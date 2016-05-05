@@ -14,5 +14,6 @@ idea {
 
         //you can configure the VCS used by the project
         vcs = 'Git'
+
     }
 }
