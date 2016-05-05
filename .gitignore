@@ -4,7 +4,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+#*.jar // SG 2016-05-06 We need some of these, at the very least we need gradle/wrapper/gradle-wrapper.jar
 *.war
 *.ear
 
