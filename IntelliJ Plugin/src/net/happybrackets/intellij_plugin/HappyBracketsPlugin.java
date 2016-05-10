@@ -1,19 +1,13 @@
 package net.happybrackets.intellij_plugin;
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import net.happybrackets.controller.ControllerMain;
 import net.happybrackets.controller.gui.GUIManager;
 import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.DeviceConnection;
@@ -25,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -49,27 +44,38 @@ public class HappyBracketsPlugin implements ToolWindowFactory {
     Synchronizer synchronizer;
     String currentPIPO = "";
     protected ControllerConfig config;
-    protected ControllerAdvertiser controllerAdvert;
+    protected ControllerAdvertiser controllerAdvertiser;
     private FileServer httpServer;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-
-
-
         Component component = toolWindow.getComponent();
         JFXPanel jfxp = new JFXPanel();
-        config = LoadableConfig.load("config/controller-config.json", new ControllerConfig());
+
+
+
+        //TODO: what can we do here? Temp code.
+        toolWindow.getComponent().add(new JLabel("DEBUG"));
+        toolWindow.getComponent().add(new JLabel(project.getName()));
+        toolWindow.getComponent().add(new JLabel(project.getBaseDir().getCanonicalPath()));
+
+        String dir = PluginManager.getPlugin(PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsPlugin")).getPath().toString();
+        System.out.println("Plugin lives at: " + dir);
+
+        String configFilePath = dir + "/classes/config/controller-config.json";
+        if(new File(configFilePath).exists()) System.out.println("Config file exists!");
+
+        //TODO: use plugin path here. How?
+        config = LoadableConfig.load(configFilePath, new ControllerConfig());
         if(config == null) config = new ControllerConfig();
         piConnection = new DeviceConnection(config);
         //setup controller broadcast
         try {
-            controllerAdvert = new ControllerAdvertiser(config);
+            controllerAdvertiser = new ControllerAdvertiser(config);
         } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        controllerAdvert.start();
+        controllerAdvertiser.start();
         //setup http httpServer
         try {
             httpServer = new FileServer(config);
