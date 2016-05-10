@@ -1,21 +1,38 @@
 package net.happybrackets.controller.gui;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Callback;
 import net.happybrackets.controller.network.DeviceConnection;
+import net.happybrackets.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.controller.network.SendToDevice;
+import net.happybrackets.core.Config;
+import net.happybrackets.core.ControllerConfig;
 
-public abstract class GUIBuilder {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
-	public static void createButtons(Pane pane, final DeviceConnection piConnection) {
-    	
-		
+public class GUIBuilder {
+
+	String currentPIPO = "";
+
+	public void createButtons(Pane pane, final DeviceConnection piConnection) {
 
 		Text globcmtx = new Text("Global commands");
 		globcmtx.setTextOrigin(VPos.CENTER);
@@ -39,7 +56,7 @@ public abstract class GUIBuilder {
 	    	b.setText("Reboot");
 	    	globalcommands.getChildren().add(b);
 		}
-		
+
 
 		{
 			Button b = new Button();
@@ -183,6 +200,101 @@ public abstract class GUIBuilder {
 
 		pane.getChildren().add(new Separator());
     	
+	}
+
+	public void setupGUI(Stage stage, DeviceConnection piConnection, ControllerConfig config) {
+
+		//core elements
+		Group masterGroup = new Group();
+		BorderPane border = new BorderPane();
+		masterGroup.getChildren().add(border);
+		border.setPadding(new Insets(10));
+
+		//the top button box
+		VBox topBox = new VBox();
+		border.setTop(topBox);
+		topBox.setMinHeight(100);
+		topBox.setSpacing(10);
+		createButtons(topBox, piConnection);
+
+		//list of PIs
+		ListView<LocalDeviceRepresentation> list = new ListView<LocalDeviceRepresentation>();
+		list.setItems(piConnection.getPIs());
+		list.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
+			@Override
+			public ListCell<LocalDeviceRepresentation> call(ListView<LocalDeviceRepresentation> theView) {
+				return new DeviceRepCell();
+			}
+		});
+		list.setMinWidth(1000);
+		list.setMaxWidth(1000);
+		list.setMinHeight(500);
+		border.setCenter(list);
+		//populate combobox with list of compositions
+		List<String> compositionFileNames = new ArrayList<String>();
+		Queue<File> dirs = new LinkedList<File>();
+		dirs.add(new File(config.getCompositionsPath()));
+
+		if(dirs != null && dirs.size() > 0) {
+			while (!dirs.isEmpty()) {
+				if(dirs.peek() != null) {
+					for (File f : dirs.poll().listFiles()) {
+						if (f.isDirectory()) {
+							dirs.add(f);
+						} else if (f.isFile()) {
+							String path = f.getPath();
+							path = path.substring(config.getCompositionsPath().length() + 1, path.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
+							if (!path.contains("$")) {
+								System.out.println(path);
+								compositionFileNames.add(path);
+							}
+						}
+					}
+				}
+			}
+		}
+		ComboBox<String> menu = new ComboBox<String>();
+		for(final String compositionFileName : compositionFileNames) {
+			menu.getItems().add(compositionFileName);
+		}
+
+		menu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1, final String arg2) {
+				if(arg2 != null) {
+					currentPIPO = config.getCompositionsPath() + "/" + arg2; //re-attatch the composition path to the menu item name
+				}
+			}
+		});
+
+		Text sendCodetxt = new Text("Send PIPOs");
+		topBox.getChildren().add(sendCodetxt);
+
+		HBox sendCodeHbox = new HBox();
+		sendCodeHbox.setSpacing(10);
+		topBox.getChildren().add(sendCodeHbox);
+		sendCodeHbox.getChildren().add(menu);
+		Button sendCode = new Button("Send >>");
+		sendCode.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				try {
+					SendToDevice.send(currentPIPO, piConnection.getPIHostnames());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		sendCodeHbox.getChildren().add(sendCode);
+		topBox.getChildren().add(new Separator());
+
+
+		//set up the scene
+		Scene scene = new Scene(masterGroup);
+		stage.setTitle("--PI Controller--");
+		stage.setScene(scene);
+		stage.sizeToScene();
+		stage.show();
 	}
 	
 }
