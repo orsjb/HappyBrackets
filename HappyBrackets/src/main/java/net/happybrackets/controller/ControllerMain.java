@@ -127,20 +127,25 @@ public class ControllerMain extends Application {
        	List<String> compositionFileNames = new ArrayList<String>();
        	Queue<File> dirs = new LinkedList<File>();
        	dirs.add(new File(config.getCompositionsPath()));
-       	while (!dirs.isEmpty()) {
-       	  for (File f : dirs.poll().listFiles()) {
-       	    if (f.isDirectory()) {
-       	      dirs.add(f);
-       	    } else if (f.isFile()) {
-       	    	String path = f.getPath();
-       	    	path = path.substring(config.getCompositionsPath().length() + 1, path.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
-       	    	if(!path.contains("$")) {
-           	    	System.out.println(path);
-           	    	compositionFileNames.add(path);
-       	    	}
-       	    }
-       	  }
-       	}
+
+		if(dirs != null && dirs.size() > 0) {
+			while (!dirs.isEmpty()) {
+				if(dirs.peek() != null) {
+					for (File f : dirs.poll().listFiles()) {
+						if (f.isDirectory()) {
+							dirs.add(f);
+						} else if (f.isFile()) {
+							String path = f.getPath();
+							path = path.substring(config.getCompositionsPath().length() + 1, path.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
+							if (!path.contains("$")) {
+								System.out.println(path);
+								compositionFileNames.add(path);
+							}
+						}
+					}
+				}
+			}
+		}
        	ComboBox<String> menu = new ComboBox<String>();
        	for(final String compositionFileName : compositionFileNames) {
 	       	menu.getItems().add(compositionFileName);

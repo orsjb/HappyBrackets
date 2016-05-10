@@ -1,4 +1,0 @@
-rootProject.name = 'happyBrackets'
-
-include 'HappyBrackets'
-include 'IntelliJ Plugin'

@@ -1,0 +1,4 @@
+{
+  "useHostname": false,
+  "compositionsPath": "target/classes"
+}
