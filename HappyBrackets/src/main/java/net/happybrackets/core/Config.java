@@ -22,5 +22,9 @@ public abstract class Config {
 	public final static String workingDir = ".";
 	public final static String audioDir = workingDir + "/audio";
 	public final static String knownPIsFile = workingDir + "/config/known_pis";
-	
+	private String compositionsPath;
+
+	public String getCompositionsPath() {
+		return compositionsPath;
+	}
 }
