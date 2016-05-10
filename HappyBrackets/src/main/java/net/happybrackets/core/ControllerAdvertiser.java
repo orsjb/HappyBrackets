@@ -39,7 +39,8 @@ public class ControllerAdvertiser {
 					}
 				}
 				catch (IOException ex) {
-					ex.printStackTrace();
+					System.err.println("Warning: Your current network does not support multicast communication. Some features of Happy Brackets will not work.");
+//					ex.printStackTrace();
 				}
  				
 			}

@@ -2,10 +2,7 @@ package net.happybrackets.core;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -115,7 +112,11 @@ public class Synchronizer {
 	
 	private void setupListener() throws IOException {
 		final MulticastSocket s = new MulticastSocket(config.getClockSynchPort());
-		s.joinGroup(InetAddress.getByName(config.getMulticastSynchAddr()));
+		try {
+			s.joinGroup(InetAddress.getByName(config.getMulticastSynchAddr()));
+		} catch(SocketException e) {
+			System.err.println("Warning: network synchronizer can't use multicast.");
+		}
 		//start a listener thread
 		Thread t = new Thread() {
 			public void run() {
