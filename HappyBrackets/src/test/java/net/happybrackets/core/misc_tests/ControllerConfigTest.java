@@ -1,6 +1,6 @@
 package net.happybrackets.core.misc_tests;
 
-import core.ControllerConfig;
+import net.happybrackets.core.ControllerConfig;
 import junit.framework.TestCase;
 
 public class ControllerConfigTest extends TestCase {

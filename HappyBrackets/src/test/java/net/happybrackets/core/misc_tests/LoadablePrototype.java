@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import com.google.gson.Gson;
-import core.EnvironmentConf;
-import core.LoadableConfig;
+import net.happybrackets.core.EnvironmentConf;
+import net.happybrackets.core.LoadableConfig;
 
 public class LoadablePrototype implements EnvironmentConf {
 	

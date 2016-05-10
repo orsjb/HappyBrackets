@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import core.LoadableConfig;
+import net.happybrackets.core.LoadableConfig;
 
 public class LoadableTest {
 	

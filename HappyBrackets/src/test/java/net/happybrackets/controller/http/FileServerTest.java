@@ -1,6 +1,6 @@
-package controller.http;
+package net.happybrackets.controller.http;
 
-import core.ControllerConfig;
+import net.happybrackets.core.ControllerConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

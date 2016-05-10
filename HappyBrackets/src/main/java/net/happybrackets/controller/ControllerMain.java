@@ -1,39 +1,20 @@
 package net.happybrackets.controller;
 
-import net.happybrackets.controller.gui.DeviceRepCell;
-import net.happybrackets.controller.gui.GUIBuilder;
+import javafx.scene.Scene;
+import net.happybrackets.controller.gui.GUIManager;
 import net.happybrackets.controller.http.FileServer;
-import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.DeviceConnection;
-import net.happybrackets.controller.network.SendToDevice;
 import net.happybrackets.core.ControllerAdvertiser;
 import net.happybrackets.core.ControllerConfig;
 import net.happybrackets.core.LoadableConfig;
 import net.happybrackets.core.Synchronizer;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 /**
  * MasterServer keeps contact with all PIs. Can control them etc.
@@ -73,8 +54,12 @@ public class ControllerMain extends Application {
             System.err.println("Unable to start http httpServer!");
             e.printStackTrace();
         }
-        GUIBuilder guiBuilder = new GUIBuilder();
-		guiBuilder.setupGUI(stage, piConnection, config);
+        GUIManager guiManager = new GUIManager();
+		Scene scene = guiManager.setupGUI(piConnection, config);
+		stage.setTitle("PI Controller");
+		stage.setScene(scene);
+		stage.sizeToScene();
+		stage.show();
     	//you can create a test pi if you don't have a real pi...
 //    	piConnection.createTestPI();
     	synchronizer = Synchronizer.get();

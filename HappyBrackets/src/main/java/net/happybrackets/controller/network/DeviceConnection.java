@@ -44,7 +44,6 @@ public class DeviceConnection {
 			s.close();
 		} catch (FileNotFoundException e1) {
 			System.out.println("Unable to read '" + config.getKnownPIsFile() + "'");
-			e1.printStackTrace();
 		}
 		// create the OSC Server
 		try {

@@ -4,8 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import core.ControllerAdvertiser;
-import core.ControllerConfig;
+import net.happybrackets.core.ControllerAdvertiser;
+import net.happybrackets.core.ControllerConfig;
 
 public class ControllerAdvertiserTest {
 	protected ControllerConfig env;
