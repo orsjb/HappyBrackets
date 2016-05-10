@@ -31,6 +31,7 @@ import java.net.UnknownHostException;
  *
  * TODO:
  *    * fix icons.
+ *    * split out singleton and repeated elements. It is possible to have multiple plugin windows! But we can only have one network manager, synch, list of pis, etc!
  *    * redesign gui, perhaps with FXML.
  *    * deal with network connection issues, including being on two networks at the same time.
  *    * reload when moved (e.g., when moved from pinned to floating mode, the content currently disappears).
@@ -39,6 +40,8 @@ import java.net.UnknownHostException;
  *
  */
 public class HappyBracketsPlugin implements ToolWindowFactory {
+
+
 
     DeviceConnection piConnection;
     Synchronizer synchronizer;
@@ -49,6 +52,9 @@ public class HappyBracketsPlugin implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+
+        System.out.println("Running createToolWindowContent();");
+
         Component component = toolWindow.getComponent();
         JFXPanel jfxp = new JFXPanel();
 
