@@ -251,6 +251,10 @@ public class GUIManager {
 						}
 					}
 				}
+				else {
+					//throw out the null File object so we don't get stuck in a never ending loop.
+					dirs.poll();
+				}
 			}
 		}
 		ComboBox<String> menu = new ComboBox<String>();
