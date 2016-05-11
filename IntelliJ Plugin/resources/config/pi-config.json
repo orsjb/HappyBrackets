@@ -1,0 +1,7 @@
+{
+  "useHostname": true,
+  "wifi": {
+    "ssid": "MySSID",
+    "psk":  "MyPWD"
+  }
+}

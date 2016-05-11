@@ -2,7 +2,7 @@ package net.happybrackets.core.misc_tests;
 
 import static org.junit.Assert.*;
 
-import core.DeviceConfig;
+import net.happybrackets.core.DeviceConfig;
 import org.junit.Before;
 import org.junit.Test;
 

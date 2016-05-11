@@ -2,16 +2,15 @@
   <id>com.your.company.unique.plugin.id</id>
   <name>Plugin display name here</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">YourCompany</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      The HappyBrackets plugin supports remote coding and control of external devices over a local network.
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      <!--Add change notes here.<br>-->
+      <!--<em>most HTML tags may be used</em>-->
     ]]>
   </change-notes>
 
@@ -26,7 +25,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <toolWindow id="HelloWorld" anchor="right" factoryClass="HelloWorld"/>
+    <toolWindow id="net.happybrackets.intellij_plugin.HappyBracketsPlugin" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsPlugin"/>
 
   </extensions>
 

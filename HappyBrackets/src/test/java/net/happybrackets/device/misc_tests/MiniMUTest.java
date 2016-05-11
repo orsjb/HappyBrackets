@@ -1,8 +1,8 @@
 package net.happybrackets.device.misc_tests;
 
-import device.sensors.MiniMU;
-import device.sensors.MiniMU.MiniMUListener;
-import core.AudioSetup;
+import net.happybrackets.device.sensors.MiniMU;
+import net.happybrackets.device.sensors.MiniMU.MiniMUListener;
+import net.happybrackets.core.AudioSetup;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Gain;
