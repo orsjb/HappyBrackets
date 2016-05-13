@@ -8,6 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static org.junit.Assert.*;
 
 /**
@@ -30,7 +33,12 @@ public class FileServerTest {
 
     @Test
     public void readFile() throws Exception {
-        String json = server.readFile("config/misc_tests-device-config.json", "utf8");
+        //add some diagnostics for current path
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        System.out.println("Current relative path is: " + s);
+
+        String json = server.readFile("src/test/config/test-device-config.json", "utf8");
         assertFalse( json == null );
         assertFalse( json.isEmpty() );
         assertTrue(  json.contains("wifi") );
