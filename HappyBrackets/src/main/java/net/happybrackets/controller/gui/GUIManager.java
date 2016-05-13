@@ -21,7 +21,6 @@ import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
 import net.happybrackets.core.Config;
 import net.happybrackets.core.ControllerConfig;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class GUIManager {
 	String currentPIPO = "";
 	ControllerConfig config;
 
-	public GUIManager(@NotNull ControllerConfig controllerConfig) {
+	public GUIManager(ControllerConfig controllerConfig) {
 		this.config = controllerConfig;
 	}
 
