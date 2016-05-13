@@ -6,6 +6,8 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentFactory;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import net.happybrackets.controller.gui.GUIManager;
@@ -19,9 +21,12 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by z3502805 on 22/04/2016.
@@ -30,8 +35,6 @@ import java.net.UnknownHostException;
  * Not much else out there about setting up an IntelliJ gui tool!
  *
  * TODO:
- *    * fix icons.
- *    * split out singleton and repeated elements. It is possible to have multiple plugin windows! But we can only have one network manager, synch, list of pis, etc!
  *    * redesign gui, perhaps with FXML.
  *    * deal with network connection issues, including being on two networks at the same time.
  *    * reload when moved (e.g., when moved from pinned to floating mode, the content currently disappears).
@@ -45,35 +48,59 @@ public class HappyBracketsPlugin implements ToolWindowFactory {
     static DeviceConnection piConnection;
     static Synchronizer synchronizer;
     static private FileServer httpServer;
-    static protected ControllerConfig config;
+    static protected IntelliJControllerConfig config;
     static protected ControllerAdvertiser controllerAdvertiser;
-
-    static String currentPIPO = "";
+    private JFXPanel jfxp;
+    private Scene scene;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
-        Component component = toolWindow.getComponent();
-        JFXPanel jfxp = new JFXPanel();
+        jfxp = new JFXPanel();
 
-        String projectDir = project.getBaseDir().getCanonicalPath();
+        System.out.println("createToolWindowContent()");
+
+        toolWindow.getComponent().addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                System.out.println("RESIZED");
+                jfxp.invalidate();
+                if(scene != null) {
+                    jfxp.setScene(scene);
+                }
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                System.out.println("MOVED");
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+                System.out.println("SHOWN");
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                System.out.println("HIDDEN");
+            }
+        });
 
         //Debug code.
 //        toolWindow.getComponent().add(new JLabel("DEBUG"));
 //        toolWindow.getComponent().add(new JLabel(project.getName()));
 //        toolWindow.getComponent().add(new JLabel(projectDir));
 
-        String dir = PluginManager.getPlugin(PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsPlugin")).getPath().toString();
-        System.out.println("Plugin lives at: " + dir);
-
-        String configFilePath = dir + "/classes/config/controller-config.json";
-        if(new File(configFilePath).exists()) System.out.println("Config file exists!");
-
         if(!staticSetup) {
+            String projectDir = project.getBaseDir().getCanonicalPath();
+            String dir = PluginManager.getPlugin(PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsPlugin")).getPath().toString();
+            System.out.println("Plugin lives at: " + dir);
+            String configFilePath = dir + "/classes/config/controller-config.json";
+            if(new File(configFilePath).exists()) System.out.println("Config file exists!");
             //all of the below concerns the set up of singletons
             //TODO: use plugin path here. How?
-            config = LoadableConfig.load(configFilePath, new ControllerConfig());
-            if (config == null) config = new ControllerConfig();
+            config = LoadableConfig.load(configFilePath, new IntelliJControllerConfig());
+            if (config == null) config = new IntelliJControllerConfig();
             //set up config relevant directories
             config.setConfigDir(dir + "/classes/config");
             piConnection = new DeviceConnection(config);
@@ -96,12 +123,29 @@ public class HappyBracketsPlugin implements ToolWindowFactory {
             synchronizer = Synchronizer.get();
             staticSetup = true;
         }
+        //TODO: we may want to make a copy of the config so that we can set different aspects here
 
-        //we make a copy of the config so that we can set different aspects here
+//        final CountDownLatch latch = new CountDownLatch(1);
+//        SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                new JFXPanel(); // initializes JavaFX environment
+//                latch.countDown();
+//            }
+//        });
+//        try {
+//            latch.await();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
-        GUIManager guiManager = new GUIManager(config);
-        Scene scene = guiManager.setupGUI(piConnection);
+        IntelliJPluginGUIManager guiManager = new IntelliJPluginGUIManager(config, project, piConnection);
+        scene = guiManager.setupGUI();
         jfxp.setScene(scene);
-        component.getParent().add(jfxp);
+
+        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+        Content content = contentFactory.createContent(jfxp, "", false);
+        toolWindow.getContentManager().addContent(content);
+//        Component component = toolWindow.getComponent();
+//        component.getParent().add(jfxp);
     }
 }

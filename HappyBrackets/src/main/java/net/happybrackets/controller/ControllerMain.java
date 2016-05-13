@@ -54,8 +54,8 @@ public class ControllerMain extends Application {
             System.err.println("Unable to start http httpServer!");
             e.printStackTrace();
         }
-        GUIManager guiManager = new GUIManager();
-		Scene scene = guiManager.setupGUI(piConnection, config);
+        GUIManager guiManager = new GUIManager(config);
+		Scene scene = guiManager.setupGUI(piConnection);
 		stage.setTitle("PI Controller");
 		stage.setScene(scene);
 		stage.sizeToScene();
