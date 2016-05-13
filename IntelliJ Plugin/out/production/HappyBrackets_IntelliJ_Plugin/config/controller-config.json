@@ -1,4 +1,3 @@
 {
-  "useHostname": false,
-  "compositionsPath": "build/classes"
+  "useHostname": false
 }
