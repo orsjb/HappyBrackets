@@ -7,6 +7,9 @@ import org.junit.Test;
 
 import net.happybrackets.core.LoadableConfig;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class LoadableTest {
 	
 	class MockClass extends LoadableConfig {
@@ -17,7 +20,12 @@ public class LoadableTest {
 
 	@Before
 	public void setUp() throws Exception {
-		cfg = LoadableConfig.load("config/misc_tests-controller-config.json", cfg);
+		//add some diagnostics for current path
+		Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+		System.out.println("Current relative path is: " + s);
+
+		cfg = LoadableConfig.load("src/test/config/test-controller-config.json", cfg);
 		if (cfg == null) fail("Unable to instantiate config class!");
 	}
 

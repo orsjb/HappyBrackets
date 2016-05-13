@@ -5,18 +5,26 @@ apply plugin: 'idea'
 assert org.gradle.api.JavaVersion.current().isJava8Compatible()
 
 repositories {
+    //All sub-projects will now refer to the same 'libs' directory
+    flatDir {
+        dirs "$rootProject.projectDir/libs"
+    }
     mavenCentral()
     //use jitpack to build beads for us :D
 //    maven { url "https://jitpack.io" }
 }
 
 dependencies {
+    //Add any libs directory jars, for example beads
+    compile     fileTree(dir: 'libs', include: '*.jar')
+
+    //remote dependencies
     compile     group: 'com.google.code.gson',  name: 'gson',       version: '2.6.2'
     compile     group: 'org.nanohttpd',         name: 'nanohttpd',  version: '2.2.0'
     compile     group: 'com.squareup.okhttp3',  name: 'okhttp',     version: '3.2.0'
     compile     group: 'de.sciss',              name: 'netutil',    version: '1.0.0'
     compile     group: 'com.pi4j',              name: 'pi4j-core',  version: '1.0'
-//    compile     group: 'com.github.samgwise',   name: 'beads',      version: 'c97545d'
+    //compile     group: 'net.beadsproject',      name: 'beads'
 
     testCompile group: 'junit',                 name: 'junit',      version: '4.+'
 }
