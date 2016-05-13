@@ -28,5 +28,6 @@ public interface EnvironmentConf {
 	//places
 	default public String getWorkingDir() 				{ return "."; }
 	default public String getAudioDir() 				{ return getWorkingDir() + "/audio"; }
-	default public String getKnownPIsFile() 			{ return getWorkingDir() + "/config/known_pis"; }
+	default public String getConfigDir() 			    { return getWorkingDir() + "/config"; }
+	default public String getKnownPIsFile() 			{ return getConfigDir() + "/known_pis"; }
 }

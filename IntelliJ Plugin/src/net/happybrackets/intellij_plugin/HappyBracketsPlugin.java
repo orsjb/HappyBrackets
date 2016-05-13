@@ -41,29 +41,27 @@ import java.net.UnknownHostException;
  */
 public class HappyBracketsPlugin implements ToolWindowFactory {
 
+    static boolean staticSetup = false;
+    static DeviceConnection piConnection;
+    static Synchronizer synchronizer;
+    static private FileServer httpServer;
+    static protected ControllerConfig config;
+    static protected ControllerAdvertiser controllerAdvertiser;
 
-
-    DeviceConnection piConnection;
-    Synchronizer synchronizer;
-    String currentPIPO = "";
-    protected ControllerConfig config;
-    protected ControllerAdvertiser controllerAdvertiser;
-    private FileServer httpServer;
+    static String currentPIPO = "";
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
-        System.out.println("Running createToolWindowContent();");
-
         Component component = toolWindow.getComponent();
         JFXPanel jfxp = new JFXPanel();
 
+        String projectDir = project.getBaseDir().getCanonicalPath();
 
-
-        //TODO: what can we do here? Temp code.
-        toolWindow.getComponent().add(new JLabel("DEBUG"));
-        toolWindow.getComponent().add(new JLabel(project.getName()));
-        toolWindow.getComponent().add(new JLabel(project.getBaseDir().getCanonicalPath()));
+        //Debug code.
+//        toolWindow.getComponent().add(new JLabel("DEBUG"));
+//        toolWindow.getComponent().add(new JLabel(project.getName()));
+//        toolWindow.getComponent().add(new JLabel(projectDir));
 
         String dir = PluginManager.getPlugin(PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsPlugin")).getPath().toString();
         System.out.println("Plugin lives at: " + dir);
@@ -71,30 +69,38 @@ public class HappyBracketsPlugin implements ToolWindowFactory {
         String configFilePath = dir + "/classes/config/controller-config.json";
         if(new File(configFilePath).exists()) System.out.println("Config file exists!");
 
-        //TODO: use plugin path here. How?
-        config = LoadableConfig.load(configFilePath, new ControllerConfig());
-        if(config == null) config = new ControllerConfig();
-        piConnection = new DeviceConnection(config);
-        //setup controller broadcast
-        try {
-            controllerAdvertiser = new ControllerAdvertiser(config);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+        if(!staticSetup) {
+            //all of the below concerns the set up of singletons
+            //TODO: use plugin path here. How?
+            config = LoadableConfig.load(configFilePath, new ControllerConfig());
+            if (config == null) config = new ControllerConfig();
+            //set up config relevant directories
+            config.setConfigDir(dir + "/classes/config");
+            piConnection = new DeviceConnection(config);
+            //setup controller broadcast
+            try {
+                controllerAdvertiser = new ControllerAdvertiser(config);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+            controllerAdvertiser.start();
+            //setup http httpServer
+            try {
+                httpServer = new FileServer(config);
+            } catch (IOException e) {
+                System.err.println("Unable to start http httpServer!");
+                e.printStackTrace();
+            }
+            //test code: you can create a test pi if you don't have a real pi...
+//    	    piConnection.createTestPI();
+            synchronizer = Synchronizer.get();
+            staticSetup = true;
         }
-        controllerAdvertiser.start();
-        //setup http httpServer
-        try {
-            httpServer = new FileServer(config);
-        } catch (IOException e) {
-            System.err.println("Unable to start http httpServer!");
-            e.printStackTrace();
-        }
-        GUIManager guiManager = new GUIManager();
-        Scene scene = guiManager.setupGUI(piConnection, config);
-        //you can create a test pi if you don't have a real pi...
-//    	piConnection.createTestPI();
-        synchronizer = Synchronizer.get();
-        //get normal desktop application behaviour - closing the stage terminates the app
+
+        //we make a copy of the config so that we can set different aspects here
+
+        GUIManager guiManager = new GUIManager(config);
+        Scene scene = guiManager.setupGUI(piConnection);
         jfxp.setScene(scene);
         component.getParent().add(jfxp);
     }

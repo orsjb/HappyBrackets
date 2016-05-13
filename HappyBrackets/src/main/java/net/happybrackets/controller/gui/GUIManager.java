@@ -21,6 +21,7 @@ import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
 import net.happybrackets.core.Config;
 import net.happybrackets.core.ControllerConfig;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,8 +32,13 @@ import java.util.Queue;
 public class GUIManager {
 
 	String currentPIPO = "";
+	ControllerConfig config;
 
-	public void createButtons(Pane pane, final DeviceConnection piConnection) {
+	public GUIManager(@NotNull ControllerConfig controllerConfig) {
+		this.config = controllerConfig;
+	}
+
+	private void createButtons(Pane pane, final DeviceConnection piConnection) {
 
 		Text globcmtx = new Text("Global commands");
 		globcmtx.setTextOrigin(VPos.CENTER);
@@ -165,8 +171,6 @@ public class GUIManager {
 		messagepaths.getChildren().add(sendAllButton);
 		Text sendTogrpstxt = new Text("Send to group");
 		messagepaths.getChildren().add(sendTogrpstxt);
-		
-		
 //		messagepaths.getChildren().add(new Separator());
 		for(int i = 0; i < 4; i++) {
 			Button b = new Button();
@@ -202,21 +206,18 @@ public class GUIManager {
     	
 	}
 
-	public Scene setupGUI(DeviceConnection piConnection, ControllerConfig config) {
-
+	public Scene setupGUI(DeviceConnection piConnection) {
 		//core elements
 		Group masterGroup = new Group();
 		BorderPane border = new BorderPane();
 		masterGroup.getChildren().add(border);
 		border.setPadding(new Insets(10));
-
 		//the top button box
 		VBox topBox = new VBox();
 		border.setTop(topBox);
 		topBox.setMinHeight(100);
 		topBox.setSpacing(10);
 		createButtons(topBox, piConnection);
-
 		//list of PIs
 		ListView<LocalDeviceRepresentation> list = new ListView<LocalDeviceRepresentation>();
 		list.setItems(piConnection.getPIs());
@@ -230,11 +231,17 @@ public class GUIManager {
 		list.setMaxWidth(1000);
 		list.setMinHeight(500);
 		border.setCenter(list);
+
+		//currently not expecting the comps path to contain a valid value
+		String compsPath = config.getCompositionsPath();
+
+		//the following populates a list of Strings with class files, associated with compositions
+
 		//populate combobox with list of compositions
 		List<String> compositionFileNames = new ArrayList<String>();
 		Queue<File> dirs = new LinkedList<File>();
-		dirs.add(new File(config.getCompositionsPath()));
-
+		dirs.add(new File(compsPath));
+		//load the composition files
 		if(dirs != null && dirs.size() > 0) {
 			while (!dirs.isEmpty()) {
 				if(dirs.peek() != null) {
@@ -257,11 +264,13 @@ public class GUIManager {
 				}
 			}
 		}
+
+		//the following creates the ComboBox containing the compoositions
+
 		ComboBox<String> menu = new ComboBox<String>();
 		for(final String compositionFileName : compositionFileNames) {
 			menu.getItems().add(compositionFileName);
 		}
-
 		menu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String arg1, final String arg2) {
@@ -271,14 +280,15 @@ public class GUIManager {
 			}
 		});
 
-		Text sendCodetxt = new Text("Send PIPOs");
-		topBox.getChildren().add(sendCodetxt);
+		//done with combo box
 
+		Text sendCodetxt = new Text("Send Compositions");
+		topBox.getChildren().add(sendCodetxt);
 		HBox sendCodeHbox = new HBox();
 		sendCodeHbox.setSpacing(10);
 		topBox.getChildren().add(sendCodeHbox);
 		sendCodeHbox.getChildren().add(menu);
-		Button sendCode = new Button("Send >>");
+		Button sendCode = new Button("Send");
 		sendCode.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
@@ -291,8 +301,6 @@ public class GUIManager {
 		});
 		sendCodeHbox.getChildren().add(sendCode);
 		topBox.getChildren().add(new Separator());
-
-
 		//set up the scene
 		Scene scene = new Scene(masterGroup);
 		return scene;
