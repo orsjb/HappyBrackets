@@ -26,11 +26,22 @@ public class FileServer extends NanoHTTPD {
         }
         catch (FileNotFoundException e) {
             System.err.println("Unable to access: " + path);
-            e.printStackTrace();
+            //e.printStackTrace();
         }
-        finally {
+
+        if (scanner != null) {
             scanner.close();
         }
+
+        return text;
+    }
+    protected static String readFile(String path, String encoding, String defaultSuffix) {
+        String text = readFile(path, encoding);
+        if (text == null) {
+            System.out.println("Trying default: " + path + defaultSuffix);
+            text = readFile(path + defaultSuffix, encoding);
+        }
+
         return text;
     }
 
@@ -74,12 +85,16 @@ public class FileServer extends NanoHTTPD {
 //            msg += "<p>Hello, " + parms.get("username") + "!</p>";
 //        }
 //        return newFixedLengthResponse(msg + "</body></html>\n");
-        String response = readFile("config/device-config.json", "utf8");
+        String deviceConfig = "config/device-config.json";
+        String response = readFile(deviceConfig, "utf8", ".default");
+
         if (response != null) {
-            return newFixedLengthResponse(statusOK, "text/json", readFile("config/device-config.json", "utf8"));
+            System.out.println("Serving file: " + deviceConfig);
+            return newFixedLengthResponse(statusOK, "text/json", response);
         }
         else {
-            return newFixedLengthResponse(statusError, "text/html", "Unable to read file: config/device-config.json ");
+            System.out.println("Serving 500 error");
+            return newFixedLengthResponse(statusError, "text/plain; charset=UTF-8", "Unable to read file: " + deviceConfig + "\n");
         }
     }
 }

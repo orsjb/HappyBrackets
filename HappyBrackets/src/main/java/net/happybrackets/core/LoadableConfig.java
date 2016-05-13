@@ -53,25 +53,32 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		}
 		
 		File f = new File(fileName);
+        //try again for the default
+        if ( !f.isFile() ) {
+            System.err.println("Unable to open file: " + fileName);
+            fileName += ".default"; //append .default for second try
+            System.out.println("Trying default: " + fileName);
+            f = new File(fileName);
+        }
+
 		if ( !f.isFile() ) {
 			System.err.println("File: '" + f.getAbsolutePath() + "' does not exist!");
 			return null;
 		}
 		
 		Gson gson = new Gson();
-		
-		try {
-			BufferedReader br = new BufferedReader( new FileReader(f.getAbsolutePath() ));
-			config = gson.fromJson(br, (Type) config.getClass());
-		}
-		catch (IOException e) {
-			System.out.println("Unable to open file: " + fileName);
-			e.printStackTrace();
-		}
-		
-		if (config == null) {
-			System.err.println("Failed loading config file: " + fileName);
-		}
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
+            config = gson.fromJson(br, (Type) config.getClass());
+        } catch (IOException e) {
+            System.err.println("Unable to open file: " + fileName);
+            e.printStackTrace();
+        }
+
+        if (config == null) {
+            System.err.println("Failed loading config file: " + fileName);
+        }
 		
 		return config;
 	}

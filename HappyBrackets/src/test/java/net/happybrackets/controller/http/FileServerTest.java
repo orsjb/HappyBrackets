@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,16 +24,19 @@ public class FileServerTest {
     @Before
     public void setUp() throws Exception {
         config = new ControllerConfig();
+        System.out.println("Starting Server");
         server = new FileServer(config);
     }
 
     @After
     public void tearDown() throws Exception {
+        System.out.println("Terminating Server");
         server.stop();
     }
 
     @Test
     public void readFile() throws Exception {
+        System.out.println("------------ Starting readFile() test -------------");
         //add some diagnostics for current path
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
@@ -42,27 +46,32 @@ public class FileServerTest {
         assertFalse( json == null );
         assertFalse( json.isEmpty() );
         assertTrue(  json.contains("wifi") );
+        System.out.println("------------ Finished readFile() test -------------");
     }
 
     @Test
-    public void getPage() throws Exception {
-//        CloseableHttpClient httpclient = HttpClients.createDefault();
-//        HttpGet httpget = new HttpGet("http://localhost:" + config.getControllerHTTPPort());
-//        CloseableHttpResponse response = httpclient.execute(httpget);
-//        String string = new String(readContents(response.getEntity()), "UTF-8");
-//        Assert.assertEquals("<xml/>", string);
-//        response.close();
+    public void getPage() {
+        System.out.println("------------ Starting getPage() test -------------");
         OkHttpClient client = new OkHttpClient();
         Request request = new okhttp3.Request.Builder()
-                .url("http://localhost:" + config.getControllerHTTPPort() + "/")
+                .url("http://localhost:" + config.getControllerHTTPPort() + "/config/device-config.json" + "\n")
                 .build();
 
-        Response response = client.newCall(request).execute();
-        String json = response.body().string();
+        String json = null;
+        try {
+            System.out.println("Executing get request...");
+            Response response = client.newCall(request).execute();
+
+            System.out.println("Extracting page body...");
+            json = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         assertFalse( json == null );
         assertFalse( json.isEmpty() );
         assertTrue(  json.contains("wifi") );
+        System.out.println("------------ Finished getPage() test -------------");
     }
 
 }
