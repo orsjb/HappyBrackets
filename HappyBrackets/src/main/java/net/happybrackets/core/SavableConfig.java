@@ -7,6 +7,9 @@ import java.io.*;
 import java.lang.reflect.Type;
 
 /**
+ * This Class exists purely to hold static methods relating to the saving of configuration classes.
+ * The static method save mirrors LoadableConfig.load() method used for loading config files.
+ *
  * Created by Samg on 19/05/2016.
  */
 public class SavableConfig {
