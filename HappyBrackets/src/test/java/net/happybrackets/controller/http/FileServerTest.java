@@ -45,7 +45,7 @@ public class FileServerTest {
         String json = server.readFile("src/test/config/test-device-config.json", "utf8");
         assertFalse( json == null );
         assertFalse( json.isEmpty() );
-        assertTrue(  json.contains("wifi") );
+        assertTrue(  json.contains("useHostname") );
         System.out.println("------------ Finished readFile() test -------------");
     }
 
@@ -70,7 +70,7 @@ public class FileServerTest {
 
         assertFalse( json == null );
         assertFalse( json.isEmpty() );
-        assertTrue(  json.contains("wifi") );
+        assertTrue(  json.contains("useHostname") );
         System.out.println("------------ Finished getPage() test -------------");
     }
 
