@@ -46,6 +46,8 @@ public class FileServer extends NanoHTTPD {
     }
 
     private ControllerConfig config;
+    private PathMapper pathMap;
+
     //server status:
     private static Response.IStatus statusOK = new Response.IStatus() {
         @Override
@@ -63,6 +65,11 @@ public class FileServer extends NanoHTTPD {
     public FileServer(ControllerConfig config) throws IOException {
         super(config.getControllerHTTPPort());
         this.config = config;
+        this.pathMap = new PathMapper();
+        //setup required paths
+        pathMap.addPath("/config/device-config.json", new WithDefaultResponse("config/device-config.json", ".default"));
+        pathMap.addPath("/config/device-wifi-config.json", new WithDefaultResponse("config/device-wifi-config.json", ".default"));
+
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("\nRunning! Point your browser to http://localhost:" + config.getControllerHTTPPort() + "/ \n");
     }
@@ -85,16 +92,16 @@ public class FileServer extends NanoHTTPD {
 //            msg += "<p>Hello, " + parms.get("username") + "!</p>";
 //        }
 //        return newFixedLengthResponse(msg + "</body></html>\n");
-        String deviceConfig = "config/device-config.json";
-        String response = readFile(deviceConfig, "utf8", ".default");
+
+        System.out.println("Request: " + session.getUri());
+        String response = pathMap.respond(session.getUri());
 
         if (response != null) {
-            System.out.println("Serving file: " + deviceConfig);
             return newFixedLengthResponse(statusOK, "text/json", response);
         }
         else {
             System.out.println("Serving 500 error");
-            return newFixedLengthResponse(statusError, "text/plain; charset=UTF-8", "Unable to read file: " + deviceConfig + "\n");
+            return newFixedLengthResponse(statusError, "text/plain; charset=UTF-8", "Unable to resolve path: " + session.getUri() + "\n");
         }
     }
 }
