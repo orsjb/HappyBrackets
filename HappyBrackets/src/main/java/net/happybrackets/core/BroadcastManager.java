@@ -13,15 +13,26 @@ import java.util.List;
  */
 public class BroadcastManager {
 
-    //TODO this should use proper implementation of OSC. Check if NetUtil can handle this.
+    //TODO this could use proper implementation of OSC? To be seen if NetUtil can handle multicast connection. Also while we're at it, can NetUtil send generic objects?
 
+    /**
+     * Listener used to respond to incoming broadcasts.
+     */
     public interface Listener {
+
+        /**
+         * Handle incoming broadcasts.
+         * @param s incoming {@link String}.
+         */
         public void messageReceived(String s);
     }
 
     private List<Listener> listeners = new ArrayList<Listener>();
     private MulticastSocket broadcastSocket;
 
+    /**
+     * Create a new BroadcastManager.
+     */
     public BroadcastManager() {
         try {
         //set up listener
@@ -35,7 +46,7 @@ public class BroadcastManager {
     }
 
     private void setupListener() throws IOException {
-        MulticastSocket s = new MulticastSocket(DeviceConfig.getInstance().getClockSynchPort());
+        MulticastSocket s = new MulticastSocket(DeviceConfig.getInstance().getBroadcastPort());
         s.joinGroup(InetAddress.getByName(DeviceConfig.getInstance().getMulticastAddr()));
         //start a listener thread
         Thread t = new Thread() {
@@ -46,8 +57,8 @@ public class BroadcastManager {
                             byte[] buf = new byte[512];
                             DatagramPacket pack = new DatagramPacket(buf, buf.length);
                             s.receive(pack);
-                            String response = new String(buf, "US-ASCII");
-                            messageReceived(response);
+                            String message = new String(buf, "US-ASCII");
+                            messageReceived(message);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -60,7 +71,7 @@ public class BroadcastManager {
     }
 
     /**
-     * Send String s over the multicast group.
+     * Broadcast {@link String} s over the multicast group.
      *
      * @param s the message to send.
      */
@@ -85,6 +96,7 @@ public class BroadcastManager {
         }
     }
 
+    //TODO should we be filtering out messages sent by ourselves? Or do we allow that? Else can we identify the sender in this function?
     private void messageReceived(String msg) {
         String[] parts = msg.split("[ ]");
         for (int i = 0; i < parts.length; i++) {
@@ -96,17 +108,27 @@ public class BroadcastManager {
         }
     }
 
+    /**
+     * Add a new {@link Listener}.
+     * @param bl the new {@link Listener}.
+     */
     public void addBroadcastListener(Listener bl) {
         listeners.add(bl);
     }
 
+    /**
+     * Remove the given {@link Listener}.
+     * @param bl the {@link Listener} to remove.
+     */
     public void removeBroadcastListener(Listener bl) {
         listeners.remove(bl);
     }
 
+    /**
+     * Clear all {@link Listener}s.
+     */
     public void clearBroadcastListeners() {
         listeners.clear();
     }
-
 
 }
