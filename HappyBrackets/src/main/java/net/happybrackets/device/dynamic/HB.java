@@ -27,9 +27,6 @@ import net.happybrackets.device.sensors.Sensor;
 
 public class HB {
 
-	// config file managing this device
-	private DeviceConfig config;
-
 	// audio stuff
 	public final AudioContext ac;
 	public final Clock clock;
@@ -54,16 +51,15 @@ public class HB {
 	public final NetworkCommunication communication;
 	public final Synchronizer synch;
 
-	public HB(AudioContext _ac, DeviceConfig _config) throws IOException {
+	public HB(AudioContext _ac) throws IOException {
 		ac = _ac;
-		this.config = _config;
 		// default audio setup (note we don't start the audio context yet)
 		masterGainEnv = new Envelope(ac, 0);
 		masterGainEnv.addSegment(1, 5000);
 		ac.out.setGain(masterGainEnv);
 		clockInterval = new Envelope(ac, 500);
 		clock = new Clock(ac, clockInterval);
-		pl = new PolyLimit(ac, ac.out.getOuts(), config.getPolyLimit());
+		pl = new PolyLimit(ac, ac.out.getOuts(), DeviceConfig.getInstance().getPolyLimit());
 		pl.setSteal(true);
 		ac.out.addInput(pl);
 		ac.out.addDependent(clock);
@@ -140,7 +136,7 @@ public class HB {
 				try {
 					// socket server (listens to incoming classes)
 					DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-					ServerSocket server = new ServerSocket(config.getCodeToDevicePort());
+					ServerSocket server = new ServerSocket(DeviceConfig.getInstance().getCodeToDevicePort());
 					// start socket server listening loop
 					while (true) {
 						// must reopen socket each time
@@ -198,14 +194,6 @@ public class HB {
 			}
 		}.start();
 
-	}
-
-	/**
-	 * Returns the @{@link DeviceConfig} for this device.
-	 * @return {@link DeviceConfig} for this device.
-     */
-	public DeviceConfig getConfig() {
-		return config;
 	}
 
 	/**

@@ -2,7 +2,9 @@ package net.happybrackets.core;
 
 import java.net.UnknownHostException;
 
-public class DeviceConfig extends LoadableConfig implements EnvironmentConfig, ControllerDiscoverer {
+public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
+
+	public static DeviceConfig singletonInstance;
 
 	private String controllerHostName;
 	private int polyLimit = 4;
@@ -13,7 +15,7 @@ public class DeviceConfig extends LoadableConfig implements EnvironmentConfig, C
 		}
 		
 		//Block and search for a controller
-		// TODO we need a logging framework too now :/
+		// TODO we need a proper logging framework
 		try {
 			controllerHostName = listenForController( getMulticastSynchAddr(), getControllerDiscoveryPort());
 		} catch (UnknownHostException e) {
@@ -29,5 +31,14 @@ public class DeviceConfig extends LoadableConfig implements EnvironmentConfig, C
 
 	public int getPolyLimit() {
 		return polyLimit;
+	}
+
+	public static DeviceConfig load(String configFile) {
+		singletonInstance = LoadableConfig.load(configFile, new DeviceConfig());
+		return singletonInstance;
+	}
+
+	public static DeviceConfig getInstance() {
+		return singletonInstance;
 	}
 }
