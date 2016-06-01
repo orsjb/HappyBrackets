@@ -15,14 +15,14 @@ public interface EnvironmentConfig {
 	default public boolean useHostname()				{ return true; }
 	default public String getMyHostName() 				{ if (useHostname()) return Device.myHostname; else return Device.myIP; }
 	default public String getMyInterface() 				{ return Device.preferedInterface; }	
-	default public String getMulticastSynchAddr()		{ return "225.2.2.5"; }
-	default public int getBroadcastOSCPort() 			{ return 2222; }
-	default public int getStatusFromDevicePort() 			{ return 2223; }
-	default public int getClockSynchPort()				{ return 2224; }
-	default public int getCodeToDevicePort()				{ return 2225; }
-	default public int getControlToDevicePort()				{ return 2226; }
-	default public int getControllerDiscoveryPort()		{ return 2227; }
-	default public int getControllerHTTPPort()		    { return 2228; }
+	default public String getMulticastAddr()			{ return "225.2.2.5"; }		//multicast address used for both synch and broadcast messages
+	default public int getBroadcastPort() 				{ return 2222; }			//broadcast port (not currently OSC)
+	default public int getStatusFromDevicePort() 		{ return 2223; }			//OSC status messages from device to controller
+	default public int getClockSynchPort()				{ return 2224; }			//synch messages over multicast
+	default public int getCodeToDevicePort()			{ return 2225; }			//Java bytecode from controller to device
+	default public int getControlToDevicePort()			{ return 2226; }			//OSC messages from controller to device
+	default public int getControllerDiscoveryPort()		{ return 2227; }			//
+	default public int getControllerHTTPPort()		    { return 2228; }			//http requests from device to controller
 	
 	//how often the PI sends an alive message to the server
 	default public int getAliveInterval() 				{ return 1000; }
@@ -31,5 +31,5 @@ public interface EnvironmentConfig {
 	default public String getWorkingDir() 				{ return "."; }
 	default public String getAudioDir() 				{ return getWorkingDir() + "/audio"; }
 	default public String getConfigDir() 			    { return getWorkingDir() + "/config"; }
-	default public String getKnownDevicesFile() 			{ return getConfigDir() + "/known_pis"; }
+	default public String getKnownDevicesFile() 		{ return getConfigDir() + "/known_pis"; }
 }

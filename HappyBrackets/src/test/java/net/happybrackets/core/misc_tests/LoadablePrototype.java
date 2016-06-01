@@ -43,7 +43,7 @@ public class LoadablePrototype implements EnvironmentConfig {
 		}
 		
 		System.out.println("KeepAliveInterval: " + cfg.getAliveInterval());
-		System.out.println("KeepAliveInterval: " + cfg.getBroadcastOSCPort());
+		System.out.println("KeepAliveInterval: " + cfg.getBroadcastPort());
 	}
 
 }

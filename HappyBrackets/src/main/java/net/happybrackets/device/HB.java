@@ -20,6 +20,7 @@ import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
+import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
@@ -54,7 +55,8 @@ public class HB {
 	public final Random rng = new Random();
 
 	// network comms stuff
-	public final NetworkCommunication communication;
+	public final NetworkCommunication controller;
+	public final BroadcastManager broadcast;
 	public final Synchronizer synch;
 
 	/**
@@ -80,8 +82,9 @@ public class HB {
 		sensors = new Hashtable<>();
 		//TODO this is temporary code. Eventually available sensors will be read from the DeviceConfig.
 		sensors.put("mu", new MiniMU());
-		// start the connection
-		communication = new NetworkCommunication(this);
+		// start network connection
+		controller = new NetworkCommunication(this);
+		broadcast = new BroadcastManager();
 		synch = Synchronizer.getInstance();
 		// start listening for code
 		startListeningForCode();
@@ -378,7 +381,7 @@ public class HB {
 	}
 
 	/**
-	 * Like {@link #reset()} except that any sounds currently playing are kept. This includes everything that is in the global memory store, all patterns, all dependents, all sensor behaviours and all communication listener behaviours.
+	 * Like {@link #reset()} except that any sounds currently playing are kept. This includes everything that is in the global memory store, all patterns, all dependents, all sensor behaviours and all controller listener behaviours.
  	 */
 	public void resetLeaveSounding() {
 		//clear dependencies and inputs
@@ -395,9 +398,9 @@ public class HB {
 			sensor.clearListeners();
 		}
 		//clear osc listeners
-		communication.clearListeners();
+		controller.clearListeners();
 		//clear broadcast listeners
-		synch.clearBroadcastListeners();		//TODO broadcast listeners should be in NetworkCommunication not synch.
+		broadcast.clearBroadcastListeners();
 	}
 
 	/**
@@ -435,7 +438,7 @@ public class HB {
 	 * @return the ID of this device, as assigned by the current controller.
      */
 	public int myIndex() {
-		return communication.getID();
+		return controller.getID();
 	}
 
 	/**

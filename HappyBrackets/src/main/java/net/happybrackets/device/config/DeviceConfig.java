@@ -19,7 +19,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		//Block and search for a controller
 		// TODO use a proper logging framework
 		try {
-			controllerHostName = listenForController( getMulticastSynchAddr(), getControllerDiscoveryPort());
+			controllerHostName = listenForController( getMulticastAddr(), getControllerDiscoveryPort());
 		} catch (UnknownHostException e) {
 			System.out.println("Error obtaining controller hostname.");
 			e.printStackTrace();

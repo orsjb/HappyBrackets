@@ -17,7 +17,7 @@ public class ControllerAdvertiser {
 		super();
 		this.env = env;
 		
-		InetAddress group = InetAddress.getByName(env.getMulticastSynchAddr());
+		InetAddress group = InetAddress.getByName(env.getMulticastAddr());
 		//set up an indefinite thread to advertise the controller
 		advertismentService = new Thread() {
 			public void run() {
@@ -41,7 +41,7 @@ public class ControllerAdvertiser {
 					}
 				}
 				catch (IOException ex) {
-					System.err.println("Warning: Your current network does not support multicast communication. Some features of Happy Brackets will not work.");
+					System.err.println("Warning: Your current network does not support multicast controller. Some features of Happy Brackets will not work.");
 //					ex.printStackTrace();
 				}
  				

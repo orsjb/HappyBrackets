@@ -19,7 +19,7 @@ public class ATest implements HBAction {
         System.out.println("Hello world");
 
 
-        d.communication.addListener(new NetworkCommunication.Listener() {
+        d.controller.addListener(new NetworkCommunication.Listener() {
             @Override
             public void msg(OSCMessage msg) {
                 if (msg.getName().equals("on")) {

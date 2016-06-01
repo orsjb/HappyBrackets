@@ -108,20 +108,20 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		    return EnvironmentConfig.super.getMyInterface();
 		}
 	}
-	public String getMulticastSynchAddr() {
+	public String getMulticastAddr() {
 		if (MulticastSynchAddr != null) {
 		    return MulticastSynchAddr;		
 		}
 		else {
-		    return EnvironmentConfig.super.getMulticastSynchAddr();
+		    return EnvironmentConfig.super.getMulticastAddr();
 		}
 	}
-	public int getBroadcastOSCPort() {
+	public int getBroadcastPort() {
 		if (BroadcastOSCPort != null) {
 		    return BroadcastOSCPort;		
 		}
 		else {
-		    return EnvironmentConfig.super.getBroadcastOSCPort();
+		    return EnvironmentConfig.super.getBroadcastPort();
 		}
 	}
 	public int getStatusFromDevicePort() {

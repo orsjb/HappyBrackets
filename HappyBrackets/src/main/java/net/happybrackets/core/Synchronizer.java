@@ -24,31 +24,20 @@ public class Synchronizer {
 	 * r <MAC1> <timeMS> <MAC2> <timeMS>
 	 */
 
+	private String myMAC; //how to uniquely identify this machine
+	private MulticastSocket broadcastSocket;
+	private long timeCorrection = 0;			//add this to current time to getInstance the REAL current time
+	private long stableTimeCorrection = 0;
+	private long lastTick;
+	private int stabilityCount = 0;
 
-	/*
-	 * TODO : Separate the Synchronizer code from the broadcast code. Broadcast code should live in NetworkCommunication, not Synch, and should probably be listening on a separate address and/or port. Where is boradcast sending happening?
-	 */
-	
-	public interface BroadcastListener {
-		public void messageReceived(String s);
-	}
-	
-	String myMAC; //how to uniquely identify this machine
-	MulticastSocket broadcastSocket;
-	long timeCorrection = 0;			//add this to current time to getInstance the REAL current time
-	long stableTimeCorrection = 0;
-	long lastTick;
-	int stabilityCount = 0;
+	private boolean on = true;
+	private boolean verbose = false;
+	private boolean veryverbose = false;
+	private boolean timedebug = false;
 
-	boolean on = true;
-	boolean verbose = false;
-	boolean veryverbose = false;
-	boolean timedebug = false;
-	
-	Map<Long, Map<String, long[]>> log;		//first referenced by message send time, then by respodent's name, with the time the respondent replied and the current time
-	
-	List<BroadcastListener> listeners = new ArrayList<Synchronizer.BroadcastListener>();
-	
+	private Map<Long, Map<String, long[]>> log;		//first referenced by message send time, then by respodent's name, with the time the respondent replied and the current time
+
 	static Synchronizer singletonSynchronizer;
 	
 	public synchronized static Synchronizer getInstance() {
@@ -118,9 +107,9 @@ public class Synchronizer {
 	private void setupListener() throws IOException {
 		final MulticastSocket s = new MulticastSocket(DeviceConfig.getInstance().getClockSynchPort());
 		try {
-			s.joinGroup(InetAddress.getByName(DeviceConfig.getInstance().getMulticastSynchAddr()));
+			s.joinGroup(InetAddress.getByName(DeviceConfig.getInstance().getMulticastAddr()));
 		} catch(SocketException e) {
-			System.err.println("Warning: network synchronizer can't use multicast.");
+			System.err.println("Warning: Synchronizer can't use multicast. No synch functionality available in this session.");
 		}
 		//start a listener thread
 		Thread t = new Thread() {
@@ -289,25 +278,7 @@ public class Synchronizer {
 					System.out.println("This machine (" + myMAC + ") is " + (timeAheadOfOther > 0 ? "ahead of" : "behind") + " " + otherMAC + " by " + Math.abs(timeAheadOfOther) + "ms");
 				}
 			}
-		} else {
-			//Listeners
-			for(BroadcastListener bl : listeners) {
-				bl.messageReceived(msg);
-			}
 		}
-	}
-
-
-	public void addBroadcastListener(BroadcastListener bl) {
-		listeners.add(bl);
-	}
-	
-	public void removeBroadcastListener(BroadcastListener bl) {
-		listeners.remove(bl);
-	}
-	
-	public void clearBroadcastListeners() {
-		listeners.clear();
 	}
 
 	/**
@@ -326,10 +297,10 @@ public class Synchronizer {
 
 	/**
 	 * Send String s over the multicast group.
-	 * 
+	 *
 	 * @param s the message to send.
 	 */
-	public void broadcast(String s) {	
+	public void broadcast(String s) {
 		byte buf[] = null;
 		try {
 			buf = s.getBytes("US-ASCII");
@@ -337,18 +308,18 @@ public class Synchronizer {
 			e1.printStackTrace();
 		}
 		if(veryverbose) System.out.println("Sending message: " + s + " (length in bytes = " + buf.length + ")");
-		// Create a DatagramPacket 
+		// Create a DatagramPacket
 		DatagramPacket pack = null;
 		try {
-			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(DeviceConfig.getInstance().getMulticastSynchAddr()), DeviceConfig.getInstance().getClockSynchPort());
+			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(DeviceConfig.getInstance().getMulticastAddr()), DeviceConfig.getInstance().getClockSynchPort());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-		} 
+		}
 		try {
 			broadcastSocket.send(pack);
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 	}
 	
 	public static void main(String[] args) {

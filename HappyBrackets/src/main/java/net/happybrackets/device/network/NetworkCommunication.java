@@ -105,7 +105,7 @@ public class NetworkCommunication {
 		);
 		System.out.println( "Controller resolved to address: " + controller );
 		//set up the controller address
-		broadcastAddress = new InetSocketAddress(DeviceConfig.getInstance().getControllerHostname(), DeviceConfig.getInstance().getBroadcastOSCPort());
+		broadcastAddress = new InetSocketAddress(DeviceConfig.getInstance().getControllerHostname(), DeviceConfig.getInstance().getBroadcastPort());
 		//set up an indefinite thread to ping the controller
 		new Thread() {
 			public void run() {
