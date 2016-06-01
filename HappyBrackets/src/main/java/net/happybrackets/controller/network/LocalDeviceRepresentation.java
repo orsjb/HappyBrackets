@@ -8,7 +8,7 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import net.happybrackets.core.ControllerConfig;
+import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
@@ -42,7 +42,7 @@ public class LocalDeviceRepresentation {
 		}
 		OSCMessage msg = new OSCMessage(msgName, args);
 		if(addr == null) {
-			addr = new InetSocketAddress(hostname, config.getControlToPIPort());
+			addr = new InetSocketAddress(hostname, config.getControlToDevicePort());
 		}
 		try {
 			server.send(msg, addr);

@@ -1,4 +1,4 @@
-package net.happybrackets.core;
+package net.happybrackets.core.config;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +13,7 @@ import com.google.gson.Gson;
  * 
  * Provides a loadable abstract class of our core configuration parameters.
  * This class wraps the default methods of the core interface with overridable values.
- * Each time a get call is executed it first checks the the relevant class value.
+ * Each time a getInstance call is executed it first checks the the relevant class value.
  *   If the value is undefined it delegates to the interface default else it returns the stored value.
  *   
  * To instantiate an object extending this class call the static buildFromJSON method.
@@ -22,27 +22,27 @@ import com.google.gson.Gson;
  *  of this object from JSON config files via the Gson library. 
  *
  */
-public abstract class LoadableConfig implements EnvironmentConf {
+public abstract class LoadableConfig implements EnvironmentConfig {
 	//use Integer instead of int so we can delegate to the interface default value on null
 	private Boolean useHostname;
 	private String  MyHostName;
 	private String  MyInterface;	
 	private String  MulticastSynchAddr;
 	private Integer BroadcastOSCPort;
-	private Integer StatusFromPIPort;
+	private Integer StatusFromDevicePort;
 	private Integer ClockSynchPort;
-	private Integer CodeToPIPort;
-	private Integer ControlToPIPort;
+	private Integer CodeToDevicePort;
+	private Integer ControlToDevicePort;
 	private Integer ControllerDiscoveryPort;
     private Integer ControllerHTTPPort;
 
-	//how often the PI sends an alive message to the server
+	//how often the PI sends an aslive message to the server
 	private Integer AliveInterval;
 
 	//places
 	private String  WorkingDir;
 	private String  AudioDir;
-	private String  KnownPIsFile;
+	private String KnownDevicesFile;
 	
 	public static <T> T load(String fileName, T config) {			
 		System.out.println("Loading: " + fileName);
@@ -89,7 +89,7 @@ public abstract class LoadableConfig implements EnvironmentConf {
             return useHostname;
         }
         else {
-            return EnvironmentConf.super.useHostname();
+            return EnvironmentConfig.super.useHostname();
         }
     }
 	public String getMyHostName() {
@@ -97,7 +97,7 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return MyHostName;		
 		}
 		else {
-		    return EnvironmentConf.super.getMyHostName();
+		    return EnvironmentConfig.super.getMyHostName();
 		}
 	}
 	public String getMyInterface() {
@@ -105,7 +105,7 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return MyInterface;		
 		}
 		else {
-		    return EnvironmentConf.super.getMyInterface();
+		    return EnvironmentConfig.super.getMyInterface();
 		}
 	}
 	public String getMulticastSynchAddr() {
@@ -113,7 +113,7 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return MulticastSynchAddr;		
 		}
 		else {
-		    return EnvironmentConf.super.getMulticastSynchAddr();
+		    return EnvironmentConfig.super.getMulticastSynchAddr();
 		}
 	}
 	public int getBroadcastOSCPort() {
@@ -121,15 +121,15 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return BroadcastOSCPort;		
 		}
 		else {
-		    return EnvironmentConf.super.getBroadcastOSCPort();
+		    return EnvironmentConfig.super.getBroadcastOSCPort();
 		}
 	}
-	public int getStatusFromPIPort() {
-		if (StatusFromPIPort != null) {
-		    return StatusFromPIPort;		
+	public int getStatusFromDevicePort() {
+		if (StatusFromDevicePort != null) {
+		    return StatusFromDevicePort;
 		}
 		else {
-		    return EnvironmentConf.super.getStatusFromPIPort();
+		    return EnvironmentConfig.super.getStatusFromDevicePort();
 		}
 	}
 	public int getClockSynchPort() {
@@ -137,23 +137,23 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return ClockSynchPort;		
 		}
 		else {
-		    return EnvironmentConf.super.getClockSynchPort();
+		    return EnvironmentConfig.super.getClockSynchPort();
 		}
 	}
-	public int getCodeToPIPort() {
-		if (CodeToPIPort != null) {
-		    return CodeToPIPort;		
+	public int getCodeToDevicePort() {
+		if (CodeToDevicePort != null) {
+		    return CodeToDevicePort;
 		}
 		else {
-		    return EnvironmentConf.super.getCodeToPIPort();
+		    return EnvironmentConfig.super.getCodeToDevicePort();
 		}
 	}
-	public int getControlToPIPort() {
-		if (ControlToPIPort != null) {
-		    return ControlToPIPort;		
+	public int getControlToDevicePort() {
+		if (ControlToDevicePort != null) {
+		    return ControlToDevicePort;
 		}
 		else {
-		    return EnvironmentConf.super.getControlToPIPort();
+		    return EnvironmentConfig.super.getControlToDevicePort();
 		}
 	}
 	public int getControllerDiscoveryPort() {
@@ -161,7 +161,7 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return ControllerDiscoveryPort;		
 		}
 		else {
-		    return EnvironmentConf.super.getControllerDiscoveryPort();
+		    return EnvironmentConfig.super.getControllerDiscoveryPort();
 		}
 	}
 	public int getAliveInterval() {
@@ -169,7 +169,7 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return AliveInterval;		
 		}
 		else {
-		    return EnvironmentConf.super.getAliveInterval();
+		    return EnvironmentConfig.super.getAliveInterval();
 		}
 	}
 	public String getWorkingDir() {
@@ -177,7 +177,7 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return WorkingDir;		
 		}
 		else {
-		    return EnvironmentConf.super.getWorkingDir();
+		    return EnvironmentConfig.super.getWorkingDir();
 		}
 	}
 	public String getAudioDir() {
@@ -185,15 +185,15 @@ public abstract class LoadableConfig implements EnvironmentConf {
 		    return AudioDir;		
 		}
 		else {
-		    return EnvironmentConf.super.getAudioDir();
+		    return EnvironmentConfig.super.getAudioDir();
 		}
 	}
-	public String getKnownPIsFile() {
-		if (KnownPIsFile != null) {
-		    return KnownPIsFile;		
+	public String getKnownDevicesFile() {
+		if (KnownDevicesFile != null) {
+		    return KnownDevicesFile;
 		}
 		else {
-		    return EnvironmentConf.super.getKnownPIsFile();
+		    return EnvironmentConfig.super.getKnownDevicesFile();
 		}
 	}
 
@@ -202,7 +202,7 @@ public abstract class LoadableConfig implements EnvironmentConf {
 			return ControllerHTTPPort;
 		}
 		else {
-			return EnvironmentConf.super.getControllerHTTPPort();
+			return EnvironmentConfig.super.getControllerHTTPPort();
 		}
 	}
 

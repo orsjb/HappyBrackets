@@ -1,7 +1,7 @@
 package net.happybrackets.device;
 
-import net.happybrackets.core.DeviceConfig;
-import net.happybrackets.core.LoadableConfig;
+import net.happybrackets.device.config.DeviceConfig;
+import net.happybrackets.core.config.LoadableConfig;
 
 public class ManagerAgent {
 

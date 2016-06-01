@@ -23,7 +23,7 @@ public class MiniMUTest {
 		Gain g = new Gain(ac, 1, gainCtrl);
 		g.addInput(wp);
 		ac.out.addInput(g);
-		//get listening to data
+		//getInstance listening to data
 		MiniMUListener myListener = new MiniMUListener() {
 			
 			public void accelData(double x, double y, double z) {

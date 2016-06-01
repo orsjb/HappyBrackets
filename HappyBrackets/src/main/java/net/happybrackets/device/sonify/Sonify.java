@@ -49,7 +49,7 @@ public class Sonify{
         if (inputIndexAsDecimal >= 1 |inputIndexAsDecimal < 0){
             System.err.println("inputIndexAsDecimal Error - either 1 or greater or less than 0");
         }
-        // get length of data to find index
+        // getInstance length of data to find index
 
         dataIndex  = (int) (data.length * inputIndexAsDecimal);
         inValue = (float) data[dataIndex]; // set inValue so update can be called

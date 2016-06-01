@@ -4,18 +4,18 @@ import de.sciss.net.OSCMessage;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.WavePlayer;
-import net.happybrackets.core.DynamoAction;
-import net.happybrackets.device.dynamic.Dynamo;
+import net.happybrackets.core.HBAction;
+import net.happybrackets.device.dynamic.HB;
 import net.happybrackets.device.network.NetworkCommunication;
 
 /**
  * Created by Ollie on 18/08/15.
  */
-public class ATest implements DynamoAction {
+public class ATest implements HBAction {
 
 
     @Override
-    public void action(final Dynamo d) {
+    public void action(final HB d) {
         System.out.println("Hello world");
 
 

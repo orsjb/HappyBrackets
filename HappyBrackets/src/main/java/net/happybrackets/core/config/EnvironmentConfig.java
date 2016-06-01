@@ -1,4 +1,4 @@
-package net.happybrackets.core;
+package net.happybrackets.core.config;
 
 //SG 2016-04-04
 //We should move from a static configuration definition to a dynamic definition.
@@ -7,7 +7,9 @@ package net.happybrackets.core;
 //Key bonuses are the PIs being able to look for the host controller instead of the current hard coded approach.
 
 
-public interface EnvironmentConf {
+import net.happybrackets.core.Device;
+
+public interface EnvironmentConfig {
 
 	//hosts and ports for network messages
 	default public boolean useHostname()				{ return true; }
@@ -15,10 +17,10 @@ public interface EnvironmentConf {
 	default public String getMyInterface() 				{ return Device.preferedInterface; }	
 	default public String getMulticastSynchAddr()		{ return "225.2.2.5"; }
 	default public int getBroadcastOSCPort() 			{ return 2222; }
-	default public int getStatusFromPIPort() 			{ return 2223; }
+	default public int getStatusFromDevicePort() 			{ return 2223; }
 	default public int getClockSynchPort()				{ return 2224; }
-	default public int getCodeToPIPort()				{ return 2225; }
-	default public int getControlToPIPort()				{ return 2226; }
+	default public int getCodeToDevicePort()				{ return 2225; }
+	default public int getControlToDevicePort()				{ return 2226; }
 	default public int getControllerDiscoveryPort()		{ return 2227; }
 	default public int getControllerHTTPPort()		    { return 2228; }
 	
@@ -29,5 +31,5 @@ public interface EnvironmentConf {
 	default public String getWorkingDir() 				{ return "."; }
 	default public String getAudioDir() 				{ return getWorkingDir() + "/audio"; }
 	default public String getConfigDir() 			    { return getWorkingDir() + "/config"; }
-	default public String getKnownPIsFile() 			{ return getConfigDir() + "/known_pis"; }
+	default public String getKnownDevicesFile() 			{ return getConfigDir() + "/known_pis"; }
 }

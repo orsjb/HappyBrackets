@@ -1,6 +1,6 @@
 package net.happybrackets.controller.http;
 
-import net.happybrackets.core.ControllerConfig;
+import net.happybrackets.controller.config.ControllerConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -59,7 +59,7 @@ public class FileServerTest {
 
         String json = null;
         try {
-            System.out.println("Executing get request...");
+            System.out.println("Executing getInstance request...");
             Response response = client.newCall(request).execute();
 
             System.out.println("Extracting page body...");

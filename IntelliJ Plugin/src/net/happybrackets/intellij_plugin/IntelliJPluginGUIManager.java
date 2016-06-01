@@ -39,7 +39,6 @@ public class IntelliJPluginGUIManager {
 	public IntelliJPluginGUIManager(@NotNull ControllerConfig controllerConfig, Project project, DeviceConnection piConnection) {
 		this.config = controllerConfig;
 		this.project = project;
-
 		this.piConnection = piConnection;
 	}
 

@@ -1,4 +1,6 @@
-package net.happybrackets.core;
+package net.happybrackets.controller.config;
+
+import net.happybrackets.core.config.LoadableConfig;
 
 public class ControllerConfig extends LoadableConfig {
 

@@ -1,11 +1,11 @@
 package net.happybrackets.device.dynamic;
 
 
-public class DynamoClassLoader extends ClassLoader {
+public class DynamicClassLoader extends ClassLoader {
 	
 	ClassLoader parent;
 	
-	public DynamoClassLoader(ClassLoader parent) {
+	public DynamicClassLoader(ClassLoader parent) {
 		super(parent);
 		this.parent = parent;
 	}

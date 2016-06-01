@@ -25,7 +25,7 @@ public abstract class Device {
 			System.out.println("Detected OS: " + System.getProperty("os.name"));
 			if (System.getProperty("os.name").startsWith("Mac OS")) {
 				netInterface = NetworkInterface.getByName("en1");
-				//if you can't get the wlan then get the ethernet mac address:
+				//if you can't getInstance the wlan then getInstance the ethernet mac address:
 				if(netInterface == null) {
 					netInterface = NetworkInterface.getByName("en0");
 				}
@@ -40,7 +40,7 @@ public abstract class Device {
 					netInterface = interfaces.nextElement();
 					
 					// Windows by default has a lot of extra interfaces,
-					//  lets at least try and get a real interface...
+					//  lets at least try and getInstance a real interface...
 					if (isViableNetworkInterface(netInterface)) {
 						favouriteInterfaceName = netInterface.getName();
 						System.out.println("I like: " + favouriteInterfaceName + ", " + netInterface.getDisplayName());
@@ -76,7 +76,7 @@ public abstract class Device {
 				//collect our chosen network interface name
 				tmpPreferedInterface = netInterface.getName(); 
 				
-				//get MAC
+				//getInstance MAC
 				byte[] mac = netInterface.getHardwareAddress();
 				StringBuilder builder = new StringBuilder();
 				for (byte a : mac) {
@@ -98,7 +98,7 @@ public abstract class Device {
 			if(tmpMAC == null && tmpHostname != null) {
 				tmpMAC = tmpHostname.substring(8, 20);
 			}
-			//if we don't have the hostname get by traditional means
+			//if we don't have the hostname getInstance by traditional means
 			// Windows seems to like this one.
 			if(tmpHostname == null) {
 				try {

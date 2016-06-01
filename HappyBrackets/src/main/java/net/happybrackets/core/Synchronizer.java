@@ -1,5 +1,7 @@
 package net.happybrackets.core;
 
+import net.happybrackets.device.config.DeviceConfig;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
@@ -12,7 +14,7 @@ import java.util.Map;
 public class Synchronizer {
 
 	/*
-	 * A tool for each Raspberry PI to work out its current synch with respect to all other PIs.
+	 * A tool for each device to work out its current synch with respect to all other devices.
 	 * We keep this independent of the audio system because the audio system start-time needs to be synched.
 	 * 
 	 * Each synchronizer sends regular pulses every second with the syntax:
@@ -21,16 +23,19 @@ public class Synchronizer {
 	 * An s means send. Upon receiving an s, each synchronizer also responds with
 	 * r <MAC1> <timeMS> <MAC2> <timeMS>
 	 */
+
+
+	/*
+	 * TODO : Separate the Synchronizer code from the broadcast code. Broadcast code should live in NetworkCommunication, not Synch, and should probably be listening on a separate address and/or port. Where is boradcast sending happening?
+	 */
 	
 	public interface BroadcastListener {
-		public void messageReceived(String s);				//TODO this should not be here. Separate the Synchronizer code from the broadcast code.
+		public void messageReceived(String s);
 	}
-	
-	private static final DeviceConfig config = new DeviceConfig(); //TODO make DeviceConfig a singleton
 	
 	String myMAC; //how to uniquely identify this machine
 	MulticastSocket broadcastSocket;
-	long timeCorrection = 0;			//add this to current time to get the REAL current time
+	long timeCorrection = 0;			//add this to current time to getInstance the REAL current time
 	long stableTimeCorrection = 0;
 	long lastTick;
 	int stabilityCount = 0;
@@ -46,7 +51,7 @@ public class Synchronizer {
 	
 	static Synchronizer singletonSynchronizer;
 	
-	public synchronized static Synchronizer get() {
+	public synchronized static Synchronizer getInstance() {
 		if(singletonSynchronizer == null) {
 			singletonSynchronizer = new Synchronizer();
 		}
@@ -54,14 +59,14 @@ public class Synchronizer {
 	}
 	
 	public static long time() {
-		return get().correctedTimeNow();
+		return getInstance().correctedTimeNow();
 	}
 	
 	private Synchronizer() {
 		//basics
 		log = new Hashtable<Long, Map<String, long[]>>();
 		try {
-			//basic init get my MAC address
+			//basic init getInstance my MAC address
 			myMAC = Device.myMAC;
 			//start listening
 			setupListener();
@@ -111,9 +116,9 @@ public class Synchronizer {
 	}
 	
 	private void setupListener() throws IOException {
-		final MulticastSocket s = new MulticastSocket(config.getClockSynchPort());
+		final MulticastSocket s = new MulticastSocket(DeviceConfig.getInstance().getClockSynchPort());
 		try {
-			s.joinGroup(InetAddress.getByName(config.getMulticastSynchAddr()));
+			s.joinGroup(InetAddress.getByName(DeviceConfig.getInstance().getMulticastSynchAddr()));
 		} catch(SocketException e) {
 			System.err.println("Warning: network synchronizer can't use multicast.");
 		}
@@ -335,7 +340,7 @@ public class Synchronizer {
 		// Create a DatagramPacket 
 		DatagramPacket pack = null;
 		try {
-			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(config.getMulticastSynchAddr()), config.getClockSynchPort());
+			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(DeviceConfig.getInstance().getMulticastSynchAddr()), DeviceConfig.getInstance().getClockSynchPort());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} 
@@ -346,9 +351,8 @@ public class Synchronizer {
 		} 
 	}
 	
-	
 	public static void main(String[] args) {
-		Synchronizer s = get();
+		Synchronizer s = getInstance();
 		s.displayClock();
 	}
 	
