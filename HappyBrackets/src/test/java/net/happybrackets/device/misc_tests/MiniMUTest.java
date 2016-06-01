@@ -45,8 +45,8 @@ public class MiniMUTest {
 			}
 			
 		};
-		MiniMU mm = new MiniMU(myListener);
-		mm.start();
+		MiniMU mm = new MiniMU();
+		mm.addListener(myListener);
 	}
 
 }

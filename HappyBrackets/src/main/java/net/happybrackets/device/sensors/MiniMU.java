@@ -14,9 +14,12 @@ public class MiniMU extends Sensor {
 
 	@Override
 	public String getSensorName() {
-		return "MiniMU Sensor";
+		return "MiniMU";
 	}
 
+	/**
+	 * Specific listener for the MiniMu sensor. Listens to various MiniMu data: accelerometer, gyro, mag, tem. There is also an imu() callback which receives them all.
+	 */
 	public static abstract class MiniMUListener implements SensorListener {
 		public void accelData(double x, double y, double z) {}
 		public void gyroData(double x, double y, double z) {}
@@ -25,21 +28,18 @@ public class MiniMU extends Sensor {
 		public void tempData(double t) {}
 	}
 
-	byte MAG_ADDRESS;
-	byte ACC_ADDRESS;
-	byte GYR_ADDRESS;
+	//TODO need to adjust for different versions
 
-	final static int MAG_DATA_ADDR = 0xa8;
-	final static int GYRO_DATA_ADDR = 0xa8;
-	final static int ACC_DATA_ADDR = 0xa8;
+	private byte MAG_ADDRESS;
+	private byte ACC_ADDRESS;
+	private byte GYR_ADDRESS;
 
-	I2CBus bus;
-	I2CDevice gyrodevice, acceldevice, magdevice;
+	private final static int MAG_DATA_ADDR = 0xa8;
+	private final static int GYRO_DATA_ADDR = 0xa8;
+	private final static int ACC_DATA_ADDR = 0xa8;
 
-	public MiniMU(MiniMUListener listener) {
-		this();
-		addListener(listener);
-	}
+	private I2CBus bus;
+	private I2CDevice gyrodevice, acceldevice, magdevice;
 
 	public MiniMU() {
 		// Work out which one we are
@@ -124,7 +124,7 @@ public class MiniMU extends Sensor {
 		start();
 	}
 
-	public void start() {
+	private void start() {
 		Runnable task = new Runnable() {
 			@Override
 			public void run() {
@@ -244,7 +244,7 @@ public class MiniMU extends Sensor {
 		return result;
 	}
 	
-	public static boolean[] getBits(byte inByte) {
+	private static boolean[] getBits(byte inByte) {
 		boolean[] bits = new boolean[8];
 		for (int j = 0; j < 8; j++) {
 			// Shift each bit by 1 starting at zero shift
@@ -254,16 +254,16 @@ public class MiniMU extends Sensor {
 		}
 		return bits;
 	}
-	
-	public static String bits2String(boolean[] bbits) {
+
+	private static String bits2String(boolean[] bbits) {
 		StringBuffer b = new StringBuffer();
 		for(boolean v : bbits) {
 			b.append(v?1:0);
 		}
 		return b.toString();
 	}
-	
-	public static int bits2Int(boolean[] bbits) {
+
+	private static int bits2Int(boolean[] bbits) {
 		int result = 0;
 		int length = bbits.length - 1;
 		if (bbits[0]) { // if the most significant bit is true
@@ -277,8 +277,8 @@ public class MiniMU extends Sensor {
 		}
 		return result;
 	}
-	
-	public static String byte2Str(byte inByte) {
+
+	private static String byte2Str(byte inByte) {
 		boolean[] bbits = getBits(inByte);
 		return bits2String(bbits);
 	}
