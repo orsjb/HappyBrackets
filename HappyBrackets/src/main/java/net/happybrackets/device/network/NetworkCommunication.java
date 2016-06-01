@@ -5,7 +5,7 @@ import net.happybrackets.core.Synchronizer;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
-import net.happybrackets.device.dynamic.Dynamo;
+import net.happybrackets.device.dynamic.HB;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -26,9 +26,9 @@ public class NetworkCommunication {
 	private InetSocketAddress controller, oscPortDetails;			 			//The network details of the controller
 	private Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>()); 	
 																//Listeners to incoming OSC messages
-	final private Dynamo pi;
+	final private HB pi;
 	
-	public NetworkCommunication(Dynamo _pi) throws IOException {
+	public NetworkCommunication(HB _pi) throws IOException {
 		this.pi = _pi;
 	
 		//init the OSCServers
@@ -68,9 +68,9 @@ public class NetworkCommunication {
 						pi.sync(timeToAct);
 						
 					} else if(msg.getName().equals("/PI/reboot")) {
-						Dynamo.rebootPI();
+						HB.rebootPI();
 					} else if(msg.getName().equals("/PI/shutdown")) {
-						Dynamo.shutdownPI();
+						HB.shutdownPI();
 					} else if(msg.getName().equals("/PI/gain")) {
 						pi.masterGainEnv.addSegment((Float)msg.getArg(0), (Float)msg.getArg(1));
 					} else if(msg.getName().equals("/PI/reset")) {

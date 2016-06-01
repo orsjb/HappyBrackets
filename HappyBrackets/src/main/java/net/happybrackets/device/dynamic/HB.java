@@ -24,8 +24,9 @@ import net.happybrackets.core.DeviceConfig;
 import net.happybrackets.core.DynamoAction;
 import net.happybrackets.core.Synchronizer;
 
-public class Dynamo {
-	
+public class HB {
+
+	// config file managing this device
 	private DeviceConfig config;
 
 	// audio stuffs
@@ -52,7 +53,7 @@ public class Dynamo {
 	public NetworkCommunication communication;
 	public Synchronizer synch;
 
-	public Dynamo(AudioContext _ac, DeviceConfig _config) throws IOException {
+	public HB(AudioContext _ac, DeviceConfig _config) throws IOException {
 		ac = _ac;
 		this.config = _config;
 		// default audio setup (note we don't start the audio context yet)
@@ -65,7 +66,7 @@ public class Dynamo {
 		pl.setSteal(true);
 		ac.out.addInput(pl);
 		ac.out.addDependent(clock);
-		System.out.println("Dynamo audio setup complete.");
+		System.out.println("HB audio setup complete.");
 		// sensor setup
 		mu = new MiniMU();
 		mu.start();
@@ -127,7 +128,7 @@ public class Dynamo {
 			public void run() {
 				try {
 					// socket server (listens to incoming classes)
-					DynamoClassLoader loader = new DynamoClassLoader(ClassLoader.getSystemClassLoader());
+					DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
 					ServerSocket server = new ServerSocket(config.getCodeToPIPort());
 					// start socket server listening loop
 					while (true) {
@@ -159,7 +160,7 @@ public class Dynamo {
 								// to
 								// recreate
 								// the classloader to avoid duplicate errors
-								loader = new DynamoClassLoader(ClassLoader.getSystemClassLoader());
+								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
 								status = "Last DynamoAction: " + pipoClass.getCanonicalName();
 							} else {
 								System.out.println("new object (not DynamoAction) >> " + c.getName());
@@ -172,7 +173,7 @@ public class Dynamo {
 							DynamoAction pipo = null;
 							try {
 								pipo = pipoClass.newInstance();
-								pipo.action(Dynamo.this);
+								pipo.action(HB.this);
 							} catch (Exception e) {
 								e.printStackTrace(); // catching all exceptions
 													 // means that we avert an exception
@@ -238,6 +239,12 @@ public class Dynamo {
 		}
 	}
 
+	/**
+	 * Adds a new pattern Bead object to the clock. This will be removed using @reset or @resetLeaveSounding, or can be specifically removed by killing the Bead.
+	 *
+	 * @param pattern
+	 * @return
+     */
 	public String pattern(Bead pattern) {
 		clock.addMessageListener(pattern);
 		String name = "pattern" + nextElementID++;
@@ -246,6 +253,12 @@ public class Dynamo {
 		return name;
 	}
 
+	/**
+	 *
+	 *
+	 * @param snd
+	 * @return
+     */
 	public String sound(UGen snd) {
 		pl.addInput(snd);
 		String name = "snd" + nextElementID++;

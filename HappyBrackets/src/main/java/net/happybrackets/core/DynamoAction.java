@@ -1,6 +1,7 @@
 package net.happybrackets.core;
 
-import net.happybrackets.device.dynamic.Dynamo;
+import net.happybrackets.device.dynamic.HB;
+
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,6 @@ import java.io.Serializable;
  */
 public interface DynamoAction extends Serializable {
 
-	void action(final Dynamo d);
+	void action(final HB d);
 
 }

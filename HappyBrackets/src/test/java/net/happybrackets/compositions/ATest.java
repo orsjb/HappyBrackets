@@ -5,7 +5,7 @@ import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.DynamoAction;
-import net.happybrackets.device.dynamic.Dynamo;
+import net.happybrackets.device.dynamic.HB;
 import net.happybrackets.device.network.NetworkCommunication;
 
 /**
@@ -15,7 +15,7 @@ public class ATest implements DynamoAction {
 
 
     @Override
-    public void action(final Dynamo d) {
+    public void action(final HB d) {
         System.out.println("Hello world");
 
 

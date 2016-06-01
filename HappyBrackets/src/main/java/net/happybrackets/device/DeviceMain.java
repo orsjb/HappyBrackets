@@ -2,7 +2,7 @@ package net.happybrackets.device;
 
 import net.happybrackets.core.DeviceConfig;
 import net.happybrackets.core.LoadableConfig;
-import net.happybrackets.device.dynamic.Dynamo;
+import net.happybrackets.device.dynamic.HB;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -40,7 +40,7 @@ public class DeviceMain {
         System.out.println("Reloading config file: " + configFile);
         config = LoadableConfig.load(configFile, config);
 
-		Dynamo pi = new Dynamo(AudioSetup.getAudioContext(args), LoadableConfig.load(configFile, config));
+		HB pi = new HB(AudioSetup.getAudioContext(args), LoadableConfig.load(configFile, config));
 		if(args.length > 5) {
 			boolean autostart = Boolean.parseBoolean(args[5]);
 			if(autostart) {
