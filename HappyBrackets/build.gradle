@@ -10,16 +10,15 @@ assert org.gradle.api.JavaVersion.current().isJava8Compatible()
 repositories {
     //All sub-projects will now refer to the same 'libs' directory
     flatDir {
-        dirs "$rootProject.projectDir/libs"
+        dirs "libs"
     }
     mavenCentral()
-    //use jitpack to build beads for us :D
-//    maven { url "https://jitpack.io" }
 }
 
 dependencies {
+
     //Add any libs directory jars, for example beads
-    compile     fileTree(dir: 'libs', include: '*.jar')
+    compile   fileTree(dir: "$rootProject.projectDir/libs", include: '*.jar')
 
     //remote dependencies
     compile     group: 'com.google.code.gson',  name: 'gson',           version: '2.6.2'
@@ -32,20 +31,25 @@ dependencies {
     testCompile group: 'junit',                 name: 'junit',      version: '4.+'
 }
 
+// A helper for checking which jars are loaded
+task listJars << {
+    configurations.compile.each { File file -> println file.name }
+}
+
 task smile << {
         println ':)'
 }
 
 shadowJar {
-    baseName = 'HappyBrackets'
+    baseName = 'HB'
     classifier = ''
 }
 
-task bundle(dependsOn: shadowJar) {
+task bundle << {
     println 'bundling...'
 }
 
-
-//
-// look here for a way to publish beads: https://jitpack.io/docs/BUILDING/
-//
+bundle.dependsOn {
+    tasks.getByPath('shadowJar')
+    tasks.getByPath('javadoc')
+}
