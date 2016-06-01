@@ -48,7 +48,7 @@ public class HB {
 
 	// shared data
 	public final Hashtable<String, Object> share = new Hashtable<String, Object>();
-	int nextElementID = 0;
+	private int nextElementID = 0;
 
 	// random number generator for general use
 	public final Random rng = new Random();
@@ -57,6 +57,12 @@ public class HB {
 	public final NetworkCommunication communication;
 	public final Synchronizer synch;
 
+	/**
+	 * Creates the HB.
+	 *
+	 * @param _ac the {@link AudioContext} for audio.
+	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
+     */
 	public HB(AudioContext _ac) throws IOException {
 		ac = _ac;
 		// default audio setup (note we don't start the audio context yet)
@@ -79,22 +85,45 @@ public class HB {
 		synch = Synchronizer.getInstance();
 		// start listening for code
 		startListeningForCode();
+		//notify started (happens immeidately or when audio starts)
+		testBleep3();
 	}
-	
-	public void sync(long time) {
-		synch.doAtTime(new Runnable() {
+
+	/**
+	 * Causes the audio to start at a given synchronised time on all devices.
+	 *
+	 * @param time time at which to sync, according to the agreed clock time
+     */
+	public void syncAudioStart(long time) {
+		doAtTime(new Runnable() {
 			public void run() {
 				startAudio();
 			}
 		}, time);
 	}
-	
+
+	/**
+	 * Causes an action to be implemented at the given, synchronized time.
+	 * @param runnable the action to perform.
+	 * @param time the time at which to perform the action.
+     */
+	public void doAtTime(Runnable runnable, long time) {
+		synch.doAtTime(runnable, time);
+	}
+
+	/**
+	 * Causes audio processing to start. By default, audio runs on startup. This is a commandline flag to {@link DeviceMain}.
+	 */
 	public void startAudio() {
 		ac.start();
 		audioOn = true;
-		testBleep3();
 	}
 
+	/**
+	 * Notifies the device that it should try to pull the device config file from the controller.
+	 *
+	 * @throws IOException if the HTTP connection fails.
+     */
 	public void pullConfigFileFromController() throws IOException {
         //getInstance fresh config file
 		String configFile = "config/device-config.json";

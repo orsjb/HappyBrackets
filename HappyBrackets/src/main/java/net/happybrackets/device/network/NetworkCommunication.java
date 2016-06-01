@@ -63,7 +63,7 @@ public class NetworkCommunication {
 					if(msg.getName().equals("/PI/sync")) {
 						long timeToAct = Long.parseLong((String)msg.getArg(0));
 						System.out.println(msg.getArg(0).getClass() + " " + msg.getArg(0));
-						hb.sync(timeToAct);
+						hb.syncAudioStart(timeToAct);
 					} else if(msg.getName().equals("/PI/reboot")) {
 						HB.rebootDevice();
 					} else if(msg.getName().equals("/PI/shutdown")) {

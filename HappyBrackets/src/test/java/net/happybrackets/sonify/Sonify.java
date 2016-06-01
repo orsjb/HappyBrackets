@@ -1,4 +1,4 @@
-package device.sonify;
+package net.happybrackets.sonify;
 
 
 public class Sonify{
