@@ -22,13 +22,18 @@ public class NetworkCommunication {
 		public void msg(OSCMessage msg);
 	}
 
-	int myID;									//ID assigned by the controller
+	private int myID;							//ID assigned by the controller
 	private OSCServer oscServer;				//The OSC server
-	private InetSocketAddress controller, oscPortDetails;		//The network details of the controller
+	private InetSocketAddress controller, broadcastAddress;		//The network details of the controller
 	private Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>()); 	
 																//Listeners to incoming OSC messages
 	final private HB hb;
-	
+
+	/**
+	 * Instantiate a new @{@link NetworkCommunication} object.
+	 * @param _hb
+	 * @throws IOException
+     */
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
 		//init the OSCServer
@@ -100,7 +105,7 @@ public class NetworkCommunication {
 		);
 		System.out.println( "Controller resolved to address: " + controller );
 		//set up the controller address
-		oscPortDetails = new InetSocketAddress(DeviceConfig.getInstance().getControllerHostname(), DeviceConfig.getInstance().getBroadcastOSCPort());
+		broadcastAddress = new InetSocketAddress(DeviceConfig.getInstance().getControllerHostname(), DeviceConfig.getInstance().getBroadcastOSCPort());
 		//set up an indefinite thread to ping the controller
 		new Thread() {
 			public void run() {
@@ -117,6 +122,11 @@ public class NetworkCommunication {
 		}.start();
 	}
 
+	/**
+	 * Send an OSC message to the controller. This assumes that you have implemented code on the controller side to respond to this message.
+	 * @param msg the message name.
+	 * @param args the message arguments.
+     */
 	public void sendToController(String msg, Object[] args) {
 		try {
 			oscServer.send(new OSCMessage(msg, args), controller);
@@ -126,27 +136,47 @@ public class NetworkCommunication {
 		}
 	}
 
+	/**
+	 * Broadcast an OSC message to all devices.
+	 * @param msg the message name.
+	 * @param args the message arguments.
+     */
 	public void broadcastOSC(String msg, Object[] args) {
 		try {
-			oscServer.send(new OSCMessage(msg, args), oscPortDetails);
+			oscServer.send(new OSCMessage(msg, args), broadcastAddress);
 			System.out.println("Sent this message: " + msg);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Add a @{@link Listener} that will respond to incoming OSC messages from the controller. Note that this will not listen to broadcast messages from other devices, for which you should use TODO!.
+	 * @param l the listener.
+     */
 	public void addListener(Listener l) {
 		listeners.add(l);
 	}
-	
+
+	/**
+	 * Remove the given {@link Listener}.
+	 * @param l the listener to remove.
+     */
 	public void removeListener(Listener l) {
 		listeners.remove(l);
 	}
 
+	/**
+	 * Clear all @{@link Listener}s.
+	 */
 	public void clearListeners() {
 		listeners.clear();
 	}
-	
+
+	/**
+	 * Get the ID of this device, as assigned by the controller. If the controller has not yet assigned an ID to this device then the ID will be -1. IDs assigned by the controller will be non-negative integers, either from a configuration file of known devices or allocated incrementally upon request.
+	 * @return the ID of this device.
+     */
 	public int getID() {
 		return myID;
 	}
