@@ -18,10 +18,10 @@ import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
+import net.happybrackets.core.HBAction;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.MiniMU;
 import net.happybrackets.core.DeviceConfig;
-import net.happybrackets.core.DynamoAction;
 import net.happybrackets.core.Synchronizer;
 
 public class HB {
@@ -29,7 +29,7 @@ public class HB {
 	// config file managing this device
 	private DeviceConfig config;
 
-	// audio stuffs
+	// audio stuff
 	public final AudioContext ac;
 	public final Clock clock;
 	public final Envelope clockInterval;
@@ -46,12 +46,12 @@ public class HB {
 	public final Hashtable<String, Object> share = new Hashtable<String, Object>();
 	int nextElementID = 0;
 
-	// random number generator
+	// random number generator for general use
 	public final Random rng = new Random();
 
-	// network stuff
-	public NetworkCommunication communication;
-	public Synchronizer synch;
+	// network comms stuff
+	public final NetworkCommunication communication;
+	public final Synchronizer synch;
 
 	public HB(AudioContext _ac, DeviceConfig _config) throws IOException {
 		ac = _ac;
@@ -62,7 +62,7 @@ public class HB {
 		ac.out.setGain(masterGainEnv);
 		clockInterval = new Envelope(ac, 500);
 		clock = new Clock(ac, clockInterval);
-		pl = new PolyLimit(ac, 1, 4);
+		pl = new PolyLimit(ac, ac.out.getOuts(), config.getPolyLimit());
 		pl.setSteal(true);
 		ac.out.addInput(pl);
 		ac.out.addDependent(clock);
@@ -72,7 +72,7 @@ public class HB {
 		mu.start();
 		// start the connection
 		communication = new NetworkCommunication(this);
-		synch = Synchronizer.get();
+		synch = Synchronizer.getInstance();
 		// start listening for code
 		startListeningForCode();
 	}
@@ -90,7 +90,10 @@ public class HB {
 		audioOn = true;
 		testBleep3();
 	}
-	
+
+	/**
+	 * Produces a single short test bleep on the device. Assumes audio is running.
+	 */
 	public void testBleep() {
 		Envelope e = new Envelope(ac, 0);
 		Gain g = new Gain(ac, 1, e);
@@ -98,11 +101,14 @@ public class HB {
 		g.addInput(wp);
 		pl.addInput(g);
 		e.addSegment(0, 10);
-		e.addSegment(0.1f, 0);
-		e.addSegment(0.1f, 50);
+		e.addSegment(0.2f, 0);
+		e.addSegment(0.2f, 50);
 		e.addSegment(0, 10, new KillTrigger(g));
 	}
-	
+
+	/**
+	 * Produces a short series of 3 bleeps on the device. Assumes audio is running.
+	 */
 	public void testBleep3() {
 		Envelope e = new Envelope(ac, 0);
 		Gain g = new Gain(ac, 1, e);
@@ -123,6 +129,9 @@ public class HB {
 		e.addSegment(0, 10, new KillTrigger(g));
 	}
 
+	/**
+	 * Launches a separate thread that listens for incoming data. When anything looks like an instance of {@link HBAction} it gets loaded and run.
+	 */
 	private void startListeningForCode() {
 		new Thread() {
 			public void run() {
@@ -134,7 +143,7 @@ public class HB {
 					while (true) {
 						// must reopen socket each time
 						Socket s = server.accept();
-						Class<? extends DynamoAction> pipoClass = null;
+						Class<? extends HBAction> pipoClass = null;
 						try {
 							InputStream input = s.getInputStream();
 							ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -148,29 +157,27 @@ public class HB {
 							Class<?>[] interfaces = c.getInterfaces();
 							boolean isPIPO = false;
 							for (Class<?> cc : interfaces) {
-								if (cc.equals(DynamoAction.class)) {
+								if (cc.equals(HBAction.class)) {
 									isPIPO = true;
 									break;
 								}
 							}
 							if (isPIPO) {
-								pipoClass = (Class<? extends DynamoAction>) c;
-								System.out.println("new DynamoAction >> " + pipoClass.getName());
-								// this means we're done with the sequence, time
-								// to
-								// recreate
+								pipoClass = (Class<? extends HBAction>) c;
+								System.out.println("new HBAction >> " + pipoClass.getName());
+								// this means we're done with the sequence, time to recreate
 								// the classloader to avoid duplicate errors
 								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-								status = "Last DynamoAction: " + pipoClass.getCanonicalName();
+								status = "Last HBAction: " + pipoClass.getCanonicalName();
 							} else {
-								System.out.println("new object (not DynamoAction) >> " + c.getName());
+								System.out.println("new object (not HBAction) >> " + c.getName());
 							}
 						} catch (Exception e) {/* snub it? */
 							System.out.println("Exception Caught trying to read Object from Socket");
 							e.printStackTrace();
 						}
 						if (pipoClass != null) {
-							DynamoAction pipo = null;
+							HBAction pipo = null;
 							try {
 								pipo = pipoClass.newInstance();
 								pipo.action(HB.this);
@@ -178,6 +185,7 @@ public class HB {
 								e.printStackTrace(); // catching all exceptions
 													 // means that we avert an exception
 													 // heading up to audio processes.
+								//TODO look into reported cases where this still falls over.
 							}
 						}
 						s.close();
@@ -189,46 +197,91 @@ public class HB {
 		}.start();
 
 	}
-	
+
+	/**
+	 * Returns the @{@link DeviceConfig} for this device.
+	 * @return {@link DeviceConfig} for this device.
+     */
 	public DeviceConfig getConfig() {
 		return config;
 	}
 
+	/**
+	 * Puts an {@link Object} into the global memory store with a given name. This overwrites any object that was previously stored with the given name.
+	 *
+	 * @param s @{@link String} name to store the object with.
+	 * @param o @{@link Object} to store.
+     */
 	public void put(String s, Object o) {
 		share.put(s, o);
 	}
 
+	/**
+	 * Gets an @{@link Object} with the given name from the global memory store. Returns null if there is no object with this name.
+	 * @param s the name of the object.
+	 * @return an @{@link Object} or null if there is no object.
+     */
 	public Object get(String s) {
 		return share.get(s);
 	}
 
+	/**
+	 * Gets an object of type int from the global memory store.
+	 * @param s the name of the int.
+	 * @return the int, or null if there is no object.
+	 * @throws ClassCastException if the stored object is not an int.
+     */
 	public int getInt(String s) {
 		return (Integer) share.get(s);
 	}
 
+	/**
+	 * Gets an object of type float from the global memory store.
+	 * @param s the name of the float.
+	 * @return the float, or null if there is no object.
+	 * @throws ClassCastException if the stored object is not a float.
+	 */
 	public float getFloat(String s) {
 		return (Float) share.get(s);
 	}
 
+	/**
+	 * Gets an object of type @{@link String} from the global memory store.
+	 * @param s the name of the @{@link String}.
+	 * @return the @{@link String}, or null if there is no object.
+	 * @throws ClassCastException if the stored object is not a @{@link String}.
+	 */
 	public String getString(String s) {
 		return (String) share.get(s);
 	}
 
+	/**
+	 * Gets an object of type @{@link UGen} from the global memory store.
+	 * @param s the name of the @{@link UGen}.
+	 * @return the @{@link UGen}, or null if there is no object.
+	 * @throws ClassCastException if the stored object is not a @{@link UGen}.
+	 */
 	public UGen getUGen(String s) {
 		return (UGen) share.get(s);
 	}
 
+	/**
+	 * Gets an object of type @{@link Bead} from the global memory store.
+	 * @param s the name of the @{@link Bead}.
+	 * @return the @{@link Bead}, or null if there is no object.
+	 * @throws ClassCastException if the stored object is not a @{@link Bead}.
+	 */
 	public Bead getBead(String s) {
 		return (Bead) share.get(s);
 	}
 	
 	/**
-	 * Stores an object but only if you haven't already created something with that name.
+	 * Stores an object in the global memory store. The object is stored only if you haven't already created something with that name. If you have, then the new object is not stored and the existing object is returned instead.
 	 * Returns either the existing stored object or the new object.
 	 * 
-	 * @param id
-	 * @param o
-	 * @return
+	 * @param id ID {@link String} of the object to store.
+	 * @param o the object.
+	 * @return either the new stored object or the existing object if something previously stored there.
 	 */
 	public Object perm(String id, Object o) {
 		if(share.containsKey(id)) {
@@ -240,10 +293,10 @@ public class HB {
 	}
 
 	/**
-	 * Adds a new pattern Bead object to the clock. This will be removed using @reset or @resetLeaveSounding, or can be specifically removed by killing the Bead.
+	 * Adds a new pattern {@link Bead} object to the {@link Clock}. This will be removed using {@link #reset()} or {@link #resetLeaveSounding()}, or can be specifically removed by killing the {@link Bead}.
 	 *
-	 * @param pattern
-	 * @return
+	 * @param pattern to play.
+	 * @return returns a string of the form "patternX" that can be used to retrieve the pattern from global memory.
      */
 	public String pattern(Bead pattern) {
 		clock.addMessageListener(pattern);
@@ -254,10 +307,10 @@ public class HB {
 	}
 
 	/**
+	 * Adds a sound to the audio output. The sound, in the form of any @{@link UGen}, is played immediately. It can be killed by calling {@link #reset()}, or by manually destroying the sound with a {@link Bead#kill()} message. Note that the system automatically limits the number of sounds added using a @{@link PolyLimit} object.
 	 *
-	 *
-	 * @param snd
-	 * @return
+	 * @param snd the sound to play.
+	 * @return returns a string of the form "sndX" that can be used to retrieve the pattern from global memory.
      */
 	public String sound(UGen snd) {
 		pl.addInput(snd);
@@ -268,7 +321,7 @@ public class HB {
 	}
 	
 	/**
-	 * Warning, this leaves dependents etc. Just cleans the audio signal chain.
+	 * Clears all of the audio that is currently playing (connected to output). Warning, this leaves dependents and patterns. Just cleans the audio signal chain. If you want to completely clear all objects, use {@link #reset()} and if you want to clear everything except the sound, use {@link #resetLeaveSounding()}.
 	 */
 	public void clearSound() {
 		//rebuilt top elements of signal chain
@@ -282,7 +335,9 @@ public class HB {
 		clearSound();
 	}
 
-	// This is like reset() except that any sounds currently playing are kept.
+	/**
+	 * Like {@link #reset()} except that any sounds currently playing are kept. This includes everything that is in the global memory store, all patterns, all dependents, all sensor behaviours and all communication listener behaviours.
+ 	 */
 	public void resetLeaveSounding() {
 		//clear dependencies and inputs
 		ac.out.clearDependents();
@@ -298,10 +353,16 @@ public class HB {
 		//clear osc listeners
 		communication.clearListeners();
 		//clear broadcast listeners
-		synch.clearBroadcastListeners();
+		synch.clearBroadcastListeners();		//TODO broadcast listeners should be in NetworkCommunication not synch.
 	}
 
+	/**
+	 * Like {@link #clearSound()} but with a fade out of the specified duration before clearing.
+	 *
+	 * @param fadeTime the fade out time in milliseconds.
+     */
 	public void fadeOutClearSound(float fadeTime) {
+		masterGainEnv.clear();
 		masterGainEnv.addSegment(0, fadeTime, new Bead() {
 			public void messageReceived(Bead message) {
 				clearSound();
@@ -309,8 +370,14 @@ public class HB {
 			}
 		});
 	}
-	
+
+	/**
+	 * Like {@link #reset()} but with a fade out of the specified duration before clearing.
+	 *
+	 * @param fadeTime the fade out time in milliseconds.
+	 */
 	public void fadeOutReset(float fadeTime) {
+		masterGainEnv.clear();
 		masterGainEnv.addSegment(0, fadeTime, new Bead() {
 			public void messageReceived(Bead message) {
 				reset();
@@ -318,32 +385,52 @@ public class HB {
 			}
 		});
 	}
-	
+
+	/**
+	 * Returns the assigned ID of the current device. The ID is a non-negative integer. The controller assigns IDs to devices based on either a look-up table in a file of known devices (mapping hostnames to IDs), or by assigning new integers on the fly. The ID of a device that has not yet been assigned an ID from the controller is -1.
+	 * @return the ID of this device, as assigned by the current controller.
+     */
 	public int myIndex() {
 		return communication.getID();
 	}
-	
-	//reboots the PI
-	public static void rebootPI() {
+
+	/**
+	 * Reboots the device immediately.
+	 */
+	public static void rebootDevice() {
 		try {
 			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo reboot"}).waitFor();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-	//shuts down the PI
-		public static void shutdownPI() {
-			try {
-				Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo shutdown now"}).waitFor();
-			} catch (Exception e) {}
+	/*
+	 * Shuts down the device immediately.
+	 */
+	public static void shutdownDevice() {
+		try {
+			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo shutdown now"}).waitFor();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		public void setStatus(String s) {
-			status = s;
-		}
-		
-		public String getStatus() {
-			return status;
-		}
+	}
+
+	/**
+	 * Sets the status @{@link String} of this device. The status string is sent to the controller and is reported in the device's list item. Note that certain application behaviours automatically set the device status, such as when the device has been assigned and ID, or when a new @{@link HBAction} has been loaded onto the device.
+	 * @param s the status of the device.
+     */
+	public void setStatus(String s) {
+		status = s;
+	}
+
+	/**
+	 * Returns the current status @{@link String} of the device.
+	 * @return the status of the device.
+     */
+	public String getStatus() {
+		return status;
+	}
 
 }
 

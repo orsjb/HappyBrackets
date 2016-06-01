@@ -30,7 +30,7 @@ public class StupidByteStuff {
 		}
 		System.out.println();
 		
-		//get 2s complement short
+		//getInstance 2s complement short
 		boolean[] myShortBits = new boolean[16];
 		for(int i = 0; i < 8; i++) {
 			myShortBits[i] = bbits[i];

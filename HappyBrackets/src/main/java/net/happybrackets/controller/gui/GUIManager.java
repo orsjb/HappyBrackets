@@ -256,7 +256,7 @@ public class GUIManager {
 					}
 				}
 				else {
-					//throw out the null File object so we don't get stuck in a never ending loop.
+					//throw out the null File object so we don't getInstance stuck in a never ending loop.
 					dirs.poll();
 				}
 			}

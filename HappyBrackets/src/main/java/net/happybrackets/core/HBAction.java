@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author ollie
  *
  */
-public interface DynamoAction extends Serializable {
+public interface HBAction extends Serializable {
 
 	void action(final HB d);
 

@@ -17,7 +17,7 @@ public class FXCollectionsTest {
 		//create the ObservableList looking at the values of the Map
 		ObservableList<String> list = FXCollections.observableArrayList(map.values());
 		
-		//get the list to print out any changes that occur
+		//getInstance the list to print out any changes that occur
 		list.addListener(new ListChangeListener<String>() {
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> arg0) {

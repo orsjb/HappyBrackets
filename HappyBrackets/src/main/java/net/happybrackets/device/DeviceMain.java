@@ -24,7 +24,7 @@ public class DeviceMain {
         System.out.println("Reading config file: " + configFile);
 		DeviceConfig config = LoadableConfig.load(configFile, new DeviceConfig());
 
-        //get fresh config file
+        //getInstance fresh config file
         String configUrl = "http://" + config.getControllerHostname() + ":" + config.getControllerHTTPPort() + "/config/device-config.json";
         System.out.println("GET config file: " + configUrl);
         OkHttpClient client = new OkHttpClient();

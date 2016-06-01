@@ -68,9 +68,9 @@ public class NetworkCommunication {
 						pi.sync(timeToAct);
 						
 					} else if(msg.getName().equals("/PI/reboot")) {
-						HB.rebootPI();
+						HB.rebootDevice();
 					} else if(msg.getName().equals("/PI/shutdown")) {
-						HB.shutdownPI();
+						HB.shutdownDevice();
 					} else if(msg.getName().equals("/PI/gain")) {
 						pi.masterGainEnv.addSegment((Float)msg.getArg(0), (Float)msg.getArg(1));
 					} else if(msg.getName().equals("/PI/reset")) {
@@ -86,7 +86,7 @@ public class NetworkCommunication {
 					} else if(msg.getName().equals("/PI/bleep")) {
 						pi.testBleep();
 					} 
-					//all other messages get forwarded to delegate listeners
+					//all other messages getInstance forwarded to delegate listeners
 					synchronized(listeners) {
 						Iterator<Listener> i = listeners.iterator();
 						while(i.hasNext()) {
@@ -121,7 +121,7 @@ public class NetworkCommunication {
 						Thread.sleep(pi.getConfig().getAliveInterval());
 					} catch (InterruptedException e) {
 //						e.printStackTrace();
-						System.out.println("/PI/alive message did not get through to controller.");
+						System.out.println("/PI/alive message did not getInstance through to controller.");
 					}
 				}
  				

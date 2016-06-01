@@ -62,8 +62,8 @@ public class ControllerMain extends Application {
 		stage.show();
     	//you can create a test pi if you don't have a real pi...
 //    	piConnection.createTestPI();
-    	synchronizer = Synchronizer.get();
-    	//get normal desktop application behaviour - closing the stage terminates the app
+    	synchronizer = Synchronizer.getInstance();
+    	//getInstance normal desktop application behaviour - closing the stage terminates the app
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 	      @Override
 	      public void handle (final WindowEvent event) {

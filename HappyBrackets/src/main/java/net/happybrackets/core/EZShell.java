@@ -18,7 +18,7 @@ public abstract class EZShell {
 			Process shell = pb.start();
 			InputStream shellIn = shell.getInputStream();
 			InputStream shellError = shell.getErrorStream();
-			// Wait for the shell to finish and get the return code
+			// Wait for the shell to finish and getInstance the return code
 			response = convertStreamToStr(shellIn);
 			String error = convertStreamToStr(shellError);
 			shellIn.close();

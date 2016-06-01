@@ -13,7 +13,7 @@ import com.google.gson.Gson;
  * 
  * Provides a loadable abstract class of our core configuration parameters.
  * This class wraps the default methods of the core interface with overridable values.
- * Each time a get call is executed it first checks the the relevant class value.
+ * Each time a getInstance call is executed it first checks the the relevant class value.
  *   If the value is undefined it delegates to the interface default else it returns the stored value.
  *   
  * To instantiate an object extending this class call the static buildFromJSON method.

@@ -45,7 +45,7 @@ public class MiniMU {
 		// Work out which one we are
 
 		// use MINIMUAHRS code to work out different versions.
-		// use WHO_AM_I register to get
+		// use WHO_AM_I register to getInstance
 		int MINIMUVersion = 2;
 
 

@@ -59,7 +59,7 @@ public class FileServerTest {
 
         String json = null;
         try {
-            System.out.println("Executing get request...");
+            System.out.println("Executing getInstance request...");
             Response response = client.newCall(request).execute();
 
             System.out.println("Extracting page body...");
