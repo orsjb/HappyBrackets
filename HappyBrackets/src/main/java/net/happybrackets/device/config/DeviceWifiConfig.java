@@ -1,4 +1,4 @@
-package net.happybrackets.core;
+package net.happybrackets.device.config;
 
 /**
  * A basic class to hold our wifi config and work with gson

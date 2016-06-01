@@ -1,6 +1,6 @@
 package net.happybrackets.core.misc_tests;
 
-import net.happybrackets.core.EnvironmentConfig;
+import net.happybrackets.core.config.EnvironmentConfig;
 import junit.framework.TestCase;
 
 public class EnvironmentConfTest extends TestCase {

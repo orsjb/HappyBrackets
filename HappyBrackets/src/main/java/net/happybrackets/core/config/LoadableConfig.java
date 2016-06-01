@@ -1,4 +1,4 @@
-package net.happybrackets.core;
+package net.happybrackets.core.config;
 
 import java.io.BufferedReader;
 import java.io.File;

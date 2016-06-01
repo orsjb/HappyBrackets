@@ -1,5 +1,8 @@
 package net.happybrackets.core;
 
+import net.happybrackets.device.config.DeviceWifiConfig;
+import net.happybrackets.core.config.LoadableConfig;
+import net.happybrackets.core.config.SavableConfig;
 import org.junit.Before;
 import org.junit.Test;
 

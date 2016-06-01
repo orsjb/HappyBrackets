@@ -1,7 +1,7 @@
 package net.happybrackets.device.network;
 
 import net.happybrackets.core.Device;
-import net.happybrackets.core.DeviceConfig;
+import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
@@ -23,7 +23,7 @@ public class NetworkCommunication {
 	}
 
 	int myID;									//ID assigned by the controller
-	private OSCServer oscServer;				//The one and only OSC server + the other one
+	private OSCServer oscServer;				//The OSC server
 	private InetSocketAddress controller, oscPortDetails;		//The network details of the controller
 	private Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>()); 	
 																//Listeners to incoming OSC messages
@@ -31,24 +31,22 @@ public class NetworkCommunication {
 	
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
-	
-		//init the OSCServers
+		//init the OSCServer
 		try {
 			oscServer = OSCServer.newUsing(OSCServer.UDP, DeviceConfig.getInstance().getControlToDevicePort());
 			oscServer.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		//add a single master listener that forwards listening to delegates
 		oscServer.addOSCListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress src, long time) {
 				//include default listener behaviour that listens for the ID assigned to this PI
-				//note technically messages can be sent from anyone, so ignore messages being sent from self... (TODO could pass this issue on to the implementer)
-//				System.out.println("Received from host: " + ((InetSocketAddress)src).getHostName());
+				//note technically messages can be sent from anyone, so ignore messages being sent from self...
+				//TODO questionable approach, is this escape needed?
 				if(src instanceof InetSocketAddress && 
-						(((InetSocketAddress)src).getHostName().contains(Device.myHostname.split("[.]")[0]) || ((InetSocketAddress)src).getHostName().contains("192.168.1.2"))) {	
+						((InetSocketAddress)src).getHostName().contains(Device.myHostname.split("[.]")[0])) {
 					return;
 				}
 				if(msg.getName().equals("/PI/set_id")) {
@@ -56,7 +54,6 @@ public class NetworkCommunication {
 					System.out.println("I have been given an ID by the controller: " + myID);
 					hb.setStatus("ID " + myID);
 				} else {
-				
 					//master commands...
 					if(msg.getName().equals("/PI/sync")) {
 						long timeToAct = Long.parseLong((String)msg.getArg(0));
@@ -145,7 +142,7 @@ public class NetworkCommunication {
 	public void removeListener(Listener l) {
 		listeners.remove(l);
 	}
-	
+
 	public void clearListeners() {
 		listeners.clear();
 	}

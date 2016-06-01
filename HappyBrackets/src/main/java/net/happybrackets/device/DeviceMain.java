@@ -1,15 +1,8 @@
 package net.happybrackets.device;
 
-import net.happybrackets.core.DeviceConfig;
-import net.happybrackets.core.LoadableConfig;
+import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.dynamic.HB;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import net.happybrackets.core.AudioSetup;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * Entry point for PI code.

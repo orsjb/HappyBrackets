@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import net.happybrackets.core.ControllerConfig;
+import net.happybrackets.controller.config.ControllerConfig;
 
 
 public class SendToDevice {

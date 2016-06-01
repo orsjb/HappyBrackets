@@ -1,4 +1,4 @@
-package net.happybrackets.core;
+package net.happybrackets.core.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

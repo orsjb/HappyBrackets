@@ -1,12 +1,12 @@
-package net.happybrackets.controller;
+package net.happybrackets.controller.gui;
 
 import javafx.scene.Scene;
 import net.happybrackets.controller.gui.GUIManager;
 import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.DeviceConnection;
-import net.happybrackets.core.ControllerAdvertiser;
-import net.happybrackets.core.ControllerConfig;
-import net.happybrackets.core.LoadableConfig;
+import net.happybrackets.controller.network.ControllerAdvertiser;
+import net.happybrackets.controller.config.ControllerConfig;
+import net.happybrackets.core.config.LoadableConfig;
 import net.happybrackets.core.Synchronizer;
 import javafx.application.Application;
 import javafx.event.EventHandler;

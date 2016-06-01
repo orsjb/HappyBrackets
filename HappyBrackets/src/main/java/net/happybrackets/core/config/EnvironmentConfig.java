@@ -1,4 +1,4 @@
-package net.happybrackets.core;
+package net.happybrackets.core.config;
 
 //SG 2016-04-04
 //We should move from a static configuration definition to a dynamic definition.
@@ -6,6 +6,8 @@ package net.happybrackets.core;
 // and we can run init level operations as part of the object instantiation.
 //Key bonuses are the PIs being able to look for the host controller instead of the current hard coded approach.
 
+
+import net.happybrackets.core.Device;
 
 public interface EnvironmentConfig {
 

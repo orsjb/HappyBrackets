@@ -3,7 +3,7 @@ package net.happybrackets.device.misc_tests;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import net.happybrackets.core.DeviceConfig;
+import net.happybrackets.device.config.DeviceConfig;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 

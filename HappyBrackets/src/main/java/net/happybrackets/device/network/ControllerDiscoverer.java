@@ -1,4 +1,6 @@
-package net.happybrackets.core;
+package net.happybrackets.device.network;
+
+import net.happybrackets.core.Device;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

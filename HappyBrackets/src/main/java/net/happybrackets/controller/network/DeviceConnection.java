@@ -13,7 +13,7 @@ import java.util.Scanner;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import net.happybrackets.core.ControllerConfig;
+import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;

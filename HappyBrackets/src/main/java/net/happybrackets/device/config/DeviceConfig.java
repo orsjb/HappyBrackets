@@ -1,4 +1,7 @@
-package net.happybrackets.core;
+package net.happybrackets.device.config;
+
+import net.happybrackets.core.config.LoadableConfig;
+import net.happybrackets.device.network.ControllerDiscoverer;
 
 import java.net.UnknownHostException;
 

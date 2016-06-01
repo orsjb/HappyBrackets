@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.happybrackets.core.LoadableConfig;
+import net.happybrackets.core.config.LoadableConfig;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

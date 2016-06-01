@@ -1,4 +1,6 @@
-package net.happybrackets.core;
+package net.happybrackets.controller.network;
+
+import net.happybrackets.controller.config.ControllerConfig;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

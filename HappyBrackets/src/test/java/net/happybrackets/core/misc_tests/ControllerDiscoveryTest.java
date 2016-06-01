@@ -1,8 +1,8 @@
 package net.happybrackets.core.misc_tests;
 
-import net.happybrackets.core.ControllerAdvertiser;
-import net.happybrackets.core.ControllerConfig;
-import net.happybrackets.core.DeviceConfig;
+import net.happybrackets.controller.network.ControllerAdvertiser;
+import net.happybrackets.controller.config.ControllerConfig;
+import net.happybrackets.device.config.DeviceConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

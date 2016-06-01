@@ -1,5 +1,7 @@
 package net.happybrackets.core;
 
+import net.happybrackets.device.config.DeviceConfig;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
@@ -21,13 +23,15 @@ public class Synchronizer {
 	 * An s means send. Upon receiving an s, each synchronizer also responds with
 	 * r <MAC1> <timeMS> <MAC2> <timeMS>
 	 */
+
+
+	/*
+	 * TODO : Separate the Synchronizer code from the broadcast code. Broadcast code should live in NetworkCommunication, not Synch, and should probably be listening on a separate address and/or port. Where is boradcast sending happening?
+	 */
 	
 	public interface BroadcastListener {
 		public void messageReceived(String s);
-		//TODO this should not be here. Separate the Synchronizer code from the broadcast code. Broadcast code should live in NetworkCommunication, not Synch.
 	}
-	
-	private static final DeviceConfig config = new DeviceConfig(); //TODO make DeviceConfig a singleton (why is DeviceConfig being created here?).
 	
 	String myMAC; //how to uniquely identify this machine
 	MulticastSocket broadcastSocket;
@@ -112,9 +116,9 @@ public class Synchronizer {
 	}
 	
 	private void setupListener() throws IOException {
-		final MulticastSocket s = new MulticastSocket(config.getClockSynchPort());
+		final MulticastSocket s = new MulticastSocket(DeviceConfig.getInstance().getClockSynchPort());
 		try {
-			s.joinGroup(InetAddress.getByName(config.getMulticastSynchAddr()));
+			s.joinGroup(InetAddress.getByName(DeviceConfig.getInstance().getMulticastSynchAddr()));
 		} catch(SocketException e) {
 			System.err.println("Warning: network synchronizer can't use multicast.");
 		}
@@ -336,7 +340,7 @@ public class Synchronizer {
 		// Create a DatagramPacket 
 		DatagramPacket pack = null;
 		try {
-			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(config.getMulticastSynchAddr()), config.getClockSynchPort());
+			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(DeviceConfig.getInstance().getMulticastSynchAddr()), DeviceConfig.getInstance().getClockSynchPort());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} 
@@ -346,7 +350,6 @@ public class Synchronizer {
 			e.printStackTrace();
 		} 
 	}
-	
 	
 	public static void main(String[] args) {
 		Synchronizer s = getInstance();

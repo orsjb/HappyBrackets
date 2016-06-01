@@ -21,7 +21,7 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.MiniMU;
-import net.happybrackets.core.DeviceConfig;
+import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
 import net.happybrackets.device.sensors.Sensor;
 
