@@ -16,9 +16,8 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		if (controllerHostName != null) {
 			return controllerHostName;
 		}
-		
 		//Block and search for a controller
-		// TODO we need a proper logging framework
+		// TODO use a proper logging framework
 		try {
 			controllerHostName = listenForController( getMulticastSynchAddr(), getControllerDiscoveryPort());
 		} catch (UnknownHostException e) {

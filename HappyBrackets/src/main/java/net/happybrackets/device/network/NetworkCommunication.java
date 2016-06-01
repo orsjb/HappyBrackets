@@ -6,7 +6,7 @@ import net.happybrackets.core.Synchronizer;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
-import net.happybrackets.device.dynamic.HB;
+import net.happybrackets.device.HB;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -30,9 +30,9 @@ public class NetworkCommunication {
 	final private HB hb;
 
 	/**
-	 * Instantiate a new @{@link NetworkCommunication} object.
-	 * @param _hb
-	 * @throws IOException
+	 * Instantiate a new {@link NetworkCommunication} object.
+	 * @param _hb the {@link HB} object this object is attached to.
+	 * @throws IOException thrown if there is a problem opening the {@link OSCServer}, likely due to the port already being in use.
      */
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;

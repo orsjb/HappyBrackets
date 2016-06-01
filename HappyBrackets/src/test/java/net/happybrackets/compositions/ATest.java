@@ -5,7 +5,7 @@ import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.device.dynamic.HB;
+import net.happybrackets.device.HB;
 import net.happybrackets.device.network.NetworkCommunication;
 
 /**

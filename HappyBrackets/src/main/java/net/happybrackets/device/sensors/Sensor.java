@@ -14,7 +14,7 @@ public abstract class Sensor {
 
     /**
      * Returns the sensor name, typically the make/model of the hardware sensor that this class refers to.
-     * @return
+     * @return a {@link String} representing the sensor's name.
      */
     public abstract String getSensorName();
 

@@ -1,10 +1,12 @@
-package net.happybrackets.device.dynamic;
+package net.happybrackets.device;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -19,11 +21,15 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.MiniMU;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
 import net.happybrackets.device.sensors.Sensor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class HB {
 
@@ -87,6 +93,23 @@ public class HB {
 		ac.start();
 		audioOn = true;
 		testBleep3();
+	}
+
+	public void pullConfigFileFromController() throws IOException {
+        //getInstance fresh config file
+		String configFile = "config/device-config.json";
+        String configUrl = "http://" + DeviceConfig.getInstance().getControllerHostname() + ":" + DeviceConfig.getInstance().getControllerHTTPPort() + "/config/device-config.json";
+        System.out.println("GET config file: " + configUrl);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new okhttp3.Request.Builder()
+                .url(configUrl)
+                .build();
+        Response response = client.newCall(request).execute();
+        System.out.println("Saving new config file: " + configFile);
+        Files.write(Paths.get(configFile), response.body().string().getBytes());
+        //reload config from file again after pulling in updates
+        System.out.println("Reloading config file: " + configFile);
+        DeviceConfig.load(configFile);
 	}
 
 	/**
@@ -199,8 +222,8 @@ public class HB {
 	/**
 	 * Puts an {@link Object} into the global memory store with a given name. This overwrites any object that was previously stored with the given name.
 	 *
-	 * @param s @{@link String} name to store the object with.
-	 * @param o @{@link Object} to store.
+	 * @param s {@link String} name to store the object with.
+	 * @param o {@link Object} to store.
      */
 	public void put(String s, Object o) {
 		share.put(s, o);

@@ -1,6 +1,6 @@
 package net.happybrackets.core;
 
-import net.happybrackets.device.dynamic.HB;
+import net.happybrackets.device.HB;
 
 import java.io.Serializable;
 
