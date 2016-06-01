@@ -26,32 +26,22 @@ DIR=`dirname $0`
 cd ${DIR}/..
 
 # Run the main app
-# args are bufSize (8192), sample rate (22050), bits (16), input channels (0), output channels (1), autostart (true)
+# args are bufSize (512), sample rate (44100), bits (16), input channels (0), output channels (1), autostart (true)
 
-BUF=4096
-SR=22050
+BUF=512
+SR=44100
 BITS=16
 INS=0
 OUTS=1 
 AUTOSTART=true 
 
-/usr/bin/sudo /usr/bin/java -cp HappyBrackets.jar net.happybrackets.device.DeviceMain $BUF $SR $BITS $INS $OUTS $AUTOSTART  > stdout &
+/usr/bin/sudo /usr/bin/java -cp HB.jar net.happybrackets.device.DeviceMain $BUF $SR $BITS $INS $OUTS $AUTOSTART  > stdout &
 
-############## BONUS FEATURE #################
-## Also run the code app (but wait a bit first)
+################ OPTIONAL ####################
+## Edit and uncomment the following two lines if you want to run a specific class on startup. You will need to have compiled the class and updated HB.jar on the device so that it contains this class.
 #sleep 10
-#/usr/bin/sudo /usr/bin/java -cp HappyBrackets.jar compositions.pipos_2014.webdirections.fluff_install.FluffyWoolInstallation &
+#/usr/bin/sudo /usr/bin/java -cp HB.jar compositions.pipos_2014.webdirections.fluff_install.FluffyWoolInstallation &
 ############## ------------- #################
-
-### Various old or test scripts ###
-# /usr/bin/sudo /usr/bin/java -cp build/picode.jar test.MiniMUTest $BUF $SR $BITS $INS $OUTS  > stdout &
-# /usr/bin/sudo /usr/bin/java -cp build/picode.jar test.PI4JTest > stdout &
-# libs/minimulib/minimu9-ahrs -b /dev/i2c-1 | /usr/bin/sudo /usr/bin/java -cp build/picode.jar test.PrintStdIn $BUF $SR $INS $OUTS > stdout &
-# echo ~ > stdout &
-# libs/minimulib/minimu9-ahrs -b /dev/i2c-1 > stdout &
-# /usr/bin/sudo /usr/bin/java -cp build/picode.jar dynamic.DynamoPI $BUF $SR $BITS $INS $OUTS > stdout &
-# /usr/bin/sudo /usr/bin/java -cp build/picode.jar synch.Synchronizer $BUF $SR $BITS $INS $OUTS > stdout &
-####################################
 
 # Finally, run the network-monitor.sh script to keep WiFi connection alive
 
