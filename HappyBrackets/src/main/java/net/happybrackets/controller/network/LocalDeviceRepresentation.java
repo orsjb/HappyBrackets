@@ -42,7 +42,7 @@ public class LocalDeviceRepresentation {
 		}
 		OSCMessage msg = new OSCMessage(msgName, args);
 		if(addr == null) {
-			addr = new InetSocketAddress(hostname, config.getControlToPIPort());
+			addr = new InetSocketAddress(hostname, config.getControlToDevicePort());
 		}
 		try {
 			server.send(msg, addr);

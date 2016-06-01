@@ -32,7 +32,7 @@ public class LoadableTest {
 	@Test
 	public void test() {
 		assertTrue(cfg.getAliveInterval() == 1500); //this should be the value in the misc_tests-controller-config.json file
-		assertTrue(cfg.getCodeToPIPort() == 2225); //this should be the value from the default interface
+		assertTrue(cfg.getCodeToDevicePort() == 2225); //this should be the value from the default interface
 	}
 
 }

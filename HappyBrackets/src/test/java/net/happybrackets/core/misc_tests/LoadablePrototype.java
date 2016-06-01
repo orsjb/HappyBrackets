@@ -5,10 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import com.google.gson.Gson;
-import net.happybrackets.core.EnvironmentConf;
+import net.happybrackets.core.EnvironmentConfig;
 import net.happybrackets.core.LoadableConfig;
 
-public class LoadablePrototype implements EnvironmentConf {
+public class LoadablePrototype implements EnvironmentConfig {
 	
 	class MockClass extends LoadableConfig {
 		

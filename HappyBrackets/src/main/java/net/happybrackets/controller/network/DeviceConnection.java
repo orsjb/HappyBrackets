@@ -36,18 +36,18 @@ public class DeviceConnection {
 		knownPIs = new Hashtable<String, Integer>();
 		//read the known pis from file
 		try {
-			Scanner s = new Scanner(new File(config.getKnownPIsFile()));
+			Scanner s = new Scanner(new File(config.getKnownDevicesFile()));
 			while(s.hasNext()) {
 				String[] line = s.nextLine().split("[ ]");
 				knownPIs.put(line[0], Integer.parseInt(line[1]));
 			}
 			s.close();
 		} catch (FileNotFoundException e1) {
-			System.out.println("Unable to read '" + config.getKnownPIsFile() + "'");
+			System.out.println("Unable to read '" + config.getKnownDevicesFile() + "'");
 		}
 		// create the OSC Server
 		try {
-			oscServer = OSCServer.newUsing(OSCServer.UDP, config.getStatusFromPIPort());
+			oscServer = OSCServer.newUsing(OSCServer.UDP, config.getStatusFromDevicePort());
 			oscServer.start();
 		} catch (IOException e) {
 			e.printStackTrace();

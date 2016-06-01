@@ -23,6 +23,7 @@ import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.MiniMU;
 import net.happybrackets.core.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
+import net.happybrackets.device.sensors.Sensor;
 
 public class HB {
 
@@ -40,7 +41,7 @@ public class HB {
 	String status = "No ID set";
 
 	// sensor stuffs
-	public final MiniMU mu;
+	public final Hashtable<String, Sensor> sensors;
 
 	// shared data
 	public final Hashtable<String, Object> share = new Hashtable<String, Object>();
@@ -68,8 +69,9 @@ public class HB {
 		ac.out.addDependent(clock);
 		System.out.println("HB audio setup complete.");
 		// sensor setup
-		mu = new MiniMU();
-		mu.start();
+		sensors = new Hashtable<>();
+		//TODO this is temporary code. Eventually available sensors will be read from the DeviceConfig.
+		sensors.put("mu", new MiniMU());
 		// start the connection
 		communication = new NetworkCommunication(this);
 		synch = Synchronizer.getInstance();
@@ -138,7 +140,7 @@ public class HB {
 				try {
 					// socket server (listens to incoming classes)
 					DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-					ServerSocket server = new ServerSocket(config.getCodeToPIPort());
+					ServerSocket server = new ServerSocket(config.getCodeToDevicePort());
 					// start socket server listening loop
 					while (true) {
 						// must reopen socket each time
@@ -349,7 +351,9 @@ public class HB {
 		//clear data store
 		share.clear();
 		//clear mu listeners
-		mu.clearListeners();
+		for(Sensor sensor : sensors.values()) {
+			sensor.clearListeners();
+		}
 		//clear osc listeners
 		communication.clearListeners();
 		//clear broadcast listeners

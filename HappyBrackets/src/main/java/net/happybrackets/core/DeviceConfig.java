@@ -1,10 +1,8 @@
 package net.happybrackets.core;
 
-import net.happybrackets.core.ControllerDiscoverer;
-
 import java.net.UnknownHostException;
 
-public class DeviceConfig extends LoadableConfig implements EnvironmentConf, ControllerDiscoverer {
+public class DeviceConfig extends LoadableConfig implements EnvironmentConfig, ControllerDiscoverer {
 
 	private String controllerHostName;
 	private int polyLimit = 4;

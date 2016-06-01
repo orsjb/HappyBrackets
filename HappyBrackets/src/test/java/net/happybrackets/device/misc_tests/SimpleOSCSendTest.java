@@ -12,7 +12,7 @@ public class SimpleOSCSendTest {
 
 	public static void main(String[] args) throws IOException {
 		OSCServer s = OSCServer.newUsing(OSCServer.UDP);
-		InetSocketAddress addr = new InetSocketAddress("pisound-009e959c510a.local", config.getControlToPIPort());
+		InetSocketAddress addr = new InetSocketAddress("pisound-009e959c510a.local", config.getControlToDevicePort());
 		
 		s.send(new OSCMessage("/PI/"), null);
 	}

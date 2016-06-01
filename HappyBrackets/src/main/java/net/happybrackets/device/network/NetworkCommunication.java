@@ -33,7 +33,7 @@ public class NetworkCommunication {
 	
 		//init the OSCServers
 		try {
-			oscServer = OSCServer.newUsing(OSCServer.UDP, pi.getConfig().getControlToPIPort());
+			oscServer = OSCServer.newUsing(OSCServer.UDP, pi.getConfig().getControlToDevicePort());
 			oscServer.start();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -104,7 +104,7 @@ public class NetworkCommunication {
 		System.out.println( "Setting up controller: " + pi.getConfig().getControllerHostname() );
 		controller = new InetSocketAddress( 
 				pi.getConfig().getControllerHostname(),
-				pi.getConfig().getStatusFromPIPort()
+				pi.getConfig().getStatusFromDevicePort()
 		);
 		System.out.println( "Controller resolved to address: " + controller );
 		

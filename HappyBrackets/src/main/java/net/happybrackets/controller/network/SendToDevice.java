@@ -40,7 +40,7 @@ public class SendToDevice {
         	try {
 				//send all of the files to this hostname
 				for(byte[] bytes : allFilesAsBytes) {
-					Socket s = new Socket(hostname, config.getCodeToPIPort());
+					Socket s = new Socket(hostname, config.getCodeToDevicePort());
 					s.getOutputStream().write(bytes);
 					s.close();
 				}
@@ -75,7 +75,7 @@ public class SendToDevice {
         byte[] bytes = buffer.toByteArray();
         for(String hostname : hostnames) {
         	try {
-				Socket s = new Socket(hostname, config.getCodeToPIPort());
+				Socket s = new Socket(hostname, config.getCodeToDevicePort());
 				s.getOutputStream().write(bytes);
 				s.close();
         	} catch(UnknownHostException e) {
