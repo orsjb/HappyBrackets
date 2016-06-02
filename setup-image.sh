@@ -2,6 +2,9 @@
 
 # run from pi, with an internet connection
 
+# keep apt-get up to date with mirrors
+sudo apt-get update
+
 # install zeroconf
 sudo apt-get install libnss-mdns
 sudo apt-get install netatalk
@@ -9,7 +12,7 @@ sudo apt-get install netatalk
 # We will skip the wifi driver for now as the Raspi3 has one built in
 
 # get 'interfaces' file and copy it to /etc/network
-wget http://happybrackets.net/image/interfaces
+wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/interfaces
 sudo mv interfaces /etc/network/interfaces
 
 # clone the github repos to 
