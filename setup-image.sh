@@ -19,7 +19,7 @@ sudo mv interfaces /etc/network/interfaces
 cd 
 mkdir git
 cd git
-git clone https://github.com/orsjb/HappyBrackets.git
+git clone git://github.com/orsjb/HappyBrackets.git
 
 # TODO setup audio if necessary.
 # set audio output to max volume
