@@ -1,0 +1,3 @@
+#force unix style (line feed) line endings for anything in scripts or config
+scripts/* text eol=lf
+config/* text eol=lf
