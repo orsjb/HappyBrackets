@@ -16,11 +16,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import net.happybrackets.controller.gui.GUIManager;
 import net.happybrackets.controller.http.FileServer;
+import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
-import net.happybrackets.core.ControllerAdvertiser;
-import net.happybrackets.core.ControllerConfig;
-import net.happybrackets.core.LoadableConfig;
 import net.happybrackets.core.Synchronizer;
+import net.happybrackets.core.config.LoadableConfig;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -46,7 +45,7 @@ import java.util.concurrent.CountDownLatch;
  *    * deal with finding the compositions folder. It is possible we can make this context aware -- i.e., it looks at the build folder for the current project.
  *
  */
-public class HappyBracketsPlugin implements ToolWindowFactory {
+public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     static boolean staticSetup = false;
     static DeviceConnection piConnection;
@@ -64,7 +63,7 @@ public class HappyBracketsPlugin implements ToolWindowFactory {
         if(!staticSetup) {
             String projectDir = project.getBaseDir().getCanonicalPath();
             String dir = PluginManager.getPlugin(
-                    PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsPlugin")
+                    PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsToolWindow")
             ).getPath().toString();
             System.out.println("Plugin lives at: " + dir);
             String configFilePath = dir + "/classes/config/controller-config.json";

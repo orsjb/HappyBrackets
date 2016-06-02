@@ -1,6 +1,7 @@
 package net.happybrackets.intellij_plugin;
 
-import net.happybrackets.core.ControllerConfig;
+
+import net.happybrackets.controller.config.ControllerConfig;
 
 /**
  * Created by ollie on 13/05/2016.
