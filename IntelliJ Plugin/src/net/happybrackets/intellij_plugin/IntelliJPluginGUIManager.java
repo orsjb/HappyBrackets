@@ -16,11 +16,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import net.happybrackets.controller.config.ControllerConfig;
 import net.happybrackets.controller.gui.DeviceRepCell;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
-import net.happybrackets.core.ControllerConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

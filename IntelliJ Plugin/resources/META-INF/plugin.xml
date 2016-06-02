@@ -1,5 +1,5 @@
 <idea-plugin version="2">
-  <id>net.happybrackets.intellij_plugin.HappyBracketsPlugin</id>
+  <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
   <version>1.0</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
@@ -25,12 +25,14 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsPlugin" icon="/hb.png"/>
+    <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/hb.png"/>
 
   </extensions>
 
   <actions>
     <!-- Add your actions here -->
+    <action class="net.happybrackets.intellij_plugin.SendToDeviceAction" id="SendToDeviceAction"
+    text="Send to Devices..."/>
   </actions>
 
   <project-components>

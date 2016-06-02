@@ -166,7 +166,7 @@ public class GUIManager {
 			}
 		});
 		messagepaths.getChildren().add(sendAllButton);
-		Text sendTogrpstxt = new Text("Send to group");
+		Text sendTogrpstxt = new Text("Send to Group");
 		messagepaths.getChildren().add(sendTogrpstxt);
 //		messagepaths.getChildren().add(new Separator());
 		for(int i = 0; i < 4; i++) {
