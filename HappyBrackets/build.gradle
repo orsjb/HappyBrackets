@@ -45,11 +45,34 @@ shadowJar {
     classifier = ''
 }
 
-task bundle << {
-    println 'bundling...'
+task packDeviceRuntime (type:Zip) {
+    destinationDir buildDir //set our output directory
+    archiveName 'HappyBracketsRuntime.zip'  //set the name of our archive
+
+    //config
+    from(rootDir) {
+        include 'config/*'
+        include 'scripts/*'
+
+        //placeholder dir
+        include 'data/**'
+    }
+
+    from("$buildDir/libs") {
+        "HB.jar"
+    }
+
+    println "Creating device package: $buildDir/$archiveName"
 }
 
-bundle.dependsOn {
-    tasks.getByPath('shadowJar')
-    tasks.getByPath('javadoc')
+packDeviceRuntime.dependsOn shadowJar
+
+task bundle << {
+    println "bundling complete, see $buildDir/libs"
 }
+
+//setup bundle dependencies
+bundle.dependsOn shadowJar
+bundle.dependsOn javadoc
+bundle.dependsOn packDeviceRuntime
+
