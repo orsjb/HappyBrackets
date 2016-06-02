@@ -22,6 +22,9 @@ cd git
 git clone git://github.com/orsjb/HappyBrackets.git
 
 # TODO setup audio if necessary.
-# set audio output to max volume
+# set audio output to max volume, well not quite max but close
+amixer cset numid=1 0
+# save audio settings
+sudo alsactl store
 
 # Setup autorun
