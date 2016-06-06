@@ -17,8 +17,8 @@ import net.beadsproject.beads.ugens.WavePlayer;
  *
  * 1) Add a WavePlayer object that plays continually.
  * 2) Create a Glide object that controls the frequency of the WavePlayer, with a glide time of 500.
- * 3) Use the Clock to update the Glide every 4 beats. Each time choose a new frequency at random, using pitches from a pentatonic scale. Use the Pitch class.
- * 4) Also add a new note that plays every 8 beats. The note should be a square wave, also chosen from the same pentatonic scale. The note should play through an ADSR envelope and be removed once played, using a KillTrigger.
+ * 3) Use the Clock to update the Glide every 4 beats. Each time choose a new frequency at random, using pitches from a pentatonic scale in the octave above middle-C (MIDI note 60). Use the Pitch class to calculate frequencies from the MIDI note numbers.
+ * 4) Add a new one-hit bass note that plays every 8 beats. The note should be a square wave, also chosen randomly from the same pentatonic scale but two octaves lower than the portamento line above. The note should play through an ADSR envelope and be removed once played, using a KillTrigger.
  *
  */
 public class CodeTask2_2 {
