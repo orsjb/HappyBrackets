@@ -1,5 +1,5 @@
 {
   "useHostname": false,
-  "AliveInterval": 1500,
+  "aliveInterval": 1500,
   "compositionsPath": "build/classes"
 }
