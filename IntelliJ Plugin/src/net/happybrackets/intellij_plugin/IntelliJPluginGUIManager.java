@@ -36,7 +36,7 @@ import java.util.Queue;
 public class IntelliJPluginGUIManager {
 
 	private String compositionsPath;
-	private String currentDynamoAction = "";
+	private String currentCompositionSelection = null;
 	private ControllerConfig config;
 	private Project project;
 	private DeviceConnection piConnection;
@@ -253,6 +253,14 @@ public class IntelliJPluginGUIManager {
 		topBox.getChildren().add(compositionPathText);
 		//the following creates the ComboBox containing the compoositions
 		menu = new ComboBox<String>();
+		menu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1, final String arg2) {
+				if(arg2 != null) {
+					currentCompositionSelection = arg2; //re-attatch the composition path to the menu item name
+				}
+			}
+		});
 		//done with combo box
 		sendCodeHbox.getChildren().add(menu);
 		Button refreshButton = new Button("Refresh");
@@ -267,12 +275,14 @@ public class IntelliJPluginGUIManager {
 		sendCode.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				try {
-					//intelliJ specific code
-//					currentDynamoAction = project
-					SendToDevice.send(currentDynamoAction, piConnection.getPIHostnames());
-				} catch (Exception ex) {
-					ex.printStackTrace();
+				if(currentCompositionSelection != null) {
+					try {
+						//intelliJ specific code
+						String pathToSend = compositionsPath + "/" + currentCompositionSelection;
+						SendToDevice.send(pathToSend, piConnection.getPIHostnames());
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 				}
 			}
 		});
@@ -285,16 +295,13 @@ public class IntelliJPluginGUIManager {
 
 	private void updateCompositionPath(String path) {
 		//TODO this needs to be saved somewhere project-specific
-		//TODO check whether this is a good compositions path (e.g., contains class files)
 		compositionsPath = path;
 		//write the config file again
 		refreshCompositionList();
 	}
 
 	private void refreshCompositionList() {
-		//TODO make fully recursive.
-		//TODO we may need to finish this function by setting the curerntly selected composition.
-		//TODO we should also auto-refresh, and set up the project so that it auto-compiles and auto-refreshes on file save/edit.
+		//TODO set up the project so that it auto-compiles and auto-refreshes on file save/edit.
 		//locate the class files of composition classes
 		//the following populates a list of Strings with class files, associated with compositions
 		//populate combobox with list of compositions
@@ -304,17 +311,19 @@ public class IntelliJPluginGUIManager {
 		for(final String compositionFileName : compositionFileNames) {
 			menu.getItems().add(compositionFileName);
 		}
-		menu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> arg0, String arg1, final String arg2) {
-				if(arg2 != null) {
-					currentDynamoAction = config.getCompositionsPath() + "/" + arg2; //re-attatch the composition path to the menu item name
-				}
+		if(compositionFileNames.size() > 0) {
+			//if there was a current dynamoAction, grab it
+			if (!menu.getItems().contains(currentCompositionSelection)) {
+				currentCompositionSelection = compositionFileNames.get(0);
 			}
-		});
+			menu.setValue(currentCompositionSelection);
+		} else {
+			currentCompositionSelection = null;
+		}
 	}
 
 	private void recursivelyGatherCompositionFileNames(List<String> compositionFileNames, String currentDir) {
+		//TODO proper approach would be to examine code source tree, then we can gather dependencies properly as well
 		//scan the current dir for composition files
 		//drop into any folders encountered
 		//add any file that looks like a composition file (is a top-level class)
@@ -326,7 +335,6 @@ public class IntelliJPluginGUIManager {
 					recursivelyGatherCompositionFileNames(compositionFileNames, item);
 				} else if(f.isFile()) {
 					if(item.endsWith(".class") && !item.contains("$")) {
-						//TODO proper approach would be to examine code source tree, then we can gather dependencies properly as well
 						item = item.substring(compositionsPath.length() + 1, item.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
 						compositionFileNames.add(item);
 					}
