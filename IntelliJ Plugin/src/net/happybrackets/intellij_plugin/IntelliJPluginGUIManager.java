@@ -296,6 +296,8 @@ public class IntelliJPluginGUIManager {
 		createTextSender(mainContainer);
 		mainContainer.getChildren().add(new Separator());
 		//list of PIs
+		Text devicesText = new Text("Devices");
+		mainContainer.getChildren().add(devicesText);
 		ListView<LocalDeviceRepresentation> list = new ListView<LocalDeviceRepresentation>();
 		list.setItems(piConnection.getPIs());
 		list.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
