@@ -6,6 +6,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.sun.javafx.css.Style;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -135,17 +136,18 @@ public class IntelliJPluginGUIManager {
 				//select a folder
 				final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
 				descriptor.setTitle("Select Composition Folder");
-				//needs to run in event dispatch thread
+				//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						try {
-							VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
-							if (virtualFile != null && virtualFile[0] != null) {
-								updateCompositionPath(virtualFile[0].getCanonicalPath());
-							}
-						} catch(IllegalStateException e) {
-							System.out.println("Note, non-fatal illegal state exception in (ntelliJPluginGUIManager.");
+						VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
+						if (virtualFile != null && virtualFile[0] != null) {
+							Platform.runLater(new Runnable() {
+								@Override
+								public void run() {
+									updateCompositionPath(virtualFile[0].getCanonicalPath());
+								}
+							});
 						}
 					}
 				});
@@ -163,6 +165,22 @@ public class IntelliJPluginGUIManager {
 		//the following creates the ComboBox containing the compoositions
 		menu = new ComboBox<String>();
 //		menu.setMaxWidth(200);
+		menu.setPrefWidth(200);
+		menu.setButtonCell(new ListCell<String>() {{super.setPrefWidth(100);}
+			   @Override
+			   protected void updateItem(String item, boolean empty) {
+				   super.updateItem(item, empty);
+				   if(item != null) {
+					   String[] parts = item.split("/");
+					   if (parts.length == 0) {
+						   setText(item);
+					   } else {
+						   setText(parts[parts.length - 1]);
+					   }
+				   }
+			   }
+		   }
+		);
 		menu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String arg1, final String arg2) {
@@ -199,9 +217,6 @@ public class IntelliJPluginGUIManager {
 		//text sender
 		Text codetxt = new Text("Send Custom Commands");
 		pane.getChildren().add(codetxt);
-//		HBox codearea = new HBox();
-//		pane.getChildren().add(codearea);
-//		codearea.setSpacing(10);
 		final TextField codeField = new TextField();
 		codeField.setPrefSize(500, 40);
 		pane.getChildren().add(codeField);

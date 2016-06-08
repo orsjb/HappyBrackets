@@ -42,8 +42,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	        	txthbox.setMinWidth(100);
 				txthbox.setAlignment(Pos.CENTER);
 	        	//reset button
-	        	Button resetButton = new Button("Reset");
-				resetButton.setMaxHeight(15);
+	        	Button resetButton = new Button("R");
+				resetButton.setMaxHeight(5);
 	        	resetButton.setOnAction(new EventHandler<ActionEvent>() {
 	        	    @Override public void handle(ActionEvent e) {
 	        	    	item.send("/PI/reset");
@@ -51,8 +51,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	        	});
 	        	main.getChildren().add(resetButton);
 	        	//bleep button
-	        	Button bleepButton = new Button("Bleep");
-				bleepButton.setMaxHeight(15);
+	        	Button bleepButton = new Button("B");
+				bleepButton.setMaxHeight(5);
 	        	bleepButton.setOnAction(new EventHandler<ActionEvent>() {
 	        	    @Override public void handle(ActionEvent e) {
 	        	    	item.send("/PI/bleep");
