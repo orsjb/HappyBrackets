@@ -60,7 +60,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
         jfxp = new JFXPanel();
-        if(!staticSetup) {
+        if(!staticSetup) {          //only run this stuff once per JVM
             String projectDir = project.getBaseDir().getCanonicalPath();
             String dir = PluginManager.getPlugin(
                     PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsToolWindow")
@@ -91,8 +91,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             }
             //test code: you can create a test pi if you don't have a real pi...
 //    	    piConnection.createTestPI();
-            //using synchronizer is optional, TODO: switch to control this, leave it off for now
-//          synchronizer = Synchronizer.get();
+            //using synchronizer is optional, TODO: switch to control this, leave it on for now
+            synchronizer = Synchronizer.getInstance();
             staticSetup = true;
         }
         //TODO: we may want to make a copy of the config so that we can set different aspects here

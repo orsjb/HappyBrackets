@@ -1,6 +1,10 @@
 package net.happybrackets.intellij_plugin;
 
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -31,10 +35,12 @@ import java.util.Queue;
 
 public class IntelliJPluginGUIManager {
 
+	private String compositionsPath;
 	private String currentDynamoAction = "";
 	private ControllerConfig config;
 	private Project project;
 	private DeviceConnection piConnection;
+	private ComboBox<String> menu;
 
 	public IntelliJPluginGUIManager(@NotNull ControllerConfig controllerConfig, Project project, DeviceConnection piConnection) {
 		this.config = controllerConfig;
@@ -43,18 +49,14 @@ public class IntelliJPluginGUIManager {
 	}
 
 	private void createButtons(Pane pane, final DeviceConnection piConnection) {
-
 		Text globcmtx = new Text("Global commands");
 		globcmtx.setTextOrigin(VPos.CENTER);
 		pane.getChildren().add(globcmtx);
-		
 		//master buttons
 		HBox globalcommands = new HBox();
 		globalcommands.setSpacing(10);
 		pane.getChildren().add(globalcommands);
-		
 //		globalcommands.getChildren().add(new Separator());
-    	
 		{
 			Button b = new Button();
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -66,8 +68,6 @@ public class IntelliJPluginGUIManager {
 	    	b.setText("Reboot");
 	    	globalcommands.getChildren().add(b);
 		}
-
-
 		{
 			Button b = new Button();
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -79,8 +79,6 @@ public class IntelliJPluginGUIManager {
 	    	b.setText("Shutdown");
 	    	globalcommands.getChildren().add(b);
 		}
-    	
-
 		{
 			Button b = new Button();
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -92,7 +90,6 @@ public class IntelliJPluginGUIManager {
 	    	b.setText("Sync");
 	    	globalcommands.getChildren().add(b);
 		}
-
 		{
 			Button b = new Button();
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -104,7 +101,6 @@ public class IntelliJPluginGUIManager {
 	    	b.setText("Reset");
 	    	globalcommands.getChildren().add(b);
 		}
-
 		{
 			Button b = new Button();
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -116,7 +112,6 @@ public class IntelliJPluginGUIManager {
 	    	b.setText("Reset Sounding");
 	    	globalcommands.getChildren().add(b);
 		}
-
 		{
 			Button b = new Button();
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -128,25 +123,19 @@ public class IntelliJPluginGUIManager {
 	    	b.setText("Clear Sound");
 	    	globalcommands.getChildren().add(b);
 		}
-		
 		//text sender
 		pane.getChildren().add(new Separator());
-		
 		Text codetxt = new Text("Custom Commands");
 		pane.getChildren().add(codetxt);
-		
 		HBox codearea = new HBox();
 		pane.getChildren().add(codearea);
 		codearea.setSpacing(10);
-		
 		final TextField codeField = new TextField();
 		codeField.setMinSize(500, 50);
 		codearea.getChildren().add(codeField);
-
 		HBox messagepaths = new HBox();
 		messagepaths.setSpacing(10);
 		pane.getChildren().add(messagepaths);
-		
 		Button sendAllButton = new Button("Send All");
 		sendAllButton.setMinWidth(80);
 		sendAllButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -173,7 +162,7 @@ public class IntelliJPluginGUIManager {
 			}
 		});
 		messagepaths.getChildren().add(sendAllButton);
-		Text sendTogrpstxt = new Text("Send to group");
+		Text sendTogrpstxt = new Text("Send to Group");
 		messagepaths.getChildren().add(sendTogrpstxt);
 //		messagepaths.getChildren().add(new Separator());
 		for(int i = 0; i < 4; i++) {
@@ -205,9 +194,7 @@ public class IntelliJPluginGUIManager {
 	    	b.setText("" + (i + 1));
 	    	messagepaths.getChildren().add(b);
 		}
-
 		pane.getChildren().add(new Separator());
-    	
 	}
 
 	public Scene setupGUI() {
@@ -235,77 +222,54 @@ public class IntelliJPluginGUIManager {
 		list.setMaxWidth(1000);
 		list.setMinHeight(500);
 		border.setCenter(list);
-
-		//currently not expecting the comps path to contain a valid value
-		String compsPath = config.getCompositionsPath();
-
-
-		Text sendCodetxt = new Text("Send Compositions");
-		topBox.getChildren().add(sendCodetxt);
+		//initial compositions path
+		String projectDir = project.getBaseDir().getCanonicalPath();
+		//assume that this path is a path to a root classes folder, relative to the project
+		compositionsPath = projectDir + "/" + config.getCompositionsPath();		//e.g., build/classes/tutorial or build/classes/compositions
+		//Sending compositions stuff
 		HBox sendCodeHbox = new HBox();
 		sendCodeHbox.setSpacing(10);
 		topBox.getChildren().add(sendCodeHbox);
-
-		/*
-		//the following populates a list of Strings with class files, associated with compositions
-
-		//populate combobox with list of compositions
-		List<String> compositionFileNames = new ArrayList<String>();
-		Queue<File> dirs = new LinkedList<File>();
-		dirs.add(new File(compsPath));
-		//load the composition files
-		if(dirs != null && dirs.size() > 0) {
-			while (!dirs.isEmpty()) {
-				if(dirs.peek() != null) {
-					for (File f : dirs.poll().listFiles()) {
-						if (f.isDirectory()) {
-							dirs.add(f);
-						} else if (f.isFile()) {
-							String path = f.getPath();
-							path = path.substring(config.getCompositionsPath().length() + 1, path.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
-							if (!path.contains("$")) {
-								System.out.println(path);
-								compositionFileNames.add(path);
-							}
-						}
-					}
-				}
-				else {
-					//throw out the null File object so we don't get stuck in a never ending loop.
-					dirs.poll();
-				}
-			}
-		}
-
-		//the following creates the ComboBox containing the compoositions
-
-		ComboBox<String> menu = new ComboBox<String>();
-		for(final String compositionFileName : compositionFileNames) {
-			menu.getItems().add(compositionFileName);
-		}
-		menu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+		Text sendCodetxt = new Text("Send Composition");
+		topBox.getChildren().add(sendCodetxt);
+		Button changeCompositionPath = new Button("Change Composition Folder");
+		changeCompositionPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void changed(ObservableValue<? extends String> arg0, String arg1, final String arg2) {
-				if(arg2 != null) {
-					currentDynamoAction = config.getCompositionsPath() + "/" + arg2; //re-attatch the composition path to the menu item name
+			public void handle(MouseEvent event) {
+				//select a folder
+				final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+				descriptor.setTitle("Select Composition Folder");
+				// 10.5 does not have #chooseFile
+				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
+				if (virtualFile != null && virtualFile[0] != null) {
+					for (int i = 0; i < virtualFile.length; i++) {
+						updateCompositionPath(virtualFile[0].getCanonicalPath());
+					}
 				}
 			}
 		});
-
+		topBox.getChildren().add(changeCompositionPath);
+		Text compositionPathText = new Text();
+		topBox.getChildren().add(compositionPathText);
+		//the following creates the ComboBox containing the compoositions
+		menu = new ComboBox<String>();
 		//done with combo box
 		sendCodeHbox.getChildren().add(menu);
-
-		*/
-
+		Button refreshButton = new Button("Refresh");
+		refreshButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				refreshCompositionList();
+			}
+		});
+		refreshCompositionList();
 		Button sendCode = new Button("Send");
 		sendCode.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				try {
-
 					//intelliJ specific code
 //					currentDynamoAction = project
-
 					SendToDevice.send(currentDynamoAction, piConnection.getPIHostnames());
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -318,5 +282,84 @@ public class IntelliJPluginGUIManager {
 		Scene scene = new Scene(masterGroup);
 		return scene;
 	}
-	
+
+	private void updateCompositionPath(String path) {
+		//TODO this needs to be saved somewhere project-specific
+		//TODO check whether this is a good compositions path (e.g., contains class files)
+		compositionsPath = path;
+		//write the config file again
+		refreshCompositionList();
+	}
+
+	private void refreshCompositionList() {
+		//TODO make fully recursive.
+		//TODO we may need to finish this function by setting the curerntly selected composition.
+		//TODO we should also auto-refresh, and set up the project so that it auto-compiles and auto-refreshes on file save/edit.
+		//locate the class files of composition classes
+		//the following populates a list of Strings with class files, associated with compositions
+		//populate combobox with list of compositions
+		List<String> compositionFileNames = new ArrayList<String>();
+		recursivelyGatherCompositionFileNames(compositionFileNames, compositionsPath);
+		menu.getItems().clear();
+		for(final String compositionFileName : compositionFileNames) {
+			menu.getItems().add(compositionFileName);
+		}
+		menu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1, final String arg2) {
+				if(arg2 != null) {
+					currentDynamoAction = config.getCompositionsPath() + "/" + arg2; //re-attatch the composition path to the menu item name
+				}
+			}
+		});
+	}
+
+	private void recursivelyGatherCompositionFileNames(List<String> compositionFileNames, String currentDir) {
+		//scan the current dir for composition files
+		//drop into any folders encountered
+		//add any file that looks like a composition file (is a top-level class)
+		String[] contents = new File(currentDir).list();
+		if(contents != null) {
+			for(String item : contents) {
+				File f = new File(item);
+				if(f.isDirectory()) {
+					recursivelyGatherCompositionFileNames(compositionFileNames, item);
+				} else if(f.isFile()) {
+					if(item.endsWith(".class") && !item.contains("$")) {
+						//TODO proper approach would be to examine code source tree, then we can gather dependencies properly as well
+						item = item.substring(compositionsPath.length() + 1, item.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
+						compositionFileNames.add(item);
+					}
+				}
+			}
+		}
+		//THE OLD CODE - Non-recursive
+//		Queue<File> dirs = new LinkedList<File>();
+//		dirs.add(new File(currentDir));
+//		//load the composition files
+//		if(dirs != null && dirs.size() > 0) {
+//			while (!dirs.isEmpty()) {
+//				if(dirs.peek() != null) {
+//					for (File f : dirs.poll().listFiles()) {
+//						if (f.isDirectory()) {
+//							dirs.add(f);
+//						} else if (f.isFile()) {
+//							String path = f.getPath();
+//							path = path.substring(config.getCompositionsPath().length() + 1, path.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
+//							if (!path.contains("$")) {
+//								System.out.println(path);
+//								compositionFileNames.add(path);
+//							}
+//						}
+//					}
+//				}
+//				else {
+//					//throw out the null File object so we don't get stuck in a never ending loop.
+//					dirs.poll();
+//				}
+//			}
+//		}
+
+	}
+
 }

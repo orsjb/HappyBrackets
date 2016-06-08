@@ -1,3 +1,4 @@
 {
-  "useHostname": false
+  "useHostname": false,
+  "compositionsPath": "build/classes/tutorial" //could also be build/classes/compositions
 }

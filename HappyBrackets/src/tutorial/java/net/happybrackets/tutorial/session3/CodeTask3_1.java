@@ -19,7 +19,7 @@ import net.beadsproject.beads.ugens.SamplePlayer;
  * 1) Loop the SamplePlayer so that you get an alternating (backwards-forwards) loop over the last 25% of the file. Now that you are looping the SamplePlayer, apply the ADSR envelope from the code tasks in the previous session, including killing the sound.
  * 2) Use the 'setPitch()' function on the SamplePlayer to play the same random pentatonic pattern as in the previous example. Note that the desired frequency is not the same as the playback rate. A playback rate of 1 will play the sound at its original frequency.
  * 3) Replace the fixed playback rate of the SamplePlayer with an Envelope, and randomly add a downward pitch bend to 1 in 5 notes.
- * 4) Switch the SamplePlayer to a GranularSamplePlayer.
+ * 4) Switch the SamplePlayer to a GranularSamplePlayer. Experiment with the functions 'setRate()', 'getGrainSizeUGen().setValue()', 'getGrainIntervalUGen().setValue()', 'getRandomnessUGen().setValue()'.
  *
  */
 public class CodeTask3_1 {
