@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -27,6 +28,7 @@ import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -237,13 +239,18 @@ public class IntelliJPluginGUIManager {
 				//select a folder
 				final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
 				descriptor.setTitle("Select Composition Folder");
-				// 10.5 does not have #chooseFile
-				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
-				if (virtualFile != null && virtualFile[0] != null) {
-					for (int i = 0; i < virtualFile.length; i++) {
-						updateCompositionPath(virtualFile[0].getCanonicalPath());
+				//needs to run in event dispatch thread
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
+						if (virtualFile != null && virtualFile[0] != null) {
+							for (int i = 0; i < virtualFile.length; i++) {
+								updateCompositionPath(virtualFile[0].getCanonicalPath());
+							}
+						}
 					}
-				}
+				});
 			}
 		});
 		topBox.getChildren().add(changeCompositionPath);
