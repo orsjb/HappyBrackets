@@ -93,7 +93,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 e.printStackTrace();
             }
             //test code: you can create a test pi if you don't have a real pi...
-//    	    piConnection.createTestPI();
+    	    piConnection.createTestPI();
+    	    piConnection.createTestPI();
             //using synchronizer is optional, TODO: switch to control this, leave it on for now
             synchronizer = Synchronizer.getInstance();
             staticSetup = true;

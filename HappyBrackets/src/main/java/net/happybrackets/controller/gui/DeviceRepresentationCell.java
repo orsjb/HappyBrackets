@@ -1,5 +1,6 @@
 package net.happybrackets.controller.gui;
 
+import javafx.geometry.Pos;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,55 +14,55 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
-public class DeviceRepCell extends ListCell<LocalDeviceRepresentation> {
+public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 	
 	int count = 0;
-	
-	public DeviceRepCell() {
-//		setMinHeight(80);
-	}
 	
 	@Override
     public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
         super.updateItem(item, empty);
         setGraphic(null);
-		//gui needs to be attached to "item", can't rely on DeviceRepCell to bind to item
+		//gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
         if (item != null) {
         	if(item.getGui() == null) {
         		//set up main panel
-	        	HBox hbox = new HBox();
-	        	hbox.setSpacing(5);
-	        	hbox.setMaxHeight(30);
+	        	HBox main = new HBox();
+				main.setStyle("-fx-font-family: sample; -fx-font-size: 12;");
+				main.setAlignment(Pos.CENTER_LEFT);
+	        	main.setSpacing(5);
+	        	main.setMaxHeight(20);
 	        	//elements
 	        	HBox txthbox = new HBox();
-	        	hbox.getChildren().add(txthbox);
+	        	main.getChildren().add(txthbox);
 	        	//name of the PI
 	        	Text name = new Text(item.hostname);
 	        	name.setUnderline(true);
 	        	txthbox.getChildren().add(name);
 	        	txthbox.setSpacing(5);
-	        	txthbox.setMinWidth(300);
+	        	txthbox.setMinWidth(100);
+				txthbox.setAlignment(Pos.CENTER);
 	        	//reset button
 	        	Button resetButton = new Button("Reset");
+				resetButton.setMaxHeight(15);
 	        	resetButton.setOnAction(new EventHandler<ActionEvent>() {
 	        	    @Override public void handle(ActionEvent e) {
 	        	    	item.send("/PI/reset");
 	        	    }
 	        	});
-	        	hbox.getChildren().add(resetButton);
+	        	main.getChildren().add(resetButton);
 	        	//bleep button
 	        	Button bleepButton = new Button("Bleep");
+				bleepButton.setMaxHeight(15);
 	        	bleepButton.setOnAction(new EventHandler<ActionEvent>() {
 	        	    @Override public void handle(ActionEvent e) {
 	        	    	item.send("/PI/bleep");
 	        	    }
 	        	});
-	        	hbox.getChildren().add(bleepButton);
+	        	main.getChildren().add(bleepButton);
 	        	//group allocations
 	        	HBox groupsHbox = new HBox();
-	        	hbox.getChildren().add(groupsHbox);
-	        	groupsHbox.setSpacing(5);
-	        	groupsHbox.getChildren().add(new Text("G#"));
+				groupsHbox.setAlignment(Pos.CENTER);
+	        	main.getChildren().add(groupsHbox);
 	        	for(int i = 0; i < 4; i++) {
 	        		final int index = i;
 		        	CheckBox c = new CheckBox();
@@ -76,21 +77,19 @@ public class DeviceRepCell extends ListCell<LocalDeviceRepresentation> {
 	        	//
 	        	Slider s = new Slider(0, 2, 1);
 	        	s.setOrientation(Orientation.HORIZONTAL);
+				s.setMaxWidth(100);
 	        	s.valueProperty().addListener(new ChangeListener<Number>() {
 					@Override
 					public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
 						item.send("/PI/gain", newval.floatValue(), 50f);
 					}
 				});
-	        	hbox.getChildren().add(s);
+	        	main.getChildren().add(s);
 	        	//a status string
 	        	Text statusText = new Text("status unknown");
-	        	hbox.getChildren().add(statusText);
-	        	
-	        	item.setGui(hbox);
-
+	        	main.getChildren().add(statusText);
+	        	item.setGui(main);
         	}
-
         	setGraphic(item.getGui());
         }	
 

@@ -221,7 +221,7 @@ public class GUIManager {
 		list.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
 			@Override
 			public ListCell<LocalDeviceRepresentation> call(ListView<LocalDeviceRepresentation> theView) {
-				return new DeviceRepCell();
+				return new DeviceRepresentationCell();
 			}
 		});
 		list.setMinWidth(1000);
