@@ -245,9 +245,7 @@ public class IntelliJPluginGUIManager {
 					public void run() {
 						VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
 						if (virtualFile != null && virtualFile[0] != null) {
-							for (int i = 0; i < virtualFile.length; i++) {
-								updateCompositionPath(virtualFile[0].getCanonicalPath());
-							}
+							updateCompositionPath(virtualFile[0].getCanonicalPath());
 						}
 					}
 				});
@@ -307,6 +305,7 @@ public class IntelliJPluginGUIManager {
 	}
 
 	private void refreshCompositionList() {
+		System.out.println("refreshCompositionList: compositionsPath=" + compositionsPath);
 		//TODO set up the project so that it auto-compiles and auto-refreshes on file save/edit.
 		//locate the class files of composition classes
 		//the following populates a list of Strings with class files, associated with compositions
@@ -329,51 +328,26 @@ public class IntelliJPluginGUIManager {
 	}
 
 	private void recursivelyGatherCompositionFileNames(List<String> compositionFileNames, String currentDir) {
-		//TODO proper approach would be to examine code source tree, then we can gather dependencies properly as well
+		//TODO best approach would be to examine code source tree, then we can gather dependencies properly as well
 		//scan the current dir for composition files
 		//drop into any folders encountered
 		//add any file that looks like a composition file (is a top-level class)
 		String[] contents = new File(currentDir).list();
 		if(contents != null) {
 			for(String item : contents) {
+				item = currentDir + "/" + item;
 				File f = new File(item);
 				if(f.isDirectory()) {
 					recursivelyGatherCompositionFileNames(compositionFileNames, item);
 				} else if(f.isFile()) {
 					if(item.endsWith(".class") && !item.contains("$")) {
-						item = item.substring(compositionsPath.length() + 1, item.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
+						item = item.substring(compositionsPath.length() + 1, item.length() - 6);
+						// 6 equates to the length fo the .class extension, the + 1 is to remove the composition path and trailing '/' for presentation in the menu
 						compositionFileNames.add(item);
 					}
 				}
 			}
 		}
-		//THE OLD CODE - Non-recursive
-//		Queue<File> dirs = new LinkedList<File>();
-//		dirs.add(new File(currentDir));
-//		//load the composition files
-//		if(dirs != null && dirs.size() > 0) {
-//			while (!dirs.isEmpty()) {
-//				if(dirs.peek() != null) {
-//					for (File f : dirs.poll().listFiles()) {
-//						if (f.isDirectory()) {
-//							dirs.add(f);
-//						} else if (f.isFile()) {
-//							String path = f.getPath();
-//							path = path.substring(config.getCompositionsPath().length() + 1, path.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
-//							if (!path.contains("$")) {
-//								System.out.println(path);
-//								compositionFileNames.add(path);
-//							}
-//						}
-//					}
-//				}
-//				else {
-//					//throw out the null File object so we don't get stuck in a never ending loop.
-//					dirs.poll();
-//				}
-//			}
-//		}
-
 	}
 
 }
