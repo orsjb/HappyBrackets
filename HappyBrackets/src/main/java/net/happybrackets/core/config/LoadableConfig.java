@@ -39,19 +39,19 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	//how often the PI sends an aslive message to the server
 	private Integer AliveInterval;
 
+	protected static LoadableConfig singletonInstance;
+
 	//places
 	private String  WorkingDir;
 	private String  AudioDir;
 	private String KnownDevicesFile;
 	
-	public static <T> T load(String fileName, T config) {			
+	public static <T extends LoadableConfig> T load(String fileName, T config) {
 		System.out.println("Loading: " + fileName);
-		
 		if (config == null) {
 			System.err.println("Argument 2, Config must be an instantiated object!");
 			return null;
 		}
-		
 		File f = new File(fileName);
         //try again for the default
         if ( !f.isFile() ) {
@@ -60,14 +60,11 @@ public abstract class LoadableConfig implements EnvironmentConfig {
             System.out.println("Trying default: " + fileName);
             f = new File(fileName);
         }
-
 		if ( !f.isFile() ) {
 			System.err.println("File: '" + f.getAbsolutePath() + "' does not exist!");
 			return null;
 		}
-		
 		Gson gson = new Gson();
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
             config = gson.fromJson(br, (Type) config.getClass());
@@ -79,8 +76,12 @@ public abstract class LoadableConfig implements EnvironmentConfig {
         if (config == null) {
             System.err.println("Failed loading config file: " + fileName);
         }
-		
+		singletonInstance = config;
 		return config;
+	}
+
+	public static LoadableConfig getInstance() {
+		return singletonInstance;
 	}
 	
 	//Override getters

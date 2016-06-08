@@ -29,9 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 public class IntelliJPluginGUIManager {
 
@@ -270,6 +268,7 @@ public class IntelliJPluginGUIManager {
 				refreshCompositionList();
 			}
 		});
+		sendCodeHbox.getChildren().add(refreshButton);
 		refreshCompositionList();
 		Button sendCode = new Button("Send");
 		sendCode.setOnMouseClicked(new EventHandler<MouseEvent>() {

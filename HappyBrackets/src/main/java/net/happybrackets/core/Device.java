@@ -38,7 +38,6 @@ public abstract class Device {
 				String favouriteInterfaceName = null;
 				while (interfaces.hasMoreElements()) {
 					netInterface = interfaces.nextElement();
-					
 					// Windows by default has a lot of extra interfaces,
 					//  lets at least try and getInstance a real interface...
 					if (isViableNetworkInterface(netInterface)) {
@@ -49,16 +48,13 @@ public abstract class Device {
 						System.out.println("Ignored: " + netInterface.getName() + ", " + netInterface.getDisplayName());
 					}
 				}
-				
 				if (favouriteInterfaceName != null ) {
 					netInterface = NetworkInterface.getByName(favouriteInterfaceName);
 				}
 				else {
 					netInterface = NetworkInterface.getByName("wlan0"); // take a stab in the dark...
 				}
-				
 				System.out.println("Selected interface: " + netInterface.getName() + ", " + netInterface.getDisplayName());
-				
 				tmpHostname = netInterface.getInetAddresses().nextElement().getHostName();
 				tmpIP = netInterface.getInetAddresses().nextElement().getHostAddress();
 			}
@@ -70,12 +66,9 @@ public abstract class Device {
                 tmpHostname = netInterface.getInetAddresses().nextElement().getHostName();
                 tmpIP = netInterface.getInetAddresses().nextElement().getHostAddress();
 			}
-			
-			
 			if(netInterface != null) {
 				//collect our chosen network interface name
-				tmpPreferedInterface = netInterface.getName(); 
-				
+				tmpPreferedInterface = netInterface.getName();
 				//getInstance MAC
 				byte[] mac = netInterface.getHardwareAddress();
 				StringBuilder builder = new StringBuilder();

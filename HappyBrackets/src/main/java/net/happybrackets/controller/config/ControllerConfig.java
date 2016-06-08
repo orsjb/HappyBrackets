@@ -35,4 +35,17 @@ public class ControllerConfig extends LoadableConfig {
         return configDir;
     }
 
+    public static ControllerConfig getInstance() {
+        return (ControllerConfig)(LoadableConfig.getInstance());
+    }
+
+    public static ControllerConfig load(String configFile) {
+        return (ControllerConfig)(LoadableConfig.load(configFile, new ControllerConfig()));
+    }
+
+    public static void setInstance(ControllerConfig instance) {
+        singletonInstance = instance;
+    }
+
+
 }

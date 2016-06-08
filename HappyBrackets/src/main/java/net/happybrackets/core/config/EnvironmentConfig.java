@@ -23,10 +23,8 @@ public interface EnvironmentConfig {
 	default public int getControlToDevicePort()			{ return 2226; }			//OSC messages from controller to device
 	default public int getControllerDiscoveryPort()		{ return 2227; }			//
 	default public int getControllerHTTPPort()		    { return 2228; }			//http requests from device to controller
-	
 	//how often the PI sends an alive message to the server
 	default public int getAliveInterval() 				{ return 1000; }
-	
 	//places
 	default public String getWorkingDir() 				{ return "."; }
 	default public String getAudioDir() 				{ return getWorkingDir() + "/audio"; }

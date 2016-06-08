@@ -62,18 +62,21 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         jfxp = new JFXPanel();
         if(!staticSetup) {          //only run this stuff once per JVM
             String projectDir = project.getBaseDir().getCanonicalPath();
-            String dir = PluginManager.getPlugin(
+            String pluginDir = PluginManager.getPlugin(
                     PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsToolWindow")
             ).getPath().toString();
-            System.out.println("Plugin lives at: " + dir);
-            String configFilePath = dir + "/classes/config/controller-config.json";
+            System.out.println("Plugin lives at: " + pluginDir);
+            String configFilePath = pluginDir + "/classes/config/controller-config.json";
             if(new File(configFilePath).exists()) System.out.println("Config file exists!");
             //all of the below concerns the set up of singletons
             //TODO: use plugin path here. How?
-            config = LoadableConfig.load(configFilePath, new IntelliJControllerConfig());
-            if (config == null) config = new IntelliJControllerConfig();
+            config = IntelliJControllerConfig.load(configFilePath);
+            if (config == null) {
+                config = new IntelliJControllerConfig();
+                IntelliJControllerConfig.setInstance(config);
+            }
             //set up config relevant directories
-            config.setConfigDir(dir + "/classes/config");
+            config.setConfigDir(pluginDir + "/classes/config");
             piConnection = new DeviceConnection(config);
             //setup controller broadcast
             try {

@@ -1,11 +1,13 @@
 package net.happybrackets.device.config;
 
+import net.happybrackets.core.config.LoadableConfig;
+
 /**
  * A basic class to hold our wifi config and work with gson
  *
  * Created by Samg on 19/05/2016.
  */
-public class DeviceWifiConfig {
+public class DeviceWifiConfig extends LoadableConfig {
 
     private String ssid;
     private String psk;

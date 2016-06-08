@@ -11,9 +11,7 @@ public class ManagerAgent {
 		System.out.println("PI Manager Agent Started as: " + env.getMyHostName());
 		System.out.println("Listening for Controller...");
 		System.out.println("Found controller on host: " + env.getControllerHostname());
-		
 		System.out.println("Requesting configuration settings from controller...");
-
 		System.out.println("PI Manager Agent Exiting");
 	}
 

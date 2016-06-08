@@ -7,8 +7,6 @@ import java.net.UnknownHostException;
 
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
 
-	public static DeviceConfig singletonInstance;
-
 	private String controllerHostName;
 	private int polyLimit = 4;
 
@@ -17,7 +15,6 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 			return controllerHostName;
 		}
 		//Block and search for a controller
-		// TODO use a proper logging framework
 		try {
 			controllerHostName = listenForController( getMulticastAddr(), getControllerDiscoveryPort());
 		} catch (UnknownHostException e) {
@@ -35,12 +32,13 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		return polyLimit;
 	}
 
-	public static DeviceConfig load(String configFile) {
-		singletonInstance = LoadableConfig.load(configFile, new DeviceConfig());
-		return singletonInstance;
+	public static DeviceConfig getInstance() {
+		return (DeviceConfig)(LoadableConfig.getInstance());
 	}
 
-	public static DeviceConfig getInstance() {
-		return singletonInstance;
+	public static DeviceConfig load(String configFile) {
+		return (DeviceConfig)(LoadableConfig.load(configFile, new DeviceConfig()));
 	}
+
+
 }

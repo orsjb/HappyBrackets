@@ -1,14 +1,12 @@
 package net.happybrackets.core;
 
-import net.happybrackets.device.config.DeviceConfig;
+import net.happybrackets.core.config.LoadableConfig;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 public class Synchronizer {
@@ -105,9 +103,9 @@ public class Synchronizer {
 	}
 	
 	private void setupListener() throws IOException {
-		final MulticastSocket s = new MulticastSocket(DeviceConfig.getInstance().getClockSynchPort());
+		final MulticastSocket s = new MulticastSocket(LoadableConfig.getInstance().getClockSynchPort());
 		try {
-			s.joinGroup(InetAddress.getByName(DeviceConfig.getInstance().getMulticastAddr()));
+			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
 		} catch(SocketException e) {
 			System.err.println("Warning: Synchronizer can't use multicast. No synch functionality available in this session.");
 		}
@@ -311,7 +309,7 @@ public class Synchronizer {
 		// Create a DatagramPacket
 		DatagramPacket pack = null;
 		try {
-			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(DeviceConfig.getInstance().getMulticastAddr()), DeviceConfig.getInstance().getClockSynchPort());
+			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()), LoadableConfig.getInstance().getClockSynchPort());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
