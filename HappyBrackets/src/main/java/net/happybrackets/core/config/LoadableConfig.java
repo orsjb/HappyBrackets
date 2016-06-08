@@ -25,16 +25,16 @@ import com.google.gson.Gson;
 public abstract class LoadableConfig implements EnvironmentConfig {
 	//use Integer instead of int so we can delegate to the interface default value on null
 	private Boolean useHostname;
-	private String  MyHostName;
-	private String  MyInterface;	
-	private String  MulticastSynchAddr;
-	private Integer BroadcastOSCPort;
-	private Integer StatusFromDevicePort;
-	private Integer ClockSynchPort;
-	private Integer CodeToDevicePort;
-	private Integer ControlToDevicePort;
-	private Integer ControllerDiscoveryPort;
-    private Integer ControllerHTTPPort;
+	private String 	myHostName;
+	private String 	myInterface;
+	private String 	multicastSynchAddr;
+	private Integer broadcastOSCPort;
+	private Integer statusFromDevicePort;
+	private Integer clockSynchPort;
+	private Integer codeToDevicePort;
+	private Integer controlToDevicePort;
+	private Integer controllerDiscoveryPort;
+    private Integer controllerHTTPPort;
 
 	//how often the PI sends an aslive message to the server
 	private Integer AliveInterval;
@@ -93,72 +93,72 @@ public abstract class LoadableConfig implements EnvironmentConfig {
         }
     }
 	public String getMyHostName() {
-		if (MyHostName != null) {
-		    return MyHostName;		
+		if (myHostName != null) {
+		    return myHostName;
 		}
 		else {
 		    return EnvironmentConfig.super.getMyHostName();
 		}
 	}
 	public String getMyInterface() {
-		if (MyInterface != null) {
-		    return MyInterface;		
+		if (myInterface != null) {
+		    return myInterface;
 		}
 		else {
 		    return EnvironmentConfig.super.getMyInterface();
 		}
 	}
 	public String getMulticastAddr() {
-		if (MulticastSynchAddr != null) {
-		    return MulticastSynchAddr;		
+		if (multicastSynchAddr != null) {
+		    return multicastSynchAddr;
 		}
 		else {
 		    return EnvironmentConfig.super.getMulticastAddr();
 		}
 	}
 	public int getBroadcastPort() {
-		if (BroadcastOSCPort != null) {
-		    return BroadcastOSCPort;		
+		if (broadcastOSCPort != null) {
+		    return broadcastOSCPort;
 		}
 		else {
 		    return EnvironmentConfig.super.getBroadcastPort();
 		}
 	}
 	public int getStatusFromDevicePort() {
-		if (StatusFromDevicePort != null) {
-		    return StatusFromDevicePort;
+		if (statusFromDevicePort != null) {
+		    return statusFromDevicePort;
 		}
 		else {
 		    return EnvironmentConfig.super.getStatusFromDevicePort();
 		}
 	}
 	public int getClockSynchPort() {
-		if (ClockSynchPort != null) {
-		    return ClockSynchPort;		
+		if (clockSynchPort != null) {
+		    return clockSynchPort;
 		}
 		else {
 		    return EnvironmentConfig.super.getClockSynchPort();
 		}
 	}
 	public int getCodeToDevicePort() {
-		if (CodeToDevicePort != null) {
-		    return CodeToDevicePort;
+		if (codeToDevicePort != null) {
+		    return codeToDevicePort;
 		}
 		else {
 		    return EnvironmentConfig.super.getCodeToDevicePort();
 		}
 	}
 	public int getControlToDevicePort() {
-		if (ControlToDevicePort != null) {
-		    return ControlToDevicePort;
+		if (controlToDevicePort != null) {
+		    return controlToDevicePort;
 		}
 		else {
 		    return EnvironmentConfig.super.getControlToDevicePort();
 		}
 	}
 	public int getControllerDiscoveryPort() {
-		if (ControllerDiscoveryPort != null) {
-		    return ControllerDiscoveryPort;		
+		if (controllerDiscoveryPort != null) {
+		    return controllerDiscoveryPort;
 		}
 		else {
 		    return EnvironmentConfig.super.getControllerDiscoveryPort();
@@ -198,8 +198,8 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	}
 
 	public int getControllerHTTPPort() {
-		if (ControllerHTTPPort != null) {
-			return ControllerHTTPPort;
+		if (controllerHTTPPort != null) {
+			return controllerHTTPPort;
 		}
 		else {
 			return EnvironmentConfig.super.getControllerHTTPPort();
