@@ -27,7 +27,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         	if(item.getGui() == null) {
         		//set up main panel
 	        	HBox main = new HBox();
-				main.setStyle("-fx-font-family: sample; -fx-font-size: 12;");
+				main.setStyle("-fx-font-family: sample; -fx-font-size: 10;");
 				main.setAlignment(Pos.CENTER_LEFT);
 	        	main.setSpacing(5);
 	        	main.setMaxHeight(20);
