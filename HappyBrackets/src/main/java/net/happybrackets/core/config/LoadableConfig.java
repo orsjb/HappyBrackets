@@ -37,7 +37,7 @@ public abstract class LoadableConfig implements EnvironmentConfig {
     private Integer controllerHTTPPort;
 
 	//how often the PI sends an aslive message to the server
-	private Integer AliveInterval;
+	private Integer aliveInterval;
 
 	protected static LoadableConfig singletonInstance;
 
@@ -166,8 +166,8 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		}
 	}
 	public int getAliveInterval() {
-		if (AliveInterval != null) {
-		    return AliveInterval;		
+		if (aliveInterval != null) {
+		    return aliveInterval;
 		}
 		else {
 		    return EnvironmentConfig.super.getAliveInterval();

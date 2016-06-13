@@ -25,12 +25,12 @@ public class LoadableTest {
 		String s = currentRelativePath.toAbsolutePath().toString();
 		System.out.println("Current relative path is: " + s);
 
-		cfg = LoadableConfig.load("src/test/config/test-controller-config.json", cfg);
+		cfg = LoadableConfig.load("src/test/config/test-config.json", cfg);
 		if (cfg == null) fail("Unable to instantiate config class!");
 	}
 
 	@Test
-	public void test() {
+	public void load() {
 		assertTrue(cfg.getAliveInterval() == 1500); //this should be the value in the misc_tests-controller-config.json file
 		assertTrue(cfg.getCodeToDevicePort() == 2225); //this should be the value from the default interface
 	}
