@@ -24,7 +24,7 @@ public class ControllerAdvertiser {
 				try (MulticastSocket serverSocket = new MulticastSocket(env.getControllerDiscoveryPort()) ) {
 					serverSocket.joinGroup(group);
 					serverSocket.setNetworkInterface( NetworkInterface.getByName(env.getMyInterface()) );
-					String msg = "controllerHostname: " + env.getMyHostName();
+					String msg = "controllerHostname: " + env.getMyHostName() + " controllerAddress: " + env.getMyAddress();
 					DatagramPacket msgPacket = new DatagramPacket(
 						msg.getBytes(),
 						msg.getBytes().length, 

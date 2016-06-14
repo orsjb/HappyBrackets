@@ -7,25 +7,38 @@ import java.net.UnknownHostException;
 
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
 
-	private String controllerHostName;
 	private int polyLimit = 4;
+	private DeviceController controller;
 
 	public synchronized String getControllerHostname() {
-		if (controllerHostName != null) {
-			return controllerHostName;
+		if (controller != null) {
+			return controller.getHostname();
 		}
-		//Block and search for a controller
-		try {
-			controllerHostName = listenForController( getMulticastAddr(), getControllerDiscoveryPort());
-		} catch (UnknownHostException e) {
-			System.out.println("Error obtaining controller hostname.");
-			e.printStackTrace();
-		}
-		return controllerHostName;
+
+		return waitForController().getHostname();
 	}
-	
+
+    public synchronized String getControllerAddress() {
+        if (controller != null) {
+            return controller.getAddress();
+        }
+
+        return waitForController().getAddress();
+    }
+
+    private DeviceController waitForController() {
+        //Block and search for a controller
+        try {
+            controller = listenForController( getMulticastAddr(), getControllerDiscoveryPort());
+        } catch (UnknownHostException e) {
+            System.out.println("Error obtaining controller hostname and address.");
+            e.printStackTrace();
+        }
+        return controller;
+    }
+
 	public int getMyId() {
-		return 0;
+		return -1;
 	}
 
 	public int getPolyLimit() {
