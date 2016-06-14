@@ -290,7 +290,7 @@ public class GUIManager {
 			@Override
 			public void handle(MouseEvent e) {
 				try {
-					SendToDevice.send(currentPIPO, piConnection.getPIHostnames());
+					SendToDevice.send(currentPIPO, piConnection.getPIAddresses());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

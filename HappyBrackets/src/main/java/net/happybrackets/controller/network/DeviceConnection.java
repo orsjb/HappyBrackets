@@ -22,11 +22,11 @@ public class DeviceConnection {
 	
 	public static final boolean verbose = false;
 	
-	OSCServer oscServer;
-	ObservableList<LocalDeviceRepresentation> thePIs;
-	Map<String, LocalDeviceRepresentation> pisByHostname;
-	Map<String, Integer> knownPIs;
-	int newID = -1;
+	private OSCServer oscServer;
+	private ObservableList<LocalDeviceRepresentation> thePIs;
+	private Map<String, LocalDeviceRepresentation> pisByHostname;
+	private Map<String, Integer> knownPIs;
+	private int newID = -1;
 	private ControllerConfig config;
 	
 	public DeviceConnection(ControllerConfig config) {
@@ -85,10 +85,19 @@ public class DeviceConnection {
 		}
 		return hostnames;
 	}
+
+    public String[] getPIAddresses() {
+        String[] addresses = new String[thePIs.size()];
+        for(int i = 0; i < addresses.length; i++) {
+            addresses[i] = thePIs.get(i).address;
+        }
+        return addresses;
+    }
 	
 	private void incomingMessage(OSCMessage msg) {
 		if(msg.getName().equals("/PI/alive")) {
-			String piName = (String)msg.getArg(0);
+			String piName       = (String)msg.getArg(0);
+			String piAddress    = (String)msg.getArg(1);
 //			System.out.println("PI Alive Message: " + piName);
 			//see if we have this PI yet
 			LocalDeviceRepresentation thisPI = pisByHostname.get(piName);
@@ -99,7 +108,7 @@ public class DeviceConnection {
 				} else {
 					id = newID--;
 				}
-				thisPI = new LocalDeviceRepresentation(piName, id, oscServer, config);
+				thisPI = new LocalDeviceRepresentation(piName, piAddress, id, oscServer, config);
 	        	pisByHostname.put(piName, thisPI);
 				final LocalDeviceRepresentation piToAdd = thisPI;
 				//adding needs to be done in an "app" thread because it affects the GUI.
@@ -227,8 +236,9 @@ public class DeviceConnection {
 	int virtualPICount = 1;
 	
 	public void createTestPI() {
-		String name = "Virtual Test PI #" + virtualPICount++;
-		LocalDeviceRepresentation virtualTestPI = new LocalDeviceRepresentation(name, 1, oscServer, config);
+		String name     = "Virtual Test PI #" + virtualPICount++;
+        String address  = "127.0.0.1";
+		LocalDeviceRepresentation virtualTestPI = new LocalDeviceRepresentation(name, address, 1, oscServer, config);
 		thePIs.add(virtualTestPI);
 		pisByHostname.put(name, virtualTestPI);
 	}

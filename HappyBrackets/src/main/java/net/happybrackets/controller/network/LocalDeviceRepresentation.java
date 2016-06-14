@@ -18,8 +18,9 @@ public class LocalDeviceRepresentation {
 
 	public long lastTimeSeen;
 	public final String hostname;
+    public final String address;
 	public final int id;
-	private InetSocketAddress addr = null;
+	private InetSocketAddress socket;
 	private final OSCServer server;
 	public final boolean[] groups;
 	private ControllerConfig config;
@@ -28,12 +29,14 @@ public class LocalDeviceRepresentation {
 	
 	Pane gui = null;
 	
-	public LocalDeviceRepresentation(String hostname, int id, OSCServer server, ControllerConfig config) {
-		this.hostname = hostname;
-		this.id = id;
-		this.server = server;
-		this.config = config;
-		groups = new boolean[4];
+	public LocalDeviceRepresentation(String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
+		this.hostname   = hostname;
+        this.address    = addr;
+		this.socket     = new InetSocketAddress(addr, config.getControlToDevicePort());
+		this.id         = id;
+		this.server     = server;
+		this.config     = config;
+		groups          = new boolean[4];
 	}
 
 	public synchronized void send(String msgName, Object... args) {
@@ -41,11 +44,11 @@ public class LocalDeviceRepresentation {
 			return;
 		}
 		OSCMessage msg = new OSCMessage(msgName, args);
-		if(addr == null) {
-			addr = new InetSocketAddress(hostname, config.getControlToDevicePort());
+		if(socket == null) {
+			socket = new InetSocketAddress(hostname, config.getControlToDevicePort());
 		}
 		try {
-			server.send(msg, addr);
+			server.send(msg, socket);
 		} catch (UnresolvedAddressException e) {
 			System.out.println("Unable to send to PI: " + hostname);
 			//e.printStackTrace();
@@ -76,5 +79,6 @@ public class LocalDeviceRepresentation {
 			});
 		}
 	}
-	
+
+
 }

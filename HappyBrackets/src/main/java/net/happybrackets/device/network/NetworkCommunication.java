@@ -100,7 +100,7 @@ public class NetworkCommunication {
 		//set up the controller address
 		System.out.println( "Setting up controller: " + DeviceConfig.getInstance().getControllerHostname() );
 		controller = new InetSocketAddress(
-				DeviceConfig.getInstance().getControllerHostname(),
+				DeviceConfig.getInstance().getControllerAddress(),
 				DeviceConfig.getInstance().getStatusFromDevicePort()
 		);
 		System.out.println( "Controller resolved to address: " + controller );
@@ -110,7 +110,15 @@ public class NetworkCommunication {
 		new Thread() {
 			public void run() {
 				while(true) {
-					sendToController("/PI/alive", new Object[] {DeviceConfig.getInstance().getMyHostName(), Synchronizer.time(), hb.getStatus()});
+					sendToController(
+							"/PI/alive",
+                            new Object[] {
+                                    DeviceConfig.getInstance().getMyHostName(),
+                                    DeviceConfig.getInstance().getMyAddress(),
+                                    Synchronizer.time(),
+                                    hb.getStatus()
+                            }
+                    );
 					try {
 						Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
 					} catch (InterruptedException e) {
