@@ -34,3 +34,4 @@ sudo alsactl store
 # Setup autorun
 wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/rc.local
 sudo mv rc.local /etc/
+chmod +x /etc/rc.local
