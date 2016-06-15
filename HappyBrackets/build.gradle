@@ -47,7 +47,7 @@ shadowJar {
 
 task packDeviceRuntime (type:Zip) {
     destinationDir buildDir //set our output directory
-    archiveName 'HappyBracketsRuntime.zip'  //set the name of our archive
+    archiveName 'HappyBrackets.zip'  //set the name of our archive
 
     //config
     from(rootDir) {
