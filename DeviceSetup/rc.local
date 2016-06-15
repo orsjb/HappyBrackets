@@ -18,6 +18,6 @@ if [ "$_IP" ]; then
 fi
 
 # Autorun HappyBrackets
-“/home/pi/HappyBrackets/scripts/run.sh”
+/home/pi/HappyBrackets/scripts/run.sh
 
 exit 0
