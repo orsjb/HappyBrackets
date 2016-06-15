@@ -4,4 +4,4 @@ Run the below commands from your raspberry pi to setup a new image with HappyBra
 
   wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/setup-image.sh
   
-  sudo bash setup-image.sh
+  bash setup-image.sh
