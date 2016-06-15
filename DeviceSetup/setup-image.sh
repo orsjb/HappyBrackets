@@ -22,7 +22,7 @@ sudo mv interfaces /etc/network/interfaces
 
 # get the happybrackets zipped project folder
 wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBrackets.zip
-unzip HappyBrackets.zip -d HappyBrackets
+unzip HappyBrackets.zip -d ~/HappyBrackets
 rm HappyBrackets.zip
 
 # TODO setup audio if necessary.
@@ -32,4 +32,5 @@ amixer cset numid=1 0
 sudo alsactl store
 
 # Setup autorun
-sudo echo “/home/pi/HappyBrackets/scripts/run.sh” >> /etc/rc.local
+wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/rc.local
+sudo mv rc.local /etc/
