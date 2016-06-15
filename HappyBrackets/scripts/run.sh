@@ -25,6 +25,8 @@ fi
 DIR=`dirname $0`
 cd ${DIR}/..
 
+echo “Running HappyBrackets”
+
 # Run the main app
 # args are bufSize (512), sample rate (44100), bits (16), input channels (0), output channels (1), autostart (true)
 

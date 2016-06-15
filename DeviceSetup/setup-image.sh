@@ -1,6 +1,8 @@
 # Script to setup new pi disc image with HappyBrackets and appropriate details
 
-# run from pi, with an internet connection
+# run from pi, with sudo, with an internet connection
+
+cd
 
 # keep apt-get up to date with mirrors
 sudo apt-get update
@@ -12,14 +14,13 @@ sudo apt-get install netatalk
 # We will skip the wifi driver for now as the Raspi3 has one built in
 
 # get 'interfaces' file and copy it to /etc/network
-wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/interfaces
+wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/interfaces
 sudo mv interfaces /etc/network/interfaces
 
-# clone the github repos to 
-cd 
-mkdir git
-cd git
-git clone git://github.com/orsjb/HappyBrackets.git
+# get the happybrackets zipped project folder
+wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBracketsRuntime.zip
+unzip HappyBracketsRuntime.zip -d HappyBrackets
+rm HappyBracketsRuntime.zip
 
 # TODO setup audio if necessary.
 # set audio output to max volume, well not quite max but close
@@ -28,3 +29,4 @@ amixer cset numid=1 0
 sudo alsactl store
 
 # Setup autorun
+sudo echo “/home/pi/HappyBrackets/scripts/run.sh” >> /etc/rc.local
