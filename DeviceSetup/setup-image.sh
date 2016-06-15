@@ -11,6 +11,9 @@ sudo apt-get update
 sudo apt-get install libnss-mdns
 sudo apt-get install netatalk
 
+# install java 8
+sudo apt-get install oracle-java8-jdk 
+
 # We will skip the wifi driver for now as the Raspi3 has one built in
 
 # get 'interfaces' file and copy it to /etc/network
@@ -18,9 +21,9 @@ wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrac
 sudo mv interfaces /etc/network/interfaces
 
 # get the happybrackets zipped project folder
-wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBracketsRuntime.zip
-unzip HappyBracketsRuntime.zip -d HappyBrackets
-rm HappyBracketsRuntime.zip
+wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBrackets.zip
+unzip HappyBrackets.zip -d HappyBrackets
+rm HappyBrackets.zip
 
 # TODO setup audio if necessary.
 # set audio output to max volume, well not quite max but close

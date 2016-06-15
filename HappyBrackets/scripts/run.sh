@@ -6,6 +6,11 @@
 NEWHOST=`cat /sys/class/net/wlan0/address | sed s/://g`
 OLDHOST=`cat /etc/hostname`
 
+if [ “$NEWHOST” == “” ]
+then
+	NEWHOST=`cat /sys/class/net/eth0/address | sed s/://g`
+fi
+
 # correct format of hostname (pisound-<MAC>)
  
 NEWHOST=pisound-${NEWHOST}
