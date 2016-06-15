@@ -6,6 +6,11 @@
 NEWHOST=`cat /sys/class/net/wlan0/address | sed s/://g`
 OLDHOST=`cat /etc/hostname`
 
+if [ “$NEWHOST” == “” ]
+then
+	NEWHOST=`cat /sys/class/net/eth0/address | sed s/://g`
+fi
+
 # correct format of hostname (pisound-<MAC>)
  
 NEWHOST=pisound-${NEWHOST}
@@ -24,6 +29,8 @@ fi
 
 DIR=`dirname $0`
 cd ${DIR}/..
+
+echo “Running HappyBrackets”
 
 # Run the main app
 # args are bufSize (512), sample rate (44100), bits (16), input channels (0), output channels (1), autostart (true)
