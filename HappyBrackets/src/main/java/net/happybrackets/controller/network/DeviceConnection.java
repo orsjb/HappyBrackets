@@ -108,6 +108,9 @@ public class DeviceConnection {
 				} else {
 					id = newID--;
 				}
+				//force names if useHostname is true
+                if (config.useHostname()) piAddress = piName;
+
 				thisPI = new LocalDeviceRepresentation(piName, piAddress, id, oscServer, config);
 	        	pisByHostname.put(piName, thisPI);
 				final LocalDeviceRepresentation piToAdd = thisPI;

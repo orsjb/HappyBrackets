@@ -38,7 +38,8 @@ public class ControllerMain extends Application {
 		Device.getInstance();		//inits the network stuff
 		config = new ControllerConfig();
 		config = LoadableConfig.load("config/controller-config.json", config);
-    	piConnection = new DeviceConnection(config);
+        if (!config.useHostname()) System.out.println("Use host names is disabled");
+        piConnection = new DeviceConnection(config);
     	
     	//setup controller broadcast
     	try {
