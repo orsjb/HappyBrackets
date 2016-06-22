@@ -18,6 +18,7 @@ import net.happybrackets.controller.gui.GUIManager;
 import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
+import net.happybrackets.core.Device;
 import net.happybrackets.core.Synchronizer;
 import net.happybrackets.core.config.LoadableConfig;
 import org.jetbrains.annotations.NotNull;
@@ -59,6 +60,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         System.out.println("*** HappyBrackets IntelliJ Plugin launching ***");
+        Device.getInstance();   //forces Device's network init to happen
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
         jfxp = new JFXPanel();
         if(!staticSetup) {          //only run this stuff once per JVM
