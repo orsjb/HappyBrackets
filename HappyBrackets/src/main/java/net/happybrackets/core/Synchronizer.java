@@ -29,6 +29,8 @@ public class Synchronizer {
 	private long lastTick;
 	private int stabilityCount = 0;
 
+	private boolean ableToUseMulticast = false;
+
 	private boolean on = true;
 	private boolean verbose = false;
 	private boolean veryverbose = false;
@@ -57,15 +59,17 @@ public class Synchronizer {
 			myMAC = Device.myMAC;
 			//start listening
 			setupListener();
-			System.out.println("Synchronizer is listening.");
-			//setup sender
-			broadcastSocket = new MulticastSocket();
-			broadcastSocket.setTimeToLive(1);
-			//start sending
-			startSending();
-			System.out.println("Synchronizer is sending synch pulses.");
-			//display clock (optional)
-			//displayClock();
+			if(ableToUseMulticast) {
+				System.out.println("Synchronizer is listening.");
+				//setup sender
+				broadcastSocket = new MulticastSocket();
+				broadcastSocket.setTimeToLive(1);
+				//start sending
+				startSending();
+				System.out.println("Synchronizer is sending synch pulses.");
+				//display clock (optional)
+				//displayClock();
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -106,7 +110,9 @@ public class Synchronizer {
 		final MulticastSocket s = new MulticastSocket(LoadableConfig.getInstance().getClockSynchPort());
 		try {
 			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
+			ableToUseMulticast = true;
 		} catch(SocketException e) {
+			e.printStackTrace();
 			System.err.println("Warning: Synchronizer can't use multicast. No synch functionality available in this session.");
 		}
 		//start a listener thread
