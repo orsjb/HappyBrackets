@@ -52,7 +52,10 @@ public abstract class Device {
                     netInterface = favouredInterfaces.get(favouredInterfaces.size() - 1); //get last, this should be a wlan interface if available
                 }
                 else if (operatingSystem.startsWith("Mac OS")) {
+                    favouredInterfaces.sort( (a, b) -> a.getName().compareToIgnoreCase(b.getName()) ); //sort interface by name
                     netInterface = favouredInterfaces.get(0);
+                    //TODO Hardcode en0 as the chosen port (on Mac we insist of WiFi)
+                    netInterface = NetworkInterface.getByName("en0");
                 }
                 else {
                     System.err.println("Operating system " + operatingSystem + " is not expressly handled, defaulting to first favoured interface");

@@ -58,6 +58,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        System.out.println("*** HappyBrackets IntelliJ Plugin launching ***");
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
         jfxp = new JFXPanel();
         if(!staticSetup) {          //only run this stuff once per JVM
@@ -80,6 +81,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             piConnection = new DeviceConnection(config);
             //setup controller broadcast
             try {
+                System.out.println("Starting ControllerAdvertiser");
                 controllerAdvertiser = new ControllerAdvertiser(config);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
@@ -96,7 +98,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     	    piConnection.createTestPI();
     	    piConnection.createTestPI();
             //using synchronizer is optional, TODO: switch to control this, leave it on for now
-            synchronizer = Synchronizer.getInstance();
+//            synchronizer = Synchronizer.getInstance();
             staticSetup = true;
         }
         //TODO: we may want to make a copy of the config so that we can set different aspects here

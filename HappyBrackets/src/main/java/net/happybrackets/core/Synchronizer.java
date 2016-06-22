@@ -112,6 +112,7 @@ public class Synchronizer {
 			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
 			ableToUseMulticast = true;
 		} catch(SocketException e) {
+			e.printStackTrace();
 			System.err.println("Warning: Synchronizer can't use multicast. No synch functionality available in this session.");
 		}
 		//start a listener thread
