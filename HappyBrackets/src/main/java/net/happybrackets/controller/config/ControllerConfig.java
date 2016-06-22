@@ -7,6 +7,7 @@ public class ControllerConfig extends LoadableConfig {
     private String compositionsPath = null;
     private String workingDir;
     private String configDir;
+    private Boolean useHostname;
 
     public String getCompositionsPath() {
         if (compositionsPath != null) {
@@ -47,5 +48,18 @@ public class ControllerConfig extends LoadableConfig {
         singletonInstance = instance;
     }
 
+    public boolean useHostname() {
+        if(useHostname == null) {
+            return true;
+        }
+        return useHostname;
+    }
 
+    @Override
+    public String getMyAddress() {
+        if (useHostname()) {
+            return getMyHostName();
+        }
+        return super.getMyAddress();
+    }
 }
