@@ -191,17 +191,10 @@ public class HB {
 				try {
 					// socket server (listens to incoming classes)
 					ServerSocket server = new ServerSocket(DeviceConfig.getInstance().getCodeToDevicePort());
+					//dynamically loads a class from byte[] data. TODO error if we receive two of the same NON-HBAction classes.
+					DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
 					// start socket server listening loop
 					while (true) {
-
-						/*
-						OB - attempted fix - I've moved the following two lines into the while loop so that the class loader is recreated each time. They were previously just above the while loop.
-						 */
-
-						//dynamically loads a class from byte[] data
-						DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-
-
 						// must reopen socket each time
 						Socket s = server.accept();
 						Class<? extends HBAction> incomingClass = null;
