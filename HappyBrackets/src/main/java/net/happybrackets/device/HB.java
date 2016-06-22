@@ -189,14 +189,21 @@ public class HB {
 		new Thread() {
 			public void run() {
 				try {
-					// socket server (listens to incoming classes)
-					DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-					ServerSocket server = new ServerSocket(DeviceConfig.getInstance().getCodeToDevicePort());
 					// start socket server listening loop
 					while (true) {
+
+						/*
+						OB - attempted fix - I've moved the following two lines into the while loop so that the class loader is recreated each time. They were previously just above the while loop.
+						 */
+
+						//dynamically loads a class from byte[] data
+						DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+						// socket server (listens to incoming classes)
+						ServerSocket server = new ServerSocket(DeviceConfig.getInstance().getCodeToDevicePort());
+
 						// must reopen socket each time
 						Socket s = server.accept();
-						Class<? extends HBAction> pipoClass = null;
+						Class<? extends HBAction> incomingClass = null;
 						try {
 							InputStream input = s.getInputStream();
 							ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -206,22 +213,23 @@ public class HB {
 								data = input.read();
 							}
 							byte[] classData = buffer.toByteArray();
+							//at this stage we have the class data in a byte array
 							Class<?> c = loader.createNewClass(classData);
 							Class<?>[] interfaces = c.getInterfaces();
-							boolean isPIPO = false;
+							boolean isHBActionClass = false;
 							for (Class<?> cc : interfaces) {
 								if (cc.equals(HBAction.class)) {
-									isPIPO = true;
+									isHBActionClass = true;
 									break;
 								}
 							}
-							if (isPIPO) {
-								pipoClass = (Class<? extends HBAction>) c;
-								System.out.println("new HBAction >> " + pipoClass.getName());
+							if (isHBActionClass) {
+								incomingClass = (Class<? extends HBAction>) c;
+								System.out.println("new HBAction >> " + incomingClass.getName());
 								// this means we're done with the sequence, time to recreate
 								// the classloader to avoid duplicate errors
 								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-								status = "Last HBAction: " + pipoClass.getCanonicalName();
+								status = "Last HBAction: " + incomingClass.getCanonicalName();
 							} else {
 								System.out.println("new object (not HBAction) >> " + c.getName());
 							}
@@ -229,10 +237,10 @@ public class HB {
 							System.out.println("Exception Caught trying to read Object from Socket");
 							e.printStackTrace();
 						}
-						if (pipoClass != null) {
+						if (incomingClass != null) {
 							HBAction pipo = null;
 							try {
-								pipo = pipoClass.newInstance();
+								pipo = incomingClass.newInstance();
 								pipo.action(HB.this);
 							} catch (Exception e) {
 								e.printStackTrace(); // catching all exceptions
