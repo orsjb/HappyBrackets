@@ -75,7 +75,7 @@ public abstract class Device {
                     netInterface = NetworkInterface.getByIndex(0); //Maybe the loopback?
                 }
             }
-
+			
             //report back
             System.out.println("Selected interface: " + netInterface.getName() + ", " + netInterface.getDisplayName());
             tmpHostname = netInterface.getInetAddresses().nextElement().getHostName();
