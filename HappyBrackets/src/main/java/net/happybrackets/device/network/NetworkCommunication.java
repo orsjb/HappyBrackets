@@ -7,6 +7,7 @@ import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.config.LocalConfigManagement;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -82,6 +83,15 @@ public class NetworkCommunication {
 						hb.fadeOutClearSound((Float)msg.getArg(0));
 					} else if(msg.getName().equals("/PI/bleep")) {
 						hb.testBleep();
+					} else if ( msg.getName().equals("/PI/config/wifi") && msg.getArgCount() == 2) {
+                        //TODO: add interfaces path to device config
+                        boolean status = LocalConfigManagement.updateInterfaces(
+                                "/etc/network/interfaces",
+                                (String) msg.getArg(0),
+                                (String) msg.getArg(1)
+                        );
+                        if (status) System.out.println("Updated interfaces file");
+                        else System.err.println("Unable to update interfaces file");
 					}
 					//all other messages getInstance forwarded to delegate listeners
 					synchronized(listeners) {
