@@ -56,7 +56,7 @@ public class Synchronizer {
 		log = new Hashtable<Long, Map<String, long[]>>();
 		try {
 			//basic init getInstance my MAC address
-			myMAC = Device.myMAC;
+			myMAC = Device.getInstance().myMAC;
 			//start listening
 			setupListener();
 			if(ableToUseMulticast) {
