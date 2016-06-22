@@ -20,7 +20,7 @@ public class HappyBracketsHelloWorld implements HBAction {
 
     @Override
     public void action(HB hb) {
-        WavePlayer wp = new WavePlayer(hb.ac, 500, Buffer.SAW);
+        WavePlayer wp = new WavePlayer(hb.ac, 1000, Buffer.SINE);
         Envelope e = new Envelope(hb.ac, 0.1f);
         Gain g = new Gain(hb.ac, 1, e);
         e.addSegment(0, 5000, new KillTrigger(g));

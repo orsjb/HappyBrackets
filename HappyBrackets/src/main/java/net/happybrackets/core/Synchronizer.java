@@ -109,6 +109,7 @@ public class Synchronizer {
 	private void setupListener() throws IOException {
 		final MulticastSocket s = new MulticastSocket(LoadableConfig.getInstance().getClockSynchPort());
 		try {
+			s.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferedInterface));
 			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
 			ableToUseMulticast = true;
 		} catch(SocketException e) {
