@@ -6,14 +6,23 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
 
-public abstract class Device {
+public class Device {
 
-	public static final String myHostname;						//the hostname for this PI (wifi)
-	public static final String myIP;
-	public static final String myMAC;							//the wlan MAC for this PI (wifi)
-	public static final String preferedInterface;
+	public final String myHostname;						//the hostname for this PI (wifi)
+	public final String myIP;
+	public final String myMAC;							//the wlan MAC for this PI (wifi)
+	public final String preferedInterface;
 
-	static {
+    private static Device singleton = null;
+
+    public static Device getInstance() {
+        if(singleton == null) {
+            singleton = new Device();
+        }
+        return singleton;
+    }
+
+	private Device() {
 		String tmpHostname = null;
         String tmpIP = null;
 		String tmpMAC = null;
@@ -171,11 +180,5 @@ public abstract class Device {
 		}
 		return true;
 	}
-	
-	public static void main(String[] args) {
-		//static code above will run
-		@SuppressWarnings("unused")
-		String x = Device.myHostname;
-	}
-	
+
 }

@@ -189,6 +189,8 @@ public class HB {
 		new Thread() {
 			public void run() {
 				try {
+					// socket server (listens to incoming classes)
+					ServerSocket server = new ServerSocket(DeviceConfig.getInstance().getCodeToDevicePort());
 					// start socket server listening loop
 					while (true) {
 
@@ -198,8 +200,7 @@ public class HB {
 
 						//dynamically loads a class from byte[] data
 						DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-						// socket server (listens to incoming classes)
-						ServerSocket server = new ServerSocket(DeviceConfig.getInstance().getCodeToDevicePort());
+
 
 						// must reopen socket each time
 						Socket s = server.accept();

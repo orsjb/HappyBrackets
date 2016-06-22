@@ -12,9 +12,9 @@ import net.happybrackets.core.Device;
 public interface EnvironmentConfig {
 
 	//hosts and ports for network messages
-	default public String getMyHostName() 				{ return Device.myHostname;}
-    default public String getMyAddress()                { return Device.myIP; }
-	default public String getMyInterface() 				{ return Device.preferedInterface; }	
+	default public String getMyHostName() 				{ return Device.getInstance().myHostname;}
+    default public String getMyAddress()                { return Device.getInstance().myIP; }
+	default public String getMyInterface() 				{ return Device.getInstance().preferedInterface; }
 	default public String getMulticastAddr()			{ return "225.2.2.5"; }		//multicast address used for both synch and broadcast messages
 	default public int getBroadcastPort() 				{ return 2222; }			//broadcast port (not currently OSC)
 	default public int getStatusFromDevicePort() 		{ return 2223; }			//OSC status messages from device to controller

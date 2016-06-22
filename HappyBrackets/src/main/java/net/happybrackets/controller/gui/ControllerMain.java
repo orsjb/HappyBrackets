@@ -6,6 +6,7 @@ import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.config.ControllerConfig;
+import net.happybrackets.core.Device;
 import net.happybrackets.core.config.LoadableConfig;
 import net.happybrackets.core.Synchronizer;
 import javafx.application.Application;
@@ -34,7 +35,8 @@ public class ControllerMain extends Application {
 	
     @Override 
     public void start(Stage stage) {
-    	config = new ControllerConfig();
+		Device.getInstance();		//inits the network stuff
+		config = new ControllerConfig();
 		config = LoadableConfig.load("config/controller-config.json", config);
     	piConnection = new DeviceConnection(config);
     	

@@ -17,7 +17,7 @@ public interface ControllerDiscoverer {
 		String controllerHostname = null;
 		String controllerAddress = null;
 		try ( MulticastSocket clientSocket = new MulticastSocket(multicastPort) ) {
-			clientSocket.setNetworkInterface(NetworkInterface.getByName(Device.preferedInterface));
+			clientSocket.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferedInterface));
 			clientSocket.joinGroup( InetAddress.getByName(multicastAddress) );
 			while (controllerHostname == null || controllerAddress == null) {
 				DatagramPacket msgPacket = new DatagramPacket(buf, buf.length);

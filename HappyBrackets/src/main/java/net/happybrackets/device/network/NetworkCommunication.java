@@ -52,7 +52,7 @@ public class NetworkCommunication {
 				//note technically messages can be sent from anyone, so ignore messages being sent from self...
 				//TODO questionable approach, is this escape needed?
 				if(src instanceof InetSocketAddress && 
-						((InetSocketAddress)src).getHostName().contains(Device.myHostname.split("[.]")[0])) {
+						((InetSocketAddress)src).getHostName().contains(DeviceConfig.getInstance().getMyHostName().split("[.]")[0])) {
 					return;
 				}
 				if(msg.getName().equals("/PI/set_id")) {
