@@ -110,20 +110,20 @@ public class Device {
 				}
 				tmpMAC = builder.substring(0, builder.length());
 			}
-//			//first attempt at hostname is to query the /etc/hostname file which should have
-//			//renamed itself (on the PI) before this Java code runs
-//			try {
-//				Scanner s = new Scanner(new File("/etc/hostname"));
-//				String line = s.next();
-//				if (line != null && !line.isEmpty() && !line.endsWith("-")) {
-//					tmpHostname = line;
-//				}
-//				s.close();
-//			} catch(Exception e) {/*Swallow this exception*/}
-//			//if we don't have the mac derive the MAC from the hostname
-//			if(tmpMAC == null && tmpHostname != null) {
-//				tmpMAC = tmpHostname.substring(8, 20);
-//			}
+			//first attempt at hostname is to query the /etc/hostname file which should have
+			//renamed itself (on the PI) before this Java code runs
+			try {
+				Scanner s = new Scanner(new File("/etc/hostname"));
+				String line = s.next();
+				if (line != null && !line.isEmpty() && !line.endsWith("-")) {
+					tmpHostname = line;
+				}
+				s.close();
+			} catch(Exception e) {/*Swallow this exception*/}
+			//if we don't have the mac derive the MAC from the hostname
+			if(tmpMAC == null && tmpHostname != null) {
+				tmpMAC = tmpHostname.substring(8, 20);
+			}
 //
 //			//If everything still isn't working lets try via our interface for an IP address
 //			if (tmpHostname == null) {
