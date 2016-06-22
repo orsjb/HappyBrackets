@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
 
@@ -22,29 +23,60 @@ public abstract class Device {
 		String tmpPreferedInterface = null;
 		try {
 			NetworkInterface netInterface;
-			System.out.println("Detected OS: " + System.getProperty("os.name"));
+			String operatingSystem = System.getProperty("os.name");
+			System.out.println("Detected OS: " + operatingSystem);
 
             System.out.println("Interfaces:");
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             String favouriteInterfaceName = null;
+            ArrayList<NetworkInterface> favouredInterfaces = new ArrayList<>();
             while (interfaces.hasMoreElements()) {
                 netInterface = interfaces.nextElement();
                 // Windows by default has a lot of extra interfaces,
                 //  lets at least try and getInstance a real interface...
                 if (isViableNetworkInterface(netInterface)) {
-                    favouriteInterfaceName = netInterface.getName();
-                    System.out.println("I like: " + favouriteInterfaceName + ", " + netInterface.getDisplayName());
+                    //collect all viable interfaces
+                    favouredInterfaces.add(netInterface);
+                    //favouriteInterfaceName = netInterface.getName();
+                    //System.out.println("I like: " + favouriteInterfaceName + ", " + netInterface.getDisplayName());
                 }
                 else {
                     System.out.println("Ignored: " + netInterface.getName() + ", " + netInterface.getDisplayName());
                 }
             }
-            if (favouriteInterfaceName != null ) {
-                netInterface = NetworkInterface.getByName(favouriteInterfaceName);
+            if ( !favouredInterfaces.isEmpty() ) {
+                System.out.println("Selecting from valid interfaces:");
+                favouredInterfaces.forEach((i) -> System.out.println("\t" + i.getName() + ", " + i.getDisplayName()));
+
+                if (favouredInterfaces.size() == 1) {
+                    netInterface = favouredInterfaces.get(0);
+                } else if (operatingSystem.startsWith("Windows") || operatingSystem.startsWith("Linux")) {
+                    favouredInterfaces.sort( (a, b) -> a.getName().compareToIgnoreCase(b.getName()) ); //sort interface by name
+                    netInterface = favouredInterfaces.get(favouredInterfaces.size() - 1); //get last, this should be a wlan interface if available
+                }
+                else if (operatingSystem.startsWith("Mac OS")) {
+                    netInterface = favouredInterfaces.get(0);
+                }
+                else {
+                    System.err.println("Operating system " + operatingSystem + " is not expressly handled, defaulting to first favoured interface");
+                    netInterface = favouredInterfaces.get(0);
+                }
             }
             else {
-                netInterface = NetworkInterface.getByName("wlan0"); // take a stab in the dark...
+                // take a stab in the dark...
+                if (operatingSystem.startsWith("Linux") || operatingSystem.startsWith("Windows")) {
+                    netInterface = NetworkInterface.getByName("wlan0");
+                }
+                else if (operatingSystem.startsWith("Mac OS")) {
+                    netInterface = NetworkInterface.getByName("en1");
+                }
+                else {
+                    System.err.println("Unable to determine a network interface!");
+                    netInterface = NetworkInterface.getByIndex(0); //Maybe the loopback?
+                }
             }
+
+            //report back
             System.out.println("Selected interface: " + netInterface.getName() + ", " + netInterface.getDisplayName());
             tmpHostname = netInterface.getInetAddresses().nextElement().getHostName();
             tmpIP = netInterface.getInetAddresses().nextElement().getHostAddress();
