@@ -1,10 +1,7 @@
 package net.happybrackets.core;
 
 import java.io.File;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
@@ -78,29 +75,17 @@ public abstract class Device {
 			
             //report back
             System.out.println("Selected interface: " + netInterface.getName() + ", " + netInterface.getDisplayName());
-            tmpHostname = netInterface.getInetAddresses().nextElement().getHostName();
-            tmpIP = netInterface.getInetAddresses().nextElement().getHostAddress();
 
-//			if (System.getProperty("os.name").startsWith("Mac OS")) {
-//				netInterface = NetworkInterface.getByName("en1");
-//				//if you can't getInstance the wlan then getInstance the ethernet mac address:
-//				if(netInterface == null) {
-//					netInterface = NetworkInterface.getByName("en0");
-//				}
-//                tmpHostname = netInterface.getInetAddresses().nextElement().getHostName();
-//                tmpIP = netInterface.getInetAddresses().nextElement().getHostAddress();
-//			}
-//			else if (System.getProperty("os.name").startsWith("Windows")) {
-//
-//			}
-//			else {
-//				netInterface = NetworkInterface.getByName("wlan0");
-//				if (netInterface == null) {
-//					netInterface = NetworkInterface.getByName("eth0");
-//				}
-//                tmpHostname = netInterface.getInetAddresses().nextElement().getHostName();
-//                tmpIP = netInterface.getInetAddresses().nextElement().getHostAddress();
-//			}
+			//Addresses
+            ArrayList<InterfaceAddress> addresses = new ArrayList<>();
+            netInterface.getInterfaceAddresses().forEach( (a) -> addresses.add(a) );
+            addresses.sort( (a, b) -> a.getAddress().getHostAddress().compareTo(b.getAddress().getHostAddress()) );
+
+            System.out.println("Available interface addresses:");
+            addresses.forEach( (a) -> System.out.println("\t" + a.getAddress().getHostAddress() ) );
+
+            tmpHostname = addresses.get(0).getAddress().getHostName();
+            tmpIP       = addresses.get(0).getAddress().getHostAddress();
 
 			if(netInterface != null) {
 				//collect our chosen network interface name
@@ -113,47 +98,41 @@ public abstract class Device {
 				}
 				tmpMAC = builder.substring(0, builder.length());
 			}
-			//first attempt at hostname is to query the /etc/hostname file which should have
-			//renamed itself (on the PI) before this Java code runs
-			try {
-				Scanner s = new Scanner(new File("/etc/hostname"));
-				String line = s.next();
-				if (line != null && !line.isEmpty() && !line.endsWith("-")) {
-					tmpHostname = line;
-				}
-				s.close();
-			} catch(Exception e) {/*Swallow this exception*/}
-			//if we don't have the mac derive the MAC from the hostname
-			if(tmpMAC == null && tmpHostname != null) {
-				tmpMAC = tmpHostname.substring(8, 20);
-			}
-			//if we don't have the hostname getInstance by traditional means
-			// Windows seems to like this one.
-			if(tmpHostname == null) {
-				try {
-					tmpHostname = InetAddress.getLocalHost().getHostName();
-				}
-				catch (UnknownHostException e) {
-					System.out.println("Unable to find host name, resorting to IP Address");
-					e.printStackTrace();
-				}
-			}
-			
-			//If everything still isn't working lets try via our interface for an IP address
-			if (tmpHostname == null) {
-				String address = netInterface.getInetAddresses().nextElement().getHostAddress();
-				//strip off trailing interface name if present
-				if (address.contains("%")) {
-					tmpHostname = address.split("%")[0];
-				}
-				else {
-					tmpHostname = address;
-				}
-			}
+//			//first attempt at hostname is to query the /etc/hostname file which should have
+//			//renamed itself (on the PI) before this Java code runs
+//			try {
+//				Scanner s = new Scanner(new File("/etc/hostname"));
+//				String line = s.next();
+//				if (line != null && !line.isEmpty() && !line.endsWith("-")) {
+//					tmpHostname = line;
+//				}
+//				s.close();
+//			} catch(Exception e) {/*Swallow this exception*/}
+//			//if we don't have the mac derive the MAC from the hostname
+//			if(tmpMAC == null && tmpHostname != null) {
+//				tmpMAC = tmpHostname.substring(8, 20);
+//			}
+//
+//			//If everything still isn't working lets try via our interface for an IP address
+//			if (tmpHostname == null) {
+//				String address = netInterface.getInetAddresses().nextElement().getHostAddress();
+//				//strip off trailing interface name if present
+//				if (address.contains("%")) {
+//					tmpHostname = address.split("%")[0];
+//				}
+//				else {
+//					tmpHostname = address;
+//				}
+//			}
 
             //strip off trailing interface name if present
             if (tmpIP.contains("%")) {
                 tmpIP = tmpIP.split("%")[0];
+            }
+
+            //strip off trailing interface name if present
+            if (tmpHostname.contains("%")) {
+                tmpHostname = tmpHostname.split("%")[0];
             }
 
 		} catch (Exception e) {
