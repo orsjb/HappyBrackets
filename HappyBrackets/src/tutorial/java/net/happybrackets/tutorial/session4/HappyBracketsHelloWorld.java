@@ -1,4 +1,4 @@
-package net.happybrackets.tutorial.session5;
+package net.happybrackets.tutorial.session4;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.events.KillTrigger;
