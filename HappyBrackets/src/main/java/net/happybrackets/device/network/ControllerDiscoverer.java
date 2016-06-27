@@ -27,6 +27,9 @@ public interface ControllerDiscoverer {
 					controllerHostname = msgParts[1];
                     controllerAddress = msgParts[3];
 				}
+				else {
+					System.err.println("recieved malformed controller discovery packet!");
+				}
 			}
 		}
 		catch (IOException ex) {

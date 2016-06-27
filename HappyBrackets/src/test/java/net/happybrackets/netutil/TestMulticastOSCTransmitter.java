@@ -12,38 +12,64 @@ public class TestMulticastOSCTransmitter {
 
     public static void main(String[] args) throws IOException {
 
-        MulticastSocket ms = new MulticastSocket(5002);
-        ms.joinGroup(InetAddress.getByName("225.2.2.5")); //<--- getting "can't assign requested address error here.
+        int mcPort = 50023;
+        String mcGroup = "225.2.2.7";
+
+        MulticastSocket ms = new MulticastSocket(mcPort);
+        ms.setNetworkInterface(NetworkInterface.getByName("eth3"));
+        ms.joinGroup(InetAddress.getByName(mcGroup)); //<--- getting "can't assign requested address error here.
         ms.setTimeToLive(1);
 
-        MulticastOSCTransmitter transmitter = new MulticastOSCTransmitter(ms);
+        MulticastOSCTransmitter transmitter = new MulticastOSCTransmitter(ms, mcGroup, mcPort);
         transmitter.connect();
 
 //        System.exit(0);
 
         new Thread() {
             int count = 0;
+
             public void run() {
-                while(true) {
+                while (true) {
                     try {
                         transmitter.send(new OSCMessage("tick_" + count++));
                         Thread.sleep(1000);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
         }.start();
 
-        //create the listener
-        OSCServer server = OSCServer.newUsing(OSCServer.UDP, 5002);
-        server.start();
-        server.addOSCListener(new OSCListener() {
+        MulticastOSCReceiver mcListener = new MulticastOSCReceiver(ms, mcGroup, mcPort);
+//        mcListener.run();
+        mcListener.addOSCListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-                System.out.println("Received message: " + msg.getName());
+                System.out.println(msg.getName());
             }
         });
+        mcListener.startListening();
+
+//        //create the listener
+//        OSCServer server = OSCServer.newUsing(OSCServer.UDP, mcPort);
+//        server.start();
+//        server.addOSCListener(new OSCListener() {
+//            @Override
+//            public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
+//                System.out.println("Received message: " + msg.getName());
+//            }
+//        });
+
+        //test larger message
+        // limit appears to be set at 8192 bytes
+        // this includes the overhead for the path, ',' separators, null padding and type string.
+        String testMessage = "This is a long test message, I repeat: ";
+        String longMessage = "";
+        for (int i = 0; i < 8187; i++) {
+            longMessage += testMessage.charAt(i % testMessage.length());
+        }
+
+        transmitter.send(new OSCMessage(longMessage));
 
 
     }

@@ -3,10 +3,7 @@ package net.happybrackets.netutil;
 import de.sciss.net.*;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
-import java.net.SocketAddress;
+import java.net.*;
 import java.nio.BufferOverflowException;
 import java.nio.channels.SelectableChannel;
 
@@ -15,11 +12,12 @@ import java.nio.channels.SelectableChannel;
  */
 public class MulticastOSCTransmitter extends OSCTransmitter {
 
-    boolean connected = false;
+    boolean         connected = false;
     MulticastSocket ms;
 
-    public MulticastOSCTransmitter(MulticastSocket ms) {
-        this(OSCPacketCodec.getDefaultCodec(), OSCChannel.UDP, null, false);
+
+    public MulticastOSCTransmitter(MulticastSocket ms, String group, int port) {
+        this(OSCPacketCodec.getDefaultCodec(), OSCChannel.UDP, new InetSocketAddress(group, port) , false);
         this.ms = ms;
     }
 
@@ -59,7 +57,12 @@ public class MulticastOSCTransmitter extends OSCTransmitter {
                 }
                 byte[] b = new byte[byteBuf.remaining()];
                 byteBuf.get(b);
-                ms.send(new DatagramPacket(b, b.length));
+                if (target == null) {
+                    ms.send(new DatagramPacket(b, b.length, localAddress.getAddress(), localAddress.getPort()));
+                }
+                else {
+                    ms.send(new DatagramPacket(b, b.length, target));
+                }
             }
         catch( BufferOverflowException e1 ) {
             throw new OSCException( OSCException.BUFFER,
