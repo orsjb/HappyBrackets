@@ -57,7 +57,9 @@ public class MulticastOSCTransmitter extends OSCTransmitter {
                         byteBuf.flip();
                     }
                 }
-                ms.send(new DatagramPacket(byteBuf.array(), byteBuf.array().length));
+                byte[] b = new byte[byteBuf.remaining()];
+                byteBuf.get(b);
+                ms.send(new DatagramPacket(b, b.length));
             }
         catch( BufferOverflowException e1 ) {
             throw new OSCException( OSCException.BUFFER,
@@ -67,7 +69,7 @@ public class MulticastOSCTransmitter extends OSCTransmitter {
 
     @Override
     public void send(OSCPacketCodec c, OSCPacket p) throws IOException {
-        send(c, p, target);
+        send(c, p, null);
     }
 
     @Override

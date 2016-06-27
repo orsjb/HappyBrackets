@@ -16,9 +16,10 @@ public class TestMulticastOSCTransmitter {
         ms.joinGroup(InetAddress.getByName("225.2.2.5")); //<--- getting "can't assign requested address error here.
         ms.setTimeToLive(1);
 
-
         MulticastOSCTransmitter transmitter = new MulticastOSCTransmitter(ms);
         transmitter.connect();
+
+//        System.exit(0);
 
         new Thread() {
             int count = 0;
