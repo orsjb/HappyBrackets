@@ -18,6 +18,14 @@ package net.happybrackets.device.sensors;
  *
  */
 
+/***************
+ * Adapted for the Happy brackets project by Sam Ferguson (2016).
+ *
+ * We will return configuration information and scaling information so
+ * this sensor can be compared to others.
+ *
+ ***************/
+
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
@@ -26,7 +34,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class HTS221pi4j {
+public class LPS25H {
 
     public static final byte LPS25H_ADDRESS = 0x5c;
 
@@ -95,30 +103,33 @@ public class HTS221pi4j {
     private LPS25HControlRegistry1 resetAz = LPS25HControlRegistry1.RESETAZ_DISABLE;
     private LPS25HControlRegistry1 sim = LPS25HControlRegistry1.SIM_4WIRE;
 
-
+    boolean debug = true;
     I2CDevice device;
     I2CBus bus;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
+        LPS25H sense = new LPS25H(LPS25H_ADDRESS);
 
-        // this address found from
-        HTS221pi4j sense = new HTS221pi4j((byte) 0x5f);
+        while (true) {
 
-        double tempVal = sense.readTemperature();
-        double pressureVal = sense.readPressure();
+            double tempVal = sense.readTemperature();
+            double pressureVal = sense.readPressure();
+            System.out.println("temp: " + tempVal + " pressure: " + pressureVal);
 
-
-        try {
-            Thread.sleep(1000);                 //1000 milliseconds is one second.
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
+            try {
+                Thread.sleep(1000);                 //1000 milliseconds is one second.
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
         }
-
     }
 
-    public HTS221pi4j(byte address) throws IOException {
-        bus = I2CFactory.getInstance(I2CBus.BUS_1);
+    public LPS25H(byte address) throws Exception {
+        bus = I2CFactory.getInstance(1);
+        if (debug){ System.out.println("bus: " + bus.toString());}
         device = bus.getDevice(address);
+        doStart();
+        if (debug){ System.out.println("device: " + device.toString());}
         buffer = ByteBuffer.allocate(4);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
     }
@@ -146,17 +157,20 @@ public class HTS221pi4j {
     }
 
     private double readPressure() throws IOException {
+        //device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
         device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
+
         buffer.put(3, (byte) 0);
         int PRESS_OUT = buffer.getInt(0);
-        System.out.println("DEBUG: PRESS_OUT  : " + PRESS_OUT);
+        System.out.println("DEBUG: PRESSURE_OUT  : " + PRESS_OUT);
         double press = (PRESS_OUT / DOUBLE_4096_0);
-        System.out.println("DEBUG: PRESS_OUT (hPa) : " + press);
+        System.out.println("DEBUG: PRESSURE_OUT (hPa) : " + press);
         return press;
 
     }
 
     private double readTemperature() throws IOException {
+        //device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short TEMP_OUT = buffer.getShort(0);
         System.out.println("DEBUG: TEMP_OUT  : " + TEMP_OUT);

@@ -8,7 +8,7 @@ import java.util.Set;
  */
 public abstract class Sensor {
 
-    //TODO correct use of generics / type parameterisation with the lister set.
+    //TODO correct use of generics / type parameterisation with the listener set.
 
     protected final Set<SensorListener> listeners = new HashSet<>();
 
