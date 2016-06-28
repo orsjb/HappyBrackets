@@ -2,18 +2,32 @@ package net.happybrackets.device.misc_tests;
 
 import net.beadsproject.beads.data.DataBead;
 import net.happybrackets.device.sensors.HTS221;
+import net.happybrackets.device.sensors.SensorListener;
 
 public class HTS221Test {
 
+    static DataBead senseDB;
+    static DataBead nameDB;
 
     public static void main(String[] args) throws Exception {
 
-        // Test instantiation of the sensors
-
         HTS221 sense = new HTS221();
-        DataBead senseDB;
-        senseDB = sense.getData();
-        System.out.println(senseDB.values());
+        sense.addListener(new SensorListener() {
+
+            @Override
+            public void getData(DataBead db){
+                senseDB = db;
+            }
+            @Override
+            public void getSensor(DataBead db){
+                nameDB = db;
+            }
+        });
+
+        sense.update();
+
+        System.out.println(senseDB);
+        System.out.println(nameDB);
 
     }
 

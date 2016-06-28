@@ -45,7 +45,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 
-public final class HTS221 implements SensorListener{
+public final class HTS221 extends Sensor {
 
     //private static final transient Logger LOG = LoggerFactory.getLogger(HTS221Consumer.class);
 
@@ -102,6 +102,8 @@ public final class HTS221 implements SensorListener{
     private HTS221ControlRegistry1 odr = HTS221ControlRegistry1.ODR_12DOT5_HZ;
     private HTS221ControlRegistry1 pd = HTS221ControlRegistry1.PD_ACTIVE;
 
+    DataBead db2 = new DataBead();
+
     /**
      * We use the same registry
      */
@@ -115,7 +117,8 @@ public final class HTS221 implements SensorListener{
     // this is a simple test of the functionality.
 
         while (true) {
-            HTS221 sense = new HTS221(HTS221_ADDRESS);
+            HTS221 sense = new HTS221();
+
             double pressureVal = sense.getHumidity();
             double tempVal = sense.readTemperature();
 
@@ -127,24 +130,30 @@ public final class HTS221 implements SensorListener{
         }
     }
 
-
-    public DataBead getData() throws IOException {
-
-        DataBead db = new DataBead();
-        db.put("Humidity", this.getHumidity());
-        db.put("Temperature", this.readTemperature());
-        return db;
+    public String getSensorName(){
+        return "HTS221";
     }
 
-    public DataBead getSensor() throws IOException {
+    public void update() throws IOException {
 
-        DataBead db = new DataBead();
-        db.put("Model", "HTS221");
-        db.put("Manufacturer", "ST MICROELECTRONICS");
-        return db;
+        for (SensorListener sListener: listeners){
+            SensorListener sl = (SensorListener) sListener;
+
+            DataBead db = new DataBead();
+            db.put("Humidity",this.getHumidity());
+            db.put("Temperature", this.readTemperature());
+            sl.getData(db);
+
+            sl.getSensor(db2);
+        }
     }
+
+
 
     public HTS221() throws Exception {
+
+        db2.put("Name","HTS221");
+        db2.put("Manufacturer", "ST Microelectronics");
 
         bus = I2CFactory.getInstance(I2CBus.BUS_1);
         device = bus.getDevice(HTS221_ADDRESS);
@@ -170,6 +179,8 @@ public final class HTS221 implements SensorListener{
 
         temperatureCalibration();
         humidityCalibration();
+
+        update();
 
     }
 
