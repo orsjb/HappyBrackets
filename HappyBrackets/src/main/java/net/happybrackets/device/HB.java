@@ -20,7 +20,7 @@ import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
-import net.happybrackets.core.OLDBroadcastManager;
+import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
@@ -56,7 +56,7 @@ public class HB {
 
 	// network comms stuff
 	public final NetworkCommunication controller;
-	public final OLDBroadcastManager broadcast;
+	public final BroadcastManager broadcast;
 	public final Synchronizer synch;
 
 	/**
@@ -84,7 +84,7 @@ public class HB {
 		sensors.put("mu", new MiniMU());
 		// start network connection
 		controller = new NetworkCommunication(this);
-		broadcast = new OLDBroadcastManager();
+		broadcast = new BroadcastManager(DeviceConfig.getInstance());	//TODO is this singleton approach good?
 		synch = Synchronizer.getInstance();
 		// start listening for code
 		startListeningForCode();

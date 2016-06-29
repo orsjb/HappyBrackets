@@ -1,5 +1,6 @@
 package net.happybrackets.tutorial.session7;
 
+import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Sample;
@@ -12,6 +13,8 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.network.NetworkCommunication;
+
+import java.net.SocketAddress;
 
 /**
  * Created by ollie on 24/06/2016.
@@ -60,8 +63,15 @@ public class CodeTask7_3 implements HBAction {
                     hb.sound(g);
                     e.addSegment(0, 100, new KillTrigger(g));
                     //send message
-                    hb.broadcast.broadcast("/ping");
+                    hb.broadcast.broadcast(new OSCMessage("/ping"));
                 }
+            }
+        });
+        //also listen for broadcasted network messages
+        hb.broadcast.addBroadcastListener(new OSCListener() {
+            @Override
+            public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
+                System.out.println("Broadcast message received: " + msg.getName());
             }
         });
 
