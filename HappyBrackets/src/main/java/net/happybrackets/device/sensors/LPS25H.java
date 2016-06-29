@@ -29,12 +29,13 @@ package net.happybrackets.device.sensors;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import net.beadsproject.beads.data.DataBead;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class LPS25H {
+public class LPS25H  extends Sensor{
 
     public static final byte LPS25H_ADDRESS = 0x5c;
 
@@ -106,9 +107,10 @@ public class LPS25H {
     boolean debug = true;
     I2CDevice device;
     I2CBus bus;
+    DataBead db2 = new DataBead();
 
     public static void main(String[] args) throws Exception {
-        LPS25H sense = new LPS25H(LPS25H_ADDRESS);
+        LPS25H sense = new LPS25H();
 
         while (true) {
 
@@ -124,14 +126,39 @@ public class LPS25H {
         }
     }
 
-    public LPS25H(byte address) throws Exception {
+    public LPS25H() throws Exception {
+
+        db2.put("Name","LPS25H");
+        db2.put("Manufacturer", "ST Microelectronics");
+
         bus = I2CFactory.getInstance(1);
         if (debug){ System.out.println("bus: " + bus.toString());}
-        device = bus.getDevice(address);
+        device = bus.getDevice(LPS25H_ADDRESS);
         doStart();
         if (debug){ System.out.println("device: " + device.toString());}
         buffer = ByteBuffer.allocate(4);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
+    }
+
+
+
+    public String getSensorName(){
+        return "LPS25H";
+    }
+
+    public void update() throws IOException {
+
+        for (SensorListener sListener: listeners){
+            SensorListener sl = (SensorListener) sListener;
+
+            DataBead db = new DataBead();
+            db.put("Pressure",this.readPressure());
+            db.put("Temperature", this.readTemperature());
+
+            sl.getData(db);
+            sl.getSensor(db2);
+
+        }
     }
 
     protected void doStart() throws Exception {

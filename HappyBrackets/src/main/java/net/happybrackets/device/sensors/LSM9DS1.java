@@ -25,6 +25,7 @@ package net.happybrackets.device.sensors;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import net.beadsproject.beads.data.DataBead;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -34,7 +35,7 @@ import java.nio.ByteBuffer;
 //import org.slf4j.LoggerFactory;
 
 
-public class LSM9DS1 {
+public class LSM9DS1 extends Sensor{
 	
 	//private static final Logger //s_logger.error = LoggerFactory.getLogger(LSM9DS1.class);
 
@@ -177,12 +178,12 @@ public class LSM9DS1 {
 	public static final float COMPASS_ELLIPSOID_CORR_32   = -0.002746F;
 	public static final float COMPASS_ELLIPSOID_CORR_33   = 0.980103F;
 
-	private static LSM9DS1 imuSensor = null;
 	private static I2CBus bus;
-	private static I2CDevice accI2CDevice ;
-	private static I2CDevice magI2CDevice ;
-    boolean debug = false;
-    static boolean debugS = false;
+	private static I2CDevice accI2CDevice;
+	private static I2CDevice magI2CDevice;
+    private static boolean debug = false;
+    private static boolean debugS = true;
+    DataBead db2 = new DataBead();
 
     private float[] previousAcceleration = {0F, 0F, 0F};
 	private float gyroBiasX;
@@ -203,16 +204,16 @@ public class LSM9DS1 {
 	public static void main(String[] args) throws Exception {
 
 		// this address found from
-		LSM9DS1 imu = new LSM9DS1(LSM9DS1_ACCADDRESS, LSM9DS1_MAGADDRESS);
+		LSM9DS1 imu = new LSM9DS1();
 		while (true) {
 
 			float[] accVal = imu.getAccelerometerRaw();
 			float[] gyrVal = imu.getGyroscopeRaw();
             float[] magVal = imu.getCompassRaw();
             if (debugS) {
-                System.out.println(String.format("Acc: %.6f %.6f %.6f ", accVal[0], accVal[1], accVal[2]));
-                System.out.println(String.format("Gyr: %.6f %.6f %.6f ", gyrVal[0], gyrVal[1], gyrVal[2]));
-                System.out.println(String.format("Mag: %.6f %.6f %.6f ", magVal[0], magVal[1], magVal[2]));
+                //System.out.println(String.format("Acc: %04.6f %04.6f %04.6f ", accVal[0], accVal[1], accVal[2]));
+                System.out.println(String.format("Gyr: %04.6f %04.6f %04.6f ", gyrVal[0], gyrVal[1], gyrVal[2]));
+                //System.out.println(String.format("Mag: %04.6f %04.6f %04.6f ", magVal[0], magVal[1], magVal[2]));
             }
             try {
 				Thread.sleep(100);
@@ -223,11 +224,13 @@ public class LSM9DS1 {
 	}
 
 
-	private LSM9DS1(int accAddress, int magAddress) throws IOException {
+	public LSM9DS1() throws IOException {
 
-		bus = I2CFactory.getInstance(I2CBus.BUS_1);
-		accI2CDevice = bus.getDevice(accAddress);
-		magI2CDevice = bus.getDevice(magAddress);
+        db2.put("Name",this.getSensorName());
+        db2.put("Manufacturer","ST MicroElectronics");
+        bus = I2CFactory.getInstance(I2CBus.BUS_1);
+		accI2CDevice = bus.getDevice(LSM9DS1_ACCADDRESS);
+		magI2CDevice = bus.getDevice(LSM9DS1_MAGADDRESS);
 		enableAccelerometer();
 		enableGyroscope();
 		enableMagnetometer();
@@ -235,24 +238,44 @@ public class LSM9DS1 {
 	}
 
 
-	public static void closeDevice() {
-		try {
-			if (accI2CDevice != null && magI2CDevice != null) {
-// Power off the device : PD = 0 (power-down mode)
-//				disableAccelerometer();
-//				disableGyroscope();
-//				disableMagnetometer();
-//				accI2CDevice.close();
-//				accI2CDevice = null;
-//				magI2CDevice.close();
-//				magI2CDevice = null;
-			}
-			if (imuSensor != null)
-				imuSensor = null;
-		} catch (Exception e) {
-			//////s_logger.error.error("Error in closing device", e);
-		}
-	}
+    public String getSensorName(){
+        return "LSM9DS1";
+    }
+
+    public void update() throws IOException {
+
+        for (SensorListener sListener: listeners){
+            SensorListener sl = (SensorListener) sListener;
+
+            DataBead db = new DataBead();
+            db.put("Accelerator",this.getAccelerometerRaw());
+            db.put("Gyrometer", this.getGyroscopeRaw());
+            db.put("Magnetometer", this.getCompassRaw());
+
+            sl.getData(db);
+            sl.getSensor(db2);
+
+        }
+    }
+
+//	public static void closeDevice() {
+//		try {
+//			if (accI2CDevice != null && magI2CDevice != null) {
+//// Power off the device : PD = 0 (power-down mode)
+////				disableAccelerometer();
+////				disableGyroscope();
+////				disableMagnetometer();
+////				accI2CDevice.close();
+////				accI2CDevice = null;
+////				magI2CDevice.close();
+////				magI2CDevice = null;
+//			}
+//			if (imuSensor != null)
+//				imuSensor = null;
+//		} catch (Exception e) {
+//			//////s_logger.error.error("Error in closing device", e);
+//		}
+//	}
 
 	public static int read(int device, int register)  {
 		int result = 0;
@@ -313,13 +336,6 @@ public class LSM9DS1 {
             ////s_logger.error.error("Unable to write to I2C device", e);
         }
     }
-
-
-
-
-
-
-
 
 
     public void getOrientationRadiants() {
@@ -391,31 +407,23 @@ public class LSM9DS1 {
 		
 		// Gyroscope x y z raw data in radians per second
 		float[] gyro = new float[3];
-
+        float scaleFactor = 0;
 		int gyroFSR = 0;
-		
-			gyroFSR = read(ACC_DEVICE, CTRL_REG1_G) & 0x00000018;
-			if (gyroFSR == 0x00000000) { // 250
-				gyro[0] = ((read(ACC_DEVICE, OUT_X_H_G) << 8) | (read(ACC_DEVICE, OUT_X_L_G) & 0x000000FF)) * GYRO_SCALE_250;
-				gyro[1] = ((read(ACC_DEVICE, OUT_Y_H_G) << 8) | (read(ACC_DEVICE, OUT_Y_L_G) & 0x000000FF)) * GYRO_SCALE_250;
-				gyro[2] = ((read(ACC_DEVICE, OUT_Z_H_G) << 8) | (read(ACC_DEVICE, OUT_Z_L_G) & 0x000000FF)) * GYRO_SCALE_250;
-			}
-			else if (gyroFSR == 0x00000008) { // 500
-				gyro[0] = ((read(ACC_DEVICE, OUT_X_H_G) << 8) | (read(ACC_DEVICE, OUT_X_L_G) & 0x000000FF)) * GYRO_SCALE_500;
-				gyro[1] = ((read(ACC_DEVICE, OUT_Y_H_G) << 8) | (read(ACC_DEVICE, OUT_Y_L_G) & 0x000000FF)) * GYRO_SCALE_500;
-				gyro[2] = ((read(ACC_DEVICE, OUT_Z_H_G) << 8) | (read(ACC_DEVICE, OUT_Z_L_G) & 0x000000FF)) * GYRO_SCALE_500;
-			}
-			else if (gyroFSR == 0x00000018) { // 2000
-				gyro[0] = ((read(ACC_DEVICE, OUT_X_H_G) << 8) | (read(ACC_DEVICE, OUT_X_L_G) & 0x000000FF)) * GYRO_SCALE_2000;
-				gyro[1] = ((read(ACC_DEVICE, OUT_Y_H_G) << 8) | (read(ACC_DEVICE, OUT_Y_L_G) & 0x000000FF)) * GYRO_SCALE_2000;
-				gyro[2] = ((read(ACC_DEVICE, OUT_Z_H_G) << 8) | (read(ACC_DEVICE, OUT_Z_L_G) & 0x000000FF)) * GYRO_SCALE_2000;
-			}
-			
-			gyro[2] = -gyro[2];
-			
-			calibrateGyroscope(gyro);
-			
-			////s_logger.error.error("Unable to read to I2C device.", e);
+		gyroFSR = read(ACC_DEVICE, CTRL_REG1_G) & 0x00000018;
+		if (gyroFSR == 0x00000000) { scaleFactor = GYRO_SCALE_250; }// 250
+        else if (gyroFSR == 0x00000008) {scaleFactor = GYRO_SCALE_500; }// 500
+        else if (gyroFSR == 0x00000018) {scaleFactor = GYRO_SCALE_2000; }// 2000
+
+        gyro[0] = ((read(ACC_DEVICE, OUT_X_H_G) << 8) | (read(ACC_DEVICE, OUT_X_L_G) & 0x000000FF)) ;
+        gyro[1] = ((read(ACC_DEVICE, OUT_Y_H_G) << 8) | (read(ACC_DEVICE, OUT_Y_L_G) & 0x000000FF)) ;
+        gyro[2] = ((read(ACC_DEVICE, OUT_Z_H_G) << 8) | (read(ACC_DEVICE, OUT_Z_L_G) & 0x000000FF)) ;
+
+        gyro[0] = flipBits(gyro[0]) * scaleFactor;
+        gyro[1] = flipBits(gyro[1]) * scaleFactor;
+        gyro[2] = flipBits(gyro[2]) * scaleFactor;
+
+        gyro[2] = -gyro[2];
+		calibrateGyroscope(gyro);
 
 		return gyro;
 		
@@ -430,45 +438,19 @@ public class LSM9DS1 {
 		// Accelerometer x y z raw data in Gs
 		float[] acc = new float[3];
 
-//		int accFS = 0;
-//
-//			accFS = read(ACC_DEVICE, CTRL_REG6_XL) & 0x00000018 + 2; ///!!!!!!! remove +2
-//
-//            if (accFS == 0x00000000) { // +/-2g
-//				acc[0] = ((read(ACC_DEVICE, OUT_X_H_XL) << 8) | (read(ACC_DEVICE, OUT_X_L_XL) & 0x000000FF)) * ACC_SCALE_2G;
-//				acc[1] = ((read(ACC_DEVICE, OUT_Y_H_XL) << 8) | (read(ACC_DEVICE, OUT_Y_L_XL) & 0x000000FF)) * ACC_SCALE_2G;
-//				acc[2] = ((read(ACC_DEVICE, OUT_Z_H_XL) << 8) | (read(ACC_DEVICE, OUT_Z_L_XL) & 0x000000FF)) * ACC_SCALE_2G;
-//			}
-//			else if (accFS == 0x00000010) { // +/-4g
-//				acc[0] = ((read(ACC_DEVICE, OUT_X_H_XL) << 8) | (read(ACC_DEVICE, OUT_X_L_XL) & 0x000000FF)) * ACC_SCALE_4G;
-//				acc[1] = ((read(ACC_DEVICE, OUT_Y_H_XL) << 8) | (read(ACC_DEVICE, OUT_Y_L_XL) & 0x000000FF)) * ACC_SCALE_4G;
-//				acc[2] = ((read(ACC_DEVICE, OUT_Z_H_XL) << 8) | (read(ACC_DEVICE, OUT_Z_L_XL) & 0x000000FF)) * ACC_SCALE_4G;
-//			}
-//			else if (accFS == 0x00000018) { // +/-8g
-//				acc[0] = ((read(ACC_DEVICE, OUT_X_H_XL) << 8) | (read(ACC_DEVICE, OUT_X_L_XL) & 0x000000FF)) * ACC_SCALE_8G;
-//				acc[1] = ((read(ACC_DEVICE, OUT_Y_H_XL) << 8) | (read(ACC_DEVICE, OUT_Y_L_XL) & 0x000000FF)) * ACC_SCALE_8G;
-//				acc[2] = ((read(ACC_DEVICE, OUT_Z_H_XL) << 8) | (read(ACC_DEVICE, OUT_Z_L_XL) & 0x000000FF)) * ACC_SCALE_8G;
-//			}
-//			else if (accFS == 0x00000008) { // +/-16g
-//				acc[0] = ((read(ACC_DEVICE, OUT_X_H_XL) << 8) | (read(ACC_DEVICE, OUT_X_L_XL) & 0x000000FF)) * ACC_SCALE_16G;
-//				acc[1] = ((read(ACC_DEVICE, OUT_Y_H_XL) << 8) | (read(ACC_DEVICE, OUT_Y_L_XL) & 0x000000FF)) * ACC_SCALE_16G;
-//				acc[2] = ((read(ACC_DEVICE, OUT_Z_H_XL) << 8) | (read(ACC_DEVICE, OUT_Z_L_XL) & 0x000000FF)) * ACC_SCALE_16G;
-//			}
-
 
         float scaleFactor = 0f;
         int accFS = 0;
-        accFS = read(ACC_DEVICE, CTRL_REG6_XL) & 0x00000018 + 2; ///!!!!!!! remove +2
+        accFS = read(ACC_DEVICE, CTRL_REG6_XL) & 0x00000018; ///!!!!!!! remove +2
 
         if (accFS == 0x00000000) { scaleFactor = ACC_SCALE_2G;} // +/-2g
         else if (accFS == 0x00000010) { scaleFactor = ACC_SCALE_4G;}// +/-4g
         else if (accFS == 0x00000018) { scaleFactor = ACC_SCALE_8G;}// +/-8g
         else if (accFS == 0x00000008) { scaleFactor = ACC_SCALE_16G;}// +/-16g
 
-        // TODO CHECK WHETHER WE NEED TO ADD THE & 0X000000FF FROM THE ORIGINAL.
-        acc[0] = ((read(ACC_DEVICE, OUT_X_H_XL) << 8) | (read(ACC_DEVICE, OUT_X_L_XL))) * scaleFactor;
-        acc[1] = ((read(ACC_DEVICE, OUT_Y_H_XL) << 8) | (read(ACC_DEVICE, OUT_Y_L_XL))) * scaleFactor;
-        acc[2] = ((read(ACC_DEVICE, OUT_Z_H_XL) << 8) | (read(ACC_DEVICE, OUT_Z_L_XL))) * scaleFactor;
+        acc[0] = ((read(ACC_DEVICE, OUT_X_H_XL) << 8) | (read(ACC_DEVICE, OUT_X_L_XL) & 0x000000FF)) ;
+        acc[1] = ((read(ACC_DEVICE, OUT_Y_H_XL) << 8) | (read(ACC_DEVICE, OUT_Y_L_XL) & 0x000000FF)) ;
+        acc[2] = ((read(ACC_DEVICE, OUT_Z_H_XL) << 8) | (read(ACC_DEVICE, OUT_Z_L_XL) & 0x000000FF)) ;
 
         // TO CHECK TWOS COMPLEMENT
         if (debug) {
@@ -485,9 +467,9 @@ public class LSM9DS1 {
         }
 
         // TWO'S COMPLEMENT DIDN'T WORK ORIGINALLY, SO ADDING THIS HERE.
-        acc[0] = flipBits(acc[0]);
-        acc[1] = flipBits(acc[1]);
-        acc[2] = flipBits(acc[2]);
+        acc[0] = flipBits(acc[0]) * scaleFactor;
+        acc[1] = flipBits(acc[1]) * scaleFactor;
+        acc[2] = flipBits(acc[2]) * scaleFactor;
 
         if( debug){ System.out.print(acc[0] + " ");}
 
@@ -499,7 +481,7 @@ public class LSM9DS1 {
         acc[1] = acc[0];
         acc[0] = accTemp;
 
-        if( debug){ System.out.print(acc[0] + " ");}
+        if( debug){ System.out.println(acc[0] + " ");}
 
         calibrateAcceleration(acc);
 

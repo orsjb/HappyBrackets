@@ -3,12 +3,11 @@ package net.happybrackets.device.sensors;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import net.beadsproject.beads.data.DataBead;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 public class MiniMU extends Sensor {
 
@@ -41,7 +40,11 @@ public class MiniMU extends Sensor {
 	private I2CBus bus;
 	private I2CDevice gyrodevice, acceldevice, magdevice;
 
-	public MiniMU() {
+	private DataBead db2 = new DataBead();
+
+	public MiniMU () {
+		db2.put("Name","MiniMU-9");
+		db2.put("Manufacturer","Pololu");
 		// Work out which one we are
 		// use MINIMUAHRS code to work out different versions.
 		// use WHO_AM_I register to getInstance
@@ -98,8 +101,8 @@ public class MiniMU extends Sensor {
 			gyrodevice.write(CNTRL4_gyr, gyroSettings4);
 			// ACCEL
 			acceldevice = bus.getDevice(ACC_ADDRESS);
-			acceldevice.write(CNTRL1_acc, (byte) accSettings1);
-			acceldevice.write(CNTRL4_acc, (byte) accSettings4);
+			acceldevice.write(CNTRL1_acc, accSettings1);
+			acceldevice.write(CNTRL4_acc, accSettings4);
 			// COMPASS enable
 			magdevice = bus.getDevice(MAG_ADDRESS);
 			magdevice.write(CNTRL1_mag, magSettings1);// DO = 011 (7.5 Hz ODR)
@@ -122,6 +125,22 @@ public class MiniMU extends Sensor {
 			e.printStackTrace();
 		}
 		start();
+	}
+
+	public void update() throws IOException {
+
+		for (SensorListener sListener: listeners){
+			SensorListener sl = (SensorListener) sListener;
+
+			DataBead db = new DataBead();
+			db.put("Accelerator",this.readSensorsAccel());
+			db.put("Gyrometer", this.readSensorsGyro());
+			db.put("Magnetometer", this.readSensorsMag());
+
+			sl.getData(db);
+			sl.getSensor(db2);
+
+		}
 	}
 
 	private void start() {
