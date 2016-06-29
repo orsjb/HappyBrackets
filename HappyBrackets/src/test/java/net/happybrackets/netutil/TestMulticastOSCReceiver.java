@@ -46,7 +46,7 @@ public class TestMulticastOSCReceiver {
         ms.joinGroup(InetAddress.getByName("225.2.2.5"));
         ms.setTimeToLive(1);
 
-        MulticastOSCReceiver receiver = new MulticastOSCReceiver(OSCPacketCodec.getDefaultCodec(), ms);
+        MulticastOSCReceiver receiver = new MulticastOSCReceiver(ms, "225.2.2.5", 5002);
         receiver.addOSCListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {

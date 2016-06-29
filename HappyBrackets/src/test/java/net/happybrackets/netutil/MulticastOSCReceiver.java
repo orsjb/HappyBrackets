@@ -23,9 +23,9 @@ public class MulticastOSCReceiver
         super(c, UDP, localAddress, true);
     }
 
-    public MulticastOSCReceiver(OSCPacketCodec c, MulticastSocket ms)
+    public MulticastOSCReceiver(MulticastSocket ms, String group, int port)
             throws IOException {
-        super(c, UDP, new InetSocketAddress(ms.getLocalAddress(), ms.getLocalPort()), false);
+        super(OSCPacketCodec.getDefaultCodec(), UDP, new InetSocketAddress(ms.getLocalAddress(), ms.getLocalPort()), false);
 
         this.ms = ms;
     }
@@ -109,8 +109,14 @@ public class MulticastOSCReceiver
                 try {
                     byteBuf.clear();
 
-                    DatagramPacket dp = new DatagramPacket(byteBuf.array(), byteBuf.array().length);
+                    //temporary until we work out a better way...
+                    // Fixed buffer size limits the maximum size of received packets
+                    // Seems there are always limitations and a default going back to the constant DEFAULTBUFSIZE
+                    byte[] buffer = new byte[getBufferSize()];
+                    DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
+
                     ms.receive(dp);
+                    byteBuf.put(buffer);
                     sender = dp.getSocketAddress();
 
                     if (!isListening) break listen;
