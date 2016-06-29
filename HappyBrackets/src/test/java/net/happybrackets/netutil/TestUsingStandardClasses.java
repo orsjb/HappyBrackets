@@ -19,6 +19,8 @@ public class TestUsingStandardClasses {
         String multicastIP = "225.2.2.5";
         int port = 5002;
         String networkInterfaceName = "en0";    //works with en0 on Mac, but not lo0.
+                                                //Qs:   how to work with IPv6? Which network interfaces work?
+                                                //      how to dynamically reload.
 
         //set up the sender
 
@@ -60,7 +62,7 @@ public class TestUsingStandardClasses {
         receiver.addOSCListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-                System.out.println(msg.getName());
+                System.out.println(msg.getName() + " " + sender);
             }
         });
 
