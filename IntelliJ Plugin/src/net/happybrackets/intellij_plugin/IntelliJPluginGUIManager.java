@@ -16,6 +16,8 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
@@ -43,6 +45,8 @@ public class IntelliJPluginGUIManager {
 	private DeviceConnection piConnection;
 	private ComboBox<String> menu;
 	private Text compositionPathText;
+	private List<String> commandHistory;
+	private int positionInCommandHistory = 0;
 	private Style style;
 
 	public IntelliJPluginGUIManager(@NotNull ControllerConfig controllerConfig, Project project, DeviceConnection piConnection) {
@@ -53,6 +57,7 @@ public class IntelliJPluginGUIManager {
 		//assume that this path is a path to a root classes folder, relative to the project
 		//e.g., build/classes/tutorial or build/classes/compositions
 		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath();
+		commandHistory = new ArrayList<>();
 	}
 
 	private void createGlobalButtons(Pane pane) {
@@ -219,6 +224,34 @@ public class IntelliJPluginGUIManager {
 		pane.getChildren().add(codetxt);
 		final TextField codeField = new TextField();
 		codeField.setPrefSize(500, 40);
+		codeField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+
+				//TODO key up and key down to move through history
+				if(event.getEventType() == KeyEvent.KEY_PRESSED) {
+
+					if(event.getCode() == KeyCode.UP) {
+						positionInCommandHistory--;
+						if(positionInCommandHistory < 0) positionInCommandHistory = 0;
+						String command = commandHistory.get(positionInCommandHistory);
+						if(command != null) {
+							codeField.setText(command);
+						}
+					} else if(event.getCode() == KeyCode.DOWN) {
+						positionInCommandHistory++;
+					} else if(!event.getCode().isModifierKey() && !event.getCode().isNavigationKey()){
+						//TODO any other key (except return, etc.??), reset the commandHistory.
+						commandHistory.remove(positionInCommandHistory);
+						positionInCommandHistory = commandHistory.size() - 1;
+					}
+
+				}
+
+				//TODO ensure event is passed back
+
+			}
+		});
 		pane.getChildren().add(codeField);
 		HBox messagepaths = new HBox();
 		messagepaths.setAlignment(Pos.TOP_RIGHT);
@@ -254,24 +287,31 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					String codeText = codeField.getText();
+					String codeText = codeField.getText().trim();
+					commandHistory.add(codeText);
+					positionInCommandHistory = commandHistory.size() - 1;
 					//need to parse the code text
-					String[] elements = codeText.split("[ ]");
-					String msg = elements[0];
-					Object[] args = new Object[elements.length - 1];
-					for(int i = 0; i < args.length; i++) {
-						String s = elements[i + 1];
-						try {
-							args[i] = Integer.parseInt(s);
-						} catch(Exception ex) {
+					String[] commands = codeText.split("[;]");	//different commands separated by ';'
+					for(String command : commands) {
+						command = command.trim();
+						String[] elements = codeText.split("[ ]");
+						String msg = elements[0];
+						Object[] args = new Object[elements.length - 1];
+						for (int i = 0; i < args.length; i++) {
+							String s = elements[i + 1];
 							try {
-								args[i] = Double.parseDouble(s);
-							} catch(Exception exx) {
-								args[i] = s;
+								args[i] = Integer.parseInt(s);
+							} catch (Exception ex) {
+								try {
+									args[i] = Double.parseDouble(s);
+								} catch (Exception exx) {
+									args[i] = s;
+								}
 							}
 						}
+						piConnection.sendToPIGroup(index, msg, args);
 					}
-					piConnection.sendToPIGroup(index, msg, args);
+
 				}
 			});
 			b.setText("" + (i + 1));
