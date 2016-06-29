@@ -1,10 +1,13 @@
 package net.happybrackets.core;
 
+import de.sciss.net.*;
 import net.happybrackets.device.config.DeviceConfig;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.MembershipKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,121 +16,83 @@ import java.util.List;
  */
 public class BroadcastManager {
 
-    //TODO this could use proper implementation of OSC? To be seen if NetUtil can handle multicast connection. Also while we're at it, can NetUtil send generic objects?
+    DeviceConfig config;
+    OSCTransmitter transmitter;
+    OSCReceiver receiver;
+    List<OSCListener> listeners;
 
     /**
-     * Listener used to respond to incoming broadcasts.
+     * Create a new OLDBroadcastManager.
      */
-    public interface Listener {
-
-        /**
-         * Handle incoming broadcasts.
-         * @param s incoming {@link String}.
-         */
-        public void messageReceived(String s);
-    }
-
-    private List<Listener> listeners = new ArrayList<Listener>();
-    private MulticastSocket broadcastSocket;
-
-    /**
-     * Create a new BroadcastManager.
-     */
-    public BroadcastManager() {
+    public BroadcastManager(DeviceConfig config) {
+        this.config = config;
+        listeners = new ArrayList<>();
         try {
-        //set up listener
-        setupListener();
-        //setup sender
-        broadcastSocket = new MulticastSocket();
-        broadcastSocket.setTimeToLive(1);
-    } catch(IOException e) {
-        System.err.println("Warning: BroadcastManager can't use multicast. No broadcast functionality available in this session.");
-    }
+            //set up listener
+            setupListener();
+            //setup sender
+            InetSocketAddress mcSocketAddr = new InetSocketAddress(config.getMulticastAddr(), config.getBroadcastPort());
+            transmitter = OSCTransmitter.newUsing(OSCChannel.UDP);
+            transmitter.setTarget(mcSocketAddr);
+            transmitter.connect();
+            //TODO how do we set time to live?
+        } catch (IOException e) {
+            System.err.println("Warning: OLDBroadcastManager can't use multicast. No broadcast functionality available in this session.");         //TODO is this diagnosis still correct?
+        }
     }
 
     private void setupListener() throws IOException {
-        MulticastSocket s = new MulticastSocket(DeviceConfig.getInstance().getBroadcastPort());
-        s.joinGroup(InetAddress.getByName(DeviceConfig.getInstance().getMulticastAddr()));
-        //start a listener thread
-        Thread t = new Thread() {
-            public void run() {
-                while(true) {
-                    if(s != null) {
-                        try {
-                            byte[] buf = new byte[512];
-                            DatagramPacket pack = new DatagramPacket(buf, buf.length);
-                            s.receive(pack);
-                            String message = new String(buf, "US-ASCII");
-                            messageReceived(message);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                //s.close();
-            }
-        };
-        t.start();
+        NetworkInterface ni = NetworkInterface.getByName(Device.getInstance().preferedInterface);
+        InetAddress group = InetAddress.getByName(config.getMulticastAddr());
+        DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
+                .setOption(StandardSocketOptions.SO_REUSEADDR, true)
+                .bind(new InetSocketAddress(config.getBroadcastPort()))
+                .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
+        MembershipKey key = dc.join(group, ni);
+        receiver = OSCReceiver.newUsing(dc);
+        receiver.startListening();
     }
 
     /**
-     * Broadcast {@link String} s over the multicast group.
+     * Broadcast {@link OSCMessage} msg over the multicast group.
      *
-     * @param s the message to send.
+     * @param msg the message to send.
      */
-    public void broadcast(String s) {
-        byte buf[] = null;
+    public void broadcast(OSCMessage msg) {
         try {
-            buf = s.getBytes("US-ASCII");
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
-        // Create a DatagramPacket
-        DatagramPacket pack = null;
-        try {
-            pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(DeviceConfig.getInstance().getMulticastAddr()), DeviceConfig.getInstance().getBroadcastPort());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        try {
-            broadcastSocket.send(pack);
+            transmitter.send(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //TODO should we be filtering out messages sent by ourselves? Or do we allow that? Else can we identify the sender in this function?
-    private void messageReceived(String msg) {
-        String[] parts = msg.split("[ ]");
-        for (int i = 0; i < parts.length; i++) {
-            parts[i] = parts[i].trim();
-        }
-        //Listeners
-        for(Listener bl : listeners) {
-            bl.messageReceived(msg);
-        }
-    }
-
     /**
-     * Add a new {@link Listener}.
-     * @param bl the new {@link Listener}.
+     * Add a new {@link OSCListener}.
+     *
+     * @param bl the new {@link OSCListener}.
      */
-    public void addBroadcastListener(Listener bl) {
+    public void addBroadcastListener(OSCListener bl) {
         listeners.add(bl);
+        receiver.addOSCListener(bl);
     }
 
     /**
-     * Remove the given {@link Listener}.
-     * @param bl the {@link Listener} to remove.
+     * Remove the given {@link OSCListener}.
+     *
+     * @param bl the {@link OSCListener} to remove.
      */
-    public void removeBroadcastListener(Listener bl) {
+    public void removeBroadcastListener(OSCListener bl) {
         listeners.remove(bl);
+        receiver.removeOSCListener(bl);
     }
 
     /**
-     * Clear all {@link Listener}s.
+     * Clear all {@link OSCListener}s.
      */
     public void clearBroadcastListeners() {
+        for(OSCListener listener : listeners) {
+            receiver.removeOSCListener(listener);
+        }
         listeners.clear();
     }
 
