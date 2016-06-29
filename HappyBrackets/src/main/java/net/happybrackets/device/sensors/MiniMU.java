@@ -25,6 +25,14 @@ public class MiniMU extends Sensor {
 		public void magData(double x, double y, double z) {}
 		public void imuData(double x, double y, double z,double x2, double y2, double z2,double x3, double y3, double z3) {}
 		public void tempData(double t) {}
+		@Override
+		public void getData(DataBead db) {
+			new Exception("Method getData(DataBead) not implemented.").printStackTrace();
+		}	//not implemented
+		@Override
+		public void getSensor(DataBead db) {
+			new Exception("Method getSensor(DataBead) not implemented.").printStackTrace();
+		}	//not implemented
 	}
 
 	//TODO need to adjust for different versions
