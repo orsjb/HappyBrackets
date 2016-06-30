@@ -8,10 +8,11 @@ import java.util.Scanner;
 
 public class Device {
 
-	public final String myHostname;						//the hostname for this PI (wifi)
-	public final String myIP;
-	public final String myMAC;							//the wlan MAC for this PI (wifi)
-	public final String preferedInterface;
+	public  final String    myHostname;				    //the hostname for this PI (wifi)
+	public  final String    myIP;
+	public  final String    myMAC;					    //the wlan MAC for this PI (wifi)
+	public  final String    preferredInterface;
+    private       String[]  validInterfaces;
 
     private static Device singleton = null;
 
@@ -53,6 +54,13 @@ public class Device {
             if ( !favouredInterfaces.isEmpty() ) {
                 System.out.println("Selecting from valid interfaces:");
                 favouredInterfaces.forEach((i) -> System.out.println("\t" + i.getName() + ", " + i.getDisplayName()));
+
+                // Populate valid interfaces array
+                validInterfaces = new String[favouredInterfaces.size()];
+                for (int i = 0; i < validInterfaces.length ; i++) {
+                    //if this list was longer we should use an iterator, but as it is only short this will do
+                    validInterfaces[i] = favouredInterfaces.get(i).getName();
+                }
 
                 if (favouredInterfaces.size() == 1) {
                     netInterface = favouredInterfaces.get(0);
@@ -161,12 +169,12 @@ public class Device {
 		myHostname          = tmpHostname;
         myIP                = tmpIP;
 		myMAC               = tmpMAC;
-		preferedInterface   = tmpPreferedInterface;
+		preferredInterface = tmpPreferedInterface;
 		//report
 		System.out.println("My hostname is:           " + myHostname);
         System.out.println("My IP address is:         " + myIP);
 		System.out.println("My MAC address is:        " + myMAC);
-		System.out.println("My prefered interface is: " + preferedInterface);
+		System.out.println("My prefered interface is: " + preferredInterface);
 	}
 	
 	public static boolean isViableNetworkInterface(NetworkInterface ni) {
@@ -183,5 +191,8 @@ public class Device {
 		}
 		return true;
 	}
+
+    // return a clone to prevent values from being mysteriously overwritten
+    public String[] getValidInterfaces() { return validInterfaces.clone(); }
 
 }
