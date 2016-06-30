@@ -227,29 +227,29 @@ public class IntelliJPluginGUIManager {
 		codeField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-
-				//TODO key up and key down to move through history
 				if(event.getEventType() == KeyEvent.KEY_PRESSED) {
-
 					if(event.getCode() == KeyCode.UP) {
 						positionInCommandHistory--;
 						if(positionInCommandHistory < 0) positionInCommandHistory = 0;
-						String command = commandHistory.get(positionInCommandHistory);
-						if(command != null) {
-							codeField.setText(command);
+						if(commandHistory.size() > 0) {
+							String command = commandHistory.get(positionInCommandHistory);
+							if (command != null) {
+								codeField.setText(command);
+							}
 						}
 					} else if(event.getCode() == KeyCode.DOWN) {
 						positionInCommandHistory++;
+						if(positionInCommandHistory >= commandHistory.size()) positionInCommandHistory = commandHistory.size() - 1;
+						if(commandHistory.size() > 0) {
+							String command = commandHistory.get(positionInCommandHistory);
+							if (command != null) {
+								codeField.setText(command);
+							}
+						}
 					} else if(!event.getCode().isModifierKey() && !event.getCode().isNavigationKey()){
-						//TODO any other key (except return, etc.??), reset the commandHistory.
-						commandHistory.remove(positionInCommandHistory);
-						positionInCommandHistory = commandHistory.size() - 1;
+						//nothing needs to be done here but I thought it'd be cool to have a comment in an if block.
 					}
-
 				}
-
-				//TODO ensure event is passed back
-
 			}
 		});
 		pane.getChildren().add(codeField);
@@ -260,24 +260,7 @@ public class IntelliJPluginGUIManager {
 		sendAllButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				String codeText = codeField.getText();
-				//need to parse the code text
-				String[] elements = codeText.split("[ ]");
-				String msg = elements[0];
-				Object[] args = new Object[elements.length - 1];
-				for(int i = 0; i < args.length; i++) {
-					String s = elements[i + 1];
-					try {
-						args[i] = Integer.parseInt(s);
-					} catch(Exception ex) {
-						try {
-							args[i] = Double.parseDouble(s);
-						} catch(Exception exx) {
-							args[i] = s;
-						}
-					}
-				}
-				piConnection.sendToAllPIs(msg, args);
+				sendCustomCommand(codeField.getText(), true, 0);
 			}
 		});
 		messagepaths.getChildren().add(sendAllButton);
@@ -287,35 +270,42 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					String codeText = codeField.getText().trim();
-					commandHistory.add(codeText);
-					positionInCommandHistory = commandHistory.size() - 1;
-					//need to parse the code text
-					String[] commands = codeText.split("[;]");	//different commands separated by ';'
-					for(String command : commands) {
-						command = command.trim();
-						String[] elements = codeText.split("[ ]");
-						String msg = elements[0];
-						Object[] args = new Object[elements.length - 1];
-						for (int i = 0; i < args.length; i++) {
-							String s = elements[i + 1];
-							try {
-								args[i] = Integer.parseInt(s);
-							} catch (Exception ex) {
-								try {
-									args[i] = Double.parseDouble(s);
-								} catch (Exception exx) {
-									args[i] = s;
-								}
-							}
-						}
-						piConnection.sendToPIGroup(index, msg, args);
-					}
-
+					sendCustomCommand(codeField.getText(), false, index);
 				}
 			});
 			b.setText("" + (i + 1));
 			messagepaths.getChildren().add(b);
+		}
+	}
+
+	public void sendCustomCommand(String text, boolean all, int group) {
+		String codeText = text.trim();
+		commandHistory.add(codeText);
+		positionInCommandHistory = commandHistory.size() - 1;
+		//need to parse the code text
+		String[] commands = codeText.split("[;]");	//different commands separated by ';'
+		for(String command : commands) {
+			command = command.trim();
+			String[] elements = command.split("[ ]");
+			String msg = elements[0];
+			Object[] args = new Object[elements.length - 1];
+			for (int i = 0; i < args.length; i++) {
+				String s = elements[i + 1];
+				try {
+					args[i] = Integer.parseInt(s);
+				} catch (Exception ex) {
+					try {
+						args[i] = Double.parseDouble(s);
+					} catch (Exception exx) {
+						args[i] = s;
+					}
+				}
+			}
+			if(all) {
+				piConnection.sendToAllPIs(msg, args);
+			} else {
+				piConnection.sendToPIGroup(group, msg, args);
+			}
 		}
 	}
 

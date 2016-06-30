@@ -80,11 +80,9 @@ public class HB {
 		System.out.println("HB audio setup complete.");
 		// sensor setup
 		sensors = new Hashtable<>();
-		//TODO this is temporary code. Eventually available sensors will be read from the DeviceConfig.
-		sensors.put("mu", new MiniMU());
 		// start network connection
 		controller = new NetworkCommunication(this);
-		broadcast = new BroadcastManager(DeviceConfig.getInstance());	//TODO is this singleton approach good?
+		broadcast = new BroadcastManager(DeviceConfig.getInstance());
 		synch = Synchronizer.getInstance();
 		// start listening for code
 		startListeningForCode();

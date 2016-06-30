@@ -21,6 +21,9 @@ public class CodeTask8_1 implements HBAction {
 
         hb.reset();
 
+        //set up an object that will respond to a minimu sensor.
+        hb.sensors.put("mu", new MiniMU());
+
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
 
@@ -40,7 +43,7 @@ public class CodeTask8_1 implements HBAction {
             }
         });
 
-        hb.sensors.get("MiniMu").addListener(new MiniMU.MiniMUListener() {
+        hb.sensors.get("mu").addListener(new MiniMU.MiniMUListener() {
             @Override
             public void accelData(double x, double y, double z) {
                 rate.setValue((float)x / 1000f);

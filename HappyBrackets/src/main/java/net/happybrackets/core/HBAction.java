@@ -11,6 +11,6 @@ import java.io.Serializable;
  */
 public interface HBAction extends Serializable {
 
-	void action(final HB d);
+	void action(final HB hb);
 
 }
