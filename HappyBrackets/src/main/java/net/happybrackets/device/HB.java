@@ -341,13 +341,13 @@ public class HB {
 	 * Adds a new pattern {@link Bead} object to the {@link Clock}. This will be removed using {@link #reset()} or {@link #resetLeaveSounding()}, or can be specifically removed by killing the {@link Bead}.
 	 *
 	 * @param pattern to play.
-	 * @return returns a string of the form "patternX" that can be used to retrieve the pattern from global memory.
+	 * @return returns a string of the form "patternX" that can be used to store the pattern in global memory.
      */
 	public String pattern(Bead pattern) {
 		clock.addMessageListener(pattern);
 		String name = "pattern" + nextElementID++;
-		put(name, pattern);
-		System.out.println(name);
+//		put(name, pattern);
+//		System.out.println(name);
 		return name;
 	}
 
@@ -355,13 +355,13 @@ public class HB {
 	 * Adds a sound to the audio output. The sound, in the form of any @{@link UGen}, is played immediately. It can be killed by calling {@link #reset()}, or by manually destroying the sound with a {@link Bead#kill()} message. Note that the system automatically limits the number of sounds added using a @{@link PolyLimit} object.
 	 *
 	 * @param snd the sound to play.
-	 * @return returns a string of the form "sndX" that can be used to retrieve the pattern from global memory.
+	 * @return returns a string of the form "sndX" that can be used to store the pattern in global memory.
      */
 	public String sound(UGen snd) {
 		pl.addInput(snd);
 		String name = "snd" + nextElementID++;
-		put(name, snd);
-		System.out.println(name);
+//		put(name, snd);
+//		System.out.println(name);
 		return name;
 	}
 	
