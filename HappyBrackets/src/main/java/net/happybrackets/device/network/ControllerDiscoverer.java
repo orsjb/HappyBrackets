@@ -11,13 +11,13 @@ import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 
 public interface ControllerDiscoverer {
-	
+
 	default DeviceController listenForController(String multicastAddress, int multicastPort) throws UnknownHostException {
 		byte[] buf = new byte[256];
 		String controllerHostname = null;
 		String controllerAddress = null;
 		try ( MulticastSocket clientSocket = new MulticastSocket(multicastPort) ) {
-			clientSocket.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferedInterface));
+			clientSocket.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferredInterface));
 			clientSocket.joinGroup( InetAddress.getByName(multicastAddress) );
 			while (controllerHostname == null || controllerAddress == null) {
 				DatagramPacket msgPacket = new DatagramPacket(buf, buf.length);

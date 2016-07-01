@@ -14,10 +14,10 @@ public class Synchronizer {
 	/*
 	 * A tool for each device to work out its current synch with respect to all other devices.
 	 * We keep this independent of the audio system because the audio system start-time needs to be synched.
-	 * 
+	 *
 	 * Each synchronizer sends regular pulses every second with the syntax:
 	 * s <MAC1> <timeMS>
-	 * 
+	 *
 	 * An s means send. Upon receiving an s, each synchronizer also responds with
 	 * r <MAC1> <timeMS> <MAC2> <timeMS>
 	 */
@@ -39,18 +39,18 @@ public class Synchronizer {
 	private Map<Long, Map<String, long[]>> log;		//first referenced by message send time, then by respodent's name, with the time the respondent replied and the current time
 
 	static Synchronizer singletonSynchronizer;
-	
+
 	public synchronized static Synchronizer getInstance() {
 		if(singletonSynchronizer == null) {
 			singletonSynchronizer = new Synchronizer();
 		}
 		return singletonSynchronizer;
 	}
-	
+
 	public static long time() {
 		return getInstance().correctedTimeNow();
 	}
-	
+
 	private Synchronizer() {
 		//basics
 		log = new Hashtable<Long, Map<String, long[]>>();
@@ -74,15 +74,15 @@ public class Synchronizer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public long stableTimeNow() {
 		return System.currentTimeMillis() + stableTimeCorrection;
 	}
-	
+
 	public long correctedTimeNow() {
 		return stableTimeNow() + timeCorrection;
 	}
-	
+
 	public void displayClock() {
 		Thread t = new Thread() {
 			public void run() {
@@ -105,11 +105,11 @@ public class Synchronizer {
 		};
 		t.start();
 	}
-	
+
 	private void setupListener() throws IOException {
 		final MulticastSocket s = new MulticastSocket(LoadableConfig.getInstance().getClockSynchPort());
 		try {
-			s.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferedInterface));
+			s.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferredInterface));
 			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
 			ableToUseMulticast = true;
 		} catch(SocketException e) {
@@ -136,7 +136,7 @@ public class Synchronizer {
 		};
 		t.start();
 	}
-	
+
 	public void doAtTime(final Runnable r, long time) {
 		final long waitTime = time - correctedTimeNow();
 		if(waitTime <= 0) {				//either run immediately
@@ -153,10 +153,10 @@ public class Synchronizer {
 					r.run();
 				}
 			}.start();
-			
+
 		}
 	}
-	
+
 	public void doAtNextStep(final Runnable r, long timeMultiplier) {
 		long timeNow = correctedTimeNow();
 		long time = ((timeNow / timeMultiplier) + 1) * timeMultiplier;
@@ -175,15 +175,15 @@ public class Synchronizer {
 					r.run();
 				}
 			}.start();
-			
+
 		}
 	}
-	
+
 	private void startSending() {
 		Thread t = new Thread() {
 			public void run() {
 				while(on) {
-					broadcast("s " + myMAC + " " + stableTimeNow() + " " + myMAC + " " + stableTimeNow());	
+					broadcast("s " + myMAC + " " + stableTimeNow() + " " + myMAC + " " + stableTimeNow());
 					//the last two components are just to ensure that send and return messages are same length to avoid network delays
 					try {
 						Thread.sleep(500 + (int)(100 * Math.random()));	//randomise send time to break network send patterns
@@ -202,12 +202,12 @@ public class Synchronizer {
 		};
 		t.start();
 	}
-	
+
 	public void close() {
 		on = false;
 		broadcastSocket.close();
 	}
-	
+
 	/**
 	 * Estimates the difference between this devices clock and the clock of the "leader" device.
 	 * This method modifies the value of the timeCorrection field, and less frequently updates the stableTimeCorrection field.
@@ -223,7 +223,7 @@ public class Synchronizer {
 				if(theLeader.compareTo(mac) < 0) {
 					theLeader = mac;
 				}
-			}	
+			}
 			if(timedebug) System.out.println("Leader is " + theLeader);
 			if(theLeader != myMAC) {
 				//if you are not the leader then make a time adjustment
@@ -236,7 +236,7 @@ public class Synchronizer {
 				timeCorrection = receiveTimeAccordingToLeader - receiveTime;
 				if(timedebug) System.out.println("time correction: " + timeCorrection + ", message time: " + messageTime + ", response sent: " + leaderResponseTime + ", response received: " + receiveTime);
 			}
-		}		
+		}
 		//finally, clear the log (for now - we might make the log last longer later)
 		log.clear();
 		//stability count
@@ -246,15 +246,15 @@ public class Synchronizer {
 			timeCorrection = 0;
 		}
 	}
-	
+
 	public float getStability() {
 		if(stableTimeCorrection == 0) {
-			return 0; 
+			return 0;
 		} else {
 			return (float)(timeCorrection / stableTimeCorrection);
 		}
 	}
-	
+
 	public void messageReceived(String msg) {
 		String[] parts = msg.split("[ ]");
 		for(int i = 0; i < parts.length; i++) {
@@ -287,7 +287,7 @@ public class Synchronizer {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param timeOriginallySent
 	 * @param otherMAC
 	 * @param timeReturnSent
@@ -326,10 +326,10 @@ public class Synchronizer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		Synchronizer s = getInstance();
 		s.displayClock();
 	}
-	
+
 }
