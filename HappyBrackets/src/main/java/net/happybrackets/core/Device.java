@@ -10,18 +10,18 @@ public class Device {
 
 	public  final String    myHostname;				    //the hostname for this PI (wifi)
 	public  final String    myIP;
-	public  final String    myMAC;					    //the wlan MAC for this PI (wifi)
+	public  final String    myMAC;					    	//the wlan MAC for this PI (wifi)
 	public  final String    preferredInterface;
-    private       String[]  validInterfaces;
+  private       String[]  validInterfaces;
 
-    private static Device singleton = null;
+  private static Device singleton = null;
 
-    public static Device getInstance() {
-        if(singleton == null) {
-            singleton = new Device();
-        }
-        return singleton;
-    }
+  public static Device getInstance() {
+      if(singleton == null) {
+          singleton = new Device();
+      }
+      return singleton;
+  }
 
 	private Device() {
 		String tmpHostname = null;
@@ -92,7 +92,7 @@ public class Device {
                     netInterface = NetworkInterface.getByIndex(0); //Maybe the loopback?
                 }
             }
-			
+
             //report back
             System.out.println("Selected interface: " + netInterface.getName() + ", " + netInterface.getDisplayName());
 
@@ -158,14 +158,14 @@ public class Device {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		//ensure we have a local suffix
 		// Windows won't care either way but *nix systems need it
 		//If there are ':' we are probably dealing with a IPv6 address
 		if (tmpHostname != null && !tmpHostname.contains(".") && !tmpHostname.contains(":")) {
 			tmpHostname += ".local";	//we'll assume a .local extension is required if no extension exists
 		}
-		
+
 		myHostname          = tmpHostname;
         myIP                = tmpIP;
 		myMAC               = tmpMAC;
@@ -176,7 +176,7 @@ public class Device {
 		System.out.println("My MAC address is:        " + myMAC);
 		System.out.println("My prefered interface is: " + preferredInterface);
 	}
-	
+
 	public static boolean isViableNetworkInterface(NetworkInterface ni) {
 		try {
 			if ( !ni.supportsMulticast()						) return false;

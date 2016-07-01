@@ -42,7 +42,7 @@ public class BroadcastManager {
     }
 
     private void setupListener() throws IOException {
-        NetworkInterface ni = NetworkInterface.getByName(Device.getInstance().preferedInterface);
+        NetworkInterface ni = NetworkInterface.getByName(Device.getInstance().preferredInterface);
         InetAddress group = InetAddress.getByName(config.getMulticastAddr());
         DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
                 .setOption(StandardSocketOptions.SO_REUSEADDR, true)
