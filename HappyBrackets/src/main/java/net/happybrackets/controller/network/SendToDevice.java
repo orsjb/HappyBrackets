@@ -11,8 +11,6 @@ import net.happybrackets.controller.config.ControllerConfig;
 
 
 public class SendToDevice {
-	
-	private static final ControllerConfig config = new ControllerConfig(); //TODO make Controller config a singleton
 
 	public static void send(String fullClassName, String[] hostnames) throws Exception {
 		String simpleClassName = new File(fullClassName).getName();
@@ -29,7 +27,10 @@ public class SendToDevice {
 		for(File f : contents) {
 			System.out.println("    " + f);
 			String fname = f.getName();
-			if(fname.startsWith(className + "$") && fname.endsWith(".class")) {
+			if((
+					fname.startsWith(className + "$") ||
+					fname.toLowerCase().contains("hbperm")	//this is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the Pi along with any HBAction classes.
+				) && fname.endsWith(".class")) {
 				allFilesAsBytes.add(getClassFileAsByteArray(packagePath + "/" + fname));
 			}
 		}
@@ -40,7 +41,7 @@ public class SendToDevice {
         	try {
 				//send all of the files to this hostname
 				for(byte[] bytes : allFilesAsBytes) {
-					Socket s = new Socket(hostname, config.getCodeToDevicePort());
+					Socket s = new Socket(hostname, ControllerConfig.getInstance().getCodeToDevicePort());
 					s.getOutputStream().write(bytes);
 					s.close();
 				}
@@ -49,39 +50,6 @@ public class SendToDevice {
         		System.out.println("SendToDevice: unable to send to " + hostname);
         	}
         } 
-	}
-	
-	public static void sendOLD(String packagePath, String className, String[] hostnames) throws Exception {
-		File packageDir = new File(packagePath); //This used to have a hard codded bin/ prepended to it but this is incompatible with the composition path being configurable now
-		File[] contents = packageDir.listFiles();
-		for(File f : contents) {
-			String fname = f.getName();
-			if(fname.startsWith(className + "$") && fname.endsWith(".class")) {
-				SendToDevice.sendClassFileOLD(packagePath + "/" + fname, hostnames);
-			}
-		}
-		SendToDevice.sendClassFileOLD(packagePath + "/" + className + ".class", hostnames);
-	}
-	
-	private static void sendClassFileOLD(String fullClassFileName, String[] hostnames) throws Exception {
-		FileInputStream fis = new FileInputStream(new File("bin/" + fullClassFileName));
-		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int data = fis.read();
-        while(data != -1){
-            buffer.write(data);
-            data = fis.read();
-        }
-        fis.close();
-        byte[] bytes = buffer.toByteArray();
-        for(String hostname : hostnames) {
-        	try {
-				Socket s = new Socket(hostname, config.getCodeToDevicePort());
-				s.getOutputStream().write(bytes);
-				s.close();
-        	} catch(UnknownHostException e) {
-        		System.out.println("SendToDevice: Was not able to send file " + fullClassFileName + " to " + hostname);
-        	}
-        }        
 	}
 
 	public static byte[] getClassFileAsByteArray(String fullClassFileName) throws Exception {
