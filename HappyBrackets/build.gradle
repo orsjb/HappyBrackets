@@ -7,6 +7,13 @@ apply plugin: 'idea'
 // Test for right version of Java in use for running this script
 assert org.gradle.api.JavaVersion.current().isJava8Compatible()
 
+idea{
+    module {
+        downloadJavadoc = true // defaults to false
+        downloadSources = true
+    }
+}
+
 repositories {
     //All sub-projects will now refer to the same 'libs' directory
     flatDir {
@@ -42,6 +49,12 @@ sourceSets {
     }
 }
 
+//create a jar of javadocs
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 // A helper for checking which jars are loaded
 task listJars << {
     configurations.compile.each { File file -> println file.name }
@@ -49,6 +62,7 @@ task listJars << {
 
 task smile << {
         println ':)'
+        println docsDir
 }
 
 shadowJar {
