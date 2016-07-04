@@ -39,12 +39,13 @@ dependencies {
     testCompile group: 'junit',                 name: 'junit',      version: '4.+'
 }
 
-//add tutorial files to source set
+//don't add tutorial files to source set, they don't need to be in the final jar.
 sourceSets {
     main {
         java {
             srcDirs( "src/main/java" )
-            srcDirs( "src/tutorial/java" )
+            srcDirs( "src/test/java" )
+            //srcDirs( "src/tutorial/java" )
         }
     }
 }
