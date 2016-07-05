@@ -3,6 +3,8 @@ package net.happybrackets.controller.network;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.UnresolvedAddressException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -24,12 +26,18 @@ public class LocalDeviceRepresentation {
 	private final OSCServer server;
 	public final boolean[] groups;
 	private ControllerConfig config;
+
+	public interface StatusUpdateListener {
+		public void update(String state);
+	}
+
+	private List<StatusUpdateListener> statusUpdateListenerList;
+
 	
 	private String status = "Status unknown";
 	
-	Pane gui = null;
-	
 	public LocalDeviceRepresentation(String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
+
 		this.hostname   = hostname;
         this.address    = addr;
 		this.socket     = new InetSocketAddress(addr, config.getControlToDevicePort());
@@ -37,6 +45,7 @@ public class LocalDeviceRepresentation {
 		this.server     = server;
 		this.config     = config;
 		groups          = new boolean[4];
+		statusUpdateListenerList = new ArrayList<>();
 	}
 
 	public synchronized void send(String msgName, Object... args) {
@@ -57,26 +66,14 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
-	public Node getGui() {
-		return gui;
-	}
-
-	public void setGui(Pane gui) {
-		this.gui = gui;
+	public void addStatusUpdateListener(StatusUpdateListener listener) {
+		statusUpdateListenerList.add(listener);
 	}
 
 	public void setStatus(String arg) {
 		status = arg;
-		//modify gui
-		if(gui != null) {
-			Platform.runLater(new Runnable() {
-				public void run() {
-					//do on other thread
-					//the last element is the status text box
-					Text statusText = (Text)gui.getChildren().get(gui.getChildren().size() - 1);
-					statusText.setText(status);
-				}
-			});
+		for(StatusUpdateListener statusUpdateListener : statusUpdateListenerList) {
+			statusUpdateListener.update(status);
 		}
 	}
 
