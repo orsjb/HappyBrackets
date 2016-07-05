@@ -16,10 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
-	
-	int count = 0;
-	HBox main;
-	
+
 	@Override
     public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
         super.updateItem(item, empty);
@@ -27,7 +24,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		//gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
         if (item != null) {
 			//set up main panel
-			main = new HBox();
+			HBox main = new HBox();
 			main.setStyle("-fx-font-family: sample; -fx-font-size: 10;");
 			main.setAlignment(Pos.CENTER_LEFT);
 			main.setSpacing(5);
@@ -40,7 +37,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			name.setUnderline(true);
 			txthbox.getChildren().add(name);
 			txthbox.setSpacing(5);
-			txthbox.setMinWidth(100);
+			txthbox.setMinWidth(200);
+			txthbox.setMaxWidth(200);
 			txthbox.setAlignment(Pos.CENTER);
 			//reset button
 			Button resetButton = new Button("R");
