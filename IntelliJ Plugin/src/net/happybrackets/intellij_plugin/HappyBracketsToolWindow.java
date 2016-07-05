@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 /**
- * Created by z3502805 on 22/04/2016.
+ * Created by ollie on 22/04/2016.
  *
  * Thank god for this site: http://alblue.bandlem.com/2011/08/intellij-plugin-development.html
  * Not much else out there about setting up an IntelliJ gui tool!
@@ -53,13 +53,14 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
         jfxp = new JFXPanel();
         if(!staticSetup) {          //only run this stuff once per JVM
+            System.out.println("Running static setup (first instance of HappyBrackets)");
             String projectDir = project.getBaseDir().getCanonicalPath();
             String pluginDir = PluginManager.getPlugin(
                     PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsToolWindow")
             ).getPath().toString();
             System.out.println("Plugin lives at: " + pluginDir);
             String configFilePath = pluginDir + "/classes/config/controller-config.json";
-            if(new File(configFilePath).exists()) System.out.println("Config file exists!");
+            if(new File(configFilePath).exists()) System.out.println("Found config file.");
             //all of the below concerns the set up of singletons
             //TODO: use plugin path here. How?
             config = IntelliJControllerConfig.load(configFilePath);
@@ -91,6 +92,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             //using synchronizer is optional, TODO: switch to control this, leave it on for now
             synchronizer = Synchronizer.getInstance();
             staticSetup = true;
+        } else {
+            System.out.println("HappyBrackets static setup already completed previously.");
         }
         //TODO: we may want to make a copy of the config so that we can set different aspects here
         IntelliJPluginGUIManager guiManager = new IntelliJPluginGUIManager(

@@ -24,7 +24,9 @@ public class Device {
   }
 
 	private Device() {
-		String tmpHostname = null;
+        System.out.println("-----------------------");
+        System.out.println("Beginning device network setup");
+        String tmpHostname = null;
         String tmpIP = null;
 		String tmpMAC = null;
 		String tmpPreferedInterface = null;
@@ -174,8 +176,10 @@ public class Device {
 		System.out.println("My hostname is:           " + myHostname);
         System.out.println("My IP address is:         " + myIP);
 		System.out.println("My MAC address is:        " + myMAC);
-		System.out.println("My prefered interface is: " + preferredInterface);
-	}
+		System.out.println("My preferred interface is: " + preferredInterface);
+        System.out.println("Device network setup complete");
+        System.out.println("-----------------------");
+    }
 
 	public static boolean isViableNetworkInterface(NetworkInterface ni) {
 		try {

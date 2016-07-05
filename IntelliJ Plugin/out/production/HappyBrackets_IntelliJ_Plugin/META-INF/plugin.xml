@@ -29,12 +29,6 @@
 
   </extensions>
 
-  <actions>
-    <!-- Add your actions here -->
-    <action class="net.happybrackets.intellij_plugin.SendToDeviceAction" id="SendToDeviceAction"
-    text="Send to Devices..."/>
-  </actions>
-
   <project-components>
 
   </project-components>

@@ -38,12 +38,14 @@ public class NetworkCommunication {
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
 		//init the OSCServer
+		System.out.println("Setting up OSC server");
 		try {
 			oscServer = OSCServer.newUsing(OSCServer.UDP, DeviceConfig.getInstance().getControlToDevicePort());
 			oscServer.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Started OSC server");
 		//add a single master listener that forwards listening to delegates
 		oscServer.addOSCListener(new OSCListener() {
 			@Override

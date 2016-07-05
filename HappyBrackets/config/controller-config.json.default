@@ -1,4 +1,5 @@
 {
   "useHostname": true,
-  "knowDevicesFile": "config/known_devices"
+  "knowDevicesFile": "config/known_devices",
+  "compositionsPath": "build"
 }

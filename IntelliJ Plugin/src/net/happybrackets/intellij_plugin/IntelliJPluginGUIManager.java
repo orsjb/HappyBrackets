@@ -39,9 +39,9 @@ public class IntelliJPluginGUIManager {
 
 	private String compositionsPath;
 	private String currentCompositionSelection = null;
-	private ControllerConfig config;
-	private Project project;
-	private DeviceConnection deviceConnection;
+	private final ControllerConfig config;
+	private final Project project;
+	private final DeviceConnection deviceConnection;
 	private ComboBox<String> menu;
 	private Text compositionPathText;
 	private List<String> commandHistory;
@@ -327,6 +327,7 @@ public class IntelliJPluginGUIManager {
 		//list of Devices
 		Text devicesText = new Text("Devices");
 		mainContainer.getChildren().add(devicesText);
+		//the list interface
 		ListView<LocalDeviceRepresentation> list = new ListView<LocalDeviceRepresentation>();
 		list.setItems(deviceConnection.getDevices());
 		list.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
@@ -335,6 +336,7 @@ public class IntelliJPluginGUIManager {
 				return new DeviceRepresentationCell();
 			}
 		});
+		//
 		mainContainer.getChildren().add(list);
 		//finally update composition path
 		updateCompositionPath(compositionsPath);

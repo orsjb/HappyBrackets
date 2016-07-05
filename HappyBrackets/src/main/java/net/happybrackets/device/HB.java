@@ -21,6 +21,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.BroadcastManager;
+import net.happybrackets.core.Device;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
@@ -66,6 +67,7 @@ public class HB {
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
      */
 	public HB(AudioContext _ac) throws IOException {
+		Device.getInstance();	//touch device at beginning, guarantees it loads
 		ac = _ac;
 		// default audio setup (note we don't start the audio context yet)
 		masterGainEnv = new Envelope(ac, 0);
@@ -80,14 +82,20 @@ public class HB {
 		System.out.println("HB audio setup complete.");
 		// sensor setup
 		sensors = new Hashtable<>();
+		System.out.print(".");
 		// start network connection
 		controller = new NetworkCommunication(this);
+		System.out.print(".");
 		broadcast = new BroadcastManager(DeviceConfig.getInstance());
+		System.out.print(".");
 		synch = Synchronizer.getInstance();
+		System.out.print(".");
 		// start listening for code
 		startListeningForCode();
+		System.out.print(".");
 		//notify started (happens immeidately or when audio starts)
 		testBleep3();
+		System.out.println("HB initialised");
 	}
 
 	/**
