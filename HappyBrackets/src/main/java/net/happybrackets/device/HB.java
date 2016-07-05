@@ -107,6 +107,7 @@ public class HB {
 		doAtTime(new Runnable() {
 			public void run() {
 				startAudio();
+				clock.reset();		//if audio is already running, we just reset the clock
 			}
 		}, time);
 	}
