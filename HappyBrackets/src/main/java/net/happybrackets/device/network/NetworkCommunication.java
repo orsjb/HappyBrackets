@@ -55,7 +55,7 @@ public class NetworkCommunication {
 //						((InetSocketAddress)src).getHostName().contains(DeviceConfig.getInstance().getMyHostName().split("[.]")[0])) {
 //					return;
 //				}
-				System.out.println("Mesage received: " + msg);
+//				System.out.println("Mesage received: " + msg.getName());
 				if(msg.getName().equals("/device/set_id")) {
 					myID = (Integer)msg.getArg(0);
 					System.out.println("I have been given an ID by the controller: " + myID);

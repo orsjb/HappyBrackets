@@ -43,7 +43,7 @@ sourceSets {
     main {
         java {
             srcDirs( "src/main/java" )
-            srcDirs( "src/test/java" )
+//            srcDirs( "src/test/java" )
             //srcDirs( "src/tutorial/java" )
         }
     }
@@ -63,6 +63,12 @@ task listJars << {
 task smile << {
         println ':)'
         println docsDir
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'net.happybrackets.device.DeviceMain'
+    }
 }
 
 shadowJar {
