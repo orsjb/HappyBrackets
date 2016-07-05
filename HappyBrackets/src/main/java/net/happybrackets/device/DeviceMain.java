@@ -16,12 +16,13 @@ public class DeviceMain {
         System.out.println("Reading config file: " + configFile);
 		DeviceConfig config = DeviceConfig.load(configFile);
 		HB hb = new HB(AudioSetup.getAudioContext(args));
+		boolean autostart = true;
 		if(args.length > 5) {
-			boolean autostart = Boolean.parseBoolean(args[5]);
-			if(autostart) {
-				System.out.println("Detected autostart. Starting audio right away.");
-				hb.startAudio();
-			}
+			autostart = Boolean.parseBoolean(args[5]);
+		}
+		if(autostart) {
+			System.out.println("Detected autostart. Starting audio right away.");
+			hb.startAudio();
 		}
 	}
 }

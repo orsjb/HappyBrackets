@@ -29,7 +29,7 @@ public class SendToDevice {
 			String fname = f.getName();
 			if((
 					fname.startsWith(className + "$") ||
-					fname.toLowerCase().contains("hbperm")	//this is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the Pi along with any HBAction classes.
+					fname.toLowerCase().contains("hbperm")	//this is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the device along with any HBAction classes.
 				) && fname.endsWith(".class")) {
 				allFilesAsBytes.add(getClassFileAsByteArray(packagePath + "/" + fname));
 			}

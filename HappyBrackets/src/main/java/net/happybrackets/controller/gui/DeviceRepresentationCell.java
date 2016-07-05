@@ -34,7 +34,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	        	//elements
 	        	HBox txthbox = new HBox();
 	        	main.getChildren().add(txthbox);
-	        	//name of the PI
+	        	//name of the device
 	        	Text name = new Text(item.hostname);
 	        	name.setUnderline(true);
 	        	txthbox.getChildren().add(name);
@@ -46,7 +46,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				resetButton.setMaxHeight(5);
 	        	resetButton.setOnAction(new EventHandler<ActionEvent>() {
 	        	    @Override public void handle(ActionEvent e) {
-	        	    	item.send("/PI/reset");
+	        	    	item.send("/device/reset");
 	        	    }
 	        	});
 	        	main.getChildren().add(resetButton);
@@ -55,7 +55,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				bleepButton.setMaxHeight(5);
 	        	bleepButton.setOnAction(new EventHandler<ActionEvent>() {
 	        	    @Override public void handle(ActionEvent e) {
-	        	    	item.send("/PI/bleep");
+	        	    	item.send("/device/bleep");
 	        	    }
 	        	});
 	        	main.getChildren().add(bleepButton);
@@ -81,7 +81,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	        	s.valueProperty().addListener(new ChangeListener<Number>() {
 					@Override
 					public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-						item.send("/PI/gain", newval.floatValue(), 50f);
+						item.send("/device/gain", newval.floatValue(), 50f);
 					}
 				});
 	        	main.getChildren().add(s);

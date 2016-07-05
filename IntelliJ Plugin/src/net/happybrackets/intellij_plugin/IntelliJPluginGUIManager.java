@@ -13,7 +13,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -42,17 +41,17 @@ public class IntelliJPluginGUIManager {
 	private String currentCompositionSelection = null;
 	private ControllerConfig config;
 	private Project project;
-	private DeviceConnection piConnection;
+	private DeviceConnection deviceConnection;
 	private ComboBox<String> menu;
 	private Text compositionPathText;
 	private List<String> commandHistory;
 	private int positionInCommandHistory = 0;
 	private Style style;
 
-	public IntelliJPluginGUIManager(@NotNull ControllerConfig controllerConfig, Project project, DeviceConnection piConnection) {
+	public IntelliJPluginGUIManager(@NotNull ControllerConfig controllerConfig, Project project, DeviceConnection deviceConnection) {
 		this.config = controllerConfig;
 		this.project = project;
-		this.piConnection = piConnection;
+		this.deviceConnection = deviceConnection;
 		//initial compositions path
 		//assume that this path is a path to a root classes folder, relative to the project
 		//e.g., build/classes/tutorial or build/classes/compositions
@@ -75,7 +74,7 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piReboot();
+					deviceConnection.deviceReboot();
 				}
 			});
 			b.setText("Reboot");
@@ -86,7 +85,7 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piShutdown();
+					deviceConnection.deviceShutdown();
 				}
 			});
 			b.setText("Shutdown");
@@ -97,7 +96,7 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piReset();
+					deviceConnection.deviceReset();
 				}
 			});
 			b.setText("Reset");
@@ -108,7 +107,7 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piResetSounding();
+					deviceConnection.deviceResetSounding();
 				}
 			});
 			b.setText("Reset Sounding");
@@ -119,7 +118,7 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piClearSound();
+					deviceConnection.deviceClearSound();
 				}
 			});
 			b.setText("Clear Sound");
@@ -204,7 +203,7 @@ public class IntelliJPluginGUIManager {
 					try {
 						//intelliJ specific code
 						String pathToSend = compositionsPath + "/" + currentCompositionSelection;
-						SendToDevice.send(pathToSend, piConnection.getPIHostnames());
+						SendToDevice.send(pathToSend, deviceConnection.getDeviceHostnames());
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
@@ -302,9 +301,9 @@ public class IntelliJPluginGUIManager {
 				}
 			}
 			if(all) {
-				piConnection.sendToAllPIs(msg, args);
+				deviceConnection.sendToAllDevices(msg, args);
 			} else {
-				piConnection.sendToPIGroup(group, msg, args);
+				deviceConnection.sendToDeviceGroup(group, msg, args);
 			}
 		}
 	}
@@ -325,11 +324,11 @@ public class IntelliJPluginGUIManager {
 		mainContainer.getChildren().add(new Separator());
 		createTextSender(mainContainer);
 		mainContainer.getChildren().add(new Separator());
-		//list of PIs
+		//list of Devices
 		Text devicesText = new Text("Devices");
 		mainContainer.getChildren().add(devicesText);
 		ListView<LocalDeviceRepresentation> list = new ListView<LocalDeviceRepresentation>();
-		list.setItems(piConnection.getPIs());
+		list.setItems(deviceConnection.getDevices());
 		list.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
 			@Override
 			public ListCell<LocalDeviceRepresentation> call(ListView<LocalDeviceRepresentation> theView) {

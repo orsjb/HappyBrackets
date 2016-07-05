@@ -40,7 +40,7 @@ public class LocalDeviceRepresentation {
 	}
 
 	public synchronized void send(String msgName, Object... args) {
-		if(hostname.startsWith("Virtual Test PI")) {
+		if(hostname.startsWith("Virtual Test Device")) {
 			return;
 		}
 		OSCMessage msg = new OSCMessage(msgName, args);
@@ -50,7 +50,7 @@ public class LocalDeviceRepresentation {
 		try {
 			server.send(msg, socket);
 		} catch (UnresolvedAddressException e) {
-			System.out.println("Unable to send to PI: " + hostname);
+			System.out.println("Unable to send to Device: " + hostname);
 			//e.printStackTrace();
 		} catch (IOException ex) {
 			ex.printStackTrace();

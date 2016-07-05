@@ -50,11 +50,12 @@ public class NetworkCommunication {
 			public void messageReceived(OSCMessage msg, SocketAddress src, long time) {
 				//include default listener behaviour that listens for the ID assigned to this device
 				//note technically messages can be sent from anyone, so ignore messages being sent from self...
-				//TODO questionable approach, is this escape needed?
-				if(src instanceof InetSocketAddress && 
-						((InetSocketAddress)src).getHostName().contains(DeviceConfig.getInstance().getMyHostName().split("[.]")[0])) {
-					return;
-				}
+//				//TODO note the following has been removed because in fact we do want to allow messages from self
+//				if(src instanceof InetSocketAddress &&
+//						((InetSocketAddress)src).getHostName().contains(DeviceConfig.getInstance().getMyHostName().split("[.]")[0])) {
+//					return;
+//				}
+				System.out.println("Mesage received: " + msg);
 				if(msg.getName().equals("/device/set_id")) {
 					myID = (Integer)msg.getArg(0);
 					System.out.println("I have been given an ID by the controller: " + myID);

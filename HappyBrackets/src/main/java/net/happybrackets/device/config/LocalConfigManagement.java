@@ -7,7 +7,6 @@ import java.io.*;
 /**
  * This class holds various administrative functions for managing devices.
  *
- * Should this just be in the HB class? Or is it good to have a place to keep some functions outside of the API?
  */
 public class LocalConfigManagement {
 

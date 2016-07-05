@@ -24,6 +24,6 @@ public abstract class AudioSetup {
 	}
 	
 	public static AudioContext getAudioContext() {			
-		return getAudioContext(new String[] {"2048", "11000", "16", "0", "1"});
+		return getAudioContext(new String[] {"2048", "44100", "16", "0", "1"});
 	}
 }

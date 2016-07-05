@@ -1,6 +1,5 @@
 package net.happybrackets.intellij_plugin;
 
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
@@ -10,27 +9,17 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import net.happybrackets.controller.gui.GUIManager;
 import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.Synchronizer;
-import net.happybrackets.core.config.LoadableConfig;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by z3502805 on 22/04/2016.
@@ -49,7 +38,7 @@ import java.util.concurrent.CountDownLatch;
 public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     static boolean staticSetup = false;
-    static DeviceConnection piConnection;
+    static DeviceConnection deviceConnection;
     static Synchronizer synchronizer;                               //runs independently, no interaction needed
     static private FileServer httpServer;
     static protected IntelliJControllerConfig config;
@@ -80,7 +69,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             }
             //set up config relevant directories
             config.setConfigDir(pluginDir + "/classes/config");
-            piConnection = new DeviceConnection(config);
+            deviceConnection = new DeviceConnection(config);
             //setup controller broadcast
             try {
                 System.out.println("Starting ControllerAdvertiser");
@@ -97,15 +86,15 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 e.printStackTrace();
             }
             //test code: you can create a test pi if you don't have a real pi...
-//    	    piConnection.createTestPI();
-//    	    piConnection.createTestPI();
+//    	    deviceConnection.createTestDevice();
+//    	    deviceConnection.createTestDevice();
             //using synchronizer is optional, TODO: switch to control this, leave it on for now
             synchronizer = Synchronizer.getInstance();
             staticSetup = true;
         }
         //TODO: we may want to make a copy of the config so that we can set different aspects here
         IntelliJPluginGUIManager guiManager = new IntelliJPluginGUIManager(
-                config, project, piConnection
+                config, project, deviceConnection
         );
         scene = guiManager.setupGUI();
         jfxp.setScene(scene);
