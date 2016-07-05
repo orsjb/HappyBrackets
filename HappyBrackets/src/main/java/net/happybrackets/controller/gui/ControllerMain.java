@@ -64,7 +64,7 @@ public class ControllerMain extends Application {
 		stage.sizeToScene();
 		stage.show();
     	//you can create a test pi if you don't have a real pi...
-//    	piConnection.createTestPI();
+//    	piConnection.createTestDevice();
     	synchronizer = Synchronizer.getInstance();
     	//getInstance normal desktop application behaviour - closing the stage terminates the app
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {

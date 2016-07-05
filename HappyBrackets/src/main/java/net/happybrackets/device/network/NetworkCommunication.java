@@ -48,42 +48,42 @@ public class NetworkCommunication {
 		oscServer.addOSCListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress src, long time) {
-				//include default listener behaviour that listens for the ID assigned to this PI
+				//include default listener behaviour that listens for the ID assigned to this device
 				//note technically messages can be sent from anyone, so ignore messages being sent from self...
 				//TODO questionable approach, is this escape needed?
 				if(src instanceof InetSocketAddress && 
 						((InetSocketAddress)src).getHostName().contains(DeviceConfig.getInstance().getMyHostName().split("[.]")[0])) {
 					return;
 				}
-				if(msg.getName().equals("/PI/set_id")) {
+				if(msg.getName().equals("/device/set_id")) {
 					myID = (Integer)msg.getArg(0);
 					System.out.println("I have been given an ID by the controller: " + myID);
 					hb.setStatus("ID " + myID);
 				} else {
 					//master commands...
-					if(msg.getName().equals("/PI/sync")) {
+					if(msg.getName().equals("/device/sync")) {
 						long timeToAct = Long.parseLong((String)msg.getArg(0));
 						System.out.println(msg.getArg(0).getClass() + " " + msg.getArg(0));
 						hb.syncAudioStart(timeToAct);
-					} else if(msg.getName().equals("/PI/reboot")) {
+					} else if(msg.getName().equals("/device/reboot")) {
 						HB.rebootDevice();
-					} else if(msg.getName().equals("/PI/shutdown")) {
+					} else if(msg.getName().equals("/device/shutdown")) {
 						HB.shutdownDevice();
-					} else if(msg.getName().equals("/PI/gain")) {
+					} else if(msg.getName().equals("/device/gain")) {
 						hb.masterGainEnv.addSegment((Float)msg.getArg(0), (Float)msg.getArg(1));
-					} else if(msg.getName().equals("/PI/reset")) {
+					} else if(msg.getName().equals("/device/reset")) {
 						hb.reset();
-					} else if(msg.getName().equals("/PI/reset_sounding")) {
+					} else if(msg.getName().equals("/device/reset_sounding")) {
 						hb.resetLeaveSounding();
-					} else if(msg.getName().equals("/PI/clearsound")) {
+					} else if(msg.getName().equals("/device/clearsound")) {
 						hb.clearSound();
-					} else if(msg.getName().equals("/PI/fadeout_reset")) {
+					} else if(msg.getName().equals("/device/fadeout_reset")) {
 						hb.fadeOutReset((Float)msg.getArg(0));
-					} else if(msg.getName().equals("/PI/fadeout_clearsound")) {
+					} else if(msg.getName().equals("/device/fadeout_clearsound")) {
 						hb.fadeOutClearSound((Float)msg.getArg(0));
-					} else if(msg.getName().equals("/PI/bleep")) {
+					} else if(msg.getName().equals("/device/bleep")) {
 						hb.testBleep();
-					} else if ( msg.getName().equals("/PI/config/wifi") && msg.getArgCount() == 2) {
+					} else if ( msg.getName().equals("/device/config/wifi") && msg.getArgCount() == 2) {
                         //TODO: add interfaces path to device config
                         boolean status = LocalConfigManagement.updateInterfaces(
                                 "/etc/network/interfaces",
@@ -121,7 +121,7 @@ public class NetworkCommunication {
 			public void run() {
 				while(true) {
 					sendToController(
-							"/PI/alive",
+							"/device/alive",
                             new Object[] {
                                     DeviceConfig.getInstance().getMyHostName(),
                                     DeviceConfig.getInstance().getMyAddress(),
@@ -132,7 +132,7 @@ public class NetworkCommunication {
 					try {
 						Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
 					} catch (InterruptedException e) {
-						System.out.println("/PI/alive message did not getInstance through to controller.");
+						System.out.println("/device/alive message did not getInstance through to controller.");
 					}
 				}
  				

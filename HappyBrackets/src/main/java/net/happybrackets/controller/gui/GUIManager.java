@@ -53,7 +53,7 @@ public class GUIManager {
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piReboot();
+					piConnection.deviceReboot();
 				}
 			});
 	    	b.setText("Reboot");
@@ -66,7 +66,7 @@ public class GUIManager {
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piShutdown();
+					piConnection.deviceShutdown();
 				}
 			});
 	    	b.setText("Shutdown");
@@ -79,7 +79,7 @@ public class GUIManager {
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piSync();
+					piConnection.deviceSync();
 				}
 			});
 	    	b.setText("Sync");
@@ -91,7 +91,7 @@ public class GUIManager {
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piReset();
+					piConnection.deviceReset();
 				}
 			});
 	    	b.setText("Reset");
@@ -103,7 +103,7 @@ public class GUIManager {
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piResetSounding();
+					piConnection.deviceResetSounding();
 				}
 			});
 	    	b.setText("Reset Sounding");
@@ -115,7 +115,7 @@ public class GUIManager {
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					piConnection.piClearSound();
+					piConnection.deviceClearSound();
 				}
 			});
 	    	b.setText("Clear Sound");
@@ -162,7 +162,7 @@ public class GUIManager {
 						}
 					}
 				}
-				piConnection.sendToAllPIs(msg, args);
+				piConnection.sendToAllDevices(msg, args);
 			}
 		});
 		messagepaths.getChildren().add(sendAllButton);
@@ -192,7 +192,7 @@ public class GUIManager {
 							}
 						}
 					}
-					piConnection.sendToPIGroup(index, msg, args);
+					piConnection.sendToDeviceGroup(index, msg, args);
 				}
 			});
 	    	b.setText("" + (i + 1));
@@ -217,7 +217,7 @@ public class GUIManager {
 		createButtons(topBox, piConnection);
 		//list of PIs
 		ListView<LocalDeviceRepresentation> list = new ListView<LocalDeviceRepresentation>();
-		list.setItems(piConnection.getPIs());
+		list.setItems(piConnection.getDevices());
 		list.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
 			@Override
 			public ListCell<LocalDeviceRepresentation> call(ListView<LocalDeviceRepresentation> theView) {
@@ -290,7 +290,7 @@ public class GUIManager {
 			@Override
 			public void handle(MouseEvent e) {
 				try {
-					SendToDevice.send(currentPIPO, piConnection.getPIAddresses());
+					SendToDevice.send(currentPIPO, piConnection.getDeviceAddresses());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
