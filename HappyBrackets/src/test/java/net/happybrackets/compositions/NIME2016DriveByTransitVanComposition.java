@@ -75,22 +75,29 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         //other setups
         setupAudio(hb);
         setupNetworkListener(hb);
-        setupSensorListener(hb);
+//        setupSensorListener(hb);
+
+        //test sound
+        Gain g = new Gain(hb.ac, 1, 0.1f);
+        g.addInput(new WavePlayer(hb.ac, 500, Buffer.SINE));
+//        hb.sound(g);
     }
 
     private void setupAudio(HB hb) {
         //sample controls - initiate all the controls we will use to control the sample
-        grainCrossFade = new Glide(hb.ac);  //1 = fully granular, 0 = fully non-granular
-        sampleGain = new Glide(hb.ac);
-        baseRate = new Glide(hb.ac);
+        grainCrossFade = new Glide(hb.ac, 0);  //1 = fully granular, 0 = fully non-granular
+        sampleGain = new Glide(hb.ac, 1);
+        baseRate = new Glide(hb.ac, 1);
         rateMod = new Glide(hb.ac);
         rateModAmount = new Glide(hb.ac);
-        basePitch = new Glide(hb.ac);
+        basePitch = new Glide(hb.ac, 1);
         pitchMod = new Glide(hb.ac);
         pitchModAmount = new Glide(hb.ac);
         //sample stuff - set up the sample players
         SamplePlayer sp = new SamplePlayer(hb.ac, SampleManager.fromGroup(TALK, 0));
         GranularSamplePlayer gsp = new GranularSamplePlayer(hb.ac, SampleManager.fromGroup(TALK, 0));
+        sp.setKillOnEnd(false);
+        gsp.setKillOnEnd(false);
         //connect up sample system
         Function sampleMix = new Function(gsp, sp, grainCrossFade) {
             public float calculate() {
@@ -111,12 +118,12 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         };
         gsp.setPitch(pitch);
         //FM + noise controls
-        fmBaseFreq = new Glide(hb.ac);
+        fmBaseFreq = new Glide(hb.ac, 500);
         fmModFreqMult = new Glide(hb.ac);
         fmModAmount = new Glide(hb.ac);
-        filtFreq = new Glide(hb.ac);
-        filtQ = new Glide(hb.ac);
-        filtGain = new Glide(hb.ac);
+        filtFreq = new Glide(hb.ac, 500);
+        filtQ = new Glide(hb.ac, 1);
+        filtGain = new Glide(hb.ac, 1);
         noiseGain = new Glide(hb.ac);
         fmGain = new Glide(hb.ac);
         //FM synth + noise
@@ -143,12 +150,12 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         f.setFrequency(filtFreq);
         f.setQ(filtQ);
         f.setGain(filtGain);
-        f.addInput(fmMix);
+//        f.addInput(fmMix);            //FM a bit too hard to handle!
         f.addInput(noiseMix);
         //delay controls
-        delayFeedback = new Glide(hb.ac);
-        delayInputGain = new Glide(hb.ac);
-        delayRateMult = new Glide(hb.ac);
+        delayFeedback = new Glide(hb.ac, 0);
+        delayInputGain = new Glide(hb.ac, 1);
+        delayRateMult = new Glide(hb.ac, 1);
         //delay
         TapIn tin = new TapIn(hb.ac, 10000);
         TapOut tout = new TapOut(hb.ac, tin, new Function(rate, delayRateMult) {
@@ -178,11 +185,12 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
                 return (x[0] * 0.5f + 1f) * x[1] + (1f - x[1]);
             }
         });
-        tremolo.addInput(tout);
+        tremolo.addInput(delayReturn);
         tremolo.addInput(f);
         tremolo.addInput(sampleMix);
         //final plumbing - connect it all to ouput
         hb.ac.out.addInput(tremolo);
+//        hb.ac.out.addInput(sp);
         //set up clock to trigger samples
         hb.clockInterval.setValue(SOURCE_INTERVAL);
         hb.pattern(new Bead() {
@@ -232,6 +240,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
 
     private void setupNetworkListener(HB hb) {
         hb.controller.addListener(msg -> {
+            System.out.println("Received message " + msg.getName());
             if(msg.getName().equals("/pitchBendEffect")) {
                 pitchBendEffect = (float) msg.getArg(0);
                 pitchModAmount.setValue(pitchBendEffect);
@@ -242,6 +251,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
                 radioNoiseEffect = (float) msg.getArg(0);
             } else if(msg.getName().equals("/flangeDelayEffect")) {
                 flangeDelayEffect = (float) msg.getArg(0);
+                delayFeedback.setValue(flangeDelayEffect);
             } else if(msg.getName().equals("/joltSnubEffect")) {
                 joltSnubEffect = (float) msg.getArg(0);
             } else if(msg.getName().equals("/repeatMode")) {
