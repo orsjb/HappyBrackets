@@ -145,7 +145,7 @@ public class IntelliJPluginGUIManager {
 					@Override
 					public void run() {
 						VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
-						if (virtualFile != null && virtualFile[0] != null) {
+						if (virtualFile != null && virtualFile.length > 0 && virtualFile[0] != null) {
 							Platform.runLater(new Runnable() {
 								@Override
 								public void run() {
