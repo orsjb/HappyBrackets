@@ -1,3 +1,4 @@
 {
-  "useHostname": true
+  "useHostname": true,
+  "knowDevicesFile": "config/known_devices"
 }
