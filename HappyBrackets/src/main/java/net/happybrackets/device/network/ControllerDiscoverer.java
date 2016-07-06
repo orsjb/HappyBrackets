@@ -17,7 +17,8 @@ public interface ControllerDiscoverer {
 		String controllerHostname = null;
 		String controllerAddress = null;
 		try ( MulticastSocket clientSocket = new MulticastSocket(multicastPort) ) {
-			// clientSocket.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferredInterface));
+			//TODO this is still needed on a Mac. General confusion about when we need to set network intefaces or not.
+			 clientSocket.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferredInterface));
 			clientSocket.joinGroup( InetAddress.getByName(multicastAddress) );
 			while (controllerHostname == null || controllerAddress == null) {
 				DatagramPacket msgPacket = new DatagramPacket(buf, buf.length);

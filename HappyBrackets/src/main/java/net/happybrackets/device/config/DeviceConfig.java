@@ -14,7 +14,6 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		if (controller != null) {
 			return controller.getHostname();
 		}
-
 		return waitForController().getHostname();
 	}
 
@@ -30,6 +29,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
         //Block and search for a controller
         try {
             controller = listenForController( getMulticastAddr(), getControllerDiscoveryPort());
+//			controller = listenForController( "225.2.2.7", 5566);
         } catch (UnknownHostException e) {
             System.out.println("Error obtaining controller hostname and address.");
             e.printStackTrace();

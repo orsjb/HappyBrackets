@@ -108,7 +108,8 @@ public class NetworkCommunication {
 			}
 		});
 		//set up the controller address
-		System.out.println( "Setting up controller: " + DeviceConfig.getInstance().getControllerHostname() );
+		String hostname = DeviceConfig.getInstance().getControllerHostname();
+		System.out.println( "Setting up controller: " + hostname );
 		controller = new InetSocketAddress(
 				DeviceConfig.getInstance().getControllerAddress(),
 				DeviceConfig.getInstance().getStatusFromDevicePort()
