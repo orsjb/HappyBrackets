@@ -10,16 +10,16 @@ import com.google.gson.Gson;
 
 
 /**
- * 
+ *
  * Provides a loadable abstract class of our core configuration parameters.
  * This class wraps the default methods of the core interface with overridable values.
  * Each time a getInstance call is executed it first checks the the relevant class value.
  *   If the value is undefined it delegates to the interface default else it returns the stored value.
- *   
+ *
  * To instantiate an object extending this class call the static buildFromJSON method.
- * 
+ *
  * This class holds the static method load which provides a generic interface for building descendants
- *  of this object from JSON config files via the Gson library. 
+ *  of this object from JSON config files via the Gson library.
  *
  */
 public abstract class LoadableConfig implements EnvironmentConfig {
@@ -31,7 +31,7 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	private Integer codeToDevicePort;
 	private Integer controlToDevicePort;
 	private Integer controllerDiscoveryPort;
-    private Integer controllerHTTPPort;
+  private Integer controllerHTTPPort;
 
 	//how often the PI sends an aslive message to the server
 	private Integer aliveInterval;
@@ -39,10 +39,10 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	protected static LoadableConfig singletonInstance;
 
 	//places
-	private String  WorkingDir;
-	private String  AudioDir;
-	private String KnownDevicesFile;
-	
+	private String workingDir;
+	private String audioDir;
+	private String knownDevicesFile;
+
 	public static <T extends LoadableConfig> T load(String fileName, T config) {
 		System.out.println("Loading: " + fileName);
 		if (config == null) {
@@ -80,7 +80,7 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	public static LoadableConfig getInstance() {
 		return singletonInstance;
 	}
-	
+
 	//Override getters
 	public String getMulticastAddr() {
 		if (multicastSynchAddr != null) {
@@ -147,24 +147,24 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		}
 	}
 	public String getWorkingDir() {
-		if (WorkingDir != null) {
-		    return WorkingDir;		
+		if (workingDir != null) {
+		    return workingDir;
 		}
 		else {
 		    return EnvironmentConfig.super.getWorkingDir();
 		}
 	}
 	public String getAudioDir() {
-		if (AudioDir != null) {
-		    return AudioDir;		
+		if (audioDir != null) {
+		    return audioDir;
 		}
 		else {
 		    return EnvironmentConfig.super.getAudioDir();
 		}
 	}
 	public String getKnownDevicesFile() {
-		if (KnownDevicesFile != null) {
-		    return KnownDevicesFile;
+		if (knownDevicesFile != null) {
+		    return knownDevicesFile;
 		}
 		else {
 		    return EnvironmentConfig.super.getKnownDevicesFile();
