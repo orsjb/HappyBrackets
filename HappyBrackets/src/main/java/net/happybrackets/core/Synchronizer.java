@@ -1,6 +1,6 @@
 package net.happybrackets.core;
 
-import net.happybrackets.core.config.LoadableConfig;
+import net.happybrackets.controller.config.ControllerConfig;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +23,7 @@ public class Synchronizer {
 	 */
 
 	private String myMAC; //how to uniquely identify this machine
-	private MulticastSocket broadcastSocket;
+	private DatagramSocket broadcastSocket;
 	private long timeCorrection = 0;			//add this to current time to getInstance the REAL current time
 	private long stableTimeCorrection = 0;
 	private long lastTick;
@@ -62,8 +62,10 @@ public class Synchronizer {
 			if(ableToUseMulticast) {
 				System.out.println("Synchronizer is listening.");
 				//setup sender
-				broadcastSocket = new MulticastSocket();
-				broadcastSocket.setTimeToLive(1);
+				// TODO: we need a way of having a consolidated network configuration which we can use :( currently we don't know if we are running on a device or a controller...
+				// Going to default to controller for know but this is really just a coin toss that we get this right...
+				broadcastSocket = new DatagramSocket(ControllerConfig.getInstance().getClockSynchPort());
+
 				//start sending
 				startSending();
 				System.out.println("Synchronizer is sending synch pulses.");
@@ -107,10 +109,11 @@ public class Synchronizer {
 	}
 
 	private void setupListener() throws IOException {
-		final MulticastSocket s = new MulticastSocket(LoadableConfig.getInstance().getClockSynchPort());
+
+		final MulticastSocket s = new MulticastSocket(ControllerConfig.getInstance().getClockSynchPort());
 		try {
-			s.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferredInterface));
-			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
+			//s.setNetworkInterface(NetworkInterface.getByName(ControllerConfig.getInstance().preferredInterface));
+			s.joinGroup(InetAddress.getByName(ControllerConfig.getInstance().getMulticastAddr()));
 			ableToUseMulticast = true;
 		} catch(SocketException e) {
 			e.printStackTrace();
@@ -316,7 +319,12 @@ public class Synchronizer {
 		// Create a DatagramPacket
 		DatagramPacket pack = null;
 		try {
-			pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()), LoadableConfig.getInstance().getClockSynchPort());
+			pack = new DatagramPacket(
+				buf,
+				buf.length,
+				InetAddress.getByName(ControllerConfig.getInstance().getMulticastAddr()),
+				ControllerConfig.getInstance().getClockSynchPort()
+			);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}

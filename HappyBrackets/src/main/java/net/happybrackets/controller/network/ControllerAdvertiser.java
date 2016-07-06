@@ -5,7 +5,7 @@ import net.happybrackets.controller.config.ControllerConfig;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.DatagramSocket;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 
@@ -16,20 +16,20 @@ public class ControllerAdvertiser {
 	public ControllerAdvertiser(ControllerConfig env) throws UnknownHostException {
 		super();
 		this.env = env;
-		
+
 		InetAddress group = InetAddress.getByName(env.getMulticastAddr());
 		//set up an indefinite thread to advertise the controller
 		advertismentService = new Thread() {
 			public void run() {
-				try (MulticastSocket serverSocket = new MulticastSocket(env.getControllerDiscoveryPort()) ) {
+				try (DatagramSocket serverSocket = new DatagramSocket(env.getControllerDiscoveryPort()) ) {
 					System.out.println("Creating ControllerAdvertiser with interface " + env.getMyInterface());
-					serverSocket.setNetworkInterface( NetworkInterface.getByName(env.getMyInterface()) );
-					serverSocket.joinGroup(group);
+					//serverSocket.setNetworkInterface( NetworkInterface.getByName(env.getMyInterface()) );
+					//serverSocket.joinGroup(group);
 					String msg = "controllerHostname: " + env.getMyHostName() + " controllerAddress: " + env.getMyAddress();
 					DatagramPacket msgPacket = new DatagramPacket(
 						msg.getBytes(),
-						msg.getBytes().length, 
-						group, 
+						msg.getBytes().length,
+						group,
 						env.getControllerDiscoveryPort()
 					);
 					while(true) {
@@ -45,19 +45,19 @@ public class ControllerAdvertiser {
 					System.err.println("Warning: Your current network does not support multicast controller. Some features of Happy Brackets will not work.");
 					ex.printStackTrace();
 				}
- 				
+
 			}
 		};
 	}
-	
+
 	public void start() {
 		advertismentService.start();
 	}
-	
+
 	public void interrupt() {
 		advertismentService.interrupt();
 	}
-	
+
 	public boolean isAlive() {
 		return advertismentService.isAlive();
 	}
