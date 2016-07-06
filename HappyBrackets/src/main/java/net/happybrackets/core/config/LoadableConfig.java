@@ -33,7 +33,7 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	private Integer controllerDiscoveryPort;
   private Integer controllerHTTPPort;
 
-	//how often the PI sends an aslive message to the server
+	//how often the PI sends an alive message to the server
 	private Integer aliveInterval;
 
 	protected static LoadableConfig singletonInstance;

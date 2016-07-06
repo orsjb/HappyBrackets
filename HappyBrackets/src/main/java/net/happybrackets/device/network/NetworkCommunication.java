@@ -61,8 +61,9 @@ public class NetworkCommunication {
 					//master commands...
 					if(msg.getName().equals("/device/sync")) {
 						long timeToAct = 1000;
-						if(msg.getArgCount() > 0) timeToAct = (Integer)msg.getArg(0);
-						System.out.println(msg.getArg(0).getClass() + " " + msg.getArg(0));
+						if(msg.getArgCount() > 0) {
+							timeToAct = (Integer)msg.getArg(0);
+						}
 						hb.syncAudioStart(timeToAct);
 					} else if(msg.getName().equals("/device/reboot")) {
 						HB.rebootDevice();

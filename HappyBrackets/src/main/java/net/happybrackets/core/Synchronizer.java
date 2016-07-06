@@ -61,11 +61,8 @@ public class Synchronizer {
 			setupListener();
 			if(ableToUseMulticast) {
 				System.out.println("Synchronizer is listening.");
-				//setup sender
-				// TODO: we need a way of having a consolidated network configuration which we can use :( currently we don't know if we are running on a device or a controller...
-				// Going to default to controller for know but this is really just a coin toss that we get this right...
-				broadcastSocket = new DatagramSocket(LoadableConfig.getInstance().getClockSynchPort());
-
+				//setup sender	//TODO Ollie - encountered problem at this line... seems that the receiver is occupying this socket, I've removed the port because we don't need this until sending, I believe.
+				broadcastSocket = new DatagramSocket();
 				//start sending
 				startSending();
 				System.out.println("Synchronizer is sending synch pulses.");
@@ -109,7 +106,6 @@ public class Synchronizer {
 	}
 
 	private void setupListener() throws IOException {
-
 		final MulticastSocket s = new MulticastSocket(LoadableConfig.getInstance().getClockSynchPort());
 		try {
 			//s.setNetworkInterface(NetworkInterface.getByName(LoadableConfig.getInstance().preferredInterface));

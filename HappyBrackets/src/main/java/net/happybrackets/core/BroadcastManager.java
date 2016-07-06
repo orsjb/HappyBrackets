@@ -22,7 +22,7 @@ public class BroadcastManager {
     List<OSCListener> listeners;
 
     /**
-     * Create a new OLDBroadcastManager.
+     * Create a new BroadcastManager.
      */
     public BroadcastManager(DeviceConfig config) {
         this.config = config;
@@ -37,7 +37,7 @@ public class BroadcastManager {
             transmitter.connect();
             //TODO how do we set time to live?
         } catch (IOException e) {
-            System.err.println("Warning: OLDBroadcastManager can't use multicast. No broadcast functionality available in this session.");         //TODO is this diagnosis still correct?
+            System.err.println("Warning: BroadcastManager can't use multicast. No broadcast functionality available in this session.");         //TODO is this diagnosis still correct?
         }
     }
 

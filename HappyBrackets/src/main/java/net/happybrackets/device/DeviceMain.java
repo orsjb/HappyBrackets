@@ -1,5 +1,6 @@
 package net.happybrackets.device;
 
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.AudioSetup;
 
@@ -20,7 +21,7 @@ public class DeviceMain {
 		boolean autostart = true;
 		for(String s : args) {
 			if(s.startsWith("start=")) {
-				autostart = Boolean.parseBoolean(s.split("[=]")[1]);
+				autostart = !s.split("[=]")[1].toLowerCase().startsWith("f");
 			} else if(!s.contains("=")) {
 				hb.attemptHBActionFromClassName(s);
 			}

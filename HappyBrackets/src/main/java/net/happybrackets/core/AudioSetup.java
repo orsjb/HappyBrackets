@@ -18,12 +18,11 @@ public abstract class AudioSetup {
 			for(String arg : args) {
 				String[] elements = arg.split("[=]");
 				if(elements.length > 1) {
-					int val = Integer.parseInt(elements[1]);
-					if(elements[0].equals("buf")) bufSize = val;
-					else if(elements[0].equals("sr")) sampleRate = val;
-					else if(elements[0].equals("bits")) bits = val;
-					else if(elements[0].equals("ins")) inchans = val;
-					else if(elements[0].equals("outs")) outchans = val;
+					if(elements[0].equals("buf")) bufSize = Integer.parseInt(elements[1]);
+					else if(elements[0].equals("sr")) sampleRate = Integer.parseInt(elements[1]);
+					else if(elements[0].equals("bits")) bits = Integer.parseInt(elements[1]);
+					else if(elements[0].equals("ins")) inchans = Integer.parseInt(elements[1]);
+					else if(elements[0].equals("outs")) outchans = Integer.parseInt(elements[1]);
 				}
 			}
 		} catch(Exception e) {

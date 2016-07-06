@@ -1,5 +1,6 @@
 package net.happybrackets.tutorial.session1;
 
+import de.sciss.net.OSCMessage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Noise;

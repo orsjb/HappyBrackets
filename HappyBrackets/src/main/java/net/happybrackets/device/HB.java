@@ -88,9 +88,9 @@ public class HB {
 		// start network connection
 		controller = new NetworkCommunication(this);
 		System.out.print(".");
-		broadcast = new BroadcastManager(DeviceConfig.getInstance());
-		System.out.print(".");
 		synch = Synchronizer.getInstance();
+		System.out.print(".");
+		broadcast = new BroadcastManager(DeviceConfig.getInstance());
 		System.out.print(".");
 		// start listening for code
 		startListeningForCode();
