@@ -1,19 +1,18 @@
 package net.happybrackets.device.misc_tests;
 
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CDevice;
+import com.pi4j.io.i2c.I2CFactory;
+import de.sciss.net.OSCServer;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CFactory;
-
-import de.sciss.net.OSCServer;
-
 public class PI4JTest {
 
-	final static byte MAG_ADDRESS = 0x1e;
-	final static byte ACC_ADDRESS = 0x19;
+	final static byte MAG_ADDRESS = 0x1d;
+	final static byte ACC_ADDRESS = 0x1d;
 	final static byte GYR_ADDRESS = 0x6b;
 
 	final static int MAG_DATA_ADDR = 0xa8;
@@ -76,18 +75,16 @@ public class PI4JTest {
 						float[] accelData = readingSensorsAccel();
 
 
-
-//						System.out.println(gyroData[0] + "\t" + gyroData[1] + "\t" + gyroData[2] + "\t" + accelData[0] + "\t" + accelData[1] + "\t" + accelData[2] + "\t");
-//						System.out.println(accelData[0] + "\t" + accelData[1] + "\t" + accelData[2] + "\t");
+						System.out.println(gyroData[0] + "\t" + gyroData[1] + "\t" + gyroData[2] + "\t" + accelData[0] + "\t" + accelData[1] + "\t" + accelData[2] + "\t");
+						System.out.println(accelData[0] + "\t" + accelData[1] + "\t" + accelData[2] + "\t");
 
 						double M_PI = 3.14159265358979323846;
 						double RAD_TO_DEG = 57.29578;
 
-						double accXangle = (float) (Math.atan2(accelData[1],accelData[2])+M_PI)*RAD_TO_DEG;
-						double accYangle = (float) (Math.atan2(accelData[2],accelData[0])+M_PI)*RAD_TO_DEG;
+						double accXangle = (float) (Math.atan2(accelData[1], accelData[2]) + M_PI) * RAD_TO_DEG;
+						double accYangle = (float) (Math.atan2(accelData[2], accelData[0]) + M_PI) * RAD_TO_DEG;
 
-						//System.out.println("New: " +  accXangle + "\t" + accYangle);
-
+						System.out.println("New: " + accXangle + "\t" + accYangle);
 
 						Object[] args = new Object[5];
 //						args[0] = gyroData[0];
@@ -140,6 +137,8 @@ public class PI4JTest {
 			int theInt = bits2Int(shortybits);
 			result[i] = theInt / 5000f;
 		}
+		System.out.println("GYR:" + result[0] + " " + result[1] + " " + result[2]);
+
 		return result;
 	}
 
@@ -172,12 +171,12 @@ public class PI4JTest {
 			int theInt = bits2Int(shortybits);
 			result[i] = theInt;
 
-			System.out.print(bits2String(shortybits) + " ");
+			//System.out.print(bits2String(shortybits) + " ");
 
 		}
 				
 		System.out.println();
-		System.out.println(result[0] + " " + result[1] + " " + result[2]);
+		System.out.println("ACC:" + result[0] + " " + result[1] + " " + result[2]);
 		
 
 		return result;
