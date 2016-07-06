@@ -56,27 +56,45 @@ public class MiniMU extends Sensor {
 		// Work out which one we are
 		// use MINIMUAHRS code to work out different versions.
 		// use WHO_AM_I register to getInstance
-		int MINIMUVersion = 2;
-		if (MINIMUVersion == 2) {
-			MAG_ADDRESS = 0x1e;
-			ACC_ADDRESS = 0x19;
-			GYR_ADDRESS = 0x6b;
-		} else if (MINIMUVersion == 3) {
-			// replace this with v3 info
-			MAG_ADDRESS = 0x1e;
-			ACC_ADDRESS = 0x19;
-			GYR_ADDRESS = 0x6b;
 
-		} else if (MINIMUVersion == 5) {
-			// replace this with v5 info
-			MAG_ADDRESS = 0x1e;
-			ACC_ADDRESS = 0x19;
-			GYR_ADDRESS = 0x6b;
-		}
 		try {
-			System.out.println("Starting sensors reading:");
+			System.out.println("Getting I2C Bus 1:");
 			bus = I2CFactory.getInstance(I2CBus.BUS_1);
 			System.out.println("Connected to bus OK!");
+
+		} catch(IOException e) {
+			System.out.println("Could not connect to bus!");
+		}
+
+		if (bus != null) {
+			try {
+				//  v2 info
+				MAG_ADDRESS = 0x1e;
+				ACC_ADDRESS = 0x19;
+				GYR_ADDRESS = 0x6b;
+				gyrodevice = bus.getDevice(GYR_ADDRESS);
+				acceldevice = bus.getDevice(ACC_ADDRESS);
+				magdevice = bus.getDevice(MAG_ADDRESS);
+
+			} catch (IOException e) {
+				System.out.println("OK - not a v2, so I'll try to set up a v3.");
+				try {
+					//  v3 info
+					MAG_ADDRESS = 0x1d;
+					ACC_ADDRESS = 0x1d;
+					GYR_ADDRESS = 0x6b;
+					gyrodevice = bus.getDevice(GYR_ADDRESS);
+					acceldevice = bus.getDevice(ACC_ADDRESS);
+					magdevice = bus.getDevice(MAG_ADDRESS);
+
+					System.out.println("OK - v3 set up.");
+
+				} catch (IOException e2) {
+					System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
+				}
+			}
+		}
+		try {
 
 			byte CNTRL1_gyr = 0x20;
 			byte CNTRL4_gyr = 0x23;
@@ -92,27 +110,16 @@ public class MiniMU extends Sensor {
 			byte magSettings1 = 0b00001100;
 			byte magSettings2 = 0b00100000;
 			byte magSettings3 = 0b00000000;
-			if (MINIMUVersion == 2) {
-				CNTRL1_gyr = 0x20;
-				CNTRL4_gyr = 0x23;
-				CNTRL1_acc = 0x20;
-				CNTRL4_acc = 0x23;
 
-				CNTRL1_mag = 0x00;
-				CNTRL2_mag = 0x01;
-				CNTRL3_mag = 0x02;
-
-			}
 			// GYRO
-			gyrodevice = bus.getDevice(GYR_ADDRESS);
 			gyrodevice.write(CNTRL1_gyr, gyroSettings1);
 			gyrodevice.write(CNTRL4_gyr, gyroSettings4);
+
 			// ACCEL
-			acceldevice = bus.getDevice(ACC_ADDRESS);
 			acceldevice.write(CNTRL1_acc, accSettings1);
 			acceldevice.write(CNTRL4_acc, accSettings4);
+
 			// COMPASS enable
-			magdevice = bus.getDevice(MAG_ADDRESS);
 			magdevice.write(CNTRL1_mag, magSettings1);// DO = 011 (7.5 Hz ODR)
 			magdevice.write(CNTRL2_mag, magSettings2);// GN = 001 (+/- 1.3 gauss full scale)
 			magdevice.write(CNTRL3_mag, magSettings3);// MD = 00 (continuous-conversion mode)
@@ -128,11 +135,13 @@ public class MiniMU extends Sensor {
 			//	        // MD = 00 (continuous-conversion mode)
 //	        writeMagReg(LSM303_MR_REG_M, 0b00000000);
 //    			#define LSM303_MR_REG_M  0x02 // LSM303DLH, LSM303DLM, LSM303DLHC
+
 		} catch(IOException e) {
 			System.out.println("Warning: unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(");
-			e.printStackTrace();
 		}
-		start();
+		if (bus != null & acceldevice != null) {
+			start();
+		}
 	}
 
 	public void update() throws IOException {
