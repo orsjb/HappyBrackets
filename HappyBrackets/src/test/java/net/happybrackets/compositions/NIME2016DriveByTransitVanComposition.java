@@ -1,5 +1,6 @@
 package net.happybrackets.compositions;
 
+import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
@@ -11,6 +12,8 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.MiniMU;
+
+import java.net.SocketAddress;
 
 /**
  * Created by ollie on 24/06/2016.
@@ -239,31 +242,34 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     }
 
     private void setupNetworkListener(HB hb) {
-        hb.controller.addListener(msg -> {
-            System.out.println("Received message " + msg.getName());
-            if(msg.getName().equals("/pitchBendEffect")) {
-                pitchBendEffect = (float) msg.getArg(0);
-                pitchModAmount.setValue(pitchBendEffect);
-            } else if(msg.getName().equals("/rateModEffect")) {
-                rateModEffect = (float) msg.getArg(0);
-                rateModAmount.setValue(rateModEffect);
-            } else if(msg.getName().equals("/radioNoseEffect")) {
-                radioNoiseEffect = (float) msg.getArg(0);
-            } else if(msg.getName().equals("/flangeDelayEffect")) {
-                flangeDelayEffect = (float) msg.getArg(0);
-                delayFeedback.setValue(flangeDelayEffect);
-            } else if(msg.getName().equals("/joltSnubEffect")) {
-                joltSnubEffect = (float) msg.getArg(0);
-            } else if(msg.getName().equals("/repeatMode")) {
-                repeatMode = RepeatMode.values()[(int) msg.getArg(0)];
-            } else if(msg.getName().equals("/sampleSelect")) {
-                sampleSelect = SampleSelect.values()[(int) msg.getArg(0)];
-            } else if(msg.getName().equals("/sampleGroup")) {
-                sampleGroup = ((String) msg.getArg(0)).trim().toUpperCase();
-            } else if(msg.getName().equals("/mashupLevel")) {
-                mashupLevel = (float) msg.getArg(0);
-            } else if(msg.getName().equals("/synchBreaks")) {
-                hb.clock.reset();                                       //TODO test synch
+        hb.controller.addListener(new OSCListener() {
+            @Override
+            public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
+                System.out.println("Received message " + msg.getName());
+                if (msg.getName().equals("/pitchBendEffect")) {
+                    pitchBendEffect = (float) msg.getArg(0);
+                    pitchModAmount.setValue(pitchBendEffect);
+                } else if (msg.getName().equals("/rateModEffect")) {
+                    rateModEffect = (float) msg.getArg(0);
+                    rateModAmount.setValue(rateModEffect);
+                } else if (msg.getName().equals("/radioNoseEffect")) {
+                    radioNoiseEffect = (float) msg.getArg(0);
+                } else if (msg.getName().equals("/flangeDelayEffect")) {
+                    flangeDelayEffect = (float) msg.getArg(0);
+                    delayFeedback.setValue(flangeDelayEffect);
+                } else if (msg.getName().equals("/joltSnubEffect")) {
+                    joltSnubEffect = (float) msg.getArg(0);
+                } else if (msg.getName().equals("/repeatMode")) {
+                    repeatMode = RepeatMode.values()[(int) msg.getArg(0)];
+                } else if (msg.getName().equals("/sampleSelect")) {
+                    sampleSelect = SampleSelect.values()[(int) msg.getArg(0)];
+                } else if (msg.getName().equals("/sampleGroup")) {
+                    sampleGroup = ((String) msg.getArg(0)).trim().toUpperCase();
+                } else if (msg.getName().equals("/mashupLevel")) {
+                    mashupLevel = (float) msg.getArg(0);
+                } else if (msg.getName().equals("/synchBreaks")) {
+                    hb.clock.reset();                                       //TODO test synch
+                }
             }
         });
     }

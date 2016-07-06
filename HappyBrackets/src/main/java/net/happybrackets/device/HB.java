@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.Random;
 
+import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
@@ -99,6 +101,42 @@ public class HB {
 	}
 
 	/**
+	 * Broadcast an {@link OSCMessage} msg over the multicast group.
+	 *
+	 * @param string the message string to send.
+	 * @param args the args to the message.
+	 */
+	public void broadcast(String string, Object... args) {
+		broadcast.broadcast(string, args);
+	}
+
+	/**
+	 * Send an {@link OSCMessage} to the controller. The controller already responds to certain OSCMessages that are already generated automatically. Best not to interefere with these. This function is only really useful if you are going to modify your controller program.
+	 *
+	 * @param string the message string to send.
+	 * @param args the args of the message.
+     */
+	public void sendToController(String string, Object... args) {
+		controller.send(string, args);
+	}
+	/**
+	 * Add a new {@link OSCListener}, listening to broadcasts.
+	 *
+	 * @param listener the new {@link OSCListener}.
+	 */
+	public void addBroadcastListener(OSCListener listener) {
+		broadcast.addBroadcastListener(listener);
+	}
+
+	/**
+	 * Add a new {@link OSCListener}, listening to incoming messages from the controller.
+	 * @param listener the new listener.
+     */
+	public void addControllerListener(OSCListener listener) {
+		controller.addListener(listener);
+	}
+
+	/**
 	 * Causes the audio to start at a given synchronised time on all devices.
 	 *
 	 * @param time time at which to sync, according to the agreed clock time
@@ -110,6 +148,15 @@ public class HB {
 				clock.reset();		//if audio is already running, we just reset the clock
 			}
 		}, time);
+	}
+
+	/**
+	 * Returns the system time adjusted according to the result of any device synch attempts.
+	 *
+	 * @return corrected time as long
+     */
+	public long getSynchTime() {
+		return synch.correctedTimeNow();
 	}
 
 	/**

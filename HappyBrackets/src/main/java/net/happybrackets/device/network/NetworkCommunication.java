@@ -1,6 +1,5 @@
 package net.happybrackets.device.network;
 
-import net.happybrackets.core.Device;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
 import de.sciss.net.OSCListener;
@@ -19,14 +18,10 @@ import java.util.Set;
 
 public class NetworkCommunication {
 
-	public static interface Listener {
-		public void msg(OSCMessage msg);
-	}
-
 	private int myID;							//ID assigned by the controller
 	private OSCServer oscServer;				//The OSC server
 	private InetSocketAddress controller, broadcastAddress;		//The network details of the controller
-	private Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>()); 	
+	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
 																//Listeners to incoming OSC messages
 	final private HB hb;
 
@@ -99,10 +94,10 @@ public class NetworkCommunication {
 					}
 					//all other messages getInstance forwarded to delegate listeners
 					synchronized(listeners) {
-						Iterator<Listener> i = listeners.iterator();
+						Iterator<OSCListener> i = listeners.iterator();
 						while(i.hasNext()) {
 							try {
-								i.next().msg(msg);	
+								i.next().messageReceived(msg, src, time);
 							} catch(Exception e) {
 								e.printStackTrace();
 							}
@@ -124,7 +119,7 @@ public class NetworkCommunication {
 		new Thread() {
 			public void run() {
 				while(true) {
-					sendToController(
+					send(
 							"/device/alive",
                             new Object[] {
                                     DeviceConfig.getInstance().getMyHostName(),
@@ -149,7 +144,7 @@ public class NetworkCommunication {
 	 * @param msg the message name.
 	 * @param args the message arguments.
      */
-	public void sendToController(String msg, Object[] args) {
+	public void send(String msg, Object[] args) {
 		try {
 			oscServer.send(new OSCMessage(msg, args), controller);
 		} catch (IOException e) {
@@ -159,37 +154,23 @@ public class NetworkCommunication {
 	}
 
 	/**
-	 * Broadcast an OSC message to all devices.
-	 * @param msg the message name.
-	 * @param args the message arguments.
-     */
-	public void broadcastOSC(String msg, Object[] args) {
-		try {
-			oscServer.send(new OSCMessage(msg, args), broadcastAddress);
-			System.out.println("Sent this message: " + msg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Add a @{@link Listener} that will respond to incoming OSC messages from the controller. Note that this will not listen to broadcast messages from other devices, for which you should use TODO!.
+	 * Add a @{@link OSCListener} that will respond to incoming OSC messages from the controller. Note that this will not listen to broadcast messages from other devices, for which you should use TODO!.
 	 * @param l the listener.
      */
-	public void addListener(Listener l) {
+	public void addListener(OSCListener l) {
 		listeners.add(l);
 	}
 
 	/**
-	 * Remove the given {@link Listener}.
+	 * Remove the given {@link OSCListener}.
 	 * @param l the listener to remove.
      */
-	public void removeListener(Listener l) {
+	public void removeListener(OSCListener l) {
 		listeners.remove(l);
 	}
 
 	/**
-	 * Clear all @{@link Listener}s.
+	 * Clear all @{@link OSCListener}s.
 	 */
 	public void clearListeners() {
 		listeners.clear();

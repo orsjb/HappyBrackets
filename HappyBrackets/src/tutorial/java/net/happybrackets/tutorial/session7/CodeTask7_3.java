@@ -30,9 +30,9 @@ public class CodeTask7_3 implements HBAction {
          //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
         //create a listener that listens to messages from the controller
-        hb.controller.addListener(new NetworkCommunication.Listener() {
+        hb.addControllerListener(new OSCListener() {
             @Override
-            public void msg(OSCMessage msg) {
+            public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 if(msg.getName().equals("/play")) {
                     float speed = 1;
                     if(msg.getArgCount() > 0) {
@@ -63,12 +63,12 @@ public class CodeTask7_3 implements HBAction {
                     hb.sound(g);
                     e.addSegment(0, 100, new KillTrigger(g));
                     //send message
-                    hb.broadcast.broadcast(new OSCMessage("/ping"));
+                    hb.broadcast("/ping");
                 }
             }
         });
         //also listen for broadcasted network messages
-        hb.broadcast.addBroadcastListener(new OSCListener() {
+        hb.addBroadcastListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 System.out.println("Broadcast message received: " + msg.getName());

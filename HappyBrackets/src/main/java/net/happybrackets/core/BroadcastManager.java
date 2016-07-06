@@ -54,11 +54,13 @@ public class BroadcastManager {
     }
 
     /**
-     * Broadcast {@link OSCMessage} msg over the multicast group.
+     * Broadcast an {@link OSCMessage} msg over the multicast group.
      *
-     * @param msg the message to send.
+     * @param name the message string to send.
+     * @param args the args to the message.
      */
-    public void broadcast(OSCMessage msg) {
+    public void broadcast(String name, Object... args) {
+        OSCMessage msg = new OSCMessage(name, args);
         try {
             transmitter.send(msg);
         } catch (IOException e) {
