@@ -1,6 +1,6 @@
 package net.happybrackets.core;
 
-import net.happybrackets.controller.config.ControllerConfig;
+import net.happybrackets.core.config.LoadableConfig;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -64,7 +64,7 @@ public class Synchronizer {
 				//setup sender
 				// TODO: we need a way of having a consolidated network configuration which we can use :( currently we don't know if we are running on a device or a controller...
 				// Going to default to controller for know but this is really just a coin toss that we get this right...
-				broadcastSocket = new DatagramSocket(ControllerConfig.getInstance().getClockSynchPort());
+				broadcastSocket = new DatagramSocket(LoadableConfig.getInstance().getClockSynchPort());
 
 				//start sending
 				startSending();
@@ -110,10 +110,10 @@ public class Synchronizer {
 
 	private void setupListener() throws IOException {
 
-		final MulticastSocket s = new MulticastSocket(ControllerConfig.getInstance().getClockSynchPort());
+		final MulticastSocket s = new MulticastSocket(LoadableConfig.getInstance().getClockSynchPort());
 		try {
-			//s.setNetworkInterface(NetworkInterface.getByName(ControllerConfig.getInstance().preferredInterface));
-			s.joinGroup(InetAddress.getByName(ControllerConfig.getInstance().getMulticastAddr()));
+			//s.setNetworkInterface(NetworkInterface.getByName(LoadableConfig.getInstance().preferredInterface));
+			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
 			ableToUseMulticast = true;
 		} catch(SocketException e) {
 			e.printStackTrace();
@@ -322,8 +322,8 @@ public class Synchronizer {
 			pack = new DatagramPacket(
 				buf,
 				buf.length,
-				InetAddress.getByName(ControllerConfig.getInstance().getMulticastAddr()),
-				ControllerConfig.getInstance().getClockSynchPort()
+				InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()),
+					LoadableConfig.getInstance().getClockSynchPort()
 			);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
