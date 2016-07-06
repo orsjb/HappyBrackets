@@ -42,7 +42,7 @@ INS=0
 OUTS=1 
 AUTOSTART=true 
 
-/usr/bin/sudo /usr/bin/java -Xmx512m -jar HB.jar $BUF $SR $BITS $INS $OUTS $AUTOSTART  > stdout &
+/usr/bin/sudo /usr/bin/java -Xmx512m -jar HB.jar buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART  > stdout &
 
 ################ OPTIONAL ####################
 ## Edit and uncomment the following two lines if you want to run a specific class on startup. You will need to have compiled the class and updated HB.jar on the device so that it contains this class.

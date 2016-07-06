@@ -239,10 +239,10 @@ public class HB {
 							e.printStackTrace();
 						}
 						if (incomingClass != null) {
-							HBAction pipo = null;
+							HBAction action = null;
 							try {
-								pipo = incomingClass.newInstance();
-								pipo.action(HB.this);
+								action = incomingClass.newInstance();
+								action.action(HB.this);
 							} catch (Exception e) {
 								e.printStackTrace(); // catching all exceptions
 													 // means that we avert an exception
@@ -257,6 +257,17 @@ public class HB {
 				}
 			}
 		}.start();
+
+	}
+
+	public void attemptHBActionFromClassName(String s) {
+		try {
+			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(s);
+			HBAction action = hbActionClass.newInstance();
+			action.action(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -487,7 +498,6 @@ public class HB {
 	public String getStatus() {
 		return status;
 	}
-
 }
 
 
