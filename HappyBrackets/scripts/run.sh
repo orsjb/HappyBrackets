@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Script to autorun on pi
+# Script to autorun HappyBrackets
+
 # get the MAC address to use as hostname
 
 NEWHOST=`cat /sys/class/net/wlan0/address | sed s/://g`
@@ -32,8 +33,7 @@ cd ${DIR}/..
 
 echo “Running HappyBrackets”
 
-# Run the main app
-# args are bufSize (512), sample rate (44100), bits (16), input channels (0), output channels (1), autostart (true)
+# Run the main app. $ACTION variable below can be used to specify an HBAction to run on startup. Make sure the compiled HBAction class, and any dependencies (including anonymous classes) are placed into data/classes.
 
 BUF=1024
 SR=44100
@@ -41,14 +41,9 @@ BITS=16
 INS=0
 OUTS=1 
 AUTOSTART=true 
+ACTION=
 
-/usr/bin/sudo /usr/bin/java -Xmx512m -jar HB.jar buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART  > stdout &
-
-################ OPTIONAL ####################
-## Edit and uncomment the following two lines if you want to run a specific class on startup. You will need to have compiled the class and updated HB.jar on the device so that it contains this class.
-#sleep 10
-#/usr/bin/sudo /usr/bin/java -cp HB.jar compositions.pipos_2014.webdirections.fluff_install.FluffyWoolInstallation &
-############## ------------- #################
+/usr/bin/sudo /usr/bin/java —cp data/classes -Xmx512m -jar HB.jar buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART $ACTION > stdout &
 
 # Finally, run the network-monitor.sh script to keep WiFi connection alive
 

@@ -15,6 +15,7 @@ import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.WavePlayer;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * Created by ollie on 5/06/2016.
@@ -28,10 +29,6 @@ import net.beadsproject.beads.ugens.WavePlayer;
 public class CodeTask1_4 extends Application {
 
     public static void main(String[] args) {
-        /*
-        JavaFX applications look a little different to regular Java programs.
-        This 'launch()' function does some Application setup under the hood. Once that's done, the 'start()' function below gets called. This is where you should do your initialisation in a JavaFX program.
-         */
         launch(args);
     }
 
@@ -43,6 +40,8 @@ public class CodeTask1_4 extends Application {
         WavePlayer wp = new WavePlayer(ac, 500, Buffer.SINE);
         ac.out.addInput(wp);
         ac.out.setGain(0.1f);
+        //create the window to visualise the waveform
+        WaveformVisualiser.open(ac, false);
         //create two buttons and give them actions
         Button btnH = new Button("High");
         btnH.setOnAction(new EventHandler<ActionEvent>() {

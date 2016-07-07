@@ -1,27 +1,36 @@
 package net.happybrackets.tutorial.session2;
 
+import de.sciss.net.OSCServer;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.*;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * Created by ollie on 5/06/2016.
  *
  * The following code plays a regular noise burst through a simple delay.
  *
- * 1) Identify what number below indicates the delay time of the delay and speed up the delay.
+ * 1) Identify what number below indicates the delay time of the delay, and use it to speed up the delay.
  * 2) Make the delay feedback on itself by connecting two UGens together in a single line of code, and identify which number is responsible for the delay feedback level.
  * 3) Now transform this delay into a ping-pong delay, in which the sound 'ping-pongs' from the left channel to the right channel and back again, with feedback as above. The time it takes to get from left to right is controlled separately from the time from right to left. Set your ping-pong delay so that the left channel echo comes 125ms after the original sound, and then the right channel echo comes 250ms after that, followed again by an attenuated delay in the left channel 125ms later, and so on.
  *
  *
  */
-public class CodeTask2_4 {
+public class CodeTask2_4 extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         //audio stuff
         AudioContext ac = new AudioContext();
         ac.start();
+        WaveformVisualiser.open(ac);
         //create a Clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);

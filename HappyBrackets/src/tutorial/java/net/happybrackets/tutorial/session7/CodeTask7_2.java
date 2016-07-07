@@ -23,7 +23,7 @@ public class CodeTask7_2 implements HBAction {
         hb.reset();
          //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
-        hb.controller.addListener(new OSCListener() {
+        hb.addControllerListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 if(msg.getName().equals("/play")) {

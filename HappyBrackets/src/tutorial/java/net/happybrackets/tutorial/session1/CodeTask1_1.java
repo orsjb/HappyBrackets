@@ -1,9 +1,12 @@
 package net.happybrackets.tutorial.session1;
 
 import de.sciss.net.OSCMessage;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Noise;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * Created by ollie on 10/05/2016.
@@ -42,7 +45,7 @@ import net.beadsproject.beads.ugens.Noise;
  *
  * Now connect your WavePlayer to the Gain object.
  * In the line g.addInput(n), replace "n" with "wp".
- * Run the code.
+ * Run the code. If you did this right you will now hear a sine tone instead of white noise.
  *
  * You can experiment by changing Buffer.SINE to Buffer.SQUARE and use autocomplete to see the other sounds.
  *
@@ -57,11 +60,22 @@ import net.beadsproject.beads.ugens.Noise;
  * Now change it to g.addInput(1, wp, 0);
  * Run that.
  *
- * You should notice that you are changing which speaker your sound is coming out of (make sure you are listening in stereo!).
+ * You should notice that you are changing which speaker your sound is coming out of (make sure you are listening in stereo!). The first argument is the choice of input channel on the gain object. As you change this from 0 to 1 you switch from the left speaker to the right speaker.
  *
  */
-public class CodeTask1_1 {
+public class CodeTask1_1 extends Application {
+
     public static void main(String[] args) {
+        /*
+        Note for those used to Java, you may not be familiar with a JavaFX application.
+        JavaFX applications look a little different to regular Java programs.
+        This 'launch()' function does some Application setup under the hood. Once that's done, the 'start()' function below gets called. This is where you should do your initialisation in a JavaFX program.
+         */
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         //set up the AudioContext and start it
         AudioContext ac = new AudioContext();
         ac.start();
@@ -73,5 +87,7 @@ public class CodeTask1_1 {
         ac.out.addInput(g);
         //say something to the console output
         System.out.println("Hello World! We are running Beads.");
+        //finally, this creates a window to visualise the waveform
+        WaveformVisualiser.open(ac);
     }
 }

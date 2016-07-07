@@ -1,10 +1,13 @@
 package net.happybrackets.tutorial.session3;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.SamplePlayer;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * Created by ollie on 6/06/2016.
@@ -21,12 +24,17 @@ import net.beadsproject.beads.ugens.SamplePlayer;
  *
  *
  */
-public class CodeTask3_2 {
+public class CodeTask3_2 extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         AudioContext ac = new AudioContext();
-        SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
         ac.start();
+        WaveformVisualiser.open(ac);
+        SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
         //clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);

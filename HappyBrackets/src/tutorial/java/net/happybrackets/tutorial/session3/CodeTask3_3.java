@@ -1,11 +1,14 @@
 package net.happybrackets.tutorial.session3;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.Function;
 import net.beadsproject.beads.ugens.SamplePlayer;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 import java.util.Random;
 
@@ -20,11 +23,16 @@ import java.util.Random;
  *
  *
  */
-public class CodeTask3_3 {
+public class CodeTask3_3 extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         AudioContext ac = new AudioContext();
         ac.start();
+        WaveformVisualiser.open(ac);
         Random rng = new Random();
         //a function object
         Function f = new Function(ac.out) {
