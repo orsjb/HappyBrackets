@@ -58,9 +58,9 @@ public class MiniMU extends Sensor {
 		// use WHO_AM_I register to getInstance
 
 		try {
-			System.out.println("Getting I2C Bus 1:");
+			System.out.print("Getting I2C Bus 1:");
 			bus = I2CFactory.getInstance(I2CBus.BUS_1);
-			System.out.println("Connected to bus OK!");
+			System.out.println(" Connected to bus OK!");
 
 		} catch(IOException e) {
 			System.out.println("Could not connect to bus!");
@@ -68,6 +68,8 @@ public class MiniMU extends Sensor {
 
 		if (bus != null) {
 			try {
+				System.out.println("Trying a v2.");
+
 				//  v2 info
 				MAG_ADDRESS = 0x1e;
 				ACC_ADDRESS = 0x19;
@@ -78,21 +80,26 @@ public class MiniMU extends Sensor {
 
 			} catch (IOException e) {
 				System.out.println("OK - not a v2, so I'll try to set up a v3.");
-				try {
-					//  v3 info
-					MAG_ADDRESS = 0x1d;
-					ACC_ADDRESS = 0x1d;
-					GYR_ADDRESS = 0x6b;
-					gyrodevice = bus.getDevice(GYR_ADDRESS);
-					acceldevice = bus.getDevice(ACC_ADDRESS);
-					magdevice = bus.getDevice(MAG_ADDRESS);
+				e.printStackTrace();
 
-					System.out.println("OK - v3 set up.");
-
-				} catch (IOException e2) {
-					System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
-				}
 			}
+			try {
+				System.out.println("V2 didnt work - trying a v3.");
+				//  v3 info
+				MAG_ADDRESS = 0x1d;
+				ACC_ADDRESS = 0x1d;
+				GYR_ADDRESS = 0x6b;
+				gyrodevice = bus.getDevice(GYR_ADDRESS);
+				acceldevice = bus.getDevice(ACC_ADDRESS);
+				magdevice = bus.getDevice(MAG_ADDRESS);
+
+				System.out.println("OK - v3 set up.");
+
+			} catch (IOException e2) {
+				System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
+				e2.printStackTrace();
+			}
+
 		}
 		try {
 
