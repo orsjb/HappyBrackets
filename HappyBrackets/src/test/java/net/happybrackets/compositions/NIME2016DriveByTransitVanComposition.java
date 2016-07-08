@@ -21,6 +21,10 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
 
     final boolean DUMMY_SENSORS = true; //for debugging when no sensors are available
 
+    final float[] TINY_DIVS = {1/8f,1/16f,1/32f,1/64f,1/128f};
+    final float[] MULTS = {0.25f, 0.5f, 0.5f, 1, 1, 1, 1.5f, 1.5f, 2f, 3f};
+    final float[] LOW_MULTS = {0.125f, 0.25f, 0.5f, 0.5f, 1, 1, 1.5f};
+
     //different sample sets
     final String TALK = "talk";
     final String DNB = "dnb";
@@ -38,9 +42,10 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     boolean newSample = false;
 
     float mashupLevel = 0f;
+    float noiseEffect = 0f;
 
     final float SOURCE_BPM = 170;
-    final float SOURCE_INTERVAL = 60000 / 170;
+    final float SOURCE_INTERVAL = 60000 / SOURCE_BPM;
 
     //strength of user input effects to different elements
     float flangeDelayEffect = 0f;
@@ -48,13 +53,15 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
 
     HB hb;
 
+    int timeSinceLastTrigger = 0;
+
     //audio stuff
     SamplePlayer sp;
     GranularSamplePlayer gsp;
 
     //sample
     UGen grainCrossFade;
-    Envelope sampleGain;
+    Glide sampleGain;
     Envelope baseRate, basePitch;
     Envelope grainSize, grainInterval, grainRandomness;
     UGen rateMod, rateModAmount;
@@ -62,10 +69,10 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
 
     //noise mix
     UGen filtFreq, filtQ, filtGain;
-    Envelope noiseGain;
+    Glide noiseGain;
 
     //delay
-    UGen delayFeedback, delayInputGain, delayRateMult;
+    Envelope delayFeedback, delayInputGain, delayRateMult;
 
     //tremolo
     UGen tremoloAmount, tremoloRateMult;
@@ -98,7 +105,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     private void setupAudio(HB hb) {
         //sample controls - initiate all the controls we will use to control the sample
         grainCrossFade = new Glide(hb.ac, 0);  //1 = fully granular, 0 = fully non-granular
-        sampleGain = new Envelope(hb.ac, 1);
+        sampleGain = new Glide(hb.ac, 1);
         baseRate = new Envelope(hb.ac, 1);
         rateMod = new Glide(hb.ac);
         rateModAmount = new Glide(hb.ac);
@@ -114,9 +121,9 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         sp.setKillOnEnd(false);
         gsp.setKillOnEnd(false);
         //connect up sample system
-        Function sampleMix = new Function(gsp, sp, grainCrossFade) {
+        Function sampleMix = new Function(gsp, sp, grainCrossFade, sampleGain) {
             public float calculate() {
-                return x[0] * x[2] + x[1] * (1f - x[2]);
+                return (x[0] * x[2] + x[1] * (1f - x[2])) * x[3];
             }
         };
         Function rate = new Function(baseRate, rateMod, rateModAmount) {
@@ -139,7 +146,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         filtFreq = new Glide(hb.ac, 500);
         filtQ = new Glide(hb.ac, 1);
         filtGain = new Glide(hb.ac, 1);
-        noiseGain = new Envelope(hb.ac);
+        noiseGain = new Glide(hb.ac, 0);
         //noise
         Noise n = new Noise(hb.ac);
         Gain noiseMix = new Gain(hb.ac, 1, noiseGain);
@@ -151,9 +158,9 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         f.setGain(filtGain);
         f.addInput(noiseMix);
         //delay controls
-        delayFeedback = new Glide(hb.ac, 0);
-        delayInputGain = new Glide(hb.ac, 1);
-        delayRateMult = new Glide(hb.ac, 1);
+        delayFeedback = new Envelope(hb.ac, 0);
+        delayInputGain = new Envelope(hb.ac, 1);
+        delayRateMult = new Envelope(hb.ac, 1);
         //delay
         TapIn tin = new TapIn(hb.ac, 10000);
         TapOut tout = new TapOut(hb.ac, tin, new Function(rate, delayRateMult) {
@@ -193,7 +200,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(hb.clock.getCount() % 64 == 0) {
+                if(hb.clock.getCount() % 256 == 0) {
                     switch (repeatMode) {
                         case ONE_HIT:           //play the break once then stop
                             loadNextSample();
@@ -249,25 +256,37 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 System.out.println("Received message " + msg.getName());
+
+                switch(msg.getName()) {
+                    case "/pitchBendEffect":
+                        System.out.println("matched pitchBendEffect message");
+                        break;
+                }
+
                 if (msg.getName().equals("/pitchBendEffect")) {             //amount sensors influence pitch bend
-                    pitchModAmount.setValue((float) msg.getArg(0));
+                    pitchModAmount.setValue(hb.getFloatArg(msg, 0));
                 } else if (msg.getName().equals("/rateModEffect")) {        //amount sensors influence rate
-                    rateModAmount.setValue((float) msg.getArg(0));
-                } else if (msg.getName().equals("/flangeDelayEffect")) {       //amount sensors influence jolty snubs
-                    flangeDelayEffect = (float) msg.getArg(0);
-                } else if (msg.getName().equals("/joltSnubEffect")) {       //amount sensors influence jolty snubs
-                    joltSnubEffect = (float) msg.getArg(0);
+                    rateModAmount.setValue(hb.getFloatArg(msg, 0));
+                } else if (msg.getName().equals("/noiseEffect")) {          //amount sensors influence noise
+                    noiseEffect = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/flangeDelayEffect")) {    //amount jolts influence delay
+                    flangeDelayEffect = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/joltSnubEffect")) {       //amount jolts influence snubs
+                    joltSnubEffect = hb.getFloatArg(msg, 0);
                 } else if (msg.getName().equals("/repeatMode")) {           //what type of playback, see RepeatMode options
                     repeatMode = RepeatMode.values()[(int) msg.getArg(0)];
                     newSample = true;
-                } else if (msg.getName().equals("/sampleSelect")) {         //what sample is chosen
+                } else if (msg.getName().equals("/sampleSelect")) {         //how sample is chosen
                     sampleSelect = SampleSelect.values()[(int) msg.getArg(0)];
                     newSample = true;
+                } else if (msg.getName().equals("/sampleChoice")) {         //what sample is chosen
+                    specificSampleSelect = (int)msg.getArg(0);
+                    newSample = true;
                 } else if (msg.getName().equals("/sampleGroup")) {          //what sample group
-                    sampleGroup = ((String) msg.getArg(0)).trim().toUpperCase();
+                    sampleGroup = ((String) msg.getArg(0)).trim().toLowerCase();
                     newSample = true;
                 } else if (msg.getName().equals("/mashupLevel")) {          //amount of mashup from 0-1
-                    mashupLevel = (float) msg.getArg(0);
+                    mashupLevel = hb.getFloatArg(msg, 0);
                 } else if (msg.getName().equals("/synchBreaks")) {          //message to synch clocks
                     hb.clock.reset();
                 } else if (msg.getName().equals("/trigger")) {              //dummy to simulate trigger
@@ -321,75 +340,185 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     }
 
     private void mashItUp() {
-
         //reset all the envelopes (sampleGain, baseRate, basePitch, grainSize, grainInterval, grainRandomness, noiseGain
-        sampleGain.clear();
         baseRate.clear();
         basePitch.clear();
         grainSize.clear();
         grainInterval.clear();
         grainRandomness.clear();
-
+        delayFeedback.clear();
+        delayRateMult.clear();
+        delayInputGain.clear();
         //Now sample is selected (or might be dead).
-        //TODO Time to mash.
-        //Mash variables
-        // -- tremoloRateMult
-        // -- tremoloAmount
-        // -- baseRate
-        // -- basePitch
-        // -- grainSize
-        // -- grainInterval
-        // -- grainRandomness
-        // -- delayRateMult
-        // -- delayFeedback
-
+        //Time to mash.
         //use mashup level
-
-        if(mashupLevel > 0.25) {
-
+        if(mashupLevel > 0) {
+            //regular mash
+            mashA();
+        } else {
+            //no mash - reset
+            unmash();
         }
+    }
 
+    //Mash variables
+    // -- tremoloRateMult
+    // -- tremoloAmount
+    // -- baseRate
+    // -- basePitch
+    // -- grainSize
+    // -- grainInterval
+    // -- grainRandomness
+    // -- delayRateMult
+    // -- delayFeedback
+
+    private void mashA() {  //regular
+        //TODO
+        int extremity = hb.rng.nextInt((int)(mashupLevel * 5));
+        ////////////set base rate
+        if(hb.rng.nextFloat() < mashupLevel) {
+            float dir = 1;
+            if(hb.rng.nextFloat() < 0.2f) {
+                dir = -1;
+                sp.setPosition(sp.getSample().getLength());
+                gsp.setPosition(gsp.getSample().getLength());
+            }
+            float rate = dir * rand(LOW_MULTS);
+            baseRate.addSegment(rate, 0);
+            //possible snub
+            if(hb.rng.nextFloat() < 0.2f) {
+                baseRate.addSegment(rate, 1000);
+                baseRate.addSegment(-0.1f, hb.rng.nextFloat() * 2000);
+            }
+        } else {
+            baseRate.setValue(1);
+        }
+        //set base pitch
+        if(hb.rng.nextFloat() < mashupLevel) {
+            float dir = 1;
+            if(hb.rng.nextFloat() < 0.2f) {
+                dir = -1;
+                sp.setPosition(sp.getSample().getLength());
+            }
+            float rate = dir * rand(MULTS);
+            basePitch.addSegment(rate, 0);
+            //possible snub
+            if(hb.rng.nextFloat() < 0.2f) {
+                basePitch.addSegment(rate, 1000);
+                basePitch.addSegment(-0.1f, rand(0, 2000));
+            }
+        } else {
+            basePitch.setValue(1);
+        }
+        //grain
+        if(hb.rng.nextFloat() < mashupLevel) {
+            float grainInt = rand(10,100);
+            float grainSizeMult = rand(0.5f, 4);
+            grainSize.addSegment(grainInt * grainSizeMult, rand(10,2000));
+            grainInterval.addSegment(grainInt, rand(10,2000));
+            grainRandomness.setValue(prob(0.2f) ? rand(0.01f, 0.1f) : 0);
+        } else {
+            grainInterval.setValue(40);
+            grainSize.setValue(60);
+            grainRandomness.setValue(0.001f);
+        }
+        //tremolo
+        tremoloRateMult.setValue(rand(MULTS));
+        if(hb.rng.nextFloat() < mashupLevel) {
+            tremoloAmount.setValue(prob(0.1f) ? rand(0.5f, 1) : 0);
+        } else {
+            tremoloAmount.setValue(0);
+        }
+        //delay
+        delayRateMult.addSegment(prob(0.5f) ? rand(TINY_DIVS): rand(MULTS), rand(0, 2000));
+        if(hb.rng.nextFloat() < mashupLevel) {
+            delayInputGain.addSegment(prob(0.1f) ? rand(0.5f, 1) : 0, rand(0, 2000));
+            delayInputGain.addSegment(0, rand(0, 2000));
+
+        } else {
+            delayInputGain.setValue(0);
+        }
+    }
+
+    private float rand(float[] x) {
+        return x[hb.rng.nextInt(x.length)];
+    }
+
+    private boolean prob(float prob) {
+        return hb.rng.nextFloat() < prob;
+    }
+
+    private void unmash() {
+        tremoloAmount.setValue(0);
+        baseRate.setValue(1);
+        basePitch.setValue(1);
+        grainSize.setValue(60);
+        grainInterval.setValue(40);
+        grainRandomness.setValue(0.001f);
+        delayInputGain.setValue(0);
     }
 
     private void sensor(float x, float y, float z) {
         float rms = (float) Math.sqrt(x * x + y * y + z * z);
         //the following ones always happen...
         //pitchBendEffect
-        pitchMod.setValue(x); //<--- TODO calibrate
+        pitchMod.setValue(x); //<--- TODO calibrate to 0.9-1.1
         //rateModEffect
-        rateMod.setValue(y);  //<--- TODO calibrate
+        rateMod.setValue(y);  //<--- TODO calibrate to 0.5-2
         //radioNoiseEffect
-        filtFreq.setValue(x); //<--- TODO calibrate
-        filtQ.setValue(y);    //<--- TODO calibrate
-        filtGain.setValue(z); //<--- TODO calibrate
-        //the following ones sometimes happen
-        //TODO sensors controlling noise / sample mix
-
+        filtFreq.setValue(x); //<--- TODO calibrate to 500-15,000
+        filtQ.setValue(y);    //<--- TODO calibrate to ??
+        filtGain.setValue(z); //<--- TODO calibrate to ??
+        //the following noise effect sometimes happens, depending on noiseEffect
+        float sampleProx = x;        //<--- TODO calibrate to 0-1
+        float sampleGainVal = 1f - (noiseEffect * sampleProx);
+        sampleGain.setValue((float) Math.sqrt(sampleGainVal));
+        noiseGain.setValue((float) Math.sqrt(1f - sampleGainVal));
         //check for a big event
         float thresh = 10;  //<--- TODO calibrate
-        if (rms > thresh) {
+        if (rms > thresh && timeSinceLastTrigger > 10) {
             trigger();
+            timeSinceLastTrigger = 0;
         }
+        timeSinceLastTrigger++;
+    }
+
+    private float rand(float low, float high) {
+        return hb.rng.nextFloat() * (low-high) + low;
     }
 
     private void trigger() {
-
-        //TODO clear these?...
-//        sampleGain.clear();
-//        baseRate.clear();
-//        basePitch.clear();
-//        grainSize.clear();
-//        grainInterval.clear();
-//        grainRandomness.clear();
-
+        System.out.println("Trigger");
         //flangeDelayEffect
         float realFlangeDelayEffect = flangeDelayEffect * 1f; //<--- TODO calibrate
-        //TODO - envelopes - do stuff to delayRateMult and delayFeedback (takeover and run envelopes)
-
+        if(realFlangeDelayEffect > 0) {
+            //clear all envelopes
+            grainSize.clear();
+            grainInterval.clear();
+            grainRandomness.clear();
+            delayFeedback.clear();
+            delayRateMult.clear();
+            delayInputGain.clear();
+            //envelopes - do stuff to delayRateMult and delayFeedback (takeover and run envelopes)
+            //delay spike, dependent on flange
+            delayInputGain.setValue(realFlangeDelayEffect);
+            delayInputGain.addSegment(realFlangeDelayEffect, 500);
+            delayInputGain.addSegment(0, 50);
+            int elements = hb.rng.nextInt(3);
+            for (int i = 0; i < elements; i++) {
+                delayRateMult.addSegment(rand(TINY_DIVS), rand(10,2000));
+            }
+            delayFeedback.setValue(0.86f);  //fix this?
+        }
         //joltSnubEffect
         float realJoltSnubEffect = joltSnubEffect * 1f; //<--- TODO calibrate
-        //TODO - do stuff to baseRate and basePitch (takeover and run envelopes)
-
+        //do stuff to baseRate and basePitch, together (takeover and run envelopes)
+        if(realJoltSnubEffect > 0) {
+            baseRate.clear();
+            basePitch.clear();
+            baseRate.addSegment(0, 1000);
+            basePitch.addSegment(0, 1000);
+        }
     }
 
 }

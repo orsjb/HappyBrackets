@@ -199,6 +199,32 @@ public class HB {
 	}
 
 	/**
+	 * Checks for an exact match to a string.
+	 * @param m the message to check.
+	 * @param match the string to check for.
+     * @return true if match.
+     */
+	public boolean messageIs(OSCMessage m, String match) {
+		return m.getName().equals(match);
+	}
+
+	/**
+	 * Gets a float arg from an {@link OSCMessage}. Accesses the arg as a float even if the arg is type int.
+	 * @param m the message.
+	 * @param index the index of the argument.
+     * @return a float.
+     */
+	public float getFloatArg(OSCMessage m, int index) {
+		float result = 0;
+		try {
+			result = (float)m.getArg(index);
+		} catch(ClassCastException e) {
+			result = (int)m.getArg(index);
+		}
+		return result;
+	}
+
+	/**
 	 * Produces a single short test bleep on the device. Assumes audio is running.
 	 */
 	public void testBleep() {
