@@ -1,7 +1,7 @@
 package net.happybrackets.core;
 
 import de.sciss.net.*;
-import net.happybrackets.device.config.DeviceConfig;
+import net.happybrackets.core.config.EnvironmentConfig;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,15 +16,17 @@ import java.util.List;
  */
 public class BroadcastManager {
 
-    DeviceConfig config;
+    EnvironmentConfig config;
     OSCTransmitter transmitter;
     OSCReceiver receiver;
     List<OSCListener> listeners;
 
     /**
      * Create a new BroadcastManager.
+     *
+     * @param config must be a reference to an environment config class implimentation
      */
-    public BroadcastManager(DeviceConfig config) {
+    public BroadcastManager(EnvironmentConfig config) {
         this.config = config;
         listeners = new ArrayList<>();
         try {
