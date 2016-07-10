@@ -82,20 +82,20 @@ public class MiniMU extends Sensor {
 
 			} catch (Exception e) {
 				System.out.println("OK - not a v2, so I'll try to set up a v3.");
-				try {
-					//  v3 info
-					MAG_ADDRESS = 0x1d;
-					ACC_ADDRESS = 0x1d;
-					GYR_ADDRESS = 0x6b;
-					gyrodevice = bus.getDevice(GYR_ADDRESS);
-					acceldevice = bus.getDevice(ACC_ADDRESS);
-					magdevice = bus.getDevice(MAG_ADDRESS);
+			}
+			try {
+				//  v3 info
+				MAG_ADDRESS = 0x1d;
+				ACC_ADDRESS = 0x1d;
+				GYR_ADDRESS = 0x6b;
+				gyrodevice = bus.getDevice(GYR_ADDRESS);
+				acceldevice = bus.getDevice(ACC_ADDRESS);
+				magdevice = bus.getDevice(MAG_ADDRESS);
 
-					System.out.println("OK - v3 set up.");
+				System.out.println("OK - v3 set up.");
 
-				} catch (Exception e2) {
-					System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
-				}
+			} catch (Exception e2) {
+				System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
 			}
 		}
 		try {

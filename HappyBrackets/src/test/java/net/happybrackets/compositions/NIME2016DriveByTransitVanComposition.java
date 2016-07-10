@@ -31,10 +31,10 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     final String AMEN = "amen";
     final String RAGGA = "ragga";
 
-    String sampleGroup = TALK;
+    String sampleGroup = AMEN;
 
     enum RepeatMode {ONE_HIT, REPEAT, NONE}
-    RepeatMode repeatMode = RepeatMode.ONE_HIT;
+    RepeatMode repeatMode = RepeatMode.REPEAT;
     enum SampleSelect {SPECIFIC, ID, RANDOM}
     SampleSelect sampleSelect = SampleSelect.SPECIFIC;
 
@@ -118,8 +118,8 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         grainInterval = new Envelope(hb.ac, 40);
         grainRandomness = new Envelope(hb.ac, 0);
         //sample stuff - set up the sample players
-        sp = new SamplePlayer(hb.ac, SampleManager.fromGroup(TALK, 0));
-        gsp = new GranularSamplePlayer(hb.ac, SampleManager.fromGroup(TALK, 0));
+        sp = new SamplePlayer(hb.ac, SampleManager.fromGroup(sampleGroup, 0));
+        gsp = new GranularSamplePlayer(hb.ac, SampleManager.fromGroup(sampleGroup, 0));
         sp.setKillOnEnd(false);
         gsp.setKillOnEnd(false);
         //connect up sample system
@@ -346,8 +346,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         hb.sensors.get("MiniMu").addListener(new MiniMU.MiniMUListener() {
             @Override
             public void accelData(double x, double y, double z) {
-               sensor((float)x,(float)y,(float)z);
-                System.out.println("Sensor data: " + x + " " + y + " " + z);
+               sensor((float)x / 12000f,(float)y / 12000f,(float)z / 12000f);
             }
         });
     }
@@ -471,6 +470,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     }
 
     private void sensor(float x, float y, float z) {
+//                System.out.println("Sensor data: " + x + " " + y + " " + z);
         float rms = (float) Math.sqrt(x * x + y * y + z * z);
         //the following ones always happen...
         //pitchBendEffect
@@ -487,8 +487,8 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         sampleGain.setValue((float) Math.sqrt(sampleGainVal));
         noiseGain.setValue((float) Math.sqrt(1f - sampleGainVal));
         //check for a big event
-        float thresh = 10;  //<--- TODO calibrate
-        if (rms > thresh && timeSinceLastTrigger > 10) {
+        float thresh = 3;  //<--- TODO calibrate
+        if (rms > thresh && timeSinceLastTrigger > 100) {
             trigger();
             timeSinceLastTrigger = 0;
         }
@@ -520,7 +520,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
             for (int i = 0; i < elements; i++) {
                 delayRateMult.addSegment(rand(TINY_DIVS), rand(10,2000));
             }
-            delayFeedback.setValue(0.96f);  //fix this?
+            delayFeedback.setValue(0.85f);  //fix this?
         }
         //joltSnubEffect
         float realJoltSnubEffect = joltSnubEffect * 1f; //<--- TODO calibrate
