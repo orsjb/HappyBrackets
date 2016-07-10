@@ -43,6 +43,8 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
 
     float mashupLevel = 0f;
     float noiseEffect = 0f;
+    float defaultBaseRate = 1;
+    float defaultBasePitch = 1;
 
     final float SOURCE_BPM = 170;
     final float SOURCE_INTERVAL = 60000 / SOURCE_BPM;
@@ -256,13 +258,6 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 System.out.println("Received message " + msg.getName());
-
-                switch(msg.getName()) {
-                    case "/pitchBendEffect":
-                        System.out.println("matched pitchBendEffect message");
-                        break;
-                }
-
                 if (msg.getName().equals("/pitchBendEffect")) {             //amount sensors influence pitch bend
                     pitchModAmount.setValue(hb.getFloatArg(msg, 0));
                 } else if (msg.getName().equals("/rateModEffect")) {        //amount sensors influence rate
@@ -287,6 +282,10 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
                     newSample = true;
                 } else if (msg.getName().equals("/mashupLevel")) {          //amount of mashup from 0-1
                     mashupLevel = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/baseRate")) {             //the base rate
+                    defaultBaseRate = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/basePitch")) {             //the base pitch
+                    defaultBasePitch = hb.getFloatArg(msg, 0);
                 } else if (msg.getName().equals("/synchBreaks")) {          //message to synch clocks
                     hb.clock.reset();
                 } else if (msg.getName().equals("/trigger")) {              //dummy to simulate trigger
@@ -373,7 +372,6 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     // -- delayFeedback
 
     private void mashA() {  //regular
-        //TODO
         int extremity = hb.rng.nextInt((int)(mashupLevel * 5));
         ////////////set base rate
         if(hb.rng.nextFloat() < mashupLevel) {
@@ -450,8 +448,8 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
 
     private void unmash() {
         tremoloAmount.setValue(0);
-        baseRate.setValue(1);
-        basePitch.setValue(1);
+        baseRate.setValue(defaultBaseRate);
+        basePitch.setValue(defaultBasePitch);
         grainSize.setValue(60);
         grainInterval.setValue(40);
         grainRandomness.setValue(0.001f);

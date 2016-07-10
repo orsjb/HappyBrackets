@@ -47,15 +47,15 @@ public class Device {
                     //collect all viable interfaces
                     favouredInterfaces.add(netInterface);
                     //favouriteInterfaceName = netInterface.getName();
-                    //System.out.println("I like: " + favouriteInterfaceName + ", " + netInterface.getDisplayName());
+                    System.out.println("    " + netInterface.getName() + " (" + netInterface.getDisplayName() + ") : VALID");
                 }
                 else {
-                    System.out.println("Ignored: " + netInterface.getName() + ", " + netInterface.getDisplayName());
+                    System.out.println("    " + netInterface.getName() + " (" + netInterface.getDisplayName() + ") : IGNORED");
                 }
             }
             if ( !favouredInterfaces.isEmpty() ) {
                 System.out.println("Selecting from valid interfaces:");
-                favouredInterfaces.forEach((i) -> System.out.println("\t" + i.getName() + ", " + i.getDisplayName()));
+                favouredInterfaces.forEach((i) -> System.out.println("\t" + i.getName() + " (" + i.getDisplayName() + ")"));
 
                 // Populate valid interfaces array
                 validInterfaces = new String[favouredInterfaces.size()];
@@ -73,8 +73,9 @@ public class Device {
                 else if (operatingSystem.startsWith("Mac OS")) {
                     favouredInterfaces.sort( (a, b) -> a.getName().compareToIgnoreCase(b.getName()) ); //sort interface by name
                     netInterface = favouredInterfaces.get(0);
-                    //TODO Hardcode en0 as the chosen port (on Mac we insist of WiFi)
+                    //TODO We are hardcoding en0 as the chosen port (on Mac we insist of WiFi), but can we be smarter?
                     netInterface = NetworkInterface.getByName("en0");
+//                    netInterface = NetworkInterface.getByName("lo0");
                 }
                 else {
                     System.err.println("Operating system " + operatingSystem + " is not expressly handled, defaulting to first favoured interface");
@@ -88,6 +89,7 @@ public class Device {
                 }
                 else if (operatingSystem.startsWith("Mac OS")) {
                     netInterface = NetworkInterface.getByName("en1");
+//                    netInterface = NetworkInterface.getByName("lo0");
                 }
                 else {
                     System.err.println("Unable to determine a network interface!");
@@ -96,7 +98,7 @@ public class Device {
             }
 
             //report back
-            System.out.println("Selected interface: " + netInterface.getName() + ", " + netInterface.getDisplayName());
+            System.out.println("Selected interface: " + netInterface.getName() + " (" + netInterface.getDisplayName() + ")");
 
 			//Addresses
             ArrayList<InterfaceAddress> addresses = new ArrayList<>();
@@ -171,7 +173,7 @@ public class Device {
 		myHostname          = tmpHostname;
         myIP                = tmpIP;
 		myMAC               = tmpMAC;
-		preferredInterface = tmpPreferedInterface;
+		preferredInterface  = tmpPreferedInterface;
 		//report
 		System.out.println("My hostname is:           " + myHostname);
         System.out.println("My IP address is:         " + myIP);
