@@ -20,7 +20,7 @@ import java.net.UnknownHostException;
 /**
  * MasterServer keeps contact with all PIs. Can control them etc.
  * Connects over OSC. This is kept entirely separate from the network synch tool, which only runs on the PIs.
- * 
+ *
  * @author ollie
  */
 
@@ -32,37 +32,38 @@ public class ControllerMain extends Application {
 	protected ControllerConfig config;
 	protected ControllerAdvertiser controllerAdvert;
     private FileServer httpServer;
-	
-    @Override 
-    public void start(Stage stage) {
-		Device.getInstance();		//inits the network stuff
-		config = new ControllerConfig();
-		config = LoadableConfig.load("config/controller-config.json", config);
-        if (!config.useHostname()) System.out.println("Use host names is disabled");
-        piConnection = new DeviceConnection(config);
-    	
-    	//setup controller broadcast
-    	try {
-			controllerAdvert = new ControllerAdvertiser(config);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	controllerAdvert.start();
 
-		//setup http httpServer
-        try {
-            httpServer = new FileServer(config);
-        } catch (IOException e) {
-            System.err.println("Unable to start http httpServer!");
-            e.printStackTrace();
-        }
-        GUIManager guiManager = new GUIManager(config);
-		Scene scene = guiManager.setupGUI(piConnection);
-		stage.setTitle("PI Controller");
-		stage.setScene(scene);
-		stage.sizeToScene();
-		stage.show();
+    @Override
+    public void start(Stage stage) {
+			Device.getInstance();		//inits the network stuff
+			config = new ControllerConfig();
+			config = LoadableConfig.load("config/controller-config.json", config);
+	    if (!config.useHostname()) System.out.println("Use host names is disabled");
+	    piConnection = new DeviceConnection(config);
+
+	    //setup controller broadcast
+	  	try {
+				controllerAdvert = new ControllerAdvertiser(config);
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+	    controllerAdvert.start();
+
+			//setup http httpServer
+	    try {
+	        httpServer = new FileServer(config);
+	    } catch (IOException e) {
+	        System.err.println("Unable to start http httpServer!");
+	        e.printStackTrace();
+	    }
+	    GUIManager guiManager = new GUIManager(config);
+			Scene scene = guiManager.setupGUI(piConnection);
+			stage.setTitle("PI Controller");
+			stage.setScene(scene);
+			stage.sizeToScene();
+			stage.show();
     	//you can create a test pi if you don't have a real pi...
 //    	piConnection.createTestDevice();
     	synchronizer = Synchronizer.getInstance();
@@ -84,6 +85,6 @@ public class ControllerMain extends Application {
     public static void main(String[] args) {
         Application.launch(args);
     }
-	
-	
+
+
 }

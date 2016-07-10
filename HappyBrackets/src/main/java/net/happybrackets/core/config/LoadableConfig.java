@@ -147,14 +147,7 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		    return EnvironmentConfig.super.getAliveInterval();
 		}
 	}
-	public String getWorkingDir() {
-		if (workingDir != null) {
-		    return workingDir;
-		}
-		else {
-		    return EnvironmentConfig.super.getWorkingDir();
-		}
-	}
+
 	public String getAudioDir() {
 		if (audioDir != null) {
 		    return audioDir;
@@ -163,6 +156,7 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		    return EnvironmentConfig.super.getAudioDir();
 		}
 	}
+
 	public String getKnownDevicesFile() {
 		if (knownDevicesFile != null) {
 		    return knownDevicesFile;
@@ -178,6 +172,19 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		}
 		else {
 			return EnvironmentConfig.super.getControllerHTTPPort();
+		}
+	}
+
+	public void setWorkingDir(String dir) {
+				this.workingDir = dir;
+	}
+
+	public String getWorkingDir() {
+		if (workingDir != null) {
+				return workingDir;
+		}
+		else {
+				return EnvironmentConfig.super.getWorkingDir();
 		}
 	}
 
