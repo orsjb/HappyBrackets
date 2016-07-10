@@ -529,7 +529,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
             baseRate.clear();
             basePitch.clear();
             baseRate.addSegment(-0.1f, 1000);
-            basePitch.addSegment(-0.1f, 1500);
+            basePitch.addSegment(-0.1f, 1501);
         }
     }
 
