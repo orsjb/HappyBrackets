@@ -60,9 +60,13 @@ public class MiniMU extends Sensor {
 		try {
 			System.out.println("Getting I2C Bus 1:");
 			bus = I2CFactory.getInstance(I2CBus.BUS_1);
-			System.out.println("Connected to bus OK!");
+			if(bus != null) {
+				System.out.println("Connected to bus OK!");
+			} else {
+				System.out.println("Could not connect to bus!");
+			}
 
-		} catch(IOException e) {
+		} catch(Exception e) {
 			System.out.println("Could not connect to bus!");
 		}
 
@@ -76,7 +80,7 @@ public class MiniMU extends Sensor {
 				acceldevice = bus.getDevice(ACC_ADDRESS);
 				magdevice = bus.getDevice(MAG_ADDRESS);
 
-			} catch (IOException e) {
+			} catch (Exception e) {
 				System.out.println("OK - not a v2, so I'll try to set up a v3.");
 				try {
 					//  v3 info
@@ -89,7 +93,7 @@ public class MiniMU extends Sensor {
 
 					System.out.println("OK - v3 set up.");
 
-				} catch (IOException e2) {
+				} catch (Exception e2) {
 					System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
 				}
 			}
@@ -138,6 +142,7 @@ public class MiniMU extends Sensor {
 
 		} catch(IOException e) {
 			System.out.println("Warning: unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(");
+			e.printStackTrace();
 		}
 		if (bus != null & acceldevice != null) {
 			start();

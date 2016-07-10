@@ -19,11 +19,11 @@ import java.net.SocketAddress;
  */
 public class NIME2016DriveByTransitVanComposition implements HBAction {
 
-    final boolean DUMMY_SENSORS = true; //for debugging when no sensors are available
+    final boolean DUMMY_SENSORS = false; //for debugging when no sensors are available
 
     final float[] TINY_DIVS = {1/8f,1/16f,1/32f,1/64f,1/128f};
-    final float[] MULTS = {0.25f, 0.5f, 0.5f, 1, 1, 1, 1.5f, 1.5f, 2f, 3f};
-    final float[] LOW_MULTS = {0.125f, 0.25f, 0.5f, 0.5f, 1, 1, 1.5f};
+    final float[] MULTS = {0.25f, 0.5f, 0.5f, 1, 1, 1, 2f};
+    final float[] LOW_MULTS = {0.125f, 0.25f, 0.5f, 0.5f, 1, 1, 1};
 
     //different sample sets
     final String TALK = "talk";
@@ -34,7 +34,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     String sampleGroup = TALK;
 
     enum RepeatMode {ONE_HIT, REPEAT, NONE}
-    RepeatMode repeatMode = RepeatMode.REPEAT;
+    RepeatMode repeatMode = RepeatMode.ONE_HIT;
     enum SampleSelect {SPECIFIC, ID, RANDOM}
     SampleSelect sampleSelect = SampleSelect.SPECIFIC;
 
@@ -109,10 +109,10 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         grainCrossFade = new Glide(hb.ac, 0);  //1 = fully granular, 0 = fully non-granular
         sampleGain = new Glide(hb.ac, 1);
         baseRate = new Envelope(hb.ac, 1);
-        rateMod = new Glide(hb.ac);
+        rateMod = new Glide(hb.ac, 100);
         rateModAmount = new Glide(hb.ac);
         basePitch = new Envelope(hb.ac, 1);
-        pitchMod = new Glide(hb.ac);
+        pitchMod = new Glide(hb.ac, 100);
         pitchModAmount = new Glide(hb.ac);
         grainSize = new Envelope(hb.ac, 60);
         grainInterval = new Envelope(hb.ac, 40);
@@ -167,7 +167,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         TapIn tin = new TapIn(hb.ac, 10000);
         TapOut tout = new TapOut(hb.ac, tin, new Function(rate, delayRateMult) {
             public float calculate() {
-                return x[1] * SOURCE_INTERVAL / x[0];
+                return x[1] * SOURCE_BPM / 60 * x[0];
             }
         });
         Gain delayInput = new Gain(hb.ac, 1, delayInputGain);
@@ -181,42 +181,53 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         tremoloAmount = new Glide(hb.ac);
         tremoloRateMult = new Glide(hb.ac);
         //tremolo
-        WavePlayer lfo = new WavePlayer(hb.ac, 0, Buffer.SINE);
+        WavePlayer lfo = new WavePlayer(hb.ac, 0, Buffer.SAW);
         lfo.setFrequency(new Function(rate, tremoloRateMult) {
             public float calculate() {
-                return x[1] * SOURCE_INTERVAL / x[0];
+//                return x[1] * SOURCE_INTERVAL / x[0];
+                return x[1] * SOURCE_INTERVAL / 60 * x[0];
             }
+
         });
         Gain tremolo = new Gain(hb.ac, 1, new Function(lfo, tremoloAmount) {
             public float calculate() {
                 return (x[0] * 0.5f + 1f) * x[1] + (1f - x[1]);
             }
         });
-        tremolo.addInput(delayReturn);
+        tremolo.addInput(tout);
         tremolo.addInput(f);
         tremolo.addInput(sampleMix);
         //final plumbing - connect it all to ouput
         hb.ac.out.addInput(tremolo);
+//        hb.ac.out.addInput(tout);
+//        hb.ac.out.addInput(sp);
         //set up clock to trigger samples
         hb.clockInterval.setValue(SOURCE_INTERVAL);
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
                 if(hb.clock.getCount() % 256 == 0) {
+                    System.out.println("tick");
                     switch (repeatMode) {
                         case ONE_HIT:           //play the break once then stop
                             loadNextSample();
                             resetSamplePlayers();
+                            mashItUp();
                             repeatMode = RepeatMode.NONE;
                             break;
                         case REPEAT:            //keep playing
                             loadNextSample();
                             resetSamplePlayers();
+                            mashItUp();
                             break;
                         case NONE:              //do nothing
+                            if(newSample) {
+                                loadNextSample();
+                                resetSamplePlayers();
+                                mashItUp();
+                            }
                             break;
                     }
-                    mashItUp();
                 }
             }
         });
@@ -232,7 +243,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
                 break;
             case ID:
                 if(newSample) {
-                    s = SampleManager.fromGroup(sampleGroup, hb.myIndex() + specificSampleSelect);
+                    s = SampleManager.fromGroup(sampleGroup, Math.abs(hb.myIndex()) + specificSampleSelect);
                 }
                 break;
             case RANDOM:
@@ -249,6 +260,8 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     }
 
     private void resetSamplePlayers() {
+        baseRate.setValue(defaultBaseRate);
+        basePitch.setValue(defaultBasePitch);
         sp.reset();
         gsp.reset();
     }
@@ -334,14 +347,15 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
             @Override
             public void accelData(double x, double y, double z) {
                sensor((float)x,(float)y,(float)z);
+                System.out.println("Sensor data: " + x + " " + y + " " + z);
             }
         });
     }
 
     private void mashItUp() {
         //reset all the envelopes (sampleGain, baseRate, basePitch, grainSize, grainInterval, grainRandomness, noiseGain
-        baseRate.clear();
-        basePitch.clear();
+//        baseRate.clear();
+//        basePitch.clear();
         grainSize.clear();
         grainInterval.clear();
         grainRandomness.clear();
@@ -372,7 +386,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     // -- delayFeedback
 
     private void mashA() {  //regular
-        int extremity = hb.rng.nextInt((int)(mashupLevel * 5));
+        int extremity = hb.rng.nextInt((int)(mashupLevel * 5) + 1);
         ////////////set base rate
         if(hb.rng.nextFloat() < mashupLevel) {
             float dir = 1;
@@ -389,12 +403,12 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
                 baseRate.addSegment(-0.1f, hb.rng.nextFloat() * 2000);
             }
         } else {
-            baseRate.setValue(1);
+            baseRate.setValue(defaultBaseRate);
         }
         //set base pitch
         if(hb.rng.nextFloat() < mashupLevel) {
             float dir = 1;
-            if(hb.rng.nextFloat() < 0.2f) {
+            if(hb.rng.nextFloat() < 0.5f) {
                 dir = -1;
                 sp.setPosition(sp.getSample().getLength());
             }
@@ -406,15 +420,15 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
                 basePitch.addSegment(-0.1f, rand(0, 2000));
             }
         } else {
-            basePitch.setValue(1);
+            basePitch.setValue(defaultBasePitch);
         }
         //grain
         if(hb.rng.nextFloat() < mashupLevel) {
             float grainInt = rand(10,100);
-            float grainSizeMult = rand(0.5f, 4);
+            float grainSizeMult = rand(0.5f, 2);
             grainSize.addSegment(grainInt * grainSizeMult, rand(10,2000));
             grainInterval.addSegment(grainInt, rand(10,2000));
-            grainRandomness.setValue(prob(0.2f) ? rand(0.01f, 0.1f) : 0);
+            grainRandomness.setValue(prob(0.4f) ? rand(0.01f, 0.5f) : 0);
         } else {
             grainInterval.setValue(40);
             grainSize.setValue(60);
@@ -423,7 +437,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         //tremolo
         tremoloRateMult.setValue(rand(MULTS));
         if(hb.rng.nextFloat() < mashupLevel) {
-            tremoloAmount.setValue(prob(0.1f) ? rand(0.5f, 1) : 0);
+            tremoloAmount.setValue(prob(0.3f) ? rand(0.5f, 1) : 0);
         } else {
             tremoloAmount.setValue(0);
         }
@@ -482,7 +496,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     }
 
     private float rand(float low, float high) {
-        return hb.rng.nextFloat() * (low-high) + low;
+        return hb.rng.nextFloat() * (high-low) + low;
     }
 
     private void trigger() {
@@ -500,13 +514,13 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
             //envelopes - do stuff to delayRateMult and delayFeedback (takeover and run envelopes)
             //delay spike, dependent on flange
             delayInputGain.setValue(realFlangeDelayEffect);
-            delayInputGain.addSegment(realFlangeDelayEffect, 500);
+            delayInputGain.addSegment(realFlangeDelayEffect, 1000);
             delayInputGain.addSegment(0, 50);
             int elements = hb.rng.nextInt(3);
             for (int i = 0; i < elements; i++) {
                 delayRateMult.addSegment(rand(TINY_DIVS), rand(10,2000));
             }
-            delayFeedback.setValue(0.86f);  //fix this?
+            delayFeedback.setValue(0.96f);  //fix this?
         }
         //joltSnubEffect
         float realJoltSnubEffect = joltSnubEffect * 1f; //<--- TODO calibrate
@@ -514,8 +528,8 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         if(realJoltSnubEffect > 0) {
             baseRate.clear();
             basePitch.clear();
-            baseRate.addSegment(0, 1000);
-            basePitch.addSegment(0, 1000);
+            baseRate.addSegment(-0.1f, 1000);
+            basePitch.addSegment(-0.1f, 1500);
         }
     }
 
