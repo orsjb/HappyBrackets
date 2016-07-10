@@ -185,8 +185,8 @@ public class MiniMU extends Sensor {
 								muListener.gyroData(  gyroData[0],  gyroData[1],  gyroData[2]);
 								muListener.magData(    magData[0],   magData[1],   magData[2]);
 								muListener.imuData(  accelData[0], accelData[1], accelData[2],
-													gyroData[0],  gyroData[1],  gyroData[2], 
-													 magData[0],   magData[1],   magData[2]);
+										gyroData[0],  gyroData[1],  gyroData[2],
+										magData[0],   magData[1],   magData[2]);
 							}
 						}
 					} catch (IOException e) {
@@ -229,11 +229,11 @@ public class MiniMU extends Sensor {
 		}
 		return result;
 	}
-	
+
 	private float[] readSensorsAccel() throws IOException {
 		int numElements = 3; //
 		float[] result = {0, 0, 0};
-		
+
 		int bytesPerElement = 2; // assuming short?
 		int numBytes = numElements * bytesPerElement; //
 		byte[] bytes = new byte[numBytes]; //
@@ -257,7 +257,7 @@ public class MiniMU extends Sensor {
 		}
 		return result;
 	}
-	
+
 	private float[] readSensorsMag() throws IOException {
 		int numElements = 3; //
 		float[] result = {0, 0, 0};
@@ -286,7 +286,7 @@ public class MiniMU extends Sensor {
 		}
 		return result;
 	}
-	
+
 	private static boolean[] getBits(byte inByte) {
 		boolean[] bits = new boolean[8];
 		for (int j = 0; j < 8; j++) {
