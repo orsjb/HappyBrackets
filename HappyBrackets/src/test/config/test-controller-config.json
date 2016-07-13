@@ -1,5 +1,18 @@
 {
   "useHostname": false,
   "aliveInterval": 1500,
-  "compositionsPath": "build/classes"
+  "compositionsPath": "build/classes",
+
+  "multicastAddr":            "225.2.2.6",
+  "broadcastPort":            2322,
+  "statusFromDevicePort":     2323,
+  "clockSynchPort":           2324,
+  "codeToDevicePort":         2325,
+  "controlToDevicePort":      2326,
+  "controllerDiscoveryPort":  2327,
+  "controllerHTTPPort":       2328,
+
+
+  "knowDevicesFile":          "config/known_devices",
+  "workingDir":               "."
 }

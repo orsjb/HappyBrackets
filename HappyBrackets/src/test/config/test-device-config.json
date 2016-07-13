@@ -1,7 +1,14 @@
 {
-  "useHostname": true,
-  "wifi": {
-    "ssid": "MySSID",
-    "psk":  "MyPWD"
-  }
+  "multicastAddr":            "225.2.2.6",
+  "broadcastPort":            2322,
+  "statusFromDevicePort":     2323,
+  "clockSynchPort":           2324,
+  "codeToDevicePort":         2325,
+  "controlToDevicePort":      2326,
+  "controllerDiscoveryPort":  2327,
+  "controllerHTTPPort":       2328,
+  "aliveInterval":            1500,
+
+  "useHostname":              false,
+  "polyLimit":                4
 }

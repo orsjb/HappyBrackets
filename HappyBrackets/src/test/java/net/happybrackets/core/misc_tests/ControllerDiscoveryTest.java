@@ -16,6 +16,7 @@ public class ControllerDiscoveryTest {
 	public void setUp() throws Exception {
 		piEnv = new DeviceConfig();
 		controllerEnv = new ControllerConfig();
+		controllerEnv = controllerEnv.load("src/test/config/test-controller-config.json");
 		advertiser = new ControllerAdvertiser(controllerEnv);
 		advertiser.start();
 	}
