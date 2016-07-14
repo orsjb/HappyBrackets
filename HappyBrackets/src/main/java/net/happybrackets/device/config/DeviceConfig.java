@@ -50,7 +50,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	}
 
 	public static DeviceConfig load(String configFile) {
-		return (DeviceConfig)(LoadableConfig.load(configFile, new DeviceConfig()));
+		return LoadableConfig.load( configFile, new DeviceConfig() );
 	}
 
 
