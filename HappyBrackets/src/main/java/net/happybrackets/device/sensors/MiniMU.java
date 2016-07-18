@@ -80,11 +80,8 @@ public class MiniMU extends Sensor {
 
 			} catch (IOException e) {
 				System.out.println("OK - not a v2, so I'll try to set up a v3.");
-				e.printStackTrace();
-
 			}
 			try {
-				System.out.println("V2 didnt work - trying a v3.");
 				//  v3 info
 				MAG_ADDRESS = 0x1d;
 				ACC_ADDRESS = 0x1d;
@@ -95,9 +92,8 @@ public class MiniMU extends Sensor {
 
 				System.out.println("OK - v3 set up.");
 
-			} catch (IOException e2) {
+			} catch (Exception e2) {
 				System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
-				e2.printStackTrace();
 			}
 
 		}
@@ -273,7 +269,7 @@ public class MiniMU extends Sensor {
 			boolean[] abits = getBits(a);
 			boolean[] bbits = getBits(b);
 			boolean[] shortybits = new boolean[16];
-			// The mag sensor is BIG ENDIAN on the lsm303dlhc 
+			// The mag sensor is BIG ENDIAN on the lsm303dlhc
 			// so lets flip b and a compared to Acc
 			for(int j = 0; j < 8; j++) {
 				shortybits[j] = abits[j];
@@ -311,7 +307,7 @@ public class MiniMU extends Sensor {
 		int length = bbits.length - 1;
 		if (bbits[0]) { // if the most significant bit is true
 			for(int i = 0; i < length; i++) { //
-				result -= bbits[length - i] ? 0 : Math.pow(2, i) ; // use the negative complement version 
+				result -= bbits[length - i] ? 0 : Math.pow(2, i) ; // use the negative complement version
 			}
 		} else {
 			for(int i = 0; i < length; i++) {

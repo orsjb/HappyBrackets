@@ -12,17 +12,17 @@ then
 fi
 
 # correct format of hostname (pisound-<MAC>)
- 
+
 NEWHOST=pisound-${NEWHOST}
 
 # reboot with correct hostname if required
 
-if [ "$NEWHOST" != "$OLDHOST" ] 
+if [ "$NEWHOST" != "$OLDHOST" ]
 then
 	echo "Changing hostname to format pisound-<MAC>. This will require a reboot."
 	echo $NEWHOST > hostname
 	sudo mv hostname /etc/
-	sudo reboot 
+	sudo reboot
 fi
 
 # move to the correct dir for running java (one level above where this script is)
@@ -39,17 +39,12 @@ BUF=1024
 SR=44100
 BITS=16
 INS=0
-OUTS=1 
-AUTOSTART=true 
+OUTS=1
+AUTOSTART=true
+ACTION=
 
-/usr/bin/sudo /usr/bin/java -Xmx512m -jar HB.jar buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART  > stdout &
-
-################ OPTIONAL ####################
-## Edit and uncomment the following two lines if you want to run a specific class on startup. You will need to have compiled the class and updated HB.jar on the device so that it contains this class.
-#sleep 10
-#/usr/bin/sudo /usr/bin/java -cp HB.jar compositions.pipos_2014.webdirections.fluff_install.FluffyWoolInstallation &
-############## ------------- #################
+(/usr/bin/sudo /usr/bin/java -cp data/classes -Xmx512m -jar HB.jar buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART $ACTION > stdout &) &
 
 # Finally, run the network-monitor.sh script to keep WiFi connection alive
 
-/usr/bin/sudo scripts/network-monitor.sh > netstatus &
+(/usr/bin/sudo scripts/network-monitor.sh > netstatus &) &

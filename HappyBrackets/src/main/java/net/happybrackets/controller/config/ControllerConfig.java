@@ -5,7 +5,6 @@ import net.happybrackets.core.config.LoadableConfig;
 public class ControllerConfig extends LoadableConfig {
 
     private String compositionsPath = null;
-    private String workingDir;
     private String configDir;
     private Boolean useHostname;
 
@@ -15,17 +14,6 @@ public class ControllerConfig extends LoadableConfig {
         }
 //        System.err.println("No composition path set in configuration.");
         return getWorkingDir();
-    }
-
-    public void setWorkingDir(String dir) {
-        this.workingDir = dir;
-    }
-
-    public String getWorkingDir() {
-        if(workingDir == null) {
-            return super.getWorkingDir();
-        }
-        return workingDir;
     }
 
     public void setConfigDir(String configDir) {
