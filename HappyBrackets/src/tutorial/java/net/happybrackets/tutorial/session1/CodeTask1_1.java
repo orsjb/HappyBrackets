@@ -9,7 +9,7 @@ import net.beadsproject.beads.ugens.Noise;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
- * Created by ollie on 10/05/2016.
+ * Created by ollie on 10/05/2016. 
  *
  * This is the "Hello World" of Beads, the Java realtime audio library used in HappyBrackets. First let's run this code.
  *
