@@ -21,7 +21,7 @@ public class LiveCoder implements HBAction {
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(hb.clock.getCount() % 8 == 0) {
+                if(hb.clock.getCount() % 16 == 0) {
                     float freq = Pitch.forceFrequencyToScale(hb.rng.nextFloat() * 2000 + 100, Pitch.dorian);
                     WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
                     Envelope e = new Envelope(hb.ac, hb.rng.nextFloat() * 0.03f + 0.1f);

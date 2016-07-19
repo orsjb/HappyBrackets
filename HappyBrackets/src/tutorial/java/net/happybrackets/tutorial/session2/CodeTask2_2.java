@@ -1,5 +1,7 @@
 package net.happybrackets.tutorial.session2;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
@@ -7,11 +9,12 @@ import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.WavePlayer;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * Created by ollie on 5/06/2016.
  *
- * Here is some basic code that shows how to set up a Clock.
+ * Here is some basic code that shows how to set up a Clock. If you run it you won't hear anything, but you will see the clock ticks outputting to the console.
  *
  * Complete the following tasks:
  *
@@ -21,12 +24,17 @@ import net.beadsproject.beads.ugens.WavePlayer;
  * 4) Add a new one-hit bass note that plays every 8 beats. The note should be a square wave, also chosen randomly from the same pentatonic scale but two octaves lower than the portamento line above. The note should play through an ADSR envelope and be removed once played, using a KillTrigger.
  *
  */
-public class CodeTask2_2 {
+public class CodeTask2_2 extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         //Audio stuff
         AudioContext ac = new AudioContext();
         ac.start();
+        WaveformVisualiser.open(ac);
         //create a Clock
         Clock c = new Clock(ac, 500);
         //important! Make sure your clock is running by adding it as a 'dependent' to some other UGen.
