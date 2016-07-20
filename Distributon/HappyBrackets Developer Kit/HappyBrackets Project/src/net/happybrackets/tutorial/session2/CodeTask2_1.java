@@ -1,17 +1,20 @@
 package net.happybrackets.tutorial.session2;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.WavePlayer;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * Created by ollie on 5/06/2016.
  *
  * Let's look at Envelopes!
  *
- * Run the following code. Then uncomment the line at the very end (shortcut for comment/uncomment = command-/) and run the code again.
+ * Run the following code. Then uncomment the line at the very end (shortcut for comment/uncomment = command-/) and run the code again. You will hear the frequency sweeping upwards.
  *
  * Duplicate that last line so that there are two copies of it, one after the other. Then change the 1000 in the second instance to 100. Run the code again. Notice that the segments run one after the other.
  *
@@ -23,12 +26,17 @@ import net.beadsproject.beads.ugens.WavePlayer;
  * 5) Add the additional argument 'new KillTrigger(g)' to the last element of your gainEnv. You won't notice any difference because you already faded the volume to zero, but this last line will remove all of the audio processing elements from the signal chain.
  *
  */
-public class CodeTask2_1 {
+public class CodeTask2_1 extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         //Audio stuff, once again we play a simple sine tone, except this time its frequency is controlled by an Envelope
         AudioContext ac = new AudioContext();
         ac.start();
+        WaveformVisualiser.open(ac);
         //here is the Envelope, initialised to 500.
         Envelope freqEnv = new Envelope(ac, 500);
         //notice that the second argument to WavePlayer is no longer a number, but an object.

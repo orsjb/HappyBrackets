@@ -1,11 +1,14 @@
 package net.happybrackets.tutorial.session3;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.GranularSamplePlayer;
 import net.beadsproject.beads.ugens.SamplePlayer;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * Created by ollie on 6/06/2016.
@@ -25,11 +28,16 @@ import net.beadsproject.beads.ugens.SamplePlayer;
  *      Using the methods 'getGrainSizeUGen().setValue()', 'getGrainIntervalUGen().setValue()', 'getRandomnessUGen().setValue()', find suitable granulation settings that make the guitar sound as natural as possible.
  *
  */
-public class CodeTask3_1 {
+public class CodeTask3_1 extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         AudioContext ac = new AudioContext();
         ac.start();
+        WaveformVisualiser.open(ac);
         //clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);

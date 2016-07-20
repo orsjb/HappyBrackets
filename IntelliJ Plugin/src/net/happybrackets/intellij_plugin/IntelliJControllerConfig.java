@@ -13,7 +13,6 @@ public class IntelliJControllerConfig extends ControllerConfig {
         return (IntelliJControllerConfig)(LoadableConfig.getInstance());
     }
 
-
     public static IntelliJControllerConfig load(String configFile) {
         return (IntelliJControllerConfig)(LoadableConfig.load(configFile, new IntelliJControllerConfig()));
     }
