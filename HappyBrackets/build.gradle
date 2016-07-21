@@ -104,6 +104,7 @@ task bundle << {
 }
 
 //setup bundle dependencies
+bundle.dependsOn test
 bundle.dependsOn shadowJar
 bundle.dependsOn javadoc
 bundle.dependsOn packDeviceRuntime
