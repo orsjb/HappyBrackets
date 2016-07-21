@@ -6,17 +6,21 @@ import net.happybrackets.device.config.DeviceConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class ControllerDiscoveryTest {
-	protected DeviceConfig piEnv;
+	protected DeviceConfig deviceEnv;
 	protected ControllerConfig controllerEnv;
 	protected ControllerAdvertiser advertiser;
 
 	@Before
 	public void setUp() throws Exception {
-		piEnv = new DeviceConfig();
+		deviceEnv = new DeviceConfig();
+		deviceEnv = deviceEnv.load("src/test/config/test-device-config.json", deviceEnv);
+
 		controllerEnv = new ControllerConfig();
-		controllerEnv = controllerEnv.load("src/test/config/test-controller-config.json");
+		controllerEnv = controllerEnv.load("src/test/config/test-controller-config.json", controllerEnv);
+
 		advertiser = new ControllerAdvertiser(controllerEnv);
 		advertiser.start();
 	}
@@ -28,9 +32,10 @@ public class ControllerDiscoveryTest {
 
 	@Test
 	public void testGetControllerHostname() {
-		assert( piEnv.getControllerHostname() != null );
-		assert( piEnv.getControllerHostname().equals(controllerEnv.getMyHostName()) );
-		System.out.println("Found host " + piEnv.getControllerHostname());
+		assertTrue( advertiser.isAlive() );
+		assertNotNull( deviceEnv.getControllerHostname() );
+		assertEquals( controllerEnv.getMyHostName(), deviceEnv.getControllerHostname() );
+		System.out.println("Found controller: " + deviceEnv.getControllerHostname());
 	}
 
 }

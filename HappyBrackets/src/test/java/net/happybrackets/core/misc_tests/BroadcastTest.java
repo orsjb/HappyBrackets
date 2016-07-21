@@ -4,19 +4,25 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.happybrackets.BroadcastManager;
+import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.controller.config.ControllerConfig;
 
+import java.net.SocketAddress;
 import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
+import static org.junit.Assert.*;
 
 public class BroadcastTest {
 	protected BroadcastManager broadcastManager;
   protected ControllerConfig config;
+	boolean receivedMulticastMessage; // for testSendReceive()
 
 	@Before
 	public void setUp() throws Exception {
-		config            = new ControllerConfig();
-    broadcastManager  = new BroadcastManager(config);
+		config            				= new ControllerConfig();
+		config										= config.load("src/test/config/test-controller-config.json", config);
+    broadcastManager  				= new BroadcastManager(config);
+		receivedMulticastMessage 	= false;
 	}
 
 	@After
@@ -26,26 +32,35 @@ public class BroadcastTest {
 
 	@Test
 	public void testSendReceive() {
-    boolean receivedMulticastMessage 	= false;
-		int 		timeOut 									= 0;
+		int	timeOut	= 0;
 
 		//prepare to recieve a message
 		broadcastManager.addBroadcastListener(new OSCListener() {
       @Override
       public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
           if(msg.getName().equals("/test")) {
-              receivedMulticastMessage == true;
+              receivedMulticastMessage = true;
+							System.out.println("Recieved test message");
           }
       }
     });
 
 		//send messages until we catch one
-		while (!receivedMulticastMessage && timeOut < 300) {
+		while (!receivedMulticastMessage && timeOut < 30) {
 			timeOut++;
+			System.out.println("Sending test broadcast " + timeOut);
 			broadcastManager.broadcast("/test");
+			//sleep for 100ms
+			try {
+				Thread.sleep(100);
+			}
+			catch (InterruptedException e) {
+				System.err.println("Sleep was interupted during BroadcastTest.");
+				e.printStackTrace();
+			}
 		}
 
-		assert( receivedMulticastMessage );
+		assertTrue( receivedMulticastMessage );
 	}
 
 }

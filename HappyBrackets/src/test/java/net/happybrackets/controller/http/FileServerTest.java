@@ -24,6 +24,7 @@ public class FileServerTest {
     @Before
     public void setUp() throws Exception {
         config = new ControllerConfig();
+        config = ControllerConfig.load("src/test/config/test-controller-config.json", config);
         System.out.println("Starting Server");
         server = new FileServer(config);
     }

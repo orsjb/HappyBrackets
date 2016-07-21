@@ -10,11 +10,12 @@ import net.happybrackets.controller.config.ControllerConfig;
 public class ControllerAdvertiserTest {
 	protected ControllerConfig env;
 	protected ControllerAdvertiser advertiser;
-	
+
 	@Before
 	public void setUp() throws Exception {
-		env = new ControllerConfig();
-		advertiser = new ControllerAdvertiser(env);
+		env 				= new ControllerConfig();
+		env 				= env.load("src/test/config/test-controller-config.json", env);
+		advertiser 	= new ControllerAdvertiser(env);
 		advertiser.start();
 	}
 
