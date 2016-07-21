@@ -3,14 +3,14 @@
   "aliveInterval": 1500,
   "compositionsPath": "build/classes",
 
-  "multicastAddr":            "225.2.2.6",
-  "broadcastPort":            2322,
-  "statusFromDevicePort":     2323,
-  "clockSynchPort":           2324,
-  "codeToDevicePort":         2325,
-  "controlToDevicePort":      2326,
-  "controllerDiscoveryPort":  2327,
-  "controllerHTTPPort":       2328,
+  "multicastAddr":            "225.3.2.6",
+  "broadcastPort":            23220,
+  "statusFromDevicePort":     23230,
+  "clockSynchPort":           23240,
+  "codeToDevicePort":         23250,
+  "controlToDevicePort":      23260,
+  "controllerDiscoveryPort":  23270,
+  "controllerHTTPPort":       23280,
 
 
   "knowDevicesFile":          "config/known_devices",
