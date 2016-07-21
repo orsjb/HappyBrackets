@@ -29,12 +29,17 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
         //Block and search for a controller
         try {
             controller = listenForController( getMulticastAddr(), getControllerDiscoveryPort());
-//			controller = listenForController( "225.2.2.7", 5566);
         } catch (UnknownHostException e) {
             System.out.println("Error obtaining controller hostname and address.");
             e.printStackTrace();
         }
-        return controller;
+
+				//if our search timed out return a loopback address
+				if (controller == null || controller.getHostname() == null || controller.getHostname().isEmpty()) {
+					return new DeviceController("localhost", "127.0.0.1");
+				}
+
+				return controller;
     }
 
 	public int getMyId() {

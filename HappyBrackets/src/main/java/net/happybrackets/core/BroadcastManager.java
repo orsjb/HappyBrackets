@@ -39,7 +39,8 @@ public class BroadcastManager {
             transmitter.connect();
             //TODO how do we set time to live?
         } catch (IOException e) {
-            System.err.println("Warning: BroadcastManager can't use multicast. No broadcast functionality available in this session.");         //TODO is this diagnosis still correct?
+            System.err.println("Error: BroadcastManager encountered an IO exception when creating a listener socket.");
+            e.printStackTrace();
         }
     }
 
