@@ -59,7 +59,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                     PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsToolWindow")
             ).getPath().toString();
             System.out.println("Plugin lives at: " + pluginDir);
-            //TODO this does not get read properly in the REAL plugin
+            //TODO this is still buggy. We are doing this statically meaning it works only for the first loaded project.
 //            String configFilePath = pluginDir + "/classes/config/controller-config.json";
             String configFilePath = projectDir + "/config/controller-config.json";
             if(new File(configFilePath).exists()) System.out.println("Found config file.");
