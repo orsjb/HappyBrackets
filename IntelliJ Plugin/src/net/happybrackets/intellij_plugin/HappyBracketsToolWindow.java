@@ -60,7 +60,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             ).getPath().toString();
             System.out.println("Plugin lives at: " + pluginDir);
             //TODO this does not get read properly in the REAL plugin
-            String configFilePath = pluginDir + "/classes/config/controller-config.json";
+//            String configFilePath = pluginDir + "/classes/config/controller-config.json";
+            String configFilePath = projectDir + "/config/controller-config.json";
             if(new File(configFilePath).exists()) System.out.println("Found config file.");
             //all of the below concerns the set up of singletons
             //TODO: use plugin path here. How?
