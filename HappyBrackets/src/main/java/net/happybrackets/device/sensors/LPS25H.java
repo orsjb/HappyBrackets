@@ -82,6 +82,9 @@ public class LPS25H  extends Sensor{
     public static byte TEMP_DATA_AVAILABLE_MASK = 0x01;
     public static byte PRESS_DATA_AVAILABLE_MASK = 0x02;
 
+    public double tempData;
+    public double barometricPressureData;
+
     public enum LPS25HControlRegistry1 {
 
         ODR_ONE_SHOT(0b000), ODR_1_HZ(0b001), ODR_7_HZ(0b010), ODR_12DOT5_HZ(0b011), ODR_25_HZ(0b100), ODR_RESERVED(
@@ -114,10 +117,8 @@ public class LPS25H  extends Sensor{
 
         while (true) {
 
-            double tempVal = sense.readTemperature();
-            double pressureVal = sense.readPressure();
-            System.out.println("temp: " + tempVal + " pressure: " + pressureVal);
-
+            double tempVal = sense.getTemperatureData();
+            double pressureVal = sense.getBarometricPressureData();
             try {
                 Thread.sleep(1000);                 //1000 milliseconds is one second.
             } catch (InterruptedException ex) {
@@ -128,8 +129,6 @@ public class LPS25H  extends Sensor{
 
     public LPS25H() throws Exception {
 
-        db2.put("Name","LPS25H");
-        db2.put("Manufacturer", "ST Microelectronics");
 
         bus = I2CFactory.getInstance(1);
         if (debug){ System.out.println("bus: " + bus.toString());}
@@ -138,6 +137,7 @@ public class LPS25H  extends Sensor{
         if (debug){ System.out.println("device: " + device.toString());}
         buffer = ByteBuffer.allocate(4);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
+        start();
     }
 
 
@@ -150,13 +150,6 @@ public class LPS25H  extends Sensor{
 
         for (SensorUpdateListener sListener: listeners){
             SensorUpdateListener sl = (SensorUpdateListener) sListener;
-
-            DataBead db = new DataBead();
-            db.put("Pressure",this.readPressure());
-            db.put("Temperature", this.readTemperature());
-
-            sl.getData(db);
-            sl.getSensor(db2);
 
         }
     }
@@ -183,7 +176,7 @@ public class LPS25H  extends Sensor{
 
     }
 
-    private double readPressure() throws IOException {
+    private double getBarometricPressureData() throws IOException {
         //device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
         device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
 
@@ -196,7 +189,7 @@ public class LPS25H  extends Sensor{
 
     }
 
-    private double readTemperature() throws IOException {
+    private double getTemperatureData() throws IOException {
         //device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short TEMP_OUT = buffer.getShort(0);
@@ -211,6 +204,37 @@ public class LPS25H  extends Sensor{
         public static final int MULTI_BYTE_READ_MASK = 0x80;
 
     }
+
+
+    private void start() {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        // get data
+                        tempData = getTemperatureData();
+                        barometricPressureData = getBarometricPressureData();
+                        //pass data on to listeners
+                    } catch(IOException e){
+                        e.printStackTrace();
+                    }
+
+                    for(SensorUpdateListener listener : listeners) {
+                        listener.sensorUpdated();
+                    }
+
+                    try {
+                        Thread.sleep(10);		//TODO this should not be hardwired.
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        new Thread(task).start();
+    }
+
 
 
 }

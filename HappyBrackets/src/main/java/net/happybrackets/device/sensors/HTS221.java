@@ -38,7 +38,6 @@ package net.happybrackets.device.sensors;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-import net.beadsproject.beads.data.DataBead;
 import net.happybrackets.device.sensors.sensor_types.HumiditySensor;
 import net.happybrackets.device.sensors.sensor_types.TemperatureSensor;
 
@@ -104,7 +103,6 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
     private HTS221ControlRegistry1 odr = HTS221ControlRegistry1.ODR_12DOT5_HZ;
     private HTS221ControlRegistry1 pd = HTS221ControlRegistry1.PD_ACTIVE;
 
-    DataBead db2 = new DataBead();
 
     /**
      * We use the same registry
@@ -113,6 +111,8 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
 
     private I2CDevice device;
     private I2CBus bus;
+    private double tempData;
+    private double humidityData;
 
 
     public String getSensorName(){
@@ -121,15 +121,12 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
 
     public HTS221() throws Exception {
 
-        db2.put("Name","HTS221");
-        db2.put("Manufacturer", "ST Microelectronics");
-
         bus = I2CFactory.getInstance(I2CBus.BUS_1);
         device = bus.getDevice(HTS221_ADDRESS);
         doStart();
         //super(endpoint, processor, device);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
-        
+        start();
     }
 
     public void doStart() throws Exception {
@@ -149,7 +146,6 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
         temperatureCalibration();
         humidityCalibration();
 
-        update();
 
     }
 
@@ -353,6 +349,32 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
 
         public static final int MULTI_BYTE_READ_MASK = 0x80;
 
+    }
+
+
+    private void start() {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                        // get data
+                        tempData = getTemperatureData();
+                        humidityData = getHumidityData();
+                        //pass data on to listeners
+
+                    for(SensorUpdateListener listener : listeners) {
+                        listener.sensorUpdated();
+                    }
+
+                    try {
+                        Thread.sleep(10);		//TODO this should not be hardwired.
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        new Thread(task).start();
     }
 
 }

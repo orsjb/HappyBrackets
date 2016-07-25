@@ -25,7 +25,6 @@ package net.happybrackets.device.sensors;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-import net.beadsproject.beads.data.DataBead;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -183,7 +182,6 @@ public class LSM9DS1 extends Sensor{
 	private static I2CDevice magI2CDevice;
     private static boolean debug = false;
     private static boolean debugS = true;
-    DataBead db2 = new DataBead();
 
     private float[] previousAcceleration = {0F, 0F, 0F};
 	private float gyroBiasX;
@@ -198,7 +196,11 @@ public class LSM9DS1 extends Sensor{
 	private float compassOffsetX;
 	private float compassOffsetY;
 	private float compassOffsetZ;
-	
+
+	private float[] accelData = {0F, 0F, 0F};
+	private float[] gyroData  = {0F, 0F, 0F};
+	private float[] magData   = {0F, 0F, 0F};
+
 	private float[] CompassAverage = {0.0F, 0.0F, 0.0F};
 
 	public static void main(String[] args) throws Exception {
@@ -226,8 +228,6 @@ public class LSM9DS1 extends Sensor{
 
 	public LSM9DS1() throws IOException {
 
-        db2.put("Name",this.getSensorName());
-        db2.put("Manufacturer","ST MicroElectronics");
         bus = I2CFactory.getInstance(I2CBus.BUS_1);
 		accI2CDevice = bus.getDevice(LSM9DS1_ACCADDRESS);
 		magI2CDevice = bus.getDevice(LSM9DS1_MAGADDRESS);
@@ -235,6 +235,7 @@ public class LSM9DS1 extends Sensor{
 		enableGyroscope();
 		enableMagnetometer();
 		setCalibrationData();
+        start();
 	}
 
 
@@ -242,21 +243,8 @@ public class LSM9DS1 extends Sensor{
         return "LSM9DS1";
     }
 
-    public void update() throws IOException {
 
-        for (SensorUpdateListener sListener: listeners){
-            SensorUpdateListener sl = (SensorUpdateListener) sListener;
 
-            DataBead db = new DataBead();
-            db.put("Accelerator",this.getAccelerometerRaw());
-            db.put("Gyrometer", this.getGyroscopeRaw());
-            db.put("Magnetometer", this.getCompassRaw());
-
-            sl.getData(db);
-            sl.getSensor(db2);
-
-        }
-    }
 
 //	public static void closeDevice() {
 //		try {
@@ -338,7 +326,7 @@ public class LSM9DS1 extends Sensor{
     }
 
 
-    public void getOrientationRadiants() {
+    public void getOrientationRadians() {
 		// Returns the current orientation in radians using the aircraft principal axes of pitch, roll and yaw
 		//s_logger.error.info("Method not yet implemented");
 	}
@@ -715,6 +703,30 @@ public class LSM9DS1 extends Sensor{
 		
 	}
 
+
+    private void start() {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    gyroData = getGyroscopeRaw();
+                    accelData = getAccelerometerRaw();
+                    magData = getCompassRaw();
+                    //pass data on to listeners
+                    for(SensorUpdateListener listener : listeners) {
+                        listener.sensorUpdated();
+                    }
+
+                    try {
+                        Thread.sleep(10);		//TODO this should not be hardwired.
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        new Thread(task).start();
+    }
 
 
 	
