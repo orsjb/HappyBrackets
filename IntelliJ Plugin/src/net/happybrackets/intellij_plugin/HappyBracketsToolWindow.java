@@ -72,7 +72,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 IntelliJControllerConfig.setInstance(config);
             }
             //set up config relevant directories
-            config.setConfigDir(pluginDir + "/classes/config");
+            config.setConfigDir(projectDir + "/config");
             deviceConnection = new DeviceConnection(config);
             //setup controller broadcast
             try {

@@ -10,7 +10,7 @@
   "aliveInterval":            1000,
 
   "useHostname":              true,
-  "knowDevicesFile":          "config/known_devices",
+  "knowDevicesFile":          "known_devices",
   "compositionsPath":         "build",
   "workingDir":               "."
 }
