@@ -1,0 +1,10 @@
+net.beadsproject.beads.analysis
+net.beadsproject.beads.analysis.featureextractors
+net.beadsproject.beads.analysis.segmenters
+net.beadsproject.beads.core
+net.beadsproject.beads.core.io
+net.beadsproject.beads.data
+net.beadsproject.beads.data.audiofile
+net.beadsproject.beads.data.buffers
+net.beadsproject.beads.events
+net.beadsproject.beads.ugens

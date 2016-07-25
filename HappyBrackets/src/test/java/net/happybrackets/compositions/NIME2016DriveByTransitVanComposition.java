@@ -334,6 +334,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     }
 
     private void setupSensorListener(HB hb) {
+//        hb.getSensor("MiniMu");
         if(!hb.sensors.containsKey("MiniMu")) {
             try {
                 hb.sensors.put("MiniMu", new MiniMU());
