@@ -27,10 +27,9 @@ import net.happybrackets.core.Device;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
-import net.happybrackets.device.sensors.MiniMU;
+import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
-import net.happybrackets.device.sensors.Sensor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -48,7 +47,7 @@ public class HB {
 	String status = "No ID set";
 
 	// sensor stuffs
-	public final Hashtable<String, Sensor> sensors;
+	public final Hashtable<Class<? extends Sensor>, Sensor> sensors;
 
 	// shared data
 	public final Hashtable<String, Object> share = new Hashtable<String, Object>();
@@ -341,7 +340,26 @@ public class HB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
 
+	/**
+	 * Gets the sensor with the given sensor ID. This will attempt to make a connection with the given sensor.
+	 *
+	 * @param sensorClass
+	 * @return
+     */
+	public Sensor getSensor(Class sensorClass) {
+		Sensor result = null;
+		if(!sensors.containsKey(sensorClass)) {
+			try {
+				result = (Sensor) sensorClass.getConstructor().newInstance();
+				if(result != null) sensors.put(sensorClass, result);
+			} catch (Exception e) {
+				System.err.println("Cannot create sensor: " + sensorClass);
+				setStatus("No sensor " + sensorClass + " available.");
+			}
+		}
+		return result;
 	}
 
 	/**

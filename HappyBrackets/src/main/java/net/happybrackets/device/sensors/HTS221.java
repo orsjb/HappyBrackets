@@ -39,13 +39,15 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import net.beadsproject.beads.data.DataBead;
+import net.happybrackets.device.sensors.sensor_types.HumiditySensor;
+import net.happybrackets.device.sensors.sensor_types.TemperatureSensor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 
-public final class HTS221 extends Sensor {
+public final class HTS221 extends Sensor implements HumiditySensor, TemperatureSensor {
 
     //private static final transient Logger LOG = LoggerFactory.getLogger(HTS221Consumer.class);
 
@@ -113,42 +115,9 @@ public final class HTS221 extends Sensor {
     private I2CBus bus;
 
 
-    public static void main(String[] args) throws Exception {
-    // this is a simple test of the functionality.
-
-        while (true) {
-            HTS221 sense = new HTS221();
-
-            double pressureVal = sense.getHumidity();
-            double tempVal = sense.readTemperature();
-
-            try {
-                Thread.sleep(1000);                 //1000 milliseconds is one second.
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
     public String getSensorName(){
         return "HTS221";
     }
-
-    public void update() throws IOException {
-
-        for (SensorListener sListener: listeners){
-            SensorListener sl = (SensorListener) sListener;
-
-            DataBead db = new DataBead();
-            db.put("Humidity",this.getHumidity());
-            db.put("Temperature", this.readTemperature());
-            sl.getData(db);
-
-            sl.getSensor(db2);
-        }
-    }
-
-
 
     public HTS221() throws Exception {
 
@@ -196,21 +165,27 @@ public final class HTS221 extends Sensor {
 
     }
 
-    public double getHumidity() throws IOException {
-
-        device.read(HUMIDITY_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
-        short rawHumidity = buffer.getShort(0);
-
-        return (rawHumidity * internalHumiditySlope + internalHumidityYIntercept);
+    public double getHumidityData() {
+        try {
+            device.read(HUMIDITY_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
+            short rawHumidity = buffer.getShort(0);
+            return (rawHumidity * internalHumiditySlope + internalHumidityYIntercept);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
-    public double readTemperature() throws IOException {
-
-        device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
-        short TEMP_OUT_L = buffer.getShort(0);
-        System.out.println("TEMP_OUT_L " + TEMP_OUT_L);
-
-        return (TEMP_OUT_L * internalTemperatureSlope + internalTemperatureYIntercept);
+    public double getTemperatureData() {
+        try {
+            device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
+            short TEMP_OUT_L = buffer.getShort(0);
+            System.out.println("TEMP_OUT_L " + TEMP_OUT_L);
+            return (TEMP_OUT_L * internalTemperatureSlope + internalTemperatureYIntercept);
+        } catch(IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public void humidityCalibration() throws Exception {

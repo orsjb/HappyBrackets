@@ -5,9 +5,8 @@ import net.beadsproject.beads.data.DataBead;
 /**
  * Created by ollie on 1/06/2016.
  */
-public interface SensorListener {
+public interface SensorUpdateListener {
 
-    void getData(DataBead db);
-    void getSensor(DataBead db);
+    void sensorUpdated();
 
 }

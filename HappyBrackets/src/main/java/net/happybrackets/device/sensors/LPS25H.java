@@ -148,8 +148,8 @@ public class LPS25H  extends Sensor{
 
     public void update() throws IOException {
 
-        for (SensorListener sListener: listeners){
-            SensorListener sl = (SensorListener) sListener;
+        for (SensorUpdateListener sListener: listeners){
+            SensorUpdateListener sl = (SensorUpdateListener) sListener;
 
             DataBead db = new DataBead();
             db.put("Pressure",this.readPressure());

@@ -11,7 +11,7 @@ public class SensorTest {
     public static void main(String[] args) throws Exception {
 
 //        HTS221 HTS221sensor = new HTS221();
-//        HTS221sensor.addListener(new SensorListener() {
+//        HTS221sensor.addListener(new SensorUpdateListener() {
 //            @Override
 //            public void getData(DataBead db){
 //                HTS221dataDB = db;
@@ -24,7 +24,7 @@ public class SensorTest {
 //        HTS221sensor.update();
 //
 //        LPS25H LPS25Hsensor = new LPS25H();
-//        LPS25Hsensor.addListener(new SensorListener() {
+//        LPS25Hsensor.addListener(new SensorUpdateListener() {
 //            @Override
 //            public void getData(DataBead db){
 //                LPS25HdataDB = db;
@@ -38,7 +38,7 @@ public class SensorTest {
 //
 //
         LSM9DS1 LSM9DS1sensor = new LSM9DS1();
-        LSM9DS1sensor.addListener(new SensorListener() {
+        LSM9DS1sensor.addListener(new SensorUpdateListener() {
             @Override
             public void getData(DataBead db){
                 LSM9DS1dataDB = db;
@@ -51,7 +51,7 @@ public class SensorTest {
         LSM9DS1sensor.update();
 
 //        MiniMU MiniMU = new MiniMU();
-//        MiniMU.addListener(new SensorListener() {
+//        MiniMU.addListener(new SensorUpdateListener() {
 //            @Override
 //            public void getData(DataBead db){
 //                MinimuDataDB = db;

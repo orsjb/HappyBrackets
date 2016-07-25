@@ -244,8 +244,8 @@ public class LSM9DS1 extends Sensor{
 
     public void update() throws IOException {
 
-        for (SensorListener sListener: listeners){
-            SensorListener sl = (SensorListener) sListener;
+        for (SensorUpdateListener sListener: listeners){
+            SensorUpdateListener sl = (SensorUpdateListener) sListener;
 
             DataBead db = new DataBead();
             db.put("Accelerator",this.getAccelerometerRaw());
