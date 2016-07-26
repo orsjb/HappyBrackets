@@ -18,11 +18,11 @@ BITS=16
 INS=0
 OUTS=1 
 AUTOSTART=true 
+ACTION=
 
 echo “Running HappyBrackets”
 
-/usr/bin/sudo /usr/bin/java -Xmx512m -jar HB.jar buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART  > stdout &
+(/usr/bin/sudo /usr/bin/java -cp data/classes -Xmx512m -jar HB.jar buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART $ACTION > stdout &) &
 
 ### Finally, run the network-monitor.sh script to keep WiFi connection alive
-
-scripts/network-monitor.sh > netstatus &
+(scripts/network-monitor.sh > netstatus &) &
