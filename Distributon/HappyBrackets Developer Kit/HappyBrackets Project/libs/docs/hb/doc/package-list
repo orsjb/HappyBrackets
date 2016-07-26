@@ -10,3 +10,4 @@ net.happybrackets.device.config.template
 net.happybrackets.device.dynamic
 net.happybrackets.device.network
 net.happybrackets.device.sensors
+net.happybrackets.device.sensors.sensor_types
