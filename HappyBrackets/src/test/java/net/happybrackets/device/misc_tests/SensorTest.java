@@ -39,16 +39,20 @@ public class SensorTest {
 //
         LSM9DS1 LSM9DS1sensor = new LSM9DS1();
         LSM9DS1sensor.addListener(new SensorUpdateListener() {
+
             @Override
+            public void sensorUpdated() {
+                //TODO this test is broken until we move the below methods up into this space and make calls to the sensor for the data values.
+            }
+
             public void getData(DataBead db){
                 LSM9DS1dataDB = db;
             }
-            @Override
+
             public void getSensor(DataBead db){
                 LSM9DS1nameDB = db;
             }
         });
-        LSM9DS1sensor.update();
 
 //        MiniMU MiniMU = new MiniMU();
 //        MiniMU.addListener(new SensorUpdateListener() {
