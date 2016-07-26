@@ -26,6 +26,7 @@ public class HappyBracketsHelloWorld implements HBAction {
         e.addSegment(0, 5000, new KillTrigger(g));
         g.addInput(wp);
         hb.sound(g);
+        System.out.println("Hello World");
     }
 
 }
