@@ -3,20 +3,14 @@
 ### Script to autorun HappyBrackets on device
 
 ### move to the correct dir for running this script (one level above where this script is)
-
 DIR=`dirname $0`
 cd ${DIR}/..
 
 ### run the auto-rename script
-
 scripts/auto-rename.sh
 
 ### run HappyBrackets
-
-echo “Running HappyBrackets”
-
-# Run the main app
-# args are bufSize (512), sample rate (44100), bits (16), input channels (0), output channels (1), autostart (true)
+### args are bufSize (512), sample rate (44100), bits (16), input channels (0), output channels (1), autostart (true)
 
 BUF=1024
 SR=44100
@@ -24,6 +18,8 @@ BITS=16
 INS=0
 OUTS=1 
 AUTOSTART=true 
+
+echo “Running HappyBrackets”
 
 /usr/bin/sudo /usr/bin/java -Xmx512m -jar HB.jar buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART  > stdout &
 
