@@ -45,8 +45,8 @@ public class CodeTask8_1 implements HBAction {
 
             @Override
             public void sensorUpdated() {
-                double x = lsm[0];
-                rate.setValue((float)x / 1000f);
+                //double x = lsm;
+                //rate.setValue((float)x / 1000f);
             }
 
         });

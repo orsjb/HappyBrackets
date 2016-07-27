@@ -1,16 +1,7 @@
-package net.happybrackets.tutorial.session3;
+package net.happybrackets.tutorial.session8;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-import net.beadsproject.beads.core.AudioContext;
-import net.beadsproject.beads.core.Bead;
-import net.beadsproject.beads.data.SampleManager;
-import net.beadsproject.beads.ugens.Clock;
-import net.beadsproject.beads.ugens.Function;
-import net.beadsproject.beads.ugens.SamplePlayer;
-import net.happybrackets.controller.gui.WaveformVisualiser;
-
-import java.util.Random;
+import net.happybrackets.core.HBAction;
+import net.happybrackets.device.HB;
 
 /**
  * Created by ollie on 6/06/2016.
@@ -23,26 +14,12 @@ import java.util.Random;
  *
  *
  */
-public class CodeTask3_3 extends Application {
+public class CodeTask8_3 implements HBAction {
 
-    public static void main(String[] args) {launch(args);
-    }
 
     @Override
-    public void start(Stage primaryStage) {
-        AudioContext ac = new AudioContext();
-        ac.start();
-        WaveformVisualiser.open(ac);
-        Random rng = new Random();
-        //a function object
-        Function f = new Function(ac.out) {
-            @Override
-            public float calculate() {
-                float nextSampleVal = rng.nextFloat() * 0.2f - 0.1f;
-                return nextSampleVal;
-            }
-        };
-        ac.out.addInput(f);
-    }
+    public void action(HB hb) {
 
+
+    }
 }

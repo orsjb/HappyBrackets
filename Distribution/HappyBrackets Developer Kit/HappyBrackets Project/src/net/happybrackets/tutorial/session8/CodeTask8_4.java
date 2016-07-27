@@ -1,31 +1,29 @@
 package net.happybrackets.tutorial.session8;
 
-import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.MiniMU;
-import net.happybrackets.device.sensors.SensorListener;
+import net.happybrackets.device.sensors.LSM9DS1;
+import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /** For this code task we want to look at the accelerometer and use it to 
  * trigger a sound when you turn over the accelerometer.
  * 
  */
-public class CodeTask8_1 implements HBAction {
+public class CodeTask8_4 implements HBAction {
 
-    @Override
+	public enum Orientation {UP, DOWN};
+	Orientation currentOri  = Orientation.UP;
+	Orientation previousOri  = Orientation.DOWN;
+
+	@Override
     public void action(HB hb) {
 
-		enum orientation = {UP, DOWN}; 
-		orientation currentOri  = UP;
-		orientation previousOri = UP;
-        hb.reset();
 
-        //set up an object that will respond to a minimu sensor.
-        hb.sensors.put("mu", new MiniMU());
+		hb.reset();
 
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
@@ -36,22 +34,24 @@ public class CodeTask8_1 implements HBAction {
         Sample s = SampleManager.randomFromGroup("Guitar");
         SamplePlayer sp = new SamplePlayer(hb.ac, s);
         sp.setRate(rate);
-        hb.sensors.get("LSM9DS1").addListener(new SensorListener() {
+
+		LSM9DS1 mySensor = (LSM9DS1)hb.getSensor(LSM9DS1.class);
+
+		mySensor.addListener(new SensorUpdateListener() {
             @Override
         	public void sensorUpdated() {
 				
 				// Get the data from Z.
-				double[] floatData = LSM9DS1.getAccelerometerData();
-				double   zAxis     = floatData[2]; 
-				
+				double zAxis = mySensor.getAccelerometerData()[2];
+
 				// set previous orientation to the current orientation
 				previousOri = currentOri;
 				
 				// Is it positive or negative.
 				if (zAxis > 0) {
-					currentOri = UP;
+					currentOri = Orientation.UP;
 				} else {
-					currentOri = DOWN;
+					currentOri = Orientation.DOWN;
 				}
 				
 				// Is it different to the current value (has it changed)
@@ -62,4 +62,5 @@ public class CodeTask8_1 implements HBAction {
             }
         });
     }
+
 }
