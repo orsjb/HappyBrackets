@@ -8,7 +8,7 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.MiniMU;
-import net.happybrackets.device.sensors.SensorListener;
+import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
  * Created by ollie on 24/06/2016.
@@ -20,9 +20,6 @@ public class CodeTask8_1 implements HBAction {
 
 
         hb.reset();
-
-        //set up an object that will respond to a minimu sensor.
-        hb.sensors.put("mu", new MiniMU());
 
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
@@ -43,11 +40,16 @@ public class CodeTask8_1 implements HBAction {
             }
         });
 
-        hb.sensors.get("mu").addListener(new MiniMU.MiniMUListener() {
+        MiniMU mm = (MiniMU)hb.getSensor(MiniMU.class);
+
+        mm.addListener(new SensorUpdateListener() {
+
             @Override
-            public void accelData(double x, double y, double z) {
+            public void sensorUpdated() {
+                double x = mm.getAccelerometerData()[0];
                 rate.setValue((float)x / 1000f);
             }
+
         });
     }
 
