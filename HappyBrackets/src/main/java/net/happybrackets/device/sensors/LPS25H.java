@@ -234,7 +234,4 @@ public class LPS25H  extends Sensor{
         };
         new Thread(task).start();
     }
-
-
-
 }

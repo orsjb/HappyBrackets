@@ -25,6 +25,9 @@ package net.happybrackets.device.sensors;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
+import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
+import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
+import net.happybrackets.device.sensors.sensor_types.MagnetometerSensor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -34,7 +37,7 @@ import java.nio.ByteBuffer;
 //import org.slf4j.LoggerFactory;
 
 
-public class LSM9DS1 extends Sensor{
+public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSensor, MagnetometerSensor{
 	
 	//private static final Logger //s_logger.error = LoggerFactory.getLogger(LSM9DS1.class);
 
@@ -183,10 +186,10 @@ public class LSM9DS1 extends Sensor{
     private static boolean debug = false;
     private static boolean debugS = true;
 
-    private float[] previousAcceleration = {0F, 0F, 0F};
-	private float gyroBiasX;
-	private float gyroBiasY;
-	private float gyroBiasZ;
+    private double[] previousAcceleration = {0F, 0F, 0F};
+	private double gyroBiasX;
+	private double gyroBiasY;
+	private double gyroBiasZ;
 	private int   gyroSampleCount = 0;
 	private static int gyroSampleRate = 0;
 
@@ -197,11 +200,11 @@ public class LSM9DS1 extends Sensor{
 	private float compassOffsetY;
 	private float compassOffsetZ;
 
-	private float[] accelData = {0F, 0F, 0F};
-	private float[] gyroData  = {0F, 0F, 0F};
-	private float[] magData   = {0F, 0F, 0F};
+	private double[] accelData = {0, 0, 0};
+	private double[] gyroData  = {0, 0, 0};
+	private double[] magData   = {0, 0, 0};
 
-	private float[] CompassAverage = {0.0F, 0.0F, 0.0F};
+	private double[] CompassAverage = {0.0, 0.0, 0.0};
 
 	public static void main(String[] args) throws Exception {
 
@@ -209,9 +212,9 @@ public class LSM9DS1 extends Sensor{
 		LSM9DS1 imu = new LSM9DS1();
 		while (true) {
 
-			float[] accVal = imu.getAccelerometerRaw();
-			float[] gyrVal = imu.getGyroscopeRaw();
-            float[] magVal = imu.getCompassRaw();
+			double[] accVal = imu.getAccelerometerRaw();
+            double[] gyrVal = imu.getGyroscopeRaw();
+            double[] magVal = imu.getCompassRaw();
             if (debugS) {
                 //System.out.println(String.format("Acc: %04.6f %04.6f %04.6f ", accVal[0], accVal[1], accVal[2]));
                 System.out.println(String.format("Gyr: %04.6f %04.6f %04.6f ", gyrVal[0], gyrVal[1], gyrVal[2]));
@@ -341,10 +344,10 @@ public class LSM9DS1 extends Sensor{
 		//s_logger.error.info("Method not yet implemented");
 	}
 
-	public float[] getCompassRaw() {
+	public double[] getCompassRaw() {
 		
 		// Magnetometer x y z raw data in uT (micro teslas)
-		float[] mag = new float[3];
+		double[] mag = new double[3];
 
 		int magFS = 0;
 		
@@ -378,7 +381,7 @@ public class LSM9DS1 extends Sensor{
 			////s_logger.error.error("Unable to read to I2C device.", e);
 
 		// Swap X and Y axis to match SenseHat library
-		float[] Compass = new float[3];
+		double[] Compass = new double[3];
 		Compass[0] = CompassAverage[1];
 		Compass[1] = CompassAverage[0];
 		Compass[2] = CompassAverage[2];
@@ -391,10 +394,10 @@ public class LSM9DS1 extends Sensor{
 		//s_logger.error.info("Method not yet implemented");
 	}
 
-	public float[] getGyroscopeRaw() {
+	public double[] getGyroscopeRaw() {
 		
 		// Gyroscope x y z raw data in radians per second
-		float[] gyro = new float[3];
+		double[] gyro = new double[3];
         float scaleFactor = 0;
 		int gyroFSR = 0;
 		gyroFSR = read(ACC_DEVICE, CTRL_REG1_G) & 0x00000018;
@@ -421,10 +424,10 @@ public class LSM9DS1 extends Sensor{
 		//s_logger.error.info("Method not yet implemented");
 	}
 
-	public float[] getAccelerometerRaw() {
+	public double[] getAccelerometerRaw() {
 
 		// Accelerometer x y z raw data in Gs
-		float[] acc = new float[3];
+		double[] acc = new double[3];
 
 
         float scaleFactor = 0f;
@@ -465,7 +468,7 @@ public class LSM9DS1 extends Sensor{
         acc[0] = -acc[0];
         acc[1] = -acc[1];
 
-        float accTemp = acc[1];
+        double accTemp = acc[1];
         acc[1] = acc[0];
         acc[0] = accTemp;
 
@@ -477,8 +480,8 @@ public class LSM9DS1 extends Sensor{
 
 	}
 
-    private float flipBits(float input) {
-        float output = input;
+    private double flipBits(double input) {
+        double output = (float) input;
         if (input > 32678) {
             output = input - 65536;
         }
@@ -592,8 +595,9 @@ public class LSM9DS1 extends Sensor{
 		}
 
 	}
+
 	
-	private void calibrateAcceleration(float[] acc) {
+	private void calibrateAcceleration(double[] acc) {
 		
 	    if (acc[0] >= 0.0)
 	    	acc[0] = acc[0] / ACCEL_CAL_MAX_X;
@@ -612,14 +616,14 @@ public class LSM9DS1 extends Sensor{
 	    
 	}
 	
-	private void calibrateGyroscope(float[] gyro) {
+	private void calibrateGyroscope(double[] gyro) {
 		
-		float[] deltaAcceleration = {0F, 0F, 0F};
+		double[] deltaAcceleration = {0, 0, 0};
 		deltaAcceleration[0] = previousAcceleration[0];
 		deltaAcceleration[1] = previousAcceleration[1];
 		deltaAcceleration[2] = previousAcceleration[2];
 		
-		float[] currentAcceleration = getAccelerometerRaw();
+		double[] currentAcceleration = getAccelerometerRaw();
 		deltaAcceleration[0] -= currentAcceleration[0];
 		deltaAcceleration[1] -= currentAcceleration[1];
 		deltaAcceleration[2] -= currentAcceleration[2];
@@ -653,7 +657,7 @@ public class LSM9DS1 extends Sensor{
 		gyroSampleRate = sampleRate;
 	}
 	
-	private void calibrateMagnetometer(float[] mag) {
+	private void calibrateMagnetometer(double[] mag) {
 		
 		mag[0] = (mag[0] - compassOffsetX) * compassScaleX;
 		mag[1] = (mag[1] - compassOffsetY) * compassScaleY;
@@ -728,6 +732,21 @@ public class LSM9DS1 extends Sensor{
         new Thread(task).start();
     }
 
+    @Override
+    public double[] getGyroscopeData() {
+        return accelData;
+    }
 
+    @Override
+    public double[] getAccelerometerData() {
+        double[] accDouble = (double[]) gyroData;
+        return accDouble;
+    }
+
+    @Override
+    public double[] getMagnetometerData() {
+        double[] mag2 = (double[]) magData;
+        return mag2;
+    }
 	
 }
