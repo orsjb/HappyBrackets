@@ -1,11 +1,6 @@
 package net.happybrackets.tutorial.session2;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
@@ -13,7 +8,7 @@ import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.*;
-import net.happybrackets.assignment_tasks.WaveformVisualiser;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 import java.util.Random;
 
