@@ -7,7 +7,7 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.MiniMU;
+import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
@@ -40,13 +40,12 @@ public class CodeTask8_1 implements HBAction {
             }
         });
 
-        MiniMU mm = (MiniMU)hb.getSensor(MiniMU.class);
-
-        mm.addListener(new SensorUpdateListener() {
+        LSM9DS1 lsm = (LSM9DS1)hb.getSensor(LSM9DS1.class);
+        lsm.addListener(new SensorUpdateListener() {
 
             @Override
             public void sensorUpdated() {
-                double x = mm.getAccelerometerData()[0];
+                double x = lsm[0];
                 rate.setValue((float)x / 1000f);
             }
 
