@@ -12,7 +12,8 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
 
 public class CodeTask8_1 implements HBAction {
 
-
+//    double[] dataBuffer = new double[12];
+//    int j = 0;
 
     @Override
     public void action(HB hb) {
@@ -27,9 +28,20 @@ public class CodeTask8_1 implements HBAction {
                 double[] accelData = lsm.getAccelerometerData();
                 String data = accelData[0] + " " + accelData[1] + " " + accelData[2];
                 System.out.println(data);
-
             }
         });
+    }
+
+    public double mean(double[] dataBuffer){
+
+        double meanValue = 0;
+
+        for (int index = 0; index < dataBuffer.length; index++) {
+            meanValue = dataBuffer[index] + meanValue;
+        }
+        meanValue = meanValue / dataBuffer.length;
+
+        return meanValue;
 
     }
 }

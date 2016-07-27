@@ -30,12 +30,14 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import net.beadsproject.beads.data.DataBead;
+import net.happybrackets.device.sensors.sensor_types.BarometricPressureSensor;
+import net.happybrackets.device.sensors.sensor_types.HumiditySensor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class LPS25H  extends Sensor{
+public class LPS25H  extends Sensor implements BarometricPressureSensor{
 
     public static final byte LPS25H_ADDRESS = 0x5c;
 
@@ -176,7 +178,7 @@ public class LPS25H  extends Sensor{
 
     }
 
-    private double getBarometricPressureData() throws IOException {
+    public double getBarometricPressureData() throws IOException {
         //device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
         device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
 
@@ -189,7 +191,7 @@ public class LPS25H  extends Sensor{
 
     }
 
-    private double getTemperatureData() throws IOException {
+    public double getTemperatureData() throws IOException {
         //device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short TEMP_OUT = buffer.getShort(0);

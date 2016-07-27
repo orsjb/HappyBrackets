@@ -15,10 +15,13 @@ public class BasicBroadcastTest implements HBAction {
 
     @Override
     public void action(HB hb) {
+
+        hb.reset();
+
         hb.addBroadcastListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage oscMessage, SocketAddress socketAddress, long l) {
-                System.out.println("Message received: " + oscMessage.getName());
+                System.out.println("Message received: " + oscMessage.getName() + " myindex = " + hb.myIndex());
             }
         });
         hb.pattern(new Bead() {
