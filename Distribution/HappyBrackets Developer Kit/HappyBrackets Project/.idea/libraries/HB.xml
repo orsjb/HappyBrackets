@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="HB">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/HB.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/libs/docs/NetUtil/doc" />
+      <root url="file://$PROJECT_DIR$/libs/docs/hb/doc" />
+      <root url="file://$PROJECT_DIR$/libs/docs/beads/doc" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
