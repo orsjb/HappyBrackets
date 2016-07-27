@@ -1,64 +1,59 @@
 package net.happybrackets.tutorial.session8;
 
+import net.beadsproject.beads.data.Buffer;
+import net.beadsproject.beads.ugens.Envelope;
+import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.LSM9DS1;
+import net.happybrackets.device.sensors.SensorUpdateListener;
 
-/** For this code task we want to look at the accelerometer and use it to 
- * trigger a sound when you turn over the accelerometer.
- * 
+/**
+ * Created by ollie on 6/06/2016.
+ *
+ * Do pythagoras to
+ *
+ *
  */
 public class CodeTask8_2 implements HBAction {
+
 
     @Override
     public void action(HB hb) {
 
-//		double xAngle = 0;
-//		double yAngle = 0;
-//		double zAngle = 0;
-//
-//		// Reset
-//        hb.reset();
-//
-//        // Set up an object that will respond to a minimu sensor.
-//        hb.sensors.put(LSM9DS1.class, new LSM9DS1());
-//
-//		// Envelope env
-//		Envelope env = new Envelope(ac, 440.0f);
-//
-//
-//		// Play a Sine Tone
-//
-//		WavePlayer wp = new WavePlayer(ac, env, Buffer.SINE);
-//
-//		Gain g = new Gain(ac, 0, 0.1f);
-//		g.addInput(wp);
-//		hb.ac.addInput(g);
-//		hb.ac.start();
-//
-//        hb.sensors.get("LSM9DS1").addListener(new SensorListener() {
-//            @Override
-//        	public void sensorUpdated() {
-//
-//				// Get the data from the accelerometer.
-//				double[] floatData = LSM9DS1.getAccelerometerData();
-//				double 	 xAxis	   = floatData[0];
-//				double 	 yAxis	   = floatData[1];
-//				double   zAxis     = floatData[2];
-//
-//				// do polar to cartesian
-//			    xAngle = Math.atan(xAxis / (Math.sqrt(Math.pow(yAxis, 2) + Math.pow(zAxis, 2))));
-//			    yAngle = Math.atan(yAxis / (Math.sqrt(Math.pow(xAxis, 2) + Math.pow(zAxis, 2))));
-//			    zAngle = Math.atan(Math.sqrt(Math.pow(xAxis, 2) + Math.pow(yAxis, 2)) / zAxis);
-//
-//				// convert degrees to radians
-//			    xAngle = xAngle * 180.00 / Math.PI;
-//				yAngle = yAngle * 180.00 / Math.PI;
-//				zAngle = zAngle * 180.00 / Math.PI;
-//
-//				// set the pitch of the sine wave. (What will this be?)
-//				env.setValue(xAngle*10);
-//
-//            }
-//        });
+        // reset HB
+        hb.reset();
+
+        //load a set of sounds
+        Envelope freq = new Envelope(hb.ac, 440);
+
+        LSM9DS1 lsm = (LSM9DS1)hb.getSensor(LSM9DS1.class);
+
+        // Sine Generator
+        WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
+
+        // Gain control
+        Gain g = new Gain(hb.ac, 1, 0.1f);
+
+        // Hook up the UGens
+        g.addInput(wp);
+        hb.ac.out.addInput(g);
+
+        lsm.addListener(new SensorUpdateListener() {
+
+            @Override
+            public void sensorUpdated() {
+
+                // get the accelerometer data
+                double x = lsm.getAccelerometerData()[0];
+
+                // change the frequency
+                freq.addSegment(10, (float) x);
+
+            }
+
+        });
+
     }
 }

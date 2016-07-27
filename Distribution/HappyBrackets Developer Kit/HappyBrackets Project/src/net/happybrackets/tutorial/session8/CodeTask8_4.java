@@ -1,7 +1,9 @@
 package net.happybrackets.tutorial.session8;
 
+import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
+import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
@@ -9,16 +11,9 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
- * For this code task we want to look at the accelerometer and use it to
- * trigger a sound when you turn over the accelerometer.
+ * Created by ollie on 24/06/2016.
  */
 public class CodeTask8_4 implements HBAction {
-
-    public enum Orientation {UP, DOWN}
-
-    ;
-    Orientation currentOri = Orientation.UP;
-    Orientation previousOri = Orientation.DOWN;
 
     @Override
     public void action(HB hb) {
@@ -29,42 +24,39 @@ public class CodeTask8_4 implements HBAction {
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
 
-        //play a new random sound
-        Sample sUp = SampleManager.fromGroup("Guitar",1);
-        Sample sDown = SampleManager.fromGroup("Guitar",2);
+        Glide rate = new Glide(hb.ac, 1);
 
-
-        LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-
-        mySensor.addListener(new SensorUpdateListener() {
+        //create a pattern that plays notes
+        hb.pattern(new Bead() {
             @Override
-            public void sensorUpdated() {
+            protected void messageReceived(Bead bead) {
 
-                // Get the data from Z.
-                double zAxis = mySensor.getAccelerometerData()[2];
-                System.out.println("zAxis" + zAxis);
-                // set previous orientation to the current orientation
-                previousOri = currentOri;
+                if(hb.clock.getCount() % 32 == 0) {
 
-                // Is it positive or negative.
-                if (zAxis > 0) {
-                    currentOri = Orientation.UP;
-                } else {
-                    currentOri = Orientation.DOWN;
-                }
+                    //play a new random sound
+                    Sample s = SampleManager.fromGroup("Guitar", 1);
+                    SamplePlayer sp = new SamplePlayer(hb.ac, s);
+                    sp.setRate(rate);
+                    hb.sound(sp);
 
-                // Is it different to the current value (has it changed)
-                if (currentOri != previousOri) {
-                    if (currentOri == Orientation.UP) {
-                        // if so play the sound
-                        SamplePlayer sp = new SamplePlayer(hb.ac, sUp);
-                        hb.sound(sp);
-                    } else if (currentOri == Orientation.DOWN) {
-                        SamplePlayer sp = new SamplePlayer(hb.ac, sDown);
-                        hb.sound(sp);
-                    }
                 }
             }
         });
+
+        LSM9DS1 lsm = (LSM9DS1)hb.getSensor(LSM9DS1.class);
+        lsm.addListener(new SensorUpdateListener() {
+
+            @Override
+            public void sensorUpdated() {
+
+                // get x
+                double x = lsm.getAccelerometerData()[0];
+
+                rate.setValue((float)x / 1000f);
+            }
+
+
+        });
     }
+
 }
