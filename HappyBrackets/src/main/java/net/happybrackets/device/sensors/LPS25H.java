@@ -15,16 +15,12 @@ package net.happybrackets.device.sensors;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *
- */
-
-/***************
+ * ----------------------------------------------------------------
  * Adapted for the Happy brackets project by Sam Ferguson (2016).
  *
  * We will return configuration information and scaling information so
  * this sensor can be compared to others.
- *
- ***************/
+ */
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
@@ -95,11 +91,9 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
                 0b1);
 
         final byte value;
-
         LPS25HControlRegistry1(int value) {
             this.value = (byte) value;
         }
-
     }
 
     private LPS25HControlRegistry1 pd = LPS25HControlRegistry1.PD_ACTIVE;
@@ -142,17 +136,13 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
         start();
     }
 
-
-
     public String getSensorName(){
         return "LPS25H";
     }
 
     public void update() throws IOException {
-
         for (SensorUpdateListener sListener: listeners){
             SensorUpdateListener sl = (SensorUpdateListener) sListener;
-
         }
     }
 
@@ -161,7 +151,6 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
         byte registry1 = (byte) (pd.value << 7 | odr.value << 4 | diffEn.value << 3 | bdu.value << 2
                 | resetAz.value << 1 | sim.value);
         device.write(CTRL_REG1, registry1);
-
         // ST suggested configuration
         device.write(RES_CONF, RES_CONF_SC);
         device.write(FIFO_CTRL, FIFO_CTRL_SC);
@@ -173,22 +162,22 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
         byte crtl1 = (byte) device.read(CTRL_REG1);
         byte maskToPowerDown = (byte) (0xff ^ (~LPS25HControlRegistry1.PD_POWER_DOWN.value << 7));
         crtl1 &= maskToPowerDown;
-
         device.write(CTRL_REG1, crtl1);
-
     }
 
-    public double getBarometricPressureData() throws IOException {
+    public double getBarometricPressureData() {
         //device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
-        device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
-
+        try {
+            device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         buffer.put(3, (byte) 0);
         int PRESS_OUT = buffer.getInt(0);
         System.out.println("DEBUG: PRESSURE_OUT  : " + PRESS_OUT);
         double press = (PRESS_OUT / DOUBLE_4096_0);
         System.out.println("DEBUG: PRESSURE_OUT (hPa) : " + press);
         return press;
-
     }
 
     public double getTemperatureData() throws IOException {
@@ -202,11 +191,8 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
     }
 
     public final class I2CConstants {
-
         public static final int MULTI_BYTE_READ_MASK = 0x80;
-
     }
-
 
     private void start() {
         Runnable task = new Runnable() {
@@ -221,11 +207,9 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
                     } catch(IOException e){
                         e.printStackTrace();
                     }
-
                     for(SensorUpdateListener listener : listeners) {
                         listener.sensorUpdated();
                     }
-
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.
                     } catch (InterruptedException e) {
