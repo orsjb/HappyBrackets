@@ -10,7 +10,7 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 /**
  * Created by ollie on 10/05/2016.
  *
- * This code is exactly the same as in HelloWorldBeads.
+ * This code is exactly the same as in HelloWorldBeadsTask.
  *
  * Modify the code so that you have two WavePlayers, one connected to the left channel playing a sine tone at 500hz, and one connected to the right channel, playing a square wave tone at 750hz. They should be passing through a stereo Gain object with a gain of 0.2.
  *
