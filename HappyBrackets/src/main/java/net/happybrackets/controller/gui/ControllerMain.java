@@ -7,6 +7,7 @@ import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.config.ControllerConfig;
 import net.happybrackets.core.Device;
+import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.config.LoadableConfig;
 import net.happybrackets.core.Synchronizer;
 import javafx.application.Application;
@@ -28,6 +29,7 @@ public class ControllerMain extends Application {
 
 	DeviceConnection piConnection;
 	Synchronizer synchronizer;
+	BroadcastManager broadcastManager;
 	String currentPIPO = "";
 	protected ControllerConfig config;
 	protected ControllerAdvertiser controllerAdvert;
@@ -42,13 +44,8 @@ public class ControllerMain extends Application {
 	    piConnection = new DeviceConnection(config);
 
 	    //setup controller broadcast
-	  	try {
-				controllerAdvert = new ControllerAdvertiser(config);
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			broadcastManager = new BroadcastManager(config);
+			controllerAdvert = new ControllerAdvertiser(broadcastManager, config.getMyHostName());
 	    controllerAdvert.start();
 
 			//setup http httpServer

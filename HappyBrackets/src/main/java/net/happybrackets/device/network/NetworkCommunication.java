@@ -136,7 +136,7 @@ public class NetworkCommunication {
 						System.out.println("/device/alive message did not getInstance through to controller.");
 					}
 				}
- 				
+
 			}
 		}.start();
 	}
@@ -148,7 +148,13 @@ public class NetworkCommunication {
      */
 	public void send(String msg, Object[] args) {
 		try {
-			oscServer.send(new OSCMessage(msg, args), controller);
+			oscServer.send(
+			new OSCMessage(msg, args),
+			new InetSocketAddress(
+						DeviceConfig.getInstance().getControllerAddress(),
+						DeviceConfig.getInstance().getStatusFromDevicePort()
+				)
+			);
 		} catch (IOException e) {
 			System.out.println("Error sending OSC message to Server:");
 			e.printStackTrace();
@@ -185,6 +191,6 @@ public class NetworkCommunication {
 	public int getID() {
 		return myID;
 	}
-	
+
 
 }
