@@ -5,11 +5,11 @@ import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.core.io.NonrealtimeIO;
+import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.DelayTrigger;
 import net.beadsproject.beads.ugens.RecordToFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Set;
 
 /**
@@ -18,45 +18,91 @@ import java.util.Set;
 public class BeadsChecker {
 
     public interface BeadsCheckable {
-        public String task(AudioContext ac, Object... args);
+        public void task(AudioContext ac, StringBuffer buf, Object... args);
     }
 
-    public BeadsChecker(BeadsCheckable testCode) {
+    public BeadsChecker(BeadsCheckable testCode, int totalTime, int snapshotInterval, String resultsDir) {
+
+        File resultsDirFile = new File(resultsDir);
+        if(!resultsDirFile.exists()) {
+            resultsDirFile.mkdir();
+        }
+
         AudioContext ac = new AudioContext(new NonrealtimeIO());
 
         //set up recorder
         RecordToFile rtf = null;
         try {
-            rtf = new RecordToFile(ac, 2, new File("result.wav"));
+            rtf = new RecordToFile(ac, 2, new File(resultsDir + "/" + "audio.wav"));
         } catch (IOException e) {
             e.printStackTrace();
         }
         rtf.addInput(ac.out);
         ac.out.addDependent(rtf);
 
-        //here we're testing
-        String result = testCode.task(ac);
+        //here we're running the test code -- the system will be set up but won't have run until later
+        //when we call "runForNMillisecondsNonRealTime()".
+        StringBuffer result = new StringBuffer();
+        testCode.task(ac, result);
 
-        //run non realtime
-        DelayTrigger dt = new DelayTrigger(ac, 10000, new Bead() {
+        //set up a clock to make snapshots
+        Clock snapshotter = new Clock(ac, snapshotInterval);
+        ac.out.addDependent(snapshotter);
+        snapshotter.addMessageListener(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                //TODO we should be able to run snapshots of the audio at different times
-                //We can actually do this with a Clock!
+                if(snapshotter.isBeat()) {
+                    //TAKE SNAPSHOT
+                    System.out.println("** snapshot ** " + ac.getTime());
+                    //grab snapshot and print somewhere
+                    StringBuffer buf = new StringBuffer();
+                    printCallChain(ac.out, buf, 0);
+                    try {
+                        FileOutputStream fos = new FileOutputStream(new File(resultsDir + "/" + "snapshot" + snapshotter.getBeatCount()));
+                        PrintStream ps = new PrintStream(fos);
+                        ps.append(buf.toString());
+                        ps.close();
+                        fos.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
-        System.out.println("completed " + ac.getTime());
-
-        ac.runForNMillisecondsNonRealTime(10000);
-        System.out.println("completed " + ac.getTime());
+        ac.runForNMillisecondsNonRealTime(totalTime);
+        System.out.println("** completed ** " + ac.getTime());
 
         //close record stream
         rtf.kill();
 
-        //ac
-        ac.printCallChain();
+        //save result text
+        try {
+            FileOutputStream fos = new FileOutputStream(new File(resultsDir + "/" + "result"));
+            PrintStream ps = new PrintStream(fos);
+            ps.append(result.toString());
+            ps.close();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    private void printCallChain(UGen ug, StringBuffer sb, int depth) {
+        for(int i = 0; i < depth; i++) {
+            sb.append(" ");
+        }
+        sb.append(ug);
+        Set<UGen> inputs = ug.getConnectedInputs();
+        for(UGen input : inputs) {
+            sb.append("\n");
+            printCallChain(input, sb, depth+1);
+        }
     }
 
 }
