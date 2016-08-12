@@ -52,10 +52,13 @@ public abstract class WaveformVisualiser {
                     g2d.clearRect(0, 0, c.getWidth(), c.getHeight());
                     for(int chan = 0; chan < ac.out.getOuts(); chan++) {
                         float[] buf = ac.out.getOutBuffer(chan);
+                        int firsty = (int) (((buf[0] * 0.5f + 0.5) + chan) * c.getHeight()/ac.out.getOuts());
+                        g2d.moveTo(0, firsty);
                         for (int i = 0; i < buf.length; i++) {
                             float f = buf[i];
                             int x = (int) ((float) i / buf.length * c.getWidth());
                             int y = (int) (((f * 0.5f + 0.5) + chan) * c.getHeight()/ac.out.getOuts());
+                            g2d.lineTo(x, y);
                             g2d.fillOval(x, y, 0.7, 0.7);
                         }
                     }
