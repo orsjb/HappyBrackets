@@ -85,6 +85,10 @@ task copyFiles << {
         from 'build/libs/HB.jar'
         into '../Distribution/HappyBrackets Developer Kit/Device/HappyBrackets'
     }
+    copy {
+        from '../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip'
+        into '../Distribution/HappyBrackets Developer Kit'
+    }
 }
 
 task bundle << {
