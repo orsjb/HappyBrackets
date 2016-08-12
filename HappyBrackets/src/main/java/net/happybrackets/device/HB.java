@@ -345,8 +345,8 @@ public class HB {
 	/**
 	 * Gets the sensor with the given sensor ID. This will attempt to make a connection with the given sensor.
 	 *
-	 * @param sensorClass
-	 * @return
+	 * @param sensorClass the class of the {@link Sensor} you want returned
+	 * @return the returned {@link Sensor}, if one can be found
      */
 	public Sensor getSensor(Class sensorClass) {
 		Sensor result = null;

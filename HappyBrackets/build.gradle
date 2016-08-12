@@ -72,7 +72,7 @@ shadowJar {
     classifier = ''
 }
 
-task copyFiles << {
+task deploy << {
     copy {
         from 'build/libs/HB.jar'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs'
@@ -96,6 +96,5 @@ task bundle << {
 }
 
 //setup bundle dependencies
-bundle.dependsOn shadowJar
-bundle.dependsOn javadoc
-bundle.dependsOn copyFiles
+deploy.dependsOn shadowJar
+deploy.dependsOn javadoc

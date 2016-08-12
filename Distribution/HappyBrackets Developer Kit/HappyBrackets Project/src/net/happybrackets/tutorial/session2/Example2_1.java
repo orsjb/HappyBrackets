@@ -31,11 +31,17 @@ public class Example2_1 extends Application {
         AudioContext ac = new AudioContext();
         ac.start();
         //add the waveplayer
+        //we control the frequency value of the WavePlayer with an Envelope object
         Envelope e = new Envelope(ac, 500);
         WavePlayer wp = new WavePlayer(ac, e, Buffer.SINE);
         //add the gain
+        //we control the gain value of the Gain object with a Glide object
         Glide glide = new Glide(ac, 0.1f);
+        //the Gain object itself takes the Glide object as its third argument
         Gain g = new Gain(ac, 1, glide);
+        //now control what will happen to the frequency, and add an event at the end
+        //this event simply prints out a message. Notice that IntelliJ intelligently converts single
+        //line actions into "lambdas".
         e.addSegment(1000, 2000);
         e.addSegment(500, 200, new Bead() {
             @Override
@@ -43,9 +49,11 @@ public class Example2_1 extends Application {
                 System.out.println("NEW BEAD!");
             }
         });
-        //connect together
+        //connect together the audio elements
         g.addInput(wp);
         ac.out.addInput(g);
+        //this is the end of the audio code. What follows sets up the visualiser and also a button
+        //that allows you to control the gain value via the Glide object you created above.
         //visualiser
         WaveformVisualiser.open(ac);
         //graphics code
