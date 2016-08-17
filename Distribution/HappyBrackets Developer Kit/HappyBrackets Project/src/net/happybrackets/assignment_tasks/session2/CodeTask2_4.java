@@ -8,33 +8,42 @@ import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.controller.gui.WaveformVisualiser;
+import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- * Created by ollie on 5/06/2016.
  *
  * The following code plays a regular noise burst through a simple delay.
  *
- * 1) Identify what number below indicates the delay time of the delay, and use it to speed up the delay.
- * 2) Make the delay feedback on itself by connecting two UGens together in a single line of code, and identify which number is responsible for the delay feedback level.
- * 3) Now transform this delay into a ping-pong delay, in which the sound 'ping-pongs' from the left channel to the right channel and back again, with feedback as above. The time it takes to get from left to right is controlled separately from the time from right to left. Set your ping-pong delay so that the left channel echo comes 125ms after the original sound, and then the right channel echo comes 250ms after that, followed again by an attenuated delay in the left channel 125ms later, and so on.
- *
+ * 1) Identify what number below indicates the delay time of the delay, and use it to speed up the delay so that it is a very tight slapback of just a few milliseconds, overlapping the original sound.
+ * 2) Make the delay feedback on itself by connecting two UGens together in a single line of code, and identify which number is responsible for the delay feedback level. Set that number so that the delay lasts at least as long as the interval between sound events.
  *
  */
-public class CodeTask2_4 extends Application {
+public class CodeTask2_4 extends Application implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        //audio stuff
+        //the AudioContext
         AudioContext ac = new AudioContext();
         ac.start();
+        //a StringBuffer used to record anything you want to print out
+        StringBuffer buf = new StringBuffer();
+        //do your work here, using the function below
+        task(ac, buf);
+        //say something to the console output
+        System.out.println(buf.toString());
+        //finally, this creates a window to visualise the waveform
         WaveformVisualiser.open(ac);
+    }
+
+    @Override
+    public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
         //create a Clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);
-        //create a delay line
+        //create a delay line with 10s of max audio storage
         TapIn tin = new TapIn(ac, 10000);
         Envelope delayTime = new Envelope(ac, 333);
         TapOut tout = new TapOut(ac, tin, delayTime);

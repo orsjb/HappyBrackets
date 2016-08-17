@@ -9,7 +9,6 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- * Created by ollie on 10/05/2016.
  *
  * This code is exactly the same as in CodeTask1_1.
  *

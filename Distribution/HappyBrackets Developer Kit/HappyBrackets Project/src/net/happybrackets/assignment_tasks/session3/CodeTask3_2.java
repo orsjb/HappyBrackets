@@ -8,44 +8,50 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.controller.gui.WaveformVisualiser;
+import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- * Created by ollie on 6/06/2016.
+ * Continue on from your code in CodeTask3_1.
  *
- * Run the code below and see how the group of samples is being loaded.
- *
- * There are two things that could be improved with this code.
- *
- * Firstly, the sound distorts because when too many samples are played, we get too loud. Adjust the volume of the guitar plucks to alleviate this.
- * Secondly, the random repetition of sounds (the same note played twice in a row) does not sound nice. Introduce a fix that stops notes repeating.
- *
- * Also introduce random variation to the volume of the guitar plucks.
- * Now introduce random pitch bend on the end of notes.
- *
+ * 4) Replace the fixed playback rate of the SamplePlayer with an Envelope (use setPitch()), and randomly add a downward pitch bend to 1 in 5 of the notes.
+ * 5) Switch the SamplePlayer to a GranularSamplePlayer.
+ *      Use the method 'setRate()' to set the GranularSamplePlayer to play back at half speed.
+ *      Note that with SamplePlayer 'getRate()' and 'getPitch()' are the same method, whereas for GranularSamplePlayer they return different things. Set the Rate so that the sample plays back at half speed.
+ *      Using the methods 'getGrainSizeUGen().setValue()', 'getGrainIntervalUGen().setValue()', 'getRandomnessUGen().setValue()', find suitable granulation settings that make the guitar sound as natural as possible.
  *
  */
-public class CodeTask3_2 extends Application {
+public class CodeTask3_2 extends Application implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
+        //the AudioContext
         AudioContext ac = new AudioContext();
         ac.start();
+        //a StringBuffer used to record anything you want to print out
+        StringBuffer buf = new StringBuffer();
+        //do your work here, using the function below
+        task(ac, buf);
+        //say something to the console output
+        System.out.println(buf.toString());
+        //finally, this creates a window to visualise the waveform
         WaveformVisualiser.open(ac);
-        SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
+    }
+
+    @Override
+    public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
         //clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);
         c.addMessageListener(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if (c.getCount() % 4 == 0) {
-                    ac.out.addInput(new SamplePlayer(ac, SampleManager.randomFromGroup("Guitar")));
+                if (c.getCount() % 32 == 0) {
+                    ac.out.addInput(new SamplePlayer(ac, SampleManager.sample("data/audio/Nylon_Guitar/Clean_A_harm.wav")));
                 }
             }
         });
     }
-
 }

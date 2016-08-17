@@ -10,10 +10,9 @@ import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.controller.gui.WaveformVisualiser;
+import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- * Created by ollie on 5/06/2016.
- *
  * Here is some basic code that shows how to set up a Clock. If you run it you won't hear anything, but you will see the clock ticks outputting to the console.
  *
  * Complete the following tasks:
@@ -24,17 +23,28 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
  * 4) Add a new one-hit bass note that plays every 8 beats. The note should be a square wave, also chosen randomly from the same pentatonic scale but two octaves lower than the portamento line above. The note should play through an ADSR envelope and be removed once played, using a KillTrigger.
  *
  */
-public class CodeTask2_2 extends Application {
+public class CodeTask2_2 extends Application implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        //Audio stuff
+        //the AudioContext
         AudioContext ac = new AudioContext();
         ac.start();
+        //a StringBuffer used to record anything you want to print out
+        StringBuffer buf = new StringBuffer();
+        //do your work here, using the function below
+        task(ac, buf);
+        //say something to the console output
+        System.out.println(buf.toString());
+        //finally, this creates a window to visualise the waveform
         WaveformVisualiser.open(ac);
+    }
+
+    @Override
+    public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
         //create a Clock
         Clock c = new Clock(ac, 500);
         //important! Make sure your clock is running by adding it as a 'dependent' to some other UGen.
@@ -44,9 +54,9 @@ public class CodeTask2_2 extends Application {
             @Override
             protected void messageReceived(Bead bead) {
                 if(c.isBeat()) {
-                    System.out.println("-----BEAT------");
+                    stringBuffer.append("-----BEAT------\n");
                 }
-                System.out.println("tick " + c.getCount() + " (beat " + c.getBeatCount() + ")");
+                stringBuffer.append("tick " + c.getCount() + " (beat " + c.getBeatCount() + ")\n");
             }
         });
     }
