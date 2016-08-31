@@ -15,27 +15,25 @@ package net.happybrackets.device.sensors;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *
- */
-
-/***************
+ * ----------------------------------------------------------------
  * Adapted for the Happy brackets project by Sam Ferguson (2016).
  *
  * We will return configuration information and scaling information so
  * this sensor can be compared to others.
- *
- ***************/
+ */
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import net.beadsproject.beads.data.DataBead;
+import net.happybrackets.device.sensors.sensor_types.BarometricPressureSensor;
+import net.happybrackets.device.sensors.sensor_types.HumiditySensor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class LPS25H  extends Sensor{
+public class LPS25H  extends Sensor implements BarometricPressureSensor{
 
     public static final byte LPS25H_ADDRESS = 0x5c;
 
@@ -82,6 +80,9 @@ public class LPS25H  extends Sensor{
     public static byte TEMP_DATA_AVAILABLE_MASK = 0x01;
     public static byte PRESS_DATA_AVAILABLE_MASK = 0x02;
 
+    public double tempData;
+    public double barometricPressureData;
+
     public enum LPS25HControlRegistry1 {
 
         ODR_ONE_SHOT(0b000), ODR_1_HZ(0b001), ODR_7_HZ(0b010), ODR_12DOT5_HZ(0b011), ODR_25_HZ(0b100), ODR_RESERVED(
@@ -90,11 +91,9 @@ public class LPS25H  extends Sensor{
                 0b1);
 
         final byte value;
-
         LPS25HControlRegistry1(int value) {
             this.value = (byte) value;
         }
-
     }
 
     private LPS25HControlRegistry1 pd = LPS25HControlRegistry1.PD_ACTIVE;
@@ -114,10 +113,8 @@ public class LPS25H  extends Sensor{
 
         while (true) {
 
-            double tempVal = sense.readTemperature();
-            double pressureVal = sense.readPressure();
-            System.out.println("temp: " + tempVal + " pressure: " + pressureVal);
-
+            double tempVal = sense.getTemperatureData();
+            double pressureVal = sense.getBarometricPressureData();
             try {
                 Thread.sleep(1000);                 //1000 milliseconds is one second.
             } catch (InterruptedException ex) {
@@ -128,8 +125,6 @@ public class LPS25H  extends Sensor{
 
     public LPS25H() throws Exception {
 
-        db2.put("Name","LPS25H");
-        db2.put("Manufacturer", "ST Microelectronics");
 
         bus = I2CFactory.getInstance(1);
         if (debug){ System.out.println("bus: " + bus.toString());}
@@ -138,26 +133,16 @@ public class LPS25H  extends Sensor{
         if (debug){ System.out.println("device: " + device.toString());}
         buffer = ByteBuffer.allocate(4);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
+        start();
     }
-
-
 
     public String getSensorName(){
         return "LPS25H";
     }
 
     public void update() throws IOException {
-
-        for (SensorListener sListener: listeners){
-            SensorListener sl = (SensorListener) sListener;
-
-            DataBead db = new DataBead();
-            db.put("Pressure",this.readPressure());
-            db.put("Temperature", this.readTemperature());
-
-            sl.getData(db);
-            sl.getSensor(db2);
-
+        for (SensorUpdateListener sListener: listeners){
+            SensorUpdateListener sl = (SensorUpdateListener) sListener;
         }
     }
 
@@ -166,7 +151,6 @@ public class LPS25H  extends Sensor{
         byte registry1 = (byte) (pd.value << 7 | odr.value << 4 | diffEn.value << 3 | bdu.value << 2
                 | resetAz.value << 1 | sim.value);
         device.write(CTRL_REG1, registry1);
-
         // ST suggested configuration
         device.write(RES_CONF, RES_CONF_SC);
         device.write(FIFO_CTRL, FIFO_CTRL_SC);
@@ -178,25 +162,25 @@ public class LPS25H  extends Sensor{
         byte crtl1 = (byte) device.read(CTRL_REG1);
         byte maskToPowerDown = (byte) (0xff ^ (~LPS25HControlRegistry1.PD_POWER_DOWN.value << 7));
         crtl1 &= maskToPowerDown;
-
         device.write(CTRL_REG1, crtl1);
-
     }
 
-    private double readPressure() throws IOException {
+    public double getBarometricPressureData() {
         //device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
-        device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
-
+        try {
+            device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         buffer.put(3, (byte) 0);
         int PRESS_OUT = buffer.getInt(0);
         System.out.println("DEBUG: PRESSURE_OUT  : " + PRESS_OUT);
         double press = (PRESS_OUT / DOUBLE_4096_0);
         System.out.println("DEBUG: PRESSURE_OUT (hPa) : " + press);
         return press;
-
     }
 
-    private double readTemperature() throws IOException {
+    public double getTemperatureData() throws IOException {
         //device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short TEMP_OUT = buffer.getShort(0);
@@ -207,10 +191,33 @@ public class LPS25H  extends Sensor{
     }
 
     public final class I2CConstants {
-
         public static final int MULTI_BYTE_READ_MASK = 0x80;
-
     }
 
-
+    private void start() {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        // get data
+                        tempData = getTemperatureData();
+                        barometricPressureData = getBarometricPressureData();
+                        //pass data on to listeners
+                    } catch(IOException e){
+                        e.printStackTrace();
+                    }
+                    for(SensorUpdateListener listener : listeners) {
+                        listener.sensorUpdated();
+                    }
+                    try {
+                        Thread.sleep(10);		//TODO this should not be hardwired.
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        new Thread(task).start();
+    }
 }

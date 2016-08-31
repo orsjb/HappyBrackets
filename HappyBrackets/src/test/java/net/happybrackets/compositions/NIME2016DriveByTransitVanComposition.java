@@ -11,6 +11,8 @@ import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.MiniMU;
+import net.happybrackets.device.sensors.SensorUpdateListener;
+import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 
 import java.net.SocketAddress;
 
@@ -334,21 +336,28 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     }
 
     private void setupSensorListener(HB hb) {
-        if(!hb.sensors.containsKey("MiniMu")) {
-            try {
-                hb.sensors.put("MiniMu", new MiniMU());
-            } catch (Exception e) {
-                System.out.println("Cannot create MiniMu sensor");
-                hb.setStatus("No MinMu available.");
-                return;
-            }
-        }
-        hb.sensors.get("MiniMu").addListener(new MiniMU.MiniMUListener() {
+//        hb.getSensor("MiniMu");
+//        if(!hb.sensors.containsKey("MiniMu")) {
+//            try {
+//                hb.sensors.put("MiniMu", new MiniMU());
+//            } catch (Exception e) {
+//                System.out.println("Cannot create MiniMu sensor");
+//                hb.setStatus("No MinMu available.");
+//                return;
+//            }
+//        }
+        hb.getSensor(MiniMU.class).addListener(new SensorUpdateListener() {
             @Override
-            public void accelData(double x, double y, double z) {
-               sensor((float)x / 12000f,(float)y / 12000f,(float)z / 12000f);
+            public void sensorUpdated() {
+                double[] accel = ((AccelerometerSensor)hb.getSensor(MiniMU.class)).getAccelerometerData();
+                sensor((float)accel[0] / 12000f,(float)accel[1] / 12000f,(float)accel[2] / 12000f);
             }
         });
+//        @Override
+//            public void accelData(double x, double y, double z) {
+//               sensor((float)x / 12000f,(float)y / 12000f,(float)z / 12000f);
+//            }
+//        });
     }
 
     private void mashItUp() {

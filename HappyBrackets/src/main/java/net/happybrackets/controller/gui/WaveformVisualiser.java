@@ -1,5 +1,7 @@
 package net.happybrackets.controller.gui;
 
+import com.sun.glass.ui.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -10,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import net.beadsproject.beads.core.AudioContext;
@@ -41,6 +44,7 @@ public abstract class WaveformVisualiser {
                 @Override
                 public void handle(WindowEvent event) {
                     ac.stop();
+                    System.exit(0);
                 }       //not always desired behaviour
             });
         }
@@ -50,17 +54,25 @@ public abstract class WaveformVisualiser {
                 while(stage.isShowing()) {
                     GraphicsContext g2d = c.getGraphicsContext2D();
                     g2d.clearRect(0, 0, c.getWidth(), c.getHeight());
-                    float[] buf = ac.out.getOutBuffer(0);
+                    g2d.setStroke(Color.BLUE);
+                    g2d.setLineWidth(0.2);
                     for(int chan = 0; chan < ac.out.getOuts(); chan++) {
+                        float[] buf = ac.out.getOutBuffer(chan);
+                        int lastY = (int) (((buf[0] * 0.5f + 0.5) + chan) * c.getHeight()/ac.out.getOuts());
+                        int lastX = 0;
+                        g2d.moveTo(0, lastY);
                         for (int i = 0; i < buf.length; i++) {
                             float f = buf[i];
+                            if(f < -1) f = -1; if(f > 1)  f = 1; if(Float.isNaN(f)) f = 0;
                             int x = (int) ((float) i / buf.length * c.getWidth());
                             int y = (int) (((f * 0.5f + 0.5) + chan) * c.getHeight()/ac.out.getOuts());
-                            g2d.fillOval(x, y, 0.7, 0.7);
+                            g2d.strokeLine(lastX, lastY, x, y);
+                            lastX = x;
+                            lastY = y;
                         }
                     }
                     try {
-                        Thread.sleep(20);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

@@ -23,29 +23,26 @@ public class MiniMUTest {
 		ac.out.addInput(g);
 		//getInstance listening to data
 
+		MiniMU mm = new MiniMU();
 
-		MiniMU.MiniMUListener myListener = new MiniMU.MiniMUListener() {
+		SensorUpdateListener myListener = new SensorUpdateListener() {
 
-			public void accelData(double x, double y, double z) {
-				String AccString = String.format("MiniMu Acc X/Y/Z = %05.2f %05.2f %05.2f", x,y,z);
-
+			@Override
+			public void sensorUpdated() {
+				double[] accel = mm.getAccelerometerData();
+				String AccString = String.format("MiniMu Acc X/Y/Z = %05.2f %05.2f %05.2f", accel[0], accel[1], accel[2]);
 				System.out.println(AccString);
-				freqCtrl.setValue(((float)Math.abs(x) * 10f) % 10000f + 600f);
-				gainCtrl.setValue(((float)Math.abs(y) * 10f) % 400f / 1600f + 0.1f);
-			}
-
-			public void gyroData(double x, double y, double z) {
-				String GyrString = String.format("MiniMu Gyr X/Y/Z = %05.2f %05.2f %05.2f", x,y,z);
+				freqCtrl.setValue(((float)Math.abs(accel[0]) * 10f) % 10000f + 600f);
+				gainCtrl.setValue(((float)Math.abs(accel[1]) * 10f) % 400f / 1600f + 0.1f);
+				double[] gyro = mm.getGyroscopeData();
+				String GyrString = String.format("MiniMu Gyr X/Y/Z = %05.2f %05.2f %05.2f", gyro[0], gyro[1], gyro[2]);
 				System.out.println(GyrString);
-			}
-
-			public void magData(double x, double y, double z) {
-				String MagString = String.format("MiniMu Mag X/Y/Z = %05.2f %05.2f %05.2f", x,y,z);
+				double[] mag = mm.getMagnetometerData();
+				String MagString = String.format("MiniMu Mag X/Y/Z = %05.2f %05.2f %05.2f", mag[0], mag[1], mag[2]);
 				System.out.println(MagString);
 			}
 
 		};
-		MiniMU mm = new MiniMU();
 		mm.addListener(myListener);
 	}
 

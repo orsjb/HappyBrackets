@@ -1,3 +1,0 @@
-#ensure we don't commit local config files\
-controller-config.json
-device-config.json

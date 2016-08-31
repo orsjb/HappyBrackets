@@ -1,23 +1,11 @@
+# all compiled classes
 *.class
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-#*.jar // SG 2016-05-06 We need some of these, at the very least we need gradle/wrapper/gradle-wrapper.jar
-*.war
-*.ear
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 # local folders #
 .gradle
-.idea
 build
-
-# Idea project files #
-*.iws
-*.ipr
-*.iml
-HappyBrackets/data/audio/NIME2016
+workspace.xml
+tasks.xml

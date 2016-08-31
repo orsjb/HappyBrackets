@@ -61,17 +61,20 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                     PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsToolWindow")
             ).getPath().toString();
             System.out.println("Plugin lives at: " + pluginDir);
-            String configFilePath = pluginDir + "/classes/config/controller-config.json";
+            //TODO this is still buggy. We are doing this statically meaning it works only for the first loaded project.
+//            String configFilePath = pluginDir + "/classes/config/controller-config.json";
+            String configFilePath = projectDir + "/config/controller-config.json";
             if(new File(configFilePath).exists()) System.out.println("Found config file.");
             //all of the below concerns the set up of singletons
             //TODO: use plugin path here. How?
             config = IntelliJControllerConfig.load(configFilePath);
+            System.out.println(config.getCompositionsPath());
             if (config == null) {
                 config = new IntelliJControllerConfig();
                 IntelliJControllerConfig.setInstance(config);
             }
             //set up config relevant directories
-            config.setConfigDir(pluginDir + "/classes/config");
+            config.setConfigDir(projectDir + "/config");
             deviceConnection = new DeviceConnection(config);
 
             //setup controller broadcast
