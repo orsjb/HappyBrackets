@@ -111,12 +111,8 @@ task packDeviceRuntime (type:Zip) {
     println "Creating device package: $buildDir/$archiveName"
 }
 
-task bundle << {
-    println "bundling complete, see $buildDir/libs"
-}
-
-//setup bundle dependencies
-bundle.dependsOn test
-bundle.dependsOn shadowJar
-bundle.dependsOn javadoc
-bundle.dependsOn packDeviceRuntime
+//setup deploy dependencies
+deploy.dependsOn test
+deploy.dependsOn shadowJar
+deploy.dependsOn javadoc
+deploy.dependsOn packDeviceRuntime
