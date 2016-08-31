@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
+import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.Synchronizer;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +44,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     static private FileServer httpServer;
     static protected IntelliJControllerConfig config;
     static protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
+    static protected BroadcastManager broadcastManager;
     private JFXPanel jfxp;
     private Scene scene;
 
@@ -71,14 +73,13 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             //set up config relevant directories
             config.setConfigDir(pluginDir + "/classes/config");
             deviceConnection = new DeviceConnection(config);
+
             //setup controller broadcast
-            try {
-                System.out.println("Starting ControllerAdvertiser");
-                controllerAdvertiser = new ControllerAdvertiser(config);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
+            System.out.println("Starting ControllerAdvertiser");
+            broadcastManager = new BroadcastManager(config);
+            controllerAdvertiser = new ControllerAdvertiser(broadcastManager, config.getMyHostName());;
             controllerAdvertiser.start();
+
             //setup http httpServer
             try {
                 httpServer = new FileServer(config);
