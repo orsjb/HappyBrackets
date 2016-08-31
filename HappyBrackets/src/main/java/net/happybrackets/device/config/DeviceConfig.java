@@ -1,6 +1,7 @@
 package net.happybrackets.device.config;
 
 import net.happybrackets.core.config.LoadableConfig;
+import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.device.network.ControllerDiscoverer;
 
 import java.net.UnknownHostException;
@@ -8,34 +9,19 @@ import java.net.UnknownHostException;
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
 
 	private int polyLimit = 4;
-	private DeviceController controller;
+	private DeviceController controller = new DeviceController("", "");
 
-	public synchronized String getControllerHostname() {
-		if (controller != null) {
-			return controller.getHostname();
-		}
-		return waitForController().getHostname();
+	public String getControllerHostname() {
+		return controller.getHostname();
 	}
 
-    public synchronized String getControllerAddress() {
-        if (controller != null) {
-            return controller.getAddress();
-        }
+  public String getControllerAddress() {
+      return controller.getAddress();
+  }
 
-        return waitForController().getAddress();
-    }
-
-    private DeviceController waitForController() {
-        //Block and search for a controller
-        try {
-            controller = listenForController( getMulticastAddr(), getControllerDiscoveryPort());
-//			controller = listenForController( "225.2.2.7", 5566);
-        } catch (UnknownHostException e) {
-            System.out.println("Error obtaining controller hostname and address.");
-            e.printStackTrace();
-        }
-        return controller;
-    }
+  public void listenForController(BroadcastManager broadcastManager) {
+		ControllerDiscoverer.super.listenForController(controller, broadcastManager);
+  }
 
 	public int getMyId() {
 		return -1;
@@ -50,7 +36,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	}
 
 	public static DeviceConfig load(String configFile) {
-		return (DeviceConfig)(LoadableConfig.load(configFile, new DeviceConfig()));
+		return LoadableConfig.load( configFile, new DeviceConfig() );
 	}
 
 

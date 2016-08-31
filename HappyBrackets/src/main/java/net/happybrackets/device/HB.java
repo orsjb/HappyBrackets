@@ -43,7 +43,7 @@ public class HB {
 	public final PolyLimit pl;
 	public final Envelope masterGainEnv;
 	boolean audioOn = false;
-	
+
 	String status = "No ID set";
 
 	// sensor stuffs
@@ -90,6 +90,7 @@ public class HB {
 		synch = Synchronizer.getInstance();
 		System.out.print(".");
 		broadcast = new BroadcastManager(DeviceConfig.getInstance());
+		DeviceConfig.getInstance().listenForController(broadcast);
 		System.out.print(".");
 		// start listening for code
 		startListeningForCode();
@@ -430,11 +431,11 @@ public class HB {
 	public Bead getBead(String s) {
 		return (Bead) share.get(s);
 	}
-	
+
 	/**
 	 * Stores an object in the global memory store. The object is stored only if you haven't already created something with that name. If you have, then the new object is not stored and the existing object is returned instead.
 	 * Returns either the existing stored object or the new object.
-	 * 
+	 *
 	 * @param id ID {@link String} of the object to store.
 	 * @param o the object.
 	 * @return either the new stored object or the existing object if something previously stored there.
@@ -475,7 +476,7 @@ public class HB {
 //		System.out.println(name);
 		return name;
 	}
-	
+
 	/**
 	 * Clears all of the audio that is currently playing (connected to output). Warning, this leaves dependents and patterns. Just cleans the audio signal chain. If you want to completely clear all objects, use {@link #reset()} and if you want to clear everything except the sound, use {@link #resetLeaveSounding()}.
 	 */
@@ -562,7 +563,7 @@ public class HB {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * Shuts down the device immediately.
 	 */
@@ -590,5 +591,3 @@ public class HB {
 		return status;
 	}
 }
-
-

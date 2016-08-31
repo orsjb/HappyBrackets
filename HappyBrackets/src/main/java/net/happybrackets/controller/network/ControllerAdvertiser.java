@@ -1,57 +1,38 @@
 package net.happybrackets.controller.network;
 
 import net.happybrackets.controller.config.ControllerConfig;
-
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.DatagramSocket;
-import java.net.NetworkInterface;
-import java.net.UnknownHostException;
+import net.happybrackets.core.BroadcastManager;
 
 public class ControllerAdvertiser {
-	ControllerConfig env;
 	private Thread advertismentService;
+	private boolean keepAlive = true;
 
-	public ControllerAdvertiser(ControllerConfig env) throws UnknownHostException {
-		super();
-		this.env = env;
-
-		InetAddress group = InetAddress.getByName(env.getMulticastAddr());
+	public ControllerAdvertiser(BroadcastManager broadcastManager, String controllerName) {
 		//set up an indefinite thread to advertise the controller
 		advertismentService = new Thread() {
 			public void run() {
-				try (DatagramSocket serverSocket = new DatagramSocket(env.getControllerDiscoveryPort()) ) {
-					System.out.println("Creating ControllerAdvertiser with interface " + env.getMyInterface());
-					//serverSocket.setNetworkInterface( NetworkInterface.getByName(env.getMyInterface()) );
-					//serverSocket.joinGroup(group);
-					String msg = "controllerHostname: " + env.getMyHostName() + " controllerAddress: " + env.getMyAddress();
-					DatagramPacket msgPacket = new DatagramPacket(
-						msg.getBytes(),
-						msg.getBytes().length,
-						group,
-						env.getControllerDiscoveryPort()
-					);
-					while(true) {
-						serverSocket.send(msgPacket);
-						try {
-							Thread.sleep(env.getAliveInterval());
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+				while (keepAlive) {
+					broadcastManager.broadcast("/hb/controller", controllerName);
+
+					try {
+						Thread.sleep(500);
+					}
+					catch (InterruptedException e) {
+						System.err.println("Sleep was interupted in ControllerAdvertiser thread");
+						e.printStackTrace();
 					}
 				}
-				catch (IOException ex) {
-					System.err.println("Warning: Your current network does not support multicast controller. Some features of Happy Brackets will not work.");
-					ex.printStackTrace();
-				}
-
 			}
 		};
 	}
 
 	public void start() {
+		keepAlive = true;
 		advertismentService.start();
+	}
+
+	public void stop() {
+		keepAlive = false;
 	}
 
 	public void interrupt() {
