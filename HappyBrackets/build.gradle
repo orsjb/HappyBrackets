@@ -93,26 +93,33 @@ task deploy << {
 
 task packDeviceRuntime (type:Zip) {
     destinationDir buildDir //set our output directory
-    archiveName 'HappyBrackets.zip'  //set the name of our archive
+    archiveName 'HappyBracketsDeviceRuntime.zip'  //set the name of our archive
 
     //config
-    from(rootDir) {
-        include 'config/*'
-        include 'scripts/*'
-
-        //placeholder dir
-        include 'data/**'
+    from("../Distribution/HappyBrackets Developer Kit/Device") {
+        include 'HappyBrackets/*/**'
     }
 
-    from("$buildDir/libs") {
-        "HB.jar"
+    println "Creating device package: $buildDir/$archiveName"
+}
+
+task packDevKit (type:Zip) {
+    destinationDir buildDir //set our output directory
+    archiveName 'HappyBracketsDeveloperKit.zip'  //set the name of our archive
+
+    //config
+    from("../Distribution") {
+        include 'HappyBrackets Developer Kit/*/**'
     }
 
     println "Creating device package: $buildDir/$archiveName"
 }
 
 //setup deploy dependencies
+deploy.dependsOn build
 deploy.dependsOn test
 deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
-deploy.dependsOn packDeviceRuntime
+
+packDevKit.dependsOn packDeviceRuntime
+packDeviceRuntime.dependsOn deploy

@@ -21,9 +21,9 @@ wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrac
 sudo mv interfaces /etc/network/interfaces
 
 # get the happybrackets zipped project folder
-wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBrackets.zip
-unzip HappyBrackets.zip -d ~/HappyBrackets
-rm HappyBrackets.zip
+wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBracketsDeviceRuntime.zip
+unzip HappyBracketsDeviceRuntime.zip
+rm HappyBracketsDeviceRuntime.zip
 
 # TODO setup audio if necessary.
 # set audio output to max volume, well not quite max but close
