@@ -54,6 +54,8 @@ public class TestBeadsChecker {
             }
         };
 
+        //now run the checker, this outputs various things by default, as well as calling your runCheck()
+        //at each of the snapshot moments.
         BeadsChecker checker = new BeadsChecker(checkable, 10000, 1000, myFunc, outputDir);
 
     }
