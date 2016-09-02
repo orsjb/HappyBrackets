@@ -22,7 +22,11 @@ public class BeadsChecker {
         public void task(AudioContext ac, StringBuffer buf, Object... args);
     }
 
-    public BeadsChecker(BeadsCheckable testCode, int totalTime, int snapshotInterval, String resultsDir) {
+    public interface BeadsCheckerFunction {
+        public void runCheck(AudioContext ac, int count);
+    }
+
+    public BeadsChecker(BeadsCheckable testCode, int totalTime, int snapshotInterval, BeadsCheckerFunction func, String resultsDir) {
         File resultsDirFile = new File(resultsDir);
         if(!resultsDirFile.exists()) {
             resultsDirFile.mkdir();
@@ -50,6 +54,10 @@ public class BeadsChecker {
                 if(snapshotter.isBeat()) {
                     //TAKE SNAPSHOT
                     System.out.println("** snapshot ** " + ac.getTime());
+                    //run the checker function
+                    if(func != null) {
+                        func.runCheck(ac, snapshotter.getBeatCount());
+                    }
                     //grab snapshot and print somewhere
                     StringBuffer buf = new StringBuffer();
                     printCallChain(ac.out, buf, 0);
