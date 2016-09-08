@@ -18,8 +18,8 @@ public class CodeTask8_1 implements HBAction {
     @Override
     public void action(HB hb) {
 
-
         hb.reset();
+        hb.masterGainEnv.setValue(0.5f);
 
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
@@ -42,12 +42,14 @@ public class CodeTask8_1 implements HBAction {
 
         MiniMU mm = (MiniMU)hb.getSensor(MiniMU.class);
 
+        mm.clearListeners();
+
         mm.addListener(new SensorUpdateListener() {
 
             @Override
             public void sensorUpdated() {
                 double x = mm.getAccelerometerData()[0];
-                rate.setValue((float)x / 1000f);
+                rate.setValue((float)x / 1000f + 0.5f);
             }
 
         });

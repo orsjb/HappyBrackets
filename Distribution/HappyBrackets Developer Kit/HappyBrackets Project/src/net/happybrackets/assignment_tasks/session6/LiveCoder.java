@@ -17,6 +17,8 @@ import net.happybrackets.device.HB;
 public class LiveCoder implements HBAction {
     @Override
     public void action(HB hb) {
+        hb.masterGainEnv.setValue(0.2f);
+        hb.clock.getIntervalUGen().setValue(2000);
         hb.clock.clearMessageListeners();
         hb.pattern(new Bead() {
             @Override
@@ -26,16 +28,16 @@ public class LiveCoder implements HBAction {
                     WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
                     Envelope e = new Envelope(hb.ac, hb.rng.nextFloat() * 0.03f + 0.1f);
                     Gain g = new Gain(hb.ac, 1, e);
-                    e.addSegment(0, 500, new KillTrigger(g));
+                    e.addSegment(0, 5000, new KillTrigger(g));
                     g.addInput(wp);
                     hb.sound(g);
                 }
                 if(hb.clock.getCount() % 6 == 5) {
                     float freq = Pitch.forceFrequencyToScale(hb.rng.nextFloat() * 1000 + 100, Pitch.dorian);
-                    WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SQUARE);
+                    WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
                     Envelope e = new Envelope(hb.ac, 0);
                     Gain g = new Gain(hb.ac, 1, e);
-                    e.addSegment(hb.rng.nextFloat() * 0.02f + 0.04f, 200);
+                    e.addSegment(hb.rng.nextFloat() * 0.02f + 0.04f, 1000);
                     e.addSegment(0, 100, new KillTrigger(g));
                     g.addInput(wp);
                     hb.sound(g);

@@ -38,9 +38,11 @@ public class TestBeadsChecker {
                     System.out.println("Connected UGen: " + item);
                     if(item instanceof Gain) {
                         System.out.println("It's a Gain!");
+
                     } else if(item instanceof WavePlayer) {
                         WavePlayer wp = (WavePlayer)item;
                         System.out.println("It's a WavePlayer! Frequency = " + wp.getFrequencyUGen().getValue());
+                        
                     }
                 }
                 //write some stuff to text file
