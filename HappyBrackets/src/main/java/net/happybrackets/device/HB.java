@@ -350,7 +350,7 @@ public class HB {
 	 * @return the returned {@link Sensor}, if one can be found
      */
 	public Sensor getSensor(Class sensorClass) {
-		Sensor result = null;
+		Sensor result = sensors.get(sensorClass);
 		if(!sensors.containsKey(sensorClass)) {
 			try {
 				result = (Sensor) sensorClass.getConstructor().newInstance();
