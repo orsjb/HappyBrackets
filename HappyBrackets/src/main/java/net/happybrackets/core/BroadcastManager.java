@@ -31,45 +31,49 @@ public class BroadcastManager {
      */
     public BroadcastManager(EnvironmentConfig config) {
         this.config = config;
+        initBroadcaster(config);
+    }
+
+    private void initBroadcaster(EnvironmentConfig config) {
         listeners = new ArrayList<OSCListener>();
         receivers = new ArrayList<OSCReceiver>();
         transmitters = new ArrayList<OSCTransmitter>();
         MessageAggregater messageAggregater = new MessageAggregater();
 
         try {
-          Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-          while ( interfaces.hasMoreElements() ) {
-            NetworkInterface netInterface = interfaces.nextElement();
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while ( interfaces.hasMoreElements() ) {
+                NetworkInterface netInterface = interfaces.nextElement();
 
-            if ( Device.isViableNetworkInterface(netInterface) ) {
-              try {
-                  //set up listener
-                  setupListener(netInterface, messageAggregater);
-                  //setup sender
-                  InetSocketAddress mcSocketAddr = new InetSocketAddress(config.getMulticastAddr(), config.getBroadcastPort());
-                  InetAddress group = InetAddress.getByName(config.getMulticastAddr());
-                  DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
-                          .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-                          .bind(new InetSocketAddress(config.getBroadcastPort()))
-                          .setOption(StandardSocketOptions.IP_MULTICAST_IF, netInterface);
-                  dc.join(group, netInterface);
-                  OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
-                  transmitter.setTarget(mcSocketAddr);
-                  transmitters.add(transmitter);
-                  //TODO how do we set time to live?
-                  System.out.println("Broadcasting on interface: " + netInterface.getName());
-              } catch (IOException e) {
-                  System.err.println("Error: BroadcastManager encountered an IO exception when creating a listener socket.");
-                  e.printStackTrace();
-              }
+                if ( Device.isViableNetworkInterface(netInterface) ) {
+                    try {
+                        //set up listener
+                        setupListener(netInterface, messageAggregater);
+                        //setup sender
+                        InetSocketAddress mcSocketAddr = new InetSocketAddress(config.getMulticastAddr(), config.getBroadcastPort());
+                        InetAddress group = InetAddress.getByName(config.getMulticastAddr());
+                        DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
+                                .setOption(StandardSocketOptions.SO_REUSEADDR, true)
+                                .bind(new InetSocketAddress(config.getBroadcastPort()))
+                                .setOption(StandardSocketOptions.IP_MULTICAST_IF, netInterface);
+                        dc.join(group, netInterface);
+                        OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
+                        transmitter.setTarget(mcSocketAddr);
+                        transmitters.add(transmitter);
+                        //TODO how do we set time to live?
+                        System.out.println("Broadcasting on interface: " + netInterface.getName());
+                    } catch (IOException e) {
+                        System.err.println("Error: BroadcastManager encountered an IO exception when creating a listener socket.");
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    System.out.println( "Skipped interface: " + netInterface.getName() );
+                }
             }
-            else {
-              System.out.println( "Skipped interface: " + netInterface.getName() );
-            }
-          }
         } catch (SocketException e) {
-    			e.printStackTrace();
-    		}
+            e.printStackTrace();
+        }
     }
 
     private void setupListener(NetworkInterface ni, MessageAggregater listener) throws IOException {
@@ -86,6 +90,13 @@ public class BroadcastManager {
         receivers.add(receiver);
     }
 
+    public void refreshBroadcaster() {
+        // cleanup:
+        receivers.forEach(r -> r.dispose());
+        transmitters.forEach(t -> t.dispose());
+        initBroadcaster(config);
+    }
+
     /**
      * Broadcast an {@link OSCMessage} msg over the multicast group.
      *
@@ -99,6 +110,10 @@ public class BroadcastManager {
               transmitter.send(msg);
           } catch (IOException e) {
               e.printStackTrace();
+
+              System.out.println("Removing broadcaster interface due to error: " + e.getLocalizedMessage());
+              transmitters.remove(transmitter);
+              transmitter.dispose();
           }
         }
     }
