@@ -8,7 +8,7 @@ build_script:
   - gradlew.bat assemble --info --no-daemon
 
 test_script:
-  - cd HappyBrackets
+  #- cd HappyBrackets not needed as we are already in the directory following setup
   - gradlew.bat test --info --no-daemon
 
 branches:
@@ -22,7 +22,6 @@ cache:
 environment:
   matrix:
   - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
-  - JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
 
 matrix:
   fast_finish: true
