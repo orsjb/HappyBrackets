@@ -23,7 +23,7 @@ public class SensorTest implements HBAction {
         hb.reset();
         hb.masterGainEnv.setValue(0.1f);
 
-        Glide freq = new Glide(hb.ac, 500);
+        Glide freq = new Glide(hb.ac, 500, 500);
 
         WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
         hb.sound(wp);
@@ -36,8 +36,9 @@ public class SensorTest implements HBAction {
             @Override
             public void sensorUpdated() {
                 double x = mm.getAccelerometerData()[0];
+                x = Math.abs(x) / 400f;
                 System.out.println(x);
-                freq.setValue((float)x / 10000f + 500f);
+                freq.setValue((float)x * 5000f + 200f);
             }
 
         });

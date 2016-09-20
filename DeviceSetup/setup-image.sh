@@ -11,6 +11,9 @@ sudo apt-get update
 sudo apt-get install libnss-mdns
 sudo apt-get install netatalk
 
+# install i2c tools
+sudo apt-get install i2c-tools
+
 # install java 8
 sudo apt-get install oracle-java8-jdk 
 

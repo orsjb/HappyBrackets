@@ -85,6 +85,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         //reset
         this.hb = hb;
         hb.reset();
+        hb.masterGainEnv.setValue(0.1f);
         //load samples
         SampleManager.group(TALK, "data/audio/NIME2016/talk");
         SampleManager.group(DNB, "data/audio/NIME2016/dnb");
@@ -147,7 +148,7 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         gsp.setGrainInterval(grainInterval);
         gsp.setRandomness(grainRandomness);
         //noise controls
-        filtFreq = new Glide(hb.ac, 500);
+        filtFreq = new Glide(hb.ac, 1000);
         filtQ = new Glide(hb.ac, 1);
         filtGain = new Glide(hb.ac, 1);
         noiseGain = new Glide(hb.ac, 0);
@@ -487,16 +488,16 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         //rateModEffect
         rateMod.setValue(y);  //<--- TODO calibrate to 0.5-2
         //radioNoiseEffect
-        filtFreq.setValue(x); //<--- TODO calibrate to 500-15,000
-        filtQ.setValue(y);    //<--- TODO calibrate to ??
-        filtGain.setValue(z); //<--- TODO calibrate to ??
+        filtFreq.setValue(Math.abs(x) * 20000 + 30); //<--- TODO calibrate to 500-15,000
+        filtQ.setValue(Math.min(2, Math.abs(y) * 100));    //<--- TODO calibrate to ??
+        filtGain.setValue(Math.min(1, Math.abs(z) * 100)); //<--- TODO calibrate to ??
         //the following noise effect sometimes happens, depending on noiseEffect
-        float sampleProx = x;        //<--- TODO calibrate to 0-1
+        float sampleProx = Math.min(1, Math.abs(x) * 100f);        //<--- TODO calibrate to 0-1
         float sampleGainVal = 1f - (noiseEffect * sampleProx);
         sampleGain.setValue((float) Math.sqrt(sampleGainVal));
-        noiseGain.setValue((float) Math.sqrt(1f - sampleGainVal));
+        noiseGain.setValue(Math.min(0.8f, (float) Math.sqrt(1f - sampleGainVal)));
         //check for a big event
-        float thresh = 3;  //<--- TODO calibrate
+        float thresh = 0.5f;  //<--- TODO calibrate
         if (rms > thresh && timeSinceLastTrigger > 100) {
             trigger();
             timeSinceLastTrigger = 0;
