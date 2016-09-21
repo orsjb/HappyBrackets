@@ -15,7 +15,7 @@ public interface EnvironmentConfig {
 	default public String getMyHostName() 					{ return Device.getInstance().myHostname;}
   default public String getMyAddress()        		{ return Device.getInstance().myIP; }
 	default public String getMyInterface() 					{ return Device.getInstance().preferredInterface; }
-	default public String getMulticastAddr()				{ return "225.2.2.5"; }		//multicast address used for both synch and broadcast messages
+	default public String getMulticastAddr()				{ return "::FFFF:225.2.2.5"; }		//multicast address used for both synch and broadcast messages
 	default public int getBroadcastPort() 					{ return 2222; }			//broadcast port (not currently OSC)
 	default public int getStatusFromDevicePort() 		{ return 2223; }			//OSC status messages from device to controller
 	default public int getClockSynchPort()					{ return 2224; }			//synch messages over multicast

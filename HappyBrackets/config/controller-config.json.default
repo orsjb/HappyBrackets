@@ -1,5 +1,5 @@
 {
-  "multicastAddr":            "225.2.2.5",
+  "multicastAddr":            "::FFFF:225.2.2.5",
   "broadcastPort":            2222,
   "statusFromDevicePort":     2223,
   "clockSynchPort":           2224,
