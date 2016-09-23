@@ -11,7 +11,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -30,20 +29,26 @@ import net.happybrackets.controller.gui.DeviceRepresentationCell;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Scanner;
 
+/**
+ * Sets up the plugin GUI and handles associated events.
+ */
 public class IntelliJPluginGUIManager {
 
 	private String compositionsPath;
 	private String currentCompositionSelection = null;
-	private final ControllerConfig config;
+	private ControllerConfig config;
 	private final Project project;
-	private final DeviceConnection deviceConnection;
+	private DeviceConnection deviceConnection;
+	private ListView<LocalDeviceRepresentation> deviceListView;
 	private ComboBox<String> compositionSelector;
 	private Text compositionPathText;
 	private List<String> commandHistory;
@@ -52,35 +57,40 @@ public class IntelliJPluginGUIManager {
 	private final int defaultElementSpacing = 10;
 
 
-	public IntelliJPluginGUIManager(@NotNull ControllerConfig controllerConfig, Project project, DeviceConnection deviceConnection) {
-		this.config = controllerConfig;
+	public IntelliJPluginGUIManager(Project project) {
 		this.project = project;
-		this.deviceConnection = deviceConnection;
+		init();
+		commandHistory = new ArrayList<>();
+	}
+
+	private void init() {
+		config = HappyBracketsToolWindow.config;
+		deviceConnection = HappyBracketsToolWindow.deviceConnection;
 		//initial compositions path
 		//assume that this path is a path to a root classes folder, relative to the project
 		//e.g., build/classes/tutorial or build/classes/compositions
 		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath();
-		commandHistory = new ArrayList<>();
 	}
 
 
 
 	public Scene setupGUI() {
 		//core elements
-		TitledPane configPane = new TitledPane("Configuration", createConfigurationPane());
-		TitledPane globalPane = new TitledPane("Global Management", createGlobalPane());
-		TitledPane compositionPane = new TitledPane("Compositions and Commands", createCompositionPane());
+		TitledPane configPane = new TitledPane("Configuration", makeConfigurationPane(0));
+		TitledPane knownDevicesPane = new TitledPane("Known Devices", makeConfigurationPane(1));
+		TitledPane globalPane = new TitledPane("Global Management", makeGlobalPane());
+		TitledPane compositionPane = new TitledPane("Compositions and Commands", makeCompositionPane());
 		TitledPane debugPane = new TitledPane("Debug", makeDebugPane());
 
 		Accordion controlPane = new Accordion();
-		controlPane.getPanes().addAll(configPane, globalPane, compositionPane, debugPane);
+		controlPane.getPanes().addAll(configPane, knownDevicesPane, globalPane, compositionPane, debugPane);
 		controlPane.setExpandedPane(compositionPane);
 
 //		SplitPane mainSplit = new SplitPane();
 //		mainSplit.setOrientation(Orientation.VERTICAL);
 //		mainSplit.getItems().add(makeScrollPane(
 //				makeTitle("Devices"),
-//				makeDeviceList()
+//				makeDevicePane()
 //		));
 //		mainSplit.getItems().add(makeScrollPane(
 //				makeTitle("Debug"),
@@ -93,7 +103,7 @@ public class IntelliJPluginGUIManager {
 
 		VBox mainContainer = new VBox(5);
 		mainContainer.setFillWidth(true);
-		mainContainer.getChildren().addAll(controlPane, new Separator(), makeDeviceList());
+		mainContainer.getChildren().addAll(controlPane, new Separator(), makeDevicePane());
 
 		ScrollPane mainScroll = new ScrollPane();
 		mainScroll.setFitToWidth(true);
@@ -134,76 +144,117 @@ public class IntelliJPluginGUIManager {
 	}
 
 
-	private Pane createGlobalPane() {
+	private Pane makeGlobalPane() {
 		//master buttons
 		FlowPane globalcommands = new FlowPane(10, 10);
 		globalcommands.setAlignment(Pos.TOP_RIGHT);
 		{
 			Button b = new Button("Reboot");
-			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent e) {
-					deviceConnection.deviceReboot();
-				}
-			});
+			b.setOnMouseClicked(event -> deviceConnection.deviceReboot());
 			b.setTooltip(new Tooltip("Reboot all devices."));
 			globalcommands.getChildren().add(b);
 		}
 		{
 			Button b = new Button("Shutdown");
-			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent e) {
-					deviceConnection.deviceShutdown();
-				}
-			});
+			b.setOnMouseClicked(event -> deviceConnection.deviceShutdown());
 			b.setTooltip(new Tooltip("Shutdown all devices."));
 			globalcommands.getChildren().add(b);
 		}
 		{
 			Button b = new Button("Reset");
-			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent e) {
-					deviceConnection.deviceReset();
-				}
-			});
+			b.setOnMouseClicked(e -> deviceConnection.deviceReset());
 			b.setTooltip(new Tooltip("Reset all devices to their initial state (same as Reset Sounding + Clear Sound)."));
 			globalcommands.getChildren().add(b);
 		}
 		{
 			Button b = new Button("Reset Sounding");
-			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent e) {
-					deviceConnection.deviceResetSounding();
-				}
-			});
+			b.setOnMouseClicked(e -> deviceConnection.deviceResetSounding());
 			b.setTooltip(new Tooltip("Reset all devices to their initial state except for audio that is currently playing."));
 			globalcommands.getChildren().add(b);
 		}
 		{
 			Button b = new Button("Clear Sound");
-			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent e) {
-					deviceConnection.deviceClearSound();
-				}
-			});
+			b.setOnMouseClicked(e -> deviceConnection.deviceClearSound());
 			b.setTooltip(new Tooltip("Clears all of the audio that is currently playing on all devices."));
 			globalcommands.getChildren().add(b);
 		}
 		return globalcommands;
 	}
 
-	private Pane createConfigurationPane() {
-		VBox pane = new VBox(defaultElementSpacing);
+	/**
+	 * Make Configuration/Known devices pane.
+	 * @param fileType 0 == configuration, 1 == known devices.
+	 */
+	private Pane makeConfigurationPane(final int fileType) {
+		final TextArea configField = new TextArea();
+		final String label = fileType == 0 ? "Configuration" : "Known Devices";
 
-		return pane;
+		configField.setPrefSize(400, 250);
+		// Load initial config into text field.
+		if (fileType == 0) {
+			configField.setText(HappyBracketsToolWindow.getCurrentConfigString());
+		}
+		else {
+			StringBuilder map = new StringBuilder();
+			deviceConnection.getKnownDevices().forEach((hostname, id) -> map.append(hostname + " " + id + "\n"));
+			configField.setText(map.toString());
+		}
+
+		Button loadButton = new Button("Load");
+		loadButton.setTooltip(new Tooltip("Load a new " + label.toLowerCase() + " file."));
+		loadButton.setOnMouseClicked(event -> {
+			//select a folder
+			final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor();
+			descriptor.setTitle("Select " + label.toLowerCase() + " file");
+			//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
+			SwingUtilities.invokeLater(() -> {
+				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
+				if (virtualFile != null && virtualFile.length > 0 && virtualFile[0] != null) {
+					Platform.runLater(() -> {
+						File configFile = new File(virtualFile[0].getCanonicalPath());
+						try {
+							String configJSON = (new Scanner(configFile)).useDelimiter("\\Z").next();
+							configField.setText(configJSON);
+						} catch (FileNotFoundException e1) {
+							e1.printStackTrace();
+						}
+					});
+				}
+			});
+		});
+
+		Button applyButton = new Button("Apply");
+		applyButton.setTooltip(new Tooltip("Apply these " + label.toLowerCase() + " settings."));
+		applyButton.setOnMouseClicked(event -> {
+			if (fileType == 0) {
+				HappyBracketsToolWindow.setConfig(configField.getText(), null);
+				init();
+				deviceListView.setItems(deviceConnection.getDevices());
+				refreshCompositionList();
+			} else {
+				Hashtable<String, Integer> knownDevices = new Hashtable<>();
+				for (String line : configField.getText().split("\\r?\\n")) {
+					String[] lineSplit = line.split("[ ]");
+					knownDevices.put(lineSplit[0], Integer.parseInt(lineSplit[1]));
+				}
+				System.out.println(knownDevices);
+				deviceConnection.setKnownDevices(knownDevices);
+			}
+		});
+
+		HBox buttons = new HBox(defaultElementSpacing);
+		buttons.setAlignment(Pos.TOP_RIGHT);
+		buttons.getChildren().addAll(loadButton, applyButton);
+
+		VBox configPane = new VBox(defaultElementSpacing);
+		configPane.setAlignment(Pos.TOP_RIGHT);
+		configPane.getChildren().addAll(makeTitle(label), configField, buttons);
+
+		return configPane;
 	}
 
 
-	private Node createCompositionPane() {
+	private Node makeCompositionPane() {
 		VBox container = new VBox(defaultElementSpacing);
 		container.getChildren().addAll(
 				makeTitle("Composition folder"),
@@ -271,24 +322,25 @@ public class IntelliJPluginGUIManager {
 //		compositionSelector.setMaxWidth(200);
 		compositionSelector.setTooltip(new Tooltip("Select a composition file to send."));
 		compositionSelector.setPrefWidth(200);
-		compositionSelector.setButtonCell(new ListCell<String>() {
-											  {
-												  super.setPrefWidth(100);
-											  }
+		compositionSelector.setButtonCell(
+				new ListCell<String>() {
+					  {
+						  super.setPrefWidth(100);
+					  }
 
-											  @Override
-											  protected void updateItem(String item, boolean empty) {
-												  super.updateItem(item, empty);
-												  if (item != null) {
-													  String[] parts = item.split("/");
-													  if (parts.length == 0) {
-														  setText(item);
-													  } else {
-														  setText(parts[parts.length - 1]);
-													  }
-												  }
-											  }
-										  }
+					  @Override
+					  protected void updateItem(String item, boolean empty) {
+						  super.updateItem(item, empty);
+						  if (item != null) {
+							  String[] parts = item.split("/");
+							  if (parts.length == 0) {
+								  setText(item);
+							  } else {
+								  setText(parts[parts.length - 1]);
+							  }
+						  }
+					  }
+				  }
 		);
 		compositionSelector.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -476,23 +528,32 @@ public class IntelliJPluginGUIManager {
 	}
 
 
-	private Node makeDeviceList() {
+	private Node makeDevicePane() {
 		//list of Devices
-		ListView<LocalDeviceRepresentation> list = new ListView<LocalDeviceRepresentation>();
-		list.setItems(deviceConnection.getDevices());
-		list.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
+		deviceListView = new ListView<LocalDeviceRepresentation>();
+		deviceListView.setItems(deviceConnection.getDevices());
+		deviceListView.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
 			@Override
 			public ListCell<LocalDeviceRepresentation> call(ListView<LocalDeviceRepresentation> theView) {
 				return new DeviceRepresentationCell();
 			}
 		});
-		list.setMinHeight(50);
-		return list;
+		deviceListView.setMinHeight(50);
+
+		VBox pane = new VBox(defaultElementSpacing);
+		pane.setPadding(new Insets(defaultElementSpacing));
+		pane.getChildren().addAll(makeTitle("Devices"), deviceListView);
+
+		return pane;
 	}
 
 	private Node makeDebugPane() {
 		VBox pane = new VBox(defaultElementSpacing);
 		pane.setMinHeight(50);
 		return pane;
+	}
+
+	private void loadConfigFile() {
+
 	}
 }

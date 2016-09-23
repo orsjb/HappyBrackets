@@ -11,5 +11,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="HappyBrackets_main" />
     <orderEntry type="library" name="beads" level="project" />
+    <orderEntry type="library" name="Gradle: org.nanohttpd:nanohttpd:2.2.0" level="project" />
   </component>
 </module>

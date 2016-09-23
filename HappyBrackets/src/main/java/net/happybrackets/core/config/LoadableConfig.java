@@ -77,6 +77,23 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		return config;
 	}
 
+	/**
+	 * Create a configuration object from the specified JSON string. {@link #singletonInstance} is updated to the
+	 * new configuration (if a parse error did not occur).
+	 *
+	 * @param configJSON The configuration in JSON format.
+	 * @param configClass The configuration object class to create.
+	 * @param <T> Configuration object type.
+	 * @return Newly created configuration object of class T.
+	 * @throws com.google.gson.JsonSyntaxException If the given string is not valid JSON.
+	 */
+	public static <T extends LoadableConfig> T loadFromString(String configJSON, Class<T> configClass) {
+		Gson gson = new Gson();
+		T config = gson.fromJson(configJSON, configClass);
+		singletonInstance = config;
+		return config;
+	}
+
 	public static LoadableConfig getInstance() {
 		return singletonInstance;
 	}

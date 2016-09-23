@@ -90,10 +90,17 @@ public class BroadcastManager {
         receivers.add(receiver);
     }
 
-    public void refreshBroadcaster() {
-        // cleanup:
+    /**
+     * Calls dispose on all receivers (OSCReceiver) and transmitters (OSCTransmitter).
+     */
+    public void dispose() {
         receivers.forEach(r -> r.dispose());
         transmitters.forEach(t -> t.dispose());
+    }
+
+    public void refreshBroadcaster() {
+        // cleanup:
+        dispose();
         initBroadcaster(config);
     }
 

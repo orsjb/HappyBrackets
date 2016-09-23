@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -73,6 +69,37 @@ public class DeviceConnection {
 			}
 		}.start();
 	}
+
+	/**
+	 * Change the known devices mapping. This will re-assign IDs to all connected devices.
+	 * @param kd Mapping from hostname to ID.
+	 */
+	public void setKnownDevices(Hashtable<String, Integer> kd) {
+		knownDevices = kd;
+		newID = -1;
+		for (LocalDeviceRepresentation device: theDevices) {
+			int id = 0;
+			if(knownDevices.containsKey(device.hostname)) {
+				device.setID(knownDevices.get(device.hostname));
+			} else {
+				device.setID(newID--);
+			}
+
+			new Thread() {
+				public void run() {
+					sendToDevice(device, "/device/set_id", device.getID());
+					System.out.println("Assigning id " + device.getID() + " to " + device.hostname);
+				}
+			}.start();
+		}
+	}
+
+	/**
+	 * Get the mapping of known device host names to device IDs. The returned map is not modifiable.
+	 */
+	public Map<String, Integer> getKnownDevices() {
+		return Collections.unmodifiableMap(knownDevices);
+	}
 	
 	public ObservableList<LocalDeviceRepresentation> getDevices() {
 		return theDevices;
@@ -127,8 +154,8 @@ public class DeviceConnection {
 				final LocalDeviceRepresentation deviceID = thisDevice;
 				new Thread() {
 					public void run() {
-						sendToDevice(deviceID, "/device/set_id", deviceID.id);
-						System.out.println("Assigning id " + deviceID.id + " to " + deviceID.hostname);
+						sendToDevice(deviceID, "/device/set_id", deviceID.getID());
+						System.out.println("Assigning id " + deviceID.getID() + " to " + deviceID.hostname);
 					}
 				}.start();
 			}

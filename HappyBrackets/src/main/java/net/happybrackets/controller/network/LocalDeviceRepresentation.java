@@ -21,7 +21,7 @@ public class LocalDeviceRepresentation {
 	public long lastTimeSeen;
 	public final String hostname;
     public final String address;
-	public final int id;
+	private int id;
 	private InetSocketAddress socket;
 	private final OSCServer server;
 	public final boolean[] groups;
@@ -46,6 +46,14 @@ public class LocalDeviceRepresentation {
 		this.config     = config;
 		groups          = new boolean[4];
 		statusUpdateListenerList = new ArrayList<>();
+	}
+
+	public void setID(int id) {
+		this.id = id;
+	}
+
+	public int getID() {
+		return id;
 	}
 
 	public synchronized void send(String msgName, Object... args) {
