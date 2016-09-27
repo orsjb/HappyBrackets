@@ -273,5 +273,10 @@ public class DeviceConnection {
 		devicesByHostname.put(name, virtualTestDevice);
 	}
 
-	
+	/**
+	 * Perform shutdown processes. Stops and disposes of the OSC server.
+	 */
+	public void dispose() {
+		oscServer.dispose();
+	}
 }

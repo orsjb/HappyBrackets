@@ -174,6 +174,10 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		}
 	}
 
+	public void setKnownDevicesFile(String path) {
+		knownDevicesFile = path;
+	}
+
 	public String getKnownDevicesFile() {
 		if (knownDevicesFile != null) {
 		    return knownDevicesFile;

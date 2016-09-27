@@ -5,8 +5,12 @@ import com.google.gson.JsonSyntaxException;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import javafx.application.Platform;
@@ -47,6 +51,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     static boolean staticSetup = false;
     static String currentConfigString;
+    static IntelliJPluginSettings settings;
     static DeviceConnection deviceConnection;
     static Synchronizer synchronizer;                               //runs independently, no interaction needed
     static private FileServer httpServer;
@@ -61,24 +66,37 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         System.out.println("*** HappyBrackets IntelliJ Plugin launching ***");
         Device.getInstance();   //forces Device's network init to happen
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
-        jfxp = new JFXPanel();
+
         if(!staticSetup) {          //only run this stuff once per JVM
             System.out.println("Running static setup (first instance of HappyBrackets)");
             String projectDir = project.getBaseDir().getCanonicalPath();
-            String pluginDir = getPluginLocation();
-            System.out.println("Plugin lives at: " + pluginDir);
+
+            System.out.println("Loading plugin settings from " + IntelliJPluginSettings.getDefaultSettingsLocation());
+            settings = IntelliJPluginSettings.load();
+
             //TODO this is still buggy. We are doing this statically meaning it works only for the first loaded project.
-            String configFilePath = pluginDir + "/classes/config/controller-config.json";
+            String configFilePath = settings.getString("controllerConfigPath");
+            if (configFilePath == null) {
+                configFilePath = getDefaultControllerConfigPath();
+                settings.set("controllerConfigPath", configFilePath);
+            }
+
             //String configFilePath = projectDir + "/config/controller-config.json";
             if(new File(configFilePath).exists()) System.out.println("Found config file.");
             //all of the below concerns the set up of singletons
-            //TODO: use plugin path here. How?
 
             try {
                 setConfigFromFile(configFilePath);
+
+                // Save settings on exit.
+                Runtime.getRuntime().addShutdownHook(new Thread()  {
+                    public void run() {
+                        settings.save();
+                    }
+                });
             }
             catch (IOException e) {
-                System.err.println("Could not read the default configuration file at " + configFilePath);
+                System.err.println("Could not read the configuration file at " + configFilePath);
                 config = new IntelliJControllerConfig();
             }
 
@@ -93,6 +111,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         }
 
         IntelliJPluginGUIManager guiManager = new IntelliJPluginGUIManager(project);
+        jfxp = new JFXPanel();
         scene = guiManager.setupGUI();
         jfxp.setScene(scene);
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
@@ -155,24 +174,30 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
         config.setConfigDir(configDir);
 
+        // If a custom known devices path has been loaded/saved previously, reload it and apply/override that possibly specified in the controller config file.
+        String knownDevicesPath = HappyBracketsToolWindow.getSettings().getString("knownDevicesPath");
+        if (knownDevicesPath == null) {
+            // Otherwise get default known devices file.
+            knownDevicesPath = HappyBracketsToolWindow.getDefaultKnownDevicesPath();
+        }
+        config.setKnownDevicesFile(knownDevicesPath);
+
         // Dispose of previous components if necessary.
         if (httpServer != null) {
             System.out.println("Stopping FileServer.");
             httpServer.stop();
-            httpServer = null;
         }
         if (controllerAdvertiser != null) {
             System.out.println("Stopping ControllerAdvertiser");
             controllerAdvertiser.stop();
-            controllerAdvertiser = null;
         }
         if (broadcastManager != null) {
+            System.out.println("Disposing of BroadcastManager");
             broadcastManager.dispose();
-            broadcastManager = null;
         }
         if (deviceConnection != null) {
-            // TODO OJC Anything to do here?
-            deviceConnection = null;
+            System.out.println("Disposing of DeviceConnection");
+            deviceConnection.dispose();
         }
 
         System.out.println(config.getCompositionsPath());
@@ -196,6 +221,11 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     }
 
 
+    public static IntelliJPluginSettings getSettings() {
+        return settings;
+    }
+
+
     /**
      * Returns the JSON String used to create the current {@link IntelliJControllerConfig} for this HappyBracketsToolWindow.
      */
@@ -210,5 +240,13 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         return PluginManager.getPlugin(
                 PluginId.getId("net.happybrackets.intellij_plugin.HappyBracketsToolWindow")
         ).getPath().getAbsolutePath().toString();
+    }
+
+    public static String getDefaultControllerConfigPath() {
+        return getPluginLocation() + "/classes/config/controller_config.json";
+    }
+
+    public static String getDefaultKnownDevicesPath() {
+        return getPluginLocation() + "/classes/config/known_devices";
     }
 }

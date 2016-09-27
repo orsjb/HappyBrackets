@@ -1,14 +1,24 @@
 package net.happybrackets.intellij_plugin;
 
+import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.popup.Balloon;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.StatusBar;
+import com.intellij.openapi.wm.WindowManager;
+import com.intellij.ui.awt.RelativePoint;
 import com.sun.javafx.css.Style;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.JFXPanel;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -33,6 +43,7 @@ import net.happybrackets.controller.network.SendToDevice;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -42,7 +53,6 @@ import java.util.Scanner;
  * Sets up the plugin GUI and handles associated events.
  */
 public class IntelliJPluginGUIManager {
-
 	private String compositionsPath;
 	private String currentCompositionSelection = null;
 	private ControllerConfig config;
@@ -55,6 +65,7 @@ public class IntelliJPluginGUIManager {
 	private int positionInCommandHistory = 0;
 	private Style style;
 	private final int defaultElementSpacing = 10;
+	private Button[] configApplyButton = new Button[2]; // 0 = overall config, 1 = known devices.
 
 
 	public IntelliJPluginGUIManager(Project project) {
@@ -188,6 +199,7 @@ public class IntelliJPluginGUIManager {
 	private Pane makeConfigurationPane(final int fileType) {
 		final TextArea configField = new TextArea();
 		final String label = fileType == 0 ? "Configuration" : "Known Devices";
+		final String setting = fileType == 0 ? "controllerConfigPath" : "knownDevicesPath";
 
 		configField.setPrefSize(400, 250);
 		// Load initial config into text field.
@@ -199,58 +211,133 @@ public class IntelliJPluginGUIManager {
 			deviceConnection.getKnownDevices().forEach((hostname, id) -> map.append(hostname + " " + id + "\n"));
 			configField.setText(map.toString());
 		}
+		configField.textProperty().addListener((observable, oldValue, newValue) -> {
+			configApplyButton[fileType].setDisable(false);
+		});
 
 		Button loadButton = new Button("Load");
 		loadButton.setTooltip(new Tooltip("Load a new " + label.toLowerCase() + " file."));
 		loadButton.setOnMouseClicked(event -> {
-			//select a folder
-			final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor();
+			//select a file
+			final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor().withShowHiddenFiles(true);
 			descriptor.setTitle("Select " + label.toLowerCase() + " file");
+
+			String currentFile = HappyBracketsToolWindow.getSettings().getString(setting);
+			VirtualFile vfile = currentFile == null ? null : LocalFileSystem.getInstance().findFileByPath(currentFile.replace(File.separatorChar, '/'));
+
 			//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
 			SwingUtilities.invokeLater(() -> {
-				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
+				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, vfile);
+				if (virtualFile != null && virtualFile.length > 0 && virtualFile[0] != null) {
+					Platform.runLater(() -> {
+						loadConfigFile(virtualFile[0].getCanonicalPath(), label, configField, setting);
+					});
+				}
+			});
+		});
+
+		Button saveButton = new Button("Save");
+		saveButton.setTooltip(new Tooltip("Save these " + label.toLowerCase() + " settings to a file."));
+		saveButton.setOnMouseClicked(event -> {
+			//select a file
+			final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor().withShowHiddenFiles(true);
+			descriptor.setTitle("Select " + label.toLowerCase() + " file to save to.");
+			String currentFile = HappyBracketsToolWindow.getSettings().getString(setting);
+			VirtualFile vfile = currentFile == null ? null : LocalFileSystem.getInstance().findFileByPath(currentFile.replace(File.separatorChar, '/'));
+
+			//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
+			SwingUtilities.invokeLater(() -> {
+				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, vfile);
 				if (virtualFile != null && virtualFile.length > 0 && virtualFile[0] != null) {
 					Platform.runLater(() -> {
 						File configFile = new File(virtualFile[0].getCanonicalPath());
-						try {
-							String configJSON = (new Scanner(configFile)).useDelimiter("\\Z").next();
-							configField.setText(configJSON);
-						} catch (FileNotFoundException e1) {
-							e1.printStackTrace();
+
+						if ((new File(HappyBracketsToolWindow.getDefaultControllerConfigPath())).getAbsolutePath().equals(configFile.getAbsolutePath()) ||
+								(new File(HappyBracketsToolWindow.getDefaultKnownDevicesPath())).getAbsolutePath().equals(configFile.getAbsolutePath())) {
+							showPopup("Error saving " + label.toLowerCase() + ": cannot overwrite default configuration files.", MessageType.ERROR, 5000);
+						}
+
+						try (PrintWriter out = new PrintWriter(configFile.getAbsolutePath())) {
+							out.print(configField.getText());
+
+							HappyBracketsToolWindow.getSettings().set(setting, configFile.getAbsolutePath());
+						} catch (Exception ex) {
+							showPopup("Error saving " + label.toLowerCase() + ": " + ex.getMessage(), MessageType.ERROR, 5000);
 						}
 					});
 				}
 			});
 		});
 
-		Button applyButton = new Button("Apply");
-		applyButton.setTooltip(new Tooltip("Apply these " + label.toLowerCase() + " settings."));
-		applyButton.setOnMouseClicked(event -> {
+		Button resetButton = new Button("Reset");
+		resetButton.setTooltip(new Tooltip("Reset these " + label.toLowerCase() + " settings to their defaults."));
+		resetButton.setOnMouseClicked(event -> {
+			HappyBracketsToolWindow.getSettings().clear(setting);
+
 			if (fileType == 0) {
-				HappyBracketsToolWindow.setConfig(configField.getText(), null);
-				init();
-				deviceListView.setItems(deviceConnection.getDevices());
-				refreshCompositionList();
+				loadConfigFile(HappyBracketsToolWindow.getDefaultControllerConfigPath(), label, configField, setting);
+				applyConfig(configField.getText());
+			}
+			else {
+				loadConfigFile(HappyBracketsToolWindow.getDefaultKnownDevicesPath(), label, configField, setting);
+				applyKnownDevices(configField.getText());
+			}
+		});
+
+		configApplyButton[fileType] = new Button("Apply");
+		configApplyButton[fileType].setTooltip(new Tooltip("Apply these " + label.toLowerCase() + " settings."));
+		configApplyButton[fileType].setDisable(true);
+		configApplyButton[fileType].setOnMouseClicked(event -> {
+			configApplyButton[fileType].setDisable(true);
+
+			if (fileType == 0) {
+				applyConfig(configField.getText());
 			} else {
-				Hashtable<String, Integer> knownDevices = new Hashtable<>();
-				for (String line : configField.getText().split("\\r?\\n")) {
-					String[] lineSplit = line.split("[ ]");
-					knownDevices.put(lineSplit[0], Integer.parseInt(lineSplit[1]));
-				}
-				System.out.println(knownDevices);
-				deviceConnection.setKnownDevices(knownDevices);
+				applyKnownDevices(configField.getText());
 			}
 		});
 
 		HBox buttons = new HBox(defaultElementSpacing);
 		buttons.setAlignment(Pos.TOP_RIGHT);
-		buttons.getChildren().addAll(loadButton, applyButton);
+		buttons.getChildren().addAll(loadButton, saveButton, resetButton, configApplyButton[fileType]);
 
 		VBox configPane = new VBox(defaultElementSpacing);
 		configPane.setAlignment(Pos.TOP_RIGHT);
 		configPane.getChildren().addAll(makeTitle(label), configField, buttons);
 
 		return configPane;
+	}
+
+
+	private void loadConfigFile(String path, String label, TextArea configField, String setting) {
+		File configFile = new File(path);
+		try {
+			String configJSON = (new Scanner(configFile)).useDelimiter("\\Z").next();
+			configField.setText(configJSON);
+			HappyBracketsToolWindow.getSettings().set(setting, configFile.getAbsolutePath());
+		} catch (FileNotFoundException ex) {
+			showPopup("Error loading " + label.toLowerCase() + ": " + ex.getMessage(), MessageType.ERROR, 5000);
+		}
+	}
+
+
+	private void applyConfig(String config) {
+		HappyBracketsToolWindow.setConfig(config, null);
+		init();
+		deviceListView.setItems(deviceConnection.getDevices());
+		refreshCompositionList();
+	}
+
+
+	private void applyKnownDevices(String kd) {
+		Hashtable<String, Integer> knownDevices = new Hashtable<>();
+		for (String line : kd.split("\\r?\\n")) {
+			String[] lineSplit = line.split("[ ]");
+			if (lineSplit.length >= 2) {
+				knownDevices.put(lineSplit[0], Integer.parseInt(lineSplit[1]));
+			}
+		}
+		deviceConnection.setKnownDevices(knownDevices);
 	}
 
 
@@ -547,13 +634,15 @@ public class IntelliJPluginGUIManager {
 		return pane;
 	}
 
+
 	private Node makeDebugPane() {
 		VBox pane = new VBox(defaultElementSpacing);
 		pane.setMinHeight(50);
 		return pane;
 	}
 
-	private void loadConfigFile() {
+
+	private void showPopup(String message, MessageType type, int timeout) {
 
 	}
 }
