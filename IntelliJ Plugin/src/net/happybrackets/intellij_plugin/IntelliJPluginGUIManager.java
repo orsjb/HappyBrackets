@@ -5,20 +5,13 @@ import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.popup.Balloon;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.StatusBar;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.ui.awt.RelativePoint;
 import com.sun.javafx.css.Style;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.JFXPanel;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,10 +23,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import javafx.stage.*;
+import javafx.stage.Popup;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import net.happybrackets.controller.config.ControllerConfig;
 import net.happybrackets.controller.gui.DeviceRepresentationCell;
 import net.happybrackets.controller.network.DeviceConnection;
@@ -230,7 +227,7 @@ public class IntelliJPluginGUIManager {
 				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, vfile);
 				if (virtualFile != null && virtualFile.length > 0 && virtualFile[0] != null) {
 					Platform.runLater(() -> {
-						loadConfigFile(virtualFile[0].getCanonicalPath(), label, configField, setting);
+						loadConfigFile(virtualFile[0].getCanonicalPath(), label, configField, setting, loadButton, event);
 					});
 				}
 			});
@@ -254,7 +251,7 @@ public class IntelliJPluginGUIManager {
 
 						if ((new File(HappyBracketsToolWindow.getDefaultControllerConfigPath())).getAbsolutePath().equals(configFile.getAbsolutePath()) ||
 								(new File(HappyBracketsToolWindow.getDefaultKnownDevicesPath())).getAbsolutePath().equals(configFile.getAbsolutePath())) {
-							showPopup("Error saving " + label.toLowerCase() + ": cannot overwrite default configuration files.", MessageType.ERROR, 5000);
+							showPopup("Error saving " + label.toLowerCase() + ": cannot overwrite default configuration files.", saveButton, 5, event);
 						}
 
 						try (PrintWriter out = new PrintWriter(configFile.getAbsolutePath())) {
@@ -262,7 +259,7 @@ public class IntelliJPluginGUIManager {
 
 							HappyBracketsToolWindow.getSettings().set(setting, configFile.getAbsolutePath());
 						} catch (Exception ex) {
-							showPopup("Error saving " + label.toLowerCase() + ": " + ex.getMessage(), MessageType.ERROR, 5000);
+							showPopup("Error saving " + label.toLowerCase() + ": " + ex.getMessage(), saveButton, 5, event);
 						}
 					});
 				}
@@ -275,11 +272,11 @@ public class IntelliJPluginGUIManager {
 			HappyBracketsToolWindow.getSettings().clear(setting);
 
 			if (fileType == 0) {
-				loadConfigFile(HappyBracketsToolWindow.getDefaultControllerConfigPath(), label, configField, setting);
+				loadConfigFile(HappyBracketsToolWindow.getDefaultControllerConfigPath(), label, configField, setting, resetButton, event);
 				applyConfig(configField.getText());
 			}
 			else {
-				loadConfigFile(HappyBracketsToolWindow.getDefaultKnownDevicesPath(), label, configField, setting);
+				loadConfigFile(HappyBracketsToolWindow.getDefaultKnownDevicesPath(), label, configField, setting, resetButton, event);
 				applyKnownDevices(configField.getText());
 			}
 		});
@@ -309,14 +306,14 @@ public class IntelliJPluginGUIManager {
 	}
 
 
-	private void loadConfigFile(String path, String label, TextArea configField, String setting) {
+	private void loadConfigFile(String path, String label, TextArea configField, String setting, Node triggeringElement, MouseEvent event) {
 		File configFile = new File(path);
 		try {
 			String configJSON = (new Scanner(configFile)).useDelimiter("\\Z").next();
 			configField.setText(configJSON);
 			HappyBracketsToolWindow.getSettings().set(setting, configFile.getAbsolutePath());
 		} catch (FileNotFoundException ex) {
-			showPopup("Error loading " + label.toLowerCase() + ": " + ex.getMessage(), MessageType.ERROR, 5000);
+			showPopup("Error loading " + label.toLowerCase() + ": " + ex.getMessage(), triggeringElement, 5, event);
 		}
 	}
 
@@ -642,7 +639,23 @@ public class IntelliJPluginGUIManager {
 	}
 
 
-	private void showPopup(String message, MessageType type, int timeout) {
+	private void showPopup(String message, Node element, int timeout, MouseEvent event) {
+		Text t = new Text(message);
 
+		VBox pane = new VBox();
+		pane.setPadding(new Insets(10));
+		pane.getChildren().add(t);
+
+		Popup p = new Popup();
+		p.getScene().setFill(Color.ORANGE);
+		p.getContent().add(pane);
+		p.show(element, event.getScreenX(), event.getScreenY());
+		p.setAutoHide(true);
+
+		if (timeout >= 0) {
+			PauseTransition pause = new PauseTransition(Duration.seconds(timeout));
+			pause.setOnFinished(e -> p.hide());
+			pause.play();
+		}
 	}
 }
