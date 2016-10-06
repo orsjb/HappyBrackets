@@ -13,10 +13,15 @@ import net.beadsproject.beads.ugens.*;
 import java.io.*;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by ollie on 27/07/2016.
  */
 public class BeadsChecker {
+
+    final static Logger logger = LoggerFactory.getLogger(BeadsChecker.class);
 
     public interface BeadsCheckable {
         public void task(AudioContext ac, StringBuffer buf, Object... args);
@@ -37,7 +42,7 @@ public class BeadsChecker {
         try {
             rtf = new RecordToFile(ac, 2, new File(resultsDir + "/" + "audio.wav"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to read file '{}/audio.wav'!", resultsDir, e);
         }
         rtf.addInput(ac.out);
         ac.out.addDependent(rtf);
@@ -53,13 +58,14 @@ public class BeadsChecker {
             protected void messageReceived(Bead bead) {
                 if(snapshotter.isBeat()) {
                     //TAKE SNAPSHOT
-                    System.out.println("** snapshot ** " + ac.getTime());
+                    logger.info("** snapshot ** " + ac.getTime());
                     //run the checker function
                     if(func != null) {
                         func.runCheck(ac, snapshotter.getBeatCount());
                     }
                     //grab snapshot and print somewhere
                     StringBuffer buf = new StringBuffer();
+                    // should we consider how to add this to a logging call?
                     printCallChain(ac.out, buf, 0);
                     try {
                         FileOutputStream fos = new FileOutputStream(new File(resultsDir + "/" + "snapshot" + snapshotter.getBeatCount()));
@@ -70,15 +76,15 @@ public class BeadsChecker {
                         //try gson solution
                         printCallChainJSON(ac.out, resultsDir + "/" + "snapshotJSON" + snapshotter.getBeatCount() + ".json");
                     } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                        logger.error("File not found exception encountered when writing snapshots!", e);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error("Error writing snapshot files!", e);
                     }
                 }
             }
         });
         ac.runForNMillisecondsNonRealTime(totalTime);
-        System.out.println("** completed ** " + ac.getTime());
+        logger.info("** completed ** {}", ac.getTime());
         //close record stream
         rtf.kill();
         //save result text
@@ -89,9 +95,9 @@ public class BeadsChecker {
             ps.close();
             fos.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error("File not found exception encountered when writing result file!", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error writing result file!", e);
         }
     }
 

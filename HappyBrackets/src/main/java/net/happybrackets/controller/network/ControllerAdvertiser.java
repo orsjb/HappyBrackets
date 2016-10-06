@@ -3,7 +3,13 @@ package net.happybrackets.controller.network;
 import net.happybrackets.controller.config.ControllerConfig;
 import net.happybrackets.core.BroadcastManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ControllerAdvertiser {
+
+	final static Logger logger = LoggerFactory.getLogger(ControllerAdvertiser.class);
+
 	private Thread advertismentService;
 	private boolean keepAlive = true;
 
@@ -18,8 +24,7 @@ public class ControllerAdvertiser {
 						Thread.sleep(500);
 					}
 					catch (InterruptedException e) {
-						System.err.println("Sleep was interupted in ControllerAdvertiser thread");
-						e.printStackTrace();
+						logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
 					}
 				}
 			}

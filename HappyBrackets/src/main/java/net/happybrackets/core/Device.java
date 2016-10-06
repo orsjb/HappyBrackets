@@ -6,7 +6,12 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Device {
+
+	final static Logger logger = LoggerFactory.getLogger(Device.class);
 
 	public  final String    myHostname;				    //the hostname for this PI (wifi)
 	public  final String    myIP;
@@ -24,8 +29,7 @@ public class Device {
   }
 
 	private Device() {
-        System.out.println("-----------------------");
-        System.out.println("Beginning device network setup");
+        logger.info("Beginning device network setup");
         String tmpHostname = null;
         String tmpIP = null;
 		String tmpMAC = null;
@@ -33,9 +37,9 @@ public class Device {
 		try {
 			NetworkInterface netInterface;
 			String operatingSystem = System.getProperty("os.name");
-			System.out.println("Detected OS: " + operatingSystem);
+			logger.debug("Detected OS: " + operatingSystem);
 
-            System.out.println("Interfaces:");
+            logger.debug("Interfaces:");
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             String favouriteInterfaceName = null;
             ArrayList<NetworkInterface> favouredInterfaces = new ArrayList<>();
@@ -47,15 +51,15 @@ public class Device {
                     //collect all viable interfaces
                     favouredInterfaces.add(netInterface);
                     //favouriteInterfaceName = netInterface.getName();
-                    System.out.println("    " + netInterface.getName() + " (" + netInterface.getDisplayName() + ") : VALID");
+                    logger.debug("    {} ({}) : VALID", netInterface.getName(), netInterface.getDisplayName());
                 }
                 else {
-                    System.out.println("    " + netInterface.getName() + " (" + netInterface.getDisplayName() + ") : IGNORED");
+                    logger.debug("    {} ({}) : IGNORED", netInterface.getName(), netInterface.getDisplayName());
                 }
             }
             if ( !favouredInterfaces.isEmpty() ) {
-                System.out.println("Selecting from valid interfaces:");
-                favouredInterfaces.forEach((i) -> System.out.println("\t" + i.getName() + " (" + i.getDisplayName() + ")"));
+                logger.debug("Selecting from valid interfaces:");
+                favouredInterfaces.forEach( (i) -> logger.debug("    {} ({})", i.getName(), i.getDisplayName()) );
 
                 // Populate valid interfaces array
                 validInterfaces = new String[favouredInterfaces.size()];
@@ -78,7 +82,7 @@ public class Device {
 //                    netInterface = NetworkInterface.getByName("lo0");
                 }
                 else {
-                    System.err.println("Operating system " + operatingSystem + " is not expressly handled, defaulting to first favoured interface");
+                    logger.warn("Operating system {} is not expressly handled, defaulting to first favoured interface", operatingSystem);
                     netInterface = favouredInterfaces.get(0);
                 }
             }
@@ -92,21 +96,21 @@ public class Device {
 //                    netInterface = NetworkInterface.getByName("lo0");
                 }
                 else {
-                    System.err.println("Unable to determine a network interface!");
+                    logger.error("Unable to determine a network interface!");
                     netInterface = NetworkInterface.getByIndex(0); //Maybe the loopback?
                 }
             }
 
             //report back
-            System.out.println("Selected interface: " + netInterface.getName() + " (" + netInterface.getDisplayName() + ")");
+            logger.debug("Selected interface: {} ({})", netInterface.getName(), netInterface.getDisplayName());
 
 			//Addresses
             ArrayList<InterfaceAddress> addresses = new ArrayList<>();
             netInterface.getInterfaceAddresses().forEach( (a) -> addresses.add(a) );
             addresses.sort( (a, b) -> a.getAddress().getHostAddress().compareTo(b.getAddress().getHostAddress()) );
 
-            System.out.println("Available interface addresses:");
-            addresses.forEach( (a) -> System.out.println("\t" + a.getAddress().getHostAddress() ) );
+            logger.debug("Available interface addresses:");
+            addresses.forEach( (a) -> logger.debug("    {}", a.getAddress().getHostAddress()) );
 
             tmpHostname = addresses.get(0).getAddress().getHostName();
             tmpIP       = addresses.get(0).getAddress().getHostAddress();
@@ -160,7 +164,7 @@ public class Device {
             }
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error encountered when assessing interfaces and addresses!", e);
 		}
 
 		//ensure we have a local suffix
@@ -171,28 +175,26 @@ public class Device {
 		}
 
 		myHostname          = tmpHostname;
-        myIP                = tmpIP;
+    myIP                = tmpIP;
 		myMAC               = tmpMAC;
 		preferredInterface  = tmpPreferedInterface;
 		//report
-		System.out.println("My hostname is:           " + myHostname);
-        System.out.println("My IP address is:         " + myIP);
-		System.out.println("My MAC address is:        " + myMAC);
-		System.out.println("My preferred interface is: " + preferredInterface);
-        System.out.println("Device network setup complete");
-        System.out.println("-----------------------");
+		logger.debug("My hostname is:            {}", myHostname);
+        logger.debug("My IP address is:          {}", myIP);
+		logger.debug("My MAC address is:         {}", myMAC);
+		logger.debug("My preferred interface is: {}", preferredInterface);
+        logger.debug("Device network setup complete");
     }
 
 	public static boolean isViableNetworkInterface(NetworkInterface ni) {
 		try {
-			if ( !ni.supportsMulticast()						) return false;
-			if ( ni.isLoopback()								) return false;
-			if ( !ni.isUp()										) return false;
-			if ( ni.isVirtual()									) return false;
+			if ( !ni.supportsMulticast()												) return false;
+			if ( ni.isLoopback()																) return false;
+			if ( !ni.isUp()										  								) return false;
+			if ( ni.isVirtual()																	) return false;
 			if ( ni.getDisplayName().matches(".*[Vv]irtual.*")	) return false; //try and catch out any interfaces which don't admit to being virtual
 		} catch (SocketException e) {
-			System.out.println("Error checking interface " + ni.getName());
-			e.printStackTrace();
+			logger.error("Error checking interface {}", ni.getName(), e);
 			return false;
 		}
 		return true;

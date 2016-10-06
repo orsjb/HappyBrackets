@@ -33,7 +33,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class LPS25H  extends Sensor implements BarometricPressureSensor{
+
+    final static Logger logger = LoggerFactory.getLogger(LPS25H.class);
 
     public static final byte LPS25H_ADDRESS = 0x5c;
 
@@ -170,13 +175,13 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
         try {
             device.read(PRESS_POUT_XL | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 3);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to read barometric pressure!", e);
         }
         buffer.put(3, (byte) 0);
         int PRESS_OUT = buffer.getInt(0);
-        System.out.println("DEBUG: PRESSURE_OUT  : " + PRESS_OUT);
+        logger.debug("PRESSURE_OUT  : {}", PRESS_OUT);
         double press = (PRESS_OUT / DOUBLE_4096_0);
-        System.out.println("DEBUG: PRESSURE_OUT (hPa) : " + press);
+        logger.debug("PRESSURE_OUT (hPa) : {}", press);
         return press;
     }
 
@@ -184,9 +189,9 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
         //device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short TEMP_OUT = buffer.getShort(0);
-        System.out.println("DEBUG: TEMP_OUT  : " + TEMP_OUT);
+        logger.debug("TEMP_OUT  : ", TEMP_OUT);
         double temp = (DOUBLE_42_5 + (TEMP_OUT / DOUBLE_480_0));
-        System.out.println("DEBUG: TEMP_OUT (C) : " + temp);
+        logger.debug("TEMP_OUT (C) : ", temp);
         return temp;
     }
 
@@ -205,7 +210,7 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
                         barometricPressureData = getBarometricPressureData();
                         //pass data on to listeners
                     } catch(IOException e){
-                        e.printStackTrace();
+                        logger.error("Unable to read temperture!", e);
                     }
                     for(SensorUpdateListener listener : listeners) {
                         listener.sensorUpdated();
@@ -213,7 +218,7 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.error("Poll interval interupted while monitoring temperture!", e);
                     }
                 }
             }

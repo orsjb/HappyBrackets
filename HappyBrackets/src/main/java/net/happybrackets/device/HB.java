@@ -34,7 +34,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HB {
+
+	final static Logger logger = LoggerFactory.getLogger(HB.class);
 
 	// audio stuff
 	public final AudioContext ac;
@@ -80,7 +85,7 @@ public class HB {
 		pl.setSteal(true);
 		ac.out.addInput(pl);
 		ac.out.addDependent(clock);
-		System.out.println("HB audio setup complete.");
+		logger.info("HB audio setup complete.");
 		// sensor setup
 		sensors = new Hashtable<>();
 		System.out.print(".");
@@ -97,7 +102,7 @@ public class HB {
 		System.out.print(".");
 		//notify started (happens immeidately or when audio starts)
 		testBleep3();
-		System.out.println("HB initialised");
+		logger.info("HB initialised");
 	}
 
 	/**
@@ -185,16 +190,16 @@ public class HB {
         //getInstance fresh config file
 		String configFile = "config/device-config.json";
         String configUrl = "http://" + DeviceConfig.getInstance().getControllerHostname() + ":" + DeviceConfig.getInstance().getControllerHTTPPort() + "/config/device-config.json";
-        System.out.println("GET config file: " + configUrl);
+        logger.debug("GET config file: {}", configUrl);
         OkHttpClient client = new OkHttpClient();
         Request request = new okhttp3.Request.Builder()
                 .url(configUrl)
                 .build();
         Response response = client.newCall(request).execute();
-        System.out.println("Saving new config file: " + configFile);
+        logger.debug("Saving new config file: {}", configFile);
         Files.write(Paths.get(configFile), response.body().string().getBytes());
         //reload config from file again after pulling in updates
-        System.out.println("Reloading config file: " + configFile);
+        logger.debug("Reloading config file: {}", configFile);
         DeviceConfig.load(configFile);
 	}
 
@@ -299,17 +304,16 @@ public class HB {
 							}
 							if (isHBActionClass) {
 								incomingClass = (Class<? extends HBAction>) c;
-								System.out.println("new HBAction >> " + incomingClass.getName());
+								logger.debug("new HBAction >> " + incomingClass.getName());
 								// this means we're done with the sequence, time to recreate
 								// the classloader to avoid duplicate errors
 								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
 								status = "Last HBAction: " + incomingClass.getCanonicalName();
 							} else {
-								System.out.println("new object (not HBAction) >> " + c.getName());
+								logger.debug("new object (not HBAction) >> " + c.getName());
 							}
-						} catch (Exception e) {/* snub it? */
-							System.out.println("Exception Caught trying to read Object from Socket");
-							e.printStackTrace();
+						} catch (Exception e) {
+							logger.error("An error occoured while trying to read object from socket", e);
 						}
 						if (incomingClass != null) {
 							HBAction action = null;
@@ -317,7 +321,7 @@ public class HB {
 								action = incomingClass.newInstance();
 								action.action(HB.this);
 							} catch (Exception e) {
-								e.printStackTrace(); // catching all exceptions
+								logger.error("Error instantiating received HBAction!", e);
 													 // means that we avert an exception
 													 // heading up to audio processes.
 								//TODO look into reported cases where this still falls over.
@@ -326,7 +330,7 @@ public class HB {
 						s.close();
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error("Error receiving new HBAction!", e);
 				}
 			}
 		}.start();
@@ -339,7 +343,7 @@ public class HB {
 			HBAction action = hbActionClass.newInstance();
 			action.action(this);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to cast Object into HBAction!", e);
 		}
 	}
 
@@ -356,7 +360,7 @@ public class HB {
 				result = (Sensor) sensorClass.getConstructor().newInstance();
 				if(result != null) sensors.put(sensorClass, result);
 			} catch (Exception e) {
-				System.err.println("Cannot create sensor: " + sensorClass);
+				logger.info("Cannot create sensor: {}", sensorClass);
 				setStatus("No sensor " + sensorClass + " available.");
 			}
 		}
@@ -560,7 +564,7 @@ public class HB {
 		try {
 			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo reboot"}).waitFor();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to reboot device!", e);
 		}
 	}
 
@@ -571,7 +575,7 @@ public class HB {
 		try {
 			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo shutdown now"}).waitFor();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to shutdown device!", e);
 		}
 	}
 

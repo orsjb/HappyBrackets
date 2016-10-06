@@ -2,6 +2,8 @@ package net.happybrackets.intellij_plugin;
 
 import java.io.*;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains settings pertaining to the plugin, stored as mappings from String keys to values.
@@ -12,6 +14,7 @@ import java.util.Properties;
  */
 public class IntelliJPluginSettings {
     protected Properties props = new Properties();
+    final static Logger logger = LoggerFactory.getLogger(IntelliJPluginSettings.class);
 
     /**
      * Get settings object with default settings.
@@ -44,7 +47,7 @@ public class IntelliJPluginSettings {
             return settings;
         }
         catch (Exception ex) {
-            System.err.println("Error loading settings file. Using defaults. Error: " + ex.getMessage());
+            logger.warn("Error loading settings file. Using defaults. Error: {}", ex.getMessage());
             return getDefaultSettings();
         }
     }

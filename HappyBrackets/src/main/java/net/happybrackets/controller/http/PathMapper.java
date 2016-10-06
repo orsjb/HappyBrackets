@@ -2,12 +2,17 @@ package net.happybrackets.controller.http;
 
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A basic class for connecting url paths to response implementing objects.
  *
  * Created by Samg on 19/05/2016.
  */
 public class PathMapper {
+
+    final static Logger logger = LoggerFactory.getLogger(PathMapper.class);
 
     private HashMap<String, PathResponse> pathMap;
     private EmptyResponse empty;
@@ -19,7 +24,7 @@ public class PathMapper {
 
     public boolean addPath(String path, PathResponse response) {
         if ( pathMap.containsKey(path) ) {
-            System.err.println("Unable to add path to PathMapper, path already exists! Path: " + path);
+            logger.error("Unable to add path to PathMapper, path already exists! Path: {}", path);
             return false;
         }
         pathMap.put(path, response);

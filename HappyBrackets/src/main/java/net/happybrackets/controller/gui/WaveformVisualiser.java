@@ -17,10 +17,15 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import net.beadsproject.beads.core.AudioContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by ollie on 7/07/2016.
  */
 public abstract class WaveformVisualiser {
+
+    final static Logger logger = LoggerFactory.getLogger(WaveformVisualiser.class);
 
     public static void open(AudioContext ac) {
         open(ac, true);
@@ -74,7 +79,7 @@ public abstract class WaveformVisualiser {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.error("Refresh interval interupted!", e);
                     }
                 }
             }

@@ -6,6 +6,9 @@ import com.google.gson.GsonBuilder;
 import java.io.*;
 import java.lang.reflect.Type;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This Class exists purely to hold static methods relating to the saving of configuration classes.
  * The static method save mirrors LoadableConfig.load() method used for loading config files.
@@ -14,11 +17,13 @@ import java.lang.reflect.Type;
  */
 public class SavableConfig {
 
+   final static Logger logger = LoggerFactory.getLogger(SavableConfig.class);
+
     public static <T> boolean save(String fileName, T config) {
-        System.out.println("Loading: " + fileName);
+        logger.info("Saving: " + fileName);
 
         if (config == null) {
-            System.err.println("Argument 2, Config must be an instantiated object!");
+            logger.error("Argument 2, Config must be an instantiated object!");
             return false;
         }
 
@@ -27,8 +32,7 @@ public class SavableConfig {
         try (Writer configFile = new FileWriter(fileName)) {
             gson.toJson(config, (Type) config.getClass(), configFile);
         } catch (IOException e) {
-            System.err.println("Unable to write to file: " + fileName);
-            e.printStackTrace();
+            logger.error("Unable to write to file: {}", fileName, e);
         }
 
         return true;

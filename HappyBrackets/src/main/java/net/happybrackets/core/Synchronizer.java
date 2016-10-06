@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Synchronizer {
 
 	/*
@@ -22,6 +25,8 @@ public class Synchronizer {
 	 * r <MAC1> <timeMS> <MAC2> <timeMS>
 	 */
 
+	final static Logger logger = LoggerFactory.getLogger(Synchronizer.class);
+
 	private String myMAC; //how to uniquely identify this machine
 	private DatagramSocket broadcastSocket;
 	private long timeCorrection = 0;			//add this to current time to getInstance the REAL current time
@@ -33,7 +38,6 @@ public class Synchronizer {
 
 	private boolean on = true;
 	private boolean verbose = false;
-	private boolean veryverbose = false;
 	private boolean timedebug = false;
 
 	private Map<Long, Map<String, long[]>> log;		//first referenced by message send time, then by respodent's name, with the time the respondent replied and the current time
@@ -60,17 +64,17 @@ public class Synchronizer {
 			//start listening
 			setupListener();
 			if(ableToUseMulticast) {
-				System.out.println("Synchronizer is listening.");
+				logger.info("Synchronizer is listening.");
 				//setup sender	//TODO Ollie - encountered problem at this line... seems that the receiver is occupying this socket, I've removed the port because we don't need this until sending, I believe.
 				broadcastSocket = new DatagramSocket();
 				//start sending
 				startSending();
-				System.out.println("Synchronizer is sending synch pulses.");
+				logger.info("Synchronizer is sending synch pulses.");
 				//display clock (optional)
 				//displayClock();
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to setup Synchronizer!", e);
 		}
 	}
 
@@ -91,13 +95,14 @@ public class Synchronizer {
 					if(tick != lastTick && timeNow % 10000 < 4) {
 						//display
 						Date d = new Date(timeNow);
+						// This looks like it shouldn't be logged?
 						System.out.println("The time is: " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + " (short correction = " + timeCorrection + "ms, long correction = " + stableTimeCorrection + "ms)");
 						lastTick = tick;
 					}
 					try {
 						Thread.sleep(1);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Poll interval interupted for displayClock!", e);
 					}
 				}
 			}
@@ -112,8 +117,8 @@ public class Synchronizer {
 			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
 			ableToUseMulticast = true;
 		} catch(SocketException e) {
-			e.printStackTrace();
-			System.err.println("Warning: Synchronizer can't use multicast. No synch functionality available in this session.");
+			logger.error("Unable to start listener!", e);
+			logger.warn("Synchronizer can't use multicast. No synch functionality available in this session.");
 		}
 		//start a listener thread
 		Thread t = new Thread() {
@@ -124,10 +129,10 @@ public class Synchronizer {
 						DatagramPacket pack = new DatagramPacket(buf, buf.length);
 						s.receive(pack);
 						String response = new String(buf, "US-ASCII");
-						if(veryverbose) System.out.println("Received data: " + response + " (total string length=" + pack.getLength() + ")");
+						logger.trace("Received data: {} (total string length={})", response, pack.getLength());
 						messageReceived(response);
 					} catch (IOException e) {
-						e.printStackTrace();
+						logger.error("Error in Synchronizer listener thread!", e);
 					}
 				}
 				s.close();
@@ -147,7 +152,7 @@ public class Synchronizer {
 					try {
 						Thread.sleep(waitTime);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Interupted while waiting to execute action in Synchronizer.doAtTime!", e);
 					}
 					r.run();
 				}
@@ -169,7 +174,7 @@ public class Synchronizer {
 					try {
 						Thread.sleep(waitTime);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Interupted while waiting for next time step!", e);
 					}
 					r.run();
 				}
@@ -187,14 +192,14 @@ public class Synchronizer {
 					try {
 						Thread.sleep(500 + (int)(100 * Math.random()));	//randomise send time to break network send patterns
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Interupted while waiting to receive Synchronizer messages!", e);
 					}
 					//now that all of the responses have come back...
 					calculateTimeCorrection();
 					try {
 						Thread.sleep(500 + (int)(100 * Math.random()));	//randomise send time to break network send patterns
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Interupted while waiting to send Synchronizer message!", e);
 					}
 				}
 			}
@@ -308,10 +313,10 @@ public class Synchronizer {
 		byte buf[] = null;
 		try {
 			buf = s.getBytes("US-ASCII");
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Unable to encode string {} with current encoding!", s, e);
 		}
-		if(veryverbose) System.out.println("Sending message: " + s + " (length in bytes = " + buf.length + ")");
+		logger.trace("Sending message: {} (length in bytes = {})", s, buf.length);
 		// Create a DatagramPacket
 		DatagramPacket pack = null;
 		try {
@@ -322,12 +327,12 @@ public class Synchronizer {
 					LoadableConfig.getInstance().getClockSynchPort()
 			);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.error("Unable to send Synchronizer message to host!", e);
 		}
 		try {
 			broadcastSocket.send(pack);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error sending Synchronizer message!", e);
 		}
 	}
 

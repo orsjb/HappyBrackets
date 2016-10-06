@@ -46,6 +46,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Sets up the plugin GUI and handles associated events.
  */
@@ -63,6 +66,7 @@ public class IntelliJPluginGUIManager {
 	private Style style;
 	private final int defaultElementSpacing = 10;
 	private Button[] configApplyButton = new Button[2]; // 0 = overall config, 1 = known devices.
+	final static Logger logger = LoggerFactory.getLogger(IntelliJPluginGUIManager.class);
 
 
 	public IntelliJPluginGUIManager(Project project) {
@@ -446,7 +450,7 @@ public class IntelliJPluginGUIManager {
 						String pathToSend = compositionsPath + "/" + currentCompositionSelection;
 						SendToDevice.send(pathToSend, deviceConnection.getDeviceHostnames());
 					} catch (Exception ex) {
-						ex.printStackTrace();
+						logger.error("Unable to send composition: '{}'!", pathToSend, ex);
 					}
 				}
 			}
@@ -566,7 +570,7 @@ public class IntelliJPluginGUIManager {
 	}
 
 	private void refreshCompositionList() {
-		System.out.println("refreshCompositionList: compositionsPath=" + compositionsPath);
+		logger.debug("refreshCompositionList: compositionsPath={}", compositionsPath);
 		//TODO set up the project so that it auto-compiles and auto-refreshes on file save/edit.
 		//locate the class files of composition classes
 		//the following populates a list of Strings with class files, associated with compositions

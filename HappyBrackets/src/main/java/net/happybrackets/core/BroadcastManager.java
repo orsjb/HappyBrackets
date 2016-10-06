@@ -13,12 +13,16 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by ollie on 1/06/2016.
  *  Multiple interface behaviour add by Sam on 11/08/2016
  */
 public class BroadcastManager {
 
+    final static Logger logger = LoggerFactory.getLogger(BroadcastManager.class);
     EnvironmentConfig config;
     List<OSCTransmitter> transmitters;
     List<OSCReceiver> receivers;
@@ -61,18 +65,17 @@ public class BroadcastManager {
                         transmitter.setTarget(mcSocketAddr);
                         transmitters.add(transmitter);
                         //TODO how do we set time to live?
-                        System.out.println("Broadcasting on interface: " + netInterface.getName());
+                        logger.debug("Broadcasting on interface: {}", netInterface.getName());
                     } catch (IOException e) {
-                        System.err.println("Error: BroadcastManager encountered an IO exception when creating a listener socket.");
-                        e.printStackTrace();
+                        logger.error("BroadcastManager encountered an IO exception when creating a listener socket!", e);
                     }
                 }
                 else {
-                    System.out.println( "Skipped interface: " + netInterface.getName() );
+                    logger.debug("Skipped interface: {}", netInterface.getName());
                 }
             }
         } catch (SocketException e) {
-            e.printStackTrace();
+            logger.error("Error while setting up BroadcastManager!", e);
         }
     }
 
@@ -116,9 +119,7 @@ public class BroadcastManager {
           try {
               transmitter.send(msg);
           } catch (IOException e) {
-              e.printStackTrace();
-
-              System.out.println("Removing broadcaster interface due to error: " + e.getLocalizedMessage());
+              logger.warn("Removing broadcaster interface due to error:", e);
               transmitters.remove(transmitter);
               transmitter.dispose();
           }

@@ -12,7 +12,12 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSensor, MagnetometerSensor {
+
+	final static Logger logger = LoggerFactory.getLogger(MiniMU.class);
 
 	@Override
 	public String getSensorName() {
@@ -46,16 +51,16 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		// use WHO_AM_I register to getInstance
 
 		try {
-			System.out.println("Getting I2C Bus 1:");
+			logger.info("Getting I2C Bus 1:");
 			bus = I2CFactory.getInstance(I2CBus.BUS_1);
 			if(bus != null) {
-				System.out.println("Connected to bus OK!");
+				logger.info("Connected to bus OK!");
 			} else {
-				System.out.println("Could not connect to bus!");
+				logger.warn("Could not connect to bus!");
 			}
 
 		} catch(Exception e) {
-			System.out.println("Could not connect to bus!");
+			logger.error("Could not connect to bus!");
 		}
 
 		if (bus != null) {
@@ -69,7 +74,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 				magdevice = bus.getDevice(MAG_ADDRESS);
 
 			} catch (Exception e) {
-				System.out.println("OK - not a v2, so I'll try to set up a v3.");
+				logger.info("OK - not a v2, so I'll try to set up a v3.");
 			}
 			try {
 				//  v3 info
@@ -80,10 +85,10 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 				acceldevice = bus.getDevice(ACC_ADDRESS);
 				magdevice = bus.getDevice(MAG_ADDRESS);
 
-				System.out.println("OK - v3 set up.");
+				logger.info("OK - v3 set up.");
 
 			} catch (Exception e2) {
-				System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
+				logger.error("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached.");
 			}
 		}
 		try {
@@ -129,8 +134,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 //    			#define LSM303_MR_REG_M  0x02 // LSM303DLH, LSM303DLM, LSM303DLHC
 
 		} catch(IOException e) {
-			System.out.println("Warning: unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(");
-			e.printStackTrace();
+			logger.error("Unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(", e);
 		}
 		if (bus != null & acceldevice != null) {
 			start();
@@ -167,12 +171,14 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 							listener.sensorUpdated();
 						}
 					} catch (IOException e) {
-//						System.out.println("MiniMU not receiving data.");
+							// System.out.println("MiniMU not receiving data.");
+							// Assuming we might like this in dev?
+							logger.debug("MiniMU not receiving data.");
 					}
 					try {
 						Thread.sleep(10);		//TODO this should not be hardwired.
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Poll interval interupted while listening for MiniMu!", e);
 					}
 				}
 			}
@@ -206,11 +212,11 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		}
 		return result;
 	}
-	
+
 	private double[] readSensorsAccel() throws IOException {
 		int numElements = 3; //
 		double[] result = {0, 0, 0};
-		
+
 		int bytesPerElement = 2; // assuming short?
 		int numBytes = numElements * bytesPerElement; //
 		byte[] bytes = new byte[numBytes]; //
@@ -234,7 +240,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		}
 		return result;
 	}
-	
+
 	private double[] readSensorsMag() throws IOException {
 		int numElements = 3; //
 		double[] result = {0, 0, 0};
@@ -250,7 +256,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 			boolean[] abits = getBits(a);
 			boolean[] bbits = getBits(b);
 			boolean[] shortybits = new boolean[16];
-			// The mag sensor is BIG ENDIAN on the lsm303dlhc 
+			// The mag sensor is BIG ENDIAN on the lsm303dlhc
 			// so lets flip b and a compared to Acc
 			for(int j = 0; j < 8; j++) {
 				shortybits[j] = abits[j];
@@ -263,7 +269,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		}
 		return result;
 	}
-	
+
 	private static boolean[] getBits(byte inByte) {
 		boolean[] bits = new boolean[8];
 		for (int j = 0; j < 8; j++) {
@@ -288,7 +294,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		int length = bbits.length - 1;
 		if (bbits[0]) { // if the most significant bit is true
 			for(int i = 0; i < length; i++) { //
-				result -= bbits[length - i] ? 0 : Math.pow(2, i) ; // use the negative complement version 
+				result -= bbits[length - i] ? 0 : Math.pow(2, i) ; // use the negative complement version
 			}
 		} else {
 			for(int i = 0; i < length; i++) {

@@ -4,7 +4,12 @@ import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.IOAudioFormat;
 import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 
-public abstract class AudioSetup { 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public abstract class AudioSetup {
+
+	final static Logger logger = LoggerFactory.getLogger(AudioSetup.class);
 
 	public static AudioContext getAudioContext(String[] args) {			//args are bufSize (512), sample rate (11000), input channels (0), output channels (1)
 
@@ -26,9 +31,9 @@ public abstract class AudioSetup {
 				}
 			}
 		} catch(Exception e) {
-			System.out.println("Warning, correct args have not been supplied to AudioSetup.getAudioContext()");
+			logger.warn("Correct args have not been supplied to AudioSetup.getAudioContext()");
 		}
-		System.out.println("Creating AudioContext with args: bufSize=" + bufSize + ", sampleRate=" + sampleRate + ", bits=" + bits + ", ins=" + inchans + ", outs=" + outchans);
+		logger.info("Creating AudioContext with args: bufSize=" + bufSize + ", sampleRate=" + sampleRate + ", bits=" + bits + ", ins=" + inchans + ", outs=" + outchans);
 		JavaSoundAudioIO jsaio = new JavaSoundAudioIO(bufSize);
 		AudioContext ac = new AudioContext(jsaio, bufSize, new IOAudioFormat(sampleRate, bits, inchans, outchans));
 		return ac;

@@ -29,6 +29,9 @@ import java.lang.reflect.Type;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by ollie on 22/04/2016.
  *
@@ -60,18 +63,19 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     static protected BroadcastManager broadcastManager;
     private JFXPanel jfxp;
     private Scene scene;
+    final static Logger logger = LoggerFactory.getLogger(HappyBracketsToolWindow.class);
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        System.out.println("*** HappyBrackets IntelliJ Plugin launching ***");
+        logger.info("*** HappyBrackets IntelliJ Plugin launching ***");
         Device.getInstance();   //forces Device's network init to happen
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
 
         if(!staticSetup) {          //only run this stuff once per JVM
-            System.out.println("Running static setup (first instance of HappyBrackets)");
+            logger.info("Running static setup (first instance of HappyBrackets)");
             String projectDir = project.getBaseDir().getCanonicalPath();
 
-            System.out.println("Loading plugin settings from " + IntelliJPluginSettings.getDefaultSettingsLocation());
+            logger.info("Loading plugin settings from " + IntelliJPluginSettings.getDefaultSettingsLocation());
             settings = IntelliJPluginSettings.load();
 
             //TODO this is still buggy. We are doing this statically meaning it works only for the first loaded project.
@@ -82,7 +86,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             }
 
             //String configFilePath = projectDir + "/config/controller-config.json";
-            if(new File(configFilePath).exists()) System.out.println("Found config file.");
+            if (new File(configFilePath).exists()) logger.debug("Found config file: {}", configFilePath);
             //all of the below concerns the set up of singletons
 
             try {
@@ -96,7 +100,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 });
             }
             catch (IOException e) {
-                System.err.println("Could not read the configuration file at " + configFilePath);
+                logger.error("Could not read the configuration file at {}", configFilePath);
                 config = new IntelliJControllerConfig();
             }
 
@@ -107,7 +111,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             synchronizer = Synchronizer.getInstance();
             staticSetup = true;
         } else {
-            System.out.println("HappyBrackets static setup already completed previously.");
+            logger.info("HappyBrackets static setup already completed previously.");
         }
 
         IntelliJPluginGUIManager guiManager = new IntelliJPluginGUIManager(project);
@@ -142,7 +146,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         }
 
         String configJSON = new Scanner(newConfigFile).useDelimiter("\\Z").next();
-        System.out.println("Loaded config:\n" + configJSON);
+        logger.info("Loaded config: {}", configJSON);
         setConfig(configJSON, newConfigFile.getParent());
     }
 
@@ -184,29 +188,29 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
         // Dispose of previous components if necessary.
         if (httpServer != null) {
-            System.out.println("Stopping FileServer.");
+            logger.debug("Stopping FileServer.");
             httpServer.stop();
         }
         if (controllerAdvertiser != null) {
-            System.out.println("Stopping ControllerAdvertiser");
+            logger.debug("Stopping ControllerAdvertiser");
             controllerAdvertiser.stop();
         }
         if (broadcastManager != null) {
-            System.out.println("Disposing of BroadcastManager");
+            logger.debug("Disposing of BroadcastManager");
             broadcastManager.dispose();
         }
         if (deviceConnection != null) {
-            System.out.println("Disposing of DeviceConnection");
+            logger.debug("Disposing of DeviceConnection");
             deviceConnection.dispose();
         }
 
-        System.out.println(config.getCompositionsPath());
+        logger.debug("Compositions path: {}", config.getCompositionsPath());
 
         //set up config relevant directories
         deviceConnection = new DeviceConnection(config);
 
         //setup controller broadcast
-        System.out.println("Starting ControllerAdvertiser");
+        logger.info("Starting ControllerAdvertiser");
         broadcastManager = new BroadcastManager(config);
         controllerAdvertiser = new ControllerAdvertiser(broadcastManager, config.getMyHostName());;
         controllerAdvertiser.start();
@@ -215,8 +219,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         try {
             httpServer = new FileServer(config);
         } catch (IOException e) {
-            System.err.println("Unable to start http httpServer!");
-            e.printStackTrace();
+            logger.error("Unable to start HTTP server!", e);
         }
     }
 

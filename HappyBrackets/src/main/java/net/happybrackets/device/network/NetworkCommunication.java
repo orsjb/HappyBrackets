@@ -16,7 +16,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class NetworkCommunication {
+
+	final static Logger logger = LoggerFactory.getLogger(NetworkCommunication.class);
 
 	private int myID;							//ID assigned by the controller
 	private OSCServer oscServer;				//The OSC server
@@ -33,14 +38,14 @@ public class NetworkCommunication {
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
 		//init the OSCServer
-		System.out.println("Setting up OSC server");
+		logger.info("Setting up OSC server");
 		try {
 			oscServer = OSCServer.newUsing(OSCServer.UDP, DeviceConfig.getInstance().getControlToDevicePort());
 			oscServer.start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error creating OSC server!", e);
 		}
-		System.out.println("Started OSC server");
+		logger.info("Started OSC server");
 		//add a single master listener that forwards listening to delegates
 		oscServer.addOSCListener(new OSCListener() {
 			@Override
@@ -55,7 +60,7 @@ public class NetworkCommunication {
 //				System.out.println("Mesage received: " + msg.getName());
 				if(msg.getName().equals("/device/set_id")) {
 					myID = (Integer)msg.getArg(0);
-					System.out.println("I have been given an ID by the controller: " + myID);
+					logger.info("I have been given an ID by the controller: {}", myID);
 					hb.setStatus("ID " + myID);
 				} else {
 					//master commands...
@@ -90,8 +95,8 @@ public class NetworkCommunication {
                                 (String) msg.getArg(0),
                                 (String) msg.getArg(1)
                         );
-                        if (status) System.out.println("Updated interfaces file");
-                        else System.err.println("Unable to update interfaces file");
+                        if (status) logger.info("Updated interfaces file");
+                        else logger.error("Unable to update interfaces file");
 					}
 					//all other messages getInstance forwarded to delegate listeners
 					synchronized(listeners) {
@@ -100,7 +105,7 @@ public class NetworkCommunication {
 							try {
 								i.next().messageReceived(msg, src, time);
 							} catch(Exception e) {
-								e.printStackTrace();
+								logger.error("Error delegating OSC message!", e);
 							}
 						}
 					}
@@ -109,12 +114,12 @@ public class NetworkCommunication {
 		});
 		//set up the controller address
 		String hostname = DeviceConfig.getInstance().getControllerHostname();
-		System.out.println( "Setting up controller: " + hostname );
+		logger.info( "Setting up controller: {}", hostname );
 		controller = new InetSocketAddress(
 				DeviceConfig.getInstance().getControllerAddress(),
 				DeviceConfig.getInstance().getStatusFromDevicePort()
 		);
-		System.out.println( "Controller resolved to address: " + controller );
+		logger.debug( "Controller resolved to address: {}", controller );
 		//set up the controller address
 		broadcastAddress = new InetSocketAddress(DeviceConfig.getInstance().getControllerHostname(), DeviceConfig.getInstance().getBroadcastPort());
 		//set up an indefinite thread to ping the controller
@@ -133,7 +138,7 @@ public class NetworkCommunication {
 					try {
 						Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
 					} catch (InterruptedException e) {
-						System.out.println("/device/alive message did not getInstance through to controller.");
+						logger.error("/device/alive message send interval interupted!", e);
 					}
 				}
 
@@ -156,8 +161,7 @@ public class NetworkCommunication {
 				)
 			);
 		} catch (IOException e) {
-			System.out.println("Error sending OSC message to Server:");
-			e.printStackTrace();
+			logger.error("Error sending OSC message to Server!", e);
 		}
 	}
 

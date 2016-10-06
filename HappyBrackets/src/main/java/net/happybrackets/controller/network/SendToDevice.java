@@ -9,8 +9,13 @@ import java.util.ArrayList;
 
 import net.happybrackets.controller.config.ControllerConfig;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class SendToDevice {
+
+	final static Logger logger = LoggerFactory.getLogger(SendToDevice.class);
 
 	public static void send(String fullClassName, String[] hostnames) throws Exception {
 		String simpleClassName = new File(fullClassName).getName();
@@ -18,14 +23,14 @@ public class SendToDevice {
 //		sendOLD(packagePath, simpleClassName, hostnames);
 		send(packagePath, simpleClassName, hostnames);
 	}
-	
+
 	public static void send(String packagePath, String className, String[] hostnames) throws Exception {
 		File packageDir = new File(packagePath);
 		File[] contents = packageDir.listFiles(); //This used to have a hard codded bin/ prepended to it but this is incompatible with the composition path being configurable now
 		ArrayList<byte[]> allFilesAsBytes = new ArrayList<byte[]>();
-		System.out.println("The following files are being sent:");
+		logger.debug("The following files are being sent:");
 		for(File f : contents) {
-			System.out.println("    " + f);
+			logger.debug("    {}", f);
 			String fname = f.getName();
 			if((
 					fname.startsWith(className + "$") ||
@@ -45,11 +50,11 @@ public class SendToDevice {
 					s.getOutputStream().write(bytes);
 					s.close();
 				}
-				System.out.println("SendToDevice: sent to " + hostname);
+				logger.debug("SendToDevice: sent to {}", hostname);
         	} catch(Exception e) {
-        		System.out.println("SendToDevice: unable to send to " + hostname);
+        		logger.error("SendToDevice: unable to send to {}", hostname, e);
         	}
-        } 
+        }
 	}
 
 	public static byte[] getClassFileAsByteArray(String fullClassFileName) throws Exception {
@@ -65,21 +70,20 @@ public class SendToDevice {
         buffer.close();
         return bytes;
 	}
-	
+
 	public static byte[] objectToByteArray(Object object) {
 		byte[] bytes = null;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream out = null;
 		try {
-		  out = new ObjectOutputStream(bos);   
+		  out = new ObjectOutputStream(bos);
 		  out.writeObject(object);
 		  bytes = bos.toByteArray();
 		  out.close();
 		  bos.close();
 		} catch(Exception e) {
-			e.printStackTrace();
-		} 
+			logger.error("Unable to write object to byte array!", e);
+		}
 		return bytes;
 	}
 }
-

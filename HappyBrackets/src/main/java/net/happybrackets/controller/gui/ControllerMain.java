@@ -18,6 +18,9 @@ import javafx.stage.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * MasterServer keeps contact with all PIs. Can control them etc.
  * Connects over OSC. This is kept entirely separate from the network synch tool, which only runs on the PIs.
@@ -26,6 +29,8 @@ import java.net.UnknownHostException;
  */
 
 public class ControllerMain extends Application {
+
+	final static Logger logger = LoggerFactory.getLogger(ControllerMain.class);
 
 	DeviceConnection piConnection;
 	Synchronizer synchronizer;
@@ -40,7 +45,7 @@ public class ControllerMain extends Application {
 			Device.getInstance();		//inits the network stuff
 			config = new ControllerConfig();
 			config = LoadableConfig.load("config/controller-config.json", config);
-	    if (!config.useHostname()) System.out.println("Use host names is disabled");
+	    if (!config.useHostname()) logger.info("Use host names is disabled");
 	    piConnection = new DeviceConnection(config);
 
 	    //setup controller broadcast
@@ -52,10 +57,10 @@ public class ControllerMain extends Application {
 	    try {
 	        httpServer = new FileServer(config);
 	    } catch (IOException e) {
-	        System.err.println("Unable to start http httpServer!");
-	        e.printStackTrace();
+	        logger.error("Unable to start http httpServer!", e);
 	    }
 	    GUIManager guiManager = new GUIManager(config);
+
 			Scene scene = guiManager.setupGUI(piConnection);
 			stage.setTitle("PI Controller");
 			stage.setScene(scene);

@@ -14,13 +14,16 @@ import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LocalDeviceRepresentation {
 
+	final static Logger logger = LoggerFactory.getLogger(LocalDeviceRepresentation.class);
+
 	public long lastTimeSeen;
 	public final String hostname;
-    public final String address;
+  public final String address;
 	private int id;
 	private InetSocketAddress socket;
 	private final OSCServer server;
@@ -33,19 +36,19 @@ public class LocalDeviceRepresentation {
 
 	private List<StatusUpdateListener> statusUpdateListenerList;
 
-	
+
 	private String status = "Status unknown";
-	
+
 	public LocalDeviceRepresentation(String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
 
-		this.hostname   = hostname;
-        this.address    = addr;
-		this.socket     = new InetSocketAddress(addr, config.getControlToDevicePort());
-		this.id         = id;
-		this.server     = server;
-		this.config     = config;
-		groups          = new boolean[4];
-		statusUpdateListenerList = new ArrayList<>();
+		this.hostname   					= hostname;
+    this.address    					= addr;
+		this.socket     					= new InetSocketAddress(addr, config.getControlToDevicePort());
+		this.id         					= id;
+		this.server     					= server;
+		this.config     					= config;
+		groups          					= new boolean[4];
+		statusUpdateListenerList  = new ArrayList<>();
 	}
 
 	public void setID(int id) {
@@ -67,10 +70,9 @@ public class LocalDeviceRepresentation {
 		try {
 			server.send(msg, socket);
 		} catch (UnresolvedAddressException e) {
-			System.out.println("Unable to send to Device: " + hostname);
-			//e.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
+			logger.error("Unable to send to Device: {}", hostname, e);
+		} catch (IOException e) {
+			logger.error("Error sending to device!", e);
 		}
 	}
 

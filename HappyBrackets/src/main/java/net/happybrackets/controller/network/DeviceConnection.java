@@ -14,17 +14,21 @@ import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DeviceConnection {
-	
+
+	final static Logger logger = LoggerFactory.getLogger(DeviceConnection.class);
 	public static final boolean verbose = false;
-	
+
 	private OSCServer oscServer;
 	private ObservableList<LocalDeviceRepresentation> theDevices;
 	private Map<String, LocalDeviceRepresentation> devicesByHostname;
 	private Map<String, Integer> knownDevices;
 	private int newID = -1;
 	private ControllerConfig config;
-	
+
 	public DeviceConnection(ControllerConfig config) {
 		this.config = config;
 		theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
@@ -39,14 +43,14 @@ public class DeviceConnection {
 			}
 			s.close();
 		} catch (FileNotFoundException e1) {
-			System.out.println("Unable to read '" + config.getKnownDevicesFile() + "'");
+			logger.error("Unable to read '{}'", config.getKnownDevicesFile());
 		}
 		// create the OSC Server
 		try {
 			oscServer = OSCServer.newUsing(OSCServer.UDP, config.getStatusFromDevicePort());
 			oscServer.start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error setting up new OSCServer!", e);
 		}
 		// set up to listen for basic messages
 		oscServer.addOSCListener(new OSCListener() {
@@ -63,7 +67,7 @@ public class DeviceConnection {
 					try {
 						Thread.sleep(config.getAliveInterval());
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Poll interval interupted for alive devices checkup", e);
 					}
 				}
 			}
@@ -88,7 +92,7 @@ public class DeviceConnection {
 			new Thread() {
 				public void run() {
 					sendToDevice(device, "/device/set_id", device.getID());
-					System.out.println("Assigning id " + device.getID() + " to " + device.hostname);
+					logger.info("Assigning id {} to {}", device.getID(), device.hostname);
 				}
 			}.start();
 		}
@@ -100,7 +104,7 @@ public class DeviceConnection {
 	public Map<String, Integer> getKnownDevices() {
 		return Collections.unmodifiableMap(knownDevices);
 	}
-	
+
 	public ObservableList<LocalDeviceRepresentation> getDevices() {
 		return theDevices;
 	}
@@ -120,7 +124,7 @@ public class DeviceConnection {
         }
         return addresses;
     }
-	
+
 	private void incomingMessage(OSCMessage msg) {
 		if(msg.getName().equals("/device/alive")) {
 			String deviceName       = (String)msg.getArg(0);
@@ -155,7 +159,7 @@ public class DeviceConnection {
 				new Thread() {
 					public void run() {
 						sendToDevice(deviceID, "/device/set_id", deviceID.getID());
-						System.out.println("Assigning id " + deviceID.getID() + " to " + deviceID.hostname);
+						logger.info("Assigning id {} to {}", deviceID.getID(), deviceID.hostname);
 					}
 				}.start();
 			}
@@ -169,23 +173,23 @@ public class DeviceConnection {
 			}
 		}
 	}
-	
+
 	public void sendToDevice(LocalDeviceRepresentation device, String msgName, Object... args) {
 		device.send(msgName, args);
 	}
-	
+
 	public void sendToAllDevices(String msgName, Object... args) {
 		for(LocalDeviceRepresentation device : devicesByHostname.values()) {
 			sendToDevice(device, msgName, args);
 		}
 	}
-	
+
 	public void sendToDeviceList(String[] list, String msgName, Object... args) {
 		for(String deviceName : list) {
 			sendToDevice(devicesByHostname.get(deviceName), msgName, args);
 		}
 	}
-	
+
 	public void sendToDeviceGroup(int group, String msgName, Object... args) {
 		//send to group - group is defined by each LocalDeviceRep having group[i] flag
 		for(LocalDeviceRepresentation device : theDevices) {
@@ -193,7 +197,7 @@ public class DeviceConnection {
 				sendToDevice(device, msgName, args);
 			}
 		}
-		
+
 	}
 
 	private void checkDeviceAliveness() {
@@ -215,15 +219,15 @@ public class DeviceConnection {
 		        public void run() {
 					theDevices.remove(devicesByHostname.get(deviceName));
 					devicesByHostname.remove(deviceName);
-					System.out.println("Removed Device from list: " + deviceName);
+					logger.info("Removed Device from list: {}", deviceName);
 		        }
 		   });
 		}
 	}
-	
-	
+
+
 	//standard messages to Device
-	
+
 	public void deviceReboot() {
 		sendToAllDevices("/device/reboot");
 	}
@@ -231,18 +235,18 @@ public class DeviceConnection {
 	public void deviceShutdown() {
 		sendToAllDevices("/device/shutdown");
 	}
-	
+
 	public void deviceSync() {
 		long timeNow = System.currentTimeMillis();
 		long timeToSync = timeNow + 5000;
 		String timeAsString = "" + timeToSync;
 		sendToAllDevices("/device/sync", timeAsString);
 	}
-	
+
 	public void deviceGain(float dest, float timeMS) {
 		sendToAllDevices("/device/gain", dest, timeMS);
 	}
-	
+
 	public void deviceReset() {
 		sendToAllDevices("/device/reset");
 	}
@@ -264,7 +268,7 @@ public class DeviceConnection {
 	}
 
 	int virtualDeviceCount = 1;
-	
+
 	public void createTestDevice() {
 		String name     = "Virtual Test Device #" + virtualDeviceCount++;
         String address  = "127.0.0.1";
