@@ -1,16 +1,11 @@
 package net.happybrackets.core;
 
 import de.sciss.net.*;
-import net.happybrackets.core.config.EnvironmentConfig;
-import net.happybrackets.core.Device;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.channels.DatagramChannel;
-import java.nio.channels.MembershipKey;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,88 +18,102 @@ import org.slf4j.LoggerFactory;
 public class BroadcastManager {
 
     final static Logger logger = LoggerFactory.getLogger(BroadcastManager.class);
-    EnvironmentConfig config;
-    List<OSCTransmitter> transmitters;
-    List<OSCReceiver> receivers;
-    List<OSCListener> listeners;
+
+    String                                        address;
+    int                                           port;
+    List<NetworkInterfacePair<OSCTransmitter>>    transmitters;
+    List<NetworkInterfacePair<OSCReceiver>>       receivers;
+    List<OSCListener>                             listeners;
+    List<OnListener>                              interfaceListeners; //listeners who care what interface the message arrived at.
+    List<NetworkInterface>                        netInterfaces;
 
     /**
      * Create a new BroadcastManager.
      *
-     * @param config must be a reference to an environment config class implimentation
+     * @param address should be a multicast address.
      */
-    public BroadcastManager(EnvironmentConfig config) {
-        this.config = config;
-        initBroadcaster(config);
+    public BroadcastManager(String address, int port) {
+        this.address = address;
+        this.port    = port;
+        initBroadcaster(address, port);
     }
 
-    private void initBroadcaster(EnvironmentConfig config) {
-        listeners = new ArrayList<OSCListener>();
-        receivers = new ArrayList<OSCReceiver>();
-        transmitters = new ArrayList<OSCTransmitter>();
-        MessageAggregater messageAggregater = new MessageAggregater();
+    /**
+     * Initialises this BroadcastManager instance.
+     */
+    private void initBroadcaster(String address, int port) {
+        listeners               = new ArrayList<>();
+        interfaceListeners      = new ArrayList<>();
+        receivers               = new ArrayList<>();
+        transmitters            = new ArrayList<>();
+        netInterfaces           = Device.viableInterfaces();
 
-        try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while ( interfaces.hasMoreElements() ) {
-                NetworkInterface netInterface = interfaces.nextElement();
+        netInterfaces.forEach( ni -> {
+            try {
+                InetAddress group = InetAddress.getByName(address);
+                //set up a listener and receiver for our broadcast address on this interface
+                addListener(ni, group, port);
+                addSender(ni, group, port);
 
-                if ( Device.isViableNetworkInterface(netInterface) ) {
-                    try {
-                        //set up listener
-                        setupListener(netInterface, messageAggregater);
-                        //setup sender
-                        InetSocketAddress mcSocketAddr = new InetSocketAddress(config.getMulticastAddr(), config.getBroadcastPort());
-                        InetAddress group = InetAddress.getByName(config.getMulticastAddr());
-                        DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
-                                .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-                                .bind(new InetSocketAddress(config.getBroadcastPort()))
-                                .setOption(StandardSocketOptions.IP_MULTICAST_IF, netInterface);
-                        dc.join(group, netInterface);
-                        OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
-                        transmitter.setTarget(mcSocketAddr);
-                        transmitters.add(transmitter);
-                        //TODO how do we set time to live?
-                        logger.debug("Broadcasting on interface: {}", netInterface.getName());
-                    } catch (IOException e) {
-                        logger.error("BroadcastManager encountered an IO exception when creating a listener socket!", e);
-                    }
-                }
-                else {
-                    logger.debug("Skipped interface: {}", netInterface.getName());
-                }
+                logger.debug("Broadcasting on interface: {}", ni.getName());
+            } catch (IOException e) {
+                logger.error("BroadcastManager encountered an IO exception when creating a listener socket!", e);
             }
-        } catch (SocketException e) {
-            logger.error("Error while setting up BroadcastManager!", e);
-        }
+        });
+
     }
 
-    private void setupListener(NetworkInterface ni, MessageAggregater listener) throws IOException {
-        InetAddress group = InetAddress.getByName(config.getMulticastAddr());
+    /**
+     * Adds a broadcast listener to the specified interface.
+     */
+    private void addListener(NetworkInterface ni, InetAddress group, int port) throws IOException {
         DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
                 .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-                .bind(new InetSocketAddress(config.getBroadcastPort()))
+                .bind(new InetSocketAddress(port))
                 .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
         //MembershipKey key = dc.join(group, ni);
         dc.join(group, ni);
+
         OSCReceiver receiver = OSCReceiver.newUsing(dc);
         receiver.startListening();
-        receiver.addOSCListener(new MessageAggregater());
-        receivers.add(receiver);
+        receiver.addOSCListener(new MessageAggregator(ni));
+
+        receivers.add(new NetworkInterfacePair<OSCReceiver>(ni, receiver));
     }
+
+    /**
+     * Adds a broadcast sender for this group on this interface
+     */
+    private void addSender(NetworkInterface ni, InetAddress group, int port) throws IOException {
+        InetSocketAddress mcSocketAddr = new InetSocketAddress(group.getHostAddress(), port);
+
+        DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
+                .setOption(StandardSocketOptions.SO_REUSEADDR, true)
+                .bind(new InetSocketAddress(port))
+                .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
+        dc.join(group, ni);
+
+        OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
+        transmitter.setTarget(mcSocketAddr);
+        transmitters.add(new NetworkInterfacePair<OSCTransmitter>(ni, transmitter));
+    }
+
 
     /**
      * Calls dispose on all receivers (OSCReceiver) and transmitters (OSCTransmitter).
      */
     public void dispose() {
-        receivers.forEach(r -> r.dispose());
-        transmitters.forEach(t -> t.dispose());
+        receivers.forEach(r -> r.value.dispose());
+        transmitters.forEach(t -> t.value.dispose());
     }
 
+    /**
+     * Rebuilds this BroadcastManager. Effectively deletes this instance and creates a new BroadcastManager.
+     */
     public void refreshBroadcaster() {
         // cleanup:
         dispose();
-        initBroadcaster(config);
+        initBroadcaster(address, port);
     }
 
     /**
@@ -115,7 +124,7 @@ public class BroadcastManager {
      */
     public void broadcast(String name, Object... args) {
         OSCMessage msg = new OSCMessage(name, args);
-        for (OSCTransmitter transmitter : transmitters) {
+        transmitters.stream().map(pair -> pair.value).forEach( transmitter -> {
           try {
               transmitter.send(msg);
           } catch (IOException e) {
@@ -123,7 +132,21 @@ public class BroadcastManager {
               transmitters.remove(transmitter);
               transmitter.dispose();
           }
-        }
+        });
+    }
+
+    /**
+     * Execute onTransmitter.cb(NetworkInterface, OSCTransmitter) for all transmitters.
+     * @param onTransmitter
+     */
+    public void forAllTransmitters(OnTransmitter onTransmitter) {
+        transmitters.forEach(pair -> {
+            try {
+                onTransmitter.cb(pair.networkInterface, pair.value);
+            } catch (Exception e) {
+                logger.error("Error executing call back on transmitter for interface {}", pair.networkInterface.getDisplayName(), e);
+            }
+        });
     }
 
     /**
@@ -134,6 +157,13 @@ public class BroadcastManager {
     public void addBroadcastListener(OSCListener bl) {
         listeners.add(bl);
         // receiver.addOSCListener(bl);
+    }
+
+    /**
+     * Add a new interface aware listener
+     */
+    public void addOnMessage(OnListener onListener) {
+        interfaceListeners.add(onListener);
     }
 
     /**
@@ -156,13 +186,52 @@ public class BroadcastManager {
         listeners.clear();
     }
 
+    private class NetworkInterfacePair<T> {
+        T value;
+        NetworkInterface networkInterface;
+
+        public NetworkInterfacePair(NetworkInterface networkInterface, T value) {
+            this.value = value;
+            this.networkInterface = networkInterface;
+        }
+    }
+
     /**
-     * An OSCLisenter for aggregting various broadcast streams for out listeners
+     * An OSCListener for aggregating various broadcast streams for out listeners
+     * Enable trace level logging for detailed OSC events
      */
-    private class MessageAggregater implements OSCListener {
-      public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-        listeners.forEach(l -> l.messageReceived(msg, sender, time));
-      }
+    private class MessageAggregator implements OSCListener {
+        NetworkInterface networkInterface;
+
+        public MessageAggregator(NetworkInterface networkInterface) {
+            this.networkInterface = networkInterface;
+        }
+
+        public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
+            if (logger.isTraceEnabled()) {
+                String args = " ";
+                for(int i = 0; i < msg.getArgCount(); i++) {
+                    args += msg.getArg(i) + " ";
+                }
+                logger.trace("Received broadcast message {} with {} args [{}] from {}", new Object[]{msg.getName(), msg.getArgCount(), args, sender.toString()});
+            }
+            listeners.forEach(l -> l.messageReceived(msg, sender, time));
+            interfaceListeners.forEach(l -> l.cb(networkInterface, msg, sender, time));
+        }
+    }
+
+    /**
+     * Call back interface for sending to all interfaces where the specific interface matters
+     */
+    public interface OnTransmitter {
+        void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException;
+    }
+
+    /**
+     * Call back interface for listening to all interfaces where the specific interface matters
+     */
+    public interface OnListener {
+        void cb(NetworkInterface ni, OSCMessage msg, SocketAddress sender, long time);
     }
 
 }

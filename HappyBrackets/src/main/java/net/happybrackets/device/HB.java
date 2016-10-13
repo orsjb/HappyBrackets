@@ -63,7 +63,7 @@ public class HB {
 
 	// network comms stuff
 	public final NetworkCommunication controller;
-	public final BroadcastManager broadcast;
+	public static BroadcastManager broadcast = new BroadcastManager(DeviceConfig.getInstance().getMulticastAddr(), DeviceConfig.getInstance().getBroadcastPort());
 	public final Synchronizer synch;
 
 	/**
@@ -73,7 +73,6 @@ public class HB {
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
      */
 	public HB(AudioContext _ac) throws IOException {
-		Device.getInstance();	//touch device at beginning, guarantees it loads
 		ac = _ac;
 		// default audio setup (note we don't start the audio context yet)
 		masterGainEnv = new Envelope(ac, 0);
@@ -94,7 +93,6 @@ public class HB {
 		System.out.print(".");
 		synch = Synchronizer.getInstance();
 		System.out.print(".");
-		broadcast = new BroadcastManager(DeviceConfig.getInstance());
 		DeviceConfig.getInstance().listenForController(broadcast);
 		System.out.print(".");
 		// start listening for code

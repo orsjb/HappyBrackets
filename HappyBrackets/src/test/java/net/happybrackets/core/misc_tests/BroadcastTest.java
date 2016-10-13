@@ -20,9 +20,9 @@ public class BroadcastTest {
 	@Before
 	public void setUp() throws Exception {
 		config            				= new ControllerConfig();
-		config										= config.load("src/test/config/test-controller-config.json", config);
-    broadcastManager  				= new BroadcastManager(config);
-		receivedMulticastMessage 	= false;
+		config							= config.load("src/test/config/test-controller-config.json", config);
+		broadcastManager  				= new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+		receivedMulticastMessage 		= false;
 	}
 
 	@After

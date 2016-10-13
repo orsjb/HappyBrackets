@@ -1,5 +1,8 @@
 package net.happybrackets.core;
 
+import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCTransmitter;
 import net.happybrackets.core.config.LoadableConfig;
 
 import java.io.IOException;
@@ -26,15 +29,15 @@ public class Synchronizer {
 	 */
 
 	final static Logger logger = LoggerFactory.getLogger(Synchronizer.class);
+    final static String oscPath = "/hb/synchonizer";
+
+    private BroadcastManager broadcast;
 
 	private String myMAC; //how to uniquely identify this machine
-	private DatagramSocket broadcastSocket;
 	private long timeCorrection = 0;			//add this to current time to getInstance the REAL current time
 	private long stableTimeCorrection = 0;
 	private long lastTick;
 	private int stabilityCount = 0;
-
-	private boolean ableToUseMulticast = false;
 
 	private boolean on = true;
 	private boolean verbose = false;
@@ -58,21 +61,16 @@ public class Synchronizer {
 	private Synchronizer() {
 		//basics
 		log = new Hashtable<Long, Map<String, long[]>>();
+        broadcast = new BroadcastManager(LoadableConfig.getInstance().getMulticastAddr(), LoadableConfig.getInstance().getClockSynchPort());
 		try {
-			//basic init getInstance my MAC address
-			myMAC = Device.getInstance().myMAC;
 			//start listening
 			setupListener();
-			if(ableToUseMulticast) {
-				logger.info("Synchronizer is listening.");
-				//setup sender	//TODO Ollie - encountered problem at this line... seems that the receiver is occupying this socket, I've removed the port because we don't need this until sending, I believe.
-				broadcastSocket = new DatagramSocket();
-				//start sending
-				startSending();
-				logger.info("Synchronizer is sending synch pulses.");
-				//display clock (optional)
-				//displayClock();
-			}
+            logger.info("Synchronizer is listening.");
+            //start sending
+            startSending();
+            logger.info("Synchronizer is sending synch pulses.");
+            //display clock (optional)
+            //displayClock();
 		} catch(Exception e) {
 			logger.error("Unable to setup Synchronizer!", e);
 		}
@@ -111,34 +109,45 @@ public class Synchronizer {
 	}
 
 	private void setupListener() throws IOException {
-		final MulticastSocket s = new MulticastSocket(LoadableConfig.getInstance().getClockSynchPort());
-		try {
-			s.setNetworkInterface(NetworkInterface.getByName(Device.getInstance().preferredInterface));
-			s.joinGroup(InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()));
-			ableToUseMulticast = true;
-		} catch(SocketException e) {
-			logger.error("Unable to start listener!", e);
-			logger.warn("Synchronizer can't use multicast. No synch functionality available in this session.");
-		}
-		//start a listener thread
-		Thread t = new Thread() {
-			public void run() {
-				while(on) {
-					try {
-						byte[] buf = new byte[512];
-						DatagramPacket pack = new DatagramPacket(buf, buf.length);
-						s.receive(pack);
-						String response = new String(buf, "US-ASCII");
-						logger.trace("Received data: {} (total string length={})", response, pack.getLength());
-						messageReceived(response);
-					} catch (IOException e) {
-						logger.error("Error in Synchronizer listener thread!", e);
-					}
-				}
-				s.close();
-			}
-		};
-		t.start();
+        broadcast.addOnMessage(new BroadcastManager.OnListener(){
+            @Override
+            public void cb(NetworkInterface ni, OSCMessage msg, SocketAddress sender, long time) {
+                String myMAC = Device.selectMAC(ni);
+                String[] parts = ((String) msg.getArg(0)).split("[ ]");
+
+                for(int i = 0; i < parts.length; i++) {
+                    parts[i] = parts[i].trim();
+                }
+
+                if(parts[0].equals("s")) {
+                    //an original send message
+                    //respond if you were not the sender
+                    if(!parts[1].equals(myMAC)) {
+                        broadcast.broadcast(oscPath, "r " + parts[1] + " " + parts[2] + " " + myMAC + " " + stableTimeNow());
+                    }
+                }
+                else if(parts[0].equals("r")) {
+                    //a response message
+                    //respond only if you WERE the sender
+                    if(parts[1].equals(myMAC)) {
+                        //find out how long the return trip was
+                        long timeOriginallySent = Long.parseLong(parts[2]);
+                        String otherMAC = parts[3];
+                        long timeReturnSent = Long.parseLong(parts[4]);
+                        long currentTime = stableTimeNow();
+                        log(timeOriginallySent, otherMAC, timeReturnSent, currentTime);
+
+                        if(verbose) {
+                            long returnTripTime = currentTime - timeOriginallySent;
+                            long timeAheadOfOther = (currentTime - (returnTripTime / 2)) - timeReturnSent;	//+ve if this unit is ahead of other unit
+                            System.out.println("Return trip from " + myMAC + " to " + parts[3] + " took " + returnTripTime + "ms");
+                            System.out.println("This machine (" + myMAC + ") is " + (timeAheadOfOther > 0 ? "ahead of" : "behind") + " " + otherMAC + " by " + Math.abs(timeAheadOfOther) + "ms");
+                        }
+                    }
+                }
+            }
+        });
+
 	}
 
 	public void doAtTime(final Runnable r, long time) {
@@ -186,9 +195,22 @@ public class Synchronizer {
 	private void startSending() {
 		Thread t = new Thread() {
 			public void run() {
+                BroadcastManager.OnTransmitter synch = new BroadcastManager.OnTransmitter() {
+                    @Override
+                    public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
+                        String myMac = Device.selectMAC(ni);
+                        transmitter.send(
+                                new OSCMessage(
+                                        oscPath,
+                                        new Object[] { "s " + myMac + " " + stableTimeNow() + " " + myMac + " " + stableTimeNow() }
+                                )
+                        );
+                    }
+                };
 				while(on) {
-					broadcast("s " + myMAC + " " + stableTimeNow() + " " + myMAC + " " + stableTimeNow());
-					//the last two components are just to ensure that send and return messages are same length to avoid network delays
+
+                    broadcast.forAllTransmitters(synch);
+
 					try {
 						Thread.sleep(500 + (int)(100 * Math.random()));	//randomise send time to break network send patterns
 					} catch (InterruptedException e) {
@@ -209,7 +231,7 @@ public class Synchronizer {
 
 	public void close() {
 		on = false;
-		broadcastSocket.close();
+		broadcast.dispose();
 	}
 
 	/**
@@ -259,36 +281,36 @@ public class Synchronizer {
 		}
 	}
 
-	public void messageReceived(String msg) {
-		String[] parts = msg.split("[ ]");
-		for(int i = 0; i < parts.length; i++) {
-			parts[i] = parts[i].trim();
-		}
-		if(parts[0].equals("s")) {
-			//an original send message
-			//respond if you were not the sender
-			if(!parts[1].equals(myMAC)) {
-				broadcast("r " + parts[1] + " " + parts[2] + " " + myMAC + " " + stableTimeNow());
-			}
-		} else if(parts[0].equals("r")) {
-			//a response message
-			//respond only if you WERE the sender
-			if(parts[1].equals(myMAC)) {
-				//find out how long the return trip was
-				long timeOriginallySent = Long.parseLong(parts[2]);
-				String otherMAC = parts[3];
-				long timeReturnSent = Long.parseLong(parts[4]);
-				long currentTime = stableTimeNow();
-				log(timeOriginallySent, otherMAC, timeReturnSent, currentTime);
-				if(verbose) {
-					long returnTripTime = currentTime - timeOriginallySent;
-					long timeAheadOfOther = (currentTime - (returnTripTime / 2)) - timeReturnSent;	//+ve if this unit is ahead of other unit
-					System.out.println("Return trip from " + myMAC + " to " + parts[3] + " took " + returnTripTime + "ms");
-					System.out.println("This machine (" + myMAC + ") is " + (timeAheadOfOther > 0 ? "ahead of" : "behind") + " " + otherMAC + " by " + Math.abs(timeAheadOfOther) + "ms");
-				}
-			}
-		}
-	}
+//	public void messageReceived(String msg) {
+//		String[] parts = msg.split("[ ]");
+//		for(int i = 0; i < parts.length; i++) {
+//			parts[i] = parts[i].trim();
+//		}
+//		if(parts[0].equals("s")) {
+//			//an original send message
+//			//respond if you were not the sender
+//			if(!parts[1].equals(myMAC)) {
+//				broadcast("r " + parts[1] + " " + parts[2] + " " + myMAC + " " + stableTimeNow());
+//			}
+//		} else if(parts[0].equals("r")) {
+//			//a response message
+//			//respond only if you WERE the sender
+//			if(parts[1].equals(myMAC)) {
+//				//find out how long the return trip was
+//				long timeOriginallySent = Long.parseLong(parts[2]);
+//				String otherMAC = parts[3];
+//				long timeReturnSent = Long.parseLong(parts[4]);
+//				long currentTime = stableTimeNow();
+//				log(timeOriginallySent, otherMAC, timeReturnSent, currentTime);
+//				if(verbose) {
+//					long returnTripTime = currentTime - timeOriginallySent;
+//					long timeAheadOfOther = (currentTime - (returnTripTime / 2)) - timeReturnSent;	//+ve if this unit is ahead of other unit
+//					System.out.println("Return trip from " + myMAC + " to " + parts[3] + " took " + returnTripTime + "ms");
+//					System.out.println("This machine (" + myMAC + ") is " + (timeAheadOfOther > 0 ? "ahead of" : "behind") + " " + otherMAC + " by " + Math.abs(timeAheadOfOther) + "ms");
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 *
@@ -304,37 +326,41 @@ public class Synchronizer {
 		log.get(timeOriginallySent).put(otherMAC, new long[] {timeReturnSent, currentTime});
 	}
 
-	/**
-	 * Send String s over the multicast group.
-	 *
-	 * @param s the message to send.
-	 */
-	public void broadcast(String s) {
-		byte buf[] = null;
-		try {
-			buf = s.getBytes("US-ASCII");
-		} catch (UnsupportedEncodingException e) {
-			logger.error("Unable to encode string {} with current encoding!", s, e);
-		}
-		logger.trace("Sending message: {} (length in bytes = {})", s, buf.length);
-		// Create a DatagramPacket
-		DatagramPacket pack = null;
-		try {
-			pack = new DatagramPacket(
-				buf,
-				buf.length,
-				InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()),
-					LoadableConfig.getInstance().getClockSynchPort()
-			);
-		} catch (UnknownHostException e) {
-			logger.error("Unable to send Synchronizer message to host!", e);
-		}
-		try {
-			broadcastSocket.send(pack);
-		} catch (IOException e) {
-			logger.error("Error sending Synchronizer message!", e);
-		}
-	}
+//	/**
+//	 * Send String s over the multicast group.
+//	 *
+//	 * @param s the message to send.
+//	 */
+//	public void broadcast(String s) {
+//		byte buf[] = null;
+//		try {
+//			buf = s.getBytes("US-ASCII");
+//		} catch (UnsupportedEncodingException e) {
+//			logger.error("Unable to encode string {} with current encoding!", s, e);
+//		}
+//		logger.trace("Sending message: {} (length in bytes = {})", s, buf.length);
+//		// Create a DatagramPacket
+//		DatagramPacket pack = null;
+//		try {
+//			pack = new DatagramPacket(
+//				buf,
+//				buf.length,
+//				InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()),
+//					LoadableConfig.getInstance().getClockSynchPort()
+//			);
+//		} catch (UnknownHostException e) {
+//			logger.error("Unable to send Synchronizer message to host!", e);
+//		}
+//		try {
+//			broadcastSocket.send(pack);
+//		} catch (IOException e) {
+//			logger.error("Error sending Synchronizer message!", e);
+//		}
+//	}
+
+    public void broadcast(String msg) {
+        broadcast.broadcast(oscPath, msg);
+    }
 
 	public static void main(String[] args) {
 		Synchronizer s = getInstance();

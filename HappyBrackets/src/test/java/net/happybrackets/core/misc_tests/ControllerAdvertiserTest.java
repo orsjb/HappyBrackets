@@ -17,7 +17,7 @@ public class ControllerAdvertiserTest {
 	public void setUp() throws Exception {
 		env 				= new ControllerConfig();
 		env 				= env.load("src/test/config/test-controller-config.json", env);
-		advertiser 	= new ControllerAdvertiser(broadcastManager, env.getMyHostName());
+		advertiser 			= new ControllerAdvertiser(broadcastManager);
 		advertiser.start();
 	}
 

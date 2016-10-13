@@ -9,22 +9,22 @@ import java.net.UnknownHostException;
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
 
 	private int polyLimit = 4;
-	private DeviceController controller = new DeviceController("", "");
+	private DeviceController controller = new DeviceController("", "", 0);
 
 	public String getControllerHostname() {
 		return controller.getHostname();
 	}
 
-  public String getControllerAddress() {
-      return controller.getAddress();
-  }
+	public String getControllerAddress() {
+	  return controller.getAddress();
+	}
 
-  public void listenForController(BroadcastManager broadcastManager) {
+	public void listenForController(BroadcastManager broadcastManager) {
 		ControllerDiscoverer.super.listenForController(controller, broadcastManager);
-  }
+	}
 
 	public int getMyId() {
-		return -1;
+		return controller.getDeviceId();
 	}
 
 	public int getPolyLimit() {

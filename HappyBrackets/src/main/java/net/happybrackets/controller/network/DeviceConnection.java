@@ -14,6 +14,7 @@ import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
+import net.happybrackets.core.BroadcastManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ public class DeviceConnection {
 	private int newID = -1;
 	private ControllerConfig config;
 
-	public DeviceConnection(ControllerConfig config) {
+	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
 		this.config = config;
 		theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
 		devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
@@ -45,6 +46,13 @@ public class DeviceConnection {
 		} catch (FileNotFoundException e1) {
 			logger.error("Unable to read '{}'", config.getKnownDevicesFile());
 		}
+
+		broadcast.addBroadcastListener(new OSCListener() {
+			@Override
+			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
+				incomingMessage(msg);
+			}
+		});
 		// create the OSC Server
 		try {
 			oscServer = OSCServer.newUsing(OSCServer.UDP, config.getStatusFromDevicePort());
