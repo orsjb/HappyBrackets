@@ -445,9 +445,9 @@ public class IntelliJPluginGUIManager {
 			@Override
 			public void handle(MouseEvent e) {
 				if (currentCompositionSelection != null) {
+					//intelliJ specific code
+					String pathToSend = compositionsPath + "/" + currentCompositionSelection;
 					try {
-						//intelliJ specific code
-						String pathToSend = compositionsPath + "/" + currentCompositionSelection;
 						SendToDevice.send(pathToSend, deviceConnection.getDeviceHostnames());
 					} catch (Exception ex) {
 						logger.error("Unable to send composition: '{}'!", pathToSend, ex);
