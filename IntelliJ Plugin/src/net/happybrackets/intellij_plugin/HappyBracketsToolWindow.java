@@ -13,6 +13,7 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.intellij.util.PathUtil;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -77,36 +78,45 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
             logger.info("Loading plugin settings from " + IntelliJPluginSettings.getDefaultSettingsLocation());
             settings = IntelliJPluginSettings.load();
+            // Save settings on exit.
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run() {
+                    settings.save();
+                }
+            });
 
             //TODO this is still buggy. We are doing this statically meaning it works only for the first loaded project.
+            //all of the below concerns the set up of singletons
+
             String configFilePath = settings.getString("controllerConfigPath");
             if (configFilePath == null) {
                 configFilePath = getDefaultControllerConfigPath();
                 settings.set("controllerConfigPath", configFilePath);
             }
 
-            //String configFilePath = projectDir + "/config/controller-config.json";
-            if (new File(configFilePath).exists()) logger.debug("Found config file: {}", configFilePath);
-            //all of the below concerns the set up of singletons
+            if (new File(configFilePath).exists()) {
+                logger.debug("Found config file: {}", configFilePath);
 
-            try {
-                setConfigFromFile(configFilePath);
-
-                // Save settings on exit.
-                Runtime.getRuntime().addShutdownHook(new Thread()  {
-                    public void run() {
-                        settings.save();
-                    }
-                });
+                try {
+                    setConfigFromFile(configFilePath);
+                } catch (IOException e) {
+                    logger.error("Could not read the configuration file at {}", configFilePath);
+                    config = new IntelliJControllerConfig();
+                }
             }
-            catch (IOException e) {
-                logger.error("Could not read the configuration file at {}", configFilePath);
-                config = new IntelliJControllerConfig();
+            else {
+                logger.debug("Loading config from plugin jar.");
+                //String jarPath = PathUtil.getJarPathForClass(this.getClass());
+                InputStream input = getClass().getResourceAsStream("/config/controller-config.json");
+
+                String configJSON = new Scanner(input).useDelimiter("\\Z").next();
+                logger.info("Loaded config: {}", configJSON);
+                setConfig(configJSON, getDefaultConfigFolder());
             }
 
             //test code: you can create a test pi if you don't have a real pi...
-    	    deviceConnection.createTestDevice();
-    	    deviceConnection.createTestDevice();
+    	    //deviceConnection.createTestDevice();
+    	    //deviceConnection.createTestDevice();
             //using synchronizer is optional, TODO: switch to control this, leave it on for now
             synchronizer = Synchronizer.getInstance();
             staticSetup = true;
@@ -245,11 +255,26 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         ).getPath().getAbsolutePath().toString();
     }
 
+    /**
+     * Returns the path to the default configuration folder, where files as such as controller-config.json
+     * will typically reside.
+     */
+    public static String getDefaultConfigFolder() {
+        String pluginLocation = getPluginLocation();
+        // IntelliJ doesn't provide a way of determining whether we're running in sandbox, or a nice way of including,
+        // for example, the controller-config.json file outside of the jar file for the non-sandbox version.
+        // So we just use the root plugin location if we don't find the /classes/config folder.
+        if ((new File(pluginLocation + "/classes/config")).exists()) {
+            return pluginLocation + "/classes/config";
+        }
+        return pluginLocation;
+    }
+
     public static String getDefaultControllerConfigPath() {
-        return getPluginLocation() + "/classes/config/controller_config.json";
+        return getDefaultConfigFolder() + "/controller-config.json";
     }
 
     public static String getDefaultKnownDevicesPath() {
-        return getPluginLocation() + "/classes/config/known_devices";
+        return getDefaultConfigFolder() + "/known_devices";
     }
 }
