@@ -1,12 +1,10 @@
 package net.happybrackets.core;
 
-import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCTransmitter;
 import net.happybrackets.core.config.LoadableConfig;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.util.Date;
 import java.util.Hashtable;
@@ -33,7 +31,7 @@ public class Synchronizer {
 
     private BroadcastManager broadcast;
 
-	private String myMAC; //how to uniquely identify this machine
+	private String myMAC = "0"; //how to uniquely identify this machine
 	private long timeCorrection = 0;			//add this to current time to getInstance the REAL current time
 	private long stableTimeCorrection = 0;
 	private long lastTick;
