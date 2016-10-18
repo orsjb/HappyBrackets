@@ -236,7 +236,7 @@ public class Device {
      * @return host name as String
      */
     public static String selectHostname(NetworkInterface ni) {
-        return ni.getInetAddresses().nextElement().getCanonicalHostName();
+        return removeLinkLocalSuffix(ni.getInetAddresses().nextElement().getCanonicalHostName());
     }
 
     /**
@@ -245,7 +245,14 @@ public class Device {
      * @return IP address as String
      */
     public static String selectIP(NetworkInterface ni) {
-        return ni.getInetAddresses().nextElement().getHostAddress();
+        return removeLinkLocalSuffix(ni.getInetAddresses().nextElement().getHostAddress());
+    }
+
+    /**
+     * Remove the trailing link local from IPv6 address and allow IPv4 to pass through.
+     */
+    public static String removeLinkLocalSuffix(String address) {
+        return address.split("%")[0];
     }
 
     /**

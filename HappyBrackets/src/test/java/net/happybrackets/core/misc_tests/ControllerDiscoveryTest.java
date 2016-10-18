@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -43,9 +44,9 @@ public class ControllerDiscoveryTest {
 
 	@Test
 	public void testGetControllerHostname() {
-        String controllerHostName = "unset";
+        ArrayList<String> controllerHostName = new ArrayList<>();
         try {
-            controllerHostName = NetworkInterface.getNetworkInterfaces().nextElement().getInetAddresses().nextElement().getHostName();
+            Device.viableInterfaces().forEach( ni -> controllerHostName.add(Device.selectHostname(ni)) );
         } catch (Exception e) {
             System.err.println("Error retrieving host name!");
             e.printStackTrace();
@@ -62,7 +63,12 @@ public class ControllerDiscoveryTest {
 
 		assertTrue( advertiser.isAlive() );
 		assertNotNull( deviceEnv.getControllerHostname() );
-		assertEquals(controllerHostName, deviceEnv.getControllerHostname() );
+        //stop advertising so we do not change mid test
+        advertiser.stop();
+        //check that one of our host names matches
+        assertTrue(
+                controllerHostName.stream().anyMatch(name -> deviceEnv.getControllerHostname().equals(name))
+        );
 		System.out.println("Found controller: " + deviceEnv.getControllerHostname());
 	}
 
