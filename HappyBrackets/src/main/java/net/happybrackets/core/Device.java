@@ -230,7 +230,7 @@ public class Device {
      * @return host name as String
      */
     public static String selectHostname(NetworkInterface ni) {
-        return ni.getInetAddresses().nextElement().getCanonicalHostName();
+        return ni.getInetAddresses().nextElement().getHostName();
     }
 
     /**
