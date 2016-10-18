@@ -1,12 +1,17 @@
 package net.happybrackets.device.config;
 
+import net.happybrackets.core.Synchronizer;
 import net.happybrackets.core.config.LoadableConfig;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.device.network.ControllerDiscoverer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.UnknownHostException;
 
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
+
+    final static Logger logger = LoggerFactory.getLogger(DeviceConfig.class);
 
 	private int polyLimit = 4;
 	private DeviceController controller = new DeviceController("", "", 0);
@@ -20,7 +25,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	}
 
 	public void listenForController(BroadcastManager broadcastManager) {
-		ControllerDiscoverer.super.listenForController(controller, broadcastManager);
+		ControllerDiscoverer.super.listenForController(controller, broadcastManager, logger);
 	}
 
 	public int getMyId() {
