@@ -22,9 +22,8 @@ public class BroadcastTest {
 
 	@Before
 	public void setUp() throws Exception {
-        Date date = new Date();
         System.out.println("BroadcastManager testing setup started at: "
-                + new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(date)
+                + new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
         );
 		config            				= new ControllerConfig();
 		config							= config.load("src/test/config/test-controller-config.json", config);
@@ -41,16 +40,21 @@ public class BroadcastTest {
                 }
             }
         });
-        date = new Date();
         System.out.println("BroadcastManager testing setup finished at: "
-                + new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(date)
+                + new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
         );
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		System.out.println("BroadcastManager testing tearDown started at: "
+						+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
+		);
 		broadcastManager.clearBroadcastListeners();
         broadcastManager.dispose();
+				System.out.println("BroadcastManager testing tearDown finished at: "
+								+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
+				);
 	}
 
 	@Test
@@ -78,6 +82,7 @@ public class BroadcastTest {
 			}
 		}
 
+		System.out.println("Send recieve test ended after: " + (timeOut * 100 * 0.001) + " seconds.");
 		assertTrue( receivedMulticastMessage );
 	}
 
