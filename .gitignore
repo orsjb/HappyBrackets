@@ -10,4 +10,9 @@ build
 workspace.xml
 tasks.xml
 .idea
+
 IntelliJ Plugin/.idea
+IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip
+
+HappyBrackets/HappyBrackets.iml
+HappyBrackets/HappyBrackets.ipr
