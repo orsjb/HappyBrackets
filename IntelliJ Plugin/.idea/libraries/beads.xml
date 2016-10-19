@@ -1,7 +1,19 @@
 <component name="libraryTable">
   <library name="beads">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../beads/build/beads/library/beads.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/beads-io.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/beads.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/jarjar-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/jl1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/jna.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/mp3spi1.9.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/org-jaudiolibs-audioservers-jack.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/org-jaudiolibs-audioservers-javasound.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/org-jaudiolibs-audioservers.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/org-jaudiolibs-jnajack.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/tools.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/tritonus_aos-0.3.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../HappyBrackets/libs/tritonus_share.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
