@@ -111,34 +111,44 @@ public class Synchronizer {
             @Override
             public void cb(NetworkInterface ni, OSCMessage msg, SocketAddress sender, long time) {
                 String myMAC = Device.selectMAC(ni);
-                String[] parts = ((String) msg.getArg(0)).split("[ ]");
+//				String[] parts = new String[msg.getArgCount()];
+//                for (int i = 0; i < msg.getArgCount(); i++) {
+//                    parts[i] = (String) msg.getArg(i);
+//                }
+//                String[] parts = ((String) msg.getArg(0)).split("[ ]");
 
-                for(int i = 0; i < parts.length; i++) {
-                    parts[i] = parts[i].trim();
-                }
+//                for(int i = 0; i < parts.length; i++) {
+//                    parts[i] = parts[i].trim();
+//                }
 
-                if(parts[0].equals("s")) {
+                String action           = (String) msg.getArg(0);
+                String sourceMAC        = (String) msg.getArg(1);
+                long timeOriginallySent = Long.parseLong((String) msg.getArg(2));
+                String otherMAC         = (String) msg.getArg(3);
+                long timeReturnSent     = Long.parseLong((String) msg.getArg(4));
+
+                if(action.equals("s")) {
                     //an original send message
                     //respond if you were not the sender
-                    if(!parts[1].equals(myMAC)) {
-                        broadcast.broadcast(oscPath, "r " + parts[1] + " " + parts[2] + " " + myMAC + " " + stableTimeNow());
+                    if(!sourceMAC.equals(myMAC)) {
+                        broadcast.broadcast(oscPath, "r", sourceMAC, timeOriginallySent, myMAC, stableTimeNow());
                     }
                 }
-                else if(parts[0].equals("r")) {
+                else if(action.equals("r")) {
                     //a response message
                     //respond only if you WERE the sender
-                    if(parts[1].equals(myMAC)) {
+                    if(sourceMAC.equals(myMAC)) {
                         //find out how long the return trip was
-                        long timeOriginallySent = Long.parseLong(parts[2]);
-                        String otherMAC = parts[3];
-                        long timeReturnSent = Long.parseLong(parts[4]);
+//                        long timeOriginallySent = Long.parseLong(timeOriginallySent);
+//                        String otherMAC = otherMAC;
+//                        long timeReturnSent = Long.parseLong(timeReturnSent);
                         long currentTime = stableTimeNow();
                         log(timeOriginallySent, otherMAC, timeReturnSent, currentTime);
 
                         if(verbose) {
                             long returnTripTime = currentTime - timeOriginallySent;
                             long timeAheadOfOther = (currentTime - (returnTripTime / 2)) - timeReturnSent;	//+ve if this unit is ahead of other unit
-                            System.out.println("Return trip from " + myMAC + " to " + parts[3] + " took " + returnTripTime + "ms");
+                            System.out.println("Return trip from " + myMAC + " to " + otherMAC + " took " + returnTripTime + "ms");
                             System.out.println("This machine (" + myMAC + ") is " + (timeAheadOfOther > 0 ? "ahead of" : "behind") + " " + otherMAC + " by " + Math.abs(timeAheadOfOther) + "ms");
                         }
                     }
@@ -193,21 +203,21 @@ public class Synchronizer {
 	private void startSending() {
 		Thread t = new Thread() {
 			public void run() {
-                BroadcastManager.OnTransmitter synch = new BroadcastManager.OnTransmitter() {
+                BroadcastManager.OnTransmitter sync = new BroadcastManager.OnTransmitter() {
                     @Override
                     public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
                         String myMac = Device.selectMAC(ni);
                         transmitter.send(
                                 new OSCMessage(
                                         oscPath,
-                                        new Object[] { "s " + myMac + " " + stableTimeNow() + " " + myMac + " " + stableTimeNow() }
+                                        new Object[] {"s", myMac, ""+stableTimeNow(), myMac, ""+stableTimeNow() }
                                 )
                         );
                     }
                 };
 				while(on) {
 
-                    broadcast.forAllTransmitters(synch);
+                    broadcast.forAllTransmitters(sync);
 
 					try {
 						Thread.sleep(500 + (int)(100 * Math.random()));	//randomise send time to break network send patterns
