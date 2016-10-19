@@ -13,6 +13,7 @@ tasks.xml
 
 IntelliJ Plugin/.idea
 IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip
+IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.iml
 
 HappyBrackets/HappyBrackets.iml
 HappyBrackets/HappyBrackets.ipr
