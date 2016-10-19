@@ -9,3 +9,5 @@ hs_err_pid*
 build
 workspace.xml
 tasks.xml
+.idea
+IntelliJ Plugin/.idea
