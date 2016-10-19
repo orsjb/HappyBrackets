@@ -111,9 +111,20 @@ public class BroadcastManager {
      * Rebuilds this BroadcastManager. Effectively deletes this instance and creates a new BroadcastManager.
      */
     public void refreshBroadcaster() {
+        statefulRefresh(listeners, interfaceListeners);
+    }
+
+    /**
+     * Rebuilds a listener with the state provided.
+     * @param listeners
+     * @param interfaceListeners
+     */
+    private void statefulRefresh(List<OSCListener> listeners, List<OnListener> interfaceListeners) {
         // cleanup:
         dispose();
         initBroadcaster(address, port);
+        listeners.forEach(l -> addBroadcastListener(l));
+        interfaceListeners.forEach(l -> addOnMessage(l));
     }
 
     /**
