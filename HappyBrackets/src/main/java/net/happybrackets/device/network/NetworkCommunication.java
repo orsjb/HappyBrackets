@@ -1,5 +1,8 @@
 package net.happybrackets.device.network;
 
+import de.sciss.net.OSCTransmitter;
+import net.happybrackets.core.BroadcastManager;
+import net.happybrackets.core.Device;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
 import de.sciss.net.OSCListener;
@@ -10,6 +13,7 @@ import net.happybrackets.device.config.LocalConfigManagement;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.util.Collections;
 import java.util.HashSet;
@@ -58,6 +62,8 @@ public class NetworkCommunication {
 //					return;
 //				}
 //				System.out.println("Mesage received: " + msg.getName());
+                logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
+
 				if(msg.getName().equals("/device/set_id")) {
 					myID = (Integer)msg.getArg(0);
 					logger.info("I have been given an ID by the controller: {}", myID);
@@ -112,6 +118,7 @@ public class NetworkCommunication {
 				}
 			}
 		});
+
 		//set up the controller address
 		String hostname = DeviceConfig.getInstance().getControllerHostname();
 		logger.info( "Setting up controller: {}", hostname );
@@ -120,27 +127,35 @@ public class NetworkCommunication {
 				DeviceConfig.getInstance().getStatusFromDevicePort()
 		);
 		logger.debug( "Controller resolved to address: {}", controller );
-		//set up the controller address
-		broadcastAddress = new InetSocketAddress(DeviceConfig.getInstance().getControllerHostname(), DeviceConfig.getInstance().getBroadcastPort());
+
 		//set up an indefinite thread to ping the controller
-		new Thread() {
-			public void run() {
-				while(true) {
-					send(
-							"/device/alive",
+        new Thread() {
+            public void run() {
+            BroadcastManager.OnTransmitter keepAlive = new BroadcastManager.OnTransmitter() {
+                @Override
+                public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
+                    transmitter.send(
+                        new OSCMessage(
+                            "/device/alive",
                             new Object[] {
-                                    DeviceConfig.getInstance().getMyHostName(),
-                                    DeviceConfig.getInstance().getMyAddress(),
+                                    Device.selectHostname(ni),
+                                    Device.selectIP(ni),
                                     Synchronizer.time(),
                                     hb.getStatus()
                             }
+                        )
                     );
-					try {
-						Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
-					} catch (InterruptedException e) {
-						logger.error("/device/alive message send interval interupted!", e);
-					}
-				}
+                }
+            };
+
+            while(true) {
+                hb.broadcast.forAllTransmitters(keepAlive);
+                try {
+                    Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
+                } catch (InterruptedException e) {
+                    logger.error("/device/alive message send interval interupted!", e);
+                }
+            }
 
 			}
 		}.start();

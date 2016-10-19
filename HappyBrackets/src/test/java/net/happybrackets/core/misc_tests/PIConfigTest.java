@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class PIConfigTest {
 	protected DeviceConfig env;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		env = new DeviceConfig();
@@ -16,9 +16,10 @@ public class PIConfigTest {
 
 	@Test
 	public void myHostNameTest() {
-		String myHostname = env.getMyHostName();
-		assertTrue(myHostname != null);
-		assertFalse( myHostname.isEmpty() );
+//      Retired:
+//		String myHostname = env.getMyHostName();
+//		assertTrue(myHostname != null);
+//		assertFalse( myHostname.isEmpty() );
 	}
 
 }

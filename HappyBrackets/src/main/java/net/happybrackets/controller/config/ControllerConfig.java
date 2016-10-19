@@ -43,11 +43,4 @@ public class ControllerConfig extends LoadableConfig {
         return useHostname;
     }
 
-    @Override
-    public String getMyAddress() {
-        if (useHostname()) {
-            return getMyHostName();
-        }
-        return super.getMyAddress();
-    }
 }

@@ -42,16 +42,16 @@ public class ControllerMain extends Application {
 
     @Override
     public void start(Stage stage) {
-			Device.getInstance();		//inits the network stuff
 			config = new ControllerConfig();
 			config = LoadableConfig.load("config/controller-config.json", config);
 	    if (!config.useHostname()) logger.info("Use host names is disabled");
-	    piConnection = new DeviceConnection(config);
 
 	    //setup controller broadcast
-			broadcastManager = new BroadcastManager(config);
-			controllerAdvert = new ControllerAdvertiser(broadcastManager, config.getMyHostName());
+			broadcastManager = new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+			controllerAdvert = new ControllerAdvertiser(broadcastManager);
 	    controllerAdvert.start();
+
+		piConnection = new DeviceConnection(config, broadcastManager);
 
 			//setup http httpServer
 	    try {

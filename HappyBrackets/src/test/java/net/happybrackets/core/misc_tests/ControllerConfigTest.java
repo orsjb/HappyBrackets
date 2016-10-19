@@ -12,9 +12,10 @@ public class ControllerConfigTest extends TestCase {
 	}
 	
 	public void testMyHostname() {
-		String myHostname = env.getMyHostName();
-		assertTrue(myHostname != null);
-		assertFalse( myHostname.isEmpty() );
+//		Retired:
+//		String myHostname = env.getMyHostName();
+//		assertTrue(myHostname != null);
+//		assertFalse( myHostname.isEmpty() );
 	}
 
 }
