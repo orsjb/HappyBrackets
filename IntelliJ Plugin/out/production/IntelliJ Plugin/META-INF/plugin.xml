@@ -1,8 +1,8 @@
 <idea-plugin version="2">
-  <id>com.your.company.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
+  <name>HappyBrackets</name>
   <version>1.0</version>
-  <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">YourCompany</vendor>
+  <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
       The HappyBrackets plugin supports remote coding and control of external devices over a local network.
@@ -25,13 +25,9 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <toolWindow id="net.happybrackets.intellij_plugin.HappyBracketsPlugin" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsPlugin"/>
+    <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/hb.png"/>
 
   </extensions>
-
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
 
   <project-components>
 

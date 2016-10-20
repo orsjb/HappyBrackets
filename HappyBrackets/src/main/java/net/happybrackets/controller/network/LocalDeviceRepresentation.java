@@ -65,10 +65,10 @@ public class LocalDeviceRepresentation {
 		}
 		OSCMessage msg = new OSCMessage(msgName, args);
 		if(socket == null) {
-			socket = new InetSocketAddress(hostname, config.getControlToDevicePort());
+			socket = new InetSocketAddress(hostname, config.getControlToDevicePort()); //TODO this could be problematic
 		}
 		try {
-			server.send(msg, socket);
+			server.send(msg, socket);	//TODO this may need a solution like BroadcastManger?
 		} catch (UnresolvedAddressException e) {
 			logger.error("Unable to send to Device: {}", hostname, e);
 		} catch (IOException e) {

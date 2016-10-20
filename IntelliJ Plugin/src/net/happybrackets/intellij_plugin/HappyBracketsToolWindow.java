@@ -69,7 +69,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         logger.info("*** HappyBrackets IntelliJ Plugin launching ***");
-        Device.getInstance();   //forces Device's network init to happen
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
 
         if(!staticSetup) {          //only run this stuff once per JVM
@@ -216,13 +215,15 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
         logger.debug("Compositions path: {}", config.getCompositionsPath());
 
-        //set up config relevant directories
-        deviceConnection = new DeviceConnection(config);
 
         //setup controller broadcast
         logger.info("Starting ControllerAdvertiser");
-        broadcastManager = new BroadcastManager(config);
-        controllerAdvertiser = new ControllerAdvertiser(broadcastManager, config.getMyHostName());;
+        broadcastManager = new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+
+        //set up device connection
+        deviceConnection = new DeviceConnection(config, broadcastManager);
+
+        controllerAdvertiser = new ControllerAdvertiser(broadcastManager);
         controllerAdvertiser.start();
 
         //setup http httpServer

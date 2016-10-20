@@ -6,10 +6,20 @@ package net.happybrackets.device.config;
 public class DeviceController {
     private String hostname;
     private String address;
+    private int    deviceId;
 
-    public DeviceController(String hostname, String address) {
+    public int getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(int deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public DeviceController(String hostname, String address, int deviceId) {
         this.hostname = hostname;
         this.address = address;
+        this.deviceId = deviceId;
     }
 
     public String getAddress() {

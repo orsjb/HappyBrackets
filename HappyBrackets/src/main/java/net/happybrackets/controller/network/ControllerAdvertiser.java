@@ -1,39 +1,59 @@
 package net.happybrackets.controller.network;
 
-import net.happybrackets.controller.config.ControllerConfig;
+import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCTransmitter;
 import net.happybrackets.core.BroadcastManager;
 
+import net.happybrackets.core.Device;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.NetworkInterface;
 
 public class ControllerAdvertiser {
 
 	final static Logger logger = LoggerFactory.getLogger(ControllerAdvertiser.class);
 
-	private Thread advertismentService;
+	private Thread advertisementService;
 	private boolean keepAlive = true;
 
-	public ControllerAdvertiser(BroadcastManager broadcastManager, String controllerName) {
+	public ControllerAdvertiser(BroadcastManager broadcastManager) {
 		//set up an indefinite thread to advertise the controller
-		advertismentService = new Thread() {
+		advertisementService = new Thread() {
 			public void run() {
-				while (keepAlive) {
-					broadcastManager.broadcast("/hb/controller", controllerName);
+            BroadcastManager.OnTransmitter advertisement = new BroadcastManager.OnTransmitter() {
+                @Override
+                public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
+                    transmitter.send(
+                            new OSCMessage(
+                                    "/hb/controller",
+                                    new Object[] {
+                                            Device.selectHostname(ni),
+                                            Device.selectIP(ni)
+                                    }
+                            )
+                    );
+                }
+            };
 
-					try {
-						Thread.sleep(500);
-					}
-					catch (InterruptedException e) {
-						logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
-					}
-				}
+            while (keepAlive) {
+                broadcastManager.forAllTransmitters(advertisement);
+
+                try {
+                    Thread.sleep(500);
+                }
+                catch (InterruptedException e) {
+                    logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
+                }
+            }
 			}
 		};
 	}
 
 	public void start() {
 		keepAlive = true;
-		advertismentService.start();
+		advertisementService.start();
 	}
 
 	public void stop() {
@@ -41,10 +61,10 @@ public class ControllerAdvertiser {
 	}
 
 	public void interrupt() {
-		advertismentService.interrupt();
+		advertisementService.interrupt();
 	}
 
 	public boolean isAlive() {
-		return advertismentService.isAlive();
+		return advertisementService.isAlive();
 	}
 }

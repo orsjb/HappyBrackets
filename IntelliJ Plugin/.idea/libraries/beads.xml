@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="beads">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../beads/build/beads/library/beads.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

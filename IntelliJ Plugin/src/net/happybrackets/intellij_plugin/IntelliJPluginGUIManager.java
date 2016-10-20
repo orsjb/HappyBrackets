@@ -1,12 +1,12 @@
 package net.happybrackets.intellij_plugin;
 
 import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.fileChooser.*;
 import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.sun.javafx.css.Style;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -241,22 +241,38 @@ public class IntelliJPluginGUIManager {
 		saveButton.setTooltip(new Tooltip("Save these " + label.toLowerCase() + " settings to a file."));
 		saveButton.setOnMouseClicked(event -> {
 			//select a file
-			final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor().withShowHiddenFiles(true);
-			descriptor.setTitle("Select " + label.toLowerCase() + " file to save to.");
-			String currentFile = HappyBracketsToolWindow.getSettings().getString(setting);
-			VirtualFile vfile = currentFile == null ? null : LocalFileSystem.getInstance().findFileByPath(currentFile.replace(File.separatorChar, '/'));
+            FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
+            fsd.withShowHiddenFiles(true);
+			final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, project);
+
+            String currentFilePath = HappyBracketsToolWindow.getSettings().getString(setting);
+            File currentFile = currentFilePath != null ? new File(HappyBracketsToolWindow.getSettings().getString(setting)) : null;
+            VirtualFile baseDir = null;
+            String currentName = null;
+            if (currentFile != null && currentFile.exists()) {
+                baseDir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
+                currentName = currentFile.getName();
+            }
+            else {
+                baseDir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
+                currentName = fileType == 0 ? "controller-config.json" : "known_devices";
+            }
+            final VirtualFile baseDirFinal = baseDir;
+            final String currentNameFinal = currentName;
 
 			//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
 			SwingUtilities.invokeLater(() -> {
-				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, vfile);
-				if (virtualFile != null && virtualFile.length > 0 && virtualFile[0] != null) {
-					Platform.runLater(() -> {
-						File configFile = new File(virtualFile[0].getCanonicalPath());
+				final VirtualFileWrapper wrapper = dialog.save(baseDirFinal, currentNameFinal);
 
-						if ((new File(HappyBracketsToolWindow.getDefaultControllerConfigPath())).getAbsolutePath().equals(configFile.getAbsolutePath()) ||
-								(new File(HappyBracketsToolWindow.getDefaultKnownDevicesPath())).getAbsolutePath().equals(configFile.getAbsolutePath())) {
-							showPopup("Error saving " + label.toLowerCase() + ": cannot overwrite default configuration files.", saveButton, 5, event);
-						}
+				if (wrapper != null) {
+					Platform.runLater(() -> {
+						File configFile = wrapper.getFile();
+
+						// Check for overwrite of default config files (this doesn't apply to deployed plugin so disabling for now.)
+						//if ((new File(HappyBracketsToolWindow.getDefaultControllerConfigPath())).getAbsolutePath().equals(configFile.getAbsolutePath()) ||
+						//		(new File(HappyBracketsToolWindow.getDefaultKnownDevicesPath())).getAbsolutePath().equals(configFile.getAbsolutePath())) {
+						//	showPopup("Error saving " + label.toLowerCase() + ": cannot overwrite default configuration files.", saveButton, 5, event);
+						//}
 
 						try (PrintWriter out = new PrintWriter(configFile.getAbsolutePath())) {
 							out.print(configField.getText());
@@ -331,14 +347,7 @@ public class IntelliJPluginGUIManager {
 
 
 	private void applyKnownDevices(String kd) {
-		Hashtable<String, Integer> knownDevices = new Hashtable<>();
-		for (String line : kd.split("\\r?\\n")) {
-			String[] lineSplit = line.split("[ ]");
-			if (lineSplit.length >= 2) {
-				knownDevices.put(lineSplit[0], Integer.parseInt(lineSplit[1]));
-			}
-		}
-		deviceConnection.setKnownDevices(knownDevices);
+		deviceConnection.setKnownDevices(kd.split("\\r?\\n"));
 	}
 
 
@@ -354,6 +363,9 @@ public class IntelliJPluginGUIManager {
 				makeTitle("Send Custom Command"),
 				makeCustomCommandPane()
 		);
+
+        // Work around. On Mac the layout doesn't allow enough height in some instances.
+		container.setMinHeight(275);
 
 		return container;
 	}
