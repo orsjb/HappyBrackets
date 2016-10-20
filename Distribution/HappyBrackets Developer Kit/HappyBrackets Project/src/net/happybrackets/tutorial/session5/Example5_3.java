@@ -8,12 +8,8 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * Created by ollie on 24/06/2016.
- *
- *
- *
  */
-public class CodeTask5_3 implements HBAction {
+public class Example5_3 implements HBAction {
 
     @Override
     public void action(HB hb) {

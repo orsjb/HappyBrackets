@@ -15,7 +15,7 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
 /**
  * Created by ollie on 24/06/2016.
  */
-public class CodeTask8_5 implements HBAction {
+public class Example8_5 implements HBAction {
 
     @Override
     public void action(HB hb) {

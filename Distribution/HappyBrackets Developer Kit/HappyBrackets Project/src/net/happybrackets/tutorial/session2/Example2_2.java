@@ -13,7 +13,6 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import java.util.Random;
 
 /**
- * Created by ollie on 25/07/2016.
  */
 public class Example2_2 extends Application {
 

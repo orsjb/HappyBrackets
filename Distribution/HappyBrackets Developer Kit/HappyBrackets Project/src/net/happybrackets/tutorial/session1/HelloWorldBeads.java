@@ -9,8 +9,6 @@ import net.beadsproject.beads.ugens.Noise;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
- * Created by ollie on 10/05/2016. 
- *
  * This is the "Hello World" of Beads, the Java realtime audio library used in HappyBrackets. First let's run this code.
  *
  * From IntelliJ, control-click or right-click on this file (i.e., click right here). About 1/3 the way down you will see the option to "Run HelloWorldBeads.main()", with a green triangle next to it. Select this option. You should hear some white noise playing back through your speakers. If you do not hear anything, check your sound is on, and look below in the "Run" window to see if there are any Java exceptions. These are blocks of code that alert you to an error.

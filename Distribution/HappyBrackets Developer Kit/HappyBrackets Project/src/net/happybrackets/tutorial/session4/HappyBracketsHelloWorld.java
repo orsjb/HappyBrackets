@@ -9,8 +9,6 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * Created by ollie on 22/06/2016.
- *
  * To run this code, make sure you have installed the HappyBrackets IntelliJ plugin.
  * Ensure you have a device set up and connected. It should be visible in the devices list in the HappyBrackets plugin.
  * From the dropdown menu in the plugin select HappyBracketsHelloWorld and click send.

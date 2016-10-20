@@ -11,14 +11,12 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * Created by ollie on 24/06/2016.
- *
  * In this example, we load some of the audio that is preloaded on the Pi, the same set of samples found in previous tutorials.
  *
  * Note that the first time you send this to the Pi it will load the samples, resulting in considerable overhead, with possible glitch and delay. However, when you send the code again, the SampleManager knows not to attempt to reload the audio, which is already stored in memory.
  *
  */
-public class CodeTask5_2 implements HBAction {
+public class Example5_2 implements HBAction {
 
     @Override
     public void action(HB hb) {

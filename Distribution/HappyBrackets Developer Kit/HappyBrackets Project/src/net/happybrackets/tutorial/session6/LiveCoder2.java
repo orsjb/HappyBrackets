@@ -12,7 +12,6 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * Created by ollie on 22/06/2016.
  */
 public class LiveCoder2 implements HBAction {
     @Override

@@ -9,7 +9,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * Created by ollie on 25/07/2016.
  */
 public class Template extends Application {
 

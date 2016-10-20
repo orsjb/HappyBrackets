@@ -17,7 +17,6 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
- * Created by ollie on 25/07/2016.
  */
 public class Example2_1 extends Application {
 

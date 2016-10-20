@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ollie on 28/07/2016.
  */
 public class ObservableObject {
 

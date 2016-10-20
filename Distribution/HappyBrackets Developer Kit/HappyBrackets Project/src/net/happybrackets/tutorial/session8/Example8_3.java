@@ -12,7 +12,7 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
  * For this code task we want to look at the accelerometer and use it to
  * trigger a sound when you turn over the accelerometer.
  */
-public class CodeTask8_3 implements HBAction {
+public class Example8_3 implements HBAction {
 
     public enum Orientation {UP, DOWN}
 

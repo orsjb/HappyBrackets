@@ -17,12 +17,9 @@ import net.happybrackets.device.network.NetworkCommunication;
 import java.net.SocketAddress;
 
 /**
- * Created by ollie on 24/06/2016.
- *
  * TODO network broadcast
- *
  */
-public class CodeTask7_3 implements HBAction {
+public class Example7_3 implements HBAction {
 
     @Override
     public void action(HB hb) {

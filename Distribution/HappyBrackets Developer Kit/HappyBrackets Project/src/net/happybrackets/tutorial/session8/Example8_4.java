@@ -11,9 +11,8 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
- * Created by ollie on 24/06/2016.
  */
-public class CodeTask8_4 implements HBAction {
+public class Example8_4 implements HBAction {
 
     @Override
     public void action(HB hb) {

@@ -11,13 +11,8 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
- * Created by ollie on 6/06/2016.
- *
- * Do pythagoras to
- *
- *
  */
-public class CodeTask8_2 implements HBAction {
+public class Example8_2 implements HBAction {
 
 
     @Override

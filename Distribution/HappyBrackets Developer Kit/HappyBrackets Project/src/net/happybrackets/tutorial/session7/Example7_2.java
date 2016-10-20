@@ -12,30 +12,32 @@ import net.happybrackets.device.network.NetworkCommunication;
 import java.net.SocketAddress;
 
 /**
- * Created by ollie on 24/06/2016.
- *
- *
  */
-public class CodeTask7_1 implements HBAction {
+public class Example7_2 implements HBAction {
 
     @Override
     public void action(HB hb) {
-
         hb.reset();
-
-        //load a set of sounds
+         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
-
         hb.addControllerListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 if(msg.getName().equals("/play")) {
+                    float speed = 1;
+                    if(msg.getArgCount() > 0) {
+                        try {
+                            speed = (float)msg.getArg(0);
+                        } catch(Exception e) {}
+                    }
                     //play a new random sound
                     Sample s = SampleManager.randomFromGroup("Guitar");
-                    hb.sound(new SamplePlayer(hb.ac, s));
+                    SamplePlayer sp = new SamplePlayer(hb.ac, s);
+                    sp.getRateUGen().setValue(speed);
+                    hb.sound(sp);
                 }
             }
-            });
+        });
     }
 
 }

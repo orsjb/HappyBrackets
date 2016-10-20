@@ -8,8 +8,6 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * Created by ollie on 24/06/2016.
- *
  * Send the following HBAction to your Pi.
  * Send it a second time. You will hear two sounds.
  * Now uncomment the hb.reset() line and send the action once again.
@@ -17,7 +15,7 @@ import net.happybrackets.device.HB;
  * You can also evoke the same actions using the interface in the HB plugin.
  *
  */
-public class CodeTask5_1 implements HBAction {
+public class Example5_1 implements HBAction {
 
     @Override
     public void action(HB hb) {

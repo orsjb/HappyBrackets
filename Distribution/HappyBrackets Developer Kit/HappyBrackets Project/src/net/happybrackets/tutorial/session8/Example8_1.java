@@ -10,7 +10,7 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
  * 
  */
 
-public class CodeTask8_1 implements HBAction {
+public class Example8_1 implements HBAction {
 
 //    double[] dataBuffer = new double[12];
 //    int j = 0;

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * Created by ollie on 23/07/2016.
  */
 public class RingModExample {
 

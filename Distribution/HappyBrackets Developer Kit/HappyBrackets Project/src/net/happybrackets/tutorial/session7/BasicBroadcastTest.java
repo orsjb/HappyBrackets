@@ -9,7 +9,6 @@ import net.happybrackets.device.HB;
 import java.net.SocketAddress;
 
 /**
- * Created by ollie on 26/07/2016.
  */
 public class BasicBroadcastTest implements HBAction {
 

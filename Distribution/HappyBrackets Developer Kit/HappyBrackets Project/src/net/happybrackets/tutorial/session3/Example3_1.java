@@ -10,7 +10,6 @@ import net.beadsproject.beads.ugens.*;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
- * Created by ollie on 25/07/2016.
  */
 public class Example3_1 extends Application {
 
