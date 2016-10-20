@@ -110,6 +110,13 @@ public class Synchronizer {
         broadcast.addOnMessage(new BroadcastManager.OnListener(){
             @Override
             public void cb(NetworkInterface ni, OSCMessage msg, SocketAddress sender, long time) {
+				if (!msg.getName().equals(oscPath)) {
+                    return;
+                }
+                else if(msg.getArgCount() != 5) {
+                    logger.debug("Received sync message with {} args, expected 5", msg.getArgCount());
+                    return;
+                }
                 String myMAC = Device.selectMAC(ni);
 //				String[] parts = new String[msg.getArgCount()];
 //                for (int i = 0; i < msg.getArgCount(); i++) {
