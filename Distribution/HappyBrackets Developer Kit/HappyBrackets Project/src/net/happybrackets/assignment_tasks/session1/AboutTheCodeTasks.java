@@ -12,6 +12,11 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * Throughout this course you will be performing code assignment tasks that will be autograded on the Kadenze server.
  *
  * The following code gives the outline for these tasks. You will put your solutions to the task in the task() function. You can run this to see what the resulting code sounds like. You can also submit these code task files to the Kadenze server and it will autorun the task command and autograde the output.
+ *
+ * Some things to note:
+ * - You only need to enter code into the task() function. You can also add your own functions. Anything you add to the start() function won't have any effect on the autograder.
+ * - the task() function gives you an AudioContext, already setup. It also gives you an object called a StringBuffer. If you need to print things to the output for the purpose of the task, then use buf.append("your text");. Don't use System.out.println();. Use '\n' to print a new line (as in the example below.
+ * - the task() function also gives you an array of Objects which will be task specific. The code tasks will show you how to extract arguments from this array where necessary.
  */
 
 public class AboutTheCodeTasks extends Application implements BeadsChecker.BeadsCheckable {
@@ -37,12 +42,13 @@ public class AboutTheCodeTasks extends Application implements BeadsChecker.Beads
 
     @Override
     public void task(AudioContext ac, StringBuffer buf, Object... args) {
-        //do your work here
+        //********** do your work here ONLY **********
         Noise n = new Noise(ac);
         Gain g = new Gain(ac, 1, 0.1f);
         g.addInput(n);
         ac.out.addInput(g);
         //write output like this
         buf.append("Hello World!\n");   //'\n' means new line
+        //********** do your work here ONLY **********
     }
 }

@@ -38,6 +38,7 @@ public class CodeTask2_5 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
+        //********** do your work here ONLY **********
         //create a Clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);
@@ -63,5 +64,6 @@ public class CodeTask2_5 extends Application implements BeadsChecker.BeadsChecka
                 }
             }
         });
+        //********** do your work here ONLY **********
     }
 }

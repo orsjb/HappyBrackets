@@ -21,7 +21,7 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
  *
  * This example is more of a teaser into making a full desktop application. It uses JavaFX to create a button.
  *
- * We won't go through this code in detail, and you shouldn't worry if it doesn't make any sense.
+ * We won't go through this code in detail, and you shouldn't worry if there are parts that don't make sense.
  * However, as an optional extra task, hack the below code to make a simple keyboard that plays the notes C, C#, D, D# etc. You can use HBox instead of VBox to lay buttons out horizontally.
  *
  * This task will not be checked.

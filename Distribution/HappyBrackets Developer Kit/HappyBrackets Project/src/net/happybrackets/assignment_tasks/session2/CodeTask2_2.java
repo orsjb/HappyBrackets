@@ -18,9 +18,9 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * Complete the following tasks:
  *
  * 1) Add a WavePlayer object that plays continually.
- * 2) Create a Glide object that controls the frequency of the WavePlayer, with a glide time of 500.
- * 3) Use the Clock to update the Glide every 4 beats. Each time choose a new frequency at random, using pitches from a pentatonic scale in the octave above middle-C (MIDI note 60). Use the Pitch class to calculate frequencies from the MIDI note numbers.
- * 4) Add a new one-hit bass note that plays every 8 beats. The note should be a square wave, also chosen randomly from the same pentatonic scale but two octaves lower than the portamento line above. The note should play through an ADSR envelope and be removed once played, using a KillTrigger.
+ * 2) Create a Glide object that controls the frequency of the WavePlayer, with a glide time of 500ms.
+ * 3) Use the Clock to update the Glide every 4 beats (note beats are not the same as ticks). Each time choose a new frequency, using pitches from a pentatonic scale in the octave above middle-C (MIDI note 60). Your sequence should loop through this pentatonic scale sequentially. Use the Pitch class to calculate frequencies from the MIDI note numbers.
+ * 4) Add a new one-hit bass note that plays every 8 beats. The note should be a square wave, with a pitch C, whichever octave suits you. The note should play through an ADSR envelope and be removed once played, using a KillTrigger.
  *
  */
 public class CodeTask2_2 extends Application implements BeadsChecker.BeadsCheckable {
@@ -45,6 +45,7 @@ public class CodeTask2_2 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
+        //********** do your work here ONLY **********
         //create a Clock
         Clock c = new Clock(ac, 500);
         //important! Make sure your clock is running by adding it as a 'dependent' to some other UGen.
@@ -59,5 +60,6 @@ public class CodeTask2_2 extends Application implements BeadsChecker.BeadsChecka
                 stringBuffer.append("tick " + c.getCount() + " (beat " + c.getBeatCount() + ")\n");
             }
         });
+        //********** do your work here ONLY **********
     }
 }

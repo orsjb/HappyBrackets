@@ -14,8 +14,8 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  *
  * The following code plays a regular noise burst through a simple delay.
  *
- * 1) Identify what number below indicates the delay time of the delay, and use it to speed up the delay so that it is a very tight slapback of just a few milliseconds, overlapping the original sound.
- * 2) Make the delay feedback on itself by connecting two UGens together in a single line of code, and identify which number is responsible for the delay feedback level. Set that number so that the delay lasts at least as long as the interval between sound events.
+ * 1) Identify what number below indicates the delay time of the delay (i.e., the interval between the original and delayed sound), and use it to speed up the delay so that it is a very tight slapback of just a few milliseconds, overlapping the original sound.
+ * 2) Make the delay feedback on itself. You will be able to do this by connecting two of the existing UGens together in a single line of code, and identify which number is responsible for the delay feedback level. Set that number so that the delay lasts at least as long as the interval between sound events.
  *
  */
 public class CodeTask2_4 extends Application implements BeadsChecker.BeadsCheckable {
@@ -40,7 +40,8 @@ public class CodeTask2_4 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
-        //create a Clock
+        //********** do your work here ONLY **********
+        // create a Clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);
         //create a delay line with 10s of max audio storage
@@ -65,5 +66,6 @@ public class CodeTask2_4 extends Application implements BeadsChecker.BeadsChecka
                 }
             }
         });
+        //********** do your work here ONLY **********
     }
 }

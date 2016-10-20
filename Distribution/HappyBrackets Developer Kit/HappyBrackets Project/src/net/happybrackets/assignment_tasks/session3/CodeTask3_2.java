@@ -16,13 +16,14 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * 4) Replace the fixed playback rate of the SamplePlayer with an Envelope (use setPitch()), and randomly add a downward pitch bend to 1 in 5 of the notes.
  * 5) Switch the SamplePlayer to a GranularSamplePlayer.
  *      Use the method 'setRate()' to set the GranularSamplePlayer to play back at half speed.
- *      Note that with SamplePlayer 'getRate()' and 'getPitch()' are the same method, whereas for GranularSamplePlayer they return different things. Set the Rate so that the sample plays back at half speed.
+ *      Note that with SamplePlayer 'getRate()' and 'getPitch()' are the same method, whereas for GranularSamplePlayer they return different things.
  *      Using the methods 'getGrainSizeUGen().setValue()', 'getGrainIntervalUGen().setValue()', 'getRandomnessUGen().setValue()', find suitable granulation settings that make the guitar sound as natural as possible.
  *
  */
 public class CodeTask3_2 extends Application implements BeadsChecker.BeadsCheckable {
 
-    public static void main(String[] args) {launch(args);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
@@ -42,6 +43,7 @@ public class CodeTask3_2 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
+        //********** do your work here ONLY **********
         //clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);
@@ -53,5 +55,6 @@ public class CodeTask3_2 extends Application implements BeadsChecker.BeadsChecka
                 }
             }
         });
+        //********** do your work here ONLY **********
     }
 }

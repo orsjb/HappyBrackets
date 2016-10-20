@@ -10,14 +10,15 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
  *
- * This code is exactly the same as in CodeTask1_1.
+ * This code is initialised exactly the same as in CodeTask1_1.
  *
- * Modify the code so that you have two WavePlayers, one connected to the left channel playing a sine tone at 500hz, and one connected to the right channel, playing a square wave tone at 750hz. They should be passing through a stereo Gain object with a gain of 0.2.
+ * Modify the code so that you have two WavePlayers, one is a sine tone at 500hz, and the other one is a square wave tone at 750hz. The sine tone should be sending to the left channel with a gain of 0.1 and the right channel with a gain of 0.2. The square tone should be connected to the right channel with a gain of 0.1 and the left channel with a gain of 0.2.
  *
  */
 public class CodeTask1_2 extends Application implements BeadsChecker.BeadsCheckable {
 
-    public static void main(String[] args) {launch(args);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
@@ -37,10 +38,11 @@ public class CodeTask1_2 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer buf, Object... args) {
-        //do your work here
+        //********** do your work here ONLY **********
         Noise n = new Noise(ac);
         Gain g = new Gain(ac, 1, 0.1f);
         g.addInput(n);
         ac.out.addInput(g);
+        //********** do your work here ONLY **********
     }
 }

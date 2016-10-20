@@ -11,7 +11,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * Created by ollie on 24/06/2016.
+ * Tasks in Session 5 are not autograded. Simply explore the behaviour.
  *
  * In this example, we load some of the audio that is preloaded on the Pi, the same set of samples found in previous tutorials.
  *

@@ -18,11 +18,12 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * Duplicate that last line so that there are two copies of it, one after the other. Then change the 1000 in the second instance to 100. Run the code again. Notice that the segments run one after the other.
  *
  * Now complete the following tasks:
- * 1) Make the frequency rise from 500hz to 1000hz over 1 second, stay there for 1 second, then rise again to 2000hz over ten seconds.
- * 2) Add the additional argument 'new AudioContextStopTrigger(ac)' to the last segment of your freqEnv and see what happens.
- * 3) Comment out all of your freqEnv addSegment() statements again. Create a new Envelope that will be used to control the Gain object. This should be called 'gainEnv' and should be initialised to 0. In the constructor for Gain, you can replace the value 0.1f by gainEnv.
- * 4) Use your new gainEnv object to create an attack-decay-sustain-release envelope. Make your sound's gain increase from 0 to 0.5f over 50ms, then drop to 0.1f over 50ms, then remain at 0.1f for 1000ms, then decay to 0 over 5 seconds.
- * 5) Add the additional argument 'new KillTrigger(g)' to the last element of your gainEnv. You won't notice any difference because you already faded the volume to zero, but this last line will remove all of the audio processing elements from the signal chain.
+ * 1) Make the frequency rise from 500hz to 1000hz over 1 second, stay there for 1 second, then rise again to 2000hz over two seconds.
+ * 2) Create a new Envelope that will be used to control the Gain object. This should be called 'gainEnv' and should be initialised to 0. In the constructor for Gain, you can replace the value 0.1f by gainEnv.
+ * 3) Use your new gainEnv object to create an attack-decay-sustain-release envelope. Make your sound's gain increase from 0 to 0.5f over 50ms, then drop to 0.1f over 50ms, then remain at 0.1f for 1000ms, then decay to 0 over 5 seconds.
+ * 4) Add the additional argument 'new KillTrigger(g)' to the last element of your ADSR gainEnv. You won't notice any difference because you already faded the volume to zero, but this last line will remove all of the audio processing elements from the signal chain.
+ *
+ * In summary, your sound should rise in frequency from 500-1000hz over 1 second, stay on 1000hz for 1 second, then rise to 2000hz over two seconds. Its gain should rise from zero to 0.5 over 50ms, then drop to 0.1 over 40ms, then remain at 0.1 for 1 second, then decay to zero over 5 seconds. After the completion of the gain envelope, the sound should destroy itself, leaving the signal chain in its original empty state.
  *
  */
 public class CodeTask2_1 extends Application implements BeadsChecker.BeadsCheckable {
@@ -47,15 +48,17 @@ public class CodeTask2_1 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
+        //********** do your work here ONLY **********
         //here is the Envelope, initialised to 500.
         Envelope freqEnv = new Envelope(ac, 500);
-        //notice that the second argument to WavePlayer is no longer a number, but an object.
+        //notice that the second argument to WavePlayer is no longer a number, but is the Envelope object.
         WavePlayer wp = new WavePlayer(ac, freqEnv, Buffer.SINE);
         Gain g = new Gain(ac, 1, 0.1f);
         g.addInput(wp);
         ac.out.addInput(g);
         g.setGain(0.1f);
-        //once you've run the above code once, uncomment the following line and run it again
+        //once you've run the above code once, uncomment the following line and run it again...
 //        freqEnv.addSegment(1000, 4000);
+        //********** do your work here ONLY **********
     }
 }

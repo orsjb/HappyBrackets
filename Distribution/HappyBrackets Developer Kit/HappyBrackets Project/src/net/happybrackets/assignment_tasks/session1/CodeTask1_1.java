@@ -14,15 +14,17 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  *
  * Let's play with some of the code. Since this is our first time coding together, this first task is mainly dedicated to seeing how well you understand Java code. We will only be looking at the task() function below. Ignore everything else.
  *
+ * Remember that to run this code you should control-click, or right-click on this file and select "Run CodeTask1_1.main()". To re-run the code you can hit the green arrow up in the top right of the window in IntelliJ. If the program is already running, then there should be a Run window below. You can press the 're-run' button, a green circular arrow, to kill and restart the program.
+ *
  * *** Step 1 ***
  *
- * Notice that the Gain object has three arguments in its constructor: (ac, 1, 0.2f).
+ * Notice that the Gain object has three arguments in its constructor: (ac, 1, 0.1f).
  * These arguments are:
  *      ac = the AudioContext that manages all of our audio devices.
  *      1 = the number of channels that our Gain object should have.
- *      0.2f = the gain. This is the number we use to multiply the signal by.
+ *      0.1f = the gain. This is the number we use to multiply the signal by.
  *
- * Try setting the gain to 0.4f and re-running the program. (If the program is already running, then in the Run window you can select the 're-run' button, a green circular arrow.
+ * Try setting the gain to 0.2f and re-running the program.
  *
  * *** Step 2 ***
  *
@@ -40,12 +42,12 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * In the line g.addInput(n), replace "n" with "wp".
  * Run the code. If you did this right you will now hear a sine tone instead of white noise.
  *
- * You can experiment by changing Buffer.SINE to Buffer.SQUARE and use autocomplete to see the other sounds.
+ * Now change Buffer.SINE to Buffer.SQUARE (try to use autocomplete to see the available options).
  *
  * *** Step 3 ***
  *
  * Lastly, we will see how we can connect a sound to just one channel.
- * Go to the line Gain g = new Gain(ac, 1, 0.2f), and change the "1" to "2".
+ * Go to the line Gain g = new Gain(ac, 1, 0.4f), and change the "1" to "2".
  * If you run the code after this change, nothing will be different. The "addInput()" command automatically connects a mono signal (from the WavePlayer) to both sides of the stereo signal (into the Gain object).
  *
  * Now go to the line g.addInput(wp) and change it to g.addInput(0, wp, 0);
@@ -54,6 +56,13 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * Run that.
  *
  * You should notice that you are changing which speaker your sound is coming out of (make sure you are listening in stereo!). The first argument is the choice of input channel on the gain object. As you change this from 0 to 1 you switch from the left speaker to the right speaker.
+ *
+ * *** Step 4 ***
+ *
+ * Now complete the task. Building on the code above, make changes to your final submission so that it has the following properties:
+ * - a stereo gain with gain value 0.3.
+ * - a WavePlayer object, with a SAW wave, playing at 1000hz plugged into the right channel.
+ * - a Noise object plugged into the left channel.
  *
  */
 public class CodeTask1_1 extends Application implements BeadsChecker.BeadsCheckable {
@@ -79,11 +88,11 @@ public class CodeTask1_1 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer buf, Object... args) {
-        //********** do your work here **********
+        //********** do your work here ONLY **********
         Noise n = new Noise(ac);
         Gain g = new Gain(ac, 1, 0.1f);
         g.addInput(n);
         ac.out.addInput(g);
-        //********** do your work here **********
+        //********** do your work here ONLY **********
     }
 }

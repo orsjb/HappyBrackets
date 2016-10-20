@@ -24,6 +24,11 @@ import java.util.Random;
  *
  * The number 50 below dictates the random spread of the oscillator detune. See what happens when you vary this.
  *
+ * Your final submission for grading should have the following properties:
+ * - 50 SINE oscillators all playing directly into ac.out.
+ * - Each oscillator has a random frequency uniformly distributed between 1000hz and 1100hz.
+ * - The gain value of ac.out scaled appropriately so that the overall gain of the summed oscillators is 0.1.
+ *
  */
 public class CodeTask1_3 extends Application implements BeadsChecker.BeadsCheckable {
 
@@ -47,12 +52,15 @@ public class CodeTask1_3 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
+        //********** do your work here ONLY **********
         //create a random number generator
         Random rng = new Random();
         //create a WavePlayer with a slight random detune on the pitch
         WavePlayer wp = new WavePlayer(ac, 500 + rng.nextFloat() * 50, Buffer.SINE);
         ac.out.addInput(wp);
-        //ac.out is actually a Gain object, so we can simply turn down the level here... no need for another Gain object.
+        //ac.out is actually a Gain object, so we can simply turn down the level here...
+        //no need for another Gain object.
         ac.out.setGain(0.1f);
+        //********** do your work here ONLY **********
     }
 }

@@ -1,4 +1,4 @@
-package net.happybrackets.assignment_tasks.session8;
+package net.happybrackets.tutorial.session8;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
