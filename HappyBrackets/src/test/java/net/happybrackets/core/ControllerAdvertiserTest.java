@@ -1,4 +1,4 @@
-package net.happybrackets.core.misc_tests;
+package net.happybrackets.core;
 
 import org.junit.After;
 import org.junit.Before;

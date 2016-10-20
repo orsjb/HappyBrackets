@@ -1,4 +1,4 @@
-package net.happybrackets.core.misc_tests;
+package net.happybrackets.core;
 
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.config.ControllerConfig;

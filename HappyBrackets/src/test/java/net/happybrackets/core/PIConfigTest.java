@@ -1,4 +1,4 @@
-package net.happybrackets.core.misc_tests;
+package net.happybrackets.core;
 
 import static org.junit.Assert.*;
 
