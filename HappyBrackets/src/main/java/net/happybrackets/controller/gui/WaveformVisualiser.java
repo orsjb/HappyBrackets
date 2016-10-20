@@ -1,6 +1,7 @@
 package net.happybrackets.controller.gui;
 
 import com.sun.glass.ui.Application;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -53,10 +54,8 @@ public abstract class WaveformVisualiser {
                 }       //not always desired behaviour
             });
         }
-        stage.show();
-        new Thread() {
-            public void run() {
-                while(stage.isShowing()) {
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
                     GraphicsContext g2d = c.getGraphicsContext2D();
                     g2d.clearRect(0, 0, c.getWidth(), c.getHeight());
                     g2d.setStroke(Color.BLUE);
@@ -76,12 +75,6 @@ public abstract class WaveformVisualiser {
                             lastY = y;
                         }
                     }
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        logger.error("Refresh interval interupted!", e);
-                    }
-                }
             }
         }.start();
     }
