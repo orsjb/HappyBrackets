@@ -128,6 +128,17 @@ public class Synchronizer {
 //                    parts[i] = parts[i].trim();
 //                }
 
+                if (logger.isTraceEnabled()) {
+                    String logMessage = msg.getName() + " args:\n";
+                    Object[] logArgs = new Object[msg.getArgCount() * 2];
+                    for (int i = 0; i < msg.getArgCount(); i++) {
+                        logMessage += "    message arg {} is a {}\n";
+                        logArgs[2*i] = i;
+                        logArgs[(2*i)+1] = msg.getArg(i).getClass().getName();
+                    }
+                    logger.trace(logMessage, logArgs);
+                }
+
                 String action           = (String) msg.getArg(0);
                 String sourceMAC        = (String) msg.getArg(1);
                 long timeOriginallySent = Long.parseLong((String) msg.getArg(2));
@@ -138,7 +149,9 @@ public class Synchronizer {
                     //an original send message
                     //respond if you were not the sender
                     if(!sourceMAC.equals(myMAC)) {
-                        broadcast.broadcast(oscPath, "r", sourceMAC, timeOriginallySent, myMAC, stableTimeNow());
+                        //ensure our long values are strings so we can upack them at the other side
+                        // by default longs become ints when packed for OSC :( probably a comparability feature for max the ancient dinosaur.
+                        broadcast.broadcast(oscPath, "r", sourceMAC, ""+timeOriginallySent, myMAC, ""+stableTimeNow());
                     }
                 }
                 else if(action.equals("r")) {
