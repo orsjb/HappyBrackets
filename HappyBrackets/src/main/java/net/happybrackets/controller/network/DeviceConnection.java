@@ -38,11 +38,12 @@ public class DeviceConnection {
 		//read the known devices from file
 		try {
 			Scanner s = new Scanner(new File(config.getKnownDevicesFile()));
-			while(s.hasNext()) {
-				String[] line = s.nextLine().split("[ ]");
-				knownDevices.put(line[0], Integer.parseInt(line[1]));
+			List<String> lines = new ArrayList<>();
+			while (s.hasNext()) {
+				lines.add(s.nextLine());
 			}
 			s.close();
+			setKnownDevices(lines.toArray(new String[0]));
 		} catch (FileNotFoundException e1) {
 			logger.error("Unable to read '{}'", config.getKnownDevicesFile());
 		}
@@ -84,11 +85,21 @@ public class DeviceConnection {
 
 	/**
 	 * Change the known devices mapping. This will re-assign IDs to all connected devices.
-	 * @param kd Mapping from hostname to ID.
+	 * @param lines Array of strings containing mappings from hostname to ID.
 	 */
-	public void setKnownDevices(Hashtable<String, Integer> kd) {
-		knownDevices = kd;
+	public void setKnownDevices(String[] lines) {
+		knownDevices.clear();
 		newID = -1;
+
+		for (String line : lines) {
+			String[] lineSplit = line.trim().split("[ ]+");
+			// Ignore blank or otherwise incorrectly formatted lines.
+			if (lineSplit.length == 2) {
+				logger.info("Adding known device mapping " + lineSplit[0] + " " + Integer.parseInt(lineSplit[1]));
+				knownDevices.put(lineSplit[0], Integer.parseInt(lineSplit[1]));
+			}
+		}
+
 		for (LocalDeviceRepresentation device: theDevices) {
 			int id = 0;
 			if(knownDevices.containsKey(device.hostname)) {
