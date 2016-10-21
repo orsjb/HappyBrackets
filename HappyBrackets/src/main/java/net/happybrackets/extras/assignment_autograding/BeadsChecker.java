@@ -25,6 +25,24 @@ public class BeadsChecker {
 
     public interface BeadsCheckable {
         public void task(AudioContext ac, StringBuffer buf, Object... args);
+
+        static void printToConsole(StringBuffer buf) { printToConsole(buf, 200); }
+        static void printToConsole(StringBuffer buf, int millis) {
+            new Thread(() -> {
+                int bufPos = 0;
+                while (true) {
+                    String newText = buf.substring(bufPos);
+                    bufPos += newText.length();
+                    System.out.print(newText);
+
+                    try {
+                        Thread.sleep(millis);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+            }).start();
+        }
     }
 
     public interface BeadsCheckerFunction {
