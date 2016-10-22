@@ -10,5 +10,6 @@
   "aliveInterval":            1000,
 
   "useHostname":              true,
-  "polyLimit":                4
+  "polyLimit":                4,
+  "logFilePath":              "logs/last-run.txt"
 }

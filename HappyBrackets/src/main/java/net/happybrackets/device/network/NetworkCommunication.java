@@ -3,6 +3,7 @@ package net.happybrackets.device.network;
 import de.sciss.net.OSCTransmitter;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.Device;
+import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
 import de.sciss.net.OSCListener;
@@ -34,6 +35,9 @@ public class NetworkCommunication {
 																//Listeners to incoming OSC messages
 	final private HB hb;
 
+	private final LogSender logSender;
+
+
 	/**
 	 * Instantiate a new {@link NetworkCommunication} object.
 	 * @param _hb the {@link HB} object this object is attached to.
@@ -50,6 +54,10 @@ public class NetworkCommunication {
 			logger.error("Error creating OSC server!", e);
 		}
 		logger.info("Started OSC server");
+
+		// Create log sender.
+		logSender = new LogSender(this,  DeviceConfig.getInstance().getLogFilePath());
+
 		//add a single master listener that forwards listening to delegates
 		oscServer.addOSCListener(new OSCListener() {
 			@Override
@@ -68,6 +76,10 @@ public class NetworkCommunication {
 					myID = (Integer)msg.getArg(0);
 					logger.info("I have been given an ID by the controller: {}", myID);
 					hb.setStatus("ID " + myID);
+				} else if(msg.getName().equals("/device/get_logs")) {
+					boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
+					logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");
+					sendLogs(sendLogs);
 				} else {
 					//master commands...
 					if(msg.getName().equals("/device/sync")) {
@@ -212,4 +224,15 @@ public class NetworkCommunication {
 	}
 
 
+	/**
+	 * Start or stop sending log messages to the controller.
+	 * On the first start the current log file contents will be sent.
+	 * Upon subsequent starts any new log messages will be sent that were created since the last stop.
+	 * Until the process is stopped, as new log messages appear they will be sent to the controller.
+	 *
+	 * @param sendLogs true to start, false to stop.
+	 */
+	public void sendLogs(boolean sendLogs) {
+		logSender.setSend(sendLogs);
+	}
 }

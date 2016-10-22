@@ -8,7 +8,9 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.sun.javafx.css.Style;
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,17 +39,15 @@ import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.SwingUtilities;
 
 /**
  * Sets up the plugin GUI and handles associated events.
@@ -66,7 +66,11 @@ public class IntelliJPluginGUIManager {
 	private Style style;
 	private final int defaultElementSpacing = 10;
 	private Button[] configApplyButton = new Button[2]; // 0 = overall config, 1 = known devices.
+
 	final static Logger logger = LoggerFactory.getLogger(IntelliJPluginGUIManager.class);
+	private LocalDeviceRepresentation logDevice; // The device we're currently monitoring for log events, if any.
+	private LocalDeviceRepresentation.LogListener logListener; // The listener for new log events, so we can remove when necessary.
+	private TextArea logOutputTextArea;
 
 
 	public IntelliJPluginGUIManager(Project project) {
@@ -88,6 +92,7 @@ public class IntelliJPluginGUIManager {
 
 	public Scene setupGUI() {
 		//core elements
+		Node devicePane = makeDevicePane();
 		TitledPane configPane = new TitledPane("Configuration", makeConfigurationPane(0));
 		TitledPane knownDevicesPane = new TitledPane("Known Devices", makeConfigurationPane(1));
 		TitledPane globalPane = new TitledPane("Global Management", makeGlobalPane());
@@ -115,7 +120,7 @@ public class IntelliJPluginGUIManager {
 
 		VBox mainContainer = new VBox(5);
 		mainContainer.setFillWidth(true);
-		mainContainer.getChildren().addAll(controlPane, new Separator(), makeDevicePane());
+		mainContainer.getChildren().addAll(controlPane, new Separator(), devicePane);
 
 		ScrollPane mainScroll = new ScrollPane();
 		mainScroll.setFitToWidth(true);
@@ -649,9 +654,73 @@ public class IntelliJPluginGUIManager {
 
 
 	private Node makeDebugPane() {
+		String startText = "Start device logging";
+		Tooltip startTooltip = new Tooltip("Tell all devices to start sending their log files.");
+		String stopText = "Stop device logging";
+		Tooltip stopTooltip = new Tooltip("Tell all devices to stop sending their log files.");
+		Button enableButton = new Button(deviceConnection.isDeviceLoggingEnabled() ? stopText : startText);
+		enableButton.setTooltip(deviceConnection.isDeviceLoggingEnabled() ? stopTooltip : startTooltip);
+		enableButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				boolean enable = !deviceConnection.isDeviceLoggingEnabled();
+				if (enable) {
+					enableButton.setText(stopText);
+					enableButton.setTooltip(stopTooltip);
+					configureLogMonitoring(deviceListView.getSelectionModel().getSelectedItem());
+				}
+				else {
+					enableButton.setText(startText);
+					enableButton.setTooltip(startTooltip);
+					configureLogMonitoring(null);
+				}
+				deviceConnection.deviceEnableLogging(enable);
+			}
+		});
+
+		logOutputTextArea = new TextArea();
+
+		deviceListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<LocalDeviceRepresentation>() {
+			@Override
+			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation oldValue, LocalDeviceRepresentation newValue) {
+				if (deviceConnection.isDeviceLoggingEnabled()) {
+					configureLogMonitoring(newValue);
+				}
+			}
+		});
+
 		VBox pane = new VBox(defaultElementSpacing);
+		pane.getChildren().addAll(enableButton, logOutputTextArea);
 		pane.setMinHeight(50);
 		return pane;
+	}
+
+	private void configureLogMonitoring(LocalDeviceRepresentation device) {
+		// If device to log is not different, nothing to do.
+		if (device == logDevice) return;
+
+		logOutputTextArea.setText("");
+
+		// First remove previous log monitor, if any.
+		if (logDevice != null) {
+			logDevice.removeLogListener(logListener);
+			logDevice = null;
+			logListener = null;
+		}
+
+		// Set-up log monitor for new device if specified.
+		if (device != null) {
+			logOutputTextArea.setText(device.getDeviceLog());
+
+			// Make it scroll to bottom. Have to wait a tick for the UI thread to actually update the text.
+			// (note: adding a listener for text change event and scrolling there doesn't work either).
+			(new Timer()).schedule(new TimerTask() {
+				public void run() { logOutputTextArea.setScrollTop(Double.MAX_VALUE); }
+			}, 100);
+
+			logListener = (newLogOutput) -> logOutputTextArea.appendText(newLogOutput);
+			device.addLogListener(logListener);
+		}
 	}
 
 

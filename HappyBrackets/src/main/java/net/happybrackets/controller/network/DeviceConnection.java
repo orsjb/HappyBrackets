@@ -29,6 +29,7 @@ public class DeviceConnection {
 	private Map<String, Integer> knownDevices;
 	private int newID = -1;
 	private ControllerConfig config;
+	private boolean loggingEnabled;
 
 	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
 		this.config = config;
@@ -285,6 +286,16 @@ public class DeviceConnection {
 	public void deviceFadeoutClearsound(float decay) {
 		sendToAllDevices("/device/fadeout_clearsound", decay);
 	}
+
+	public void deviceEnableLogging(boolean enable) {
+		loggingEnabled = enable;
+		// Send as int because OSCPacketCodec.encodeMessage falls over if we try to send a boolean for some reason.
+		sendToAllDevices("/device/get_logs", enable ? 1 : 0);
+	}
+	public boolean isDeviceLoggingEnabled() {
+		return loggingEnabled;
+	}
+
 
 	int virtualDeviceCount = 1;
 

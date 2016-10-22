@@ -14,6 +14,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
     final static Logger logger = LoggerFactory.getLogger(DeviceConfig.class);
 
 	private int polyLimit = 4;
+	private String logFilePath = "logs/last-run.txt";
 	private DeviceController controller = new DeviceController("", "", 0);
 
 	public String getControllerHostname() {
@@ -35,6 +36,8 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	public int getPolyLimit() {
 		return polyLimit;
 	}
+
+	public String getLogFilePath() {return logFilePath; };
 
 	public static DeviceConfig getInstance() {
 		return (DeviceConfig)(LoadableConfig.getInstance());
