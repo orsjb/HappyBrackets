@@ -47,7 +47,7 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * *** Step 3 ***
  *
  * Lastly, we will see how we can connect a sound to just one channel.
- * Go to the line Gain g = new Gain(ac, 1, 0.4f), and change the "1" to "2".
+ * Go to the line Gain g = new Gain(ac, 1, 0.2f), and change the "1" to "2".
  * If you run the code after this change, nothing will be different. The "addInput()" command automatically connects a mono signal (from the WavePlayer) to both sides of the stereo signal (into the Gain object).
  *
  * Now go to the line g.addInput(wp) and change it to g.addInput(0, wp, 0);
