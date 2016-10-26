@@ -13,7 +13,6 @@ import net.happybrackets.device.sensors.MiniMU;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
- * Created by ollie on 24/06/2016.
  */
 public class SensorTest implements HBAction {
 
