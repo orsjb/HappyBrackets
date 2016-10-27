@@ -11,7 +11,7 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  */
-public class Example3_1 extends Application {
+public class Example3_5 extends Application {
 
     public static void main(String[] args) {
         launch(args);

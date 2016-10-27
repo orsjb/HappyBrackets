@@ -1,16 +1,20 @@
 package net.happybrackets.tutorial.session2;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
-import net.beadsproject.beads.data.Pitch;
-import net.beadsproject.beads.events.KillTrigger;
-import net.beadsproject.beads.ugens.*;
+import net.beadsproject.beads.ugens.Envelope;
+import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Glide;
+import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.controller.gui.WaveformVisualiser;
-
-import java.util.Random;
 
 /**
  */
@@ -25,60 +29,47 @@ public class Example2_2 extends Application {
         //set up the audio context
         AudioContext ac = new AudioContext();
         ac.start();
-
-        //random number generator
-        Random random = new Random();
-
+        //add the waveplayer
+        //we control the frequency value of the WavePlayer with an Envelope object
         Envelope e = new Envelope(ac, 500);
-        e.addSegment(1000, 5000);
-
-        //the clock
-        Clock clock = new Clock(ac, e);
-        ac.out.addDependent(clock);
-
-        //the base pitch
-        int basePitch = 50;
-
-        //delay
-        TapIn tin = new TapIn(ac, 10000);
-        TapOut tout = new TapOut(ac, tin, e);
-        Gain delayFeedbackGain = new Gain(ac, 1, 0.7f);
-        delayFeedbackGain.addInput(tout);
-        tin.addInput(delayFeedbackGain);
-        ac.out.addInput(delayFeedbackGain);
-
-        //filter
-        BiquadFilter filter = new BiquadFilter(ac, 2, BiquadFilter.Type.LP);
-        filter.setFrequency(100f);
-
-        //connect filter to delay
-        tin.addInput(filter);
-        ac.out.addInput(filter);
-
-        clock.addMessageListener(new Bead() {
+        WavePlayer wp = new WavePlayer(ac, e, Buffer.SINE);
+        //add the gain
+        //we control the gain value of the Gain object with a Glide object
+        Glide glide = new Glide(ac, 0.1f);
+        //the Gain object itself takes the Glide object as its third argument
+        Gain g = new Gain(ac, 1, glide);
+        //now control what will happen to the frequency, and add an event at the end
+        //this event simply prints out a message. Notice that IntelliJ intelligently converts single
+        //line actions into "lambdas".
+        e.addSegment(1000, 2000);
+        e.addSegment(500, 200, new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-
-                if(clock.getCount() % 32 == 0) {
-                    //add the waveplayer
-                    int pitch = basePitch + 12 + Pitch.major[random.nextInt(7)];
-                    float freq = Pitch.mtof(pitch);
-                    WavePlayer wp = new WavePlayer(ac, freq, Buffer.SQUARE);
-                    //add the gain
-                    Envelope e = new Envelope(ac, 0.1f);
-                    Gain g = new Gain(ac, 1, e);
-                    e.addSegment(0, 200, new KillTrigger(g));
-                    //connect together
-                    g.addInput(wp);
-                    filter.addInput(g);
-                    filter.setFrequency(freq * 4);
-                }
-
+                System.out.println("NEW BEAD!");
             }
         });
-
+        //connect together the audio elements
+        g.addInput(wp);
+        ac.out.addInput(g);
+        //this is the end of the audio code. What follows sets up the visualiser and also a button
+        //that allows you to control the gain value via the Glide object you created above.
         //visualiser
         WaveformVisualiser.open(ac);
+        //graphics code
+        //set up the scene
+        VBox layout = new VBox();
+        Scene s = new Scene(layout);
+        primaryStage.setScene(s);
+        primaryStage.show();
+        //create a button
+        Button b = new Button("Press Me!");
+        b.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("BUTTON PRESSED");
+                glide.setValue(0);
+            }
+        });
+        layout.getChildren().add(b);
     }
-
 }
