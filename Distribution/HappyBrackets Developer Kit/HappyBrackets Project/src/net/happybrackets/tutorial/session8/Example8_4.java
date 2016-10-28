@@ -16,45 +16,31 @@ public class Example8_4 implements HBAction {
 
     @Override
     public void action(HB hb) {
-
-
         hb.reset();
-
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
-
         Glide rate = new Glide(hb.ac, 1);
-
         //create a pattern that plays notes
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-
                 if(hb.clock.getCount() % 32 == 0) {
-
                     //play a new random sound
                     Sample s = SampleManager.fromGroup("Guitar", 1);
                     SamplePlayer sp = new SamplePlayer(hb.ac, s);
                     sp.setRate(rate);
                     hb.sound(sp);
-
                 }
             }
         });
-
         LSM9DS1 lsm = (LSM9DS1)hb.getSensor(LSM9DS1.class);
         lsm.addListener(new SensorUpdateListener() {
-
             @Override
             public void sensorUpdated() {
-
                 // get x
                 double x = lsm.getAccelerometerData()[0];
-
                 rate.setValue((float)x / 1000f);
             }
-
-
         });
     }
 

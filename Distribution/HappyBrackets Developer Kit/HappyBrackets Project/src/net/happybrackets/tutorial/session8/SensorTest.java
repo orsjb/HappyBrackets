@@ -18,20 +18,14 @@ public class SensorTest implements HBAction {
 
     @Override
     public void action(HB hb) {
-
         hb.reset();
         hb.masterGainEnv.setValue(0.1f);
-
         Glide freq = new Glide(hb.ac, 500, 500);
-
         WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
         hb.sound(wp);
-
         MiniMU mm = (MiniMU)hb.getSensor(MiniMU.class);
-
         mm.clearListeners();
         mm.addListener(new SensorUpdateListener() {
-
             @Override
             public void sensorUpdated() {
                 double x = mm.getAccelerometerData()[0];
@@ -39,7 +33,6 @@ public class SensorTest implements HBAction {
                 System.out.println(x);
                 freq.setValue((float)x * 5000f + 200f);
             }
-
         });
     }
 

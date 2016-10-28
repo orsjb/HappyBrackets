@@ -21,38 +21,27 @@ public class Example8_3 implements HBAction {
 
     @Override
     public void action(HB hb) {
-
-
         hb.reset();
-
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
-
         //play a new random sound
         Sample sUp = SampleManager.fromGroup("Guitar",1);
         Sample sDown = SampleManager.fromGroup("Guitar",2);
-
-
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-
         mySensor.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {
-
                 // Get the data from Z.
                 double zAxis = mySensor.getAccelerometerData()[2];
                 System.out.println("zAxis: " + zAxis);
-
                 // set previous orientation to the current orientation
                 previousOri = currentOri;
-
                 // Is it positive or negative.
                 if (zAxis >= 0) {
                     currentOri = Orientation.UP;
                 } else {
                     currentOri = Orientation.DOWN;
                 }
-
                 // Is it different to the current value (has it changed)
                 if (currentOri != previousOri) {
                     // if so play the sound

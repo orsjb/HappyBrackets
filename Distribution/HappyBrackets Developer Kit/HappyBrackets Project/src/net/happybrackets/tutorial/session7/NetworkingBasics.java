@@ -12,7 +12,14 @@ import net.happybrackets.device.HB;
 import java.net.SocketAddress;
 
 /**
- * Created by samferguson on 27/07/2016.
+ * In this example, a listener is set up to listen to commands from the controller.
+ * Messages:
+ *
+ *  /guitar_pluck <key=float_value>...
+ *  keys include rate and gain.
+ *
+ *  /guitar/base_rate <float:rate>
+ *  /base_rate <float:rate>
  */
 public class NetworkingBasics implements HBAction {
 
@@ -28,10 +35,8 @@ public class NetworkingBasics implements HBAction {
             @Override
             public void messageReceived(OSCMessage oscMessage, SocketAddress socketAddress, long l) {
                 if(oscMessage.getName().toLowerCase().equals("/guitar_pluck")) {
-
                     float thisRate = 1;
                     float gain = 1;
-
                     for(int i = 0; i < oscMessage.getArgCount(); i++) {
                         String argContent = (String)oscMessage.getArg(i);
                         String[] argElements = argContent.split("=");
@@ -41,22 +46,12 @@ public class NetworkingBasics implements HBAction {
                             gain = Float.parseFloat(argElements[1]);
                         }
                     }
-
-//                    if(oscMessage.getArgCount() > 0) {
-//                        thisRate = hb.getFloatArg(oscMessage, 0);
-//                    }
-//                    if(oscMessage.getArgCount() > 1) {
-//                        gain = hb.getFloatArg(oscMessage, 1);
-//                    }
-
                     SamplePlayer sp = new SamplePlayer(hb.ac, SampleManager.sample("data/audio/Nylon_Guitar/Clean_A_harm.wav"));
                     sp.getRateUGen().setValue(globalBaseRate * guitarBaseRate * thisRate);
                     Gain g = new Gain(hb.ac, 1, gain);
                     g.addInput(sp);
                     sp.setKillListener(new KillTrigger(g));
                     hb.sound(g);
-
-
                 } else if(oscMessage.getName().equals("/guitar/base_rate")) {
                     String[] messageElements = oscMessage.getName().split("/");
                     hb.setStatus(messageElements[2]);

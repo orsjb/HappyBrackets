@@ -10,10 +10,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This example demonstrates the observer pattern.
  */
 public class ObservableObject {
 
+    public interface Listener {
+        public void eventOccurred();
+    }
+    List<Listener> myListeners;
     float[] myarray = new float[] {1.4f, 2.8f, 3.6f, 4.8f};
+
+    public ObservableObject() {
+        myListeners = new ArrayList<>();
+        new Thread() {
+            public void run() {
+                while(true) {
+                    somethingHappened();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
 
     public void doSomethingToTheFloat(float[] x) throws IOException, ClassNotFoundException {
         for(float f : x) {
@@ -34,28 +55,6 @@ public class ObservableObject {
             }
 
         }
-    }
-
-    public interface Listener {
-        public void eventOccurred();
-    }
-
-    List<Listener> myListeners;
-
-    public ObservableObject() {
-        myListeners = new ArrayList<>();
-        new Thread() {
-            public void run() {
-                while(true) {
-                    somethingHappened();
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
     }
 
     public void addListener(Listener newListener) {

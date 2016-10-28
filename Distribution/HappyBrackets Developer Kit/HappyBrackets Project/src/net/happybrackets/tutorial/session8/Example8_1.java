@@ -5,23 +5,21 @@ import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
-/** For this code task we want to look at the accelerometer and use it to 
+/**
+ * In this example, we look at grabbing accelerometer data from the SenseHat.
+ * If you have a different sensor, see the sensor objects available in the HappyBrackets library (replacing the LSM9DS1 class).
+ *
+ * For this code task we want to look at the accelerometer and use it to
  * trigger a sound when you turn over the accelerometer.
  * 
  */
 
 public class Example8_1 implements HBAction {
 
-//    double[] dataBuffer = new double[12];
-//    int j = 0;
-
     @Override
     public void action(HB hb) {
-
         hb.reset();
-
         LSM9DS1 lsm = (LSM9DS1)hb.getSensor(LSM9DS1.class);
-
         lsm.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {
@@ -33,14 +31,11 @@ public class Example8_1 implements HBAction {
     }
 
     public double mean(double[] dataBuffer){
-
         double meanValue = 0;
-
         for (int index = 0; index < dataBuffer.length; index++) {
-            meanValue = dataBuffer[index] + meanValue;
+            meanValue += dataBuffer[index];
         }
-        meanValue = meanValue / dataBuffer.length;
-
+        meanValue /= dataBuffer.length;
         return meanValue;
 
     }
