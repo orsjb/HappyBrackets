@@ -1,20 +1,24 @@
 package net.happybrackets.tutorial.session2;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.events.KillTrigger;
-import net.beadsproject.beads.ugens.*;
+import net.beadsproject.beads.ugens.Clock;
+import net.beadsproject.beads.ugens.Envelope;
+import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
+ * In this example, we show simple use of the Clock class.
+ * It is really important to notice the line ac.out.addDependent(clock), without which the Clock does not run.
+ *
+ * Notice below, if you are looking at this file in IntelliJ that the code for creating the Bead is rewritten to simplify the dynamic creation of this class. Look for the line clock.addMessageListener() and exand it by clicking on the + button on the left hand side of the code.
+ *
+ * Also notice here that at each clock event we are creating a new sound, added to the signal chain. We use an Envelope and a KillTrigger to ensure that the sound does not remain forever, but fades out to zero and is then destroyed.
  */
 public class Example2_3 extends Application {
 

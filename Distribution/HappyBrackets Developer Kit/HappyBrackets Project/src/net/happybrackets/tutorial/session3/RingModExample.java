@@ -13,6 +13,14 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
+ * This is a slightly more complex example including playing back random samples from a set, panning each sound, possibly reversing it at random, and ring modulating each sound with a common ringmod oscillator.
+ * Note the output to the commandline, which reports the number of UGens connected to ac.out. This number changes according to sounds being added and later auto-removed.
+ *
+ * Note the sp.setKillListener() function which flags the signal to be destroyed once the sample has played.
+ *
+ * Note also that the panner is a hand-coded UGen. This is not necessary, but illustrates how you can code UGens on the fly.
+ *
+ * Lastly, this example shows how to record data to a file. Note the DelayTrigger which triggers the end of the recording after 20 seconds.
  */
 public class RingModExample {
 
@@ -65,7 +73,6 @@ public class RingModExample {
                 }
             }
         });
-
         //recording code
         RecordToFile recorder = new RecordToFile(ac, 2, new File("test.wav"));
         ac.out.addDependent(recorder);
@@ -78,6 +85,5 @@ public class RingModExample {
             }
         });
         ac.out.addDependent(dt);
-
     }
 }

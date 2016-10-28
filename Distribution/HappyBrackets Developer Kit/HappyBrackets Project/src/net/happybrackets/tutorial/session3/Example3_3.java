@@ -1,25 +1,16 @@
 package net.happybrackets.tutorial.session3;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
-import net.beadsproject.beads.core.Bead;
-import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
-import java.util.Random;
-
 /**
- * Created by ollie on 25/07/2016.
+ * In this example we demonstrate a simple use of ring modulation, affecting a sample.
  */
 public class Example3_3 extends Application {
 
@@ -40,17 +31,16 @@ public class Example3_3 extends Application {
         Envelope loopEndEnv = new Envelope(ac, 500);
         sp.setLoopEnd(loopEndEnv);
         loopEndEnv.addSegment(1, 5000);
-//        ac.out.addInput(sp);
-
+        //Envelope controlling the frequency of the ringmod modulation signal
         Envelope modFreq = new Envelope(ac, 500);
         modFreq.addSegment(1000, 3000);
+        //the ringmod oscillator
         WavePlayer ringmodulator = new WavePlayer(ac, modFreq, Buffer.SINE);
         Gain g = new Gain(ac, 1, 0.1f);
         g.addInput(ringmodulator);
-
+        //all way do to get the ringmod effect is multiply the source signal by our osciallator's signal
         Mult m = new Mult(ac, sp, g);
         ac.out.addInput(m);
-
         //visualiser
         WaveformVisualiser.open(ac);
 

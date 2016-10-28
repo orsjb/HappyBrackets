@@ -13,6 +13,17 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import java.util.Random;
 
 /**
+ * In this example we look at sending sounds generated from a Clock into a global effect chain.
+ *
+ * The effect chain consists of a filter feeding into a feedback delay line.
+ *
+ * The clock and the delay are both controlled by the same interval value (the Envelope e).
+ *
+ * This is also being transformed to create a decelerando.
+ *
+ * Note how the sounds in the clock listener are now being added to the filter input rather than ac.out.
+ * Also note that the input to ac.out includes the filter as well as the delay, since we need to hear both.
+ *
  */
 public class Example2_5 extends Application {
 
@@ -27,6 +38,7 @@ public class Example2_5 extends Application {
         ac.start();
         //random number generator
         Random random = new Random();
+        //
         Envelope e = new Envelope(ac, 500);
         e.addSegment(1000, 5000);
         //the clock

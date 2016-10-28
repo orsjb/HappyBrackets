@@ -12,13 +12,14 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
+ * An example with a more extensive musical structure. You can play with this while it is running.
  */
 public class LiveCoder implements HBAction {
     @Override
     public void action(HB hb) {
+        hb.resetLeaveSounding();
         hb.masterGainEnv.setValue(0.2f);
         hb.clock.getIntervalUGen().setValue(8000);
-        hb.clock.clearMessageListeners();
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {

@@ -9,6 +9,8 @@ import net.happybrackets.device.HB;
 import java.net.SocketAddress;
 
 /**
+ * In this example the device both broadcasts messages off its clock, and also prints out any broadcast messages.
+ * You need to be running this in the terminal with output in order to see this printout.
  */
 public class BasicBroadcastTest implements HBAction {
 

@@ -9,7 +9,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * Created by samferguson on 27/07/2016.
+ * Example of playing a single sound on multiple devices at the same time.
  */
 public class SyncExample implements HBAction {
 
@@ -28,16 +28,6 @@ public class SyncExample implements HBAction {
                 hb.sound(g);
             }
         }, hb.getSynchTime() + 5000);
-
-
-        hb.pattern(new Bead() {
-            @Override
-            protected void messageReceived(Bead bead) {
-                if (hb.clock.getCount() % 16 == 0) {
-                    //
-                }
-            }
-        });
 
     }
 

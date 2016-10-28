@@ -8,6 +8,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
+ * This example plays random sounds from the Nylon_Guitar group on the Pi. As before, you can reset and resent but the sounds will remain loaded.
  */
 public class Example5_3 implements HBAction {
 

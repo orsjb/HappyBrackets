@@ -8,6 +8,9 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
+ *
+ * This example explores the behaviour of an HBAction when you send it multiple times to the Pi.
+ *
  * Send the following HBAction to your Pi.
  * Send it a second time. You will hear two sounds.
  * Now uncomment the hb.reset() line and send the action once again.

@@ -1,25 +1,20 @@
 package net.happybrackets.tutorial.session3;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
-import net.beadsproject.beads.core.Bead;
-import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.data.Buffer;
-import net.beadsproject.beads.data.Sample;
-import net.beadsproject.beads.data.SampleManager;
-import net.beadsproject.beads.ugens.*;
+import net.beadsproject.beads.ugens.Envelope;
+import net.beadsproject.beads.ugens.Function;
+import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
-import java.util.Random;
-
 /**
- * Created by ollie on 25/07/2016.
+ * This example demonstrates a simple Frequency Modulation signal chain.
+ *
+ * Note in this case the base frequency is dynamically controlled by an Envelope, whereas the modulation ratio and the modulation amount are both fixed values. It would be simple to make all of these parameters dynamic and controlled by any other factors you wished.
+ *
  */
 public class Example3_2 extends Application {
 
@@ -32,53 +27,34 @@ public class Example3_2 extends Application {
         //set up the audio context
         AudioContext ac = new AudioContext();
         ac.start();
-        //load sample
-        Sample s = SampleManager.sample("data/audio/Nylon_Guitar/Clean_A_harm.wav");
-        GranularSamplePlayer sp = new GranularSamplePlayer(ac, s);
-        //set rate and pitch parameters
-        Envelope e = new Envelope(ac, 2);
-        e.addSegment(1, 3000);
-        sp.setRate(e);
-        sp.getPitchUGen().setValue(4);
-        //set loop loop parameters
-        sp.setLoopType(SamplePlayer.LoopType.LOOP_ALTERNATING);
-        Envelope loopEndEnv = new Envelope(ac, 500);
-        sp.setLoopEnd(loopEndEnv);
-        loopEndEnv.addSegment(1, 5000);
-        //set grain parameters
-        sp.getGrainIntervalUGen().setValue(10);
-        sp.getGrainSizeUGen().setValue(20);
-        sp.getRandomnessUGen().setValue(0.01f);
-        //ac.out.addInput(sp);
-
-        Random random = new Random();
-
+        //base freq - as envelope, with a line segment
         Envelope baseFreq = new Envelope(ac, 500);
         baseFreq.addSegment(1000, 2000);
-
-        float modAmount = 500;
+        //fixed modulation ratio (the ratio of the modulator frequency to the carrier frequency
+        float modRatio = 1.1f;
+        //create the modulator wave player, with a Function object mapping the baseFreq.
         WavePlayer modulator = new WavePlayer(ac, new Function(baseFreq) {
             @Override
             public float calculate() {
-                return x[0] * 1.1f;
+                return x[0] * modRatio;
             }
         }, Buffer.SINE);
-
+        //fixed modulation amount
+        float modAmount = 500;
+        //create the modulation signal, which combines the baseFreq with the output from the modulator
         Function modSignal = new Function(modulator, baseFreq) {
             @Override
             public float calculate() {
                 return x[0] * modAmount + x[1];
             }
         };
+        //create the carrier signal
         WavePlayer carrier = new WavePlayer(ac, modSignal, Buffer.SINE);
-
-
+        //connect to output
         Gain g = new Gain(ac, 1, 0.1f);
         g.addInput(carrier);
         ac.out.addInput(g);
-
         //visualiser
         WaveformVisualiser.open(ac);
-
     }
 }

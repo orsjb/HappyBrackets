@@ -12,6 +12,9 @@ import net.happybrackets.device.network.NetworkCommunication;
 import java.net.SocketAddress;
 
 /**
+ * In this example we play a sound upon receiving the message "/play" with a float argument to control the playback rate.
+ * Be warned, you need to type your argument as a float. e.g., type 1.0 instead of 1.
+ * Note you can use the hb.getFloatArg() method to avoid this danger of accidentally sending ints instead of floats.
  */
 public class Example7_2 implements HBAction {
 

@@ -10,7 +10,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * Created by samferguson on 26/07/2016.
+ * This example can be played twice on the same device or on two devices to show that multiple patterns can play at once.
  */
 public class Example5_4 implements HBAction {
 

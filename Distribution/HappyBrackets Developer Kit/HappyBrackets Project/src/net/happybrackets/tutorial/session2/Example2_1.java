@@ -10,6 +10,9 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
+ * This example shows the use of an Envelope object to control the frequency of a WavePlayer.
+ * Try changing the arguments to the commands e.addSegment(), and add more segments to see what happens.
+ * Look at the documentation for Envelope and WavePlayer (use the F1 key, or look at beadsproject.net/doc).
  */
 public class Example2_1 extends Application {
 
@@ -22,10 +25,10 @@ public class Example2_1 extends Application {
         //set up the audio context
         AudioContext ac = new AudioContext();
         ac.start();
-        //add the waveplayer
+        //add the waveplayer, with frequency value controlled by an Envelope
         Envelope e = new Envelope(ac, 500);
-        e.addSegment(1000, 2000);
-        e.addSegment(500, 200);
+        e.addSegment(1000, 2000);               //segment arguments are (destination, time_ms)
+        e.addSegment(500, 200);                 //queue multiple segments
         WavePlayer wp = new WavePlayer(ac, e, Buffer.SINE);
         Gain g = new Gain(ac, 1, 0.1f);
         //connect together
