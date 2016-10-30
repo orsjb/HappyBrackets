@@ -36,7 +36,7 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	private Integer codeToDevicePort;
 	private Integer controlToDevicePort;
 	private Integer controllerDiscoveryPort;
-  private Integer controllerHTTPPort;
+  	private Integer controllerHTTPPort;
 
 	//how often the PI sends an alive message to the server
 	private Integer aliveInterval;
