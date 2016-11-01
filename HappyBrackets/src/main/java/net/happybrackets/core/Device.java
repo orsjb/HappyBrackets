@@ -192,6 +192,7 @@ public class Device {
 			if ( !ni.isUp()										  						) return false;
 			if ( ni.isVirtual()															) return false; // No sub interfaces
 			//if ( ni.getDisplayName().matches(".*[Vv]irtual.*")	                    ) return false; //try and catch out any interfaces which belong to a virtualisation environment
+            if ( !ni.getInetAddresses().hasMoreElements()                               ) return false; // Make sure we can access at least one address for this interface.
 		} catch (SocketException e) {
 			logger.error("Error checking interface {}", ni.getName(), e);
 			return false;
