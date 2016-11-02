@@ -50,11 +50,13 @@ public class BroadcastTest {
 		System.out.println("BroadcastManager testing tearDown started at: "
 						+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
 		);
+
 		broadcastManager.clearBroadcastListeners();
         broadcastManager.dispose();
-				System.out.println("BroadcastManager testing tearDown finished at: "
-								+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
-				);
+
+		System.out.println("BroadcastManager testing tearDown finished at: "
+						+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
+		);
 	}
 
 	@Test
