@@ -9,9 +9,10 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Device {
+public abstract class Device {
 
 	final static Logger logger = LoggerFactory.getLogger(Device.class);
+    private static String deviceName = null;
 
 //	public  final String    myHostname;		//the hostname for this PI (wifi)
 //	public  final String    myIP;
@@ -293,4 +294,20 @@ public class Device {
         return "000000000000";
     }
 
+    public static String getDeviceName() {
+        if(deviceName == null) {
+            try {
+                Scanner s = new Scanner(new File("/etc/hostname"));
+                String line = s.next();
+                if (line != null && !line.isEmpty() && !line.endsWith("-")) {
+                    deviceName = line;
+                }
+                s.close();
+            } catch (Exception e) {
+                logger.error("Problem reading device name at /etc/hostname", e);
+            }
+        }
+        logger.debug("Read device name from /etc/hostname. Name is {}", deviceName);
+        return deviceName;
+    }
 }

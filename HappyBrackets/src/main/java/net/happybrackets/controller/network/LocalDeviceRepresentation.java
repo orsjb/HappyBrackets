@@ -1,6 +1,7 @@
 package net.happybrackets.controller.network;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.channels.UnresolvedAddressException;
@@ -24,6 +25,7 @@ public class LocalDeviceRepresentation {
 	final static Logger logger = LoggerFactory.getLogger(LocalDeviceRepresentation.class);
 
 	public long lastTimeSeen;
+	public final String deviceName;
 	public final String hostname;
 	public final String address;
 	private int id;
@@ -49,11 +51,12 @@ public class LocalDeviceRepresentation {
 
 	private String status = "Status unknown";
 
-	public LocalDeviceRepresentation(String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
+	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
 
+		this.deviceName						= deviceName;
 		this.hostname   					= hostname;
     	this.address    					= addr;
-		this.socket     					= new InetSocketAddress(addr, config.getControlToDevicePort());
+		this.socket     					= null;
 		this.id         					= id;
 		this.server     					= server;
 		this.config     					= config;
@@ -68,11 +71,8 @@ public class LocalDeviceRepresentation {
 			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
 				if (msg.getName().equals("/device/log") && ((Integer) msg.getArg(0)) == id) {
 					String newLogOutput = (String) msg.getArg(1);
-
 					log = log + "\n" + newLogOutput;
-
 					logger.debug("Received new log output from device {} ({}): {}", hostname, id, newLogOutput);
-
 					for (LogListener listener : logListenerList) {
 						listener.newLogMessage(newLogOutput);
 					}
@@ -94,13 +94,22 @@ public class LocalDeviceRepresentation {
 			return;
 		}
 		OSCMessage msg = new OSCMessage(msgName, args);
-		if(socket == null) {
-			socket = new InetSocketAddress(hostname, config.getControlToDevicePort()); //TODO this could be problematic
-		}
+
+		//TODO speed this up. We also need to try hostname.local!
+		//TODO solution >> create an array of strings ordered according to previous success, iterate through these in a loop
 		try {
-			server.send(msg, socket);	//TODO this may need a solution like BroadcastManger?
-		} catch (UnresolvedAddressException | IOException e) {
-			logger.error("Error sending to device at{}!", hostname, e);
+			if(socket == null) {
+				socket = new InetSocketAddress(hostname, config.getControlToDevicePort());
+			}
+			server.send(msg, socket);
+		} catch (UnresolvedAddressException | IOException e1) {
+			try {
+				socket = new InetSocketAddress(deviceName + ".local", config.getControlToDevicePort());
+				server.send(msg, socket);
+			} catch (UnresolvedAddressException | IOException e2){
+				logger.error("Error sending to device at {}! (Setting socket back to null).", deviceName, e1);
+				socket = null;
+			}
 		}
 	}
 

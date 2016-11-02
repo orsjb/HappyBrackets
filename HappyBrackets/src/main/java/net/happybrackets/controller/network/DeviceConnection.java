@@ -148,7 +148,8 @@ public class DeviceConnection {
 	private void incomingMessage(OSCMessage msg) {
 		if(msg.getName().equals("/device/alive")) {
 			String deviceName       = (String)msg.getArg(0);
-			String deviceAddress    = (String)msg.getArg(1);
+			String deviceHostname	= (String)msg.getArg(1);
+			String deviceAddress    = (String)msg.getArg(2);
 //			System.out.println("Device Alive Message: " + deviceName);
 			//see if we have this device yet
 			LocalDeviceRepresentation thisDevice = devicesByHostname.get(deviceName);
@@ -161,8 +162,7 @@ public class DeviceConnection {
 				}
 				//force names if useHostname is true
                 if (config.useHostname()) deviceAddress = deviceName;
-
-				thisDevice = new LocalDeviceRepresentation(deviceName, deviceAddress, id, oscServer, config);
+				thisDevice = new LocalDeviceRepresentation(deviceName, deviceHostname, deviceAddress, id, oscServer, config);
 	        	devicesByHostname.put(deviceName, thisDevice);
 				final LocalDeviceRepresentation deviceToAdd = thisDevice;
 				//adding needs to be done in an "app" thread because it affects the GUI.
@@ -186,8 +186,8 @@ public class DeviceConnection {
 			//keep up to date
 			thisDevice.lastTimeSeen = System.currentTimeMillis();	//Ultimately this should be "corrected time"
 			//TODO update the status in the GUI, not sure how to bind this
-			if(msg.getArgCount() > 3) {
-				String status = (String)msg.getArg(3);
+			if(msg.getArgCount() > 4) {
+				String status = (String)msg.getArg(4);
 				thisDevice.setStatus(status);
 //				System.out.println("Got status update from " + thisDevice.hostname + ": " + status);
 			}
@@ -301,8 +301,9 @@ public class DeviceConnection {
 
 	public void createTestDevice() {
 		String name     = "Virtual Test Device #" + virtualDeviceCount++;
+		String hostname = "myHostname!";
         String address  = "127.0.0.1";
-		LocalDeviceRepresentation virtualTestDevice = new LocalDeviceRepresentation(name, address, 1, oscServer, config);
+		LocalDeviceRepresentation virtualTestDevice = new LocalDeviceRepresentation(name, hostname, address, 1, oscServer, config);
 		theDevices.add(virtualTestDevice);
 		devicesByHostname.put(name, virtualTestDevice);
 	}

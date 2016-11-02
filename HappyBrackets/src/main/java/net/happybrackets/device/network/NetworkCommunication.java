@@ -150,6 +150,7 @@ public class NetworkCommunication {
                         new OSCMessage(
                             "/device/alive",
                             new Object[] {
+									Device.getDeviceName(),
                                     Device.selectHostname(ni),
                                     Device.selectIP(ni),
                                     Synchronizer.time(),
