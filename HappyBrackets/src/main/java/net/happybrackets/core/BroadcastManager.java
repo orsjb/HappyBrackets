@@ -103,8 +103,9 @@ public class BroadcastManager {
      * Calls dispose on all receivers (OSCReceiver) and transmitters (OSCTransmitter).
      */
     public void dispose() {
-        receivers.forEach(r -> r.value.dispose());
-        transmitters.forEach(t -> t.value.dispose());
+//        These calls take an unusually long time and ma not be necessary?
+//        receivers.forEach(r -> r.value.dispose());
+//        transmitters.forEach(t -> t.value.dispose());
     }
 
     /**

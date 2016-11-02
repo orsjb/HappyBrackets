@@ -50,11 +50,12 @@ public class BroadcastTest {
 		System.out.println("BroadcastManager testing tearDown started at: "
 						+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
 		);
-		assert broadcastManager != null;
+
 		broadcastManager.clearBroadcastListeners();
-		broadcastManager.dispose();
+        broadcastManager.dispose();
+
 		System.out.println("BroadcastManager testing tearDown finished at: "
-				+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
+						+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
 		);
 	}
 
@@ -67,6 +68,7 @@ public class BroadcastTest {
 
 	public void testSendReceive() {
 		int	timeOut	= 0;
+
 		//send messages until we catch one
 		while (!receivedMulticastMessage && timeOut < 30) {
 			timeOut++;
@@ -81,6 +83,7 @@ public class BroadcastTest {
 				e.printStackTrace();
 			}
 		}
+
 		System.out.println("Send recieve test ended after: " + (timeOut * 100 * 0.001) + " seconds.");
 		assertTrue( receivedMulticastMessage );
 	}
