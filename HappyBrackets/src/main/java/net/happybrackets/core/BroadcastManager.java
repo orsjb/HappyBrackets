@@ -52,8 +52,23 @@ public class BroadcastManager {
             try {
                 InetAddress group = InetAddress.getByName(address);
                 //set up a listener and receiver for our broadcast address on this interface
-                addListener(ni, group, port);
-                addSender(ni, group, port);
+                DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
+                        .setOption(StandardSocketOptions.SO_REUSEADDR, true)
+                        .bind(new InetSocketAddress(port))
+                        .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
+                //MembershipKey key = dc.join(group, ni);
+                dc.join(group, ni);
+
+                //add receivers
+                OSCReceiver receiver = OSCReceiver.newUsing(dc);
+                receiver.startListening();
+                receiver.addOSCListener(new MessageAggregator(ni));
+                receivers.add(new NetworkInterfacePair<OSCReceiver>(ni, receiver));
+
+                // add transmitters
+                OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
+                transmitter.setTarget( new InetSocketAddress(group.getHostAddress(), port) );
+                transmitters.add(new NetworkInterfacePair<OSCTransmitter>(ni, transmitter));
 
                 logger.debug("Broadcasting on interface: {}", ni.getName());
             } catch (IOException e) {
@@ -61,41 +76,6 @@ public class BroadcastManager {
             }
         });
 
-    }
-
-    /**
-     * Adds a broadcast listener to the specified interface.
-     */
-    private void addListener(NetworkInterface ni, InetAddress group, int port) throws IOException {
-        DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
-                .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-                .bind(new InetSocketAddress(port))
-                .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
-        //MembershipKey key = dc.join(group, ni);
-        dc.join(group, ni);
-
-        OSCReceiver receiver = OSCReceiver.newUsing(dc);
-        receiver.startListening();
-        receiver.addOSCListener(new MessageAggregator(ni));
-
-        receivers.add(new NetworkInterfacePair<OSCReceiver>(ni, receiver));
-    }
-
-    /**
-     * Adds a broadcast sender for this group on this interface
-     */
-    private void addSender(NetworkInterface ni, InetAddress group, int port) throws IOException {
-        InetSocketAddress mcSocketAddr = new InetSocketAddress(group.getHostAddress(), port);
-
-        DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
-                .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-                .bind(new InetSocketAddress(port))
-                .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
-        dc.join(group, ni);
-
-        OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
-        transmitter.setTarget(mcSocketAddr);
-        transmitters.add(new NetworkInterfacePair<OSCTransmitter>(ni, transmitter));
     }
 
 
