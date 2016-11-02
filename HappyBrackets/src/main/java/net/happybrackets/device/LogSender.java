@@ -19,7 +19,7 @@ import java.util.Scanner;
  * Upon starting only new log messages will be sent.
  * As new log messages appear they will be sent to the controller (via a separate thread).
  *
- * @see {@link NetworkCommunication#sendLogs(boolean)}
+ * See {@link NetworkCommunication#sendLogs(boolean)}.
  */
 public class LogSender {
     final static Logger logger = LoggerFactory.getLogger(LogSender.class);
