@@ -46,6 +46,9 @@ public class SendToDevice {
         	try {
 				//send all of the files to this hostname
 				for(byte[] bytes : allFilesAsBytes) {
+					//TODO this may need the same solution as LocalDeviceRepresentation.
+					//TODO solution, replace String[] hostnames with an array of LocalDeviceRepresentations and perform the same check
+					//TODO *OR* just broadcast this instead of sending it individually ??
 					Socket s = new Socket(hostname, ControllerConfig.getInstance().getCodeToDevicePort());
 					s.getOutputStream().write(bytes);
 					s.close();
