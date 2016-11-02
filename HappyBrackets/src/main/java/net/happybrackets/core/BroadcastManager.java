@@ -73,7 +73,6 @@ public class BroadcastManager {
                 .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
         //MembershipKey key = dc.join(group, ni);
         dc.join(group, ni);
-
         OSCReceiver receiver = OSCReceiver.newUsing(dc);
         receiver.startListening();
         receiver.addOSCListener(new MessageAggregator(ni));
@@ -103,6 +102,7 @@ public class BroadcastManager {
      * Calls dispose on all receivers (OSCReceiver) and transmitters (OSCTransmitter).
      */
     public void dispose() {
+        //TODO - potential memory leak or other badness (lines removed to try to speed up tests, but may be needed)
 //        These calls take an unusually long time and ma not be necessary?
 //        receivers.forEach(r -> r.value.dispose());
 //        transmitters.forEach(t -> t.value.dispose());

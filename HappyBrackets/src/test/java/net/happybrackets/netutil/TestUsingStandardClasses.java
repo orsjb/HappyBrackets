@@ -37,6 +37,7 @@ public class TestUsingStandardClasses {
                 while(true) {
                     try {
                         transmitter.send(new OSCMessage("tick_" + count++));
+                        System.out.println("Sending \"tick\" message");
                         Thread.sleep(500);
                     } catch(Exception e) {
                         e.printStackTrace();
@@ -62,7 +63,7 @@ public class TestUsingStandardClasses {
         receiver.addOSCListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-                System.out.println(msg.getName() + " " + sender);
+                System.out.println("Received message: " + msg.getName() + " " + sender);
             }
         });
 
