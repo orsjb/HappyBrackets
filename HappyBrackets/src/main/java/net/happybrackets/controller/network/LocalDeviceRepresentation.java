@@ -99,10 +99,8 @@ public class LocalDeviceRepresentation {
 		}
 		try {
 			server.send(msg, socket);	//TODO this may need a solution like BroadcastManger?
-		} catch (UnresolvedAddressException e) {
-			logger.error("Unable to send to Device: {}", hostname, e);
-		} catch (IOException e) {
-			logger.error("Error sending to device!", e);
+		} catch (UnresolvedAddressException | IOException e) {
+			logger.error("Error sending to device at{}!", hostname, e);
 		}
 	}
 

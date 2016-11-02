@@ -189,6 +189,7 @@ public class Device {
 		try {
 			if ( !ni.supportsMulticast()												) return false;
 			//if ( ni.isLoopback()														) return false;
+            if ( !ni.isLoopback() && !isValidMac(selectMAC(ni))                         ) return false;
 			if ( !ni.isUp()										  						) return false;
 			if ( ni.isVirtual()															) return false; // No sub interfaces
 			//if ( ni.getDisplayName().matches(".*[Vv]irtual.*")	                    ) return false; //try and catch out any interfaces which belong to a virtualisation environment
@@ -279,6 +280,17 @@ public class Device {
             logger.error("Unable to obtain MAC address for interface {}", ni.getDisplayName(), e);
             return "error";
         }
+    }
+
+    public static boolean isValidMac(String mac) {
+        if (mac.equals(emptyMac())) {
+            return false;
+        }
+        return true;
+    }
+
+    public static String emptyMac() {
+        return "000000000000";
     }
 
 }

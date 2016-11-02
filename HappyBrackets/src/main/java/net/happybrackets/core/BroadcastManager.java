@@ -72,7 +72,7 @@ public class BroadcastManager {
 
                 logger.debug("Broadcasting on interface: {}", ni.getName());
             } catch (IOException e) {
-                logger.error("BroadcastManager encountered an IO exception when creating a listener socket!", e);
+                logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}!", ni.getName(), e);
             }
         });
 

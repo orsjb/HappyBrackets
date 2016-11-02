@@ -386,9 +386,9 @@ public class Synchronizer {
 //		}
 //	}
 
-    public void broadcast(String msg) {
-        broadcast.broadcast(oscPath, msg);
-    }
+//    public void broadcast(String msg) {
+//        broadcast.broadcast(oscPath, msg);
+//    }
 
 	public static void main(String[] args) {
 		Synchronizer s = getInstance();
