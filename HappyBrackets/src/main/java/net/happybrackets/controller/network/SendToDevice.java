@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.happybrackets.controller.config.ControllerConfig;
 
@@ -13,18 +14,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SendToDevice {
+public abstract class SendToDevice {
 
 	final static Logger logger = LoggerFactory.getLogger(SendToDevice.class);
 
-	public static void send(String fullClassName, String[] hostnames) throws Exception {
+	public static void send(String fullClassName, List<LocalDeviceRepresentation> devices) throws Exception {
 		String simpleClassName = new File(fullClassName).getName();
 		String packagePath = new File(fullClassName).getParent();
 //		sendOLD(packagePath, simpleClassName, hostnames);
-		send(packagePath, simpleClassName, hostnames);
+		send(packagePath, simpleClassName, devices);
 	}
 
-	public static void send(String packagePath, String className, String[] hostnames) throws Exception {
+	public static void send(String packagePath, String className, List<LocalDeviceRepresentation> devices) throws Exception {
 		File packageDir = new File(packagePath);
 		File[] contents = packageDir.listFiles(); //This used to have a hard codded bin/ prepended to it but this is incompatible with the composition path being configurable now
 		ArrayList<byte[]> allFilesAsBytes = new ArrayList<byte[]>();
@@ -42,20 +43,15 @@ public class SendToDevice {
 		allFilesAsBytes.add(getClassFileAsByteArray(packagePath + "/" + className + ".class"));
 		//now we have all the files as byte arrays
 		//time to send
-		for(String hostname : hostnames) {
+		for(LocalDeviceRepresentation device : devices) {
         	try {
 				//send all of the files to this hostname
 				for(byte[] bytes : allFilesAsBytes) {
-					//TODO this may need the same solution as LocalDeviceRepresentation.
-					//TODO solution, replace String[] hostnames with an array of LocalDeviceRepresentations and perform the same check
-					//TODO *OR* just broadcast this instead of sending it individually ??
-					Socket s = new Socket(hostname, ControllerConfig.getInstance().getCodeToDevicePort());
-					s.getOutputStream().write(bytes);
-					s.close();
+					device.send(bytes);
 				}
-				logger.debug("SendToDevice: sent to {}", hostname);
+				logger.debug("SendToDevice: sent to {}", device);
         	} catch(Exception e) {
-        		logger.error("SendToDevice: unable to send to {}", hostname, e);
+        		logger.error("SendToDevice: unable to send to {}", device, e);
         	}
         }
 	}

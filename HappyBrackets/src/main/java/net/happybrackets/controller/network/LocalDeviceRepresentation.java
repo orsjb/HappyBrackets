@@ -1,18 +1,13 @@
 package net.happybrackets.controller.network;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.net.*;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.sciss.net.OSCListener;
-import javafx.application.Platform;
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
@@ -28,8 +23,9 @@ public class LocalDeviceRepresentation {
 	public final String deviceName;
 	public final String hostname;
 	public final String address;
+	public List<String> preferredAddressStrings; 	//This list contains, in order of preference: address, hostname, deviceName, hostname.local or deviceName.local.
 	private int id;
-	private InetSocketAddress socket;
+	private InetSocketAddress socketAddress;
 	private final OSCServer server;
 	public final boolean[] groups;
 	private ControllerConfig config;
@@ -56,14 +52,13 @@ public class LocalDeviceRepresentation {
 		this.deviceName						= deviceName;
 		this.hostname   					= hostname;
     	this.address    					= addr;
-		this.socket     					= null;
+		this.socketAddress = null;
 		this.id         					= id;
 		this.server     					= server;
 		this.config     					= config;
 		groups          					= new boolean[4];
 		statusUpdateListenerList  = new ArrayList<>();
 		logListenerList = new ArrayList<>();
-
 		// Set-up log monitor.
 		log = "";
 		server.addOSCListener(new OSCListener() {
@@ -89,26 +84,68 @@ public class LocalDeviceRepresentation {
 		return id;
 	}
 
+	private void lazySetupAddressStrings() {
+		if(preferredAddressStrings == null) {
+			preferredAddressStrings = new LinkedList<>();
+			preferredAddressStrings.add(deviceName + ".local");
+			preferredAddressStrings.add(address);
+			preferredAddressStrings.add(hostname + ".local");
+			preferredAddressStrings.add(hostname);
+			preferredAddressStrings.add(deviceName);
+		}
+	}
+
 	public synchronized void send(String msgName, Object... args) {
 		if(hostname.startsWith("Virtual Test Device")) {
 			return;
 		}
 		OSCMessage msg = new OSCMessage(msgName, args);
-
-		//TODO speed this up. We also need to try hostname.local!
-		//TODO solution >> create an array of strings ordered according to previous success, iterate through these in a loop
-		try {
-			if(socket == null) {
-				socket = new InetSocketAddress(hostname, config.getControlToDevicePort());
-			}
-			server.send(msg, socket);
-		} catch (UnresolvedAddressException | IOException e1) {
+		lazySetupAddressStrings();
+		boolean success = false;
+		int count = 0;
+		while(!success) {
 			try {
-				socket = new InetSocketAddress(deviceName + ".local", config.getControlToDevicePort());
-				server.send(msg, socket);
-			} catch (UnresolvedAddressException | IOException e2){
-				logger.error("Error sending to device at {}! (Setting socket back to null).", deviceName, e1);
-				socket = null;
+				if (socketAddress == null) {
+					socketAddress = new InetSocketAddress(preferredAddressStrings.get(0), config.getControlToDevicePort());
+				}
+				server.send(msg, socketAddress);
+				success = true;
+			} catch (UnresolvedAddressException | IOException e1) {
+				logger.error("Error sending to device {} using address {}! (Setting socketAddress back to null).",
+						deviceName, preferredAddressStrings.get(0), e1);
+				//set the socketAddress back to null as it will need to be rebuilt
+				socketAddress = null;
+				//rotate the preferredAddressStrings list to try the next one in the list
+				String failedString = preferredAddressStrings.remove(0);
+				preferredAddressStrings.add(failedString);
+				if(count > 4) break;
+				count++;
+			}
+		}
+	}
+
+	public synchronized void send(byte[] data) {
+		lazySetupAddressStrings();
+		boolean success = false;
+		int count = 0;
+		while(!success) {
+			try {
+				Socket s = new Socket(preferredAddressStrings.get(0), ControllerConfig.getInstance().getCodeToDevicePort());
+				s.getOutputStream().write(data);
+				s.close();
+				success = true;
+				logger.debug("Success sending to device {} using address {}!",
+						deviceName, preferredAddressStrings.get(0));
+			} catch (IOException | IllegalArgumentException e1) {
+				logger.error("Error sending to device {} using address {}! (Setting socketAddress back to null).",
+						deviceName, preferredAddressStrings.get(0), e1);
+				//set the socketAddress back to null as it will need to be rebuilt
+				socketAddress = null;
+				//rotate the preferredAddressStrings list to try the next one in the list
+				String failedString = preferredAddressStrings.remove(0);	//remove from front
+				preferredAddressStrings.add(failedString);		//add to end
+				if(count > 4) break;
+				count++;
 			}
 		}
 	}

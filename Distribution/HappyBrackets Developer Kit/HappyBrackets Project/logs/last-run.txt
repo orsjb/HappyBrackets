@@ -1,0 +1,81 @@
+INFO net.happybrackets.core.config.LoadableConfig - Loading: config/controller-config.json
+DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
+DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
+DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+ERROR net.happybrackets.controller.network.DeviceConnection - Unable to read 'null/known_devices'
+INFO net.happybrackets.controller.http.FileServer - Running! Point your browser to http://localhost:2228/
+INFO net.happybrackets.controller.network.DeviceConnection - Assigning id -1 to fe80:0:0:0:29e:95ff:fe9c:47ef
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session1/AboutTheCodeTasks
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session1/CodeTask1_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session1/CodeTask1_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session1/CodeTask1_3
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session1/OptionalExtra_CodeTask1_4
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session2/CodeTask2_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session2/CodeTask2_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session2/CodeTask2_3
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session2/CodeTask2_4
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session2/CodeTask2_5
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session3/CodeTask3_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session3/CodeTask3_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session3/CodeTask3_3
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session3/CodeTask3_4
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session3/CodeTask3_5
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session3/CodeTask3_6
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session4/HappyBracketsHelloWorld
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session6/CodeTask6_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session6/CodeTask6_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session7/CodeTask7_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session7/CodeTask7_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session7/CodeTask7_3
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/Session8/CodeTask8_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/Session8/CodeTask8_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/projects/Bowls
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/projects/Kookaburra
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/projects/TwoEggs
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/projects/WaterBottle
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session1/HelloWorldBeads
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session2/Example2_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session2/Example2_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session2/Example2_3
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session2/Example2_4
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session2/Example2_5
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session3/Example3_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session3/Example3_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session3/Example3_3
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session3/RingModExample
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session4/HappyBracketsHelloWorld
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session5/Example5_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session5/Example5_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session5/Example5_3
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session5/Example5_4
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session6/LiveCoder
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session6/SyncExample
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session7/BasicBroadcastTest
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session7/Example7_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session7/Example7_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session7/NetworkingBasics
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session7/OSCTest
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session8/Example8_1
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session8/Example8_2
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session8/Example8_3
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session8/Example8_4
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session8/Example8_5
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session8/SensorTest
+DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session9/ObservableObject
+DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
+DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
+DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+INFO net.happybrackets.core.Synchronizer - Synchronizer is listening.
+INFO net.happybrackets.core.Synchronizer - Synchronizer is sending synch pulses.
+DEBUG net.happybrackets.controller.network.SendToDevice - The following files are being sent:
+DEBUG net.happybrackets.controller.network.SendToDevice -     build/production/HappyBrackets Project/net/happybrackets/assignment_tasks/session4/HappyBracketsHelloWorld.class
+DEBUG net.happybrackets.controller.network.LocalDeviceRepresentation - Success sending to device hb-009e959c47ef using address hb-009e959c47ef.local!
+DEBUG net.happybrackets.controller.network.SendToDevice - SendToDevice: sent to net.happybrackets.controller.network.LocalDeviceRepresentation@5a13225b

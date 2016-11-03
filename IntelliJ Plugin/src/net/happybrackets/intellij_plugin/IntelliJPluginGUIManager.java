@@ -465,7 +465,7 @@ public class IntelliJPluginGUIManager {
 					//intelliJ specific code
 					String pathToSend = compositionsPath + "/" + currentCompositionSelection;
 					try {
-						SendToDevice.send(pathToSend, deviceConnection.getDeviceHostnames());
+						SendToDevice.send(pathToSend, deviceConnection.getDevices());
 					} catch (Exception ex) {
 						logger.error("Unable to send composition: '{}'!", pathToSend, ex);
 					}

@@ -36,6 +36,19 @@ public class BroadcastManager {
         this.address = address;
         this.port    = port;
         initBroadcaster(address, port);
+        //automatically refresh the broadcaster every second
+        new Thread() {
+            public void run() {
+                while(true) {
+                    refreshBroadcaster();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        logger.error("", e);
+                    }
+                }
+            }
+        }.start();
     }
 
     /**
@@ -72,10 +85,10 @@ public class BroadcastManager {
 
                 logger.debug("Broadcasting on interface: {}", ni.getName());
             } catch (IOException e) {
-                logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}!", ni.getName(), e);
+//                logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}!", ni.getName(), e);
+                logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", ni.getName());
             }
         });
-
     }
 
 
@@ -102,6 +115,7 @@ public class BroadcastManager {
      */
     private void statefulRefresh(List<OSCListener> listeners, List<OnListener> interfaceListeners) {
         // cleanup:
+        logger.debug("Refreshing the broadcaster");
         dispose();
         initBroadcaster(address, port);
         listeners.forEach(l -> addBroadcastListener(l));

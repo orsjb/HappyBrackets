@@ -295,7 +295,7 @@ public class GUIManager {
 			@Override
 			public void handle(MouseEvent e) {
 				try {
-					SendToDevice.send(currentPIPO, piConnection.getDeviceAddresses());
+					SendToDevice.send(currentPIPO, piConnection.getDevices());
 				} catch (Exception ex) {
 					logger.error("Error sending code!", ex);
 				}

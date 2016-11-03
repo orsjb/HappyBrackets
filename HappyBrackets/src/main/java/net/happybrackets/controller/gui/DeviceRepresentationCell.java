@@ -33,7 +33,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			HBox txthbox = new HBox();
 			main.getChildren().add(txthbox);
 			//name of the device
-			Text name = new Text(item.hostname);
+			Text name = new Text(item.deviceName);
 			name.setUnderline(true);
 			txthbox.getChildren().add(name);
 			txthbox.setSpacing(5);
