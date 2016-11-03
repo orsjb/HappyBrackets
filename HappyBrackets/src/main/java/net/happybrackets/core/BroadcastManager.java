@@ -110,7 +110,7 @@ public class BroadcastManager {
     }
 
     /**
-     * Rebuilds a listener with the state provided.
+     * Rebuilds a listener with the state provided. This is aggressive and does a complete dispose and rebuild.
      * @param listeners
      * @param interfaceListeners
      */
@@ -121,6 +121,28 @@ public class BroadcastManager {
         initBroadcaster(address, port);
         listeners.forEach(l -> addBroadcastListener(l));
         interfaceListeners.forEach(l -> addOnMessage(l));
+
+    }
+
+    /**
+     * Rebuilds a listener with the state provided. This is gentle and only rebuilds what needs to be rebuilt.
+     * @param listeners
+     * @param interfaceListeners
+     */
+    // TODO not implemented yet.
+    private void statefulRefreshGentle(List<OSCListener> listeners, List<OnListener> interfaceListeners) {
+        //THE NEW WAY - ONLY REBUILD WHAT IS BROKEN.
+        //iterate through existing network interfaces, revalidate them, and rebuild or destroy as required
+        netInterfaces.forEach( ni -> {
+            //TODO - has this net interface changed?
+            String name = ni.getName();
+            logger.debug(name);
+        });
+        //iterate through the viable interfaces to see if new interfaces have become viable.
+        List<NetworkInterface> tempInterfaces = Device.viableInterfaces();
+        tempInterfaces.forEach(networkInterface -> {
+            //TODO - is this interface not in the list? So add it.
+        });
     }
 
     /**
