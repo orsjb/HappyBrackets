@@ -192,6 +192,7 @@ public class DeviceConnection {
 //				System.out.println("Got status update from " + thisDevice.hostname + ": " + status);
 			}
 		}
+		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
 	}
 
 	public void sendToDevice(LocalDeviceRepresentation device, String msgName, Object... args) {

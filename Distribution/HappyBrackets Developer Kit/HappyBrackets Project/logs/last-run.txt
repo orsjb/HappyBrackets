@@ -1,14 +1,20 @@
 INFO net.happybrackets.core.config.LoadableConfig - Loading: config/controller-config.json
 DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
 DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en5 (en5, MAC: ac87a31a30fc, host name: yap.local, IP: fe80:0:0:0:187b:eebd:b530:4ebf) : VALID
 DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
 DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
 ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en5
 DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
 DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+DEBUG net.happybrackets.core.BroadcastManager - creating broadcast refresh thread...
+DEBUG net.happybrackets.core.BroadcastManager - refresh loop...
+DEBUG net.happybrackets.core.BroadcastManager - Refreshing the broadcaster
 ERROR net.happybrackets.controller.network.DeviceConnection - Unable to read 'null/known_devices'
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
 INFO net.happybrackets.controller.http.FileServer - Running! Point your browser to http://localhost:2228/
-INFO net.happybrackets.controller.network.DeviceConnection - Assigning id -1 to fe80:0:0:0:29e:95ff:fe9c:47ef
 DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session1/AboutTheCodeTasks
 DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session1/CodeTask1_1
 DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/assignment_tasks/session1/CodeTask1_2
@@ -66,16 +72,451 @@ DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: producti
 DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session8/Example8_5
 DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session8/SensorTest
 DEBUG net.happybrackets.controller.gui.GUIManager - Adding composition: production/HappyBrackets Project/net/happybrackets/tutorial/session9/ObservableObject
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en5
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en0
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
 DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
 DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en5 (en5, MAC: ac87a31a30fc, host name: yap.local, IP: fe80:0:0:0:187b:eebd:b530:4ebf) : VALID
+DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
+DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en5 (en5, MAC: ac87a31a30fc, host name: yap.local, IP: fe80:0:0:0:187b:eebd:b530:4ebf) : VALID
 DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
 DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
 ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en5
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en5
 DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
 DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
 INFO net.happybrackets.core.Synchronizer - Synchronizer is listening.
 INFO net.happybrackets.core.Synchronizer - Synchronizer is sending synch pulses.
-DEBUG net.happybrackets.controller.network.SendToDevice - The following files are being sent:
-DEBUG net.happybrackets.controller.network.SendToDevice -     build/production/HappyBrackets Project/net/happybrackets/assignment_tasks/session4/HappyBracketsHelloWorld.class
-DEBUG net.happybrackets.controller.network.LocalDeviceRepresentation - Success sending to device hb-009e959c47ef using address hb-009e959c47ef.local!
-DEBUG net.happybrackets.controller.network.SendToDevice - SendToDevice: sent to net.happybrackets.controller.network.LocalDeviceRepresentation@5a13225b
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.core.BroadcastManager - refresh loop...
+DEBUG net.happybrackets.core.BroadcastManager - Refreshing the broadcaster
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en5
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en0
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
+DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en5 (en5, MAC: ac87a31a30fc, host name: yap.local, IP: fe80:0:0:0:187b:eebd:b530:4ebf) : VALID
+DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
+DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en5
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.core.BroadcastManager - refresh loop...
+DEBUG net.happybrackets.core.BroadcastManager - Refreshing the broadcaster
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en5
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en0
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
+DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en5 (en5, MAC: ac87a31a30fc, host name: yap.local, IP: fe80:0:0:0:187b:eebd:b530:4ebf) : VALID
+DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
+DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en5
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.core.BroadcastManager - refresh loop...
+DEBUG net.happybrackets.core.BroadcastManager - Refreshing the broadcaster
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en5
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en0
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
+DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en5 (en5, MAC: ac87a31a30fc, host name: yap.local, IP: fe80:0:0:0:187b:eebd:b530:4ebf) : VALID
+DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
+DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en5
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en0
+java.net.BindException: Can't assign requested address
+	at sun.nio.ch.DatagramChannelImpl.send0(Native Method)
+	at sun.nio.ch.DatagramChannelImpl.sendFromNativeBuffer(DatagramChannelImpl.java:521)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:483)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:462)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.core.Synchronizer$5$1.cb(Synchronizer.java:230)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.core.Synchronizer$5.run(Synchronizer.java:240)
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en0
+java.net.BindException: Can't assign requested address
+	at sun.nio.ch.DatagramChannelImpl.send0(Native Method)
+	at sun.nio.ch.DatagramChannelImpl.sendFromNativeBuffer(DatagramChannelImpl.java:521)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:483)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:462)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+INFO net.happybrackets.controller.network.DeviceConnection - Assigning id -1 to fe80:0:0:0:29e:95ff:fe9c:47ef
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.core.BroadcastManager - refresh loop...
+DEBUG net.happybrackets.core.BroadcastManager - Refreshing the broadcaster
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en5
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en0
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
+INFO net.happybrackets.controller.network.DeviceConnection - Removed Device from list: hb-009e959c47ef
+DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en5 (en5, MAC: ac87a31a30fc, host name: yap.local, IP: fe80:0:0:0:187b:eebd:b530:4ebf) : VALID
+DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
+DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en5
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+INFO net.happybrackets.controller.network.DeviceConnection - Assigning id -2 to fe80:0:0:0:29e:95ff:fe9c:47ef
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.core.BroadcastManager - refresh loop...
+DEBUG net.happybrackets.core.BroadcastManager - Refreshing the broadcaster
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en5
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+ERROR net.happybrackets.core.BroadcastManager - Error executing call back on transmitter for interface en0
+java.nio.channels.ClosedChannelException: null
+	at sun.nio.ch.DatagramChannelImpl.ensureOpen(DatagramChannelImpl.java:320)
+	at sun.nio.ch.DatagramChannelImpl.send(DatagramChannelImpl.java:428)
+	at de.sciss.net.OSCTransmitter$UDPOSCTransmitter.send(OSCTransmitter.java:705)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:498)
+	at de.sciss.net.OSCTransmitter.send(OSCTransmitter.java:534)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1$1.cb(ControllerAdvertiser.java:28)
+	at net.happybrackets.core.BroadcastManager.lambda$forAllTransmitters$7(BroadcastManager.java:152)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at net.happybrackets.core.BroadcastManager.forAllTransmitters(BroadcastManager.java:150)
+	at net.happybrackets.controller.network.ControllerAdvertiser$1.run(ControllerAdvertiser.java:41)
+DEBUG net.happybrackets.core.Device -     utun0 (utun0) : IGNORED
+INFO net.happybrackets.controller.network.DeviceConnection - Removed Device from list: hb-009e959c47ef
+DEBUG net.happybrackets.core.Device -     awdl0 (awdl0, MAC: f20ecd60d4c9, host name: fe80:0:0:0:f00e:cdff:fe60:d4c9, IP: fe80:0:0:0:f00e:cdff:fe60:d4c9) : VALID
+DEBUG net.happybrackets.core.Device -     en5 (en5, MAC: ac87a31a30fc, host name: yap.local, IP: fe80:0:0:0:187b:eebd:b530:4ebf) : VALID
+DEBUG net.happybrackets.core.Device -     en0 (en0, MAC: a45e60c5c3a3, host name: yap.local, IP: fe80:0:0:0:4d5:b48b:d2bb:7347) : VALID
+DEBUG net.happybrackets.core.Device -     lo0 (lo0, MAC: 000000000000, host name: fe80:0:0:0:0:0:0:1, IP: fe80:0:0:0:0:0:0:1) : VALID
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! This interface will not be used.
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en5
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: en0
+DEBUG net.happybrackets.core.BroadcastManager - Broadcasting on interface: lo0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 0
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+INFO net.happybrackets.controller.network.DeviceConnection - Assigning id -3 to fe80:0:0:0:29e:95ff:fe9c:47ef
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1
+DEBUG net.happybrackets.controller.network.DeviceConnection - Updated device list. Number of devices = 1

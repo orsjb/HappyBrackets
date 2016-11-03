@@ -48,6 +48,7 @@ public class ControllerMain extends Application {
 
 	    //setup controller broadcast
 			broadcastManager = new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+		broadcastManager.startRefreshThread();
 			controllerAdvert = new ControllerAdvertiser(broadcastManager);
 	    controllerAdvert.start();
 

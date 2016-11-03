@@ -34,21 +34,28 @@ public class BroadcastManager {
      */
     public BroadcastManager(String address, int port) {
         this.address = address;
-        this.port    = port;
+        this.port = port;
         initBroadcaster(address, port);
         //automatically refresh the broadcaster every second
-        new Thread() {
+    }
+
+    public Thread startRefreshThread() {
+        logger.debug("creating broadcast refresh thread...");
+        Thread t = new Thread() {
             public void run() {
                 while(true) {
+                    logger.debug("refresh loop...");
                     refreshBroadcaster();
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         logger.error("", e);
                     }
                 }
             }
-        }.start();
+        };
+        t.start();
+        return t;
     }
 
     /**
@@ -60,7 +67,6 @@ public class BroadcastManager {
         receivers               = new ArrayList<>();
         transmitters            = new ArrayList<>();
         netInterfaces           = Device.viableInterfaces();
-
         netInterfaces.forEach( ni -> {
             try {
                 InetAddress group = InetAddress.getByName(address);
@@ -71,34 +77,29 @@ public class BroadcastManager {
                         .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
                 //MembershipKey key = dc.join(group, ni);
                 dc.join(group, ni);
-
                 //add receivers
                 OSCReceiver receiver = OSCReceiver.newUsing(dc);
                 receiver.startListening();
                 receiver.addOSCListener(new MessageAggregator(ni));
                 receivers.add(new NetworkInterfacePair<OSCReceiver>(ni, receiver));
-
                 // add transmitters
                 OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
                 transmitter.setTarget( new InetSocketAddress(group.getHostAddress(), port) );
                 transmitters.add(new NetworkInterfacePair<OSCTransmitter>(ni, transmitter));
-
                 logger.debug("Broadcasting on interface: {}", ni.getName());
             } catch (IOException e) {
-//                logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}!", ni.getName(), e);
                 logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", ni.getName());
             }
         });
     }
 
-
     /**
      * Calls dispose on all receivers (OSCReceiver) and transmitters (OSCTransmitter).
      */
     public void dispose() {
-//        These calls take an unusually long time and ma not be necessary?
-//        receivers.forEach(r -> r.value.dispose());
-//        transmitters.forEach(t -> t.value.dispose());
+//        These calls take an unusually long time and may not be necessary?
+        receivers.forEach(r -> r.value.dispose());
+        transmitters.forEach(t -> t.value.dispose());
     }
 
     /**

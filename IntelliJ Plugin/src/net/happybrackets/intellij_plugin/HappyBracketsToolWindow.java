@@ -219,6 +219,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         //setup controller broadcast
         logger.info("Starting ControllerAdvertiser");
         broadcastManager = new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+        broadcastManager.startRefreshThread();
 
         //set up device connection
         deviceConnection = new DeviceConnection(config, broadcastManager);
