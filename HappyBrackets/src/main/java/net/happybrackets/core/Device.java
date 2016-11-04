@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 public abstract class Device {
 
 	final static Logger logger = LoggerFactory.getLogger(Device.class);
-    private static String deviceName = null;
 
 //	public  final String    myHostname;		//the hostname for this PI (wifi)
 //	public  final String    myIP;
@@ -295,19 +294,23 @@ public abstract class Device {
     }
 
     public static String getDeviceName() {
-        if(deviceName == null) {
-            try {
-                Scanner s = new Scanner(new File("/etc/hostname"));
-                String line = s.next();
-                if (line != null && !line.isEmpty() && !line.endsWith("-")) {
-                    deviceName = line;
-                }
-                s.close();
-            } catch (Exception e) {
-                logger.error("Problem reading device name at /etc/hostname", e);
-            }
+
+        if (System.getProperty("os.name").contains("Windows")) {
+            return "WinDeviceNotReallySupportedYet";
         }
-        logger.debug("Read device name from /etc/hostname. Name is {}", deviceName);
-        return deviceName;
+
+        try {
+            Scanner s = new Scanner(new File("/etc/hostname"));
+            String line = s.next();
+            if (line != null && !line.isEmpty() && !line.endsWith("-")) {
+                logger.debug("Read device name from /etc/hostname. Name is {}", line);
+                return line;
+            }
+            s.close();
+        } catch (Exception e) {
+            logger.error("Problem reading device name at /etc/hostname for OS: {}", System.getProperty("os.name"), e);
+        }
+
+        return "UnableToObtainHostName";
     }
 }

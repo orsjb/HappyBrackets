@@ -16,8 +16,8 @@ import de.sciss.net.OSCMessage;
 import static org.junit.Assert.*;
 
 public class BroadcastTest {
-	protected BroadcastManager broadcastManager;
-  protected ControllerConfig config;
+	protected TestBroadcastManager broadcastManager;
+    protected ControllerConfig config;
 	boolean receivedMulticastMessage; // for testSendReceive()
 
 	@Before
@@ -27,7 +27,7 @@ public class BroadcastTest {
         );
 		config            				= new ControllerConfig();
 		config							= config.load("src/test/config/test-controller-config.json", config);
-		broadcastManager  				= new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+		broadcastManager  				= new TestBroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
 		receivedMulticastMessage 		= false;
 
         //setup test listener
@@ -89,12 +89,27 @@ public class BroadcastTest {
 	}
 
     public void testBroadcastRefresh() {
-        System.out.println("Refreshing broadcast manager");
+        System.out.println("Simulating interface disconnect in broadcast manager: " + new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date()));
+        broadcastManager.simulateInterfaceDisconnection();
         broadcastManager.refreshBroadcaster();
+		System.out.println("Completed refresh: " + new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date()));
         // attempt the send receive test again after refresh
-        System.out.println("Attempting send recive again after refersh");
+        System.out.println("Attempting send receive again after refersh");
         receivedMulticastMessage = false;
         testSendReceive();
+    }
+
+    private class TestBroadcastManager extends BroadcastManager {
+
+        public TestBroadcastManager(String address, int port) {
+            super(address, port);
+        }
+
+        void simulateInterfaceDisconnection() {
+            transmitters.clear();
+            receivers.clear();
+            netInterfaces.clear();
+        }
     }
 
 }

@@ -49,7 +49,7 @@ public class BroadcastManager {
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
-                        logger.error("", e);
+                        logger.error("Broadcast manager poll interval interrupted!", e);
                     }
                 }
             }
@@ -113,8 +113,8 @@ public class BroadcastManager {
      */
     public void dispose() {
 //        These calls take an unusually long time and may not be necessary? Hammering the tests.
-        receivers.forEach(r -> r.value.dispose());
-        transmitters.forEach(t -> t.value.dispose());
+//        receivers.forEach(r -> r.value.dispose());
+//        transmitters.forEach(t -> t.value.dispose());
     }
 
     /**
@@ -135,7 +135,7 @@ public class BroadcastManager {
         dispose();
         // rebuild
         initBroadcaster(address, port);
-        listeners.forEach(l -> addBroadcastListener(l));            //<--- TODO these lines seem redundant, since the arg is listeners
+        listeners.forEach(l -> addBroadcastListener(l));            //Re add the old listeners to the new lists created by initBroadcaster
         interfaceListeners.forEach(l -> addOnMessage(l));           //
     }
 
@@ -189,19 +189,19 @@ public class BroadcastManager {
                     //set up a listener and receiver for our broadcast address on this interface
                     DatagramChannel dc = null;
                     // Try creating IPv6 channel first.
-                    try {
-                        dc = DatagramChannel.open(StandardProtocolFamily.INET6)
-                                .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-                                .bind(new InetSocketAddress(port))
-                                .setOption(StandardSocketOptions.IP_MULTICAST_IF, newInterface);
-                    }
-                    catch (Exception ex) {
+//                    try {
+//                        dc = DatagramChannel.open(StandardProtocolFamily.INET6)
+//                                .setOption(StandardSocketOptions.SO_REUSEADDR, true)
+//                                .bind(new InetSocketAddress(port))
+//                                .setOption(StandardSocketOptions.IP_MULTICAST_IF, newInterface);
+//                    }
+//                    catch (Exception ex) {
                         // If creating IPv6 channel doesn't work try IPv4.
                         dc = DatagramChannel.open(StandardProtocolFamily.INET)
                                 .setOption(StandardSocketOptions.SO_REUSEADDR, true)
                                 .bind(new InetSocketAddress(port))
                                 .setOption(StandardSocketOptions.IP_MULTICAST_IF, newInterface);
-                    }
+//                    }
                     if (dc != null) {                                                       //TODO this is probably not correct, also not added listeners and interfaceListeners as in statefulRefreshHard().
                         dc.join(group, newInterface);
                         //add receivers
