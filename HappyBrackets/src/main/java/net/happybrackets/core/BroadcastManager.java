@@ -97,7 +97,7 @@ public class BroadcastManager {
      * Calls dispose on all receivers (OSCReceiver) and transmitters (OSCTransmitter).
      */
     public void dispose() {
-//        These calls take an unusually long time and may not be necessary?
+//        These calls take an unusually long time and may not be necessary? Hammering the tests.
         receivers.forEach(r -> r.value.dispose());
         transmitters.forEach(t -> t.value.dispose());
     }
@@ -106,7 +106,8 @@ public class BroadcastManager {
      * Rebuilds this BroadcastManager. Effectively deletes this instance and creates a new BroadcastManager.
      */
     public void refreshBroadcaster() {
-        statefulRefresh(listeners, interfaceListeners);
+//        statefulRefreshHard(listeners, interfaceListeners);
+        statefulRefreshSoft(listeners, interfaceListeners);
     }
 
     /**
@@ -114,34 +115,84 @@ public class BroadcastManager {
      * @param listeners
      * @param interfaceListeners
      */
-    private void statefulRefresh(List<OSCListener> listeners, List<OnListener> interfaceListeners) {
-        // cleanup:
-        logger.debug("Refreshing the broadcaster");
+    private void statefulRefreshHard(List<OSCListener> listeners, List<OnListener> interfaceListeners) {
+        // cleanup
         dispose();
+        // rebuild
         initBroadcaster(address, port);
-        listeners.forEach(l -> addBroadcastListener(l));
-        interfaceListeners.forEach(l -> addOnMessage(l));
-
+        listeners.forEach(l -> addBroadcastListener(l));            //<--- TODO these lines seem redundant, since the arg is listeners
+        interfaceListeners.forEach(l -> addOnMessage(l));           //
     }
+
+    String wifiIPaddress;
 
     /**
      * Rebuilds a listener with the state provided. This is gentle and only rebuilds what needs to be rebuilt.
      * @param listeners
      * @param interfaceListeners
      */
-    // TODO not implemented yet.
-    private void statefulRefreshGentle(List<OSCListener> listeners, List<OnListener> interfaceListeners) {
+    private void statefulRefreshSoft(List<OSCListener> listeners, List<OnListener> interfaceListeners) {
         //THE NEW WAY - ONLY REBUILD WHAT IS BROKEN.
-        //iterate through existing network interfaces, revalidate them, and rebuild or destroy as required
+        //iterate through existing network interfaces, destroy as required
+        List<NetworkInterface> toRemove = new ArrayList<>();
         netInterfaces.forEach( ni -> {
-            //TODO - has this net interface changed?
             String name = ni.getName();
-            logger.debug(name);
+            if(!Device.isViableNetworkInterface(ni)) {
+                toRemove.add(ni);
+                logger.debug("The network interface " + ni + " is no longer valid! Removing it!");
+                if(name.equals("en0")) {
+                    wifiIPaddress = null;
+                }
+            }
         });
+        //we now have a to-remove list
+        //clean up the removes
+        receivers.forEach(r -> {
+            if(toRemove.contains(r.networkInterface)) {
+                r.value.dispose();
+            }
+        });
+        transmitters.forEach(t -> {
+            if(toRemove.contains(t.networkInterface)) {
+                t.value.dispose();
+            }
+        });
+        netInterfaces.removeAll(toRemove);
         //iterate through the viable interfaces to see if new interfaces have become viable.
         List<NetworkInterface> tempInterfaces = Device.viableInterfaces();
-        tempInterfaces.forEach(networkInterface -> {
-            //TODO - is this interface not in the list? So add it.
+        tempInterfaces.forEach(newInterface -> {
+            boolean[] exists = new boolean[] {false};
+            netInterfaces.forEach(existingInterface -> {
+                if(newInterface.getName().equals(existingInterface.getName())) {
+                    exists[0] = true;
+                }
+            });
+            if(!exists[0]) {
+                logger.debug("The network interface " + newInterface + " has become valid! Adding it!");
+                try {
+                    InetAddress group = InetAddress.getByName(address);
+                    //set up a listener and receiver for our broadcast address on this interface
+                    DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET)
+                            .setOption(StandardSocketOptions.SO_REUSEADDR, true)
+                            .bind(new InetSocketAddress(port))
+                            .setOption(StandardSocketOptions.IP_MULTICAST_IF, newInterface);
+                    //MembershipKey key = dc.join(group, ni);
+                    dc.join(group, newInterface);
+                    //add receivers
+                    OSCReceiver receiver = OSCReceiver.newUsing(dc);
+                    receiver.startListening();
+                    receiver.addOSCListener(new MessageAggregator(newInterface));
+                    receivers.add(new NetworkInterfacePair<OSCReceiver>(newInterface, receiver));
+                    // add transmitters
+                    OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
+                    transmitter.setTarget( new InetSocketAddress(group.getHostAddress(), port) );
+                    transmitters.add(new NetworkInterfacePair<OSCTransmitter>(newInterface, transmitter));
+                    logger.debug("Broadcasting on interface: {}", newInterface.getName());
+                } catch (IOException e) {
+                    logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", newInterface.getName());
+                }
+                netInterfaces.add(newInterface);
+            }
         });
     }
 
@@ -157,7 +208,7 @@ public class BroadcastManager {
           try {
               transmitter.send(msg);
           } catch (IOException e) {
-              logger.warn("Removing broadcaster interface due to error:", e);
+              logger.warn("Removing broadcaster interface due to error:");
               transmitters.remove(transmitter);
               transmitter.dispose();
           }
@@ -173,7 +224,7 @@ public class BroadcastManager {
             try {
                 onTransmitter.cb(pair.networkInterface, pair.value);
             } catch (Exception e) {
-                logger.error("Error executing call back on transmitter for interface {}", pair.networkInterface.getDisplayName(), e);
+                logger.error("Error executing call back on transmitter for interface {}", pair.networkInterface.getDisplayName());
             }
         });
     }
