@@ -164,7 +164,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         setConfig(configJSON, newConfigFile.getParent());
     }
 
-
     /**
      * Resets the statically stored configuration to the provided config, and
      * recreates or resets the relevant components (DeviceConnection,
