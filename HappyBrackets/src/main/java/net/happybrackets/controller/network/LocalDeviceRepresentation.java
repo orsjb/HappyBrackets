@@ -12,6 +12,7 @@ import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
+import net.happybrackets.core.ErrorListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,7 @@ public class LocalDeviceRepresentation {
 
 	private List<StatusUpdateListener> statusUpdateListenerList;
 
+	private List<ErrorListener> errorListenerList;
 
 	private String log;
 	public interface LogListener {
@@ -59,6 +61,8 @@ public class LocalDeviceRepresentation {
 		groups          					= new boolean[4];
 		statusUpdateListenerList  = new ArrayList<>();
 		logListenerList = new ArrayList<>();
+		errorListenerList = new ArrayList<>();
+
 		// Set-up log monitor.
 		log = "";
 		server.addOSCListener(new OSCListener() {
@@ -128,6 +132,8 @@ public class LocalDeviceRepresentation {
 		lazySetupAddressStrings();
 		boolean success = false;
 		int count = 0;
+		boolean possibleIPvIssue = false;
+		List<Exception> exceptions = new ArrayList<>(5);
 		while(!success) {
 			try {
 				Socket s = new Socket(preferredAddressStrings.get(0), ControllerConfig.getInstance().getCodeToDevicePort());
@@ -144,20 +150,42 @@ public class LocalDeviceRepresentation {
 				//rotate the preferredAddressStrings list to try the next one in the list
 				String failedString = preferredAddressStrings.remove(0);	//remove from front
 				preferredAddressStrings.add(failedString);		//add to end
+
+				exceptions.add(e1);
+				possibleIPvIssue |= e1 instanceof java.net.SocketException && e1.getMessage().contains("rotocol");
 				if(count > 4) break;
 				count++;
 			}
 		}
+
+		if (possibleIPvIssue) {
+			logger.error("It looks like there might be an IPv4/IPv6 incompatibility, try setting the JVM option -Djava.net.preferIPv6Addresses=true or -Djava.net.preferIPv4Addresses=true");
+		}
+		// Communicate the errors to the plugin gui if it's running (and anything else that's listening).
+		exceptions.forEach((e) -> sendError("Error sending to device!", e));
 	}
 
 	public void addStatusUpdateListener(StatusUpdateListener listener) {
 		statusUpdateListenerList.add(listener);
 	}
 
+	public void addErrorListener(ErrorListener listener) {
+		errorListenerList.add(listener);
+	}
+	public void removeErrorListener(ErrorListener listener) {
+		errorListenerList.remove(listener);
+	}
+
 	public void setStatus(String arg) {
 		status = arg;
 		for(StatusUpdateListener statusUpdateListener : statusUpdateListenerList) {
 			statusUpdateListener.update(status);
+		}
+	}
+
+	private void sendError(String description, Exception ex) {
+		for (ErrorListener l : errorListenerList) {
+			l.errorOccurred(this.getClass(), description, ex);
 		}
 	}
 

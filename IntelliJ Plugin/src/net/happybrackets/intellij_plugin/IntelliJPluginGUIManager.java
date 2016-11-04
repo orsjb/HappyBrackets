@@ -1,6 +1,7 @@
 package net.happybrackets.intellij_plugin;
 
 import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.fileChooser.*;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.project.Project;
@@ -14,8 +15,10 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -41,13 +44,20 @@ import net.happybrackets.controller.network.SendToDevice;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
+import net.happybrackets.core.ErrorListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.SwingUtilities;
+
 
 /**
  * Sets up the plugin GUI and handles associated events.
@@ -72,6 +82,8 @@ public class IntelliJPluginGUIManager {
 	private LocalDeviceRepresentation.LogListener logListener; // The listener for new log events, so we can remove when necessary.
 	private TextArea logOutputTextArea;
 
+	private Map<LocalDeviceRepresentation, DeviceErrorListener> deviceErrorListeners;
+
 
 	public IntelliJPluginGUIManager(Project project) {
 		this.project = project;
@@ -86,6 +98,30 @@ public class IntelliJPluginGUIManager {
 		//assume that this path is a path to a root classes folder, relative to the project
 		//e.g., build/classes/tutorial or build/classes/compositions
 		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath();
+
+		deviceErrorListeners = new HashMap<>();
+		// Add ErrorListener's to the devices so we can report to the user when an error occurs communicating
+		// with the device.
+		deviceConnection.getDevices().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+			@Override
+			public void onChanged(Change<? extends LocalDeviceRepresentation> change) {
+				while (change.next()) {
+					if (change.wasAdded()) {
+						change.getAddedSubList().forEach((device) -> {
+							DeviceErrorListener listener = new DeviceErrorListener(device);
+							deviceErrorListeners.put(device, listener);
+							device.addErrorListener(listener);
+						});
+					}
+					if (change.wasRemoved()) {
+						change.getRemoved().forEach((device) -> {
+							device.removeErrorListener(deviceErrorListeners.get(device));
+							deviceErrorListeners.remove(device);
+						});
+					}
+				}
+			}
+		});
 	}
 
 
@@ -320,12 +356,73 @@ public class IntelliJPluginGUIManager {
 		});
 
 		HBox buttons = new HBox(defaultElementSpacing);
-		buttons.setAlignment(Pos.TOP_RIGHT);
+		buttons.setAlignment(Pos.TOP_LEFT);
 		buttons.getChildren().addAll(loadButton, saveButton, resetButton, configApplyButton[fileType]);
 
+
+		// Set IP version buttons.
+		HBox ipvButtons = new HBox(defaultElementSpacing);
+		ipvButtons.setAlignment(Pos.TOP_LEFT);
+
+		for (int ipv = 4; ipv <= 6; ipv+=2) {
+			final int ipvFinal = ipv;
+
+			Button setIPv = new Button("Set IntelliJ to prefer IPv" + ipv);
+			String currentSetting = System.getProperty("java.net.preferIPv" + ipv + "Addresses");
+
+			if (currentSetting != null && currentSetting.toLowerCase().equals("true")) {
+				setIPv.setDisable(true);
+			}
+
+			setIPv.setTooltip(new Tooltip("Set the JVM used by IntelliJ to prefer IPv" + ipv + " addresses by default.\nThis can help resolve IPv4/Ipv6 incompatibility issues in some cases."));
+			setIPv.setOnMouseClicked(event -> {
+				// for the 32 and 64 bit versions of the options files.
+				for (String postfix : new String[]{"", "64"}) {
+					String filename = "/idea" + postfix + ".vmoptions";
+					// Create custom options files if they don't already exist.
+					File custOptsFile = new File(PathManager.getCustomOptionsDirectory() + "/idea" + postfix + ".vmoptions");
+					if (!custOptsFile.exists()) {
+						// Create copy of default.
+						try {
+							Files.copy(Paths.get(PathManager.getBinPath() + filename), custOptsFile.toPath());
+						} catch (IOException e) {
+							showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
+						}
+					}
+
+					if (custOptsFile.exists()) {
+						StringBuilder newOpts = new StringBuilder();
+						try (Stream<String> stream = Files.lines(custOptsFile.toPath())) {
+							stream.forEach((line) -> {
+								// Remove any existing preferences.
+								if (!line.contains("java.net.preferIPv")) {
+									newOpts.append(line + "\n");
+								}
+							});
+							// Add new preference to end.
+							newOpts.append("-Djava.net.preferIPv" + ipvFinal + "Addresses=true");
+						} catch (IOException e) {
+							showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
+						}
+
+						// Write new options to file.
+						try (PrintWriter out = new PrintWriter(custOptsFile.getAbsolutePath())) {
+							out.println(newOpts);
+						} catch (FileNotFoundException e) {
+							// This totally shouldn't happen.
+						}
+					}
+				}
+
+				showPopup("You must restart IntelliJ for the changes to take effect.", setIPv, 5, event);
+			});
+
+			ipvButtons.getChildren().add(setIPv);
+		}
+
 		VBox configPane = new VBox(defaultElementSpacing);
-		configPane.setAlignment(Pos.TOP_RIGHT);
-		configPane.getChildren().addAll(makeTitle(label), configField, buttons);
+		configPane.setAlignment(Pos.TOP_LEFT);
+		configPane.getChildren().addAll(makeTitle(label), configField, buttons, ipvButtons);
 
 		return configPane;
 	}
@@ -346,7 +443,9 @@ public class IntelliJPluginGUIManager {
 	private void applyConfig(String config) {
 		HappyBracketsToolWindow.setConfig(config, null);
 		init();
+
 		deviceListView.setItems(deviceConnection.getDevices());
+
 		refreshCompositionList();
 	}
 
@@ -723,8 +822,11 @@ public class IntelliJPluginGUIManager {
 		}
 	}
 
-
 	private void showPopup(String message, Node element, int timeout, MouseEvent event) {
+		showPopup(message, element, timeout, event.getScreenX(), event.getScreenY());
+	}
+
+	private void showPopup(String message, Node element, int timeout, double x, double y) {
 		Text t = new Text(message);
 
 		VBox pane = new VBox();
@@ -734,13 +836,33 @@ public class IntelliJPluginGUIManager {
 		Popup p = new Popup();
 		p.getScene().setFill(Color.ORANGE);
 		p.getContent().add(pane);
-		p.show(element, event.getScreenX(), event.getScreenY());
+		p.show(element, x, y);
 		p.setAutoHide(true);
 
 		if (timeout >= 0) {
 			PauseTransition pause = new PauseTransition(Duration.seconds(timeout));
 			pause.setOnFinished(e -> p.hide());
 			pause.play();
+		}
+	}
+
+
+	private class DeviceErrorListener implements ErrorListener {
+		LocalDeviceRepresentation device;
+		public DeviceErrorListener(LocalDeviceRepresentation device) {
+			this.device = device;
+		}
+		@Override
+		public void errorOccurred(Class clazz, String description, Exception ex) {
+			Point2D pos = deviceListView.localToScreen(0, 0);
+			if (pos != null) {
+				// If it appears we have an IPv4/IPv6 incompatibility.
+				if (ex != null && ex instanceof java.net.SocketException && ex.getMessage().contains("rotocol")) {
+					showPopup("Error communicating with device " + device.getID() + ". It looks like there might be an IPv4/IPv6\nincompatibility. Try setting the protocol to use in the Configuration panel.", deviceListView, 10, pos.getX(), pos.getY());
+				} else {
+					showPopup("Error communicating with device " + device.getID() + ".", deviceListView, 5, pos.getX(), pos.getY());
+				}
+			}
 		}
 	}
 }

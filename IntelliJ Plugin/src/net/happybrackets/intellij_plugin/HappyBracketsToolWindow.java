@@ -23,6 +23,7 @@ import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.Synchronizer;
+import net.happybrackets.core.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -32,6 +33,8 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
 
 /**
  * Created by ollie on 22/04/2016.
@@ -68,6 +71,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        Logging.AddFileAppender( (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root"), "Plugin", getPluginLocation() + "/controller.log", Level.INFO);
+
         logger.info("*** HappyBrackets IntelliJ Plugin launching ***");
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
 

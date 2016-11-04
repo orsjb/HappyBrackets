@@ -3,6 +3,8 @@ package net.happybrackets.controller.network;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
@@ -59,6 +61,7 @@ public class DeviceConnection {
 		try {
 			oscServer = OSCServer.newUsing(OSCServer.UDP, config.getStatusFromDevicePort());
 			oscServer.start();
+			logger.info("Created and started OSCServer for address {}", oscServer.getLocalAddress());
 		} catch (IOException e) {
 			logger.error("Error setting up new OSCServer!", e);
 		}
