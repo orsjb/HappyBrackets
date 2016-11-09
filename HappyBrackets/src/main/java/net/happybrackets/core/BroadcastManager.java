@@ -227,7 +227,8 @@ public class BroadcastManager {
                     }
 
                 } catch (IOException e) {
-                    logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", newInterface.getName(), e);
+                    logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! Trying again next refresh.", newInterface.getName());
+                    logger.debug("Stacktrace:", e);
                 }
             }
         });

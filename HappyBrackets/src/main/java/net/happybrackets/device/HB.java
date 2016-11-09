@@ -100,6 +100,8 @@ public class HB {
 		System.out.print(".");
 		//notify started (happens immeidately or when audio starts)
 		testBleep3();
+
+        broadcast.startRefreshThread();
 		logger.info("HB initialised");
 	}
 
