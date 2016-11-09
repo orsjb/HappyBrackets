@@ -28,7 +28,7 @@ public class BroadcastTest {
 		config            				= new ControllerConfig();
 		config							= config.load("src/test/config/test-controller-config.json", config);
 		broadcastManager  				= new TestBroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
-		broadcastManager.refreshBroadcaster();
+		broadcastManager.startRefreshThread();
 		receivedMulticastMessage 		= false;
 
         //setup test listener
@@ -52,8 +52,9 @@ public class BroadcastTest {
 						+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
 		);
 
-		broadcastManager.clearBroadcastListeners();
-        broadcastManager.dispose();
+        // leave these to be GCed
+//		broadcastManager.clearBroadcastListeners();
+//        broadcastManager.dispose();
 
 		System.out.println("BroadcastManager testing tearDown finished at: "
 						+ new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date())
@@ -71,7 +72,7 @@ public class BroadcastTest {
 		int	timeOut	= 0;
 
 		//send messages until we catch one
-		while (!receivedMulticastMessage && timeOut < 30) {
+		while (!receivedMulticastMessage && timeOut < 300) {
 			timeOut++;
 			System.out.println("Sending test broadcast " + timeOut);
 			broadcastManager.broadcast("/test");
@@ -92,7 +93,6 @@ public class BroadcastTest {
     public void testBroadcastRefresh() {
         System.out.println("Simulating interface disconnect in broadcast manager: " + new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date()));
         broadcastManager.simulateInterfaceDisconnection();
-        broadcastManager.refreshBroadcaster();
 		System.out.println("Completed refresh: " + new SimpleDateFormat("yyyy.MM.dd  HH:mm:ss:ms").format(new Date()));
         // attempt the send receive test again after refresh
         System.out.println("Attempting send receive again after refersh");

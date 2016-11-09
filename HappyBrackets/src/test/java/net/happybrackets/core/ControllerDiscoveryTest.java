@@ -30,7 +30,7 @@ public class ControllerDiscoveryTest {
 
 		//we need a broadcast manager for testing but we can only run one at a time
 		broadcastManager = new BroadcastManager(controllerEnv.getMulticastAddr(), controllerEnv.getBroadcastPort());
-		broadcastManager.refreshBroadcaster();
+		broadcastManager.startRefreshThread();
 
 		advertiser = new ControllerAdvertiser(broadcastManager);
 		advertiser.start();
