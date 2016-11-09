@@ -1,7 +1,5 @@
 package net.happybrackets.assignment_tasks.session1;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.WavePlayer;

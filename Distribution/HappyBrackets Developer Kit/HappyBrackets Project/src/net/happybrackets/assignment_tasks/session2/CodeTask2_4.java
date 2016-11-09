@@ -1,8 +1,5 @@
 package net.happybrackets.assignment_tasks.session2;
 
-import de.sciss.net.OSCServer;
-import javafx.application.Application;
-import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.events.KillTrigger;

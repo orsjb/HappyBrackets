@@ -1,8 +1,6 @@
 package net.happybrackets.assignment_tasks.session1;
 
 import de.sciss.net.OSCMessage;
-import javafx.application.Application;
-import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Noise;
@@ -40,7 +38,7 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  *
  * Now connect your WavePlayer to the Gain object.
  * In the line g.addInput(n), replace "n" with "wp".
- * Run the code. If you did this right you will now hear a sine tone instead of white noise.
+ * Run the code.
  *
  * Now change Buffer.SINE to Buffer.SQUARE (try to use autocomplete to see the available options).
  *
@@ -55,7 +53,7 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * Now change it to g.addInput(1, wp, 0);
  * Run that.
  *
- * You should notice that you are changing which speaker your sound is coming out of (make sure you are listening in stereo!). The first argument is the choice of input channel on the gain object. As you change this from 0 to 1 you switch from the left speaker to the right speaker.
+ * You should notice that you are changing which speaker your sound is coming out of (make sure you are listening in stereo!).
  *
  * *** Step 4 ***
  *

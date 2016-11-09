@@ -157,5 +157,3 @@ development.dependsOn build
 development.dependsOn test
 development.dependsOn shadowJar
 development.dependsOn packDeviceRuntime
-
-

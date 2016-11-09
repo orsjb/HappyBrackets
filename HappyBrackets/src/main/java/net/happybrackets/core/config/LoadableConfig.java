@@ -130,7 +130,6 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		    return EnvironmentConfig.super.getStatusFromDevicePort();
 		}
 	}
-
 	public int getClockSynchPort() {
 		if (clockSynchPort != null) {
 		    return clockSynchPort;

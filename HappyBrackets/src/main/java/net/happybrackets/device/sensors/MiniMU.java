@@ -65,6 +65,8 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 		if (bus != null) {
 			try {
+				System.out.println("Trying a v2.");
+
 				//  v2 info
 				MAG_ADDRESS = 0x1e;
 				ACC_ADDRESS = 0x19;
@@ -90,6 +92,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 			} catch (Exception e2) {
 				logger.error("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached.");
 			}
+
 		}
 		try {
 
