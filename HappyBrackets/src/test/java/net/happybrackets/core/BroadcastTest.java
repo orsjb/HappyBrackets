@@ -28,6 +28,7 @@ public class BroadcastTest {
 		config            				= new ControllerConfig();
 		config							= config.load("src/test/config/test-controller-config.json", config);
 		broadcastManager  				= new TestBroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+		broadcastManager.refreshBroadcaster();
 		receivedMulticastMessage 		= false;
 
         //setup test listener
