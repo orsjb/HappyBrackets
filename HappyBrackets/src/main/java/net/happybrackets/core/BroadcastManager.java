@@ -198,6 +198,7 @@ public class BroadcastManager {
                     }
                     catch (Exception ex) {
                         // If creating IPv6 channel doesn't work try IPv4.
+                        logger.debug("IPv6 failed, falling back to IPv4 for interface {}", newInterface.getName());
                         dc = DatagramChannel.open(StandardProtocolFamily.INET)
                                 .setOption(StandardSocketOptions.SO_REUSEADDR, true)
                                 .bind(new InetSocketAddress(port))
@@ -219,7 +220,7 @@ public class BroadcastManager {
                         logger.debug("Broadcasting on interface: {}", newInterface.getName());
                     }
                 } catch (IOException e) {
-                    logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", newInterface.getName());
+                    logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", newInterface.getName(), e);
                 }
                 netInterfaces.add(newInterface);
             }
@@ -238,9 +239,15 @@ public class BroadcastManager {
           try {
               transmitter.send(msg);
           } catch (IOException e) {
-              logger.warn("Removing broadcaster interface due to error:");
-              transmitters.remove(transmitter);
-              transmitter.dispose();
+              logger.warn("Removing broadcaster interface due to error:", e);
+              transmitters.stream().filter(t -> transmitter.equals((OSCTransmitter) t.value)).forEach(match -> {
+                  netInterfaces.remove(match.networkInterface);
+                  transmitters.remove(match);
+                  match.value.dispose();
+              });
+//              transmitters.remove(transmitter);
+//              netInterfaces.remove(transmitter)
+//              transmitter.dispose();
           }
         });
     }
@@ -254,7 +261,11 @@ public class BroadcastManager {
             try {
                 onTransmitter.cb(pair.networkInterface, pair.value);
             } catch (Exception e) {
-                logger.error("Error executing call back on transmitter for interface {}", pair.networkInterface.getDisplayName());
+                logger.error("Error executing call back on transmitter for interface {}, removing interface", pair.networkInterface.getDisplayName(), e);
+
+                netInterfaces.remove(pair.networkInterface);
+                transmitters.remove(pair);
+                pair.value.dispose();
             }
         });
     }
