@@ -93,8 +93,6 @@ public class IntelliJPluginGUIManager {
 	}
 
 	private void init() {
-		//awful hack but we need to prompt JavaFX to initialise itself, this will do it
-		new JFXPanel();
 		config = HappyBracketsToolWindow.config;
 		deviceConnection = HappyBracketsToolWindow.deviceConnection;
 		//initial compositions path

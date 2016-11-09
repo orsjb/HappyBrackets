@@ -1,19 +1,25 @@
 # all compiled classes
 *.class
 
+# all instances of HB.jar
+*HB.jar
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# local folders #
+# local folders
 .gradle
 build
 workspace.xml
 tasks.xml
 .idea
 
+# intellij stuff
 IntelliJ Plugin/.idea
 IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip
 IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.iml
-
 HappyBrackets/HappyBrackets.iml
 HappyBrackets/HappyBrackets.ipr
+
+# docs copied into HappyBrackets Project
+Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs

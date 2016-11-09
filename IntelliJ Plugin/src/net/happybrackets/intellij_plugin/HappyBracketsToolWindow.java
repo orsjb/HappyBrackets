@@ -71,6 +71,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        //awful hack but we need to prompt JavaFX to initialise itself, this will do it
+        new JFXPanel();
         Logging.AddFileAppender( (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root"), "Plugin", getPluginLocation() + "/controller.log", Level.DEBUG);
 
         logger.info("*** HappyBrackets IntelliJ Plugin launching ***");
