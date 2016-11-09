@@ -66,46 +66,48 @@ public class BroadcastManager {
         interfaceListeners      = new ArrayList<>();
         receivers               = new ArrayList<>();
         transmitters            = new ArrayList<>();
-        netInterfaces           = Device.viableInterfaces();
-        netInterfaces.forEach( ni -> {
-            try {
-                InetAddress group = InetAddress.getByName(address);
-                //set up a listener and receiver for our broadcast address on this interface
-                DatagramChannel dc = null;
-                // Try creating IPv6 channel first.
-                try {
-                    dc = DatagramChannel.open(StandardProtocolFamily.INET6)
-                            .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-                            .bind(new InetSocketAddress(port))
-                            .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
-                    dc.join(group, ni);
-                }
-                catch (Exception ex) {
-                    // If creating IPv6 channel doesn't work try IPv4.
-                    dc = DatagramChannel.open(StandardProtocolFamily.INET)
-                            .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-                            .bind(new InetSocketAddress(port))
-                            .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
-                    if(dc != null) {
-                        dc.join(group, ni);
-                    }
-                }
-                if (dc != null) {
-                    //add receivers
-                    OSCReceiver receiver = OSCReceiver.newUsing(dc);
-                    receiver.startListening();
-                    receiver.addOSCListener(new MessageAggregator(ni));
-                    receivers.add(new NetworkInterfacePair<OSCReceiver>(ni, receiver));
-                    // add transmitters
-                    OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
-                    transmitter.setTarget(new InetSocketAddress(group.getHostAddress(), port));
-                    transmitters.add(new NetworkInterfacePair<OSCTransmitter>(ni, transmitter));
-                    logger.debug("Broadcasting on interface: {}", ni.getName());
-                }
-            } catch (IOException e) {
-                logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", ni.getName());
-            }
-        });
+        netInterfaces           = new ArrayList<>();
+        //  Defer the fiding of interfaces to the refresh cycle so that we don't block the thread loading the BroadcastManager
+//        netInterfaces           = Device.viableInterfaces();
+//        netInterfaces.forEach( ni -> {
+//            try {
+//                InetAddress group = InetAddress.getByName(address);
+//                //set up a listener and receiver for our broadcast address on this interface
+//                DatagramChannel dc = null;
+//                // Try creating IPv6 channel first.
+//                try {
+//                    dc = DatagramChannel.open(StandardProtocolFamily.INET6)
+//                            .setOption(StandardSocketOptions.SO_REUSEADDR, true)
+//                            .bind(new InetSocketAddress(port))
+//                            .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
+//                    dc.join(group, ni);
+//                }
+//                catch (Exception ex) {
+//                    // If creating IPv6 channel doesn't work try IPv4.
+//                    dc = DatagramChannel.open(StandardProtocolFamily.INET)
+//                            .setOption(StandardSocketOptions.SO_REUSEADDR, true)
+//                            .bind(new InetSocketAddress(port))
+//                            .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
+//                    if(dc != null) {
+//                        dc.join(group, ni);
+//                    }
+//                }
+//                if (dc != null) {
+//                    //add receivers
+//                    OSCReceiver receiver = OSCReceiver.newUsing(dc);
+//                    receiver.startListening();
+//                    receiver.addOSCListener(new MessageAggregator(ni));
+//                    receivers.add(new NetworkInterfacePair<OSCReceiver>(ni, receiver));
+//                    // add transmitters
+//                    OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
+//                    transmitter.setTarget(new InetSocketAddress(group.getHostAddress(), port));
+//                    transmitters.add(new NetworkInterfacePair<OSCTransmitter>(ni, transmitter));
+//                    logger.debug("Broadcasting on interface: {}", ni.getName());
+//                }
+//            } catch (IOException e) {
+//                logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", ni.getName());
+//            }
+//        });
     }
 
     /**
@@ -196,6 +198,7 @@ public class BroadcastManager {
                                 .setOption(StandardSocketOptions.IP_MULTICAST_IF, newInterface);
                         dc.join(group, newInterface);
                     }
+
                     catch (Exception ex) {
                         // If creating IPv6 channel doesn't work try IPv4.
                         logger.debug("IPv6 failed, falling back to IPv4 for interface {}", newInterface.getName());
@@ -207,6 +210,7 @@ public class BroadcastManager {
                             dc.join(group, newInterface);
                         }
                     }
+
                     if (dc != null) {        
                         //add receivers
                         OSCReceiver receiver = OSCReceiver.newUsing(dc);
@@ -217,12 +221,14 @@ public class BroadcastManager {
                         OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
                         transmitter.setTarget(new InetSocketAddress(group.getHostAddress(), port));
                         transmitters.add(new NetworkInterfacePair<OSCTransmitter>(newInterface, transmitter));
+
+                        netInterfaces.add(newInterface);
                         logger.debug("Broadcasting on interface: {}", newInterface.getName());
                     }
+
                 } catch (IOException e) {
                     logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", newInterface.getName(), e);
                 }
-                netInterfaces.add(newInterface);
             }
         });
     }
