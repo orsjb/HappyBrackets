@@ -71,7 +71,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        Logging.AddFileAppender( (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root"), "Plugin", getPluginLocation() + "/controller.log", Level.INFO);
+        Logging.AddFileAppender( (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root"), "Plugin", getPluginLocation() + "/controller.log", Level.DEBUG);
 
         logger.info("*** HappyBrackets IntelliJ Plugin launching ***");
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
@@ -136,7 +136,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         Content content = contentFactory.createContent(jfxp, "", false);
         toolWindow.getContentManager().addContent(content);
     }
-
 
     /**
      * Loads the specified configuration file, resets the statically stored

@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
+import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,7 +51,6 @@ public class DeviceConnection {
 		} catch (FileNotFoundException e1) {
 			logger.error("Unable to read '{}'", config.getKnownDevicesFile());
 		}
-
 		broadcast.addBroadcastListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
@@ -154,6 +154,7 @@ public class DeviceConnection {
 				String deviceName = (String) msg.getArg(0);
 				String deviceHostname = (String) msg.getArg(1);
 				String deviceAddress = (String) msg.getArg(2);
+				logger.debug("Received message from device: " + deviceName);
 	//			System.out.println("Device Alive Message: " + deviceName);
 				//see if we have this device yet
 				LocalDeviceRepresentation thisDevice = devicesByHostname.get(deviceName);
@@ -188,12 +189,14 @@ public class DeviceConnection {
 					}.start();
 				}
 				//keep up to date
-				thisDevice.lastTimeSeen = System.currentTimeMillis();	//Ultimately this should be "corrected time"
-				//TODO update the status in the GUI, not sure how to bind this
-				if(msg.getArgCount() > 4) {
-					String status = (String)msg.getArg(4);
-					thisDevice.setStatus(status);
-	//				System.out.println("Got status update from " + thisDevice.hostname + ": " + status);
+				if(thisDevice != null) {
+					thisDevice.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
+					//TODO update the status in the GUI, not sure how to bind this
+					if (msg.getArgCount() > 4) {
+						String status = (String) msg.getArg(4);
+						thisDevice.setStatus(status);
+						//				System.out.println("Got status update from " + thisDevice.hostname + ": " + status);
+					}
 				}
 			} catch(Exception e) {
 				logger.error("Error reading incoming OSC message", e);

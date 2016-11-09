@@ -16,6 +16,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -92,6 +93,8 @@ public class IntelliJPluginGUIManager {
 	}
 
 	private void init() {
+		//awful hack but we need to prompt JavaFX to initialise itself, this will do it
+		new JFXPanel();
 		config = HappyBracketsToolWindow.config;
 		deviceConnection = HappyBracketsToolWindow.deviceConnection;
 		//initial compositions path
