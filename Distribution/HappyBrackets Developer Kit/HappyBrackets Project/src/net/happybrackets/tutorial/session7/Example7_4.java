@@ -21,7 +21,7 @@ import java.net.SocketAddress;
  *  /guitar/base_rate <float:rate>
  *  /base_rate <float:rate>
  */
-public class NetworkingBasics implements HBAction {
+public class Example7_4 implements HBAction {
 
     float globalBaseRate = 1;
     float guitarBaseRate = 1;

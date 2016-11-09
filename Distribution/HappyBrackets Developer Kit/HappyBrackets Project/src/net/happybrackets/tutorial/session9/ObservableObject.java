@@ -10,51 +10,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This example demonstrates the observer pattern.
+ * This example demonstrates the observer pattern. It runs standalone.
  */
 public class ObservableObject {
 
     public interface Listener {
         public void eventOccurred();
     }
-    List<Listener> myListeners;
-    float[] myarray = new float[] {1.4f, 2.8f, 3.6f, 4.8f};
+    private List<Listener> myListeners;
+    private int x;
 
     public ObservableObject() {
         myListeners = new ArrayList<>();
-        new Thread() {
-            public void run() {
-                while(true) {
-                    somethingHappened();
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
+        x = 0;
     }
 
-    public void doSomethingToTheFloat(float[] x) throws IOException, ClassNotFoundException {
-        for(float f : x) {
-            System.out.println(f * 3 % 2);
-            try {
-                Thread.sleep(1000);
-            } catch(Exception e) {
-                e.printStackTrace();
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream("myFile");
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                }
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                Bead b = (Bead)ois.readObject();
-                b.getKillListener().kill();
-            }
+    public int getX() {
+        return x;
+    }
 
-        }
+    public void setX(int x) {
+        this.x = x;
+        somethingHappened();
     }
 
     public void addListener(Listener newListener) {
@@ -68,15 +45,30 @@ public class ObservableObject {
     }
 
     public static void main(String[] args) {
+        //create the observable object
         ObservableObject o = new ObservableObject();
+        //add a new listener that will react when something happens
         o.addListener(new Listener() {
             @Override
             public void eventOccurred() {
-                System.out.println("Event Occurred");
+                System.out.println("Event Occurred: x=" + o.getX());
             }
         });
+        //set up a thread that keeps repeating the somethingHappenedAction().
+        new Thread() {
+            public void run() {
+                int count = 0;
+                while(true) {
+                    o.setX(count++);
+                    try {
+                        Thread.sleep(100 * count);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
     }
-
-
 
 }

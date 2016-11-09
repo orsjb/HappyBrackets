@@ -10,6 +10,7 @@ import net.happybrackets.device.HB;
 
 /**
  * Example of playing a single sound on multiple devices at the same time.
+ * An alternative to this is to synch the clocks on the devices (using /device/sync) and then create events on the clock.
  */
 public class SyncExample implements HBAction {
 

@@ -11,6 +11,7 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
+ * In this example we use the x-axis of the accelerometer to manipulate the pitch of the playback of  a sample that is played off the clock.
  */
 public class Example8_4 implements HBAction {
 

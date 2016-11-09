@@ -11,6 +11,7 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
+ * In this examlpe, we use the z-axis of the accelerometer data to manipulate the frequency of a WavePlayer.
  */
 public class Example8_2 implements HBAction {
 

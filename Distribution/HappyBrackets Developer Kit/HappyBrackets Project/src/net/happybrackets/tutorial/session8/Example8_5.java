@@ -13,6 +13,7 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
+ * This example shows different kinds of data we can get from the SenseHat.
  */
 public class Example8_5 implements HBAction {
 
@@ -23,7 +24,7 @@ public class Example8_5 implements HBAction {
         hts.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {
-                // get x
+                // get data
                 double humidity = hts.getHumidityData();
                 double temperature = hts.getTemperatureData();
                 System.out.println("Humidity: " + humidity);
@@ -34,9 +35,9 @@ public class Example8_5 implements HBAction {
         lps.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {
-                // get x
-//                double pressure = lps.();
-//                System.out.println("Pressure: " + pressure);
+                // get data
+                double pressure = lps.getBarometricPressureData();
+                System.out.println("Pressure: " + pressure);
             }
         });
 

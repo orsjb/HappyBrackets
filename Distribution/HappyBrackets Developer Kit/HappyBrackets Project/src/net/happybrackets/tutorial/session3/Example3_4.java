@@ -22,7 +22,7 @@ import java.util.Random;
  *
  * Lastly, this example shows how to record data to a file. Note the DelayTrigger which triggers the end of the recording after 20 seconds.
  */
-public class RingModExample {
+public class Example3_4 {
 
     public static void main(String[] args) throws IOException {
         //random number generator

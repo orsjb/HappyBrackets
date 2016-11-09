@@ -15,7 +15,7 @@ import java.net.SocketAddress;
  * Try running this twice on two computers. You will need to adjust the send and receive ports on one machine, and also the destination on both machines, so that they speak to each other.
  *
  */
-public class OSCTest {
+public class Example7_5 {
 
     public final static int SEND_PORT = 5555;
     public final static int RECEIVE_PORT = 6666;

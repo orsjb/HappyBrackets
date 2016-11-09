@@ -9,8 +9,7 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
- * For this code task we want to look at the accelerometer and use it to
- * trigger a sound when you turn over the accelerometer.
+ * For this example we want to look at the accelerometer and use it to trigger a sound when you turn over the accelerometer.
  */
 public class Example8_3 implements HBAction {
 
