@@ -149,7 +149,7 @@ public class LogSender {
                 // Send the new lines in the log file.
                 String line;
                 while ((line = fileReader.readLine()) != null) {
-                    sb.append(line);
+                    sb.append(line).append("\n");
                 }
 
                 networkCommunication.send("/device/log",
