@@ -97,7 +97,9 @@ shadowJar {
     }
 }
 
-task deploy << {
+task deploy
+
+task deployJarAndJavaDoc << {
     copy {
         from 'build/libs/HB.jar'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs'
@@ -110,6 +112,10 @@ task deploy << {
         from 'build/libs/HB.jar'
         into '../Distribution/HappyBrackets Developer Kit/Device/HappyBrackets'
     }
+    println "copied jars"
+}
+
+task deployPlugin << {
     copy {
         from '../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip'
         into '../Distribution/HappyBrackets Developer Kit'
@@ -141,21 +147,21 @@ task packDevKit (type:Zip) {
 }
 
 shadowJar.dependsOn config
+
+deployJarAndJavaDoc.dependsOn shadowJar
+
 packDeviceRuntime.dependsOn shadowJar
+packDeviceRuntime.dependsOn deployJarAndJavaDoc
 
 //setup deploy dependencies
 deploy.dependsOn build
 deploy.dependsOn test
 deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
-
-packDevKit.dependsOn packDeviceRuntime
+deploy.dependsOn deployPlugin
 deploy.dependsOn packDeviceRuntime
 
+packDevKit.dependsOn packDeviceRuntime
+
 //development build routine
-development.dependsOn build
-development.dependsOn test
-development.dependsOn shadowJar
-development.dependsOn packDeviceRuntime
-
-
+development.dependsOn deploy
