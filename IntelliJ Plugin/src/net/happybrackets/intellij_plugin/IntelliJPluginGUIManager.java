@@ -85,6 +85,7 @@ public class IntelliJPluginGUIManager {
 
 	private Map<LocalDeviceRepresentation, DeviceErrorListener> deviceErrorListeners;
 
+	private static final int minTextAreaHeight = 200;
 
 	public IntelliJPluginGUIManager(Project project) {
 		this.project = project;
@@ -129,43 +130,30 @@ public class IntelliJPluginGUIManager {
 
 	public Scene setupGUI() {
 		//core elements
-		Node devicePane = makeDevicePane();
+		TitledPane devicePane = new TitledPane("Devices", makeDevicePane());
 		TitledPane configPane = new TitledPane("Configuration", makeConfigurationPane(0));
 		TitledPane knownDevicesPane = new TitledPane("Known Devices", makeConfigurationPane(1));
 		TitledPane globalPane = new TitledPane("Global Management", makeGlobalPane());
 		TitledPane compositionPane = new TitledPane("Compositions and Commands", makeCompositionPane());
 		TitledPane debugPane = new TitledPane("Debug", makeDebugPane());
 
-		Accordion controlPane = new Accordion();
-		controlPane.getPanes().addAll(configPane, knownDevicesPane, globalPane, compositionPane, debugPane);
-		controlPane.setExpandedPane(compositionPane);
-
-//		SplitPane mainSplit = new SplitPane();
-//		mainSplit.setOrientation(Orientation.VERTICAL);
-//		mainSplit.getItems().add(makeScrollPane(
-//				makeTitle("Devices"),
-//				makeDevicePane()
-//		));
-//		mainSplit.getItems().add(makeScrollPane(
-//				makeTitle("Debug"),
-//				makeDebugPane()
-//		));
-//		mainSplit.setPrefHeight(10000);
-//
-//		VBox mainContainer = new VBox(defaultElementSpacing);
-//		mainContainer.getChildren().addAll(controlPane, new Separator(), mainSplit);
+		configPane.setExpanded(false);
+		knownDevicesPane.setExpanded(false);
+		debugPane.setExpanded(false);
 
 		VBox mainContainer = new VBox(5);
 		mainContainer.setFillWidth(true);
-		mainContainer.getChildren().addAll(controlPane, new Separator(), devicePane);
+		mainContainer.getChildren().addAll(configPane, knownDevicesPane, globalPane, compositionPane, debugPane, devicePane);
 
 		ScrollPane mainScroll = new ScrollPane();
 		mainScroll.setFitToWidth(true);
 		mainScroll.setFitToHeight(true);
+		//mainScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		mainScroll.setStyle("-fx-font-family: sample; -fx-font-size: 12;");
 		mainScroll.setMinHeight(100);
 		mainScroll.setContent(mainContainer);
 
+		deviceListView.prefWidthProperty().bind(mainScroll.widthProperty().subtract(4));
 
 		//finally update composition path
 		updateCompositionPath(compositionsPath);
@@ -174,20 +162,6 @@ public class IntelliJPluginGUIManager {
 		return new Scene(mainScroll);
 	}
 
-//	private ScrollPane makeScrollPane(Node... items) {
-//		VBox vbox = new VBox(defaultElementSpacing);
-//		vbox.setPadding(new Insets(defaultElementSpacing));
-//		vbox.setFillWidth(true);
-//		vbox.setAlignment(Pos.TOP_CENTER);
-//		vbox.getChildren().addAll(items);
-//
-//		ScrollPane scroll = new ScrollPane();
-//		scroll.setPannable(true);
-//		scroll.setFitToWidth(true);
-//		scroll.setFitToHeight(true);
-//		scroll.setContent(vbox);
-//		return scroll;
-//	}
 
 	private Text makeTitle(String title) {
 		Text text = new Text(title);
@@ -200,8 +174,8 @@ public class IntelliJPluginGUIManager {
 
 	private Pane makeGlobalPane() {
 		//master buttons
-		FlowPane globalcommands = new FlowPane(10, 10);
-		globalcommands.setAlignment(Pos.TOP_RIGHT);
+		FlowPane globalcommands = new FlowPane(defaultElementSpacing, defaultElementSpacing);
+		globalcommands.setAlignment(Pos.TOP_LEFT);
 		{
 			Button b = new Button("Reboot");
 			b.setOnMouseClicked(event -> deviceConnection.deviceReboot());
@@ -244,7 +218,8 @@ public class IntelliJPluginGUIManager {
 		final String label = fileType == 0 ? "Configuration" : "Known Devices";
 		final String setting = fileType == 0 ? "controllerConfigPath" : "knownDevicesPath";
 
-		configField.setPrefSize(400, 250);
+		//configField.setPrefSize(400, 250);
+		configField.setMinHeight(minTextAreaHeight);
 		// Load initial config into text field.
 		if (fileType == 0) {
 			configField.setText(HappyBracketsToolWindow.getCurrentConfigString());
@@ -356,74 +331,81 @@ public class IntelliJPluginGUIManager {
 			}
 		});
 
-		HBox buttons = new HBox(defaultElementSpacing);
+		FlowPane buttons = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 		buttons.setAlignment(Pos.TOP_LEFT);
 		buttons.getChildren().addAll(loadButton, saveButton, resetButton, configApplyButton[fileType]);
 
 
-		// Set IP version buttons.
-		HBox ipvButtons = new HBox(defaultElementSpacing);
-		ipvButtons.setAlignment(Pos.TOP_LEFT);
+		// If this is the main configuration pane, include buttons to set preferred IP version.
+		FlowPane ipvButtons = null;
+		if (fileType == 0) {
+			// Set IP version buttons.
+			ipvButtons = new FlowPane(defaultElementSpacing, defaultElementSpacing);
+			ipvButtons.setAlignment(Pos.TOP_LEFT);
 
-		for (int ipv = 4; ipv <= 6; ipv+=2) {
-			final int ipvFinal = ipv;
+			for (int ipv = 4; ipv <= 6; ipv += 2) {
+				final int ipvFinal = ipv;
 
-			Button setIPv = new Button("Set IntelliJ to prefer IPv" + ipv);
-			String currentSetting = System.getProperty("java.net.preferIPv" + ipv + "Addresses");
+				Button setIPv = new Button("Set IntelliJ to prefer IPv" + ipv);
+				String currentSetting = System.getProperty("java.net.preferIPv" + ipv + "Addresses");
 
-			if (currentSetting != null && currentSetting.toLowerCase().equals("true")) {
-				setIPv.setDisable(true);
-			}
-
-			setIPv.setTooltip(new Tooltip("Set the JVM used by IntelliJ to prefer IPv" + ipv + " addresses by default.\nThis can help resolve IPv4/Ipv6 incompatibility issues in some cases."));
-			setIPv.setOnMouseClicked(event -> {
-				// for the 32 and 64 bit versions of the options files.
-				for (String postfix : new String[]{"", "64"}) {
-					String filename = "/idea" + postfix + ".vmoptions";
-					// Create custom options files if they don't already exist.
-					File custOptsFile = new File(PathManager.getCustomOptionsDirectory() + "/idea" + postfix + ".vmoptions");
-					if (!custOptsFile.exists()) {
-						// Create copy of default.
-						try {
-							Files.copy(Paths.get(PathManager.getBinPath() + filename), custOptsFile.toPath());
-						} catch (IOException e) {
-							showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
-						}
-					}
-
-					if (custOptsFile.exists()) {
-						StringBuilder newOpts = new StringBuilder();
-						try (Stream<String> stream = Files.lines(custOptsFile.toPath())) {
-							stream.forEach((line) -> {
-								// Remove any existing preferences.
-								if (!line.contains("java.net.preferIPv")) {
-									newOpts.append(line + "\n");
-								}
-							});
-							// Add new preference to end.
-							newOpts.append("-Djava.net.preferIPv" + ipvFinal + "Addresses=true");
-						} catch (IOException e) {
-							showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
-						}
-
-						// Write new options to file.
-						try (PrintWriter out = new PrintWriter(custOptsFile.getAbsolutePath())) {
-							out.println(newOpts);
-						} catch (FileNotFoundException e) {
-							// This totally shouldn't happen.
-						}
-					}
+				if (currentSetting != null && currentSetting.toLowerCase().equals("true")) {
+					setIPv.setDisable(true);
 				}
 
-				showPopup("You must restart IntelliJ for the changes to take effect.", setIPv, 5, event);
-			});
+				setIPv.setTooltip(new Tooltip("Set the JVM used by IntelliJ to prefer IPv" + ipv + " addresses by default.\nThis can help resolve IPv4/Ipv6 incompatibility issues in some cases."));
+				setIPv.setOnMouseClicked(event -> {
+					// for the 32 and 64 bit versions of the options files.
+					for (String postfix : new String[]{"", "64"}) {
+						String filename = "/idea" + postfix + ".vmoptions";
+						// Create custom options files if they don't already exist.
+						File custOptsFile = new File(PathManager.getCustomOptionsDirectory() + "/idea" + postfix + ".vmoptions");
+						if (!custOptsFile.exists()) {
+							// Create copy of default.
+							try {
+								Files.copy(Paths.get(PathManager.getBinPath() + filename), custOptsFile.toPath());
+							} catch (IOException e) {
+								showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
+							}
+						}
 
-			ipvButtons.getChildren().add(setIPv);
+						if (custOptsFile.exists()) {
+							StringBuilder newOpts = new StringBuilder();
+							try (Stream<String> stream = Files.lines(custOptsFile.toPath())) {
+								stream.forEach((line) -> {
+									// Remove any existing preferences.
+									if (!line.contains("java.net.preferIPv")) {
+										newOpts.append(line + "\n");
+									}
+								});
+								// Add new preference to end.
+								newOpts.append("-Djava.net.preferIPv" + ipvFinal + "Addresses=true");
+							} catch (IOException e) {
+								showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
+							}
+
+							// Write new options to file.
+							try (PrintWriter out = new PrintWriter(custOptsFile.getAbsolutePath())) {
+								out.println(newOpts);
+							} catch (FileNotFoundException e) {
+								// This totally shouldn't happen.
+							}
+						}
+					}
+
+					showPopup("You must restart IntelliJ for the changes to take effect.", setIPv, 5, event);
+				});
+
+				ipvButtons.getChildren().add(setIPv);
+			}
 		}
 
 		VBox configPane = new VBox(defaultElementSpacing);
 		configPane.setAlignment(Pos.TOP_LEFT);
-		configPane.getChildren().addAll(makeTitle(label), configField, buttons, ipvButtons);
+		configPane.getChildren().addAll(makeTitle(label), configField, buttons);
+		if (ipvButtons != null) {
+			configPane.getChildren().add(ipvButtons);
+		}
 
 		return configPane;
 	}
@@ -515,7 +497,7 @@ public class IntelliJPluginGUIManager {
 		});
 
 		FlowPane compositionFolderPane = new FlowPane(10, 10);
-		compositionFolderPane.setAlignment(Pos.TOP_RIGHT);
+		compositionFolderPane.setAlignment(Pos.TOP_LEFT);
 		compositionFolderPane.getChildren().addAll(compositionPathText, changeCompositionPath, refreshButton);
 
 		return compositionFolderPane;
@@ -611,8 +593,8 @@ public class IntelliJPluginGUIManager {
 			}
 		});
 
-		HBox messagepaths = new HBox(defaultElementSpacing);
-		messagepaths.setAlignment(Pos.TOP_RIGHT);
+		FlowPane messagepaths = new FlowPane(defaultElementSpacing, defaultElementSpacing);
+		messagepaths.setAlignment(Pos.TOP_LEFT);
 		Button sendAllButton = new Button("All");
 		sendAllButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -743,13 +725,9 @@ public class IntelliJPluginGUIManager {
 				return new DeviceRepresentationCell();
 			}
 		});
-		deviceListView.setMinHeight(50);
+		deviceListView.setMinHeight(minTextAreaHeight);
 
-		VBox pane = new VBox(defaultElementSpacing);
-		pane.setPadding(new Insets(defaultElementSpacing));
-		pane.getChildren().addAll(makeTitle("Devices"), deviceListView);
-
-		return pane;
+		return deviceListView;
 	}
 
 
@@ -780,6 +758,8 @@ public class IntelliJPluginGUIManager {
 
 		logOutputTextArea = new TextArea();
 
+		logOutputTextArea.setMinHeight(minTextAreaHeight);
+
 		deviceListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<LocalDeviceRepresentation>() {
 			@Override
 			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation oldValue, LocalDeviceRepresentation newValue) {
@@ -791,7 +771,6 @@ public class IntelliJPluginGUIManager {
 
 		VBox pane = new VBox(defaultElementSpacing);
 		pane.getChildren().addAll(enableButton, logOutputTextArea);
-		pane.setMinHeight(50);
 		return pane;
 	}
 
