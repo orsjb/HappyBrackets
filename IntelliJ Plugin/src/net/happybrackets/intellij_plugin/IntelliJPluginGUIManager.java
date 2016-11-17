@@ -148,7 +148,7 @@ public class IntelliJPluginGUIManager {
 		ScrollPane mainScroll = new ScrollPane();
 		mainScroll.setFitToWidth(true);
 		mainScroll.setFitToHeight(true);
-		//mainScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		mainScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		mainScroll.setStyle("-fx-font-family: sample; -fx-font-size: 12;");
 		mainScroll.setMinHeight(100);
 		mainScroll.setContent(mainContainer);
@@ -258,24 +258,24 @@ public class IntelliJPluginGUIManager {
 		saveButton.setTooltip(new Tooltip("Save these " + label.toLowerCase() + " settings to a file."));
 		saveButton.setOnMouseClicked(event -> {
 			//select a file
-            FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
-            fsd.withShowHiddenFiles(true);
+			FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
+			fsd.withShowHiddenFiles(true);
 			final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, project);
 
-            String currentFilePath = HappyBracketsToolWindow.getSettings().getString(setting);
-            File currentFile = currentFilePath != null ? new File(HappyBracketsToolWindow.getSettings().getString(setting)) : null;
-            VirtualFile baseDir = null;
-            String currentName = null;
-            if (currentFile != null && currentFile.exists()) {
-                baseDir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
-                currentName = currentFile.getName();
-            }
-            else {
-                baseDir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
-                currentName = fileType == 0 ? "controller-config.json" : "known_devices";
-            }
-            final VirtualFile baseDirFinal = baseDir;
-            final String currentNameFinal = currentName;
+			String currentFilePath = HappyBracketsToolWindow.getSettings().getString(setting);
+			File currentFile = currentFilePath != null ? new File(HappyBracketsToolWindow.getSettings().getString(setting)) : null;
+			VirtualFile baseDir = null;
+			String currentName = null;
+			if (currentFile != null && currentFile.exists()) {
+				baseDir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
+				currentName = currentFile.getName();
+			}
+			else {
+				baseDir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
+				currentName = fileType == 0 ? "controller-config.json" : "known_devices";
+			}
+			final VirtualFile baseDirFinal = baseDir;
+			final String currentNameFinal = currentName;
 
 			//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
 			SwingUtilities.invokeLater(() -> {
@@ -357,15 +357,29 @@ public class IntelliJPluginGUIManager {
 				setIPv.setOnMouseClicked(event -> {
 					// for the 32 and 64 bit versions of the options files.
 					for (String postfix : new String[]{"", "64"}) {
-						String filename = "/idea" + postfix + ".vmoptions";
+						String postfix2 = "";
+						String filename = "/idea" + postfix + postfix2 + ".vmoptions";
+						// If this (Linux (and Mac?)) version of the file doesn't exist, try the Windows version.
+						if (!Paths.get(PathManager.getBinPath() + filename).toFile().exists()) {
+							postfix2 = ".exe";
+							filename = "/idea" + postfix + postfix2 + ".vmoptions";
+
+							if (!Paths.get(PathManager.getBinPath() + filename).toFile().exists()) {
+								showPopup("An error occurred: could not find default configuration file.", setIPv, 5, event);
+								return;
+							}
+						}
+
 						// Create custom options files if they don't already exist.
-						File custOptsFile = new File(PathManager.getCustomOptionsDirectory() + "/idea" + postfix + ".vmoptions");
+						File custOptsFile = new File(PathManager.getCustomOptionsDirectory() + "/idea" + postfix + postfix2 + ".vmoptions");
 						if (!custOptsFile.exists()) {
 							// Create copy of default.
 							try {
 								Files.copy(Paths.get(PathManager.getBinPath() + filename), custOptsFile.toPath());
 							} catch (IOException e) {
+								logger.error("Error creating custom options file.", e);
 								showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
+								return;
 							}
 						}
 
@@ -381,7 +395,9 @@ public class IntelliJPluginGUIManager {
 								// Add new preference to end.
 								newOpts.append("-Djava.net.preferIPv" + ipvFinal + "Addresses=true");
 							} catch (IOException e) {
+								logger.error("Error creating custom options file.", e);
 								showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
+								return;
 							}
 
 							// Write new options to file.
@@ -451,7 +467,7 @@ public class IntelliJPluginGUIManager {
 				makeCustomCommandPane()
 		);
 
-        // Work around. On Mac the layout doesn't allow enough height in some instances.
+		// Work around. On Mac the layout doesn't allow enough height in some instances.
 		container.setMinHeight(275);
 
 		return container;
@@ -511,23 +527,23 @@ public class IntelliJPluginGUIManager {
 		compositionSelector.setPrefWidth(200);
 		compositionSelector.setButtonCell(
 				new ListCell<String>() {
-					  {
-						  super.setPrefWidth(100);
-					  }
+					{
+						super.setPrefWidth(100);
+					}
 
-					  @Override
-					  protected void updateItem(String item, boolean empty) {
-						  super.updateItem(item, empty);
-						  if (item != null) {
-							  String[] parts = item.split("/");
-							  if (parts.length == 0) {
-								  setText(item);
-							  } else {
-								  setText(parts[parts.length - 1]);
-							  }
-						  }
-					  }
-				  }
+					@Override
+					protected void updateItem(String item, boolean empty) {
+						super.updateItem(item, empty);
+						if (item != null) {
+							String[] parts = item.split("/");
+							if (parts.length == 0) {
+								setText(item);
+							} else {
+								setText(parts[parts.length - 1]);
+							}
+						}
+					}
+				}
 		);
 		compositionSelector.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
