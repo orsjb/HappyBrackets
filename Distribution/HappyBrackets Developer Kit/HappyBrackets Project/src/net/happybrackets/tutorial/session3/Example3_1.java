@@ -35,7 +35,7 @@ public class Example3_1 extends Application {
         e.addSegment(1, 3000);
         sp.setRate(e);
         sp.getPitchUGen().setValue(4);
-        //set loop loop parameters
+        //set loop parameters
         sp.setLoopType(SamplePlayer.LoopType.LOOP_ALTERNATING);
         Envelope loopEndEnv = new Envelope(ac, 500);
         sp.setLoopEnd(loopEndEnv);
@@ -52,11 +52,11 @@ public class Example3_1 extends Application {
         WavePlayer wp = new WavePlayer(ac, 500, Buffer.SINE);
         //set up the LFO to perform amplitude modulation to the oscillator
         ZMap mappedLFOToGain = new ZMap(ac, 1);
-        mappedLFOToGain.setRanges(-1, 1, 0, 0.1f);
+        mappedLFOToGain.setRanges(-1, 1, 0, 0.1f);   //set input and output ranges
         mappedLFOToGain.addInput(lfo);
         Gain g = new Gain(ac, 1, mappedLFOToGain);
         g.addInput(wp);
-        //play back this sound
+        //play back this modulated waveform sound
         ac.out.addInput(g);
         //visualiser
         WaveformVisualiser.open(ac);
