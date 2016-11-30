@@ -1,6 +1,8 @@
 package net.happybrackets.assignment_tasks.session7;
 
 import de.sciss.net.OSCMessage;
+import net.beadsproject.beads.core.AudioContext;
+import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
 
 import java.util.Hashtable;
@@ -18,7 +20,7 @@ import java.util.Hashtable;
  * Your code should also respond to an OSC message with address "/panic", which should clear the Hashtable of any active notes.
  *
  */
-public class CodeTask7_3 implements SimpleCheckable {
+public class CodeTask7_3 implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {
         CodeTask7_3 task = new CodeTask7_3();
@@ -28,27 +30,26 @@ public class CodeTask7_3 implements SimpleCheckable {
         //this task involves several note events coming in...
 
         message = new OSCMessage("/note", new Object[]{60, 110});
-        task.task(new Object[]{buf, noteStore, message});
+        task.task(null, buf, new Object[]{noteStore, message});
 
         message = new OSCMessage("/note", new Object[]{62, 55});
-        task.task(new Object[]{buf, noteStore, message});
+        task.task(null, buf, new Object[]{noteStore, message});
 
         message = new OSCMessage("/note", new Object[]{60, 0});
-        task.task(new Object[]{buf, noteStore, message});
+        task.task(null, buf, new Object[]{noteStore, message});
 
         message = new OSCMessage("/note", new Object[]{62, 0});
-        task.task(new Object[]{buf, noteStore, message});
+        task.task(null, buf, new Object[]{noteStore, message});
 
         System.out.println(buf);
     }
 
     @Override
-    public void task(Object... objects) {
+    public void task(AudioContext ac, StringBuffer buf, Object... objects) {
         //********** do your work here ONLY **********
         //your objects...
-        StringBuffer buf = (StringBuffer)objects[0];
-        Hashtable<Integer, Integer> noteStore = (Hashtable<Integer, Integer>)objects[1];
-        OSCMessage message = (OSCMessage)objects[2];
+        Hashtable<Integer, Integer> noteStore = (Hashtable<Integer, Integer>)objects[0];
+        OSCMessage message = (OSCMessage)objects[1];
         //do stuff here, remove the following line
         buf.append("Hello World!\n");
         //********** do your work here ONLY **********

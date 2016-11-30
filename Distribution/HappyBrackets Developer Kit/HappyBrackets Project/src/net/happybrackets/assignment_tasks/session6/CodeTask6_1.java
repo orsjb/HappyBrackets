@@ -1,7 +1,9 @@
 package net.happybrackets.assignment_tasks.session6;
 
+import net.beadsproject.beads.core.AudioContext;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
+import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
 
 import java.util.Hashtable;
@@ -21,7 +23,7 @@ import java.util.Hashtable;
  * city String
  *
  */
-public class CodeTask6_1 implements SimpleCheckable {
+public class CodeTask6_1 implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {
         StringBuffer buf = new StringBuffer();
@@ -30,16 +32,15 @@ public class CodeTask6_1 implements SimpleCheckable {
         testShare.put("height", 180.1f);
         testShare.put("children", 0);
         testShare.put("city", "Sydney");
-        new CodeTask6_1().task(new Object[]{buf, testShare});
+        new CodeTask6_1().task(null, buf, new Object[]{testShare});
         System.out.println(buf);
     }
 
     @Override
-    public void task(Object... objects) {
+    public void task(AudioContext ac, StringBuffer buf, Object... objects) {
         //********** do your work here ONLY **********
         //your objects...
-        StringBuffer buf = (StringBuffer)objects[0];
-        Hashtable<String, Object> share = (Hashtable<String, Object>)objects[1];
+        Hashtable<String, Object> share = (Hashtable<String, Object>)objects[0];
         //do stuff here, remove the following line
         buf.append("Hello World!\n");
         //********** do your work here ONLY **********

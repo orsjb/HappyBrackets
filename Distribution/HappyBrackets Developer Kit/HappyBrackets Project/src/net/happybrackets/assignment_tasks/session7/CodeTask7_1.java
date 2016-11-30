@@ -1,14 +1,11 @@
 package net.happybrackets.assignment_tasks.session7;
 
 import de.sciss.net.OSCMessage;
+import net.beadsproject.beads.core.AudioContext;
+import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
 
 /**
- *
- * TODO
- *
- * Handle OSC messages - parse messages, including string manipulation.
- *
  * In this task you receive an OSC message which represents a chord. The first argument gives a wave form, either SINE, SAW or SQUARE. The remaining arguments to the message consist of pairs of MIDI-note and gain values.
  *
  * However, due to a miscommunication about communication standards, some manufacturers understood that the waveform argument can actually go at the end of the list instead of at the beginning.
@@ -33,20 +30,20 @@ import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
  * Remember to print to the StringBuffer, not to System.out.
  *
  */
-public class CodeTask7_1 implements SimpleCheckable {
+public class CodeTask7_1 implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {
         StringBuffer buf = new StringBuffer();
         OSCMessage message = new OSCMessage("/chord", new Object[]{"SINE", 60, 0.1f, 63, 0.2f, 67, 0.1f, "filtfreq", 500f, "filtq", 0.2f});
-        new CodeTask7_1().task(new Object[]{buf});
+        new CodeTask7_1().task(null, buf, new Object[]{message});
         System.out.println(buf);
     }
 
     @Override
-    public void task(Object... objects) {
+    public void task(AudioContext ac, StringBuffer buf, Object... objects) {
         //********** do your work here ONLY **********
         //your objects...
-        StringBuffer buf = (StringBuffer)objects[0];
+        OSCMessage message = (OSCMessage)objects[0];
         //do stuff here, remove the following line
         buf.append("Hello World!\n");
         //********** do your work here ONLY **********
