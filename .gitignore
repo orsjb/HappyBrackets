@@ -1,23 +1,25 @@
+# all compiled classes
 *.class
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-#*.jar // SG 2016-05-06 We need some of these, at the very least we need gradle/wrapper/gradle-wrapper.jar
-*.war
-*.ear
+# all instances of HB.jar
+*HB.jar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# local folders #
+# local folders
 .gradle
-.idea
 build
+workspace.xml
+tasks.xml
+.idea
 
-# Idea project files #
-*.iws
-*.ipr
-*.iml
-HappyBrackets/data/audio/NIME2016
+# intellij stuff
+IntelliJ Plugin/.idea
+IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip
+IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.iml
+HappyBrackets/HappyBrackets.iml
+HappyBrackets/HappyBrackets.ipr
+
+# docs copied into HappyBrackets Project
+Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs

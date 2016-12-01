@@ -23,19 +23,24 @@ repositories {
 }
 
 dependencies {
-
     //Add any libs directory jars, for example beads
     compile   fileTree(dir: "$rootProject.projectDir/libs", include: '*.jar')
 
-    //remote dependencies
-    compile     group: 'com.google.code.gson',  name: 'gson',           version: '2.6.2'
-    compile     group: 'org.nanohttpd',         name: 'nanohttpd',      version: '2.2.0'
-    compile     group: 'com.squareup.okhttp3',  name: 'okhttp',         version: '3.2.0'
-    compile     group: 'de.sciss',              name: 'netutil',        version: '1.0.0'
-    compile     group: 'com.pi4j',              name: 'pi4j-core',      version: '1.0'
-    //compile     group: 'net.beadsproject',      name: 'beads'
+    // config dependencies
+    compile     group: 'com.google.code.gson',  name: 'gson',               version: '2.6.2'
+    compile     group: 'org.nanohttpd',         name: 'nanohttpd',          version: '2.2.0'
+    compile     group: 'com.squareup.okhttp3',  name: 'okhttp',             version: '3.2.0'
+    // osc
+    compile     group: 'de.sciss',              name: 'netutil',            version: '1.0.0'
+    // pi stuff
+    compile     group: 'com.pi4j',              name: 'pi4j-core',          version: '1.0'
+    // logging
+    compile     group: 'ch.qos.logback',        name: 'logback-core',       version: '1.1.7'
+    compile     group: 'ch.qos.logback',        name: 'logback-classic',    version: '1.1.7'
+    runtime     group: 'org.codehaus.groovy',   name: 'groovy',             version: '2.4.7'
+    compile     group: 'org.slf4j',             name: 'slf4j-api',          version: '1.7.7'
 
-    testCompile group: 'junit',                 name: 'junit',      version: '4.+'
+    testCompile group: 'junit',                 name: 'junit',              version: '4.+'
 }
 
 //don't add tutorial files to source set, they don't need to be in the final jar.
@@ -43,8 +48,21 @@ sourceSets {
     main {
         java {
             srcDirs( "src/main/java" )
-//            srcDirs( "src/test/java" )
-            //srcDirs( "src/tutorial/java" )
+        }
+    }
+}
+
+task development
+
+task config {
+    //select the appropriate resources includes
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(development)) {
+            //Ensure we include a production version of logback.groovy config in our classpath
+            sourceSets.main.resources.srcDirs = ["config/dev"]
+        } else {
+            //Ensure we include a production version of logback.groovy config in our classpath
+            sourceSets.main.resources.srcDirs = ["config/prod"]
         }
     }
 }
@@ -74,35 +92,76 @@ jar {
 shadowJar {
     baseName = 'HB'
     classifier = ''
+    manifest {
+        attributes 'Main-Class': 'net.happybrackets.device.DeviceMain'
+    }
+}
+
+task deploy
+
+task deployJarAndJavaDoc << {
+    copy {
+        from 'build/libs/HB.jar'
+        into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs'
+    }
+    copy {
+        from 'build/docs/javadoc'
+        into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc'
+    }
+    copy {
+        from 'build/libs/HB.jar'
+        into '../Distribution/HappyBrackets Developer Kit/Device/HappyBrackets'
+    }
+    println "copied jars"
+}
+
+task deployPlugin << {
+    copy {
+        from '../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip'
+        into '../Distribution/HappyBrackets Developer Kit'
+    }
 }
 
 task packDeviceRuntime (type:Zip) {
     destinationDir buildDir //set our output directory
-    archiveName 'HappyBrackets.zip'  //set the name of our archive
+    archiveName 'HappyBracketsDeviceRuntime.zip'  //set the name of our archive
 
     //config
-    from(rootDir) {
-        include 'config/*'
-        include 'scripts/*'
-
-        //placeholder dir
-        include 'data/**'
-    }
-
-    from("$buildDir/libs") {
-        "HB.jar"
+    from("../Distribution/HappyBrackets Developer Kit/Device") {
+        include 'HappyBrackets/*/**'
     }
 
     println "Creating device package: $buildDir/$archiveName"
 }
 
-packDeviceRuntime.dependsOn shadowJar
+task packDevKit (type:Zip) {
+    destinationDir buildDir //set our output directory
+    archiveName 'HappyBracketsDeveloperKit.zip'  //set the name of our archive
 
-task bundle << {
-    println "bundling complete, see $buildDir/libs"
+    //config
+    from("../Distribution") {
+        include 'HappyBrackets Developer Kit/*/**'
+    }
+
+    println "Creating device package: $buildDir/$archiveName"
 }
 
-//setup bundle dependencies
-bundle.dependsOn shadowJar
-bundle.dependsOn javadoc
-bundle.dependsOn packDeviceRuntime
+shadowJar.dependsOn config
+
+deployJarAndJavaDoc.dependsOn shadowJar
+
+packDeviceRuntime.dependsOn shadowJar
+packDeviceRuntime.dependsOn deployJarAndJavaDoc
+
+//setup deploy dependencies
+deploy.dependsOn build
+deploy.dependsOn test
+deploy.dependsOn shadowJar
+deploy.dependsOn javadoc
+deploy.dependsOn deployPlugin
+deploy.dependsOn packDeviceRuntime
+
+packDevKit.dependsOn packDeviceRuntime
+
+//development build routine
+development.dependsOn deploy

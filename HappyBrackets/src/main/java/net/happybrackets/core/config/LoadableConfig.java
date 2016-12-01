@@ -8,6 +8,8 @@ import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,15 +25,18 @@ import com.google.gson.Gson;
  *
  */
 public abstract class LoadableConfig implements EnvironmentConfig {
+
+	final static Logger logger = LoggerFactory.getLogger(LoadableConfig.class);
+
 	//use Integer instead of int so we can delegate to the interface default value on null
-	private String 	multicastSynchAddr;
+	private String 	multicastAddr;
 	private Integer broadcastOSCPort;
 	private Integer statusFromDevicePort;
 	private Integer clockSynchPort;
 	private Integer codeToDevicePort;
 	private Integer controlToDevicePort;
 	private Integer controllerDiscoveryPort;
-  private Integer controllerHTTPPort;
+  	private Integer controllerHTTPPort;
 
 	//how often the PI sends an alive message to the server
 	private Integer aliveInterval;
@@ -44,35 +49,54 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	private String knownDevicesFile;
 
 	public static <T extends LoadableConfig> T load(String fileName, T config) {
-		System.out.println("Loading: " + fileName);
+		logger.info("Loading: {}", fileName);
 		if (config == null) {
-			System.err.println("Argument 2, Config must be an instantiated object!");
+			logger.error("Argument 2, Config must be an instantiated object!");
 			return null;
 		}
-		File f = new File(fileName);
-        //try again for the default
-        if ( !f.isFile() ) {
-            System.err.println("Unable to open file: " + fileName);
-            fileName += ".default"; //append .default for second try
-            System.out.println("Trying default: " + fileName);
-            f = new File(fileName);
-        }
-		if ( !f.isFile() ) {
-			System.err.println("File: '" + f.getAbsolutePath() + "' does not exist!");
-			return null;
-		}
-		Gson gson = new Gson();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
-            config = gson.fromJson(br, (Type) config.getClass());
-        } catch (IOException e) {
-            System.err.println("Unable to open file: " + fileName);
-            e.printStackTrace();
-        }
 
-        if (config == null) {
-            System.err.println("Failed loading config file: " + fileName);
-        }
+		File f = new File(fileName);
+    //try again for the default
+    if ( !f.isFile() ) {
+        logger.warn("Unable to open file: {}", fileName);
+        fileName += ".default"; //append .default for second try
+        logger.info("Trying default: {}", fileName);
+        f = new File(fileName);
+    }
+		if ( !f.isFile() ) {
+			logger.error("File: '{}' does not exist!", f.getAbsolutePath());
+			return null;
+		}
+
+		Gson gson = new Gson();
+    try {
+        BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
+        config = gson.fromJson(br, (Type) config.getClass());
+    } catch (IOException e) {
+        logger.error("Unable to open file: {}", fileName, e);
+    }
+
+    if (config == null) {
+        logger.error("Failed loading config file: {}");
+    }
+
+		singletonInstance = config;
+		return config;
+	}
+
+	/**
+	 * Create a configuration object from the specified JSON string. {@link #singletonInstance} is updated to the
+	 * new configuration (if a parse error did not occur).
+	 *
+	 * @param configJSON The configuration in JSON format.
+	 * @param configClass The configuration object class to create.
+	 * @param <T> Configuration object type.
+	 * @return Newly created configuration object of class T.
+	 * @throws com.google.gson.JsonSyntaxException If the given string is not valid JSON.
+	 */
+	public static <T extends LoadableConfig> T loadFromString(String configJSON, Class<T> configClass) {
+		Gson gson = new Gson();
+		T config = gson.fromJson(configJSON, configClass);
 		singletonInstance = config;
 		return config;
 	}
@@ -83,8 +107,8 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 
 	//Override getters
 	public String getMulticastAddr() {
-		if (multicastSynchAddr != null) {
-		    return multicastSynchAddr;
+		if (multicastAddr != null) {
+		    return multicastAddr;
 		}
 		else {
 		    return EnvironmentConfig.super.getMulticastAddr();
@@ -154,6 +178,10 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		else {
 		    return EnvironmentConfig.super.getAudioDir();
 		}
+	}
+
+	public void setKnownDevicesFile(String path) {
+		knownDevicesFile = path;
 	}
 
 	public String getKnownDevicesFile() {

@@ -1,64 +1,70 @@
 package net.happybrackets.controller.network;
 
-import net.happybrackets.controller.config.ControllerConfig;
+import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCTransmitter;
+import net.happybrackets.core.BroadcastManager;
+
+import net.happybrackets.core.Device;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.DatagramSocket;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 
 public class ControllerAdvertiser {
-	ControllerConfig env;
-	private Thread advertismentService;
 
-	public ControllerAdvertiser(ControllerConfig env) throws UnknownHostException {
-		super();
-		this.env = env;
+	final static Logger logger = LoggerFactory.getLogger(ControllerAdvertiser.class);
 
-		InetAddress group = InetAddress.getByName(env.getMulticastAddr());
+	private Thread advertisementService;
+	private boolean keepAlive = true;
+
+	public ControllerAdvertiser(BroadcastManager broadcastManager) {
 		//set up an indefinite thread to advertise the controller
-		advertismentService = new Thread() {
+		advertisementService = new Thread() {
 			public void run() {
-				try (DatagramSocket serverSocket = new DatagramSocket(env.getControllerDiscoveryPort()) ) {
-					System.out.println("Creating ControllerAdvertiser with interface " + env.getMyInterface());
-					//serverSocket.setNetworkInterface( NetworkInterface.getByName(env.getMyInterface()) );
-					//serverSocket.joinGroup(group);
-					String msg = "controllerHostname: " + env.getMyHostName() + " controllerAddress: " + env.getMyAddress();
-					DatagramPacket msgPacket = new DatagramPacket(
-						msg.getBytes(),
-						msg.getBytes().length,
-						group,
-						env.getControllerDiscoveryPort()
-					);
-					while(true) {
-						serverSocket.send(msgPacket);
-						try {
-							Thread.sleep(env.getAliveInterval());
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				catch (IOException ex) {
-					System.err.println("Warning: Your current network does not support multicast controller. Some features of Happy Brackets will not work.");
-					ex.printStackTrace();
-				}
+            BroadcastManager.OnTransmitter advertisement = new BroadcastManager.OnTransmitter() {
+                @Override
+                public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
+                    transmitter.send(
+                            new OSCMessage(
+                                    "/hb/controller",
+                                    new Object[] {
+                                            Device.selectHostname(ni),
+                                            Device.selectIP(ni)
+                                    }
+                            )
+                    );
+                }
+            };
 
+            while (keepAlive) {
+                broadcastManager.forAllTransmitters(advertisement);
+
+                try {
+                    Thread.sleep(500);
+                }
+                catch (InterruptedException e) {
+                    logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
+                }
+            }
 			}
 		};
 	}
 
 	public void start() {
-		advertismentService.start();
+		keepAlive = true;
+		advertisementService.start();
+	}
+
+	public void stop() {
+		keepAlive = false;
 	}
 
 	public void interrupt() {
-		advertismentService.interrupt();
+		advertisementService.interrupt();
 	}
 
 	public boolean isAlive() {
-		return advertismentService.isAlive();
+		return advertisementService.isAlive();
 	}
 }

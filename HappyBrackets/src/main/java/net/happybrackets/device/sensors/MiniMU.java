@@ -4,35 +4,24 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import net.beadsproject.beads.data.DataBead;
+import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
+import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
+import net.happybrackets.device.sensors.sensor_types.MagnetometerSensor;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public class MiniMU extends Sensor {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSensor, MagnetometerSensor {
+
+	final static Logger logger = LoggerFactory.getLogger(MiniMU.class);
 
 	@Override
 	public String getSensorName() {
 		return "MiniMU";
-	}
-
-	/**
-	 * Specific listener for the MiniMu sensor. Listens to various MiniMu data: accelerometer, gyro, mag, tem. There is also an imu() callback which receives them all.
-	 */
-	public static abstract class MiniMUListener implements SensorListener {
-		public void accelData(double x, double y, double z) {}
-		public void gyroData(double x, double y, double z) {}
-		public void magData(double x, double y, double z) {}
-		public void imuData(double x, double y, double z,double x2, double y2, double z2,double x3, double y3, double z3) {}
-		public void tempData(double t) {}
-		@Override
-		public void getData(DataBead db) {
-			new Exception("Method getData(DataBead) not implemented.").printStackTrace();
-		}	//not implemented
-		@Override
-		public void getSensor(DataBead db) {
-			new Exception("Method getSensor(DataBead) not implemented.").printStackTrace();
-		}	//not implemented
 	}
 
 	//TODO need to adjust for different versions
@@ -50,6 +39,10 @@ public class MiniMU extends Sensor {
 
 	private DataBead db2 = new DataBead();
 
+	double[] gyroData = new double[3];
+	double[] accelData = new double[3];
+	double[] magData = new double[3];
+
 	public MiniMU () {
 		db2.put("Name","MiniMU-9");
 		db2.put("Manufacturer","Pololu");
@@ -58,18 +51,20 @@ public class MiniMU extends Sensor {
 		// use WHO_AM_I register to getInstance
 
 		try {
-			System.out.print("Getting I2C Bus 1:");
+			logger.info("Getting I2C Bus 1:");
 			bus = I2CFactory.getInstance(I2CBus.BUS_1);
-			System.out.println(" Connected to bus OK!");
+			if(bus != null) {
+				logger.info("Connected to bus OK!");
+			} else {
+				logger.warn("Could not connect to bus!");
+			}
 
-		} catch(IOException e) {
-			System.out.println("Could not connect to bus!");
+		} catch(Exception e) {
+			logger.error("Could not connect to bus!");
 		}
 
 		if (bus != null) {
 			try {
-				System.out.println("Trying a v2.");
-
 				//  v2 info
 				MAG_ADDRESS = 0x1e;
 				ACC_ADDRESS = 0x19;
@@ -78,8 +73,8 @@ public class MiniMU extends Sensor {
 				acceldevice = bus.getDevice(ACC_ADDRESS);
 				magdevice = bus.getDevice(MAG_ADDRESS);
 
-			} catch (IOException e) {
-				System.out.println("OK - not a v2, so I'll try to set up a v3.");
+			} catch (Exception e) {
+				logger.info("OK - not a v2, so I'll try to set up a v3.");
 			}
 			try {
 				//  v3 info
@@ -90,12 +85,11 @@ public class MiniMU extends Sensor {
 				acceldevice = bus.getDevice(ACC_ADDRESS);
 				magdevice = bus.getDevice(MAG_ADDRESS);
 
-				System.out.println("OK - v3 set up.");
+				logger.info("OK - v3 set up.");
 
 			} catch (Exception e2) {
-				System.out.println("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached. ");
+				logger.error("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached.");
 			}
-
 		}
 		try {
 
@@ -140,28 +134,28 @@ public class MiniMU extends Sensor {
 //    			#define LSM303_MR_REG_M  0x02 // LSM303DLH, LSM303DLM, LSM303DLHC
 
 		} catch(IOException e) {
-			System.out.println("Warning: unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(");
+			logger.error("Unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(", e);
 		}
 		if (bus != null & acceldevice != null) {
 			start();
 		}
 	}
 
-	public void update() throws IOException {
-
-		for (SensorListener sListener: listeners){
-			SensorListener sl = (SensorListener) sListener;
-
-			DataBead db = new DataBead();
-			db.put("Accelerator",this.readSensorsAccel());
-			db.put("Gyrometer", this.readSensorsGyro());
-			db.put("Magnetometer", this.readSensorsMag());
-
-			sl.getData(db);
-			sl.getSensor(db2);
-
-		}
-	}
+//	public void update() throws IOException {
+//
+//		for (SensorUpdateListener sListener: listeners){
+//			SensorUpdateListener sl = (SensorUpdateListener) sListener;
+//
+//			DataBead db = new DataBead();
+//			db.put("Accelerator",this.readSensorsAccel());
+//			db.put("Gyrometer", this.readSensorsGyro());
+//			db.put("Magnetometer", this.readSensorsMag());
+//
+//			sl.getData(db);
+//			sl.getSensor(db2);
+//
+//		}
+//	}
 
 	private void start() {
 		Runnable task = new Runnable() {
@@ -169,29 +163,22 @@ public class MiniMU extends Sensor {
 			public void run() {
 				while(true) {
 					try {
-						float[] gyroData = readSensorsGyro();
-						float[] accelData = readSensorsAccel();
-						float[] magData = readSensorsMag();
-
+						gyroData = readSensorsGyro();
+						accelData = readSensorsAccel();
+						magData = readSensorsMag();
 						//pass data on to listeners
-						for(SensorListener listener : listeners) {
-							MiniMUListener muListener = (MiniMUListener)listener;
-							if (accelData.length > 0 ){ // misc_tests for empty array.
-								muListener.accelData(accelData[0], accelData[1], accelData[2]);
-								muListener.gyroData(  gyroData[0],  gyroData[1],  gyroData[2]);
-								muListener.magData(    magData[0],   magData[1],   magData[2]);
-								muListener.imuData(  accelData[0], accelData[1], accelData[2],
-										gyroData[0],  gyroData[1],  gyroData[2],
-										magData[0],   magData[1],   magData[2]);
-							}
+						for(SensorUpdateListener listener : listeners) {
+							listener.sensorUpdated();
 						}
 					} catch (IOException e) {
-//						System.out.println("MiniMU not receiving data.");
+							// System.out.println("MiniMU not receiving data.");
+							// Assuming we might like this in dev?
+							logger.debug("MiniMU not receiving data.");
 					}
 					try {
-						Thread.sleep(10);
+						Thread.sleep(10);		//TODO this should not be hardwired.
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Poll interval interupted while listening for MiniMu!", e);
 					}
 				}
 			}
@@ -199,9 +186,9 @@ public class MiniMU extends Sensor {
 		new Thread(task).start();
 	}
 
-	private float[] readSensorsGyro() throws IOException {
+	private double[] readSensorsGyro() throws IOException {
 		int numElements = 3; //
-		float[] result = {0, 0, 0};
+		double[] result = {0, 0, 0};
 		int bytesPerElement = 2; // assuming short?
 		int numBytes = numElements * bytesPerElement; //
 		byte[] bytes = new byte[numBytes]; //
@@ -226,9 +213,9 @@ public class MiniMU extends Sensor {
 		return result;
 	}
 
-	private float[] readSensorsAccel() throws IOException {
+	private double[] readSensorsAccel() throws IOException {
 		int numElements = 3; //
-		float[] result = {0, 0, 0};
+		double[] result = {0, 0, 0};
 
 		int bytesPerElement = 2; // assuming short?
 		int numBytes = numElements * bytesPerElement; //
@@ -254,9 +241,9 @@ public class MiniMU extends Sensor {
 		return result;
 	}
 
-	private float[] readSensorsMag() throws IOException {
+	private double[] readSensorsMag() throws IOException {
 		int numElements = 3; //
-		float[] result = {0, 0, 0};
+		double[] result = {0, 0, 0};
 		int bytesPerElement = 2; // assuming short?
 		int numBytes = numElements * bytesPerElement; //
 		byte[] bytes = new byte[numBytes]; //
@@ -322,4 +309,18 @@ public class MiniMU extends Sensor {
 		return bits2String(bbits);
 	}
 
+	@Override
+	public double[] getGyroscopeData() {
+		return accelData;
+	}
+
+	@Override
+	public double[] getAccelerometerData() {
+		return gyroData;
+	}
+
+	@Override
+	public double[] getMagnetometerData() {
+		return magData;
+	}
 }

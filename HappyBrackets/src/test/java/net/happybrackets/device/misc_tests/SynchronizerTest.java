@@ -25,8 +25,9 @@ public class SynchronizerTest {
         while(true) {
 
             stability = sync.getStability();
-            sync.broadcast("Stable time: " + sync.stableTimeNow());
-            sync.broadcast("Corrected time: " + sync.correctedTimeNow());
+//            This method is depreciated! sg
+//            sync.broadcast("Stable time: " + sync.stableTimeNow());
+//            sync.broadcast("Corrected time: " + sync.correctedTimeNow());
 
             timeNow = System.nanoTime();
             System.out.print("Time: " + sync.stableTimeNow());

@@ -1,5 +1,5 @@
 # HappyBrackets #
-Best practice, multi-device, multi-media creative coding for Java. Everyone welcome. Have fun, but strive for best practice!
+Write Java code on your computer and deploy it straight to multiple remote devices, such as Raspberry Pis, CHIPs, or BeagleBones.
 
 ## Getting Setup ##
 Happy brackets builds with Gradle. All you need to do to get started is call:

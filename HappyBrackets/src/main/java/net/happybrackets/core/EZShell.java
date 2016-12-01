@@ -8,7 +8,12 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class EZShell {
+
+	final static Logger logger = LoggerFactory.getLogger(EZShell.class);
 
 	public static String call(String... args) {
 		String response = null;
@@ -31,25 +36,25 @@ public abstract class EZShell {
 				throw new IOException("EZShell ERROR! Calling: " + errorArgs + "\nShell error is: " + error);
 			}
 		} catch(IOException e) {
-			e.printStackTrace();
+			logger.error("Error during shell call!", e);
 		}
 		return response;
 	}
-	
+
 	public static void callNoResult(String... args) {
 		try {
 			ProcessBuilder pb = new ProcessBuilder(args);
 			// To capture output from the shell
 			pb.start();
 		} catch(IOException e) {
-			e.printStackTrace();
+			logger.error("Error during shell call!", e);
 		}
 	}
-	
-	
+
+
 	/*
 	 * Code taken from http://singztechmusings.wordpress.com/2011/06/21/getting-started-with-javas-processbuilder-a-sample-utility-class-to-interact-with-linux-from-java-program/
-	 * 
+	 *
 	 * To convert the InputStream to String we use the Reader.read(char[]
 	 * buffer) method. We iterate until the Reader return -1 which means
 	 * there's no more data to read. We use the StringWriter class to

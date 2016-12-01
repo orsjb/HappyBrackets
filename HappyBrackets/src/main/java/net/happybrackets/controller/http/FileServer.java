@@ -15,7 +15,12 @@ import java.util.Scanner;
 import net.happybrackets.controller.config.ControllerConfig;
 import fi.iki.elonen.NanoHTTPD;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FileServer extends NanoHTTPD {
+
+   final static Logger logger = LoggerFactory.getLogger(FileServer.class);
 
     protected static String readFile(String path, String encoding) {
         Scanner scanner = null;
@@ -25,8 +30,7 @@ public class FileServer extends NanoHTTPD {
             text = scanner.useDelimiter("\\A").next();
         }
         catch (FileNotFoundException e) {
-            System.err.println("Unable to access: " + path);
-            //e.printStackTrace();
+            logger.error("Unable to access: {}", path, e);
         }
 
         if (scanner != null) {
@@ -38,7 +42,7 @@ public class FileServer extends NanoHTTPD {
     protected static String readFile(String path, String encoding, String defaultSuffix) {
         String text = readFile(path, encoding);
         if (text == null) {
-            System.out.println("Trying default: " + path + defaultSuffix);
+            logger.debug("Trying default: {}{}", path, defaultSuffix);
             text = readFile(path + defaultSuffix, encoding);
         }
 
@@ -71,14 +75,14 @@ public class FileServer extends NanoHTTPD {
         pathMap.addPath("/config/device-wifi-config.json", new WithDefaultResponse("config/device-wifi-config.json", ".default"));
 
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-        System.out.println("\nRunning! Point your browser to http://localhost:" + config.getControllerHTTPPort() + "/ \n");
+        logger.info("Running! Point your browser to http://localhost:{}/", config.getControllerHTTPPort());
     }
 
     public static void main(String[] args) {
         try {
             new FileServer(new ControllerConfig());
         } catch (IOException ioe) {
-            System.err.println("Couldn't start server:\n" + ioe);
+            logger.error("Couldn't start server!", ioe);
         }
     }
 
@@ -93,14 +97,14 @@ public class FileServer extends NanoHTTPD {
 //        }
 //        return newFixedLengthResponse(msg + "</body></html>\n");
 
-        System.out.println("Request: " + session.getUri());
+        logger.debug("Request: {}", session.getUri());
         String response = pathMap.respond(session.getUri());
 
         if (response != null) {
             return newFixedLengthResponse(statusOK, "text/json", response);
         }
         else {
-            System.out.println("Serving 500 error");
+            logger.debug("Serving 500 error");
             return newFixedLengthResponse(statusError, "text/plain; charset=UTF-8", "Unable to resolve path: " + session.getUri() + "\n");
         }
     }

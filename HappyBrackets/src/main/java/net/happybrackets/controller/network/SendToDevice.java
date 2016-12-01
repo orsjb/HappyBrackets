@@ -6,26 +6,32 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.happybrackets.controller.config.ControllerConfig;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SendToDevice {
 
-	public static void send(String fullClassName, String[] hostnames) throws Exception {
+public abstract class SendToDevice {
+
+	final static Logger logger = LoggerFactory.getLogger(SendToDevice.class);
+
+	public static void send(String fullClassName, List<LocalDeviceRepresentation> devices) throws Exception {
 		String simpleClassName = new File(fullClassName).getName();
 		String packagePath = new File(fullClassName).getParent();
 //		sendOLD(packagePath, simpleClassName, hostnames);
-		send(packagePath, simpleClassName, hostnames);
+		send(packagePath, simpleClassName, devices);
 	}
-	
-	public static void send(String packagePath, String className, String[] hostnames) throws Exception {
+
+	public static void send(String packagePath, String className, List<LocalDeviceRepresentation> devices) throws Exception {
 		File packageDir = new File(packagePath);
 		File[] contents = packageDir.listFiles(); //This used to have a hard codded bin/ prepended to it but this is incompatible with the composition path being configurable now
 		ArrayList<byte[]> allFilesAsBytes = new ArrayList<byte[]>();
-		System.out.println("The following files are being sent:");
+		logger.debug("The following files are being sent:");
 		for(File f : contents) {
-			System.out.println("    " + f);
+			logger.debug("    {}", f);
 			String fname = f.getName();
 			if((
 					fname.startsWith(className + "$") ||
@@ -37,19 +43,17 @@ public class SendToDevice {
 		allFilesAsBytes.add(getClassFileAsByteArray(packagePath + "/" + className + ".class"));
 		//now we have all the files as byte arrays
 		//time to send
-		for(String hostname : hostnames) {
+		for(LocalDeviceRepresentation device : devices) {
         	try {
 				//send all of the files to this hostname
 				for(byte[] bytes : allFilesAsBytes) {
-					Socket s = new Socket(hostname, ControllerConfig.getInstance().getCodeToDevicePort());
-					s.getOutputStream().write(bytes);
-					s.close();
+					device.send(bytes);
 				}
-				System.out.println("SendToDevice: sent to " + hostname);
+				logger.debug("SendToDevice: sent to {}", device);
         	} catch(Exception e) {
-        		System.out.println("SendToDevice: unable to send to " + hostname);
+        		logger.error("SendToDevice: unable to send to {}", device, e);
         	}
-        } 
+        }
 	}
 
 	public static byte[] getClassFileAsByteArray(String fullClassFileName) throws Exception {
@@ -65,21 +69,20 @@ public class SendToDevice {
         buffer.close();
         return bytes;
 	}
-	
+
 	public static byte[] objectToByteArray(Object object) {
 		byte[] bytes = null;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream out = null;
 		try {
-		  out = new ObjectOutputStream(bos);   
+		  out = new ObjectOutputStream(bos);
 		  out.writeObject(object);
 		  bytes = bos.toByteArray();
 		  out.close();
 		  bos.close();
 		} catch(Exception e) {
-			e.printStackTrace();
-		} 
+			logger.error("Unable to write object to byte array!", e);
+		}
 		return bytes;
 	}
 }
-

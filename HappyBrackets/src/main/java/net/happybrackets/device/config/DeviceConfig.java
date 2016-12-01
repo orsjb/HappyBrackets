@@ -1,56 +1,50 @@
 package net.happybrackets.device.config;
 
+import net.happybrackets.core.Synchronizer;
 import net.happybrackets.core.config.LoadableConfig;
+import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.device.network.ControllerDiscoverer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.UnknownHostException;
 
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
 
-	private int polyLimit = 4;
-	private DeviceController controller;
+    final static Logger logger = LoggerFactory.getLogger(DeviceConfig.class);
 
-	public synchronized String getControllerHostname() {
-		if (controller != null) {
-			return controller.getHostname();
-		}
-		return waitForController().getHostname();
+	private int polyLimit = 4;
+	private String logFilePath = "logs/last-run.txt";
+	private DeviceController controller = new DeviceController("", "", 0);
+
+	public String getControllerHostname() {
+		return controller.getHostname();
 	}
 
-    public synchronized String getControllerAddress() {
-        if (controller != null) {
-            return controller.getAddress();
-        }
+	public String getControllerAddress() {
+	  return controller.getAddress();
+	}
 
-        return waitForController().getAddress();
-    }
-
-    private DeviceController waitForController() {
-        //Block and search for a controller
-        try {
-            controller = listenForController( getMulticastAddr(), getControllerDiscoveryPort());
-//			controller = listenForController( "225.2.2.7", 5566);
-        } catch (UnknownHostException e) {
-            System.out.println("Error obtaining controller hostname and address.");
-            e.printStackTrace();
-        }
-        return controller;
-    }
+	public void listenForController(BroadcastManager broadcastManager) {
+		ControllerDiscoverer.super.listenForController(controller, broadcastManager, logger);
+	}
 
 	public int getMyId() {
-		return -1;
+		return controller.getDeviceId();
 	}
 
 	public int getPolyLimit() {
 		return polyLimit;
 	}
 
+	public String getLogFilePath() {return logFilePath; };
+
 	public static DeviceConfig getInstance() {
 		return (DeviceConfig)(LoadableConfig.getInstance());
 	}
 
 	public static DeviceConfig load(String configFile) {
-		return (DeviceConfig)(LoadableConfig.load(configFile, new DeviceConfig()));
+		return LoadableConfig.load( configFile, new DeviceConfig() );
 	}
 
 

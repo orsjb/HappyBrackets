@@ -26,7 +26,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GUIManager {
+
+	final static Logger logger = LoggerFactory.getLogger(GUIManager.class);
 
 	String currentPIPO = "";
 	ControllerConfig config;
@@ -40,14 +45,14 @@ public class GUIManager {
 		Text globcmtx = new Text("Global commands");
 		globcmtx.setTextOrigin(VPos.CENTER);
 		pane.getChildren().add(globcmtx);
-		
+
 		//master buttons
 		HBox globalcommands = new HBox();
 		globalcommands.setSpacing(10);
 		pane.getChildren().add(globalcommands);
-		
+
 //		globalcommands.getChildren().add(new Separator());
-    	
+
 		{
 			Button b = new Button();
 	    	b.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -72,7 +77,7 @@ public class GUIManager {
 	    	b.setText("Shutdown");
 	    	globalcommands.getChildren().add(b);
 		}
-    	
+
 
 		{
 			Button b = new Button();
@@ -121,17 +126,17 @@ public class GUIManager {
 	    	b.setText("Clear Sound");
 	    	globalcommands.getChildren().add(b);
 		}
-		
+
 		//text sender
 		pane.getChildren().add(new Separator());
-		
+
 		Text codetxt = new Text("Custom Commands");
 		pane.getChildren().add(codetxt);
-		
+
 		HBox codearea = new HBox();
 		pane.getChildren().add(codearea);
 		codearea.setSpacing(10);
-		
+
 		final TextField codeField = new TextField();
 		codeField.setMinSize(500, 50);
 		codearea.getChildren().add(codeField);
@@ -139,7 +144,7 @@ public class GUIManager {
 		HBox messagepaths = new HBox();
 		messagepaths.setSpacing(10);
 		pane.getChildren().add(messagepaths);
-		
+
 		Button sendAllButton = new Button("Send All");
 		sendAllButton.setMinWidth(80);
 		sendAllButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -200,7 +205,7 @@ public class GUIManager {
 		}
 
 		pane.getChildren().add(new Separator());
-    	
+
 	}
 
 	public Scene setupGUI(DeviceConnection piConnection) {
@@ -247,9 +252,9 @@ public class GUIManager {
 							dirs.add(f);
 						} else if (f.isFile()) {
 							String path = f.getPath();
-							path = path.substring(config.getCompositionsPath().length() + 1, path.length() - 6); // 6 equates to the length fo the .class extension, the + 1 is to remove path '/'
+							path = path.substring(config.getCompositionsPath().length() + 1, path.length() - 6); // 6 equates to the length of the .class extension, the + 1 is to remove path '/'
 							if (!path.contains("$")) {
-								System.out.println(path);
+								logger.debug("Adding composition: {}", path);
 								compositionFileNames.add(path);
 							}
 						}
@@ -290,9 +295,9 @@ public class GUIManager {
 			@Override
 			public void handle(MouseEvent e) {
 				try {
-					SendToDevice.send(currentPIPO, piConnection.getDeviceAddresses());
+					SendToDevice.send(currentPIPO, piConnection.getDevices());
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					logger.error("Error sending code!", ex);
 				}
 			}
 		});
@@ -302,5 +307,5 @@ public class GUIManager {
 		Scene scene = new Scene(masterGroup);
 		return scene;
 	}
-	
+
 }

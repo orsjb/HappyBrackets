@@ -38,16 +38,19 @@ package net.happybrackets.device.sensors;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-import net.beadsproject.beads.data.DataBead;
+import net.happybrackets.device.sensors.sensor_types.HumiditySensor;
+import net.happybrackets.device.sensors.sensor_types.TemperatureSensor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public final class HTS221 extends Sensor {
+public final class HTS221 extends Sensor implements HumiditySensor, TemperatureSensor {
 
-    //private static final transient Logger LOG = LoggerFactory.getLogger(HTS221Consumer.class);
+    final static Logger logger = LoggerFactory.getLogger(HTS221.class);
 
     public static byte HTS221_ADDRESS = 0x5F;
 
@@ -102,7 +105,6 @@ public final class HTS221 extends Sensor {
     private HTS221ControlRegistry1 odr = HTS221ControlRegistry1.ODR_12DOT5_HZ;
     private HTS221ControlRegistry1 pd = HTS221ControlRegistry1.PD_ACTIVE;
 
-    DataBead db2 = new DataBead();
 
     /**
      * We use the same registry
@@ -111,68 +113,34 @@ public final class HTS221 extends Sensor {
 
     private I2CDevice device;
     private I2CBus bus;
+    private double tempData;
+    private double humidityData;
 
-
-    public static void main(String[] args) throws Exception {
-    // this is a simple test of the functionality.
-
-        while (true) {
-            HTS221 sense = new HTS221();
-
-            double pressureVal = sense.getHumidity();
-            double tempVal = sense.readTemperature();
-
-            try {
-                Thread.sleep(1000);                 //1000 milliseconds is one second.
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
 
     public String getSensorName(){
         return "HTS221";
     }
 
-    public void update() throws IOException {
-
-        for (SensorListener sListener: listeners){
-            SensorListener sl = (SensorListener) sListener;
-
-            DataBead db = new DataBead();
-            db.put("Humidity",this.getHumidity());
-            db.put("Temperature", this.readTemperature());
-            sl.getData(db);
-
-            sl.getSensor(db2);
-        }
-    }
-
-
-
     public HTS221() throws Exception {
-
-        db2.put("Name","HTS221");
-        db2.put("Manufacturer", "ST Microelectronics");
 
         bus = I2CFactory.getInstance(I2CBus.BUS_1);
         device = bus.getDevice(HTS221_ADDRESS);
         doStart();
         //super(endpoint, processor, device);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
-        
+        start();
     }
 
     public void doStart() throws Exception {
 
         byte result = (byte) (0xff & device.read(WHO_AM_I));
-        System.out.println("WHO_AM_I : " + toHexToString(result));
+        logger.debug("WHO_AM_I : {}", toHexToString(result));
 
         byte crtl1 = (byte) (odr.value | bdu.value << 2 | pd.value << 7);
 
         byte avconf = (byte) (humidityMode.average | temperatureMode.average << 3);
-        System.out.println("crtl1 : " + toHexToString(crtl1));
-        System.out.println("avconf : " + toHexToString(avconf));
+        logger.debug("crtl1 : {}", toHexToString(crtl1));
+        logger.debug("avconf : {}", toHexToString(avconf));
 
         device.write(CTRL_REG1, crtl1);
         device.write(AV_CONF, avconf);
@@ -180,7 +148,6 @@ public final class HTS221 extends Sensor {
         temperatureCalibration();
         humidityCalibration();
 
-        update();
 
     }
 
@@ -196,21 +163,27 @@ public final class HTS221 extends Sensor {
 
     }
 
-    public double getHumidity() throws IOException {
-
-        device.read(HUMIDITY_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
-        short rawHumidity = buffer.getShort(0);
-
-        return (rawHumidity * internalHumiditySlope + internalHumidityYIntercept);
+    public double getHumidityData() {
+        try {
+            device.read(HUMIDITY_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
+            short rawHumidity = buffer.getShort(0);
+            return (rawHumidity * internalHumiditySlope + internalHumidityYIntercept);
+        } catch (IOException e) {
+            logger.error("Error reading humidity!", e);
+            return 0;
+        }
     }
 
-    public double readTemperature() throws IOException {
-
-        device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
-        short TEMP_OUT_L = buffer.getShort(0);
-        System.out.println("TEMP_OUT_L " + TEMP_OUT_L);
-
-        return (TEMP_OUT_L * internalTemperatureSlope + internalTemperatureYIntercept);
+    public double getTemperatureData() {
+        try {
+            device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
+            short TEMP_OUT_L = buffer.getShort(0);
+            logger.debug("TEMP_OUT_L {}", TEMP_OUT_L);
+            return (TEMP_OUT_L * internalTemperatureSlope + internalTemperatureYIntercept);
+        } catch(IOException e) {
+            logger.error("Error reading temperature!", e);
+            return 0;
+        }
     }
 
     public void humidityCalibration() throws Exception {
@@ -218,26 +191,26 @@ public final class HTS221 extends Sensor {
         device.read(H0_rH_x2, buffer.array(), 0, 1);
         buffer.put(1, (byte) 0);
         short H0_H_2 = buffer.getShort(0);
-        System.out.println("H0_H_2 " + H0_H_2);
+        logger.debug("H0_H_2 {}", H0_H_2);
 
         double H0 = H0_H_2 / 2.0;
-        System.out.println("H0 " + H0);
+        logger.debug("H0 {}", H0);
 
         device.read(H1_rH_x2, buffer.array(), 0, 1);
         buffer.put(1, (byte) 0);
         short H1_H_2 = buffer.getShort(0);
-        System.out.println("H1_H_2 " + H1_H_2);
+        logger.debug("H1_H_2 {}", H1_H_2);
 
         double H1 = H1_H_2 / 2.0;
-        System.out.println("H1 " + H1);
+        logger.debug("H1 {}", H1);
 
         device.read(H0_T0_OUT | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short H0_T0_OUT = buffer.getShort(0);
-        System.out.println("H0_T0_OUT: " + toHexToString(H0_T0_OUT));
+        logger.debug("H0_T0_OUT: {}", toHexToString(H0_T0_OUT));
 
         device.read(H1_T0_OUT | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short H1_T0_OUT = buffer.getShort(0);
-        System.out.println("H1_T0_OUT: " + toHexToString(H1_T0_OUT));
+        logger.debug("H1_T0_OUT: {}", toHexToString(H1_T0_OUT));
 
         internalHumiditySlope = (H1 - H0) / (H1_T0_OUT - H0_T0_OUT);
         internalHumidityYIntercept = H0 - (internalHumiditySlope * H0_T0_OUT);
@@ -245,35 +218,35 @@ public final class HTS221 extends Sensor {
 
     public void temperatureCalibration() throws Exception {
         byte tempMSB = (byte) (0x0f & device.read(T1_T0_msb));
-        System.out.println("T1/T0 msb:" + toHexToString(tempMSB));
+        logger.debug("T1/T0 msb: {}", toHexToString(tempMSB));
 
         // retrieve T0 / (Msb T0_degC U T0_degC)_x8
         byte temp0LSB = (byte) (0xff & device.read(T0_degC_x8));
         buffer.put(0, temp0LSB);
         buffer.put(1, (byte) (tempMSB & 0x03));
         short T0_C_8 = buffer.getShort(0);
-        System.out.println("T0_C_8:" + toHexToString(T0_C_8));
+        logger.debug("T0_C_8: {}", toHexToString(T0_C_8));
         double T0 = T0_C_8 / 8.0;
-        System.out.println("T0 " + T0);
+        logger.debug("T0 {}", T0);
 
         // retrieve T1 / (Msb T1_degC U T1_degC)_x8
         byte temp1LSB = (byte) (device.read(T1_degC_x8));
         buffer.put(0, temp1LSB);
         buffer.put(1, (byte) ((byte) (tempMSB & 0x0C) >> 2));
         short T1_C_8 = buffer.getShort(0);
-        System.out.println("T1_C_8:" + toHexToString(T1_C_8));
+        logger.debug("T1_C_8: {}", toHexToString(T1_C_8));
         double T1 = T1_C_8 / 8.0;
-        System.out.println("T1 " + T1);
+        logger.debug("T1 {}", T1);
 
         // retrieve T0_OUT
         device.read(T0_OUT | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short T0_OUT = buffer.getShort(0);
-        System.out.println("T0_OUT " + toHexToString(T0_OUT));
+        logger.debug("T0_OUT {}", toHexToString(T0_OUT));
 
         // retrieve T1_OUT
         device.read(T1_OUT | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
         short T1_OUT = buffer.getShort(0);
-        System.out.println("T1_OUT " + toHexToString(T1_OUT));
+        logger.debug("T1_OUT {}", toHexToString(T1_OUT));
 
         // Temperature calibration slope
         internalTemperatureSlope = ((T1 - T0) / (T1_OUT - T0_OUT));
@@ -378,6 +351,31 @@ public final class HTS221 extends Sensor {
 
         public static final int MULTI_BYTE_READ_MASK = 0x80;
 
+    }
+
+
+    private void start() {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    // get data
+                    tempData = getTemperatureData();
+                    humidityData = getHumidityData();
+                    //pass data on to listeners
+
+                    for(SensorUpdateListener listener : listeners) {
+                        listener.sensorUpdated();
+                    }
+                    try {
+                        Thread.sleep(10);		//TODO this should not be hardwired.
+                    } catch (InterruptedException e) {
+                        logger.error("Poll interval interrupted for sensor!", e);
+                    }
+                }
+            }
+        };
+        new Thread(task).start();
     }
 
 }

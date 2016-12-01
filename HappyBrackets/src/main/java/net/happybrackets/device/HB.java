@@ -27,15 +27,19 @@ import net.happybrackets.core.Device;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
-import net.happybrackets.device.sensors.MiniMU;
+import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.Synchronizer;
-import net.happybrackets.device.sensors.Sensor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HB {
+
+	final static Logger logger = LoggerFactory.getLogger(HB.class);
 
 	// audio stuff
 	public final AudioContext ac;
@@ -44,11 +48,11 @@ public class HB {
 	public final PolyLimit pl;
 	public final Envelope masterGainEnv;
 	boolean audioOn = false;
-	
+
 	String status = "No ID set";
 
 	// sensor stuffs
-	public final Hashtable<String, Sensor> sensors;
+	public final Hashtable<Class<? extends Sensor>, Sensor> sensors;
 
 	// shared data
 	public final Hashtable<String, Object> share = new Hashtable<String, Object>();
@@ -59,7 +63,7 @@ public class HB {
 
 	// network comms stuff
 	public final NetworkCommunication controller;
-	public final BroadcastManager broadcast;
+	public static BroadcastManager broadcast = new BroadcastManager(DeviceConfig.getInstance().getMulticastAddr(), DeviceConfig.getInstance().getBroadcastPort());
 	public final Synchronizer synch;
 
 	/**
@@ -69,7 +73,6 @@ public class HB {
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
      */
 	public HB(AudioContext _ac) throws IOException {
-		Device.getInstance();	//touch device at beginning, guarantees it loads
 		ac = _ac;
 		// default audio setup (note we don't start the audio context yet)
 		masterGainEnv = new Envelope(ac, 0);
@@ -81,7 +84,7 @@ public class HB {
 		pl.setSteal(true);
 		ac.out.addInput(pl);
 		ac.out.addDependent(clock);
-		System.out.println("HB audio setup complete.");
+		logger.info("HB audio setup complete.");
 		// sensor setup
 		sensors = new Hashtable<>();
 		System.out.print(".");
@@ -90,14 +93,16 @@ public class HB {
 		System.out.print(".");
 		synch = Synchronizer.getInstance();
 		System.out.print(".");
-		broadcast = new BroadcastManager(DeviceConfig.getInstance());
+		DeviceConfig.getInstance().listenForController(broadcast);
 		System.out.print(".");
 		// start listening for code
 		startListeningForCode();
 		System.out.print(".");
 		//notify started (happens immeidately or when audio starts)
 		testBleep3();
-		System.out.println("HB initialised");
+
+        broadcast.startRefreshThread();
+		logger.info("HB initialised");
 	}
 
 	/**
@@ -185,16 +190,16 @@ public class HB {
         //getInstance fresh config file
 		String configFile = "config/device-config.json";
         String configUrl = "http://" + DeviceConfig.getInstance().getControllerHostname() + ":" + DeviceConfig.getInstance().getControllerHTTPPort() + "/config/device-config.json";
-        System.out.println("GET config file: " + configUrl);
+        logger.debug("GET config file: {}", configUrl);
         OkHttpClient client = new OkHttpClient();
         Request request = new okhttp3.Request.Builder()
                 .url(configUrl)
                 .build();
         Response response = client.newCall(request).execute();
-        System.out.println("Saving new config file: " + configFile);
+        logger.debug("Saving new config file: {}", configFile);
         Files.write(Paths.get(configFile), response.body().string().getBytes());
         //reload config from file again after pulling in updates
-        System.out.println("Reloading config file: " + configFile);
+        logger.debug("Reloading config file: {}", configFile);
         DeviceConfig.load(configFile);
 	}
 
@@ -273,17 +278,16 @@ public class HB {
 							}
 							if (isHBActionClass) {
 								incomingClass = (Class<? extends HBAction>) c;
-								System.out.println("new HBAction >> " + incomingClass.getName());
+								logger.debug("new HBAction >> " + incomingClass.getName());
 								// this means we're done with the sequence, time to recreate
 								// the classloader to avoid duplicate errors
 								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
 								status = "Last HBAction: " + incomingClass.getCanonicalName();
 							} else {
-								System.out.println("new object (not HBAction) >> " + c.getName());
+								logger.debug("new object (not HBAction) >> " + c.getName());
 							}
-						} catch (Exception e) {/* snub it? */
-							System.out.println("Exception Caught trying to read Object from Socket");
-							e.printStackTrace();
+						} catch (Exception e) {
+							logger.error("An error occoured while trying to read object from socket", e);
 						}
 						if (incomingClass != null) {
 							HBAction action = null;
@@ -291,7 +295,7 @@ public class HB {
 								action = incomingClass.newInstance();
 								action.action(HB.this);
 							} catch (Exception e) {
-								e.printStackTrace(); // catching all exceptions
+								logger.error("Error instantiating received HBAction!", e);
 													 // means that we avert an exception
 													 // heading up to audio processes.
 								//TODO look into reported cases where this still falls over.
@@ -300,7 +304,7 @@ public class HB {
 						s.close();
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error("Error receiving new HBAction!", e);
 				}
 			}
 		}.start();
@@ -313,9 +317,28 @@ public class HB {
 			HBAction action = hbActionClass.newInstance();
 			action.action(this);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to cast Object into HBAction!", e);
 		}
+	}
 
+	/**
+	 * Gets the sensor with the given sensor ID. This will attempt to make a connection with the given sensor.
+	 *
+	 * @param sensorClass the class of the {@link Sensor} you want returned
+	 * @return the returned {@link Sensor}, if one can be found
+     */
+	public Sensor getSensor(Class sensorClass) {
+		Sensor result = sensors.get(sensorClass);
+		if(!sensors.containsKey(sensorClass)) {
+			try {
+				result = (Sensor) sensorClass.getConstructor().newInstance();
+				if(result != null) sensors.put(sensorClass, result);
+			} catch (Exception e) {
+				logger.info("Cannot create sensor: {}", sensorClass);
+				setStatus("No sensor " + sensorClass + " available.");
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -386,11 +409,11 @@ public class HB {
 	public Bead getBead(String s) {
 		return (Bead) share.get(s);
 	}
-	
+
 	/**
 	 * Stores an object in the global memory store. The object is stored only if you haven't already created something with that name. If you have, then the new object is not stored and the existing object is returned instead.
 	 * Returns either the existing stored object or the new object.
-	 * 
+	 *
 	 * @param id ID {@link String} of the object to store.
 	 * @param o the object.
 	 * @return either the new stored object or the existing object if something previously stored there.
@@ -431,7 +454,7 @@ public class HB {
 //		System.out.println(name);
 		return name;
 	}
-	
+
 	/**
 	 * Clears all of the audio that is currently playing (connected to output). Warning, this leaves dependents and patterns. Just cleans the audio signal chain. If you want to completely clear all objects, use {@link #reset()} and if you want to clear everything except the sound, use {@link #resetLeaveSounding()}.
 	 */
@@ -515,10 +538,10 @@ public class HB {
 		try {
 			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo reboot"}).waitFor();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to reboot device!", e);
 		}
 	}
-	
+
 	/*
 	 * Shuts down the device immediately.
 	 */
@@ -526,7 +549,7 @@ public class HB {
 		try {
 			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo shutdown now"}).waitFor();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to shutdown device!", e);
 		}
 	}
 
@@ -546,5 +569,3 @@ public class HB {
 		return status;
 	}
 }
-
-

@@ -10,8 +10,9 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.MiniMU;
+import net.happybrackets.device.sensors.SensorUpdateListener;
+import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 
 import java.net.SocketAddress;
 
@@ -19,6 +20,12 @@ import java.net.SocketAddress;
  * Created by ollie on 24/06/2016.
  */
 public class NIME2016DriveByTransitVanComposition implements HBAction {
+
+    final boolean DUMMY_SENSORS = false; //for debugging when no sensors are available
+
+    final float[] TINY_DIVS = {1/8f,1/16f,1/32f,1/64f,1/128f};
+    final float[] MULTS = {0.25f, 0.5f, 0.5f, 1, 1, 1, 2f};
+    final float[] LOW_MULTS = {0.125f, 0.25f, 0.5f, 0.5f, 1, 1, 1};
 
     //different sample sets
     final String TALK = "talk";
@@ -37,39 +44,48 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
     boolean newSample = false;
 
     float mashupLevel = 0f;
+    float noiseEffect = 0f;
+    float defaultBaseRate = 1;
+    float defaultBasePitch = 1;
 
     final float SOURCE_BPM = 170;
-    final float SOURCE_INTERVAL = 60000 / 170;
+    final float SOURCE_INTERVAL = 60000 / SOURCE_BPM;
 
     //strength of user input effects to different elements
-    float rateModEffect = 0f;
-    float pitchBendEffect = 0f;
-    float radioNoiseEffect = 0f;
     float flangeDelayEffect = 0f;
     float joltSnubEffect = 0f;
 
+    HB hb;
+
+    int timeSinceLastTrigger = 0;
+
     //audio stuff
+    SamplePlayer sp;
+    GranularSamplePlayer gsp;
 
     //sample
-    UGen grainCrossFade, sampleGain;
-    UGen baseRate, rateMod, rateModAmount;
-    UGen basePitch, pitchMod, pitchModAmount;
+    UGen grainCrossFade;
+    Glide sampleGain;
+    Envelope baseRate, basePitch;
+    Envelope grainSize, grainInterval, grainRandomness;
+    UGen rateMod, rateModAmount;
+    UGen pitchMod, pitchModAmount;
 
-    //FM synth
-    UGen fmBaseFreq, fmModFreqMult, fmModAmount;
-
-    //noise FM mix
-    UGen filtFreq, filtQ, filtGain, noiseGain, fmGain;
+    //noise mix
+    UGen filtFreq, filtQ, filtGain;
+    Glide noiseGain;
 
     //delay
-    UGen delayFeedback, delayInputGain, delayRateMult;
+    Envelope delayFeedback, delayInputGain, delayRateMult;
 
     //tremolo
     UGen tremoloAmount, tremoloRateMult;
 
     public void action(HB hb) {
         //reset
+        this.hb = hb;
         hb.reset();
+        hb.masterGainEnv.setValue(0.1f);
         //load samples
         SampleManager.group(TALK, "data/audio/NIME2016/talk");
         SampleManager.group(DNB, "data/audio/NIME2016/dnb");
@@ -78,7 +94,12 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         //other setups
         setupAudio(hb);
         setupNetworkListener(hb);
-//        setupSensorListener(hb);
+
+        if(DUMMY_SENSORS) {
+            dummySensor();
+        } else {
+            setupSensorListener(hb);
+        }
 
         //test sound
         Gain g = new Gain(hb.ac, 1, 0.1f);
@@ -90,21 +111,24 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         //sample controls - initiate all the controls we will use to control the sample
         grainCrossFade = new Glide(hb.ac, 0);  //1 = fully granular, 0 = fully non-granular
         sampleGain = new Glide(hb.ac, 1);
-        baseRate = new Glide(hb.ac, 1);
-        rateMod = new Glide(hb.ac);
+        baseRate = new Envelope(hb.ac, 1);
+        rateMod = new Glide(hb.ac, 100);
         rateModAmount = new Glide(hb.ac);
-        basePitch = new Glide(hb.ac, 1);
-        pitchMod = new Glide(hb.ac);
+        basePitch = new Envelope(hb.ac, 1);
+        pitchMod = new Glide(hb.ac, 100);
         pitchModAmount = new Glide(hb.ac);
+        grainSize = new Envelope(hb.ac, 60);
+        grainInterval = new Envelope(hb.ac, 40);
+        grainRandomness = new Envelope(hb.ac, 0);
         //sample stuff - set up the sample players
         sp = new SamplePlayer(hb.ac, SampleManager.fromGroup(sampleGroup, 0));
         gsp = new GranularSamplePlayer(hb.ac, SampleManager.fromGroup(sampleGroup, 0));
         sp.setKillOnEnd(false);
         gsp.setKillOnEnd(false);
         //connect up sample system
-        Function sampleMix = new Function(gsp, sp, grainCrossFade) {
+        Function sampleMix = new Function(gsp, sp, grainCrossFade, sampleGain) {
             public float calculate() {
-                return x[0] * x[2] + x[1] * (1f - x[2]);
+                return (x[0] * x[2] + x[1] * (1f - x[2])) * x[3];
             }
         };
         Function rate = new Function(baseRate, rateMod, rateModAmount) {
@@ -120,32 +144,16 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
             }
         };
         gsp.setPitch(pitch);
-        //FM + noise controls
-        fmBaseFreq = new Glide(hb.ac, 500);
-        fmModFreqMult = new Glide(hb.ac);
-        fmModAmount = new Glide(hb.ac);
-        filtFreq = new Glide(hb.ac, 500);
+        gsp.setGrainSize(grainSize);
+        gsp.setGrainInterval(grainInterval);
+        gsp.setRandomness(grainRandomness);
+        //noise controls
+        filtFreq = new Glide(hb.ac, 1000);
         filtQ = new Glide(hb.ac, 1);
         filtGain = new Glide(hb.ac, 1);
-        noiseGain = new Glide(hb.ac);
-        fmGain = new Glide(hb.ac);
-        //FM synth + noise
-        WavePlayer fmMod = new WavePlayer(hb.ac, 0, Buffer.SINE);
-        WavePlayer fmCarrier = new WavePlayer(hb.ac, 0, Buffer.SINE);
+        noiseGain = new Glide(hb.ac, 0);
+        //noise
         Noise n = new Noise(hb.ac);
-        //create FM synth and connect up FM + noise system
-        fmMod.setFrequency(new Function(fmBaseFreq, fmModFreqMult) {
-            public float calculate() {
-                return (x[0] * x[1]);
-            }
-        });
-        fmCarrier.setFrequency(new Function(fmBaseFreq, fmMod, fmModAmount) {
-            public float calculate() {
-                return x[0] + (x[1] * x[2]);
-            }
-        });
-        Gain fmMix = new Gain(hb.ac, 1, fmGain);
-        fmMix.addInput(fmCarrier);
         Gain noiseMix = new Gain(hb.ac, 1, noiseGain);
         noiseMix.addInput(n);
         //create the filter
@@ -153,17 +161,16 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         f.setFrequency(filtFreq);
         f.setQ(filtQ);
         f.setGain(filtGain);
-//        f.addInput(fmMix);            //FM a bit too hard to handle!
         f.addInput(noiseMix);
         //delay controls
-        delayFeedback = new Glide(hb.ac, 0);
-        delayInputGain = new Glide(hb.ac, 1);
-        delayRateMult = new Glide(hb.ac, 1);
+        delayFeedback = new Envelope(hb.ac, 0);
+        delayInputGain = new Envelope(hb.ac, 1);
+        delayRateMult = new Envelope(hb.ac, 1);
         //delay
         TapIn tin = new TapIn(hb.ac, 10000);
         TapOut tout = new TapOut(hb.ac, tin, new Function(rate, delayRateMult) {
             public float calculate() {
-                return x[1] * SOURCE_INTERVAL / x[0];
+                return x[1] * SOURCE_BPM / 60 * x[0];
             }
         });
         Gain delayInput = new Gain(hb.ac, 1, delayInputGain);
@@ -177,68 +184,89 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         tremoloAmount = new Glide(hb.ac);
         tremoloRateMult = new Glide(hb.ac);
         //tremolo
-        WavePlayer lfo = new WavePlayer(hb.ac, 0, Buffer.SINE);
+        WavePlayer lfo = new WavePlayer(hb.ac, 0, Buffer.SAW);
         lfo.setFrequency(new Function(rate, tremoloRateMult) {
             public float calculate() {
-                return x[1] * SOURCE_INTERVAL / x[0];
+//                return x[1] * SOURCE_INTERVAL / x[0];
+                return x[1] * SOURCE_INTERVAL / 60 * x[0];
             }
+
         });
         Gain tremolo = new Gain(hb.ac, 1, new Function(lfo, tremoloAmount) {
             public float calculate() {
                 return (x[0] * 0.5f + 1f) * x[1] + (1f - x[1]);
             }
         });
-        tremolo.addInput(delayReturn);
+        tremolo.addInput(tout);
         tremolo.addInput(f);
         tremolo.addInput(sampleMix);
         //final plumbing - connect it all to ouput
         hb.ac.out.addInput(tremolo);
+//        hb.ac.out.addInput(tout);
 //        hb.ac.out.addInput(sp);
         //set up clock to trigger samples
         hb.clockInterval.setValue(SOURCE_INTERVAL);
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(hb.clock.getCount() % 64 == 0) {
-                    //trigger a new break
-                    Sample s = null;
-                    switch (sampleSelect) {
-                        case SPECIFIC:
-                            if(newSample) {
-                                s = SampleManager.fromGroup(sampleGroup, specificSampleSelect);
-                            }
+                if(hb.clock.getCount() % 256 == 0) {
+                    System.out.println("tick");
+                    switch (repeatMode) {
+                        case ONE_HIT:           //play the break once then stop
+                            loadNextSample();
+                            resetSamplePlayers();
+                            mashItUp();
+                            repeatMode = RepeatMode.NONE;
                             break;
-                        case ID_ONCE:
-                            if(newSample) {
-                                s = SampleManager.fromGroup(sampleGroup, hb.myIndex() + specificSampleSelect);
-                            }
+                        case REPEAT:            //keep playing
+                            loadNextSample();
+                            resetSamplePlayers();
+                            mashItUp();
                             break;
-                        case RANDOM_ONCE:
+                        case NONE:              //do nothing
                             if(newSample) {
-                                s = SampleManager.randomFromGroup(sampleGroup);
+                                loadNextSample();
+                                resetSamplePlayers();
+                                mashItUp();
                             }
-                            break;
-                        case RANDOM_REPEAT:
-                            s = SampleManager.randomFromGroup(sampleGroup);
                             break;
                     }
-                    if(s != null) {
-                        sp.setSample(s);
-                        gsp.setSample(s);
-                        newSample = false;
-                    }
-                    sp.reset();
-                    gsp.reset();
-
-                    //TODO choose playback position?
-                    //TODO set up any mash actions (depends on mashupLevel)
-
-
-
-
                 }
             }
         });
+    }
+
+    private void loadNextSample() {
+        Sample s = null;
+        switch (sampleSelect) {
+            case SPECIFIC:
+                if(newSample) {
+                    s = SampleManager.fromGroup(sampleGroup, specificSampleSelect);
+                }
+                break;
+            case ID:
+                if(newSample) {
+                    s = SampleManager.fromGroup(sampleGroup, Math.abs(hb.myIndex()) + specificSampleSelect);
+                }
+                break;
+            case RANDOM:
+                s = SampleManager.randomFromGroup(sampleGroup);
+                break;
+            default:
+                break;
+        }
+        if(s != null) {
+            sp.setSample(s);
+            gsp.setSample(s);
+            newSample = false;
+        }
+    }
+
+    private void resetSamplePlayers() {
+        baseRate.setValue(defaultBaseRate);
+        basePitch.setValue(defaultBasePitch);
+        sp.reset();
+        gsp.reset();
     }
 
     private void setupNetworkListener(HB hb) {
@@ -246,50 +274,91 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 System.out.println("Received message " + msg.getName());
-                if (msg.getName().equals("/pitchBendEffect")) {
-                    pitchBendEffect = (float) msg.getArg(0);
-                    pitchModAmount.setValue(pitchBendEffect);
-                } else if (msg.getName().equals("/rateModEffect")) {
-                    rateModEffect = (float) msg.getArg(0);
-                    rateModAmount.setValue(rateModEffect);
-                } else if (msg.getName().equals("/radioNoseEffect")) {
-                    radioNoiseEffect = (float) msg.getArg(0);
-                } else if (msg.getName().equals("/flangeDelayEffect")) {
-                    flangeDelayEffect = (float) msg.getArg(0);
-                    delayFeedback.setValue(flangeDelayEffect);
-                } else if (msg.getName().equals("/joltSnubEffect")) {
-                    joltSnubEffect = (float) msg.getArg(0);
-                } else if (msg.getName().equals("/repeatMode")) {
+                if (msg.getName().equals("/pitchBendEffect")) {             //amount sensors influence pitch bend
+                    pitchModAmount.setValue(hb.getFloatArg(msg, 0));
+                } else if (msg.getName().equals("/rateModEffect")) {        //amount sensors influence rate
+                    rateModAmount.setValue(hb.getFloatArg(msg, 0));
+                } else if (msg.getName().equals("/noiseEffect")) {          //amount sensors influence noise
+                    noiseEffect = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/flangeDelayEffect")) {    //amount jolts influence delay
+                    flangeDelayEffect = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/joltSnubEffect")) {       //amount jolts influence snubs
+                    joltSnubEffect = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/repeatMode")) {           //what type of playback, see RepeatMode options
                     repeatMode = RepeatMode.values()[(int) msg.getArg(0)];
-                } else if (msg.getName().equals("/sampleSelect")) {
+                    newSample = true;
+                } else if (msg.getName().equals("/sampleSelect")) {         //how sample is chosen
                     sampleSelect = SampleSelect.values()[(int) msg.getArg(0)];
-                } else if (msg.getName().equals("/sampleGroup")) {
-                    sampleGroup = ((String) msg.getArg(0)).trim().toUpperCase();
-                } else if (msg.getName().equals("/mashupLevel")) {
-                    mashupLevel = (float) msg.getArg(0);
-                } else if (msg.getName().equals("/synchBreaks")) {
-                    hb.clock.reset();                                       //TODO test synch
+                    newSample = true;
+                } else if (msg.getName().equals("/sampleChoice")) {         //what sample is chosen
+                    specificSampleSelect = (int)msg.getArg(0);
+                    newSample = true;
+                } else if (msg.getName().equals("/sampleGroup")) {          //what sample group
+                    sampleGroup = ((String) msg.getArg(0)).trim().toLowerCase();
+                    newSample = true;
+                } else if (msg.getName().equals("/mashupLevel")) {          //amount of mashup from 0-1
+                    mashupLevel = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/baseRate")) {             //the base rate
+                    defaultBaseRate = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/basePitch")) {             //the base pitch
+                    defaultBasePitch = hb.getFloatArg(msg, 0);
+                } else if (msg.getName().equals("/synchBreaks")) {          //message to synch clocks
+                    hb.clock.reset();
+                } else if (msg.getName().equals("/trigger")) {              //dummy to simulate trigger
+                    trigger();
+                } else if(msg.getName().equals("/nograin")) {               //set to no grain
+                    grainCrossFade.setValue(0);
+                } else if(msg.getName().equals("/grain")) {                 //set to grain
+                    grainCrossFade.setValue(1);
                 }
             }
         });
     }
 
-    private void setupSensorListener(HB hb) {
-        if(!hb.sensors.containsKey("MiniMu")) {
-            try {
-                hb.sensors.put("MiniMu", new MiniMU());
-            } catch (Exception e) {
-                System.out.println("Cannot create MiniMu sensor");
-                hb.setStatus("No MinMu available.");
-                return;
+    private void dummySensor() {
+        new Thread() {
+            float x,y,z;
+            int count = 0;
+            public void run() {
+                while(true) {
+                    x = (float)Math.sin(count * 1.0);
+                    y = (float)Math.sin(count * 1.1);
+                    z = (float)Math.sin(count * 1.2);
+                    sensor(x,y,z);
+                    count++;
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        }
-        hb.sensors.get("MiniMu").addListener(new MiniMU.MiniMUListener() {
+        }.start();
+    }
+
+    private void setupSensorListener(HB hb) {
+//        hb.getSensor("MiniMu");
+//        if(!hb.sensors.containsKey("MiniMu")) {
+//            try {
+//                hb.sensors.put("MiniMu", new MiniMU());
+//            } catch (Exception e) {
+//                System.out.println("Cannot create MiniMu sensor");
+//                hb.setStatus("No MinMu available.");
+//                return;
+//            }
+//        }
+        hb.getSensor(MiniMU.class).addListener(new SensorUpdateListener() {
             @Override
-            public void accelData(double x, double y, double z) {
-               sensor((float)x / 12000f,(float)y / 12000f,(float)z / 12000f);
+            public void sensorUpdated() {
+                double[] accel = ((AccelerometerSensor)hb.getSensor(MiniMU.class)).getAccelerometerData();
+                sensor((float)accel[0] / 12000f,(float)accel[1] / 12000f,(float)accel[2] / 12000f);
             }
         });
+//        @Override
+//            public void accelData(double x, double y, double z) {
+//               sensor((float)x / 12000f,(float)y / 12000f,(float)z / 12000f);
+//            }
+//        });
     }
 
     private void mashItUp() {
@@ -419,16 +488,16 @@ public class NIME2016DriveByTransitVanComposition implements HBAction {
         //rateModEffect
         rateMod.setValue(y);  //<--- TODO calibrate to 0.5-2
         //radioNoiseEffect
-        filtFreq.setValue(x); //<--- TODO calibrate to 500-15,000
-        filtQ.setValue(y);    //<--- TODO calibrate to ??
-        filtGain.setValue(z); //<--- TODO calibrate to ??
+        filtFreq.setValue(Math.abs(x) * 20000 + 30); //<--- TODO calibrate to 500-15,000
+        filtQ.setValue(Math.min(2, Math.abs(y) * 100));    //<--- TODO calibrate to ??
+        filtGain.setValue(Math.min(1, Math.abs(z) * 100)); //<--- TODO calibrate to ??
         //the following noise effect sometimes happens, depending on noiseEffect
-        float sampleProx = x;        //<--- TODO calibrate to 0-1
+        float sampleProx = Math.min(1, Math.abs(x) * 100f);        //<--- TODO calibrate to 0-1
         float sampleGainVal = 1f - (noiseEffect * sampleProx);
         sampleGain.setValue((float) Math.sqrt(sampleGainVal));
-        noiseGain.setValue((float) Math.sqrt(1f - sampleGainVal));
+        noiseGain.setValue(Math.min(0.8f, (float) Math.sqrt(1f - sampleGainVal)));
         //check for a big event
-        float thresh = 3;  //<--- TODO calibrate
+        float thresh = 0.5f;  //<--- TODO calibrate
         if (rms > thresh && timeSinceLastTrigger > 100) {
             trigger();
             timeSinceLastTrigger = 0;
