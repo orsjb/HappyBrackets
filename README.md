@@ -1,7 +1,16 @@
 # HappyBrackets #
 Write Java code on your computer and deploy it straight to multiple remote devices, such as Raspberry Pis, CHIPs, or BeagleBones.
 
-## Getting Setup ##
+## Overview ##
+
+
+## Using HappyBrackets in your project ##
+
+
+
+## Developing on HappyBrackets core libraries ##
+
+### Getting Setup ###
 Happy brackets builds with Gradle. All you need to do to get started is call:
 * ```./gradlew idea``` on Unix like platforms such as linux or OS X
 * ```gradlew idea``` on Windows
