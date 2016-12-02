@@ -115,15 +115,18 @@ public class NetworkCommunication {
                         );
                         if (status) logger.info("Updated interfaces file");
                         else logger.error("Unable to update interfaces file");
-					}
-					//all other messages getInstance forwarded to delegate listeners
-					synchronized(listeners) {
-						Iterator<OSCListener> i = listeners.iterator();
-						while(i.hasNext()) {
-							try {
-								i.next().messageReceived(msg, src, time);
-							} catch(Exception e) {
-								logger.error("Error delegating OSC message!", e);
+					} else if (msg.getName().equals("/device/alive")) {
+						//ignore
+					} else {
+						//all other messages getInstance forwarded to delegate listeners
+						synchronized (listeners) {
+							Iterator<OSCListener> i = listeners.iterator();
+							while (i.hasNext()) {
+								try {
+									i.next().messageReceived(msg, src, time);
+								} catch (Exception e) {
+									logger.error("Error delegating OSC message!", e);
+								}
 							}
 						}
 					}

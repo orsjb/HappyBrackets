@@ -294,11 +294,9 @@ public abstract class Device {
     }
 
     public static String getDeviceName() {
-
         if (System.getProperty("os.name").contains("Windows")) {
-            return "WinDeviceNotReallySupportedYet";
+            return "WindowsDevice";
         }
-
         try {
             Scanner s = new Scanner(new File("/etc/hostname"));
             String line = s.next();
@@ -310,7 +308,6 @@ public abstract class Device {
         } catch (Exception e) {
             logger.error("Problem reading device name at /etc/hostname for OS: {}", System.getProperty("os.name"), e);
         }
-
-        return "UnableToObtainHostName";
+        return null;
     }
 }

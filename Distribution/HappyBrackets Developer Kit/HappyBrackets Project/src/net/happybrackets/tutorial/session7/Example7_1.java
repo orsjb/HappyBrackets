@@ -22,7 +22,9 @@ public class Example7_1 implements HBAction {
         hb.addBroadcastListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage oscMessage, SocketAddress socketAddress, long l) {
-                System.out.println("Message received: " + oscMessage.getName() + " myindex = " + hb.myIndex());
+                if(!oscMessage.getName().startsWith("/device")) {
+                    hb.setStatus("Message received: " + oscMessage.getName() + " myindex = " + hb.myIndex());
+                }
             }
         });
         hb.pattern(new Bead() {
