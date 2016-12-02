@@ -1,6 +1,8 @@
 package net.happybrackets.core;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -306,8 +308,37 @@ public abstract class Device {
             }
             s.close();
         } catch (Exception e) {
-            logger.error("Problem reading device name at /etc/hostname for OS: {}", System.getProperty("os.name"), e);
+
+            //try to get it using the 'hostname' command
+            String nameFromCommandLine = hostnameFromCommandline();
+            if(nameFromCommandLine != null) {
+                return nameFromCommandLine;
+            } else {
+                logger.debug("Problem reading device name at /etc/hostname for OS: {}", System.getProperty("os.name"), e);
+            }
         }
-        return null;
+        return "Unnamed";
+    }
+
+    private static String hostnameFromCommandline() {       //TODO make this work for Windows?
+        String line=null;
+        try {
+            Runtime rt = Runtime.getRuntime();
+            Process pr = rt.exec("hostname");
+            BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+            line = input.readLine();
+//            while((line=input.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//            int exitVal = pr.waitFor();
+        } catch(Exception e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+        return line;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(hostnameFromCommandline());
     }
 }
