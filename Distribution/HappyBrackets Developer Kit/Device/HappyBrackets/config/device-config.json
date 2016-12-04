@@ -8,7 +8,7 @@
   "controllerDiscoveryPort":  2227,
   "controllerHTTPPort":       2228,
   "aliveInterval":            1000,
-
   "useHostname":              true,
+
   "polyLimit":                4
 }

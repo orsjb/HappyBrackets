@@ -1,9 +1,14 @@
 #!/bin/bash
 
-zip -r HappyBrackets\ Developer\ Kit.zip HappyBrackets\ Developer\ Kit/
+# Builds the deployment zips and uploads them.
+# TODO: remove .DS_Store and other unwanted files.
+
+zip -r HappyBracketsDeveloperKit.zip HappyBrackets\ Developer\ Kit/
 cd HappyBrackets\ Developer\ Kit/Device/
 zip -r ../../HappyBracketsDeviceRuntime.zip HappyBrackets/
 cd ../../
-scp *.zip happybrackets@wayne.dreamhost.com:happybrackets.net/downloads/
+scp *.zip happybrackets@happybrackets.net:happybrackets.net/downloads/
 rm *.zip
-scp -r HappyBrackets\ Developer\ Kit/Device/HappyBrackets\ Project/libs/docs/hb/javadoc happybrackets@wayne.dreamhost.com:happybrackets.net/doc
+cp -r HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/libs/docs/hb/javadoc ./doc
+scp -r doc happybrackets@happybrackets.net:happybrackets.net/
+rm -r doc

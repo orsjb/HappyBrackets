@@ -35,7 +35,7 @@ public abstract class SendToDevice {
 			String fname = f.getName();
 			if((
 					fname.startsWith(className + "$") ||
-					fname.toLowerCase().contains("hbperm")	//this is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the device along with any HBAction classes.
+					fname.toLowerCase().contains("hbperm")	//this is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the device along with any HBAction classes when something else from that package gets sent.
 				) && fname.endsWith(".class")) {
 				allFilesAsBytes.add(getClassFileAsByteArray(packagePath + "/" + fname));
 			}

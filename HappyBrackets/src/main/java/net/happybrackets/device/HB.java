@@ -3,6 +3,7 @@ package net.happybrackets.device;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
@@ -282,6 +283,9 @@ public class HB {
 					while (true) {
 						// must reopen socket each time
 						Socket s = server.accept();
+						InetAddress incomingAddress = s.getInetAddress();
+						String incomingIP = incomingAddress.getHostAddress();
+						//TODO security solution 2. Use incomingIP to determine if we should accept this code.
 						Class<? extends HBAction> incomingClass = null;
 						try {
 							InputStream input = s.getInputStream();
@@ -292,6 +296,7 @@ public class HB {
 								data = input.read();
 							}
 							byte[] classData = buffer.toByteArray();
+							//TODO at this point perhaps we need a string as well as the class data which is the passphrase (security solution 1?).
 							//at this stage we have the class data in a byte array
 							Class<?> c = loader.createNewClass(classData);
 							Class<?>[] interfaces = c.getInterfaces();
