@@ -106,9 +106,14 @@ public class DeviceConnection {
 
 		for (LocalDeviceRepresentation device: theDevices) {
 			int id = 0;
-			if(knownDevices.containsKey(device.hostname)) {
+
+			if (knownDevices.containsKey(device.hostname)) {
 				device.setID(knownDevices.get(device.hostname));
-			} else {
+			}
+			else if (knownDevices.containsKey(device.deviceName)) {
+				device.setID(knownDevices.get(device.deviceName));
+			}
+			else {
 				device.setID(newID--);
 			}
 
