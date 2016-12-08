@@ -220,8 +220,15 @@ public class DeviceConnection {
 		device.send(msgName, args);
 	}
 
+
 	public void sendToAllDevices(String msgName, Object... args) {
 		for(LocalDeviceRepresentation device : devicesByHostname.values()) {
+			sendToDevice(device, msgName, args);
+		}
+	}
+
+	public void sendToDeviceList(Iterable<LocalDeviceRepresentation> devices, String msgName, Object... args) {
+		for (LocalDeviceRepresentation device : devices) {
 			sendToDevice(device, msgName, args);
 		}
 	}

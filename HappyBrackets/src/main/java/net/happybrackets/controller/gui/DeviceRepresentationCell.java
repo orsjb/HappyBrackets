@@ -1,19 +1,16 @@
 package net.happybrackets.controller.gui;
 
 import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.Slider;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
@@ -24,24 +21,26 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		//gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
         if (item != null) {
 			//set up main panel
-			FlowPane main = new FlowPane(5, 5);
+			GridPane main = new GridPane();
 			main.setStyle("-fx-font-family: sample; -fx-font-size: 10;");
-			main.setAlignment(Pos.CENTER_LEFT);
+			main.setVgap(5);
 
 			//name of the device
 			HBox txthbox = new HBox();
-			main.getChildren().add(txthbox);
+			txthbox.setAlignment(Pos.CENTER_LEFT);
+			main.add(txthbox, 0, 0);
 			Text name = new Text(item.deviceName);
 			name.setUnderline(true);
 			txthbox.getChildren().add(name);
 			txthbox.setMinWidth(100);
 
-			FlowPane controls = new FlowPane(5, 5);
+			HBox controls = new HBox(5);
 			controls.setAlignment(Pos.CENTER_LEFT);
-			main.getChildren().add(controls);
+			main.add(controls, 0, 1, 2, 1);
 
 			//reset button
 			Button resetButton = new Button("R");
+			resetButton.setTooltip(new Tooltip("Reset device to its initial state."));
 			resetButton.setMaxHeight(5);
 			resetButton.setOnAction(new EventHandler<ActionEvent>() {
 				@Override public void handle(ActionEvent e) {
@@ -49,8 +48,32 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				}
 			});
 			controls.getChildren().add(resetButton);
+
+			//reset sounding button
+			Button resetSoundingButton = new Button("RS");
+			resetSoundingButton.setTooltip(new Tooltip("Reset Sounding. Resets device to its initial state except for audio that is currently playing."));
+			resetSoundingButton.setMaxHeight(5);
+			resetSoundingButton.setOnAction(new EventHandler<ActionEvent>() {
+				@Override public void handle(ActionEvent e) {
+					item.send("/device/reset_sounding");
+				}
+			});
+			controls.getChildren().add(resetSoundingButton);
+
+			//reset sounding button
+			Button clearSoundButton = new Button("CS");
+			clearSoundButton.setTooltip(new Tooltip("Clear Sound. Stop audio that is currently playing on this device."));
+			clearSoundButton.setMaxHeight(5);
+			clearSoundButton.setOnAction(new EventHandler<ActionEvent>() {
+				@Override public void handle(ActionEvent e) {
+					item.send("/device/clearsound");
+				}
+			});
+			controls.getChildren().add(clearSoundButton);
+
 			//bleep button
 			Button bleepButton = new Button("B");
+			bleepButton.setTooltip(new Tooltip("Tell device to emit a bleep sound."));
 			bleepButton.setMaxHeight(5);
 			bleepButton.setOnAction(new EventHandler<ActionEvent>() {
 				@Override public void handle(ActionEvent e) {
@@ -86,7 +109,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			controls.getChildren().add(s);
 			//a status string
 			Text statusText = new Text("status unknown");
-			controls.getChildren().add(statusText);
+			main.add(statusText, 1, 0);
+			main.setHalignment(statusText, HPos.RIGHT);
 			item.addStatusUpdateListener(new LocalDeviceRepresentation.StatusUpdateListener() {
 				@Override
 				public void update(String state) {
