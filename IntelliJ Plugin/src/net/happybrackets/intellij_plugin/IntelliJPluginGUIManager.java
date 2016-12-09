@@ -747,6 +747,8 @@ public class IntelliJPluginGUIManager {
 		//populate combobox with list of compositions
 		List<String> compositionFileNames = new ArrayList<String>();
 		recursivelyGatherCompositionFileNames(compositionFileNames, compositionsPath);
+		// Sort compositions alphabetically.
+		Collections.sort(compositionFileNames, String.CASE_INSENSITIVE_ORDER);
 		compositionSelector.getItems().clear();
 		for(final String compositionFileName : compositionFileNames) {
 			compositionSelector.getItems().add(compositionFileName);
