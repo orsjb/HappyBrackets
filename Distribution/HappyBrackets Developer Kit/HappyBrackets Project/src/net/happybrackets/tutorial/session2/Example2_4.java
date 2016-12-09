@@ -39,7 +39,6 @@ import java.util.Random;
  *
  * Note how the sounds in the clock listener are now being added to the filter input rather than ac.out.
  * Also note that the input to ac.out includes the filter as well as the delay, since we need to hear both.
- *
  */
 public class Example2_4 extends Application {
 
@@ -78,7 +77,7 @@ public class Example2_4 extends Application {
         clock.addMessageListener(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(clock.getCount() % 32 == 0) {
+                if (clock.getCount() % 32 == 0) {
                     //add the waveplayer
                     int pitch = basePitch + 12 + Pitch.major[random.nextInt(7)];
                     float freq = Pitch.mtof(pitch);

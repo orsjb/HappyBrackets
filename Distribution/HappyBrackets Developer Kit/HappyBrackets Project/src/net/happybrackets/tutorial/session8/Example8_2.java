@@ -43,7 +43,7 @@ public class Example8_2 implements HBAction {
         zm.setValue(0.0f);
         freq.addInput(zm);
         // New Accelerometer
-        LSM9DS1 lsm = (LSM9DS1)hb.getSensor(LSM9DS1.class);
+        LSM9DS1 lsm = (LSM9DS1) hb.getSensor(LSM9DS1.class);
         // Sine Generator
         WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
         // Gain control

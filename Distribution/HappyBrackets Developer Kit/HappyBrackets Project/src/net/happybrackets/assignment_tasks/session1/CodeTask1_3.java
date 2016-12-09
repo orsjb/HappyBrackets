@@ -27,12 +27,13 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 import java.util.Random;
 
 /**
- *
- * This task involves for-loops. It is assumed you have enough coding experience to know how to make one. If you're not sure, take a look at the supporting material to see where you can learn about basic principles of Java programming.
+ * This task involves for-loops. It is assumed you have enough coding experience to know how to make one. If you're not
+ * sure, take a look at the supporting material to see where you can learn about basic principles of Java programming.
  *
  * Remember to do all of your work in the task() function only. This will be tested.
  *
- * Using the example code, add an integer variable N that specifies the number of oscillators, and then write a for-loop that creates N oscillators.
+ * Using the example code, add an integer variable N that specifies the number of oscillators, and then write a for-loop
+ * that creates N oscillators.
  *
  * Be sure to also regulate the volume to account for the fact that many oscillators will be louder than 1!
  *
@@ -44,11 +45,11 @@ import java.util.Random;
  * - 50 SINE oscillators all playing directly into ac.out.
  * - Each oscillator has a random frequency uniformly distributed between 1000hz and 1100hz.
  * - The gain value of ac.out scaled appropriately so that the overall gain of the summed oscillators is 0.1.
- *
  */
 public class CodeTask1_3 extends Application implements BeadsChecker.BeadsCheckable {
 
-    public static void main(String[] args) {launch(args);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override

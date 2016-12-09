@@ -26,7 +26,8 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * This example can be played twice on the same device or on two devices to show that multiple patterns can play at once.
+ * This example can be played twice on the same device or on two devices to show that multiple patterns can play at
+ * once.
  */
 public class Example5_4 implements HBAction {
 
@@ -40,7 +41,7 @@ public class Example5_4 implements HBAction {
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(hb.clock.getCount() % 16 == 0) {
+                if (hb.clock.getCount() % 16 == 0) {
                     float freq = 500 + hb.rng.nextFloat() * 500;
                     WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
                     Envelope e = new Envelope(hb.ac, 0.1f);

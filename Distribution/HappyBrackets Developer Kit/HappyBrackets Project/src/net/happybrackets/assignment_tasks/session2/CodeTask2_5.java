@@ -26,15 +26,18 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- *
  * The following code is exactly the same as CodeTask2_4.
  *
- * Now transform this delay into a ping-pong delay, in which the sound 'ping-pongs' from the left channel to the right channel and back again. The time it takes to get from left to right is controlled separately from the time from right to left. Set your ping-pong delay so that the left channel echo comes 125ms after the original sound, and then the right channel echo comes 250ms after that, followed again by an attenuated delay in the left channel 125ms later, and so on.
- *
+ * Now transform this delay into a ping-pong delay, in which the sound 'ping-pongs' from the left channel to the right
+ * channel and back again. The time it takes to get from left to right is controlled separately from the time from right
+ * to left. Set your ping-pong delay so that the left channel echo comes 125ms after the original sound, and then the
+ * right channel echo comes 250ms after that, followed again by an attenuated delay in the left channel 125ms later, and
+ * so on.
  */
 public class CodeTask2_5 extends Application implements BeadsChecker.BeadsCheckable {
 
-    public static void main(String[] args) {launch(args);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class CodeTask2_5 extends Application implements BeadsChecker.BeadsChecka
         c.addMessageListener(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(c.isBeat()) {
+                if (c.isBeat()) {
                     Noise n = new Noise(ac);
                     Envelope e = new Envelope(ac, 0.1f);
                     Gain g = new Gain(ac, 1, e);

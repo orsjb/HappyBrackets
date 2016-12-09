@@ -25,15 +25,20 @@ import net.beadsproject.beads.ugens.Noise;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
- * This is the "Hello World" of Beads, the Java realtime audio library used in HappyBrackets. First let's run this code.
+ * This is the "Hello World" of Beads, the Java realtime audio library used in HappyBrackets. First let's run this
+ * code.
  *
- * From IntelliJ, control-click or right-click on this file (i.e., click right here). About 1/3 the way down you will see the option to "Run HelloWorldBeads.main()", with a green triangle next to it. Select this option. You should hear some white noise playing back through your speakers. If you do not hear anything, check your sound is on, and look below in the "Run" window to see if there are any Java exceptions. These are blocks of code that alert you to an error.
+ * From IntelliJ, control-click or right-click on this file (i.e., click right here). About 1/3 the way down you will
+ * see the option to "Run HelloWorldBeads.main()", with a green triangle next to it. Select this option. You should hear
+ * some white noise playing back through your speakers. If you do not hear anything, check your sound is on, and look
+ * below in the "Run" window to see if there are any Java exceptions. These are blocks of code that alert you to an
+ * error.
  *
  * Congratulations. You are now running your first Beads program!
  *
- * To stop the program, you can click the red square down below in the Run window. Note if you can't see the "Run" window you can go to the "View" menu and look under "Tool Windows". You'll notice in the top right of this window now that you can re-run HelloWorldBeads by pressing the green arrow.
- *
- *
+ * To stop the program, you can click the red square down below in the Run window. Note if you can't see the "Run"
+ * window you can go to the "View" menu and look under "Tool Windows". You'll notice in the top right of this window now
+ * that you can re-run HelloWorldBeads by pressing the green arrow.
  */
 public class HelloWorldBeads extends Application {
 
@@ -41,7 +46,8 @@ public class HelloWorldBeads extends Application {
         /*
         Note for those used to Java, you may not be familiar with a JavaFX application.
         JavaFX applications look a little different to regular Java programs.
-        This 'launch()' function does some Application setup under the hood. Once that's done, the 'start()' function below gets called. That is where you should do your initialisation in a JavaFX program.
+        This 'launch()' function does some Application setup under the hood. Once that's done, the 'start()' function
+        below gets called. That is where you should do your initialisation in a JavaFX program.
          */
         launch(args);
     }

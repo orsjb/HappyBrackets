@@ -21,7 +21,6 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
 
 /**
- *
  * In this task detect when an event has occurred, based on the threshold.
  *
  * Whenever an event occurs print the index of the event to the StringBuffer.
@@ -30,7 +29,6 @@ import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
  *
  * 4
  * 10
- *
  */
 public class CodeTask8_2 implements BeadsChecker.BeadsCheckable {
 
@@ -46,8 +44,8 @@ public class CodeTask8_2 implements BeadsChecker.BeadsCheckable {
     public void task(AudioContext ac, StringBuffer buf, Object... objects) {
         //********** do your work here ONLY **********
         //your objects...
-        float[] sensordata = (float[])objects[0];
-        float threshold = (float)objects[1];
+        float[] sensordata = (float[]) objects[0];
+        float threshold = (float) objects[1];
         //do stuff here, remove the following line
         buf.append("Hello World!\n");
         //********** do your work here ONLY **********

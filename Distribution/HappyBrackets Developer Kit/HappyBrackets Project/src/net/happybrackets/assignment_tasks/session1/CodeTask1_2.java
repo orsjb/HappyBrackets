@@ -25,11 +25,12 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- *
  * This code is initialised exactly the same as in CodeTask1_1.
  *
- * Modify the code so that you have two WavePlayers, one is a sine tone at 500hz, and the other one is a square wave tone at 750hz. The sine tone should be sending to the left channel with a gain of 0.1 and the right channel with a gain of 0.2. The square tone should be connected to the right channel with a gain of 0.1 and the left channel with a gain of 0.2.
- *
+ * Modify the code so that you have two WavePlayers, one is a sine tone at 500hz, and the other one is a square wave
+ * tone at 750hz. The sine tone should be sending to the left channel with a gain of 0.1 and the right channel with a
+ * gain of 0.2. The square tone should be connected to the right channel with a gain of 0.1 and the left channel with a
+ * gain of 0.2.
  */
 public class CodeTask1_2 extends Application implements BeadsChecker.BeadsCheckable {
 

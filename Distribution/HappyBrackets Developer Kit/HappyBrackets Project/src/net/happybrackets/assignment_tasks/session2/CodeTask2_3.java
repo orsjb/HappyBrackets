@@ -25,14 +25,13 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- *
  * Fix the bug in the following code (why can't you see the word 'tick' appearing in the console?).
  * Make the tick message appear every beat, with a tempo of 175BPM.
- *
  */
 public class CodeTask2_3 extends Application implements BeadsChecker.BeadsCheckable {
 
-    public static void main(String[] args) {launch(args);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class Example8_5 implements HBAction {
     @Override
     public void action(HB hb) {
         hb.reset();
-        HTS221 hts = (HTS221)hb.getSensor(HTS221.class);
+        HTS221 hts = (HTS221) hb.getSensor(HTS221.class);
         hts.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {
@@ -47,7 +47,7 @@ public class Example8_5 implements HBAction {
                 System.out.println("Temperature: " + temperature);
             }
         });
-        LPS25H lps = (LPS25H)hb.getSensor(LPS25H.class);
+        LPS25H lps = (LPS25H) hb.getSensor(LPS25H.class);
         lps.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {

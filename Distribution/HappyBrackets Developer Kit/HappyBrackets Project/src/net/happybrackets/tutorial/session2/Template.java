@@ -25,7 +25,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * This code just gives you a button to use as an input. Experiment with the use of the button to control Beads elements, as in the lesson.
+ * This code just gives you a button to use as an input. Experiment with the use of the button to control Beads
+ * elements, as in the lesson.
  */
 public class Template extends Application {
 

@@ -39,7 +39,7 @@ public class Example7_2 implements HBAction {
         hb.addControllerListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-                if(msg.getName().equals("/play")) {
+                if (msg.getName().equals("/play")) {
                     //play a new random sound
                     Sample s = SampleManager.randomFromGroup("Guitar");
                     hb.sound(new SamplePlayer(hb.ac, s));

@@ -29,8 +29,9 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 /**
  * This example demonstrates a simple Frequency Modulation signal chain.
  *
- * Note in this case the base frequency is dynamically controlled by an Envelope, whereas the modulation ratio and the modulation amount are both fixed values. It would be simple to make all of these parameters dynamic and controlled by any other factors you wished.
- *
+ * Note in this case the base frequency is dynamically controlled by an Envelope, whereas the modulation ratio and the
+ * modulation amount are both fixed values. It would be simple to make all of these parameters dynamic and controlled by
+ * any other factors you wished.
  */
 public class Example3_2 extends Application {
 

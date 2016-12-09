@@ -26,11 +26,9 @@ import net.beadsproject.beads.ugens.*;
 import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
- *
  * In this example we explore loading and playing back samples, using granular sample playback.
  *
  * In the same example, towards the bottom, we are also creating an amplitude-modulated wave player.
- *
  */
 public class Example3_1 extends Application {
 

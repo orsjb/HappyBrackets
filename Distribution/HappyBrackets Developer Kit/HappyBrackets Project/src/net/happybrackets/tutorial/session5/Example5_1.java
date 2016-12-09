@@ -24,7 +24,6 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- *
  * This example explores the behaviour of an HBAction when you send it multiple times to the Pi.
  *
  * Send the following HBAction to your Pi.
@@ -32,7 +31,6 @@ import net.happybrackets.device.HB;
  * Now uncomment the hb.reset() line and send the action once again.
  * Try each of the four uncommented lines, one at a time and compare their effects.
  * You can also evoke the same actions using the interface in the HB plugin.
- *
  */
 public class Example5_1 implements HBAction {
 

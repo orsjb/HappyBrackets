@@ -31,12 +31,13 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  *
  * There are two things that could be improved with this code.
  *
- * Firstly, the sound distorts because when too many samples are played, we get too loud. Adjust the volume of the guitar plucks to alleviate this.
- * Secondly, the random repetition of sounds (the same note played twice in a row) does not sound nice. Introduce a fix that stops notes repeating immediately one after the other.
+ * Firstly, the sound distorts because when too many samples are played, we get too loud. Adjust the volume of the
+ * guitar plucks to alleviate this.
+ * Secondly, the random repetition of sounds (the same note played twice in a row) does not sound nice. Introduce a fix
+ * that stops notes repeating immediately one after the other.
  *
  * Also introduce random variation to the volume of the guitar plucks.
  * Now introduce a random pitch bend on the end of every one in ten notes.
- *
  */
 public class CodeTask3_3 extends Application implements BeadsChecker.BeadsCheckable {
 

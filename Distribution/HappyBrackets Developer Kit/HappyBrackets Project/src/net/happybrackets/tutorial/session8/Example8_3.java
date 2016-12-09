@@ -25,7 +25,8 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
- * For this example we want to look at the accelerometer and use it to trigger a sound when you turn over the accelerometer.
+ * For this example we want to look at the accelerometer and use it to trigger a sound when you turn over the
+ * accelerometer.
  */
 public class Example8_3 implements HBAction {
 
@@ -40,8 +41,8 @@ public class Example8_3 implements HBAction {
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
         //play a new random sound
-        Sample sUp = SampleManager.fromGroup("Guitar",1);
-        Sample sDown = SampleManager.fromGroup("Guitar",2);
+        Sample sUp = SampleManager.fromGroup("Guitar", 1);
+        Sample sDown = SampleManager.fromGroup("Guitar", 2);
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
         mySensor.addListener(new SensorUpdateListener() {
             @Override

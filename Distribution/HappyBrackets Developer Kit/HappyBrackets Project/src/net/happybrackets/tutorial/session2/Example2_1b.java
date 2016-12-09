@@ -34,12 +34,13 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * This example shows the use of Glide, which can be used to smooth the signal from a discrete action.
- * It also shows the use of the concept of triggers, and the use of the Beads class to receive trigger actions from an envelope.
+ * It also shows the use of the concept of triggers, and the use of the Beads class to receive trigger actions from an
+ * envelope.
  *
  * In this example the Glide controls the volume, and the Envelope controls the frequency.
  *
- * The code at the end is all JavaFX GUI code. It is not essential to the course, but gives a rough idea of how to program simple GUI elements in Java.
- *
+ * The code at the end is all JavaFX GUI code. It is not essential to the course, but gives a rough idea of how to
+ * program simple GUI elements in Java.
  */
 public class Example2_1b extends Application {
 

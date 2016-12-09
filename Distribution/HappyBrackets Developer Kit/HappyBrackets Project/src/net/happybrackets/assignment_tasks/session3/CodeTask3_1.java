@@ -35,14 +35,21 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * Why doesn't the sample data get read every time the sound is played?
  *
  * Tasks:
- * 1) Loop the SamplePlayer so that you get an alternating (backwards-forwards) loop over the last 25% of the file.
- * 2) Now that you are looping the SamplePlayer, apply an ADSR envelope, as you did in the code tasks in the previous session, including killing the sound (remember because you are passing the sound through a new UGen object, that object will not be killed automatically).
- * 3) Use the 'getPitch().setValue(x)' method on the SamplePlayer to pitch each note to follow a random pentatonic pattern. Note that the desired frequency is not the same as the playback rate. A playback rate of 1 will play the sound at its original frequency. The sample has a pitch class of "A natural".
  *
+ * 1) Loop the SamplePlayer so that you get an alternating (backwards-forwards) loop over the last 25% of the file.
+ *
+ * 2) Now that you are looping the SamplePlayer, apply an ADSR envelope, as you did in the code tasks in the previous
+ * session, including killing the sound (remember because you are passing the sound through a new UGen object, that
+ * object will not be killed automatically).
+ *
+ * 3) Use the 'getPitch().setValue(x)' method on the SamplePlayer to pitch each note to follow a random pentatonic
+ * pattern. Note that the desired frequency is not the same as the playback rate. A playback rate of 1 will play the
+ * sound at its original frequency. The sample has a pitch class of "A natural".
  */
 public class CodeTask3_1 extends Application implements BeadsChecker.BeadsCheckable {
 
-    public static void main(String[] args) {launch(args);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override

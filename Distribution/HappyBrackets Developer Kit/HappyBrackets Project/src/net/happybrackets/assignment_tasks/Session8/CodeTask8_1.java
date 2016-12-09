@@ -21,7 +21,8 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
 
 /**
- * In this task you should populate the array smoothSensorData by running a sliding window average over the array sensorData, using the window length specified by windowLength.
+ * In this task you should populate the array smoothSensorData by running a sliding window average over the array
+ * sensorData, using the window length specified by windowLength.
  */
 public class CodeTask8_1 implements BeadsChecker.BeadsCheckable {
 
@@ -38,9 +39,9 @@ public class CodeTask8_1 implements BeadsChecker.BeadsCheckable {
     public void task(AudioContext ac, StringBuffer buf, Object... objects) {
         //********** do your work here ONLY **********
         //your objects...
-        float[] sensorData = (float[])objects[0];
-        float[] smoothSensorData = (float[])objects[1];
-        int windowLength = (int)objects[2];
+        float[] sensorData = (float[]) objects[0];
+        float[] smoothSensorData = (float[]) objects[1];
+        int windowLength = (int) objects[2];
         //do stuff here, remove the following line
         buf.append("Hello World!\n");
         //********** do your work here ONLY **********

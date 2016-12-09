@@ -27,16 +27,20 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- *
  * The following code plays a regular noise burst through a simple delay.
  *
- * 1) Identify what number below indicates the delay time of the delay (i.e., the interval between the original and delayed sound), and use it to speed up the delay so that it is a very tight slapback of just a few milliseconds, overlapping the original sound.
- * 2) Make the delay feedback on itself. You will be able to do this by connecting two of the existing UGens together in a single line of code, and identify which number is responsible for the delay feedback level. Set that number so that the delay lasts at least as long as the interval between sound events.
+ * 1) Identify what number below indicates the delay time of the delay (i.e., the interval between the original and
+ * delayed sound), and use it to speed up the delay so that it is a very tight slapback of just a few milliseconds,
+ * overlapping the original sound.
  *
+ * 2) Make the delay feedback on itself. You will be able to do this by connecting two of the existing UGens together in
+ * a single line of code, and identify which number is responsible for the delay feedback level. Set that number so that
+ * the delay lasts at least as long as the interval between sound events.
  */
 public class CodeTask2_4 extends Application implements BeadsChecker.BeadsCheckable {
 
-    public static void main(String[] args) {launch(args);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
@@ -71,7 +75,7 @@ public class CodeTask2_4 extends Application implements BeadsChecker.BeadsChecka
         c.addMessageListener(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(c.isBeat()) {
+                if (c.isBeat()) {
                     Noise n = new Noise(ac);
                     Envelope e = new Envelope(ac, 0.1f);
                     Gain g = new Gain(ac, 1, e);

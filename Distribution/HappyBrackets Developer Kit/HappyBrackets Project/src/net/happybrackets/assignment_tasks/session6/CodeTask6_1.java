@@ -27,7 +27,8 @@ import java.util.Hashtable;
 /**
  * For the assessable tasks in Sessions 6 onwards we use a simplified version of the code checker interface.
  *
- * This task is about using Hashtables. Given the Hashtable that is passed to you from the checker, print to the StringBuffer the name of the index, followed by the type of the value at that index.
+ * This task is about using Hashtables. Given the Hashtable that is passed to you from the checker, print to the
+ * StringBuffer the name of the index, followed by the type of the value at that index.
  *
  * Make sure you write your answers into the StringBuffer, not to System.out.
  *
@@ -37,7 +38,6 @@ import java.util.Hashtable;
  * age Integer
  * children Integer
  * city String
- *
  */
 public class CodeTask6_1 implements BeadsChecker.BeadsCheckable {
 
@@ -56,7 +56,7 @@ public class CodeTask6_1 implements BeadsChecker.BeadsCheckable {
     public void task(AudioContext ac, StringBuffer buf, Object... objects) {
         //********** do your work here ONLY **********
         //your objects...
-        Hashtable<String, Object> share = (Hashtable<String, Object>)objects[0];
+        Hashtable<String, Object> share = (Hashtable<String, Object>) objects[0];
         //do stuff here, remove the following line
         buf.append("Hello World!\n");
         //********** do your work here ONLY **********

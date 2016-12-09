@@ -24,17 +24,18 @@ import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
 import java.util.Hashtable;
 
 /**
- *
  * In this task you have to parse incoming MIDI note messages containing a MIDI note number and note velocity.
  * Following the MIDI protocol, any event with a velocity of zero means that the note has ended.
- * Your task is to maintain the hashtable so that it only contains currently active notes (those notes that have started but not ended).
+ * Your task is to maintain the hashtable so that it only contains currently active notes (those notes that have started
+ * but not ended).
  * Any MIDI note number must either be active or not active (you can't play two of the same note at the same time).
  *
- * In the code below, after the first call of the task function, the Hashtable should contain exactly one entry, with key 60 and value 110.
+ * In the code below, after the first call of the task function, the Hashtable should contain exactly one entry, with
+ * key 60 and value 110.
  * After the second call, there should be two entries. After the third call there should be one entry, and so on.
  *
- * Your code should also respond to an OSC message with address "/panic", which should clear the Hashtable of any active notes.
- *
+ * Your code should also respond to an OSC message with address "/panic", which should clear the Hashtable of any active
+ * notes.
  */
 public class CodeTask7_3 implements BeadsChecker.BeadsCheckable {
 
@@ -64,8 +65,8 @@ public class CodeTask7_3 implements BeadsChecker.BeadsCheckable {
     public void task(AudioContext ac, StringBuffer buf, Object... objects) {
         //********** do your work here ONLY **********
         //your objects...
-        Hashtable<Integer, Integer> noteStore = (Hashtable<Integer, Integer>)objects[0];
-        OSCMessage message = (OSCMessage)objects[1];
+        Hashtable<Integer, Integer> noteStore = (Hashtable<Integer, Integer>) objects[0];
+        OSCMessage message = (OSCMessage) objects[1];
         //do stuff here, remove the following line
         buf.append("Hello World!\n");
         //********** do your work here ONLY **********

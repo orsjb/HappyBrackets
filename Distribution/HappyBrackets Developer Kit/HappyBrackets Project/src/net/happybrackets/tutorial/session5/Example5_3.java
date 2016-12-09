@@ -24,7 +24,8 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
 /**
- * This example plays random sounds from the Nylon_Guitar group on the Pi. As before, you can reset and resend but the sounds will remain loaded.
+ * This example plays random sounds from the Nylon_Guitar group on the Pi. As before, you can reset and resend but the
+ * sounds will remain loaded.
  */
 public class Example5_3 implements HBAction {
 
@@ -39,7 +40,7 @@ public class Example5_3 implements HBAction {
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(hb.clock.getCount() % 32 == 0) {
+                if (hb.clock.getCount() % 32 == 0) {
                     //play a new random sound
                     Sample s = SampleManager.randomFromGroup("Guitar");
                     hb.sound(new SamplePlayer(hb.ac, s));
