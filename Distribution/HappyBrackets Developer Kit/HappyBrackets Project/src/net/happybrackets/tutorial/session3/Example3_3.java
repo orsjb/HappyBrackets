@@ -26,7 +26,7 @@ public class Example3_3 extends Application {
         //load sample
         Sample s = SampleManager.sample("data/audio/Nylon_Guitar/Clean_A_harm.wav");
         SamplePlayer sp = new SamplePlayer(ac, s);
-        //set loop loop parameters
+        //set loop parameters
         sp.setLoopType(SamplePlayer.LoopType.LOOP_ALTERNATING);
         Envelope loopEndEnv = new Envelope(ac, 500);
         sp.setLoopEnd(loopEndEnv);
@@ -38,7 +38,7 @@ public class Example3_3 extends Application {
         WavePlayer ringmodulator = new WavePlayer(ac, modFreq, Buffer.SINE);
         Gain g = new Gain(ac, 1, 0.1f);
         g.addInput(ringmodulator);
-        //all way do to get the ringmod effect is multiply the source signal by our osciallator's signal
+        //one way to get the ringmod effect is multiply the source signal by our oscillator's signal
         Mult m = new Mult(ac, sp, g);
         ac.out.addInput(m);
         //visualiser
