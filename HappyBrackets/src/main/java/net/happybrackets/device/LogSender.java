@@ -60,7 +60,7 @@ public class LogSender {
         try {
             // Set-up a file change monitor.
             watcher = FileSystems.getDefault().newWatchService();
-            logPath = new File(logLocation);
+            logPath = new File(logLocation).getAbsoluteFile();
 
             if (!logPath.exists() || !logPath.isFile()) {
                 logger.error("An error occurred monitoring the log file " + logPath.getAbsolutePath() + " for changes: it does not exist or is a directory.");
@@ -69,7 +69,7 @@ public class LogSender {
 
             fileReader = new RandomAccessFile(logPath, "r");
 
-            logPathDir = logPath.getParentFile();
+            logPathDir = logPath.getAbsoluteFile().getParentFile();
             logPathDir.toPath().register(watcher, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
 
             // Set-up the monitor handler/log sender.
@@ -105,6 +105,7 @@ public class LogSender {
     }
 
     private class Sender extends Thread {
+        @Override
         public void run() {
             // Flag to indicate if we've sent the existing contents, if any.
             boolean sentInitial = false;
@@ -122,7 +123,7 @@ public class LogSender {
 
                         // For each changed/deleted file in the log file directory (if any).
                         for (WatchEvent<?> event : key.pollEvents()) {
-                            File modifiedFile = logPathDir.toPath().resolve((Path) event.context()).toFile();
+                            File modifiedFile = logPathDir.toPath().resolve((Path) event.context()).toFile().getAbsoluteFile();
 
                             // If the log file has changed.
                             if (modifiedFile.equals(logPath)) {
