@@ -57,17 +57,21 @@ public class CodeTask2_5 extends Application implements BeadsChecker.BeadsChecka
 
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
-        //********** do your work here ONLY **********
         //create a Clock
         Clock c = new Clock(ac, 500);
         ac.out.addDependent(c);
         //create a delay line with 10s of max audio storage
         TapIn tin = new TapIn(ac, 10000);
+
+        //********** do your work here ONLY **********
         Envelope delayTime = new Envelope(ac, 333);
         TapOut tout = new TapOut(ac, tin, delayTime);
         Gain delayGain = new Gain(ac, 1, 0.5f);
         delayGain.addInput(tout);
         ac.out.addInput(delayGain);
+        //********** do your work here ONLY **********
+
+        //********** do not edit below this line **********
         //add some behaviour that responds to the clock
         c.addMessageListener(new Bead() {
             @Override
@@ -83,6 +87,5 @@ public class CodeTask2_5 extends Application implements BeadsChecker.BeadsChecka
                 }
             }
         });
-        //********** do your work here ONLY **********
     }
 }
