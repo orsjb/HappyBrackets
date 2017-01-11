@@ -97,23 +97,6 @@ public class BeadsChecker {
                     if(func != null) {
                         func.runCheck(ac, snapshotter.getBeatCount());
                     }
-                    //grab snapshot and print somewhere
-                    StringBuffer buf = new StringBuffer();
-                    // should we consider how to add this to a logging call?
-                    printCallChain(ac.out, buf, 0);
-                    try {
-                        FileOutputStream fos = new FileOutputStream(new File(resultsDir + "/" + "snapshot" + snapshotter.getBeatCount()));
-                        PrintStream ps = new PrintStream(fos);
-                        ps.append(buf.toString());
-                        ps.close();
-                        fos.close();
-                        //try gson solution
-                        printCallChainJSON(ac.out, resultsDir + "/" + "snapshotJSON" + snapshotter.getBeatCount() + ".json");
-                    } catch (FileNotFoundException e) {
-                        logger.error("File not found exception encountered when writing snapshots!", e);
-                    } catch (IOException e) {
-                        logger.error("Error writing snapshot files!", e);
-                    }
                 }
             }
         });
