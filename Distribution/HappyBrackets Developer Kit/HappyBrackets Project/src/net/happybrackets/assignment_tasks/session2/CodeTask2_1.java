@@ -52,7 +52,7 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * elements from the signal chain.
  *
  * In summary, your sound should rise in frequency from 500-1000hz over 1 second, stay on 1000hz for 1 second, then rise
- * to 2000hz over two seconds. Its gain should rise from zero to 0.5 over 50ms, then drop to 0.1 over 40ms, then remain
+ * to 2000hz over two seconds. Its gain should rise from zero to 0.5 over 50ms, then drop to 0.1 over 50ms, then remain
  * at 0.1 for 1 second, then decay to zero over 5 seconds. After the completion of the gain envelope, the sound should
  * destroy itself, leaving the signal chain in its original empty state.
  */
