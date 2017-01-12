@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.assignment_tasks.session1;
 
 import javafx.application.Application;
@@ -17,14 +33,13 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.WavePlayer;
 
 /**
- *
  * This example is more of a teaser into making a full desktop application. It uses JavaFX to create a button.
  *
  * We won't go through this code in detail, and you shouldn't worry if there are parts that don't make sense.
- * However, as an optional extra task, hack the below code to make a simple keyboard that plays the notes C, C#, D, D# etc. You can use HBox instead of VBox to lay buttons out horizontally.
+ * However, as an optional extra task, hack the below code to make a simple keyboard that plays the notes C, C#, D, D#
+ * etc. You can use HBox instead of VBox to lay buttons out horizontally.
  *
  * This task will not be checked.
- *
  */
 public class OptionalExtra_CodeTask1_4 extends Application {
 

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.assignment_tasks.session1;
 
 import javafx.application.Application;
@@ -9,11 +25,12 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 
 /**
- *
  * This code is initialised exactly the same as in CodeTask1_1.
  *
- * Modify the code so that you have two WavePlayers, one is a sine tone at 500hz, and the other one is a square wave tone at 750hz. The sine tone should be sending to the left channel with a gain of 0.1 and the right channel with a gain of 0.2. The square tone should be connected to the right channel with a gain of 0.1 and the left channel with a gain of 0.2.
- *
+ * Modify the code so that you have two WavePlayers, one is a sine tone at 500hz, and the other one is a square wave
+ * tone at 750hz. The sine tone should be sending to the left channel with a gain of 0.1 and the right channel with a
+ * gain of 0.2. The square tone should be connected to the right channel with a gain of 0.1 and the left channel with a
+ * gain of 0.2.
  */
 public class CodeTask1_2 extends Application implements BeadsChecker.BeadsCheckable {
 

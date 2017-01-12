@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.assignment_tasks.session3;
 
 import javafx.application.Application;
@@ -15,9 +31,10 @@ import java.util.Random;
 /**
  * In this task you will make a sample-and-hold LFO that modulates a filter.
  * The speed and output range of the LFO will be determined by lfoFreq, freqLow and freqHigh.
- * There are two obvious ways to do this. Either create a Clock which is then used to control the Glide, or use a Function that replaces the Glide.
+ * There are two obvious ways to do this. Either create a Clock which is then used to control the Glide, or use a
+ * Function that replaces the Glide.
  */
-public class CodeTask3_5 extends Application  implements BeadsChecker.BeadsCheckable {
+public class CodeTask3_5 extends Application implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {
         launch(args);
@@ -45,9 +62,9 @@ public class CodeTask3_5 extends Application  implements BeadsChecker.BeadsCheck
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
         //********** do your work here ONLY **********
-        float lfoFreq = (Float)objects[0];
-        float freqLow = (Float)objects[1];
-        float freqHigh = (Float)objects[2];
+        float lfoFreq = (Float) objects[0];
+        float freqLow = (Float) objects[1];
+        float freqHigh = (Float) objects[2];
         Noise n = new Noise(ac);
         BiquadFilter bf = new BiquadFilter(ac, 1, BiquadFilter.Type.LP);
         Glide filtFreq = new Glide(ac, freqLow);   //either replace the Glide object with a Function object, or use a Clock to control the Glide.

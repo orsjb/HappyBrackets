@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.tutorial.session9;
 
 import net.beadsproject.beads.core.Bead;
@@ -17,6 +33,7 @@ public class ObservableObject {
     public interface Listener {
         public void eventOccurred();
     }
+
     private List<Listener> myListeners;
     private int x;
 
@@ -39,7 +56,7 @@ public class ObservableObject {
     }
 
     private void somethingHappened() {
-        for(Listener l : myListeners) {
+        for (Listener l : myListeners) {
             l.eventOccurred();
         }
     }
@@ -58,7 +75,7 @@ public class ObservableObject {
         new Thread() {
             public void run() {
                 int count = 0;
-                while(true) {
+                while (true) {
                     o.setX(count++);
                     try {
                         Thread.sleep(100 * count);

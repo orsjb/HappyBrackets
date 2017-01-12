@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.assignment_tasks.session3;
 
 import javafx.application.Application;
@@ -16,13 +32,15 @@ import java.util.Random;
 /**
  * The following code creates noise, just like the Noise object, except it does so using a custom Function class.
  *
- * (Note this is much less efficient than using the Noise object because it actually uses a random number generator, whereas the Noise class plays back a readymade buffer of generated noise. Also, the Function object is a bit less efficient because it makes an individual method call each time it calculates a new sample).
+ * (Note this is much less efficient than using the Noise object because it actually uses a random number generator,
+ * whereas the Noise class plays back a readymade buffer of generated noise. Also, the Function object is a bit less
+ * efficient because it makes an individual method call each time it calculates a new sample).
  *
- * Change the code so that the Function object generates a saw tooth wave, oscillating between -0.1 and +0.1, with a frequency defined by the float variable 'freq' that is given below. To do this you will need to know the sample rate, using ac.getSampleRate().
- *
- *
+ * Change the code so that the Function object generates a saw tooth wave, oscillating between -0.1 and +0.1, with a
+ * frequency defined by the float variable 'freq' that is given below. To do this you will need to know the sample rate,
+ * using ac.getSampleRate().
  */
-public class CodeTask3_4 extends Application  implements BeadsChecker.BeadsCheckable {
+public class CodeTask3_4 extends Application implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {
         launch(args);
@@ -48,7 +66,7 @@ public class CodeTask3_4 extends Application  implements BeadsChecker.BeadsCheck
     @Override
     public void task(AudioContext ac, StringBuffer stringBuffer, Object... objects) {
         //********** do your work here ONLY **********
-        float freq = (Float)objects[0]; //<-- this is the freq value you should use
+        float freq = (Float) objects[0]; //<-- this is the freq value you should use
         Random rng = new Random();
         //a function object
         Function f = new Function(ac.out) {

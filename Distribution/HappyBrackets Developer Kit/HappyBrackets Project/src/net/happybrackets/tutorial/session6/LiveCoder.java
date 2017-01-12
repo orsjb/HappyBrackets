@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.tutorial.session6;
 
 import net.beadsproject.beads.core.Bead;
@@ -23,9 +39,9 @@ public class LiveCoder implements HBAction {
         hb.pattern(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(hb.clock.getCount() % 2 == 0) {
+                if (hb.clock.getCount() % 2 == 0) {
                     float freq = Pitch.forceFrequencyToScale(hb.rng.nextFloat() * 2000 + 100, Pitch.dorian) * 1f;
-                    if(hb.rng.nextFloat() < 0.2f) freq *= 0.5f;
+                    if (hb.rng.nextFloat() < 0.2f) freq *= 0.5f;
                     WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
                     Envelope e = new Envelope(hb.ac, 0);
                     Gain g = new Gain(hb.ac, 1, e);
@@ -34,7 +50,7 @@ public class LiveCoder implements HBAction {
                     g.addInput(wp);
                     hb.sound(g);
                 }
-                if(hb.clock.getCount() % 12 == 5) {
+                if (hb.clock.getCount() % 12 == 5) {
                     float freq = Pitch.forceFrequencyToScale(hb.rng.nextFloat() * 1000 + 100, Pitch.dorian);
                     WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SAW);
                     Envelope e = new Envelope(hb.ac, 0);
@@ -44,7 +60,7 @@ public class LiveCoder implements HBAction {
                     g.addInput(wp);
                     hb.sound(g);
                 }
-                if(hb.clock.getCount() % 2 == 0 || hb.rng.nextFloat() < 0.02f) {
+                if (hb.clock.getCount() % 2 == 0 || hb.rng.nextFloat() < 0.02f) {
                     Noise n = new Noise(hb.ac);
                     Envelope e = new Envelope(hb.ac, hb.rng.nextFloat() * hb.rng.nextFloat() * 0.2f + 0.02f);
                     Gain g = new Gain(hb.ac, 1, e);

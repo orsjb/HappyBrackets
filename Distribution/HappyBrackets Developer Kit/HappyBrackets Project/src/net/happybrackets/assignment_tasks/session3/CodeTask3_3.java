@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.assignment_tasks.session3;
 
 import javafx.application.Application;
@@ -15,12 +31,13 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  *
  * There are two things that could be improved with this code.
  *
- * Firstly, the sound distorts because when too many samples are played, we get too loud. Adjust the volume of the guitar plucks to alleviate this.
- * Secondly, the random repetition of sounds (the same note played twice in a row) does not sound nice. Introduce a fix that stops notes repeating immediately one after the other.
+ * Firstly, the sound distorts because when too many samples are played, we get too loud. Adjust the volume of the
+ * guitar plucks to alleviate this.
+ * Secondly, the random repetition of sounds (the same note played twice in a row) does not sound nice. Introduce a fix
+ * that stops notes repeating immediately one after the other.
  *
  * Also introduce random variation to the volume of the guitar plucks.
  * Now introduce a random pitch bend on the end of every one in ten notes.
- *
  */
 public class CodeTask3_3 extends Application implements BeadsChecker.BeadsCheckable {
 

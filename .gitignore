@@ -2,24 +2,32 @@
 *.class
 
 # all instances of HB.jar
-*HB.jar
+HB.jar
+
+# all .DS_Store files
+.DS_Store
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+**/hs_err_pid*
 
-# local folders
-.gradle
-build
-workspace.xml
-tasks.xml
-.idea
-
-# intellij stuff
-IntelliJ Plugin/.idea
-IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip
-IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.iml
+# HappyBrackets Project
+HappyBrackets/.gradle/
+HappyBrackets/build/
+HappyBrackets/.idea/
+HappyBrackets/logs/
 HappyBrackets/HappyBrackets.iml
 HappyBrackets/HappyBrackets.ipr
 
-# docs copied into HappyBrackets Project
-Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs
+# IntelliJ Plugin Project
+IntelliJ\ Plugin/.idea/
+IntelliJ\ Plugin/out/
+IntelliJ\ Plugin/HappyBrackets_IntelliJ_Plugin.zip
+IntelliJ\ Plugin/HappyBrackets_IntelliJ_Plugin.iml
+
+# Distribution > HappyBrackets Project 
+Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/build/
+Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/logs/
+Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/libs/docs/
+Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/.idea/
+Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets_IntelliJ_Plugin.zip
+

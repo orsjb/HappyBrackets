@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.device.network;
 
 import de.sciss.net.OSCTransmitter;
@@ -24,6 +40,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class takes care of communication between the device and the controller. You would mainly use it to send OSC messages to the controller and listen for incoming OSC messages from the controller. However, these methods are both wrapped in the {@link HB} class.
+ */
 public class NetworkCommunication {
 
 	final static Logger logger = LoggerFactory.getLogger(NetworkCommunication.class);
@@ -115,22 +134,24 @@ public class NetworkCommunication {
                         );
                         if (status) logger.info("Updated interfaces file");
                         else logger.error("Unable to update interfaces file");
-					}
-					//all other messages getInstance forwarded to delegate listeners
-					synchronized(listeners) {
-						Iterator<OSCListener> i = listeners.iterator();
-						while(i.hasNext()) {
-							try {
-								i.next().messageReceived(msg, src, time);
-							} catch(Exception e) {
-								logger.error("Error delegating OSC message!", e);
+					} else if (msg.getName().equals("/device/alive")) {
+						//ignore
+					} else {
+						//all other messages getInstance forwarded to delegate listeners
+						synchronized (listeners) {
+							Iterator<OSCListener> i = listeners.iterator();
+							while (i.hasNext()) {
+								try {
+									i.next().messageReceived(msg, src, time);
+								} catch (Exception e) {
+									logger.error("Error delegating OSC message!", e);
+								}
 							}
 						}
 					}
 				}
 			}
 		});
-
 		//set up the controller address
 		String hostname = DeviceConfig.getInstance().getControllerHostname();
 		logger.info( "Setting up controller: {}", hostname );
@@ -139,7 +160,6 @@ public class NetworkCommunication {
 				DeviceConfig.getInstance().getStatusFromDevicePort()
 		);
 		logger.debug( "Controller resolved to address: {}", controller );
-
 		//set up an indefinite thread to ping the controller
         new Thread() {
             public void run() {
@@ -160,7 +180,6 @@ public class NetworkCommunication {
                     );
                 }
             };
-
             while(true) {
                 hb.broadcast.forAllTransmitters(keepAlive);
                 try {
@@ -169,7 +188,6 @@ public class NetworkCommunication {
                     logger.error("/device/alive message send interval interupted!", e);
                 }
             }
-
 			}
 		}.start();
 	}

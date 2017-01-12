@@ -17,7 +17,9 @@ sudo apt-get install i2c-tools
 # install java 8
 sudo apt-get install oracle-java8-jdk 
 
-# We will skip the wifi driver for now as the Raspi3 has one built in
+# Enable I2C on raspi, to connect to sensors. 
+# Counter-intuitively 'do_i2c 0' means 'enable'. 
+sudo raspi-config nonint do_i2c 0
 
 # get 'interfaces' file and copy it to /etc/network
 wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/interfaces

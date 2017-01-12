@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.core;
 
 import de.sciss.net.*;
@@ -12,8 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class manages broadcast communication - i.e., one to all comms. You would mainly use it to send broadcast messages and listen to broadcast messages. However, these functions are wrapped in the {@link HB} class and should be accessed there.
+ *
  * Created by ollie on 1/06/2016.
- *  Multiple interface behaviour add by Sam on 11/08/2016
+ *  Multiple interface behaviour add by Sam Gillespie on 11/08/2016.
  */
 public class BroadcastManager {
 

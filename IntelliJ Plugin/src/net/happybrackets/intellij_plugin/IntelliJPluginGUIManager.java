@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.intellij_plugin;
 
 import com.intellij.openapi.actionSystem.DataKeys;
@@ -86,6 +102,9 @@ public class IntelliJPluginGUIManager {
 	private Map<LocalDeviceRepresentation, DeviceErrorListener> deviceErrorListeners;
 
 	private static final int minTextAreaHeight = 200;
+
+	private static final int ALL = -1; // Send to all devices.
+	private static final int SELECTED = -2; // Send to selected device(s).
 
 	public IntelliJPluginGUIManager(Project project) {
 		this.project = project;
@@ -520,6 +539,10 @@ public class IntelliJPluginGUIManager {
 	}
 
 	private Pane makeCompositionSendPane() {
+		GridPane compositionSendPane = new GridPane();
+		compositionSendPane.setHgap(defaultElementSpacing);
+		compositionSendPane.setVgap(defaultElementSpacing);
+
 		// Create the ComboBox containing the compoositions
 		compositionSelector = new ComboBox<String>();
 //		compositionSelector.setMaxWidth(200);
@@ -553,28 +576,62 @@ public class IntelliJPluginGUIManager {
 				}
 			}
 		});
+		compositionSendPane.add(compositionSelector, 0, 0, 6, 1);
 
 		Button compositionSendButton = new Button("All");
 		compositionSendButton.setTooltip(new Tooltip("Send the selected composition to all devices."));
 		compositionSendButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				if (currentCompositionSelection != null) {
-					//intelliJ specific code
-					String pathToSend = compositionsPath + "/" + currentCompositionSelection;
-					try {
-						SendToDevice.send(pathToSend, deviceConnection.getDevices());
-					} catch (Exception ex) {
-						logger.error("Unable to send composition: '{}'!", pathToSend, ex);
-					}
-				}
+				sendSelectedComposition(deviceConnection.getDevices());
 			}
 		});
+		compositionSendPane.add(compositionSendButton, 0, 1);
 
-		HBox compositionSendPane = new HBox(defaultElementSpacing);
-		compositionSendPane.getChildren().addAll(compositionSelector, compositionSendButton);
+		Button compositionSendSelectedButton = new Button("Selected");
+		compositionSendSelectedButton.setTooltip(new Tooltip("Send the selected composition to the selected devices."));
+		compositionSendSelectedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				sendSelectedComposition(deviceListView.getSelectionModel().getSelectedItems());
+			}
+		});
+		compositionSendPane.add(compositionSendSelectedButton, 1, 1);
+
+		for (int i = 0; i < 4; i++) {
+			final int group = i;
+			Button compositionSendGroupButton = new Button("" + (i + 1));
+			compositionSendGroupButton.setTooltip(new Tooltip("Send the selected composition to device group " + (i + 1) + "."));
+			compositionSendGroupButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent e) {
+					List<LocalDeviceRepresentation> devices = new ArrayList<>();
+					for(LocalDeviceRepresentation device : deviceListView.getItems()) {
+						if (device.groups[group]) {
+							devices.add(device);
+						}
+					}
+					sendSelectedComposition(devices);
+				}
+			});
+			compositionSendPane.add(compositionSendGroupButton, 2 + group, 1);
+		}
+
 		return compositionSendPane;
 	}
+
+	private void sendSelectedComposition(List<LocalDeviceRepresentation> devices) {
+		if (currentCompositionSelection != null) {
+			//intelliJ specific code
+			String pathToSend = compositionsPath + "/" + currentCompositionSelection;
+			try {
+				SendToDevice.send(pathToSend, devices);
+			} catch (Exception ex) {
+				logger.error("Unable to send composition: '{}'!", pathToSend, ex);
+			}
+		}
+	}
+
 
 	private Pane makeCustomCommandPane() {
 		final TextField codeField = new TextField();
@@ -611,21 +668,32 @@ public class IntelliJPluginGUIManager {
 
 		FlowPane messagepaths = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 		messagepaths.setAlignment(Pos.TOP_LEFT);
+
 		Button sendAllButton = new Button("All");
 		sendAllButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				sendCustomCommand(codeField.getText(), true, 0);
+				sendCustomCommand(codeField.getText(), ALL);
 			}
 		});
 		messagepaths.getChildren().add(sendAllButton);
+
+		Button sendSelectedButton = new Button("Selected");
+		sendSelectedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				sendCustomCommand(codeField.getText(), SELECTED);
+			}
+		});
+		messagepaths.getChildren().add(sendSelectedButton);
+
 		for(int i = 0; i < 4; i++) {
 			Button b = new Button();
 			final int index = i;
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					sendCustomCommand(codeField.getText(), false, index);
+					sendCustomCommand(codeField.getText(), index);
 				}
 			});
 			b.setText("" + (i + 1));
@@ -641,10 +709,9 @@ public class IntelliJPluginGUIManager {
 	/**
 	 * Send a custom command to the specified devices.
 	 * @param text The command to send.
-	 * @param all Set to true to send the command to all devices.
-	 * @param group If 'all' is false the group of devices to send the command to.
+	 * @param devicesOrGroup If 'all' is false the group of devices to send the command to.
 	 */
-	public void sendCustomCommand(String text, boolean all, int group) {
+	public void sendCustomCommand(String text, int devicesOrGroup) {
 		String codeText = text.trim();
 		commandHistory.add(codeText);
 		positionInCommandHistory = commandHistory.size() - 1;
@@ -667,10 +734,14 @@ public class IntelliJPluginGUIManager {
 					}
 				}
 			}
-			if(all) {
+			if (devicesOrGroup == ALL) {
 				deviceConnection.sendToAllDevices(msg, args);
-			} else {
-				deviceConnection.sendToDeviceGroup(group, msg, args);
+			}
+			else if (devicesOrGroup == SELECTED) {
+				deviceConnection.sendToDeviceList(deviceListView.getSelectionModel().getSelectedItems(), msg, args);
+			}
+			else {
+				deviceConnection.sendToDeviceGroup(devicesOrGroup, msg, args);
 			}
 		}
 	}
@@ -692,6 +763,8 @@ public class IntelliJPluginGUIManager {
 		//populate combobox with list of compositions
 		List<String> compositionFileNames = new ArrayList<String>();
 		recursivelyGatherCompositionFileNames(compositionFileNames, compositionsPath);
+		// Sort compositions alphabetically.
+		Collections.sort(compositionFileNames, String.CASE_INSENSITIVE_ORDER);
 		compositionSelector.getItems().clear();
 		for(final String compositionFileName : compositionFileNames) {
 			compositionSelector.getItems().add(compositionFileName);

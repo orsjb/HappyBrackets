@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.assignment_tasks.session3;
 
 import javafx.application.Application;
@@ -13,12 +29,17 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
 /**
  * Continue on from your code in CodeTask3_1.
  *
- * 4) Replace the fixed playback rate of the SamplePlayer with an Envelope (use setPitch()), and randomly add a downward pitch bend to 1 in 5 of the notes.
- * 5) Switch the SamplePlayer to a GranularSamplePlayer.
- *      Use the method 'setRate()' to set the GranularSamplePlayer to play back at half speed.
- *      Note that with SamplePlayer 'getRate()' and 'getPitch()' are the same method, whereas for GranularSamplePlayer they return different things.
- *      Using the methods 'getGrainSizeUGen().setValue()', 'getGrainIntervalUGen().setValue()', 'getRandomnessUGen().setValue()', find suitable granulation settings that make the guitar sound as natural as possible.
+ * 4) Replace the fixed playback rate of the SamplePlayer with an Envelope (use setPitch()), and randomly add a downward
+ * pitch bend to 1 in 5 of the notes.
  *
+ * 5) Switch the SamplePlayer to a GranularSamplePlayer.
+ * Use the method 'setRate()' to set the GranularSamplePlayer to play back at half speed.
+ * Note that with SamplePlayer 'getRate()' and 'getPitch()' are the same method, whereas for GranularSamplePlayer they
+ * return different things.
+ *
+ * Using the methods 'getGrainSizeUGen().setValue()', 'getGrainIntervalUGen().setValue()',
+ * 'getRandomnessUGen().setValue()', find suitable granulation settings that make the guitar sound as natural as
+ * possible.
  */
 public class CodeTask3_2 extends Application implements BeadsChecker.BeadsCheckable {
 

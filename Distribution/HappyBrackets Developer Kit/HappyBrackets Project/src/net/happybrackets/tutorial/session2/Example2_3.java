@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.tutorial.session2;
 
 import javafx.application.Application;
@@ -16,9 +32,9 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 import java.util.Random;
 
 /**
- * In this example, we do some more complex melodic manipulation and create multiple patterns running off the same clock.
+ * In this example, we do some more complex melodic manipulation and create multiple patterns running off the same
+ * clock.
  * We use the Pitch class to create notes from a major scale.
- *
  */
 public class Example2_3 extends Application {
 
@@ -40,7 +56,7 @@ public class Example2_3 extends Application {
         clock.addMessageListener(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if(clock.getCount() % 16 == 0) {
+                if (clock.getCount() % 16 == 0) {
                     //add the waveplayer
                     int pitch = basePitch + 12 + Pitch.major[random.nextInt(7)];
                     float freq = Pitch.mtof(pitch);
@@ -53,7 +69,7 @@ public class Example2_3 extends Application {
                     g.addInput(wp);
                     ac.out.addInput(g);
                 }
-                if(clock.getCount() % 6 == 0) {
+                if (clock.getCount() % 6 == 0) {
                     //add the waveplayer
                     int pitch = basePitch + Pitch.major[random.nextInt(7)];
                     float freq = Pitch.mtof(pitch);

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.controller.network;
 
 import java.io.File;
@@ -106,9 +122,14 @@ public class DeviceConnection {
 
 		for (LocalDeviceRepresentation device: theDevices) {
 			int id = 0;
-			if(knownDevices.containsKey(device.hostname)) {
+
+			if (knownDevices.containsKey(device.hostname)) {
 				device.setID(knownDevices.get(device.hostname));
-			} else {
+			}
+			else if (knownDevices.containsKey(device.deviceName)) {
+				device.setID(knownDevices.get(device.deviceName));
+			}
+			else {
 				device.setID(newID--);
 			}
 
@@ -150,57 +171,62 @@ public class DeviceConnection {
 
 	private void incomingMessage(OSCMessage msg) {
 		if(msg.getName().equals("/device/alive")) {
-			try {
-				String deviceName = (String) msg.getArg(0);
-				String deviceHostname = (String) msg.getArg(1);
-				String deviceAddress = (String) msg.getArg(2);
-				logger.debug("Received message from device: " + deviceName);
-	//			System.out.println("Device Alive Message: " + deviceName);
-				//see if we have this device yet
-				LocalDeviceRepresentation thisDevice = devicesByHostname.get(deviceName);
-				if(thisDevice == null) { //if not add it
-					int id = 0;
-					if(knownDevices.containsKey(deviceName)) {
-						id = knownDevices.get(deviceName);
-					} else {
-						id = newID--;
-					}
-					//force names if useHostname is true
-					if (config.useHostname()) deviceAddress = deviceName;
-					thisDevice = new LocalDeviceRepresentation(deviceName, deviceHostname, deviceAddress, id, oscServer, config);
-					devicesByHostname.put(deviceName, thisDevice);
-					final LocalDeviceRepresentation deviceToAdd = thisDevice;
-					//adding needs to be done in an "app" thread because it affects the GUI.
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							theDevices.add(deviceToAdd);
+			synchronized (this) {			//needs to be synchronized else we might put two copies in
+				try {
+					String deviceName = (String) msg.getArg(0);
+					String deviceHostname = (String) msg.getArg(1);
+					String deviceAddress = (String) msg.getArg(2);
+					logger.debug("Received message from device: " + deviceName);
+					//			System.out.println("Device Alive Message: " + deviceName);
+					//see if we have this device yet
+					LocalDeviceRepresentation thisDevice = devicesByHostname.get(deviceName);
+					logger.debug("Getting device from store: name=" + deviceName + ", result=" + thisDevice);
+
+					if (thisDevice == null) { //if not add it
+						int id = 0;
+						if (knownDevices.containsKey(deviceName)) {
+							id = knownDevices.get(deviceName);
+						} else {
+							id = newID--;
 						}
-					});
-					//make sure this device knows its ID
-					//since there is a lag in assigning an InetSocketAddress, and since this is the first
-					//message sent to the device, it should be done in a separate thread.
-					final LocalDeviceRepresentation deviceID = thisDevice;
-					new Thread() {
-						public void run() {
-							sendToDevice(deviceID, "/device/set_id", deviceID.getID());
-							logger.info("Assigning id {} to {}", deviceID.getID(), deviceID.hostname);
-						}
-					}.start();
-				}
-				//keep up to date
-				if(thisDevice != null) {
-					thisDevice.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
-					//TODO update the status in the GUI, not sure how to bind this
-					if (msg.getArgCount() > 4) {
-						String status = (String) msg.getArg(4);
-						thisDevice.setStatus(status);
-						//				System.out.println("Got status update from " + thisDevice.hostname + ": " + status);
+						//force names if useHostname is true
+						if (config.useHostname()) deviceAddress = deviceName;
+						thisDevice = new LocalDeviceRepresentation(deviceName, deviceHostname, deviceAddress, id, oscServer, config);
+						devicesByHostname.put(deviceName, thisDevice);
+						logger.debug("Put device in store: name=" + deviceName + ", size=" + devicesByHostname.size());
+						final LocalDeviceRepresentation deviceToAdd = thisDevice;
+						//adding needs to be done in an "app" thread because it affects the GUI.
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								theDevices.add(deviceToAdd);
+							}
+						});
+						//make sure this device knows its ID
+						//since there is a lag in assigning an InetSocketAddress, and since this is the first
+						//message sent to the device, it should be done in a separate thread.
+						final LocalDeviceRepresentation deviceID = thisDevice;
+						new Thread() {
+							public void run() {
+								sendToDevice(deviceID, "/device/set_id", deviceID.getID());
+								logger.info("Assigning id {} to {}", deviceID.getID(), deviceID.hostname);
+							}
+						}.start();
 					}
+					//keep up to date
+					if (thisDevice != null) {
+						thisDevice.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
+						//TODO update the status in the GUI, not sure how to bind this
+						if (msg.getArgCount() > 4) {
+							String status = (String) msg.getArg(4);
+							thisDevice.setStatus(status);
+							//				System.out.println("Got status update from " + thisDevice.hostname + ": " + status);
+						}
+					}
+				} catch (Exception e) {
+					logger.error("Error reading incoming OSC message", e);
+					return;
 				}
-			} catch(Exception e) {
-				logger.error("Error reading incoming OSC message", e);
-				return;
 			}
 		}
 //		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
@@ -210,8 +236,15 @@ public class DeviceConnection {
 		device.send(msgName, args);
 	}
 
+
 	public void sendToAllDevices(String msgName, Object... args) {
 		for(LocalDeviceRepresentation device : devicesByHostname.values()) {
+			sendToDevice(device, msgName, args);
+		}
+	}
+
+	public void sendToDeviceList(Iterable<LocalDeviceRepresentation> devices, String msgName, Object... args) {
+		for (LocalDeviceRepresentation device : devices) {
 			sendToDevice(device, msgName, args);
 		}
 	}

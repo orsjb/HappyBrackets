@@ -1,0 +1,15 @@
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.
+ERROR net.happybrackets.core.BroadcastManager - BroadcastManager encountered an IO exception when creating a listener socket on interface awdl0! Trying again next refresh.

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Ollie Bown
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.happybrackets.tutorial.session3;
 
 import javafx.application.Application;
@@ -13,8 +29,9 @@ import net.happybrackets.controller.gui.WaveformVisualiser;
 /**
  * This example demonstrates a simple Frequency Modulation signal chain.
  *
- * Note in this case the base frequency is dynamically controlled by an Envelope, whereas the modulation ratio and the modulation amount are both fixed values. It would be simple to make all of these parameters dynamic and controlled by any other factors you wished.
- *
+ * Note in this case the base frequency is dynamically controlled by an Envelope, whereas the modulation ratio and the
+ * modulation amount are both fixed values. It would be simple to make all of these parameters dynamic and controlled by
+ * any other factors you wished.
  */
 public class Example3_2 extends Application {
 
