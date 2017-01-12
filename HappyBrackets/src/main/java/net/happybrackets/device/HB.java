@@ -54,6 +54,9 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * HB is the main controller class for a HappyBrackets program. It is accessed from an {@link HBAction}'s {@link HBAction#action(HB)} method, where users can play sounds, create network listeners, send network messages, and perform other actions.
+ */
 public class HB {
 
 	final static Logger logger = LoggerFactory.getLogger(HB.class);
@@ -358,6 +361,10 @@ public class HB {
 
 	}
 
+	/**
+	 * Attempts to load the given class as an {@link HBAction}. If an {@link HBAction} can be found matching the fully qualified Java classname then this is loaded and its {@link HBAction#action(HB)} method is run.
+	 * @param s
+	 */
 	public void attemptHBActionFromClassName(String s) {
 		try {
 			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(s);

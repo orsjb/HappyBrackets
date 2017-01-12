@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.happybrackets.device.sensors;
+package net.happybrackets.device.sensors.sensor_types;
 
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.Buffer;
@@ -22,6 +22,8 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.AudioSetup;
+import net.happybrackets.device.sensors.MiniMU;
+import net.happybrackets.device.sensors.SensorUpdateListener;
 
 public class MiniMUTest {
 

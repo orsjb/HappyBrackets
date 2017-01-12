@@ -20,11 +20,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Abstract base class for types of things that are sensors. Enables adding and removing of sensor listeners, and getting sensor name. See a real Sensor implementation such as {@link MiniMU} for more details.
+ *
  * Created by ollie on 1/06/2016.
  */
 public abstract class Sensor {
-
-    //TODO correct use of generics / type parameterisation with the listener set.
 
     protected final Set<SensorUpdateListener> listeners = new HashSet<>();
 

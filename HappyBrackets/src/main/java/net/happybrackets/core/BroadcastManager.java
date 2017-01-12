@@ -28,8 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class manages broadcast communication - i.e., one to all comms. You would mainly use it to send broadcast messages and listen to broadcast messages. However, these functions are wrapped in the {@link HB} class and should be accessed there.
+ *
  * Created by ollie on 1/06/2016.
- *  Multiple interface behaviour add by Sam on 11/08/2016
+ *  Multiple interface behaviour add by Sam Gillespie on 11/08/2016.
  */
 public class BroadcastManager {
 
