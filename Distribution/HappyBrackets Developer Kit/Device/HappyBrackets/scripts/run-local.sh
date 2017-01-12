@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ### Script to autorun HappyBrackets on device
+### This script is identical to run.sh but defaults to running HappyBrackets in 'local' access mode.
 
 ### move to the correct dir for running this script (one level above where this script is)
 DIR=`dirname $0`
@@ -20,7 +21,7 @@ OUTS=1
 AUTOSTART=true 
 # ACCESSMODE may be 'open' (accept code from any controller), 'local' (accept 
 # code from controller on local host), or 'closed' (do not accept any code).
-ACCESSMODE=open
+ACCESSMODE=local
 ACTION=
 
 echo “Running HappyBrackets”
