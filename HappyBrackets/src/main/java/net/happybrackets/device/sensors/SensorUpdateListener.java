@@ -19,6 +19,8 @@ package net.happybrackets.device.sensors;
 import net.beadsproject.beads.data.DataBead;
 
 /**
+ * Gets notified when a sensor has been updated. No data is passed in this method. The implementor should independently query the sensor for data.
+ *
  * Created by ollie on 1/06/2016.
  */
 public interface SensorUpdateListener {

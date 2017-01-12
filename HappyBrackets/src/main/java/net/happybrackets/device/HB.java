@@ -52,33 +52,85 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * HB is the main controller class for a HappyBrackets program. It is accessed from an {@link HBAction}'s {@link HBAction#action(HB)} method, where users can play sounds, create network listeners, send network messages, and perform other actions.
+ */
 public class HB {
 
 	final static Logger logger = LoggerFactory.getLogger(HB.class);
 
 	// audio stuff
+
+	/**
+	 * The {@link AudioContext} used by HappyBrackets. This is autorun by default from the start script, but that can be controlled by a commandline flag.
+	 */
 	public final AudioContext ac;
+
+	/**
+	 * The {@link Clock} used by HappyBrackets. This is up and running, with a default interval of 500ms and default "ticks per beat" of 16.
+	 */
 	public final Clock clock;
+
+	/**
+	 * The {@link Envelope} that controls the clock interval. Default value is 500ms.
+	 */
 	public final Envelope clockInterval;
+
+	/**
+	 * The {@link PolyLimit} that controls polyphony. This is used for sounds added with the {@link HB#sound(UGen)} method. Default number of voices is 4.
+	 */
 	public final PolyLimit pl;
+
+	/**
+	 * The {@link Envelope} used to control the master gain. Default value is 1.
+	 */
+
 	public final Envelope masterGainEnv;
+
+
+	/**
+	 * Audio on status.
+	 */
 	boolean audioOn = false;
 
+	/**
+	 * Status string used to send to the controller periodically.
+	 */
 	String status = "No ID set";
 
 	// sensor stuffs
+	/**
+	 * A {@link Hashtable} to store sensors.
+	 */
 	public final Hashtable<Class<? extends Sensor>, Sensor> sensors;
 
 	// shared data
+	/**
+	 * A {@link Hashtable} to store generic objects.
+	 */
 	public final Hashtable<String, Object> share = new Hashtable<String, Object>();
 	private int nextElementID = 0;
 
-	// random number generator for general use
+	/**
+	 * A random number generator for general use.
+	 */
 	public final Random rng = new Random();
 
 	// network comms stuff
+
+	/**
+	 * The {@link NetworkCommunication} object used to communicate with the controller. The important methods are provided directly from {@link HB}, e.g., {@link HB#sendToController(String, Object...)} and {@link HB#addControllerListener(OSCListener)}.
+	 */
 	public final NetworkCommunication controller;
+
+	/**
+	 * The {@link BroadcastManager}object used to communicate with other devices using 1-many broadcasts. The important methods are provided directly from {@link HB}, e.g., {@link HB#broadcast(String, Object...)} and {@link HB#addBroadcastListener(OSCListener)}.
+	 */
 	public static BroadcastManager broadcast = new BroadcastManager(DeviceConfig.getInstance().getMulticastAddr(), DeviceConfig.getInstance().getBroadcastPort());
+
+	/**
+	 * The {@link Synchronizer} object used to manage time synch between devices. The important methods are provided directly from {@link HB}, e.g., {@link HB#doAtTime(Runnable, long)} and {@link HB#getSynchTime()}.
+	 */
 	public final Synchronizer synch;
 
 	private AccessMode accessMode;
@@ -133,7 +185,6 @@ public class HB {
 
 		//notify started (happens immeidately or when audio starts)
 		testBleep3();
-
         broadcast.startRefreshThread();
 		logger.info("HB initialised");
 	}
@@ -191,7 +242,7 @@ public class HB {
 	/**
 	 * Returns the system time adjusted according to the result of any device synch attempts.
 	 *
-	 * @return corrected time as long
+	 * @return corrected time as long, in millseconds since 1st Jan 1970.
      */
 	public long getSynchTime() {
 		return synch.correctedTimeNow();
@@ -200,7 +251,7 @@ public class HB {
 	/**
 	 * Causes an action to be implemented at the given, synchronized time.
 	 * @param runnable the action to perform.
-	 * @param time the time at which to perform the action.
+	 * @param time the time at which to perform the action, in millseconds since 1st Jan 1970.
      */
 	public void doAtTime(Runnable runnable, long time) {
 		synch.doAtTime(runnable, time);
@@ -250,7 +301,7 @@ public class HB {
 	 * Gets a float arg from an {@link OSCMessage}. Accesses the arg as a float even if the arg is type int.
 	 * @param m the message.
 	 * @param index the index of the argument.
-     * @return a float.
+     * @return a float argument.
      */
 	public float getFloatArg(OSCMessage m, int index) {
 		float result = 0;
@@ -403,6 +454,10 @@ public class HB {
 
 	}
 
+	/**
+	 * Attempts to load the given class as an {@link HBAction}. If an {@link HBAction} can be found matching the fully qualified Java classname then this is loaded and its {@link HBAction#action(HB)} method is run.
+	 * @param s
+	 */
 	public void attemptHBActionFromClassName(String s) {
 		try {
 			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(s);

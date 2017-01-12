@@ -29,18 +29,19 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A tool for each device to work out its current synch with respect to all other devices.
+ * We keep this independent of the audio system because the audio system start-time needs to be synched.
+ *
+ * Each synchronizer sends regular pulses every interval with the syntax:
+ * s <MAC1> <timeMS>
+ *
+ * An s means send. Upon receiving an s, each synchronizer also responds with
+ * r <MAC1> <timeMS> <MAC2> <timeMS>
+ *
+ * This volley of broadcasts and responses allows each synchronizer to calculate network round-trips and average these over time. The device with the first MAC address, in alphanumeric order, is considered the master timer.
+ */
 public class Synchronizer {
-
-	/*
-	 * A tool for each device to work out its current synch with respect to all other devices.
-	 * We keep this independent of the audio system because the audio system start-time needs to be synched.
-	 *
-	 * Each synchronizer sends regular pulses every second with the syntax:
-	 * s <MAC1> <timeMS>
-	 *
-	 * An s means send. Upon receiving an s, each synchronizer also responds with
-	 * r <MAC1> <timeMS> <MAC2> <timeMS>
-	 */
 
 	final static Logger logger = LoggerFactory.getLogger(Synchronizer.class);
     final static String oscPath = "/hb/synchonizer";
@@ -68,6 +69,10 @@ public class Synchronizer {
 		return singletonSynchronizer;
 	}
 
+	/**
+	 * This returns the time in Linux format (ms since Jan 1st 1970) according to the synchronization. Note this is not guaranteed to be the right time, only the same time as the other devices on the network (also not guaranteed, but that's the aim).
+	 * @return time in ms since Jan 1st 1970.
+	 */
 	public static long time() {
 		return getInstance().correctedTimeNow();
 	}
@@ -90,10 +95,18 @@ public class Synchronizer {
 		}
 	}
 
+	/**
+	 * Returns the time corrected with long-term correction. This should be accurate over longer periods of synch but not so sensitive to recent synch changes.
+	 * @return time in ms since Jan 1st 1970.
+	 */
 	public long stableTimeNow() {
 		return System.currentTimeMillis() + stableTimeCorrection;
 	}
 
+	/**
+	 * Returns the time corrected with short-term correction. This is more sensitive to recent synch changes but is not as reliable in the long-term as {@link Synchronizer#stableTimeNow()}.
+	 * @return time in ms since Jan 1st 1970.
+	 */
 	public long correctedTimeNow() {
 		return stableTimeNow() + timeCorrection;
 	}
@@ -134,16 +147,6 @@ public class Synchronizer {
                     return;
                 }
                 String myMAC = Device.selectMAC(ni);
-//				String[] parts = new String[msg.getArgCount()];
-//                for (int i = 0; i < msg.getArgCount(); i++) {
-//                    parts[i] = (String) msg.getArg(i);
-//                }
-//                String[] parts = ((String) msg.getArg(0)).split("[ ]");
-
-//                for(int i = 0; i < parts.length; i++) {
-//                    parts[i] = parts[i].trim();
-//                }
-
                 if (logger.isTraceEnabled()) {
                     String logMessage = msg.getName() + " args:\n";
                     Object[] logArgs = new Object[msg.getArgCount() * 2];
@@ -154,13 +157,11 @@ public class Synchronizer {
                     }
                     logger.trace(logMessage, logArgs);
                 }
-
                 String action           = (String) msg.getArg(0);
                 String sourceMAC        = (String) msg.getArg(1);
                 long timeOriginallySent = Long.parseLong((String) msg.getArg(2));
                 String otherMAC         = (String) msg.getArg(3);
                 long timeReturnSent     = Long.parseLong((String) msg.getArg(4));
-
                 if(action.equals("s")) {
                     //an original send message
                     //respond if you were not the sender
@@ -175,12 +176,8 @@ public class Synchronizer {
                     //respond only if you WERE the sender
                     if(sourceMAC.equals(myMAC)) {
                         //find out how long the return trip was
-//                        long timeOriginallySent = Long.parseLong(timeOriginallySent);
-//                        String otherMAC = otherMAC;
-//                        long timeReturnSent = Long.parseLong(timeReturnSent);
                         long currentTime = stableTimeNow();
                         log(timeOriginallySent, otherMAC, timeReturnSent, currentTime);
-
                         if(verbose) {
                             long returnTripTime = currentTime - timeOriginallySent;
                             long timeAheadOfOther = (currentTime - (returnTripTime / 2)) - timeReturnSent;	//+ve if this unit is ahead of other unit
@@ -191,9 +188,13 @@ public class Synchronizer {
                 }
             }
         });
-
 	}
 
+	/**
+	 * Cause an event to happen at the given time.
+	 * @param r the {@link Runnable} to run at the given time.
+	 * @param time the synchronized time to enact the event, in ms since 1st Jan 1970.
+	 */
 	public void doAtTime(final Runnable r, long time) {
 		final long waitTime = time - correctedTimeNow();
 		if(waitTime <= 0) {				//either run immediately
@@ -206,28 +207,6 @@ public class Synchronizer {
 						Thread.sleep(waitTime);
 					} catch (InterruptedException e) {
 						logger.error("Interupted while waiting to execute action in Synchronizer.doAtTime!", e);
-					}
-					r.run();
-				}
-			}.start();
-
-		}
-	}
-
-	public void doAtNextStep(final Runnable r, long timeMultiplier) {
-		long timeNow = correctedTimeNow();
-		long time = ((timeNow / timeMultiplier) + 1) * timeMultiplier;
-		final long waitTime = time - correctedTimeNow();
-		if(waitTime <= 0) {				//either run immediately
-			r.run();
-		} else {						//or wait the required time
-			//create a new thread just in order to run this incoming thread
-			new Thread() {
-				public void run() {
-					try {
-						Thread.sleep(waitTime);
-					} catch (InterruptedException e) {
-						logger.error("Interupted while waiting for next time step!", e);
 					}
 					r.run();
 				}
@@ -252,9 +231,7 @@ public class Synchronizer {
                     }
                 };
 				while(on) {
-
                     broadcast.forAllTransmitters(sync);
-
 					try {
 						Thread.sleep(500 + (int)(100 * Math.random()));	//randomise send time to break network send patterns
 					} catch (InterruptedException e) {
@@ -273,6 +250,9 @@ public class Synchronizer {
 		t.start();
 	}
 
+	/**
+	 * Shut down the Synchronizer. This is irreversible.
+	 */
 	public void close() {
 		on = false;
 		broadcast.dispose();
@@ -317,6 +297,10 @@ public class Synchronizer {
 		}
 	}
 
+	/**
+	 * Return measure of the stability of the time correction.
+	 * @return near zero when very stable, higher values indicate less stability.
+	 */
 	public float getStability() {
 		if(stableTimeCorrection == 0) {
 			return 0;
@@ -324,37 +308,6 @@ public class Synchronizer {
 			return (float)(timeCorrection / stableTimeCorrection);
 		}
 	}
-
-//	public void messageReceived(String msg) {
-//		String[] parts = msg.split("[ ]");
-//		for(int i = 0; i < parts.length; i++) {
-//			parts[i] = parts[i].trim();
-//		}
-//		if(parts[0].equals("s")) {
-//			//an original send message
-//			//respond if you were not the sender
-//			if(!parts[1].equals(myMAC)) {
-//				broadcast("r " + parts[1] + " " + parts[2] + " " + myMAC + " " + stableTimeNow());
-//			}
-//		} else if(parts[0].equals("r")) {
-//			//a response message
-//			//respond only if you WERE the sender
-//			if(parts[1].equals(myMAC)) {
-//				//find out how long the return trip was
-//				long timeOriginallySent = Long.parseLong(parts[2]);
-//				String otherMAC = parts[3];
-//				long timeReturnSent = Long.parseLong(parts[4]);
-//				long currentTime = stableTimeNow();
-//				log(timeOriginallySent, otherMAC, timeReturnSent, currentTime);
-//				if(verbose) {
-//					long returnTripTime = currentTime - timeOriginallySent;
-//					long timeAheadOfOther = (currentTime - (returnTripTime / 2)) - timeReturnSent;	//+ve if this unit is ahead of other unit
-//					System.out.println("Return trip from " + myMAC + " to " + parts[3] + " took " + returnTripTime + "ms");
-//					System.out.println("This machine (" + myMAC + ") is " + (timeAheadOfOther > 0 ? "ahead of" : "behind") + " " + otherMAC + " by " + Math.abs(timeAheadOfOther) + "ms");
-//				}
-//			}
-//		}
-//	}
 
 	/**
 	 *
@@ -369,42 +322,6 @@ public class Synchronizer {
 		}
 		log.get(timeOriginallySent).put(otherMAC, new long[] {timeReturnSent, currentTime});
 	}
-
-//	/**
-//	 * Send String s over the multicast group.
-//	 *
-//	 * @param s the message to send.
-//	 */
-//	public void broadcast(String s) {
-//		byte buf[] = null;
-//		try {
-//			buf = s.getBytes("US-ASCII");
-//		} catch (UnsupportedEncodingException e) {
-//			logger.error("Unable to encode string {} with current encoding!", s, e);
-//		}
-//		logger.trace("Sending message: {} (length in bytes = {})", s, buf.length);
-//		// Create a DatagramPacket
-//		DatagramPacket pack = null;
-//		try {
-//			pack = new DatagramPacket(
-//				buf,
-//				buf.length,
-//				InetAddress.getByName(LoadableConfig.getInstance().getMulticastAddr()),
-//					LoadableConfig.getInstance().getClockSynchPort()
-//			);
-//		} catch (UnknownHostException e) {
-//			logger.error("Unable to send Synchronizer message to host!", e);
-//		}
-//		try {
-//			broadcastSocket.send(pack);
-//		} catch (IOException e) {
-//			logger.error("Error sending Synchronizer message!", e);
-//		}
-//	}
-
-//    public void broadcast(String msg) {
-//        broadcast.broadcast(oscPath, msg);
-//    }
 
 	public static void main(String[] args) {
 		Synchronizer s = getInstance();
