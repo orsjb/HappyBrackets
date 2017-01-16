@@ -5,17 +5,17 @@
 cd
 
 # keep apt-get up to date with mirrors
-sudo apt-get update
+sudo apt-get -y update
 
 # install zeroconf
-sudo apt-get -y install libnss-mdns
-sudo apt-get -y install netatalk
+sudo apt-get -y --force-yes install libnss-mdns
+sudo apt-get -y --force-yes install netatalk
 
 # install i2c tools
-sudo apt-get -y install i2c-tools
+sudo apt-get -y --force-yes install i2c-tools
 
 # install java 8
-sudo apt-get -y install oracle-java8-jdk 
+sudo apt-get -y --force-yes install oracle-java8-jdk 
 
 # Enable I2C on raspi, to connect to sensors. 
 # Counter-intuitively 'do_i2c 0' means 'enable'. 
