@@ -144,7 +144,7 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
-	public synchronized void send(byte[] data) {
+	public synchronized void send(byte[]... data) {
 		lazySetupAddressStrings();
 		boolean success = false;
 		int count = 0;
@@ -153,7 +153,9 @@ public class LocalDeviceRepresentation {
 		while(!success) {
 			try {
 				Socket s = new Socket(preferredAddressStrings.get(0), ControllerConfig.getInstance().getCodeToDevicePort());
-				s.getOutputStream().write(data);
+				for (byte[] d : data) {
+					s.getOutputStream().write(d);
+				}
 				s.close();
 				success = true;
 				logger.debug("Success sending to device {} using address {}!",

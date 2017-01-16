@@ -1,6 +1,6 @@
 # Script to setup new pi disc image with HappyBrackets and appropriate details
 
-# run from pi, with sudo, with an internet connection
+# run from pi, with an internet connection
 
 cd
 
@@ -36,7 +36,12 @@ amixer cset numid=1 0
 # save audio settings
 sudo alsactl store
 
-# Setup autorun
+# set up autorun
 wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/rc.local
 sudo mv rc.local /etc/
 chmod +x /etc/rc.local
+
+# set up ssh login
+sudo update-rc.d ssh enable
+sudo invoke-rc.d ssh start
+

@@ -57,6 +57,9 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	//how often the PI sends an alive message to the server
 	private Integer aliveInterval;
 
+	// Shared key used for encryption of class files sent from controller to device.
+	private String encryptionKey;
+
 	protected static LoadableConfig singletonInstance;
 
 	//places
@@ -231,4 +234,12 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 		}
 	}
 
+	public String getEncryptionKey() {
+		if (encryptionKey != null && encryptionKey.length() > 0) {
+			return encryptionKey;
+		}
+		else {
+			return EnvironmentConfig.super.getEncryptionKey();
+		}
+	}
 }

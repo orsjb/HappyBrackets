@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
  * We keep this independent of the audio system because the audio system start-time needs to be synched.
  *
  * Each synchronizer sends regular pulses every interval with the syntax:
- * s <MAC1> <timeMS>
+ * s MAC1 timeMS
  *
  * An s means send. Upon receiving an s, each synchronizer also responds with
- * r <MAC1> <timeMS> <MAC2> <timeMS>
+ * r MAC1 timeMS MAC2 timeMS
  *
  * This volley of broadcasts and responses allows each synchronizer to calculate network round-trips and average these over time. The device with the first MAC address, in alphanumeric order, is considered the master timer.
  */

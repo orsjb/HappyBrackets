@@ -32,12 +32,27 @@ public class DeviceMain {
     final static Logger logger = LoggerFactory.getLogger(DeviceMain.class);
 
 	public static void main(String[] args) throws Exception {
+		// Determine access mode.
+		HB.AccessMode mode = HB.AccessMode.OPEN;
+		for (String s : args) {
+			if (s.startsWith("access=")) {
+				try {
+					mode = HB.AccessMode.valueOf(s.split("[=]")[1].toUpperCase());
+				}
+				catch (Exception e) {
+					logger.error("Error setting access mode from command line, check spelling. Defaulting to OPEN.");
+				}
+				break;
+			}
+		}
 
-        //manage configuration files;
+		logger.debug("Access mode is " + mode);
+
+		//manage configuration files;
 		String configFile = "config/device-config.json";
         logger.debug("Loading config file: {}", configFile);
 		DeviceConfig config = DeviceConfig.load(configFile);
-		HB hb = new HB(AudioSetup.getAudioContext(args));
+		HB hb = new HB(AudioSetup.getAudioContext(args), mode);
 		//deal with autostart and parse arguments
 		boolean autostart = true;
 		for(String s : args) {

@@ -24,6 +24,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -39,14 +40,11 @@ import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
-import net.happybrackets.core.BroadcastManager;
-import net.happybrackets.core.Device;
-import net.happybrackets.core.HBAction;
+import net.happybrackets.core.*;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.core.Synchronizer;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -135,13 +133,26 @@ public class HB {
 	 */
 	public final Synchronizer synch;
 
+	private AccessMode accessMode;
+
 	/**
 	 * Creates the HB.
 	 *
 	 * @param _ac the {@link AudioContext} for audio.
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
-     */
+	 */
 	public HB(AudioContext _ac) throws IOException {
+		this(_ac, AccessMode.OPEN);
+	}
+
+	/**
+	 * Creates the HB.
+	 *
+	 * @param _ac the {@link AudioContext} for audio.
+	 * @param _am The access mode.
+	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
+     */
+	public HB(AudioContext _ac, AccessMode _am) throws IOException {
 		ac = _ac;
 		// default audio setup (note we don't start the audio context yet)
 		masterGainEnv = new Envelope(ac, 0);
@@ -164,9 +175,14 @@ public class HB {
 		System.out.print(".");
 		DeviceConfig.getInstance().listenForController(broadcast);
 		System.out.print(".");
-		// start listening for code
-		startListeningForCode();
+
+		this.accessMode = _am;
+		if (accessMode != AccessMode.CLOSED) {
+			// start listening for code
+			startListeningForCode();
+		}
 		System.out.print(".");
+
 		//notify started (happens immeidately or when audio starts)
 		testBleep3();
         broadcast.startRefreshThread();
@@ -352,7 +368,15 @@ public class HB {
 						Socket s = server.accept();
 						InetAddress incomingAddress = s.getInetAddress();
 						String incomingIP = incomingAddress.getHostAddress();
-						//TODO security solution 2. Use incomingIP to determine if we should accept this code.
+
+						// Check if code is allowed from this address.
+						boolean allow = accessMode == AccessMode.OPEN || accessMode == AccessMode.LOCAL && Device.isThisMyIpAddress(incomingAddress);
+						if (!allow) {
+							logger.debug("Code from host IP " + incomingIP + " DISALLOWED.");
+							continue;
+						}
+						logger.debug("Code from host IP " + incomingIP + " ALLOWED.");
+
 						Class<? extends HBAction> incomingClass = null;
 						try {
 							InputStream input = s.getInputStream();
@@ -362,8 +386,29 @@ public class HB {
 								buffer.write(data);
 								data = input.read();
 							}
-							byte[] classData = buffer.toByteArray();
-							//TODO at this point perhaps we need a string as well as the class data which is the passphrase (security solution 1?).
+
+							byte[] dataRaw = buffer.toByteArray();
+							byte[] classData;
+
+							try {
+								classData = Encryption.decrypt(DeviceConfig.getInstance().getEncryptionKey(), dataRaw, 32, dataRaw.length - 32 - Encryption.getIVLength());
+							}
+							catch (Exception e) {
+								logger.error("Error decrypting received class. Check that the encryptionKey in this device's configuration and the controller's configuration match.");
+								throw e;
+							}
+
+							// Check given hash matches hash of (decrypted) data.
+							MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+							byte[] hash = sha256.digest(classData);
+							for (int i = 0; i < hash.length; i++) {
+								if (hash[i] != dataRaw[i]) {
+									throw new Exception("Hash mismatch for received class data.");
+								}
+							}
+
+							logger.debug("Received class data hash matches given hash.");
+
 							//at this stage we have the class data in a byte array
 							Class<?> c = loader.createNewClass(classData);
 							Class<?>[] interfaces = c.getInterfaces();
@@ -669,5 +714,21 @@ public class HB {
      */
 	public String getStatus() {
 		return status;
+	}
+
+
+	public enum AccessMode {
+		/**
+		 * Allow receiving incoming code from any controller.
+		 */
+		OPEN,
+		/**
+		 * Allow receiving incoming code only from a controller running on the same host machine.
+		 */
+		LOCAL,
+		/**
+		 * Disallow receiving code.
+		 */
+		CLOSED
 	}
 }
