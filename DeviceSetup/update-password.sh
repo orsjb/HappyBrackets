@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run this script to automatically change your password from the default.
+# Run this script from your controller computer to automatically change your password from the default on any remote devices. You will be prompted to give the device name and a new password.
 
 echo "Enter the name of the device, e.g., hb-abcd12345678..."
 
