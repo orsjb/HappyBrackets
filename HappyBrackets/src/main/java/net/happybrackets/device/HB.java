@@ -430,7 +430,7 @@ public class HB {
 								logger.debug("new object (not HBAction) >> " + c.getName());
 							}
 						} catch (Exception e) {
-							logger.error("An error occoured while trying to read object from socket", e);
+							logger.error("An error occurred while trying to read object from socket.", e);
 						}
 						if (incomingClass != null) {
 							HBAction action = null;
