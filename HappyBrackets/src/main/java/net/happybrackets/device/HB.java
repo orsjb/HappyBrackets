@@ -372,7 +372,7 @@ public class HB {
 						// Check if code is allowed from this address.
 						boolean allow = accessMode == AccessMode.OPEN || accessMode == AccessMode.LOCAL && Device.isThisMyIpAddress(incomingAddress);
 						if (!allow) {
-							logger.debug("Code from host IP " + incomingIP + " DISALLOWED.");
+							logger.error("Code from host IP " + incomingIP + " DISALLOWED because access mode is set to local.");
 							continue;
 						}
 						logger.debug("Code from host IP " + incomingIP + " ALLOWED.");
