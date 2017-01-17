@@ -45,5 +45,5 @@ public interface EnvironmentConfig {
 	default public String getAudioDir()						{ return getWorkingDir() + "/audio"; }
 	default public String getConfigDir() 			    	{ return getWorkingDir() + "/config"; }
 	default public String getKnownDevicesFile()				{ return getConfigDir() + "/known_devices"; }
-	default public String getEncryptionKey()				{ return "abc123"; }
+	default public String getEncryptionKey()				{ return "CHANGE ME!"; }
 }

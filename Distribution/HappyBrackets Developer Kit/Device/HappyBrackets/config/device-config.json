@@ -9,6 +9,8 @@
   "controllerHTTPPort":       2228,
   "aliveInterval":            1000,
   "useHostname":              true,
+  
+  "encryptionKey":            "CHANGE ME!",
 
   "polyLimit":                4
 }

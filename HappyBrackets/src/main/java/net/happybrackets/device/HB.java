@@ -372,7 +372,7 @@ public class HB {
 						// Check if code is allowed from this address.
 						boolean allow = accessMode == AccessMode.OPEN || accessMode == AccessMode.LOCAL && Device.isThisMyIpAddress(incomingAddress);
 						if (!allow) {
-							logger.debug("Code from host IP " + incomingIP + " DISALLOWED.");
+							logger.error("Code from host IP " + incomingIP + " DISALLOWED because access mode is set to local.");
 							continue;
 						}
 						logger.debug("Code from host IP " + incomingIP + " ALLOWED.");
@@ -430,7 +430,7 @@ public class HB {
 								logger.debug("new object (not HBAction) >> " + c.getName());
 							}
 						} catch (Exception e) {
-							logger.error("An error occoured while trying to read object from socket", e);
+							logger.error("An error occurred while trying to read object from socket.", e);
 						}
 						if (incomingClass != null) {
 							HBAction action = null;

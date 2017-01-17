@@ -9,7 +9,7 @@
   "controllerHTTPPort":       2228,
   "aliveInterval":            1000,
 
+  "encryptionKey":            "CHANGE ME!",
   "useHostname":              true,
-  "polyLimit":                4,
-  "logFilePath":              "logs/last-run.txt"
+  "polyLimit":                4
 }
