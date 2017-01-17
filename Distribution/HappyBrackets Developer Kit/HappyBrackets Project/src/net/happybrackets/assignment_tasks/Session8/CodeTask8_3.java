@@ -40,7 +40,7 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  * 1. Do pythagoras along x and y to find a third value, which we'll call h(x,y).
  * 2. Do pythagoras along h(x,y) and z to find the distance from the origin to (x,y,z).
  *
- *
+ * Write these calculated values into the StringBuffer, one value per (x,y,z) calculation.
  *
  */
 public class CodeTask8_3 implements BeadsChecker.BeadsCheckable {
@@ -79,7 +79,6 @@ public class CodeTask8_3 implements BeadsChecker.BeadsCheckable {
         //********** do your work here ONLY **********
         //your objects...
         float[][] accelData = (float[][]) objects[0];
-        float threshold = (float) objects[1];
         //do stuff here, remove the following line
         buf.append("Hello World!\n");
         //********** do your work here ONLY **********
