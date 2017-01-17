@@ -27,17 +27,23 @@ import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
- * In this example we use the x-axis of the accelerometer to manipulate the pitch of the playback of  a sample that is
- * played off the clock.
+ * In this example we use the z-axis of the accelerometer to manipulate the pitch of the playback of a sample that is
+ * triggered from the clock.
  */
 public class Example8_4 implements HBAction {
 
     @Override
     public void action(HB hb) {
+
         hb.reset();
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
+
         Glide rate = new Glide(hb.ac, 1);
+
+        LSM9DS1 lsm = (LSM9DS1) hb.getSensor(LSM9DS1.class);
+
+
         //create a pattern that plays notes
         hb.pattern(new Bead() {
             @Override
@@ -51,15 +57,18 @@ public class Example8_4 implements HBAction {
                 }
             }
         });
-        LSM9DS1 lsm = (LSM9DS1) hb.getSensor(LSM9DS1.class);
+
+
         lsm.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {
-                // get x
-                double x = lsm.getAccelerometerData()[0];
-                rate.setValue((float) x / 1000f);
+
+                // get z axis value from Accelerometer
+                double z = lsm.getAccelerometerData()[2];
+
+                // Set the Rate
+                rate.setValue((float) z);
             }
         });
     }
-
 }

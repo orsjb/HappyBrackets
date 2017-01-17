@@ -11,7 +11,7 @@
  *******************************************************************************/
 
 /***************
- * Adapted for the Happy brackets project by Sam Ferguson (2016).
+ * Adapted for the HappyBrackets project by Sam Ferguson (2016).
  *
  * Uses Pi4J instead of dio for accessing the pins
  *
@@ -28,15 +28,19 @@ import com.pi4j.io.i2c.I2CFactory;
 import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
 import net.happybrackets.device.sensors.sensor_types.MagnetometerSensor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 //import com.company.sensehat.sensors.KuraException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-
+/**
+ * The LSM9DS1 is the IMU sensor on the Raspberry Pi Sensehat.
+ * It contains an accelerometer, a gyroscope and a magenetometer.
+ *
+ */
 public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSensor, MagnetometerSensor{
 
 	final static Logger logger = LoggerFactory.getLogger(LSM9DS1.class);

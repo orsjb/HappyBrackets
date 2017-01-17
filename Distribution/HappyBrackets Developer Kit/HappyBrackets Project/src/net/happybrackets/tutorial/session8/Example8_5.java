@@ -16,16 +16,10 @@
 
 package net.happybrackets.tutorial.session8;
 
-import net.beadsproject.beads.core.Bead;
-import net.beadsproject.beads.data.Sample;
-import net.beadsproject.beads.data.SampleManager;
-import net.beadsproject.beads.ugens.Glide;
-import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.HTS221;
 import net.happybrackets.device.sensors.LPS25H;
-import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
@@ -36,7 +30,11 @@ public class Example8_5 implements HBAction {
     @Override
     public void action(HB hb) {
         hb.reset();
+
+        // This is the connection to the Humidity and Temperature sensor
         HTS221 hts = (HTS221) hb.getSensor(HTS221.class);
+
+        // Adding a listener and overloading sensorUpdated is how we access the data
         hts.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {
@@ -47,7 +45,11 @@ public class Example8_5 implements HBAction {
                 System.out.println("Temperature: " + temperature);
             }
         });
+
+
+        // This is the connection to the Pressure sensor
         LPS25H lps = (LPS25H) hb.getSensor(LPS25H.class);
+        // Again - adding a listener and overloading sensorUpdated is how we access the data
         lps.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {

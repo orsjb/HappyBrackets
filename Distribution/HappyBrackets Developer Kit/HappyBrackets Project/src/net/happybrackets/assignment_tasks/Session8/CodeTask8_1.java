@@ -14,16 +14,27 @@
  * limitations under the License.
  */
 
-package net.happybrackets.assignment_tasks.Session8;
+package net.happybrackets.assignment_tasks.session8;
 
 import net.beadsproject.beads.core.AudioContext;
 import net.happybrackets.extras.assignment_autograding.BeadsChecker;
-import net.happybrackets.extras.assignment_autograding.SimpleCheckable;
 
 /**
  * In this task you should populate the array smoothSensorData by running a sliding window average over the array
  * sensorData, using the window length specified by windowLength.
+ *
+ * You should use a window with 5 samples, and you should calculate the arithmetic mean.
+ *
+ * You could just start the window with its left most extent lined up to the beginning of the values, but that would
+ * mean that the output would be shorter than the input.
+ *
+ * Instead, to make sure your smoothed output is the same length as the input you should:
+ * Add copies of the first sample so that the window's middle is centred on the 1st sample for the 1st calculation, and
+ * add copies of the last sample so that the window middle is centred on the last sample for the final calculation.
+ *
  */
+
+
 public class CodeTask8_1 implements BeadsChecker.BeadsCheckable {
 
     public static void main(String[] args) {
@@ -42,8 +53,11 @@ public class CodeTask8_1 implements BeadsChecker.BeadsCheckable {
         float[] sensorData = (float[]) objects[0];
         float[] smoothSensorData = (float[]) objects[1];
         int windowLength = (int) objects[2];
-        //do stuff here, remove the following line
+
+
+        // do your task here, and remove the following line
         buf.append("Hello World!\n");
+
         //********** do your work here ONLY **********
     }
 }
