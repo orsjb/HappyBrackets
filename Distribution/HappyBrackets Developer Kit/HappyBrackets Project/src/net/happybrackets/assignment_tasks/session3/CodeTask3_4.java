@@ -42,6 +42,8 @@ import java.util.Random;
  */
 public class CodeTask3_4 extends Application implements BeadsChecker.BeadsCheckable {
 
+    int bufPos = 0;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -57,8 +59,18 @@ public class CodeTask3_4 extends Application implements BeadsChecker.BeadsChecka
         float testFreq = 400f;
         //do your work here, using the function below
         task(ac, buf, new Object[]{testFreq});
-        //say something to the console output
-        System.out.println(buf.toString());
+        //poll StringBuffer for new console output
+        new Thread(() -> {
+            while(true) {
+                String newText = buf.substring(bufPos);
+                bufPos += newText.length();
+                System.out.print(newText);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+            }
+        }).start();
         //finally, this creates a window to visualise the waveform
         WaveformVisualiser.open(ac);
     }
