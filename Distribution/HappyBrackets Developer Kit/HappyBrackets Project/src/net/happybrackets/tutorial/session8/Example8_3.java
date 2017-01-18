@@ -40,9 +40,11 @@ public class Example8_3 implements HBAction {
         hb.reset();
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
-        //play a new random sound
+
+        // Choose two sounds from the Group of Samples
         Sample sUp = SampleManager.fromGroup("Guitar", 1);
         Sample sDown = SampleManager.fromGroup("Guitar", 2);
+
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
         mySensor.addListener(new SensorUpdateListener() {
             @Override

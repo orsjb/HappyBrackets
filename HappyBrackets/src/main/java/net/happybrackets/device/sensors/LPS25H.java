@@ -16,7 +16,7 @@ package net.happybrackets.device.sensors;
  * limitations under the License.
  *
  * ----------------------------------------------------------------
- * Adapted for the Happy brackets project by Sam Ferguson (2016).
+ * Adapted for the HappyBrackets project by Sam Ferguson (2016).
  *
  * We will return configuration information and scaling information so
  * this sensor can be compared to others.
@@ -27,15 +27,18 @@ import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import net.beadsproject.beads.data.DataBead;
 import net.happybrackets.device.sensors.sensor_types.BarometricPressureSensor;
-import net.happybrackets.device.sensors.sensor_types.HumiditySensor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * The LPS25H is the pressure sensor (barometer) on the Raspberry Pi Sensehat.
+ *
+ */
 public class LPS25H  extends Sensor implements BarometricPressureSensor{
 
     final static Logger logger = LoggerFactory.getLogger(LPS25H.class);
@@ -208,13 +211,15 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
                         // get data
                         tempData = getTemperatureData();
                         barometricPressureData = getBarometricPressureData();
-                        //pass data on to listeners
+
                     } catch(IOException e){
-                        logger.error("Unable to read temperture!", e);
+                        logger.error("Unable to read temperature!", e);
                     }
+                    //pass data on to listeners
                     for(SensorUpdateListener listener : listeners) {
                         listener.sensorUpdated();
                     }
+                    // sleep for 10ms
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.
                     } catch (InterruptedException e) {

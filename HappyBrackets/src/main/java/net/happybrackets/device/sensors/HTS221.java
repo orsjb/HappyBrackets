@@ -25,7 +25,7 @@ package net.happybrackets.device.sensors;
  */
 
 /***************
- * Adapted for the Happy brackets project by Sam Ferguson (2016).
+ * Adapted for the HappyBrackets project by Sam Ferguson (2016).
  *
  * Removed the larger rhiot framework and kept the I2C code
  *
@@ -40,14 +40,19 @@ import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import net.happybrackets.device.sensors.sensor_types.HumiditySensor;
 import net.happybrackets.device.sensors.sensor_types.TemperatureSensor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * The HTS221 is the humidity and temperature sensor on the Raspberry Pi Sensehat.
+ *
+ *
+ */
 public final class HTS221 extends Sensor implements HumiditySensor, TemperatureSensor {
 
     final static Logger logger = LoggerFactory.getLogger(HTS221.class);
@@ -106,9 +111,7 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
     private HTS221ControlRegistry1 pd = HTS221ControlRegistry1.PD_ACTIVE;
 
 
-    /**
-     * We use the same registry
-     */
+
     public static byte WHO_AM_I = 0x0F;
 
     private I2CDevice device;
@@ -116,10 +119,13 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
     private double tempData;
     private double humidityData;
 
-
+    /**
+     * getSensorName() returns the name of the sensor
+     */
     public String getSensorName(){
         return "HTS221";
     }
+
 
     public HTS221() throws Exception {
 
@@ -163,6 +169,11 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
 
     }
 
+    /**
+     * getHumidityData accesses the sensor to return the Humidity data.
+     * @return Humidity data as double
+     */
+
     public double getHumidityData() {
         try {
             device.read(HUMIDITY_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);
@@ -174,6 +185,11 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
         }
     }
 
+
+    /**
+     * getTemperatureData accesses the sensor to find the latest temperatureData.
+     * @return temperature data as double
+     */
     public double getTemperatureData() {
         try {
             device.read(TEMP_OUT_L | I2CConstants.MULTI_BYTE_READ_MASK, buffer.array(), 0, 2);

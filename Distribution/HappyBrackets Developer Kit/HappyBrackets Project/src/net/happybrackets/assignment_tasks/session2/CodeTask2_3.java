@@ -30,6 +30,8 @@ import net.happybrackets.extras.assignment_autograding.BeadsChecker;
  */
 public class CodeTask2_3 extends Application implements BeadsChecker.BeadsCheckable {
 
+    int bufPos = 0;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -43,8 +45,19 @@ public class CodeTask2_3 extends Application implements BeadsChecker.BeadsChecka
         StringBuffer buf = new StringBuffer();
         //do your work here, using the function below
         task(ac, buf);
-        //say something to the console output
-        System.out.println(buf.toString());
+        //poll StringBuffer for new console output
+        new Thread(() -> {
+            while(true) {
+                String newText = buf.substring(bufPos);
+                bufPos += newText.length();
+                System.out.print(newText);
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+            }
+        }).start();
         //finally, this creates a window to visualise the waveform
         WaveformVisualiser.open(ac);
     }
