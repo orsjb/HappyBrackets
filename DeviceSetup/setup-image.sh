@@ -22,8 +22,8 @@ sudo apt-get -y --force-yes install oracle-java8-jdk
 sudo raspi-config nonint do_i2c 0
 
 # get 'interfaces' file and copy it to /etc/network
-wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/interfaces
-sudo mv interfaces /etc/network/interfaces
+# wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/interfaces
+# sudo mv interfaces /etc/network/interfaces
 
 # get the happybrackets zipped project folder
 wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBracketsDeviceRuntime.zip
