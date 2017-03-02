@@ -21,10 +21,6 @@ sudo apt-get -y --force-yes install oracle-java8-jdk
 # Counter-intuitively 'do_i2c 0' means 'enable'. 
 sudo raspi-config nonint do_i2c 0
 
-# get 'interfaces' file and copy it to /etc/network
-# wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/interfaces
-# sudo mv interfaces /etc/network/interfaces
-
 # get the happybrackets zipped project folder
 wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBracketsDeviceRuntime.zip
 unzip HappyBracketsDeviceRuntime.zip
@@ -44,4 +40,25 @@ chmod +x /etc/rc.local
 # set up ssh login
 sudo update-rc.d ssh enable
 sudo invoke-rc.d ssh start
+
+# Network Settings
+echo "***********************************"
+echo "-----------------------------------"
+echo "***********************************"
+echo "Do you want to alter your WiFi network settings so your Pi automatically connects to 'PINet'?"
+echo "If you are currently connected on a working WiFi network you probably don't want to change the network settings."
+echo "If you are connected directly or over ethernet, you can change the network settings to connect to a particular wifi network."
+echo "if you do wish to change the network settings so that your Pi is setup to automatically connect then do the following commands:"
+echo ""
+echo "NOTE: Do not run these commands on a normal laptop or computer, only on a Raspberry Pi."
+echo ""
+echo "wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/interfaces"
+echo "sudo cp /etc/network/interfaces /etc/network/interfaces.backup"
+echo "sudo mv interfaces /etc/network/interfaces"
+echo ""
+echo "If you make this change, the SSID this PI will search for will be 'PINet'"
+echo "Password is 'happybrackets'"
+echo "You can (and should) change these details by making changes to the interfaces file:"
+echo "nano /etc/network/interfaces"
+
 
