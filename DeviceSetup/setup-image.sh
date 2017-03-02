@@ -59,6 +59,6 @@ echo ""
 echo "If you make this change, the SSID this PI will search for will be 'PINet'"
 echo "Password is 'happybrackets'"
 echo "You can (and should) change these details by making changes to the interfaces file:"
-echo "nano /etc/network/interfaces"
+echo "sudo nano /etc/network/interfaces"
 
 
