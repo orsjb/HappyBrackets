@@ -41,7 +41,7 @@ public class Example7_3 implements HBAction {
         hb.reset();
         //load a set of sounds
         SampleManager.group("Guitar", "data/audio/Nylon_Guitar");
-        hb.addControllerListener(new OSCListener() {
+        hb.controller.addListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 if (msg.getName().equals("/play")) {

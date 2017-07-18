@@ -229,7 +229,7 @@ public class BroadcastManager {
                         }
                     }
 
-                    if (dc != null) {        
+                    if (dc != null) {
                         //add receivers
                         OSCReceiver receiver = OSCReceiver.newUsing(dc);
                         receiver.startListening();
