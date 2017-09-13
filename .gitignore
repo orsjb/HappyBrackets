@@ -13,12 +13,12 @@ HB.jar
 # HappyBrackets Project
 HappyBrackets/.gradle/
 HappyBrackets/build/
-HappyBrackets/.idea/
+HappyBrackets/.idea/workspace.xml
 HappyBrackets/logs/
 HappyBrackets/HappyBrackets.ipr
 
 # IntelliJ Plugin Project
-IntelliJ\ Plugin/.idea/
+IntelliJ\ Plugin/.idea/workspace.xml
 IntelliJ\ Plugin/out/
 IntelliJ\ Plugin/HappyBrackets_IntelliJ_Plugin.zip
 
@@ -26,6 +26,6 @@ IntelliJ\ Plugin/HappyBrackets_IntelliJ_Plugin.zip
 Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/build/
 Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/logs/
 Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/libs/docs/
-Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/.idea/
+Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/.idea/workspace.xml
 Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets_IntelliJ_Plugin.zip
 
