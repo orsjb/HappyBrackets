@@ -47,11 +47,23 @@ public class LocalDeviceRepresentation {
 	public final boolean[] groups;
 	private ControllerConfig config;
 
-	public interface StatusUpdateListener {
+	private boolean isConnected = true;
+
+	public boolean getIsConnected() {
+		return this.isConnected;
+	}
+
+
+    public interface StatusUpdateListener {
 		public void update(String state);
 	}
 
+    public interface ConnectedUpdateListener{
+        public void update(boolean connected);
+    }
+
 	private List<StatusUpdateListener> statusUpdateListenerList;
+    private List<ConnectedUpdateListener> connectedUpdateListenerList;
 
 	private List<ErrorListener> errorListenerList;
 
@@ -76,8 +88,11 @@ public class LocalDeviceRepresentation {
 		this.config     					= config;
 		groups          					= new boolean[4];
 		statusUpdateListenerList  = new ArrayList<>();
+        connectedUpdateListenerList = new ArrayList<>();
+
 		logListenerList = new ArrayList<>();
 		errorListenerList = new ArrayList<>();
+        this.isConnected = true;
 
 		// Set-up log monitor.
 		log = "";
@@ -187,6 +202,10 @@ public class LocalDeviceRepresentation {
 		statusUpdateListenerList.add(listener);
 	}
 
+	public void addConnectedUpdateListener(ConnectedUpdateListener listener){
+        connectedUpdateListenerList.add(listener);
+    }
+
 	public void addErrorListener(ErrorListener listener) {
 		errorListenerList.add(listener);
 	}
@@ -200,6 +219,13 @@ public class LocalDeviceRepresentation {
 			statusUpdateListener.update(status);
 		}
 	}
+
+    public void setIsConnected(boolean connected) {
+        this.isConnected = connected;
+        for(ConnectedUpdateListener listener : connectedUpdateListenerList) {
+            listener.update(connected);
+        }
+    }
 
 	private void sendError(String description, Exception ex) {
 		for (ErrorListener l : errorListenerList) {

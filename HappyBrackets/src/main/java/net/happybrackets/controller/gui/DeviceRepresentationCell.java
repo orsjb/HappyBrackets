@@ -16,10 +16,14 @@
 
 package net.happybrackets.controller.gui;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.*;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.beans.value.ChangeListener;
@@ -30,12 +34,32 @@ import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
-	@Override
+
+    // define the username to use for SSH Command
+    final String DEF_USERNAME = "pi";
+    private String username = DEF_USERNAME;
+
+    //in case the user is not using pi as the default username for ssh
+    public void setUsername(String val)
+    {
+        this.username = val;
+    }
+
+
+
+
+	String buildSSHCommand(String device_name)
+    {
+        return "ssh " + username + "@" + device_name + ".local";
+    }
+
+    @Override
     public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
         super.updateItem(item, empty);
         setGraphic(null);
 		//gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
         if (item != null) {
+
 			//set up main panel
 			GridPane main = new GridPane();
 			main.setStyle("-fx-font-family: sample; -fx-font-size: 10;");
@@ -46,7 +70,23 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			txthbox.setAlignment(Pos.CENTER_LEFT);
 			main.add(txthbox, 0, 0);
 			Text name = new Text(item.deviceName);
+
 			name.setUnderline(true);
+
+
+			//if item not currently active, make that obvious by putting strikethrough through disconnected device
+			name.setStrikethrough(!item.getIsConnected());
+
+            item.addConnectedUpdateListener(new LocalDeviceRepresentation.ConnectedUpdateListener() {
+                @Override
+                public void update(boolean connected) {
+                    Platform.runLater(new Runnable() {
+                        public void run() {
+                            name.setStrikethrough(!connected);
+                        }
+                    });
+                }
+            });
 			txthbox.getChildren().add(name);
 			txthbox.setMinWidth(100);
 
@@ -127,6 +167,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			Text statusText = new Text("status unknown");
 			main.add(statusText, 1, 0);
 			main.setHalignment(statusText, HPos.RIGHT);
+
 			item.addStatusUpdateListener(new LocalDeviceRepresentation.StatusUpdateListener() {
 				@Override
 				public void update(String state) {
@@ -136,6 +177,28 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 						}
 					});
 				}
+			});
+
+            controls.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+				@Override
+				public void handle(ContextMenuEvent event) {
+					// create a popup menu to allow accessing parameters
+					ContextMenu contextMenu = new ContextMenu();
+
+					MenuItem copySshCommandMenu = new MenuItem("Copy SSH " + item.deviceName + " to clipboard");
+					copySshCommandMenu.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							final Clipboard clipboard = Clipboard.getSystemClipboard();
+							final ClipboardContent content = new ClipboardContent();
+							content.putString(buildSSHCommand(item.deviceName));
+							clipboard.setContent(content);
+						}
+					});
+                    contextMenu.getItems().addAll(copySshCommandMenu);
+                    contextMenu.show(controls, event.getScreenX(), event.getScreenY());
+				}
+
 			});
 
 			setGraphic(main);

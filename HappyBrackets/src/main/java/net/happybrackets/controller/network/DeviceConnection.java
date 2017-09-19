@@ -180,6 +180,7 @@ public class DeviceConnection {
 					//			System.out.println("Device Alive Message: " + deviceName);
 					//see if we have this device yet
 					LocalDeviceRepresentation thisDevice = devicesByHostname.get(deviceName);
+
 					logger.debug("Getting device from store: name=" + deviceName + ", result=" + thisDevice);
 
 					if (thisDevice == null) { //if not add it
@@ -215,8 +216,10 @@ public class DeviceConnection {
 					}
 					//keep up to date
 					if (thisDevice != null) {
+                        thisDevice.setIsConnected(true);
 						thisDevice.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
-						//TODO update the status in the GUI, not sure how to bind this
+
+                        // Status is updated in GUI via listener
 						if (msg.getArgCount() > 4) {
 							String status = (String) msg.getArg(4);
 							thisDevice.setStatus(status);
@@ -273,7 +276,11 @@ public class DeviceConnection {
 				LocalDeviceRepresentation thisDevice = devicesByHostname.get(deviceName);
 				long timeSinceSeen = timeNow - thisDevice.lastTimeSeen;
 				if(timeSinceSeen > config.getAliveInterval() * 5) {	//config this number?
-					devicesToRemove.add(deviceName);
+					//devicesToRemove.add(deviceName);
+                    if (thisDevice.getIsConnected()) {
+                        thisDevice.setIsConnected(false);
+                        // we need to invoke the update of GUI here
+                    }
 				}
 			}
 		}
