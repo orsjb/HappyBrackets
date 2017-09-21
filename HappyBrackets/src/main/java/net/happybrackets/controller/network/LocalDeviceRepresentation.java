@@ -42,10 +42,14 @@ public class LocalDeviceRepresentation {
 	public final String address;
 	public List<String> preferredAddressStrings; 	//This list contains, in order of preference: address, hostname, deviceName, hostname.local or deviceName.local.
 	private int id;
+
 	private InetSocketAddress socketAddress;
+
 	private final OSCServer server;
 	public final boolean[] groups;
 	private ControllerConfig config;
+
+
 
 	private boolean isConnected = true;
 
@@ -62,8 +66,13 @@ public class LocalDeviceRepresentation {
         public void update(boolean connected);
     }
 
+    public interface SocketAddressChangedListener{
+		public void socketChanged(InetAddress oldAddress, InetAddress InetAddress);
+	}
+
 	private List<StatusUpdateListener> statusUpdateListenerList;
     private List<ConnectedUpdateListener> connectedUpdateListenerList;
+	private List<SocketAddressChangedListener> socketAddressChangedListenerList;
 
 	private List<ErrorListener> errorListenerList;
 
@@ -77,6 +86,12 @@ public class LocalDeviceRepresentation {
 
 	private String status = "Status unknown";
 
+	// Overload constructors. Construct with a SocketAddress
+	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress) {
+		this(deviceName, hostname, addr, id, server, config);
+		this.socketAddress = socketAddress;
+	}
+
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
 
 		this.deviceName						= deviceName;
@@ -89,7 +104,7 @@ public class LocalDeviceRepresentation {
 		groups          					= new boolean[4];
 		statusUpdateListenerList  = new ArrayList<>();
         connectedUpdateListenerList = new ArrayList<>();
-
+		socketAddressChangedListenerList = new ArrayList<>();
 		logListenerList = new ArrayList<>();
 		errorListenerList = new ArrayList<>();
         this.isConnected = true;
@@ -109,6 +124,40 @@ public class LocalDeviceRepresentation {
 				}
 			}
 		});
+	}
+
+
+	public final InetSocketAddress getSocketAddress()
+	{
+		return this.socketAddress;
+	}
+
+
+	// First test if our stored socket address is the same as the argument
+	// If it is different, store new value and raise event to notify that change occurred
+	public void setSocketAddress(InetAddress newSocketAddress)
+	{
+		InetAddress old = null;
+
+		String old_host_address = "";
+
+		if (this.socketAddress != null) {
+			old = this.socketAddress.getAddress();
+			old_host_address = old.getHostAddress();
+		}
+
+		String new_host_address = newSocketAddress.getHostAddress();
+		boolean same_address = old_host_address.equals(new_host_address);
+		if (!same_address)
+		{
+			this.socketAddress = new InetSocketAddress(newSocketAddress, config.getControlToDevicePort());
+
+			// now raise event
+			for(SocketAddressChangedListener listener : socketAddressChangedListenerList) {
+				listener.socketChanged(old, newSocketAddress);
+			}
+
+		}
 	}
 
 	public void setID(int id) {
@@ -140,14 +189,15 @@ public class LocalDeviceRepresentation {
 		int count = 0;
 		while(!success) {
 			try {
-				if (socketAddress == null) {
-					socketAddress = new InetSocketAddress(preferredAddressStrings.get(0), config.getControlToDevicePort());
+				if (this.socketAddress == null) {
+					this.socketAddress =  new InetSocketAddress(preferredAddressStrings.get(0), config.getControlToDevicePort());
 				}
 				server.send(msg, socketAddress);
 				success = true;
 			} catch (UnresolvedAddressException | IOException e1) {
 				logger.error("Error sending to device {} using address {}! (Setting socketAddress back to null).",
 						deviceName, preferredAddressStrings.get(0), e1);
+
 				//set the socketAddress back to null as it will need to be rebuilt
 				socketAddress = null;
 				//rotate the preferredAddressStrings list to try the next one in the list
@@ -167,7 +217,17 @@ public class LocalDeviceRepresentation {
 		List<Exception> exceptions = new ArrayList<>(5);
 		while(!success) {
 			try {
-				Socket s = new Socket(preferredAddressStrings.get(0), ControllerConfig.getInstance().getCodeToDevicePort());
+				String clientAddress = null;
+				if (this.socketAddress != null)
+				{
+					clientAddress = this.socketAddress.getHostName();
+				}
+				else
+				{
+					clientAddress = preferredAddressStrings.get(0);
+				}
+
+				Socket s = new Socket(clientAddress, ControllerConfig.getInstance().getCodeToDevicePort());
 				for (byte[] d : data) {
 					s.getOutputStream().write(d);
 				}
@@ -179,7 +239,7 @@ public class LocalDeviceRepresentation {
 				logger.error("Error sending to device {} using address {}! (Setting socketAddress back to null).",
 						deviceName, preferredAddressStrings.get(0), e1);
 				//set the socketAddress back to null as it will need to be rebuilt
-				socketAddress = null;
+				this.setSocketAddress(null);//socketAddress = null;
 				//rotate the preferredAddressStrings list to try the next one in the list
 				String failedString = preferredAddressStrings.remove(0);	//remove from front
 				preferredAddressStrings.add(failedString);		//add to end
@@ -205,6 +265,10 @@ public class LocalDeviceRepresentation {
 	public void addConnectedUpdateListener(ConnectedUpdateListener listener){
         connectedUpdateListenerList.add(listener);
     }
+
+    public void addSocketAddressChangedListener(SocketAddressChangedListener listener){
+		socketAddressChangedListenerList.add(listener);
+	}
 
 	public void addErrorListener(ErrorListener listener) {
 		errorListenerList.add(listener);

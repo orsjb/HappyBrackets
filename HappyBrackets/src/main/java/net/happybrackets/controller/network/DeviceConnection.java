@@ -70,7 +70,7 @@ public class DeviceConnection {
 		broadcast.addBroadcastListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-				incomingMessage(msg);
+				incomingMessage(msg, sender);
 			}
 		});
 		// create the OSC Server
@@ -85,7 +85,7 @@ public class DeviceConnection {
 		oscServer.addOSCListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
-				incomingMessage(msg);
+				incomingMessage(msg, source);
 			}
 		});
 		// set up thread to watch for lost devices
@@ -169,10 +169,11 @@ public class DeviceConnection {
         return addresses;
     }
 
-	private void incomingMessage(OSCMessage msg) {
+	private void incomingMessage(OSCMessage msg, SocketAddress sender) {
 		if(msg.getName().equals("/device/alive")) {
 			synchronized (this) {			//needs to be synchronized else we might put two copies in
 				try {
+
 					String deviceName = (String) msg.getArg(0);
 					String deviceHostname = (String) msg.getArg(1);
 					String deviceAddress = (String) msg.getArg(2);
@@ -191,7 +192,10 @@ public class DeviceConnection {
 							id = newID--;
 						}
 						//force names if useHostname is true
-						if (config.useHostname()) deviceAddress = deviceName;
+						if (config.useHostname()) {
+							deviceAddress = deviceName;
+						}
+
 						thisDevice = new LocalDeviceRepresentation(deviceName, deviceHostname, deviceAddress, id, oscServer, config);
 						devicesByHostname.put(deviceName, thisDevice);
 						logger.debug("Put device in store: name=" + deviceName + ", size=" + devicesByHostname.size());
@@ -216,6 +220,12 @@ public class DeviceConnection {
 					}
 					//keep up to date
 					if (thisDevice != null) {
+						// we need to update Host address
+						// we will check that the InetAddress that we have stored is the same - IP address may have changed
+						InetAddress sendingAddress = ((InetSocketAddress) sender).getAddress();
+						thisDevice.setSocketAddress(sendingAddress);
+
+
                         thisDevice.setIsConnected(true);
 						thisDevice.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
 
