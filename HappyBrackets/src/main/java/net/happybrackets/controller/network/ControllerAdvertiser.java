@@ -34,7 +34,7 @@ public class ControllerAdvertiser {
 	private Thread advertisementService;
 	private boolean keepAlive = true;
 
-	public ControllerAdvertiser(BroadcastManager broadcastManager) {
+	public ControllerAdvertiser(BroadcastManager broadcast_manager) {
 		//set up an indefinite thread to advertise the controller
 		advertisementService = new Thread() {
 			public void run() {
@@ -54,7 +54,7 @@ public class ControllerAdvertiser {
             };
 
             while (keepAlive) {
-                broadcastManager.forAllTransmitters(advertisement);
+				broadcast_manager.forAllTransmitters(advertisement);
 
                 try {
                     Thread.sleep(500);

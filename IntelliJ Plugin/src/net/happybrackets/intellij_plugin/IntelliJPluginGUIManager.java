@@ -149,36 +149,36 @@ public class IntelliJPluginGUIManager {
 
 	public Scene setupGUI() {
 		//core elements
-		TitledPane devicePane = new TitledPane("Devices", makeDevicePane());
-		TitledPane configPane = new TitledPane("Configuration", makeConfigurationPane(0));
-		TitledPane knownDevicesPane = new TitledPane("Known Devices", makeConfigurationPane(1));
-		TitledPane globalPane = new TitledPane("Global Management", makeGlobalPane());
-		TitledPane compositionPane = new TitledPane("Compositions and Commands", makeCompositionPane());
-		TitledPane debugPane = new TitledPane("Debug", makeDebugPane());
+		TitledPane device_pane = new TitledPane("Devices", makeDevicePane());
+		TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
+		TitledPane known_devices_pane = new TitledPane("Known Devices", makeConfigurationPane(1));
+		TitledPane global_pane = new TitledPane("Global Management", makeGlobalPane());
+		TitledPane composition_pane = new TitledPane("Compositions and Commands", makeCompositionPane());
+		TitledPane debug_pane = new TitledPane("Debug", makeDebugPane());
 
-		configPane.setExpanded(false);
-		knownDevicesPane.setExpanded(false);
-		debugPane.setExpanded(false);
+		config_pane.setExpanded(false);
+		known_devices_pane.setExpanded(false);
+		debug_pane.setExpanded(false);
 
-		VBox mainContainer = new VBox(5);
-		mainContainer.setFillWidth(true);
-		mainContainer.getChildren().addAll(configPane, knownDevicesPane, globalPane, compositionPane, debugPane, devicePane);
+		VBox main_container = new VBox(5);
+		main_container.setFillWidth(true);
+		main_container.getChildren().addAll(config_pane, known_devices_pane, global_pane, composition_pane, debug_pane, device_pane);
 
-		ScrollPane mainScroll = new ScrollPane();
-		mainScroll.setFitToWidth(true);
-		mainScroll.setFitToHeight(true);
-		mainScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		mainScroll.setStyle("-fx-font-family: sample; -fx-font-size: 12;");
-		mainScroll.setMinHeight(100);
-		mainScroll.setContent(mainContainer);
+		ScrollPane main_scroll = new ScrollPane();
+		main_scroll.setFitToWidth(true);
+		main_scroll.setFitToHeight(true);
+		main_scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		main_scroll.setStyle("-fx-font-family: sample; -fx-font-size: 12;");
+		main_scroll.setMinHeight(100);
+		main_scroll.setContent(main_container);
 
-		deviceListView.prefWidthProperty().bind(mainScroll.widthProperty().subtract(4));
+		deviceListView.prefWidthProperty().bind(main_scroll.widthProperty().subtract(4));
 
 		//finally update composition path
 		updateCompositionPath(compositionsPath);
 
 		//return a JavaFX Scene
-		return new Scene(mainScroll);
+		return new Scene(main_scroll);
 	}
 
 
@@ -230,31 +230,31 @@ public class IntelliJPluginGUIManager {
 
 	/**
 	 * Make Configuration/Known devices pane.
-	 * @param fileType 0 == configuration, 1 == known devices.
+	 * @param file_type 0 == configuration, 1 == known devices.
 	 */
-	private Pane makeConfigurationPane(final int fileType) {
-		final TextArea configField = new TextArea();
-		final String label = fileType == 0 ? "Configuration" : "Known Devices";
-		final String setting = fileType == 0 ? "controllerConfigPath" : "knownDevicesPath";
+	private Pane makeConfigurationPane(final int file_type) {
+		final TextArea config_field = new TextArea();
+		final String label = file_type == 0 ? "Configuration" : "Known Devices";
+		final String setting = file_type == 0 ? "controllerConfigPath" : "knownDevicesPath";
 
 		//configField.setPrefSize(400, 250);
-		configField.setMinHeight(minTextAreaHeight);
+		config_field.setMinHeight(minTextAreaHeight);
 		// Load initial config into text field.
-		if (fileType == 0) {
-			configField.setText(HappyBracketsToolWindow.getCurrentConfigString());
+		if (file_type == 0) {
+			config_field.setText(HappyBracketsToolWindow.getCurrentConfigString());
 		}
 		else {
 			StringBuilder map = new StringBuilder();
 			deviceConnection.getKnownDevices().forEach((hostname, id) -> map.append(hostname + " " + id + "\n"));
-			configField.setText(map.toString());
+			config_field.setText(map.toString());
 		}
-		configField.textProperty().addListener((observable, oldValue, newValue) -> {
-			configApplyButton[fileType].setDisable(false);
+		config_field.textProperty().addListener((observable, oldValue, newValue) -> {
+			configApplyButton[file_type].setDisable(false);
 		});
 
-		Button loadButton = new Button("Load");
-		loadButton.setTooltip(new Tooltip("Load a new " + label.toLowerCase() + " file."));
-		loadButton.setOnMouseClicked(event -> {
+		Button load_button = new Button("Load");
+		load_button.setTooltip(new Tooltip("Load a new " + label.toLowerCase() + " file."));
+		load_button.setOnMouseClicked(event -> {
 			//select a file
 			final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor().withShowHiddenFiles(true);
 			descriptor.setTitle("Select " + label.toLowerCase() + " file");
@@ -264,45 +264,45 @@ public class IntelliJPluginGUIManager {
 
 			//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
 			SwingUtilities.invokeLater(() -> {
-				VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, vfile);
-				if (virtualFile != null && virtualFile.length > 0 && virtualFile[0] != null) {
+				VirtualFile[] virtual_file = FileChooser.chooseFiles(descriptor, null, vfile);
+				if (virtual_file != null && virtual_file.length > 0 && virtual_file[0] != null) {
 					Platform.runLater(() -> {
-						loadConfigFile(virtualFile[0].getCanonicalPath(), label, configField, setting, loadButton, event);
+						loadConfigFile(virtual_file[0].getCanonicalPath(), label, config_field, setting, load_button, event);
 					});
 				}
 			});
 		});
 
-		Button saveButton = new Button("Save");
-		saveButton.setTooltip(new Tooltip("Save these " + label.toLowerCase() + " settings to a file."));
-		saveButton.setOnMouseClicked(event -> {
+		Button save_button = new Button("Save");
+		save_button.setTooltip(new Tooltip("Save these " + label.toLowerCase() + " settings to a file."));
+		save_button.setOnMouseClicked(event -> {
 			//select a file
 			FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
 			fsd.withShowHiddenFiles(true);
 			final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, project);
 
-			String currentFilePath = HappyBracketsToolWindow.getSettings().getString(setting);
-			File currentFile = currentFilePath != null ? new File(HappyBracketsToolWindow.getSettings().getString(setting)) : null;
-			VirtualFile baseDir = null;
-			String currentName = null;
+			String current_file_path = HappyBracketsToolWindow.getSettings().getString(setting);
+			File currentFile = current_file_path != null ? new File(HappyBracketsToolWindow.getSettings().getString(setting)) : null;
+			VirtualFile base_dir = null;
+			String current_name = null;
 			if (currentFile != null && currentFile.exists()) {
-				baseDir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
-				currentName = currentFile.getName();
+				base_dir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
+				current_name = currentFile.getName();
 			}
 			else {
-				baseDir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
-				currentName = fileType == 0 ? "controller-config.json" : "known_devices";
+				base_dir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
+				current_name = file_type == 0 ? "controller-config.json" : "known_devices";
 			}
-			final VirtualFile baseDirFinal = baseDir;
-			final String currentNameFinal = currentName;
+			final VirtualFile base_dir_final = base_dir;
+			final String current_name_final = current_name;
 
 			//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
 			SwingUtilities.invokeLater(() -> {
-				final VirtualFileWrapper wrapper = dialog.save(baseDirFinal, currentNameFinal);
+				final VirtualFileWrapper wrapper = dialog.save(base_dir_final, current_name_final);
 
 				if (wrapper != null) {
 					Platform.runLater(() -> {
-						File configFile = wrapper.getFile();
+						File config_file = wrapper.getFile();
 
 						// Check for overwrite of default config files (this doesn't apply to deployed plugin so disabling for now.)
 						//if ((new File(HappyBracketsToolWindow.getDefaultControllerConfigPath())).getAbsolutePath().equals(configFile.getAbsolutePath()) ||
@@ -310,70 +310,70 @@ public class IntelliJPluginGUIManager {
 						//	showPopup("Error saving " + label.toLowerCase() + ": cannot overwrite default configuration files.", saveButton, 5, event);
 						//}
 
-						try (PrintWriter out = new PrintWriter(configFile.getAbsolutePath())) {
-							out.print(configField.getText());
+						try (PrintWriter out = new PrintWriter(config_file.getAbsolutePath())) {
+							out.print(config_field.getText());
 
-							HappyBracketsToolWindow.getSettings().set(setting, configFile.getAbsolutePath());
+							HappyBracketsToolWindow.getSettings().set(setting, config_file.getAbsolutePath());
 						} catch (Exception ex) {
-							showPopup("Error saving " + label.toLowerCase() + ": " + ex.getMessage(), saveButton, 5, event);
+							showPopup("Error saving " + label.toLowerCase() + ": " + ex.getMessage(), save_button, 5, event);
 						}
 					});
 				}
 			});
 		});
 
-		Button resetButton = new Button("Reset");
-		resetButton.setTooltip(new Tooltip("Reset these " + label.toLowerCase() + " settings to their defaults."));
-		resetButton.setOnMouseClicked(event -> {
+		Button reset_button = new Button("Reset");
+		reset_button.setTooltip(new Tooltip("Reset these " + label.toLowerCase() + " settings to their defaults."));
+		reset_button.setOnMouseClicked(event -> {
 			HappyBracketsToolWindow.getSettings().clear(setting);
 
-			if (fileType == 0) {
-				loadConfigFile(HappyBracketsToolWindow.getDefaultControllerConfigPath(), label, configField, setting, resetButton, event);
-				applyConfig(configField.getText());
+			if (file_type == 0) {
+				loadConfigFile(HappyBracketsToolWindow.getDefaultControllerConfigPath(), label, config_field, setting, reset_button, event);
+				applyConfig(config_field.getText());
 			}
 			else {
-				loadConfigFile(HappyBracketsToolWindow.getDefaultKnownDevicesPath(), label, configField, setting, resetButton, event);
-				applyKnownDevices(configField.getText());
+				loadConfigFile(HappyBracketsToolWindow.getDefaultKnownDevicesPath(), label, config_field, setting, reset_button, event);
+				applyKnownDevices(config_field.getText());
 			}
 		});
 
-		configApplyButton[fileType] = new Button("Apply");
-		configApplyButton[fileType].setTooltip(new Tooltip("Apply these " + label.toLowerCase() + " settings."));
-		configApplyButton[fileType].setDisable(true);
-		configApplyButton[fileType].setOnMouseClicked(event -> {
-			configApplyButton[fileType].setDisable(true);
+		configApplyButton[file_type] = new Button("Apply");
+		configApplyButton[file_type].setTooltip(new Tooltip("Apply these " + label.toLowerCase() + " settings."));
+		configApplyButton[file_type].setDisable(true);
+		configApplyButton[file_type].setOnMouseClicked(event -> {
+			configApplyButton[file_type].setDisable(true);
 
-			if (fileType == 0) {
-				applyConfig(configField.getText());
+			if (file_type == 0) {
+				applyConfig(config_field.getText());
 			} else {
-				applyKnownDevices(configField.getText());
+				applyKnownDevices(config_field.getText());
 			}
 		});
 
 		FlowPane buttons = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 		buttons.setAlignment(Pos.TOP_LEFT);
-		buttons.getChildren().addAll(loadButton, saveButton, resetButton, configApplyButton[fileType]);
+		buttons.getChildren().addAll(load_button, save_button, reset_button, configApplyButton[file_type]);
 
 
 		// If this is the main configuration pane, include buttons to set preferred IP version.
-		FlowPane ipvButtons = null;
-		if (fileType == 0) {
+		FlowPane ipv_buttons = null;
+		if (file_type == 0) {
 			// Set IP version buttons.
-			ipvButtons = new FlowPane(defaultElementSpacing, defaultElementSpacing);
-			ipvButtons.setAlignment(Pos.TOP_LEFT);
+			ipv_buttons = new FlowPane(defaultElementSpacing, defaultElementSpacing);
+			ipv_buttons.setAlignment(Pos.TOP_LEFT);
 
 			for (int ipv = 4; ipv <= 6; ipv += 2) {
-				final int ipvFinal = ipv;
+				final int ipv_final = ipv;
 
-				Button setIPv = new Button("Set IntelliJ to prefer IPv" + ipv);
-				String currentSetting = System.getProperty("java.net.preferIPv" + ipv + "Addresses");
+				Button set_IPv = new Button("Set IntelliJ to prefer IPv" + ipv);
+				String current_setting = System.getProperty("java.net.preferIPv" + ipv + "Addresses");
 
-				if (currentSetting != null && currentSetting.toLowerCase().equals("true")) {
-					setIPv.setDisable(true);
+				if (current_setting != null && current_setting.toLowerCase().equals("true")) {
+					set_IPv.setDisable(true);
 				}
 
-				setIPv.setTooltip(new Tooltip("Set the JVM used by IntelliJ to prefer IPv" + ipv + " addresses by default.\nThis can help resolve IPv4/Ipv6 incompatibility issues in some cases."));
-				setIPv.setOnMouseClicked(event -> {
+				set_IPv.setTooltip(new Tooltip("Set the JVM used by IntelliJ to prefer IPv" + ipv + " addresses by default.\nThis can help resolve IPv4/Ipv6 incompatibility issues in some cases."));
+				set_IPv.setOnMouseClicked(event -> {
 					// for the 32 and 64 bit versions of the options files.
 					for (String postfix : new String[]{"", "64"}) {
 						String postfix2 = "";
@@ -384,76 +384,76 @@ public class IntelliJPluginGUIManager {
 							filename = "/idea" + postfix + postfix2 + ".vmoptions";
 
 							if (!Paths.get(PathManager.getBinPath() + filename).toFile().exists()) {
-								showPopup("An error occurred: could not find default configuration file.", setIPv, 5, event);
+								showPopup("An error occurred: could not find default configuration file.", set_IPv, 5, event);
 								return;
 							}
 						}
 
 						// Create custom options files if they don't already exist.
-						File custOptsFile = new File(PathManager.getCustomOptionsDirectory() + "/idea" + postfix + postfix2 + ".vmoptions");
-						if (!custOptsFile.exists()) {
+						File cust_opts_file = new File(PathManager.getCustomOptionsDirectory() + "/idea" + postfix + postfix2 + ".vmoptions");
+						if (!cust_opts_file.exists()) {
 							// Create copy of default.
 							try {
-								Files.copy(Paths.get(PathManager.getBinPath() + filename), custOptsFile.toPath());
+								Files.copy(Paths.get(PathManager.getBinPath() + filename), cust_opts_file.toPath());
 							} catch (IOException e) {
 								logger.error("Error creating custom options file.", e);
-								showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
+								showPopup("Error creating custom options file: " + e.getMessage(), set_IPv, 5, event);
 								return;
 							}
 						}
 
-						if (custOptsFile.exists()) {
-							StringBuilder newOpts = new StringBuilder();
-							try (Stream<String> stream = Files.lines(custOptsFile.toPath())) {
+						if (cust_opts_file.exists()) {
+							StringBuilder new_opts = new StringBuilder();
+							try (Stream<String> stream = Files.lines(cust_opts_file.toPath())) {
 								stream.forEach((line) -> {
 									// Remove any existing preferences.
 									if (!line.contains("java.net.preferIPv")) {
-										newOpts.append(line + "\n");
+										new_opts.append(line + "\n");
 									}
 								});
 								// Add new preference to end.
-								newOpts.append("-Djava.net.preferIPv" + ipvFinal + "Addresses=true");
+								new_opts.append("-Djava.net.preferIPv" + ipv_final + "Addresses=true");
 							} catch (IOException e) {
 								logger.error("Error creating custom options file.", e);
-								showPopup("Error creating custom options file: " + e.getMessage(), setIPv, 5, event);
+								showPopup("Error creating custom options file: " + e.getMessage(), set_IPv, 5, event);
 								return;
 							}
 
 							// Write new options to file.
-							try (PrintWriter out = new PrintWriter(custOptsFile.getAbsolutePath())) {
-								out.println(newOpts);
+							try (PrintWriter out = new PrintWriter(cust_opts_file.getAbsolutePath())) {
+								out.println(new_opts);
 							} catch (FileNotFoundException e) {
 								// This totally shouldn't happen.
 							}
 						}
 					}
 
-					showPopup("You must restart IntelliJ for the changes to take effect.", setIPv, 5, event);
+					showPopup("You must restart IntelliJ for the changes to take effect.", set_IPv, 5, event);
 				});
 
-				ipvButtons.getChildren().add(setIPv);
+				ipv_buttons.getChildren().add(set_IPv);
 			}
 		}
 
-		VBox configPane = new VBox(defaultElementSpacing);
-		configPane.setAlignment(Pos.TOP_LEFT);
-		configPane.getChildren().addAll(makeTitle(label), configField, buttons);
-		if (ipvButtons != null) {
-			configPane.getChildren().add(ipvButtons);
+		VBox config_pane = new VBox(defaultElementSpacing);
+		config_pane.setAlignment(Pos.TOP_LEFT);
+		config_pane.getChildren().addAll(makeTitle(label), config_field, buttons);
+		if (ipv_buttons != null) {
+			config_pane.getChildren().add(ipv_buttons);
 		}
 
-		return configPane;
+		return config_pane;
 	}
 
 
-	private void loadConfigFile(String path, String label, TextArea configField, String setting, Node triggeringElement, MouseEvent event) {
-		File configFile = new File(path);
+	private void loadConfigFile(String path, String label, TextArea config_field, String setting, Node triggering_element, MouseEvent event) {
+		File config_file = new File(path);
 		try {
-			String configJSON = (new Scanner(configFile)).useDelimiter("\\Z").next();
-			configField.setText(configJSON);
-			HappyBracketsToolWindow.getSettings().set(setting, configFile.getAbsolutePath());
+			String config_JSON = (new Scanner(config_file)).useDelimiter("\\Z").next();
+			config_field.setText(config_JSON);
+			HappyBracketsToolWindow.getSettings().set(setting, config_file.getAbsolutePath());
 		} catch (FileNotFoundException ex) {
-			showPopup("Error loading " + label.toLowerCase() + ": " + ex.getMessage(), triggeringElement, 5, event);
+			showPopup("Error loading " + label.toLowerCase() + ": " + ex.getMessage(), triggering_element, 5, event);
 		}
 	}
 
@@ -494,12 +494,12 @@ public class IntelliJPluginGUIManager {
 
 	private Pane makeCompositionFolderPane() {
 		compositionPathText = new Text();
-		TextFlow compositionPathTextPane = new TextFlow(compositionPathText);
-		compositionPathTextPane.setTextAlignment(TextAlignment.RIGHT);
+		TextFlow composition_path_text_pane = new TextFlow(compositionPathText);
+		composition_path_text_pane.setTextAlignment(TextAlignment.RIGHT);
 
-		Button changeCompositionPath = new Button("Change");
-		changeCompositionPath.setTooltip(new Tooltip("Select a new folder containing composition files."));
-		changeCompositionPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		Button change_composition_path = new Button("Change");
+		change_composition_path.setTooltip(new Tooltip("Select a new folder containing composition files."));
+		change_composition_path.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				//select a folder
@@ -509,12 +509,12 @@ public class IntelliJPluginGUIManager {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						VirtualFile[] virtualFile = FileChooser.chooseFiles(descriptor, null, null);
-						if (virtualFile != null && virtualFile.length > 0 && virtualFile[0] != null) {
+						VirtualFile[] virtual_file = FileChooser.chooseFiles(descriptor, null, null);
+						if (virtual_file != null && virtual_file.length > 0 && virtual_file[0] != null) {
 							Platform.runLater(new Runnable() {
 								@Override
 								public void run() {
-									updateCompositionPath(virtualFile[0].getCanonicalPath());
+									updateCompositionPath(virtual_file[0].getCanonicalPath());
 								}
 							});
 						}
@@ -522,26 +522,26 @@ public class IntelliJPluginGUIManager {
 				});
 			}
 		});
-		Button refreshButton = new Button("Refresh");
-		refreshButton.setTooltip(new Tooltip("Reload the available composition files."));
-		refreshButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		Button refresh_button = new Button("Refresh");
+		refresh_button.setTooltip(new Tooltip("Reload the available composition files."));
+		refresh_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				refreshCompositionList();
 			}
 		});
 
-		FlowPane compositionFolderPane = new FlowPane(10, 10);
-		compositionFolderPane.setAlignment(Pos.TOP_LEFT);
-		compositionFolderPane.getChildren().addAll(compositionPathText, changeCompositionPath, refreshButton);
+		FlowPane composition_folder_pane = new FlowPane(10, 10);
+		composition_folder_pane.setAlignment(Pos.TOP_LEFT);
+		composition_folder_pane.getChildren().addAll(compositionPathText, change_composition_path, refresh_button);
 
-		return compositionFolderPane;
+		return composition_folder_pane;
 	}
 
 	private Pane makeCompositionSendPane() {
-		GridPane compositionSendPane = new GridPane();
-		compositionSendPane.setHgap(defaultElementSpacing);
-		compositionSendPane.setVgap(defaultElementSpacing);
+		GridPane composition_send_pane = new GridPane();
+		composition_send_pane.setHgap(defaultElementSpacing);
+		composition_send_pane.setVgap(defaultElementSpacing);
 
 		// Create the ComboBox containing the compoositions
 		compositionSelector = new ComboBox<String>();
@@ -576,33 +576,33 @@ public class IntelliJPluginGUIManager {
 				}
 			}
 		});
-		compositionSendPane.add(compositionSelector, 0, 0, 6, 1);
+		composition_send_pane.add(compositionSelector, 0, 0, 6, 1);
 
-		Button compositionSendButton = new Button("All");
-		compositionSendButton.setTooltip(new Tooltip("Send the selected composition to all devices."));
-		compositionSendButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		Button composition_send_button = new Button("All");
+		composition_send_button.setTooltip(new Tooltip("Send the selected composition to all devices."));
+		composition_send_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				sendSelectedComposition(deviceConnection.getDevices());
 			}
 		});
-		compositionSendPane.add(compositionSendButton, 0, 1);
+		composition_send_pane.add(composition_send_button, 0, 1);
 
-		Button compositionSendSelectedButton = new Button("Selected");
-		compositionSendSelectedButton.setTooltip(new Tooltip("Send the selected composition to the selected devices."));
-		compositionSendSelectedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		Button composition_send_selected_button = new Button("Selected");
+		composition_send_selected_button.setTooltip(new Tooltip("Send the selected composition to the selected devices."));
+		composition_send_selected_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				sendSelectedComposition(deviceListView.getSelectionModel().getSelectedItems());
 			}
 		});
-		compositionSendPane.add(compositionSendSelectedButton, 1, 1);
+		composition_send_pane.add(composition_send_selected_button, 1, 1);
 
 		for (int i = 0; i < 4; i++) {
 			final int group = i;
-			Button compositionSendGroupButton = new Button("" + (i + 1));
-			compositionSendGroupButton.setTooltip(new Tooltip("Send the selected composition to device group " + (i + 1) + "."));
-			compositionSendGroupButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			Button composition_send_group_button = new Button("" + (i + 1));
+			composition_send_group_button.setTooltip(new Tooltip("Send the selected composition to device group " + (i + 1) + "."));
+			composition_send_group_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
 					List<LocalDeviceRepresentation> devices = new ArrayList<>();
@@ -614,30 +614,30 @@ public class IntelliJPluginGUIManager {
 					sendSelectedComposition(devices);
 				}
 			});
-			compositionSendPane.add(compositionSendGroupButton, 2 + group, 1);
+			composition_send_pane.add(composition_send_group_button, 2 + group, 1);
 		}
 
-		return compositionSendPane;
+		return composition_send_pane;
 	}
 
 	private void sendSelectedComposition(List<LocalDeviceRepresentation> devices) {
 		if (currentCompositionSelection != null) {
 			//intelliJ specific code
-			String pathToSend = compositionsPath + "/" + currentCompositionSelection;
+			String path_to_send = compositionsPath + "/" + currentCompositionSelection;
 			try {
-				SendToDevice.send(pathToSend, devices);
+				SendToDevice.send(path_to_send, devices);
 			} catch (Exception ex) {
-				logger.error("Unable to send composition: '{}'!", pathToSend, ex);
+				logger.error("Unable to send composition: '{}'!", path_to_send, ex);
 			}
 		}
 	}
 
 
 	private Pane makeCustomCommandPane() {
-		final TextField codeField = new TextField();
-		codeField.setTooltip(new Tooltip("Enter a custom command to send."));
-		codeField.setPrefSize(500, 40);
-		codeField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		final TextField code_field = new TextField();
+		code_field.setTooltip(new Tooltip("Enter a custom command to send."));
+		code_field.setPrefSize(500, 40);
+		code_field.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				if(event.getEventType() == KeyEvent.KEY_PRESSED) {
@@ -647,7 +647,7 @@ public class IntelliJPluginGUIManager {
 						if(commandHistory.size() > 0) {
 							String command = commandHistory.get(positionInCommandHistory);
 							if (command != null) {
-								codeField.setText(command);
+								code_field.setText(command);
 							}
 						}
 					} else if(event.getCode() == KeyCode.DOWN) {
@@ -656,7 +656,7 @@ public class IntelliJPluginGUIManager {
 						if(commandHistory.size() > 0) {
 							String command = commandHistory.get(positionInCommandHistory);
 							if (command != null) {
-								codeField.setText(command);
+								code_field.setText(command);
 							}
 						}
 					} else if(!event.getCode().isModifierKey() && !event.getCode().isNavigationKey()){
@@ -669,23 +669,23 @@ public class IntelliJPluginGUIManager {
 		FlowPane messagepaths = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 		messagepaths.setAlignment(Pos.TOP_LEFT);
 
-		Button sendAllButton = new Button("All");
-		sendAllButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		Button send_all_button = new Button("All");
+		send_all_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				sendCustomCommand(codeField.getText(), ALL);
+				sendCustomCommand(code_field.getText(), ALL);
 			}
 		});
-		messagepaths.getChildren().add(sendAllButton);
+		messagepaths.getChildren().add(send_all_button);
 
-		Button sendSelectedButton = new Button("Selected");
-		sendSelectedButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		Button send_selected_button = new Button("Selected");
+		send_selected_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				sendCustomCommand(codeField.getText(), SELECTED);
+				sendCustomCommand(code_field.getText(), SELECTED);
 			}
 		});
-		messagepaths.getChildren().add(sendSelectedButton);
+		messagepaths.getChildren().add(send_selected_button);
 
 		for(int i = 0; i < 4; i++) {
 			Button b = new Button();
@@ -693,30 +693,30 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					sendCustomCommand(codeField.getText(), index);
+					sendCustomCommand(code_field.getText(), index);
 				}
 			});
 			b.setText("" + (i + 1));
 			messagepaths.getChildren().add(b);
 		}
 
-		VBox customCommandPane = new VBox(defaultElementSpacing);
-		customCommandPane.getChildren().addAll(codeField, messagepaths);
-		return customCommandPane;
+		VBox custom_command_pane = new VBox(defaultElementSpacing);
+		custom_command_pane.getChildren().addAll(code_field, messagepaths);
+		return custom_command_pane;
 	}
 
 
 	/**
 	 * Send a custom command to the specified devices.
 	 * @param text The command to send.
-	 * @param devicesOrGroup If 'all' is false the group of devices to send the command to.
+	 * @param devices_or_group If 'all' is false the group of devices to send the command to.
 	 */
-	public void sendCustomCommand(String text, int devicesOrGroup) {
-		String codeText = text.trim();
-		commandHistory.add(codeText);
+	public void sendCustomCommand(String text, int devices_or_group) {
+		String code_text = text.trim();
+		commandHistory.add(code_text);
 		positionInCommandHistory = commandHistory.size() - 1;
 		//need to parse the code text
-		String[] commands = codeText.split("[;]");	//different commands separated by ';'
+		String[] commands = code_text.split("[;]");	//different commands separated by ';'
 		for(String command : commands) {
 			command = command.trim();
 			String[] elements = command.split("[ ]");
@@ -734,14 +734,14 @@ public class IntelliJPluginGUIManager {
 					}
 				}
 			}
-			if (devicesOrGroup == ALL) {
+			if (devices_or_group == ALL) {
 				deviceConnection.sendToAllDevices(msg, args);
 			}
-			else if (devicesOrGroup == SELECTED) {
+			else if (devices_or_group == SELECTED) {
 				deviceConnection.sendToDeviceList(deviceListView.getSelectionModel().getSelectedItems(), msg, args);
 			}
 			else {
-				deviceConnection.sendToDeviceGroup(devicesOrGroup, msg, args);
+				deviceConnection.sendToDeviceGroup(devices_or_group, msg, args);
 			}
 		}
 	}
@@ -761,18 +761,18 @@ public class IntelliJPluginGUIManager {
 		//locate the class files of composition classes
 		//the following populates a list of Strings with class files, associated with compositions
 		//populate combobox with list of compositions
-		List<String> compositionFileNames = new ArrayList<String>();
-		recursivelyGatherCompositionFileNames(compositionFileNames, compositionsPath);
+		List<String> composition_file_names = new ArrayList<String>();
+		recursivelyGatherCompositionFileNames(composition_file_names, compositionsPath);
 		// Sort compositions alphabetically.
-		Collections.sort(compositionFileNames, String.CASE_INSENSITIVE_ORDER);
+		Collections.sort(composition_file_names, String.CASE_INSENSITIVE_ORDER);
 		compositionSelector.getItems().clear();
-		for(final String compositionFileName : compositionFileNames) {
-			compositionSelector.getItems().add(compositionFileName);
+		for(final String composition_file_name : composition_file_names) {
+			compositionSelector.getItems().add(composition_file_name);
 		}
-		if(compositionFileNames.size() > 0) {
+		if(composition_file_names.size() > 0) {
 			//if there was a current dynamoAction, grab it
 			if (!compositionSelector.getItems().contains(currentCompositionSelection)) {
-				currentCompositionSelection = compositionFileNames.get(0);
+				currentCompositionSelection = composition_file_names.get(0);
 			}
 			compositionSelector.setValue(currentCompositionSelection);
 		} else {
@@ -780,23 +780,23 @@ public class IntelliJPluginGUIManager {
 		}
 	}
 
-	private void recursivelyGatherCompositionFileNames(List<String> compositionFileNames, String currentDir) {
+	private void recursivelyGatherCompositionFileNames(List<String> composition_file_names, String current_dir) {
 		//TODO best approach would be to examine code source tree, then we can gather dependencies properly as well
 		//scan the current dir for composition files
 		//drop into any folders encountered
 		//add any file that looks like a composition file (is a top-level class)
-		String[] contents = new File(currentDir).list();
+		String[] contents = new File(current_dir).list();
 		if(contents != null) {
 			for(String item : contents) {
-				item = currentDir + "/" + item;
+				item = current_dir + "/" + item;
 				File f = new File(item);
 				if(f.isDirectory()) {
-					recursivelyGatherCompositionFileNames(compositionFileNames, item);
+					recursivelyGatherCompositionFileNames(composition_file_names, item);
 				} else if(f.isFile()) {
 					if(item.endsWith(".class") && !item.contains("$")) {
 						item = item.substring(compositionsPath.length() + 1, item.length() - 6);
 						// 6 equates to the length fo the .class extension, the + 1 is to remove the composition path and trailing '/' for presentation in the compositionSelector
-						compositionFileNames.add(item);
+						composition_file_names.add(item);
 					}
 				}
 			}
@@ -821,24 +821,24 @@ public class IntelliJPluginGUIManager {
 
 
 	private Node makeDebugPane() {
-		String startText = "Start device logging";
-		Tooltip startTooltip = new Tooltip("Tell all devices to start sending their log files.");
-		String stopText = "Stop device logging";
-		Tooltip stopTooltip = new Tooltip("Tell all devices to stop sending their log files.");
-		Button enableButton = new Button(deviceConnection.isDeviceLoggingEnabled() ? stopText : startText);
-		enableButton.setTooltip(deviceConnection.isDeviceLoggingEnabled() ? stopTooltip : startTooltip);
-		enableButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		String start_text = "Start device logging";
+		Tooltip start_tooltip = new Tooltip("Tell all devices to start sending their log files.");
+		String stop_text = "Stop device logging";
+		Tooltip stop_tooltip = new Tooltip("Tell all devices to stop sending their log files.");
+		Button enable_button = new Button(deviceConnection.isDeviceLoggingEnabled() ? stop_text : start_text);
+		enable_button.setTooltip(deviceConnection.isDeviceLoggingEnabled() ? stop_tooltip : start_tooltip);
+		enable_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				boolean enable = !deviceConnection.isDeviceLoggingEnabled();
 				if (enable) {
-					enableButton.setText(stopText);
-					enableButton.setTooltip(stopTooltip);
+					enable_button.setText(stop_text);
+					enable_button.setTooltip(stop_tooltip);
 					configureLogMonitoring(deviceListView.getSelectionModel().getSelectedItem());
 				}
 				else {
-					enableButton.setText(startText);
-					enableButton.setTooltip(startTooltip);
+					enable_button.setText(start_text);
+					enable_button.setTooltip(start_tooltip);
 					configureLogMonitoring(null);
 				}
 				deviceConnection.deviceEnableLogging(enable);
@@ -851,15 +851,15 @@ public class IntelliJPluginGUIManager {
 
 		deviceListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<LocalDeviceRepresentation>() {
 			@Override
-			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation oldValue, LocalDeviceRepresentation newValue) {
+			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation old_value, LocalDeviceRepresentation new_value) {
 				if (deviceConnection.isDeviceLoggingEnabled()) {
-					configureLogMonitoring(newValue);
+					configureLogMonitoring(new_value);
 				}
 			}
 		});
 
 		VBox pane = new VBox(defaultElementSpacing);
-		pane.getChildren().addAll(enableButton, logOutputTextArea);
+		pane.getChildren().addAll(enable_button, logOutputTextArea);
 		return pane;
 	}
 

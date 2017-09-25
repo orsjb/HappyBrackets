@@ -86,7 +86,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     final static Logger logger = LoggerFactory.getLogger(HappyBracketsToolWindow.class);
 
     @Override
-    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow tool_window) {
         //awful hack but we need to prompt JavaFX to initialise itself, this will do it
         new JFXPanel();
         Logging.AddFileAppender( (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root"), "Plugin", getPluginLocation() + "/controller.log", Level.DEBUG);
@@ -110,19 +110,19 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             //TODO this is still buggy. We are doing this statically meaning it works only for the first loaded project.
             //all of the below concerns the set up of singletons
 
-            String configFilePath = settings.getString("controllerConfigPath");
-            if (configFilePath == null) {
-                configFilePath = getDefaultControllerConfigPath();
-                settings.set("controllerConfigPath", configFilePath);
+            String config_file_path = settings.getString("controllerConfigPath");
+            if (config_file_path == null) {
+                config_file_path = getDefaultControllerConfigPath();
+                settings.set("controllerConfigPath", config_file_path);
             }
 
-            if (new File(configFilePath).exists()) {
-                logger.debug("Found config file: {}", configFilePath);
+            if (new File(config_file_path).exists()) {
+                logger.debug("Found config file: {}", config_file_path);
 
                 try {
-                    setConfigFromFile(configFilePath);
+                    setConfigFromFile(config_file_path);
                 } catch (IOException e) {
-                    logger.error("Could not read the configuration file at {}", configFilePath);
+                    logger.error("Could not read the configuration file at {}", config_file_path);
                     config = new IntelliJControllerConfig();
                 }
             }
@@ -131,9 +131,9 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 //String jarPath = PathUtil.getJarPathForClass(this.getClass());
                 InputStream input = getClass().getResourceAsStream("/config/controller-config.json");
 
-                String configJSON = new Scanner(input).useDelimiter("\\Z").next();
-                logger.info("Loaded config: {}", configJSON);
-                setConfig(configJSON, getDefaultConfigFolder());
+                String config_JSON = new Scanner(input).useDelimiter("\\Z").next();
+                logger.info("Loaded config: {}", config_JSON);
+                setConfig(config_JSON, getDefaultConfigFolder());
             }
 
             //test code: you can create a test pi if you don't have a real pi...
@@ -146,13 +146,13 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             logger.info("HappyBrackets static setup already completed previously.");
         }
 
-        IntelliJPluginGUIManager guiManager = new IntelliJPluginGUIManager(project);
+        IntelliJPluginGUIManager gui_manager = new IntelliJPluginGUIManager(project);
         jfxp = new JFXPanel();
-        scene = guiManager.setupGUI();
+        scene = gui_manager.setupGUI();
         jfxp.setScene(scene);
-        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(jfxp, "", false);
-        toolWindow.getContentManager().addContent(content);
+        ContentFactory content_factory = ContentFactory.SERVICE.getInstance();
+        Content content = content_factory.createContent(jfxp, "", false);
+        tool_window.getContentManager().addContent(content);
     }
 
     /**
@@ -170,15 +170,15 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
      *
      * @throws IOException If there is an error reading the given config file.
      */
-    static void setConfigFromFile(String configFilePath) throws IOException {
-        File newConfigFile = new File(configFilePath);
-        if (!newConfigFile.isFile() || !newConfigFile.canRead()) {
-            throw new IllegalArgumentException("Specified configuration file does not exist or is not readable, path is: " + configFilePath);
+    static void setConfigFromFile(String config_file_path) throws IOException {
+        File new_config_file = new File(config_file_path);
+        if (!new_config_file.isFile() || !new_config_file.canRead()) {
+            throw new IllegalArgumentException("Specified configuration file does not exist or is not readable, path is: " + config_file_path);
         }
 
-        String configJSON = new Scanner(newConfigFile).useDelimiter("\\Z").next();
-        logger.info("Loaded config: {}", configJSON);
-        setConfig(configJSON, newConfigFile.getParent());
+        String config_JSON = new Scanner(new_config_file).useDelimiter("\\Z").next();
+        logger.info("Loaded config: {}", config_JSON);
+        setConfig(config_JSON, new_config_file.getParent());
     }
 
     /**
@@ -197,24 +197,24 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
      *
      * @throws IllegalArgumentException If there is an error loading or parsing the given config file.
      */
-    static void setConfig(String configJSON, String configDir) {
+    static void setConfig(String config_JSON, String config_dir) {
         try {
-            config = IntelliJControllerConfig.loadFromString(configJSON);
+            config = IntelliJControllerConfig.loadFromString(config_JSON);
         } catch (JsonSyntaxException e) {
             throw new IllegalArgumentException("Could not parse specified configuration.", e);
         }
 
-        currentConfigString = configJSON;
+        currentConfigString = config_JSON;
 
-        config.setConfigDir(configDir);
+        config.setConfigDir(config_dir);
 
         // If a custom known devices path has been loaded/saved previously, reload it and apply/override that possibly specified in the controller config file.
-        String knownDevicesPath = HappyBracketsToolWindow.getSettings().getString("knownDevicesPath");
-        if (knownDevicesPath == null) {
+        String known_devices_path = HappyBracketsToolWindow.getSettings().getString("knownDevicesPath");
+        if (known_devices_path == null) {
             // Otherwise get default known devices file.
-            knownDevicesPath = HappyBracketsToolWindow.getDefaultKnownDevicesPath();
+            known_devices_path = HappyBracketsToolWindow.getDefaultKnownDevicesPath();
         }
-        config.setKnownDevicesFile(knownDevicesPath);
+        config.setKnownDevicesFile(known_devices_path);
 
         // Dispose of previous components if necessary.
         if (httpServer != null) {
@@ -283,14 +283,14 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
      * will typically reside.
      */
     public static String getDefaultConfigFolder() {
-        String pluginLocation = getPluginLocation();
+        String plugin_location = getPluginLocation();
         // IntelliJ doesn't provide a way of determining whether we're running in sandbox, or a nice way of including,
         // for example, the controller-config.json file outside of the jar file for the non-sandbox version.
         // So we just use the root plugin location if we don't find the /classes/config folder.
-        if ((new File(pluginLocation + "/classes/config")).exists()) {
-            return pluginLocation + "/classes/config";
+        if ((new File(plugin_location + "/classes/config")).exists()) {
+            return plugin_location + "/classes/config";
         }
-        return pluginLocation;
+        return plugin_location;
     }
 
     public static String getDefaultControllerConfigPath() {

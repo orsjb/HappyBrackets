@@ -113,11 +113,11 @@ public class IntelliJPluginSettings {
     /**
      * Get the String value for the specified setting. Returns defaultValue if the setting has not been set.
      */
-    public String getString(String setting, String defaultValue) {
+    public String getString(String setting, String default_value) {
         if (props.containsKey(setting)) {
             return (String) props.get(setting);
         }
-        return defaultValue;
+        return default_value;
     }
 
     /**

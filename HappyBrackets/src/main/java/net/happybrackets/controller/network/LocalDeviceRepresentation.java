@@ -38,16 +38,17 @@ public class LocalDeviceRepresentation {
 
 	public long lastTimeSeen;
 	public final String deviceName;
-	public final String hostname;
+	public final String hostName;
 	public final String address;
-	public List<String> preferredAddressStrings; 	//This list contains, in order of preference: address, hostname, deviceName, hostname.local or deviceName.local.
-	private int id;
+	public List<String> preferredAddressStrings; 	//This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
+	private int deviceId; //
+	private String status = "Status unknown"; // This is the displayed ID
 
 	private InetSocketAddress socketAddress;
 
 	private final OSCServer server;
 	public final boolean[] groups;
-	private ControllerConfig config;
+	private ControllerConfig controllerConfig;
 
 
 
@@ -67,7 +68,7 @@ public class LocalDeviceRepresentation {
     }
 
     public interface SocketAddressChangedListener{
-		public void socketChanged(InetAddress oldAddress, InetAddress InetAddress);
+		public void socketChanged(InetAddress old_address, InetAddress inet_address);
 	}
 
 	private List<StatusUpdateListener> statusUpdateListenerList;
@@ -84,7 +85,7 @@ public class LocalDeviceRepresentation {
 
 
 
-	private String status = "Status unknown";
+
 
 	// Overload constructors. Construct with a SocketAddress
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress) {
@@ -95,12 +96,12 @@ public class LocalDeviceRepresentation {
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
 
 		this.deviceName						= deviceName;
-		this.hostname   					= hostname;
+		this.hostName   					= hostname;
     	this.address    					= addr;
-		this.socketAddress = null;
-		this.id         					= id;
+		this.socketAddress 					= null;
+		this.deviceId     					= id;
 		this.server     					= server;
-		this.config     					= config;
+		this.controllerConfig     			= config;
 		groups          					= new boolean[4];
 		statusUpdateListenerList  = new ArrayList<>();
         connectedUpdateListenerList = new ArrayList<>();
@@ -115,11 +116,11 @@ public class LocalDeviceRepresentation {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
 				if (msg.getName().equals("/device/log") && ((Integer) msg.getArg(0)) == id) {
-					String newLogOutput = (String) msg.getArg(1);
-					log = log + "\n" + newLogOutput;
-					logger.debug("Received new log output from device {} ({}): {}", hostname, id, newLogOutput);
+					String new_log_output = (String) msg.getArg(1);
+					log = log + "\n" + new_log_output;
+					logger.debug("Received new log output from device {} ({}): {}", hostname, id, new_log_output);
 					for (LogListener listener : logListenerList) {
-						listener.newLogMessage(newLogOutput);
+						listener.newLogMessage(new_log_output);
 					}
 				}
 			}
@@ -135,7 +136,7 @@ public class LocalDeviceRepresentation {
 
 	// First test if our stored socket address is the same as the argument
 	// If it is different, store new value and raise event to notify that change occurred
-	public void setSocketAddress(InetAddress newSocketAddress)
+	public void setSocketAddress(InetAddress new_socket_address)
 	{
 		InetAddress old = null;
 
@@ -146,26 +147,26 @@ public class LocalDeviceRepresentation {
 			old_host_address = old.getHostAddress();
 		}
 
-		String new_host_address = newSocketAddress.getHostAddress();
+		String new_host_address = new_socket_address.getHostAddress();
 		boolean same_address = old_host_address.equals(new_host_address);
 		if (!same_address)
 		{
-			this.socketAddress = new InetSocketAddress(newSocketAddress, config.getControlToDevicePort());
+			this.socketAddress = new InetSocketAddress(new_socket_address, controllerConfig.getControlToDevicePort());
 
 			// now raise event
 			for(SocketAddressChangedListener listener : socketAddressChangedListenerList) {
-				listener.socketChanged(old, newSocketAddress);
+				listener.socketChanged(old, new_socket_address);
 			}
 
 		}
 	}
 
 	public void setID(int id) {
-		this.id = id;
+		this.deviceId = id;
 	}
 
 	public int getID() {
-		return id;
+		return deviceId;
 	}
 
 	private void lazySetupAddressStrings() {
@@ -173,24 +174,24 @@ public class LocalDeviceRepresentation {
 			preferredAddressStrings = new LinkedList<>();
 			preferredAddressStrings.add(deviceName + ".local");
 			preferredAddressStrings.add(address);
-			preferredAddressStrings.add(hostname + ".local");
-			preferredAddressStrings.add(hostname);
+			preferredAddressStrings.add(hostName + ".local");
+			preferredAddressStrings.add(hostName);
 			preferredAddressStrings.add(deviceName);
 		}
 	}
 
-	public synchronized void send(String msgName, Object... args) {
-		if(hostname.startsWith("Virtual Test Device")) {
+	public synchronized void send(String msg_name, Object... args) {
+		if(hostName.startsWith("Virtual Test Device")) {
 			return;
 		}
-		OSCMessage msg = new OSCMessage(msgName, args);
+		OSCMessage msg = new OSCMessage(msg_name, args);
 		lazySetupAddressStrings();
 		boolean success = false;
 		int count = 0;
 		while(!success) {
 			try {
 				if (this.socketAddress == null) {
-					this.socketAddress =  new InetSocketAddress(preferredAddressStrings.get(0), config.getControlToDevicePort());
+					this.socketAddress =  new InetSocketAddress(preferredAddressStrings.get(0), controllerConfig.getControlToDevicePort());
 				}
 				server.send(msg, socketAddress);
 				success = true;
@@ -201,8 +202,8 @@ public class LocalDeviceRepresentation {
 				//set the socketAddress back to null as it will need to be rebuilt
 				socketAddress = null;
 				//rotate the preferredAddressStrings list to try the next one in the list
-				String failedString = preferredAddressStrings.remove(0);
-				preferredAddressStrings.add(failedString);
+				String failed_string = preferredAddressStrings.remove(0);
+				preferredAddressStrings.add(failed_string);
 				if(count > 4) break;
 				count++;
 			}
@@ -213,21 +214,21 @@ public class LocalDeviceRepresentation {
 		lazySetupAddressStrings();
 		boolean success = false;
 		int count = 0;
-		boolean possibleIPvIssue = false;
+		boolean possible_IP_vIssue = false;
 		List<Exception> exceptions = new ArrayList<>(5);
 		while(!success) {
 			try {
-				String clientAddress = null;
+				String client_address = null;
 				if (this.socketAddress != null)
 				{
-					clientAddress = this.socketAddress.getHostName();
+					client_address = this.socketAddress.getHostName();
 				}
 				else
 				{
-					clientAddress = preferredAddressStrings.get(0);
+					client_address = preferredAddressStrings.get(0);
 				}
 
-				Socket s = new Socket(clientAddress, ControllerConfig.getInstance().getCodeToDevicePort());
+				Socket s = new Socket(client_address, ControllerConfig.getInstance().getCodeToDevicePort());
 				for (byte[] d : data) {
 					s.getOutputStream().write(d);
 				}
@@ -245,13 +246,13 @@ public class LocalDeviceRepresentation {
 				preferredAddressStrings.add(failedString);		//add to end
 
 				exceptions.add(e1);
-				possibleIPvIssue |= e1 instanceof java.net.SocketException && e1.getMessage().contains("rotocol");
+				possible_IP_vIssue |= e1 instanceof java.net.SocketException && e1.getMessage().contains("rotocol");
 				if(count > 4) break;
 				count++;
 			}
 		}
 
-		if (possibleIPvIssue) {
+		if (possible_IP_vIssue) {
 			logger.error("It looks like there might be an IPv4/IPv6 incompatibility, try setting the JVM option -Djava.net.preferIPv6Addresses=true or -Djava.net.preferIPv4Addresses=true");
 		}
 		// Communicate the errors to the plugin gui if it's running (and anything else that's listening).

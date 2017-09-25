@@ -112,19 +112,19 @@ public class DeviceConnection {
 		newID = -1;
 
 		for (String line : lines) {
-			String[] lineSplit = line.trim().split("[ ]+");
+			String[] line_split = line.trim().split("[ ]+");
 			// Ignore blank or otherwise incorrectly formatted lines.
-			if (lineSplit.length == 2) {
-				logger.info("Adding known device mapping " + lineSplit[0] + " " + Integer.parseInt(lineSplit[1]));
-				knownDevices.put(lineSplit[0], Integer.parseInt(lineSplit[1]));
+			if (line_split.length == 2) {
+				logger.info("Adding known device mapping " + line_split[0] + " " + Integer.parseInt(line_split[1]));
+				knownDevices.put(line_split[0], Integer.parseInt(line_split[1]));
 			}
 		}
 
 		for (LocalDeviceRepresentation device: theDevices) {
 			int id = 0;
 
-			if (knownDevices.containsKey(device.hostname)) {
-				device.setID(knownDevices.get(device.hostname));
+			if (knownDevices.containsKey(device.hostName)) {
+				device.setID(knownDevices.get(device.hostName));
 			}
 			else if (knownDevices.containsKey(device.deviceName)) {
 				device.setID(knownDevices.get(device.deviceName));
@@ -136,7 +136,7 @@ public class DeviceConnection {
 			new Thread() {
 				public void run() {
 					sendToDevice(device, "/device/set_id", device.getID());
-					logger.info("Assigning id {} to {}", device.getID(), device.hostname);
+					logger.info("Assigning id {} to {}", device.getID(), device.hostName);
 				}
 			}.start();
 		}
@@ -156,7 +156,7 @@ public class DeviceConnection {
 	public String[] getDeviceHostnames() {
 		String[] hostnames = new String[theDevices.size()];
 		for(int i = 0; i < hostnames.length; i++) {
-			hostnames[i] = theDevices.get(i).hostname;
+			hostnames[i] = theDevices.get(i).hostName;
 		}
 		return hostnames;
 	}
@@ -174,65 +174,65 @@ public class DeviceConnection {
 			synchronized (this) {			//needs to be synchronized else we might put two copies in
 				try {
 
-					String deviceName = (String) msg.getArg(0);
-					String deviceHostname = (String) msg.getArg(1);
-					String deviceAddress = (String) msg.getArg(2);
-					logger.debug("Received message from device: " + deviceName);
+					String device_name = (String) msg.getArg(0);
+					String device_hostname = (String) msg.getArg(1);
+					String device_address = (String) msg.getArg(2);
+					logger.debug("Received message from device: " + device_name);
 					//			System.out.println("Device Alive Message: " + deviceName);
 					//see if we have this device yet
-					LocalDeviceRepresentation thisDevice = devicesByHostname.get(deviceName);
+					LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
 
-					logger.debug("Getting device from store: name=" + deviceName + ", result=" + thisDevice);
+					logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
 
-					if (thisDevice == null) { //if not add it
+					if (this_device == null) { //if not add it
 						int id = 0;
-						if (knownDevices.containsKey(deviceName)) {
-							id = knownDevices.get(deviceName);
+						if (knownDevices.containsKey(device_name)) {
+							id = knownDevices.get(device_name);
 						} else {
 							id = newID--;
 						}
 						//force names if useHostname is true
 						if (config.useHostname()) {
-							deviceAddress = deviceName;
+							device_address = device_name;
 						}
 
-						thisDevice = new LocalDeviceRepresentation(deviceName, deviceHostname, deviceAddress, id, oscServer, config);
-						devicesByHostname.put(deviceName, thisDevice);
-						logger.debug("Put device in store: name=" + deviceName + ", size=" + devicesByHostname.size());
-						final LocalDeviceRepresentation deviceToAdd = thisDevice;
+						this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, id, oscServer, config);
+						devicesByHostname.put(device_name, this_device);
+						logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
+						final LocalDeviceRepresentation device_to_add = this_device;
 						//adding needs to be done in an "app" thread because it affects the GUI.
 						Platform.runLater(new Runnable() {
 							@Override
 							public void run() {
-								theDevices.add(deviceToAdd);
+								theDevices.add(device_to_add);
 							}
 						});
 						//make sure this device knows its ID
 						//since there is a lag in assigning an InetSocketAddress, and since this is the first
 						//message sent to the device, it should be done in a separate thread.
-						final LocalDeviceRepresentation deviceID = thisDevice;
+						final LocalDeviceRepresentation device_id = this_device;
 						new Thread() {
 							public void run() {
-								sendToDevice(deviceID, "/device/set_id", deviceID.getID());
-								logger.info("Assigning id {} to {}", deviceID.getID(), deviceID.hostname);
+								sendToDevice(device_id, "/device/set_id", device_id.getID());
+								logger.info("Assigning id {} to {}", device_id.getID(), device_id.hostName);
 							}
 						}.start();
 					}
 					//keep up to date
-					if (thisDevice != null) {
+					if (this_device != null) {
 						// we need to update Host address
 						// we will check that the InetAddress that we have stored is the same - IP address may have changed
-						InetAddress sendingAddress = ((InetSocketAddress) sender).getAddress();
-						thisDevice.setSocketAddress(sendingAddress);
+						InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
+						this_device.setSocketAddress(sending_address);
 
 
-                        thisDevice.setIsConnected(true);
-						thisDevice.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
+						this_device.setIsConnected(true);
+						this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
 
                         // Status is updated in GUI via listener
 						if (msg.getArgCount() > 4) {
 							String status = (String) msg.getArg(4);
-							thisDevice.setStatus(status);
+							this_device.setStatus(status);
 							//				System.out.println("Got status update from " + thisDevice.hostname + ": " + status);
 						}
 					}
@@ -245,34 +245,34 @@ public class DeviceConnection {
 //		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
 	}
 
-	public void sendToDevice(LocalDeviceRepresentation device, String msgName, Object... args) {
-		device.send(msgName, args);
+	public void sendToDevice(LocalDeviceRepresentation device, String msg_name, Object... args) {
+		device.send(msg_name, args);
 	}
 
 
-	public void sendToAllDevices(String msgName, Object... args) {
+	public void sendToAllDevices(String msg_name, Object... args) {
 		for(LocalDeviceRepresentation device : devicesByHostname.values()) {
-			sendToDevice(device, msgName, args);
+			sendToDevice(device, msg_name, args);
 		}
 	}
 
-	public void sendToDeviceList(Iterable<LocalDeviceRepresentation> devices, String msgName, Object... args) {
+	public void sendToDeviceList(Iterable<LocalDeviceRepresentation> devices, String msg_name, Object... args) {
 		for (LocalDeviceRepresentation device : devices) {
-			sendToDevice(device, msgName, args);
+			sendToDevice(device, msg_name, args);
 		}
 	}
 
-	public void sendToDeviceList(String[] list, String msgName, Object... args) {
+	public void sendToDeviceList(String[] list, String msg_name, Object... args) {
 		for(String deviceName : list) {
-			sendToDevice(devicesByHostname.get(deviceName), msgName, args);
+			sendToDevice(devicesByHostname.get(deviceName), msg_name, args);
 		}
 	}
 
-	public void sendToDeviceGroup(int group, String msgName, Object... args) {
+	public void sendToDeviceGroup(int group, String msg_name, Object... args) {
 		//send to group - group is defined by each LocalDeviceRep having group[i] flag
 		for(LocalDeviceRepresentation device : theDevices) {
 			if(device.groups[group]) {
-				sendToDevice(device, msgName, args);
+				sendToDevice(device, msg_name, args);
 			}
 		}
 
@@ -280,21 +280,21 @@ public class DeviceConnection {
 
 	private void checkDeviceAliveness() {
 		long timeNow = System.currentTimeMillis();
-		List<String> devicesToRemove = new ArrayList<String>();
+		List<String> devices_to_remove = new ArrayList<String>();
 		for(String deviceName : devicesByHostname.keySet()) {
 			if(!deviceName.startsWith("Virtual Test Device")) {
-				LocalDeviceRepresentation thisDevice = devicesByHostname.get(deviceName);
-				long timeSinceSeen = timeNow - thisDevice.lastTimeSeen;
-				if(timeSinceSeen > config.getAliveInterval() * 5) {	//config this number?
+				LocalDeviceRepresentation this_device = devicesByHostname.get(deviceName);
+				long time_since_seen = timeNow - this_device.lastTimeSeen;
+				if(time_since_seen > config.getAliveInterval() * 5) {	//config this number?
 					//devicesToRemove.add(deviceName);
-                    if (thisDevice.getIsConnected()) {
-                        thisDevice.setIsConnected(false);
+                    if (this_device.getIsConnected()) {
+						this_device.setIsConnected(false);
                         // we need to invoke the update of GUI here
                     }
 				}
 			}
 		}
-		for(final String deviceName : devicesToRemove) {
+		for(final String deviceName : devices_to_remove) {
 			//removal needs to be done in an "app" thread because it affects the GUI.
 			Platform.runLater(new Runnable() {
 		        @Override
@@ -319,14 +319,14 @@ public class DeviceConnection {
 	}
 
 	public void deviceSync() {
-		long timeNow = System.currentTimeMillis();
-		long timeToSync = timeNow + 5000;
-		String timeAsString = "" + timeToSync;
-		sendToAllDevices("/device/sync", timeAsString);
+		long time_now = System.currentTimeMillis();
+		long time_to_sync = time_now + 5000;
+		String time_as_string = "" + time_to_sync;
+		sendToAllDevices("/device/sync", time_as_string);
 	}
 
-	public void deviceGain(float dest, float timeMS) {
-		sendToAllDevices("/device/gain", dest, timeMS);
+	public void deviceGain(float dest, float time_ms) {
+		sendToAllDevices("/device/gain", dest, time_ms);
 	}
 
 	public void deviceReset() {
@@ -365,9 +365,9 @@ public class DeviceConnection {
 		String name     = "Virtual Test Device #" + virtualDeviceCount++;
 		String hostname = "myHostname!";
         String address  = "127.0.0.1";
-		LocalDeviceRepresentation virtualTestDevice = new LocalDeviceRepresentation(name, hostname, address, 1, oscServer, config);
-		theDevices.add(virtualTestDevice);
-		devicesByHostname.put(name, virtualTestDevice);
+		LocalDeviceRepresentation virtual_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, this.oscServer, this.config);
+		theDevices.add(virtual_test_device);
+		devicesByHostname.put(name, virtual_test_device);
 	}
 
 	/**
