@@ -30,43 +30,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/beads.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/jarjar-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/org-jaudiolibs-audioservers-jack.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/mp3spi1.9.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/org-jaudiolibs-audioservers-javasound.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -93,6 +57,15 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/org-jaudiolibs-audioservers-jack.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/tritonus_aos-0.3.6.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -111,6 +84,24 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/beads.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/mp3spi1.9.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/jna.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -121,6 +112,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/org-jaudiolibs-audioservers.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/org-jaudiolibs-audioservers-javasound.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
