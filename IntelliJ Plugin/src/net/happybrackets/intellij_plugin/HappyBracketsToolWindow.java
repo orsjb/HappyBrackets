@@ -94,9 +94,31 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         logger.info("*** HappyBrackets IntelliJ Plugin launching ***");
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
 
+        String project_dir = project.getBaseDir().getCanonicalPath();
+        loadSingletons(project_dir);
+
+        IntelliJPluginGUIManager gui_manager = new IntelliJPluginGUIManager(project);
+        jfxp = new JFXPanel();
+        scene = gui_manager.setupGUI();
+        jfxp.setScene(scene);
+        ContentFactory content_factory = ContentFactory.SERVICE.getInstance();
+        Content content = content_factory.createContent(jfxp, "", false);
+        tool_window.getContentManager().addContent(content);
+
+
+
+
+    }
+
+    /**
+     * Load singletons when loading first project
+     * @param project_dir
+     */
+    synchronized void loadSingletons(String project_dir)
+    {
         if(!staticSetup) {          //only run this stuff once per JVM
             logger.info("Running static setup (first instance of HappyBrackets)");
-            String projectDir = project.getBaseDir().getCanonicalPath();
+
 
             logger.info("Loading plugin settings from " + IntelliJPluginSettings.getDefaultSettingsLocation());
             settings = IntelliJPluginSettings.load();
@@ -106,6 +128,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                     settings.save();
                 }
             });
+
 
             //TODO this is still buggy. We are doing this statically meaning it works only for the first loaded project.
             //all of the below concerns the set up of singletons
@@ -137,8 +160,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             }
 
             //test code: you can create a test pi if you don't have a real pi...
-    	    //deviceConnection.createTestDevice();
-    	    //deviceConnection.createTestDevice();
+            //deviceConnection.createTestDevice();
+            //deviceConnection.createTestDevice();
             //using synchronizer is optional, TODO: switch to control this, leave it on for now
             synchronizer = Synchronizer.getInstance();
             staticSetup = true;
@@ -146,15 +169,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             logger.info("HappyBrackets static setup already completed previously.");
         }
 
-        IntelliJPluginGUIManager gui_manager = new IntelliJPluginGUIManager(project);
-        jfxp = new JFXPanel();
-        scene = gui_manager.setupGUI();
-        jfxp.setScene(scene);
-        ContentFactory content_factory = ContentFactory.SERVICE.getInstance();
-        Content content = content_factory.createContent(jfxp, "", false);
-        tool_window.getContentManager().addContent(content);
     }
-
     /**
      * Loads the specified configuration file, resets the statically stored
      * configuration to the newly loaded config, and recreates or resets the
