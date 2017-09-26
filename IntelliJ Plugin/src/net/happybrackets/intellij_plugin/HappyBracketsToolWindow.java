@@ -95,7 +95,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         Platform.setImplicitExit(false);    //<-- essential voodoo (http://stackoverflow.com/questions/17092607/use-javafx-to-develop-intellij-idea-plugin-ui)
 
         String project_dir = project.getBaseDir().getCanonicalPath();
-        loadSingletons(project_dir);
+        loadSingletons(project_dir, this.getClass());
 
         IntelliJPluginGUIManager gui_manager = new IntelliJPluginGUIManager(project);
         jfxp = new JFXPanel();
@@ -114,7 +114,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
      * Load singletons when loading first project
      * @param project_dir
      */
-    synchronized void loadSingletons(String project_dir)
+    synchronized static  void loadSingletons(String project_dir, Class calling_class)
     {
         if(!staticSetup) {          //only run this stuff once per JVM
             logger.info("Running static setup (first instance of HappyBrackets)");
@@ -152,7 +152,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             else {
                 logger.debug("Loading config from plugin jar.");
                 //String jarPath = PathUtil.getJarPathForClass(this.getClass());
-                InputStream input = getClass().getResourceAsStream("/config/controller-config.json");
+                InputStream input = calling_class.getResourceAsStream("/config/controller-config.json");
 
                 String config_JSON = new Scanner(input).useDelimiter("\\Z").next();
                 logger.info("Loaded config: {}", config_JSON);
