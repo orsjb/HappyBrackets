@@ -173,6 +173,7 @@ public class DeviceConnection {
 		if(msg.getName().equals("/device/alive")) {
 			synchronized (this) {			//needs to be synchronized else we might put two copies in
 				try {
+					InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
 
 					String device_name = (String) msg.getArg(0);
 					String device_hostname = (String) msg.getArg(1);
@@ -197,6 +198,8 @@ public class DeviceConnection {
 						}
 
 						this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, id, oscServer, config);
+
+
 						devicesByHostname.put(device_name, this_device);
 						logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
 						final LocalDeviceRepresentation device_to_add = this_device;
@@ -210,6 +213,7 @@ public class DeviceConnection {
 						//make sure this device knows its ID
 						//since there is a lag in assigning an InetSocketAddress, and since this is the first
 						//message sent to the device, it should be done in a separate thread.
+						this_device.setSocketAddress(sending_address);
 						final LocalDeviceRepresentation device_id = this_device;
 						new Thread() {
 							public void run() {
@@ -222,7 +226,7 @@ public class DeviceConnection {
 					if (this_device != null) {
 						// we need to update Host address
 						// we will check that the InetAddress that we have stored is the same - IP address may have changed
-						InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
+
 						this_device.setSocketAddress(sending_address);
 
 

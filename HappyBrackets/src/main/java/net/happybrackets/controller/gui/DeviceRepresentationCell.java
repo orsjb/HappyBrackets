@@ -185,8 +185,20 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					// create a popup menu to allow accessing parameters
 					ContextMenu contextMenu = new ContextMenu();
 
-					MenuItem copySshCommandMenu = new MenuItem("Copy SSH " + item.deviceName + " to clipboard");
-					copySshCommandMenu.setOnAction(new EventHandler<ActionEvent>() {
+
+					MenuItem copy_name_command_menu = new MenuItem("Copy " + item.deviceName + " to clipboard");
+					copy_name_command_menu.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							final Clipboard clipboard = Clipboard.getSystemClipboard();
+							final ClipboardContent content = new ClipboardContent();
+							content.putString(item.deviceName);
+							clipboard.setContent(content);
+						}
+					});
+
+					MenuItem copy_ssh_command_menu = new MenuItem("Copy SSH " + item.deviceName + " to clipboard");
+					copy_ssh_command_menu.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
 							final Clipboard clipboard = Clipboard.getSystemClipboard();
@@ -195,7 +207,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 							clipboard.setContent(content);
 						}
 					});
-                    contextMenu.getItems().addAll(copySshCommandMenu);
+                    contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu);
                     contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 				}
 
