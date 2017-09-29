@@ -29,6 +29,7 @@ import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
 import net.happybrackets.core.ErrorListener;
+import net.happybrackets.core.OSCVocabulary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +59,13 @@ public class LocalDeviceRepresentation {
 		return this.isConnected;
 	}
 
+	public void setVersion(int major, int minor, int build, int date) {
+		String status_text = "V: " + major + "." + minor + "." + build + "." + date;
+		setStatus(status_text);
+	}
 
-    public interface StatusUpdateListener {
+
+	public interface StatusUpdateListener {
 		public void update(String state);
 	}
 
@@ -67,13 +73,24 @@ public class LocalDeviceRepresentation {
         public void update(boolean connected);
     }
 
+	public interface DeviceIdUpdateListener{
+		public void update(int new_id);
+	}
+
     public interface SocketAddressChangedListener{
 		public void socketChanged(InetAddress old_address, InetAddress inet_address);
+	}
+
+	public interface DeviceRemovedListener{
+		public void deviceRemoved(LocalDeviceRepresentation device);
 	}
 
 	private List<StatusUpdateListener> statusUpdateListenerList;
     private List<ConnectedUpdateListener> connectedUpdateListenerList;
 	private List<SocketAddressChangedListener> socketAddressChangedListenerList;
+	private List<DeviceIdUpdateListener> deviceIdUpdateListenerList;
+	private List<DeviceRemovedListener> deviceRemovedListenerList;
+
 
 	private List<ErrorListener> errorListenerList;
 
@@ -106,6 +123,8 @@ public class LocalDeviceRepresentation {
 		statusUpdateListenerList  = new ArrayList<>();
         connectedUpdateListenerList = new ArrayList<>();
 		socketAddressChangedListenerList = new ArrayList<>();
+		deviceIdUpdateListenerList = new ArrayList<>();
+		deviceRemovedListenerList = new ArrayList<>();
 		logListenerList = new ArrayList<>();
 		errorListenerList = new ArrayList<>();
         this.isConnected = true;
@@ -115,7 +134,7 @@ public class LocalDeviceRepresentation {
 		server.addOSCListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
-				if (msg.getName().equals("/device/log") && ((Integer) msg.getArg(0)) == id) {
+				if (msg.getName().equals(OSCVocabulary.Device.LOG) && ((Integer) msg.getArg(0)) == id) {
 					String new_log_output = (String) msg.getArg(1);
 					log = log + "\n" + new_log_output;
 					logger.debug("Received new log output from device {} ({}): {}", hostname, id, new_log_output);
@@ -161,8 +180,32 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
+	/**
+	 * Lets device that know about this to remove their listeners
+	 * It then removes all listeners from list
+	 */
+	public void deviceRemoved(){
+		for (DeviceRemovedListener listener: deviceRemovedListenerList){
+			listener.deviceRemoved(this);
+		}
+
+		deviceRemovedListenerList.clear();
+	}
+
+	/**
+	 * Set the device Id of the this. If it has changed, it will notify any listeners
+	 * @param id
+	 */
 	public void setID(int id) {
+		boolean changed = this.deviceId != id;
 		this.deviceId = id;
+
+		if (changed) {
+			for (DeviceIdUpdateListener listener: deviceIdUpdateListenerList){
+				listener.update(id);
+			}
+		}
+
 	}
 
 	public int getID() {
@@ -271,9 +314,16 @@ public class LocalDeviceRepresentation {
 		socketAddressChangedListenerList.add(listener);
 	}
 
+	public void addDeviceRemovedListener(DeviceRemovedListener listener){
+    	deviceRemovedListenerList.add(listener);
+	}
+
+	public void addDeviceIdUpdateListener(DeviceIdUpdateListener listener) {deviceIdUpdateListenerList.add(listener);}
+
 	public void addErrorListener(ErrorListener listener) {
 		errorListenerList.add(listener);
 	}
+
 	public void removeErrorListener(ErrorListener listener) {
 		errorListenerList.remove(listener);
 	}
@@ -290,6 +340,7 @@ public class LocalDeviceRepresentation {
         for(ConnectedUpdateListener listener : connectedUpdateListenerList) {
             listener.update(connected);
         }
+
     }
 
 	private void sendError(String description, Exception ex) {

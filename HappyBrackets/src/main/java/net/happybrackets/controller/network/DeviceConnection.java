@@ -24,7 +24,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
-import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +33,7 @@ import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
 import net.happybrackets.core.BroadcastManager;
+import net.happybrackets.core.OSCVocabulary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +135,7 @@ public class DeviceConnection {
 
 			new Thread() {
 				public void run() {
-					sendToDevice(device, "/device/set_id", device.getID());
+					sendToDevice(device, OSCVocabulary.Device.SET_ID, device.getID());
 					logger.info("Assigning id {} to {}", device.getID(), device.hostName);
 				}
 			}.start();
@@ -169,84 +169,212 @@ public class DeviceConnection {
         return addresses;
     }
 
-	private void incomingMessage(OSCMessage msg, SocketAddress sender) {
-		if(msg.getName().equals("/device/alive")) {
-			synchronized (this) {			//needs to be synchronized else we might put two copies in
+	/**
+	 * process alive message from device
+	 * @param msg OSC Message
+	 * @param sender the Socket Address of where the message originated
+	 */
+	private void processStatusMessage(OSCMessage msg, SocketAddress sender) {
+		// Lets put some constants here so we can read them
+		final int DEVICE_NAME = 0;
+		final int DEVICE_STATUS = 1;
+
+		try {
+			String device_name = (String) msg.getArg(DEVICE_NAME);
+			LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
+
+			if (this_device != null) {
+				String status = (String) msg.getArg(DEVICE_STATUS);
+				this_device.setStatus(status);
+			}
+
+		}
+		catch (Exception ex){}
+	}
+
+		/**
+         * process alive message from device
+         * @param msg OSC Message
+         * @param sender the Socket Address of where the message originated
+         */
+	private void processAliveMessage(OSCMessage msg, SocketAddress sender) {
+		// Lets put some constants here so we can read them
+		final int DEVICE_NAME = 0;
+		final int DEVICE_HOSTNAME = 1;
+		final int DEVICE_ADDRESS = 2;
+		final int DEVICE_SYNCHRONIZER_TIME = 3;
+		final int DEVICE_ID = 4;
+		try {
+			boolean invalid_pi = false;
+
+			InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
+			int device_id = 0;
+
+			String device_name = (String) msg.getArg(DEVICE_NAME);
+			String device_hostname = (String) msg.getArg(DEVICE_HOSTNAME);
+			String device_address = (String) msg.getArg(DEVICE_ADDRESS);
+			logger.debug("Received message from device: " + device_name);
+			//			System.out.println("Device Alive Message: " + deviceName);
+			//see if we have this device yet
+			LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
+
+			// we need to prevent overwriting an ID that has already been set
+			if (msg.getArgCount() > DEVICE_ID) {
 				try {
-					InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
-
-					String device_name = (String) msg.getArg(0);
-					String device_hostname = (String) msg.getArg(1);
-					String device_address = (String) msg.getArg(2);
-					logger.debug("Received message from device: " + device_name);
-					//			System.out.println("Device Alive Message: " + deviceName);
-					//see if we have this device yet
-					LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
-
-					logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
-
-					if (this_device == null) { //if not add it
-						int id = 0;
-						if (knownDevices.containsKey(device_name)) {
-							id = knownDevices.get(device_name);
-						} else {
-							id = newID--;
-						}
-						//force names if useHostname is true
-						if (config.useHostname()) {
-							device_address = device_name;
-						}
-
-						this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, id, oscServer, config);
+					device_id =  (int) msg.getArg(DEVICE_ID);
+				} catch (Exception ex) {}
 
 
-						devicesByHostname.put(device_name, this_device);
-						logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
-						final LocalDeviceRepresentation device_to_add = this_device;
-						//adding needs to be done in an "app" thread because it affects the GUI.
+			}
+			else
+			{
+				invalid_pi = true;
+			}
+
+			logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
+
+			if (this_device == null) { //if not add it
+
+
+				if (device_id == 0) {
+					if (knownDevices.containsKey(device_name)) {
+						device_id = knownDevices.get(device_name);
+					} else {
+						device_id = newID--;
+					}
+				}
+				//force names if useHostname is true
+				if (config.useHostname()) {
+					device_address = device_name;
+				}
+
+				this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config);
+
+				this_device.addDeviceRemovedListener(new LocalDeviceRepresentation.DeviceRemovedListener() {
+					@Override
+					public void deviceRemoved(LocalDeviceRepresentation device) {
 						Platform.runLater(new Runnable() {
 							@Override
 							public void run() {
-								theDevices.add(device_to_add);
+								String device_name = device.deviceName;
+								theDevices.remove(devicesByHostname.get(device_name));
+								devicesByHostname.remove(device_name);
+								logger.info("Removed Device from list: {}", device_name);
 							}
 						});
-						//make sure this device knows its ID
-						//since there is a lag in assigning an InetSocketAddress, and since this is the first
-						//message sent to the device, it should be done in a separate thread.
-						this_device.setSocketAddress(sending_address);
-						final LocalDeviceRepresentation device_id = this_device;
-						new Thread() {
-							public void run() {
-								sendToDevice(device_id, "/device/set_id", device_id.getID());
-								logger.info("Assigning id {} to {}", device_id.getID(), device_id.hostName);
-							}
-						}.start();
 					}
-					//keep up to date
-					if (this_device != null) {
-						// we need to update Host address
-						// we will check that the InetAddress that we have stored is the same - IP address may have changed
+				});
 
-						this_device.setSocketAddress(sending_address);
-
-
-						this_device.setIsConnected(true);
-						this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
-
-                        // Status is updated in GUI via listener
-						if (msg.getArgCount() > 4) {
-							String status = (String) msg.getArg(4);
-							this_device.setStatus(status);
-							//				System.out.println("Got status update from " + thisDevice.hostname + ": " + status);
-						}
+				devicesByHostname.put(device_name, this_device);
+				logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
+				final LocalDeviceRepresentation device_to_add = this_device;
+				//adding needs to be done in an "app" thread because it affects the GUI.
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						theDevices.add(device_to_add);
 					}
-				} catch (Exception e) {
-					logger.error("Error reading incoming OSC message", e);
-					return;
-				}
+				});
+				//make sure this device knows its ID
+				//since there is a lag in assigning an InetSocketAddress, and since this is the first
+				//message sent to the device, it should be done in a separate thread.
+				this_device.setSocketAddress(sending_address);
+				final LocalDeviceRepresentation local_device = this_device;
+
+
+				// Send Id to Device and Request status
+				new Thread() {
+					public void run() {
+						sendToDevice(local_device, OSCVocabulary.Device.SET_ID, local_device.getID());
+						logger.info("Assigning id {} to {}", local_device.getID(), local_device.hostName);
+
+						// now ask for status
+						//local_device.send(OSCVocabulary.Device.STATUS);
+						local_device.send(OSCVocabulary.Device.VERSION);
+					}
+				}.start();
 			}
+
+			//keep up to date
+			if (this_device != null) {
+				// we need to update Host address
+				// we will check that the InetAddress that we have stored is the same - IP address may have changed
+
+				this_device.setSocketAddress(sending_address);
+
+				// Make sure we don't have a zero device_id from device
+				if (device_id != 0) {
+					this_device.setID(device_id);
+				}
+				else if (invalid_pi){
+					this_device.setStatus("Invalid Verion on Device PI");
+				}
+				this_device.setIsConnected(true);
+				this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
+
+
+			}
+		} catch (Exception e) {
+			logger.error("Error reading incoming OSC message", e);
+			return;
 		}
+
+	}
+
+
+	/**
+	 * The incoming OSC Message
+	 * Must be synchronised to prevent multiple copies going in case we get a message in response to this and we are not ready for it yet
+	 * @param msg OSC Message
+	 * @param sender the Socket Address of where the message originated
+	 */
+	private synchronized void incomingMessage(OSCMessage msg, SocketAddress sender) {
+
+		if(msg.getName().equals(OSCVocabulary.Device.ALIVE)) {
+			processAliveMessage(msg, sender);
+		}
+		else if (msg.getName().equals(OSCVocabulary.Device.STATUS))
+		{
+			processStatusMessage(msg, sender);
+		}
+
+		else if (msg.getName().equals(OSCVocabulary.Device.VERSION))
+		{
+			processVersionMessage(msg, sender);
+		}
+
 //		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
+	}
+
+	/**
+	 *
+	 * @param msg
+	 * @param sender
+	 */
+	private void processVersionMessage(OSCMessage msg, SocketAddress sender) {
+		final int DEVICE_NAME = 0;
+		final int DEVICE_MAJOR = 1;
+		final int DEVICE_MINOR = 2;
+		final int DEVICE_BUILD = 3;
+		final int DEVICE_DATE = 4;
+
+		try {
+			String device_name = (String) msg.getArg(DEVICE_NAME);
+			LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
+
+			if (this_device != null) {
+				int major, minor, build, date;
+
+				major =(int)msg.getArg(DEVICE_MAJOR);
+				minor =  (int)msg.getArg(DEVICE_MINOR);
+				build = (int)msg.getArg(DEVICE_BUILD);
+				date = (int)msg.getArg(DEVICE_DATE);
+
+				this_device.setVersion (major, minor, build, date);
+			}
+
+		}
+		catch (Exception ex){}
 	}
 
 	public void sendToDevice(LocalDeviceRepresentation device, String msg_name, Object... args) {
@@ -315,48 +443,48 @@ public class DeviceConnection {
 	//standard messages to Device
 
 	public void deviceReboot() {
-		sendToAllDevices("/device/reboot");
+		sendToAllDevices(OSCVocabulary.Device.REBOOT);
 	}
 
 	public void deviceShutdown() {
-		sendToAllDevices("/device/shutdown");
+		sendToAllDevices(OSCVocabulary.Device.SHUTDOWN);
 	}
 
 	public void deviceSync() {
 		long time_now = System.currentTimeMillis();
 		long time_to_sync = time_now + 5000;
 		String time_as_string = "" + time_to_sync;
-		sendToAllDevices("/device/sync", time_as_string);
+		sendToAllDevices(OSCVocabulary.Device.SYNC, time_as_string);
 	}
 
 	public void deviceGain(float dest, float time_ms) {
-		sendToAllDevices("/device/gain", dest, time_ms);
+		sendToAllDevices(OSCVocabulary.Device.GAIN, dest, time_ms);
 	}
 
 	public void deviceReset() {
-		sendToAllDevices("/device/reset");
+		sendToAllDevices(OSCVocabulary.Device.RESET);
 	}
 
 	public void deviceResetSounding() {
-		sendToAllDevices("/device/reset_sounding");
+		sendToAllDevices( OSCVocabulary.Device.RESET_SOUNDING);
 	}
 
 	public void deviceClearSound() {
-		sendToAllDevices("/device/clearsound");
+		sendToAllDevices(OSCVocabulary.Device.CLEAR_SOUND);
 	}
 
 	public void deviceFadeoutReset(float decay) {
-		sendToAllDevices("/device/fadeout_reset", decay);
+		sendToAllDevices( OSCVocabulary.Device.FADEOUT_RESET, decay);
 	}
 
 	public void deviceFadeoutClearsound(float decay) {
-		sendToAllDevices("/device/fadeout_clearsound", decay);
+		sendToAllDevices(OSCVocabulary.Device.FADEOUT_CLEAR_SOUND, decay);
 	}
 
 	public void deviceEnableLogging(boolean enable) {
 		loggingEnabled = enable;
 		// Send as int because OSCPacketCodec.encodeMessage falls over if we try to send a boolean for some reason.
-		sendToAllDevices("/device/get_logs", enable ? 1 : 0);
+		sendToAllDevices(OSCVocabulary.Device.GET_LOGS, enable ? 1 : 0);
 	}
 	public boolean isDeviceLoggingEnabled() {
 		return loggingEnabled;

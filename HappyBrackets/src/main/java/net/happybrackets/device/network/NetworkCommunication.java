@@ -17,11 +17,9 @@
 package net.happybrackets.device.network;
 
 import de.sciss.net.OSCTransmitter;
-import net.happybrackets.core.BroadcastManager;
-import net.happybrackets.core.Device;
+import net.happybrackets.core.*;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.core.Synchronizer;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
@@ -91,41 +89,59 @@ public class NetworkCommunication {
 //				System.out.println("Mesage received: " + msg.getName());
                 logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
 
-				if(msg.getName().equals("/device/set_id")) {
+				if(msg.getName().equals(OSCVocabulary.Device.SET_ID)) {
 					myID = (Integer)msg.getArg(0);
 					logger.info("I have been given an ID by the controller: {}", myID);
 					hb.setStatus("ID " + myID);
-				} else if(msg.getName().equals("/device/get_logs")) {
+				} else if(msg.getName().equals(OSCVocabulary.Device.GET_LOGS)) {
 					boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
 					logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");
 					sendLogs(sendLogs);
 				} else {
 					//master commands...
-					if(msg.getName().equals("/device/sync")) {
+					if(msg.getName().equals(OSCVocabulary.Device.SYNC)) {
 						long timeToAct = 1000;
 						if(msg.getArgCount() > 0) {
 							timeToAct = (Integer)msg.getArg(0);
 						}
 						hb.syncAudioStart(timeToAct);
-					} else if(msg.getName().equals("/device/reboot")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.REBOOT)) {
 						HB.rebootDevice();
-					} else if(msg.getName().equals("/device/shutdown")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.SHUTDOWN)) {
 						HB.shutdownDevice();
-					} else if(msg.getName().equals("/device/gain")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.GAIN)) {
 						hb.masterGainEnv.addSegment((Float)msg.getArg(0), (Float)msg.getArg(1));
-					} else if(msg.getName().equals("/device/reset")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.RESET)) {
 						hb.reset();
-					} else if(msg.getName().equals("/device/reset_sounding")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.RESET_SOUNDING)) {
 						hb.resetLeaveSounding();
-					} else if(msg.getName().equals("/device/clearsound")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.CLEAR_SOUND)) {
 						hb.clearSound();
-					} else if(msg.getName().equals("/device/fadeout_reset")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.FADEOUT_RESET)) {
 						hb.fadeOutReset((Float)msg.getArg(0));
-					} else if(msg.getName().equals("/device/fadeout_clearsound")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
 						hb.fadeOutClearSound((Float)msg.getArg(0));
-					} else if(msg.getName().equals("/device/bleep")) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.BLEEP)) {
 						hb.testBleep();
-					} else if ( msg.getName().equals("/device/config/wifi") && msg.getArgCount() == 2) {
+					} else if(msg.getName().equals(OSCVocabulary.Device.STATUS)) {
+						send(OSCVocabulary.Device.STATUS,
+								new Object[] {
+										Device.getDeviceName(),
+										hb.getStatus()
+								});
+					} else if(msg.getName().equals(OSCVocabulary.Device.VERSION)) {
+						send(OSCVocabulary.Device.VERSION,
+								new Object[] {
+										Device.getDeviceName(),
+										BuildVersion.getMajor(),
+										BuildVersion.getMinor(),
+										BuildVersion.getBuild(),
+										BuildVersion.getDate()
+								});
+
+						System.out.println("Version sent " + BuildVersion.getVersionText());
+
+					} else if ( msg.getName().equals(OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
                         //TODO: add interfaces path to device config
                         boolean status = LocalConfigManagement.updateInterfaces(
                                 "/etc/network/interfaces",
@@ -134,7 +150,7 @@ public class NetworkCommunication {
                         );
                         if (status) logger.info("Updated interfaces file");
                         else logger.error("Unable to update interfaces file");
-					} else if (msg.getName().equals("/device/alive")) {
+					} else if (msg.getName().equals(OSCVocabulary.Device.ALIVE)) {
 						//ignore
 					} else {
 						//all other messages getInstance forwarded to delegate listeners
@@ -160,6 +176,7 @@ public class NetworkCommunication {
 				DeviceConfig.getInstance().getStatusFromDevicePort()
 		);
 		logger.debug( "Controller resolved to address: {}", controller );
+
 		//set up an indefinite thread to ping the controller
         new Thread() {
             public void run() {
@@ -168,13 +185,13 @@ public class NetworkCommunication {
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
                     transmitter.send(
                         new OSCMessage(
-                            "/device/alive",
+                             OSCVocabulary.Device.ALIVE,
                             new Object[] {
 									Device.getDeviceName(),
                                     Device.selectHostname(ni),
                                     Device.selectIP(ni),
                                     Synchronizer.time(),
-                                    hb.getStatus()
+                                    hb.myIndex()
                             }
                         )
                     );
@@ -185,7 +202,7 @@ public class NetworkCommunication {
                 try {
                     Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
                 } catch (InterruptedException e) {
-                    logger.error("/device/alive message send interval interupted!", e);
+                    logger.error(OSCVocabulary.Device.ALIVE + " message send interval interupted!", e);
                 }
             }
 			}

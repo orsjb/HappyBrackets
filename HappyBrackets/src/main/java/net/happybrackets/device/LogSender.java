@@ -18,6 +18,7 @@ package net.happybrackets.device;
 
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.Device;
+import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.Synchronizer;
 import net.happybrackets.device.network.NetworkCommunication;
 import org.slf4j.Logger;
@@ -169,7 +170,7 @@ public class LogSender {
                     sb.append(line).append("\n");
                 }
 
-                networkCommunication.send("/device/log",
+                networkCommunication.send(OSCVocabulary.Device.LOG,
                         new Object[] {
                                 networkCommunication.getID(),
                                 sb.toString()
