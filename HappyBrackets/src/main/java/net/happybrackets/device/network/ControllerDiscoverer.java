@@ -33,7 +33,8 @@ public interface ControllerDiscoverer {
 				if (msg.getName().equals("/hb/controller") && msg.getArgCount() > 0) {
                     String advertisedAddress = (String) msg.getArg(1);
                     String advertisedHostname = (String) msg.getArg(0);
-                    if (!( controller.getAddress().equals(advertisedAddress) && controller.getHostname().equals(advertisedHostname) )) {
+
+					if ( !controller.getAddress().equals(advertisedAddress) || !controller.getHostname().equals(advertisedHostname) ) {
                         controller.setAddress(advertisedAddress);
                         controller.setHostname(advertisedHostname);
                         logger.debug("Updated controller to {} at {}", controller.getHostname(), controller.getAddress());
