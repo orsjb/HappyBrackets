@@ -229,6 +229,16 @@ public class NetworkCommunication {
 	}
 
 	/**
+	 * Send an OSC message to an Address other than the one we have configured as our controller
+	 * @param msg
+	 * @param args
+	 * @param requester
+	 */
+	public void send (String msg, Object[] args, SocketAddress requester)
+	{
+
+	}
+	/**
 	 * Add a @{@link OSCListener} that will respond to incoming OSC messages from the controller. Note that this will not listen to broadcast messages from other devices, for which you should use TODO!.
 	 * @param l the listener.
      */

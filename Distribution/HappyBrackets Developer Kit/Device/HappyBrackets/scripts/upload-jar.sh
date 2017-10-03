@@ -20,9 +20,10 @@ fi
 if [ "$DEVICE_NAME" != "" ]; then
 # run scp 
 
-    echo “Running Upload to ${DEVICE_NAME}”
 
-    scp HB.jar pi@$DEVICE_NAME:~/HappyBrackets
+    HOST_ADDRESS="pi@${DEVICE_NAME}"
+    echo “Running Upload to ${HOST_ADDRESS}”
+    scp HB.jar $HOST_ADDRESS:~/HappyBrackets
 
 else
     echo "You need to enter the device name as argument to call. eg ${0} hb-001d43801b7a.local"
