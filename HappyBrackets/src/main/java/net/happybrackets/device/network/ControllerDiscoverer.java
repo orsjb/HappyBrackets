@@ -23,6 +23,8 @@ import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import org.slf4j.Logger;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 public interface ControllerDiscoverer {
@@ -31,7 +33,10 @@ public interface ControllerDiscoverer {
 		broadcastManager.addBroadcastListener(new OSCListener(){
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
 				if (msg.getName().equals("/hb/controller") && msg.getArgCount() > 0) {
-                    String advertisedAddress = (String) msg.getArg(1);
+
+					InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
+
+                    String advertisedAddress =  sending_address.getHostAddress();//  (String) msg.getArg(1);
                     String advertisedHostname = (String) msg.getArg(0);
 
 					if ( !controller.getAddress().equals(advertisedAddress) || !controller.getHostname().equals(advertisedHostname) ) {

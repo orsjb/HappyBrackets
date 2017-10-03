@@ -27,6 +27,7 @@ import net.happybrackets.device.HB;
 import net.happybrackets.device.config.LocalConfigManagement;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketAddress;
@@ -87,6 +88,9 @@ public class NetworkCommunication {
 //					return;
 //				}
 //				System.out.println("Mesage received: " + msg.getName());
+
+				InetAddress sending_address = ((InetSocketAddress) src).getAddress();
+
                 logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
 
 				if(msg.getName().equals(OSCVocabulary.Device.SET_ID)) {
@@ -128,7 +132,8 @@ public class NetworkCommunication {
 								new Object[] {
 										Device.getDeviceName(),
 										hb.getStatus()
-								});
+								},
+								sending_address);
 					} else if(msg.getName().equals(OSCVocabulary.Device.VERSION)) {
 						send(OSCVocabulary.Device.VERSION,
 								new Object[] {
@@ -137,7 +142,8 @@ public class NetworkCommunication {
 										BuildVersion.getMinor(),
 										BuildVersion.getBuild(),
 										BuildVersion.getDate()
-								});
+								},
+								sending_address);
 
 						System.out.println("Version sent " + BuildVersion.getVersionText());
 
@@ -230,14 +236,25 @@ public class NetworkCommunication {
 
 	/**
 	 * Send an OSC message to an Address other than the one we have configured as our controller
-	 * @param msg
-	 * @param args
-	 * @param requester
+	 * @param msg the message name
+	 * @param args the message arguments
+	 * @param requester the Address of the device making request
 	 */
-	public void send (String msg, Object[] args, SocketAddress requester)
+	public void send (String msg, Object[] args, InetAddress requester)
 	{
-
+		try {
+			oscServer.send(
+					new OSCMessage(msg, args),
+					new InetSocketAddress(
+							requester.getHostAddress(),
+							DeviceConfig.getInstance().getStatusFromDevicePort()
+					)
+			);
+		} catch (IOException e) {
+			logger.error("Error sending OSC message to Server!", e);
+		}
 	}
+
 	/**
 	 * Add a @{@link OSCListener} that will respond to incoming OSC messages from the controller. Note that this will not listen to broadcast messages from other devices, for which you should use TODO!.
 	 * @param l the listener.
