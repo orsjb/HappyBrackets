@@ -139,7 +139,7 @@ public class Synchronizer {
         broadcast.addOnMessage(new BroadcastManager.OnListener(){
             @Override
             public void cb(NetworkInterface ni, OSCMessage msg, SocketAddress sender, long time) {
-				if (!msg.getName().equals(oscPath)) {
+				if (!OSCVocabulary.match(msg, oscPath)) {
                     return;
                 }
                 else if(msg.getArgCount() != 5) {

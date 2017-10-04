@@ -16,8 +16,7 @@
 
 package net.happybrackets.controller.network;
 
-import de.sciss.net.OSCMessage;
-import de.sciss.net.OSCTransmitter;
+import de.sciss.net.*;
 import net.happybrackets.core.BroadcastManager;
 
 import net.happybrackets.core.Device;
@@ -25,23 +24,60 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.NetworkInterface;
+import java.net.*;
+import java.nio.ByteBuffer;
 
 public class ControllerAdvertiser {
 
 	final static Logger logger = LoggerFactory.getLogger(ControllerAdvertiser.class);
 
 	private Thread advertisementService;
+
 	private boolean keepAlive = true;
 
+	DatagramSocket broadcastSocket = null;
+	ByteBuffer byteBuf;
+
+	//set up an indefinite thread to advertise the controller
+	DatagramSocket finalBroadcastSocket = broadcastSocket;
 	public ControllerAdvertiser(BroadcastManager broadcast_manager) {
+
+
+		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
+
+		try {
+			broadcastSocket = new DatagramSocket(broadcast_manager.getPort());
+			broadcastSocket.setBroadcast(true);
+			broadcastSocket.setReuseAddress(true);
+			broadcastSocket.connect(InetAddress.getByName("255.255.255.255"), broadcast_manager.getPort());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
 		//set up an indefinite thread to advertise the controller
 		advertisementService = new Thread() {
 			public void run() {
             BroadcastManager.OnTransmitter advertisement = new BroadcastManager.OnTransmitter() {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
-                    transmitter.send(
+
+					OSCPacket p = new OSCMessage(
+							"/hb/controller",
+							new Object[] {
+									Device.selectHostname(ni),
+									Device.selectIP(ni)
+							}
+					);
+
+					OSCPacketCodec codec = transmitter.getCodec();
+
+					byteBuf.clear();
+					codec.encode( p, byteBuf );
+					byteBuf.flip();
+
+                	transmitter.send(
                             new OSCMessage(
                                     "/hb/controller",
                                     new Object[] {
@@ -50,8 +86,18 @@ public class ControllerAdvertiser {
                                     }
                             )
                     );
+
+
+                    //String message = "My Test Message";
+                    //byte[] buf = message.getBytes();
+					//byte [] buf = new byte[byteBuf.limit()];
+					//byteBuf.get(buf);
+
+					//DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
+					//broadcastSocket.send(packet);
                 }
             };
+
 
             while (keepAlive) {
 				broadcast_manager.forAllTransmitters(advertisement);

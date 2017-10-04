@@ -817,6 +817,9 @@ public class IntelliJPluginGUIManager {
 		String start_text = "Start device logging";
 		Tooltip start_tooltip = new Tooltip("Tell all devices to start sending their log files.");
 		String stop_text = "Stop device logging";
+
+		String disable_osc_text = "Disable Advertise";
+		String enable_osc_text = "Enable Advertise";
 		Tooltip stop_tooltip = new Tooltip("Tell all devices to stop sending their log files.");
 		Button enable_button = new Button(deviceConnection.isDeviceLoggingEnabled() ? stop_text : start_text);
 		enable_button.setTooltip(deviceConnection.isDeviceLoggingEnabled() ? stop_tooltip : start_tooltip);
@@ -838,6 +841,16 @@ public class IntelliJPluginGUIManager {
 			}
 		});
 
+		Button disable_osc_button = new Button(deviceConnection.getDisabledAdvertise() ?  enable_osc_text :disable_osc_text);
+
+		disable_osc_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				deviceConnection.setDisableAdvertise((!deviceConnection.getDisabledAdvertise()));
+				disable_osc_button.setText(deviceConnection.getDisabledAdvertise() ?  enable_osc_text :disable_osc_text);
+			}
+		});
+
 		logOutputTextArea = new TextArea();
 
 		logOutputTextArea.setMinHeight(minTextAreaHeight);
@@ -852,7 +865,7 @@ public class IntelliJPluginGUIManager {
 		});
 
 		VBox pane = new VBox(defaultElementSpacing);
-		pane.getChildren().addAll(enable_button, logOutputTextArea);
+		pane.getChildren().addAll(enable_button, disable_osc_button, logOutputTextArea);
 		return pane;
 	}
 

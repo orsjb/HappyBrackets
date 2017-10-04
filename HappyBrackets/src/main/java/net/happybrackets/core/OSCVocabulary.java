@@ -1,5 +1,7 @@
 package net.happybrackets.core;
 
+import de.sciss.net.OSCMessage;
+
 /**
  * This module will list the messages sent and received via OSC
  * Using this class will remove possibility of typo mistakes
@@ -30,5 +32,16 @@ public final class OSCVocabulary {
         public static final String VERSION = "/device/version";
     }
 
+    /**
+     * Test whether an OSC message matches the supplied name
+     * Only simple test and does not do wildcards
+     * @param msg OSC Message to test
+     * @param name the name to test for
+     * @return true on a match
+     */
+    static public boolean match(OSCMessage msg, String name)
+    {
+        return msg.getName().equals(name);
+    }
 
 }

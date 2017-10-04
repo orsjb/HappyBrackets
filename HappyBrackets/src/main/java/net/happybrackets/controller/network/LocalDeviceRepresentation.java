@@ -134,7 +134,7 @@ public class LocalDeviceRepresentation {
 		server.addOSCListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
-				if (msg.getName().equals(OSCVocabulary.Device.LOG) && ((Integer) msg.getArg(0)) == id) {
+				if (OSCVocabulary.match(msg, OSCVocabulary.Device.LOG) && ((Integer) msg.getArg(0)) == id) {
 					String new_log_output = (String) msg.getArg(1);
 					log = log + "\n" + new_log_output;
 					logger.debug("Received new log output from device {} ({}): {}", hostname, id, new_log_output);

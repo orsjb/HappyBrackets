@@ -50,8 +50,14 @@ public class DeviceConnection {
 	private ControllerConfig config;
 	private boolean loggingEnabled;
 
+	BroadcastManager broadcastManager;
+
+	// flag to disable sending and receiving OSC
+	private boolean disableAdvertising = false;
+
 	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
 		this.config = config;
+		broadcastManager = broadcast;
 		theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
 		devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
 		knownDevices = new Hashtable<String, Integer>();
@@ -92,7 +98,10 @@ public class DeviceConnection {
 		new Thread() {
 			public void run() {
 				while(true) {
+
 					checkDeviceAliveness();
+
+
 					try {
 						Thread.sleep(config.getAliveInterval());
 					} catch (InterruptedException e) {
@@ -103,6 +112,20 @@ public class DeviceConnection {
 		}.start();
 	}
 
+	/**
+	 * Flag if we are disabling OSC
+	 * @return
+	 */
+	public final boolean getDisabledAdvertise(){
+		return disableAdvertising;
+	}
+
+	public void setDisableAdvertise(boolean disable){
+		disableAdvertising = disable;
+		broadcastManager.setDisableSend(disable);
+		logger.debug("OSC Advertising Disabled: " + disable);
+
+	}
 	/**
 	 * Change the known devices mapping. This will re-assign IDs to all connected devices.
 	 * @param lines Array of strings containing mappings from hostname to ID.
@@ -330,19 +353,15 @@ public class DeviceConnection {
 	 */
 	private synchronized void incomingMessage(OSCMessage msg, SocketAddress sender) {
 
-		if(msg.getName().equals(OSCVocabulary.Device.ALIVE)) {
-			processAliveMessage(msg, sender);
+		if (!disableAdvertising) {
+			if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
+				processAliveMessage(msg, sender);
+			} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
+				processStatusMessage(msg, sender);
+			} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
+				processVersionMessage(msg, sender);
+			}
 		}
-		else if (msg.getName().equals(OSCVocabulary.Device.STATUS))
-		{
-			processStatusMessage(msg, sender);
-		}
-
-		else if (msg.getName().equals(OSCVocabulary.Device.VERSION))
-		{
-			processVersionMessage(msg, sender);
-		}
-
 //		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
 	}
 

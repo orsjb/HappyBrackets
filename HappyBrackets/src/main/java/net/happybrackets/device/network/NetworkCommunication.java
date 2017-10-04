@@ -93,48 +93,48 @@ public class NetworkCommunication {
 
                 logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
 
-				if(msg.getName().equals(OSCVocabulary.Device.SET_ID)) {
+				if(OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ID)) {
 					myID = (Integer)msg.getArg(0);
 					logger.info("I have been given an ID by the controller: {}", myID);
 					hb.setStatus("ID " + myID);
-				} else if(msg.getName().equals(OSCVocabulary.Device.GET_LOGS)) {
+				} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
 					boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
 					logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");
 					sendLogs(sendLogs);
 				} else {
 					//master commands...
-					if(msg.getName().equals(OSCVocabulary.Device.SYNC)) {
+					if(OSCVocabulary.match(msg, OSCVocabulary.Device.SYNC)) {
 						long timeToAct = 1000;
 						if(msg.getArgCount() > 0) {
 							timeToAct = (Integer)msg.getArg(0);
 						}
 						hb.syncAudioStart(timeToAct);
-					} else if(msg.getName().equals(OSCVocabulary.Device.REBOOT)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.REBOOT)) {
 						HB.rebootDevice();
-					} else if(msg.getName().equals(OSCVocabulary.Device.SHUTDOWN)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.SHUTDOWN)) {
 						HB.shutdownDevice();
-					} else if(msg.getName().equals(OSCVocabulary.Device.GAIN)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
 						hb.masterGainEnv.addSegment((Float)msg.getArg(0), (Float)msg.getArg(1));
-					} else if(msg.getName().equals(OSCVocabulary.Device.RESET)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
 						hb.reset();
-					} else if(msg.getName().equals(OSCVocabulary.Device.RESET_SOUNDING)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.RESET_SOUNDING)) {
 						hb.resetLeaveSounding();
-					} else if(msg.getName().equals(OSCVocabulary.Device.CLEAR_SOUND)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.CLEAR_SOUND)) {
 						hb.clearSound();
-					} else if(msg.getName().equals(OSCVocabulary.Device.FADEOUT_RESET)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_RESET)) {
 						hb.fadeOutReset((Float)msg.getArg(0));
-					} else if(msg.getName().equals(OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
 						hb.fadeOutClearSound((Float)msg.getArg(0));
-					} else if(msg.getName().equals(OSCVocabulary.Device.BLEEP)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.BLEEP)) {
 						hb.testBleep();
-					} else if(msg.getName().equals(OSCVocabulary.Device.STATUS)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
 						send(OSCVocabulary.Device.STATUS,
 								new Object[] {
 										Device.getDeviceName(),
 										hb.getStatus()
 								},
 								sending_address);
-					} else if(msg.getName().equals(OSCVocabulary.Device.VERSION)) {
+					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
 						send(OSCVocabulary.Device.VERSION,
 								new Object[] {
 										Device.getDeviceName(),
@@ -147,7 +147,7 @@ public class NetworkCommunication {
 
 						System.out.println("Version sent " + BuildVersion.getVersionText());
 
-					} else if ( msg.getName().equals(OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
+					} else if ( OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
                         //TODO: add interfaces path to device config
                         boolean status = LocalConfigManagement.updateInterfaces(
                                 "/etc/network/interfaces",
@@ -156,7 +156,7 @@ public class NetworkCommunication {
                         );
                         if (status) logger.info("Updated interfaces file");
                         else logger.error("Unable to update interfaces file");
-					} else if (msg.getName().equals(OSCVocabulary.Device.ALIVE)) {
+					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
 						//ignore
 					} else {
 						//all other messages getInstance forwarded to delegate listeners
