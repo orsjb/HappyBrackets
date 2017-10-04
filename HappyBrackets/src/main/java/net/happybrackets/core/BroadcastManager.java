@@ -282,17 +282,31 @@ public class BroadcastManager {
      * @param onTransmitter
      */
     public void forAllTransmitters(OnTransmitter onTransmitter) {
-        transmitters.forEach(pair -> {
-            try {
-                onTransmitter.cb(pair.networkInterface, pair.value);
-            } catch (Exception e) {
-                logger.error("Error executing call back on transmitter for interface {}, removing interface", pair.networkInterface.getDisplayName(), e);
+        try {
+            ArrayList<NetworkInterfacePair<OSCTransmitter>> removal_list = new ArrayList<>(); // do not intantiate unless we actually need one
 
+
+            transmitters.forEach(pair -> {
+                try {
+                    onTransmitter.cb(pair.networkInterface, pair.value);
+                } catch (Exception e) {
+                    logger.error("Error executing call back on transmitter for interface {}, removing interface", pair.networkInterface.getDisplayName(), e);
+
+                    removal_list.add(pair);
+
+                }
+            });
+            removal_list.forEach(pair -> {
                 netInterfaces.remove(pair.networkInterface);
                 transmitters.remove(pair);
                 pair.value.dispose();
-            }
-        });
+            });
+
+            removal_list.clear();
+        } catch (Exception ex) {
+            logger.error("Error executing forAllTransmitters " + ex.getMessage());
+        }
+
     }
 
     /**
