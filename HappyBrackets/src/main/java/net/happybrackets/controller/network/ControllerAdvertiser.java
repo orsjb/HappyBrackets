@@ -46,7 +46,7 @@ public class ControllerAdvertiser {
 		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
 
 		try {
-			broadcastSocket = new DatagramSocket(broadcast_manager.getPort());
+			broadcastSocket = new DatagramSocket();
 			broadcastSocket.setBroadcast(true);
 			broadcastSocket.setReuseAddress(true);
 			broadcastSocket.connect(InetAddress.getByName("255.255.255.255"), broadcast_manager.getPort());
@@ -63,7 +63,7 @@ public class ControllerAdvertiser {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
 
-					OSCPacket p = new OSCMessage(
+					OSCPacket msg = new OSCMessage(
 							"/hb/controller",
 							new Object[] {
 									Device.selectHostname(ni),
@@ -74,27 +74,26 @@ public class ControllerAdvertiser {
 					OSCPacketCodec codec = transmitter.getCodec();
 
 					byteBuf.clear();
-					codec.encode( p, byteBuf );
+					codec.encode( msg, byteBuf );
 					byteBuf.flip();
 
                 	transmitter.send(
-                            new OSCMessage(
-                                    "/hb/controller",
-                                    new Object[] {
-                                            Device.selectHostname(ni),
-                                            Device.selectIP(ni)
-                                    }
-                            )
+							msg
                     );
 
 
-                    //String message = "My Test Message";
-                    //byte[] buf = message.getBytes();
-					//byte [] buf = new byte[byteBuf.limit()];
-					//byteBuf.get(buf);
 
-					//DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
-					//broadcastSocket.send(packet);
+					try {
+						byte[] buf = new byte[byteBuf.limit()];
+						byteBuf.get(buf);
+
+						DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
+						broadcastSocket.send(packet);
+					}
+					catch (Exception ex)
+					{
+						System.out.println(ex.getMessage());
+					}
                 }
             };
 

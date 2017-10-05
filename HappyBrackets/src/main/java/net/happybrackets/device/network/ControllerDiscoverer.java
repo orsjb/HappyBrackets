@@ -40,6 +40,7 @@ public interface ControllerDiscoverer {
                     String advertisedAddress =  sending_address.getHostAddress();//  (String) msg.getArg(1);
                     String advertisedHostname = (String) msg.getArg(0);
 
+                    //System.out.println("Received controller message from " + advertisedAddress);
 					if ( !controller.getAddress().equals(advertisedAddress) || !controller.getHostname().equals(advertisedHostname) ) {
                         controller.setAddress(advertisedAddress);
                         controller.setHostname(advertisedHostname);

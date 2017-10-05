@@ -16,21 +16,16 @@
 
 package net.happybrackets.device.network;
 
-import de.sciss.net.OSCTransmitter;
+import de.sciss.net.*;
 import net.happybrackets.core.*;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
-import de.sciss.net.OSCListener;
-import de.sciss.net.OSCMessage;
-import de.sciss.net.OSCServer;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.config.LocalConfigManagement;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.SocketAddress;
+import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,6 +50,9 @@ public class NetworkCommunication {
 
 	private final LogSender logSender;
 
+	// Define variables we will use for broadcast
+	DatagramSocket broadcastSocket = null;
+	ByteBuffer byteBuf;
 
 	/**
 	 * Instantiate a new {@link NetworkCommunication} object.
@@ -63,6 +61,18 @@ public class NetworkCommunication {
      */
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
+
+		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
+
+		try {
+			broadcastSocket = new DatagramSocket();
+			broadcastSocket.setBroadcast(true);
+			broadcastSocket.setReuseAddress(true);
+			broadcastSocket.connect(InetAddress.getByName("255.255.255.255"), _hb.broadcast.getPort());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		//init the OSCServer
 		logger.info("Setting up OSC server");
 		try {
@@ -189,18 +199,38 @@ public class NetworkCommunication {
             BroadcastManager.OnTransmitter keepAlive = new BroadcastManager.OnTransmitter() {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
-                    transmitter.send(
-                        new OSCMessage(
-                             OSCVocabulary.Device.ALIVE,
-                            new Object[] {
+					OSCPacket msg = new OSCMessage(
+							OSCVocabulary.Device.ALIVE,
+							new Object[] {
 									Device.getDeviceName(),
-                                    Device.selectHostname(ni),
-                                    Device.selectIP(ni),
-                                    Synchronizer.time(),
-                                    hb.myIndex()
-                            }
-                        )
+									Device.selectHostname(ni),
+									Device.selectIP(ni),
+									Synchronizer.time(),
+									hb.myIndex()
+							}
+					);
+
+                	transmitter.send(
+                        msg
                     );
+
+					OSCPacketCodec codec = transmitter.getCodec();
+
+					byteBuf.clear();
+					codec.encode( msg, byteBuf );
+					byteBuf.flip();
+
+					try {
+						byte[] buf = new byte[byteBuf.limit()];
+						byteBuf.get(buf);
+
+						DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
+						broadcastSocket.send(packet);
+					}
+					catch (Exception ex)
+					{
+						System.out.println(ex.getMessage());
+					}
                 }
             };
             while(true) {
