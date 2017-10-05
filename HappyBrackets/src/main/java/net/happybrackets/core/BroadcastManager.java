@@ -279,26 +279,36 @@ public class BroadcastManager {
      */
     public void broadcast(String name, Object... args) {
 
-        if (!disableSend) {
-            OSCMessage msg = new OSCMessage(name, args);
+        try {
+            if (!disableSend) {
+                OSCMessage msg = new OSCMessage(name, args);
                 ArrayList<NetworkInterfacePair<OSCTransmitter>> removal_list = new ArrayList<>(); // do not intantiate unless we actually need one
 
                 transmitters.stream().map(pair -> pair.value).forEach(transmitter -> {
-                try {
-                    transmitter.send(msg);
-                } catch (IOException e) {
-                    logger.warn("Removing broadcaster interface due to error:", e);
+                    try {
+                        transmitter.send(msg);
+                    } catch (IOException e) {
+                        logger.warn("Removing broadcaster interface due to error:", e);
 
-                    transmitters.stream().filter(t -> transmitter.equals((OSCTransmitter) t.value)).forEach(match -> {
-                        netInterfaces.remove(match.networkInterface);
-                        transmitters.remove(match);
-                        match.value.dispose();
-                    });
-//              transmitters.remove(transmitter);
-//              netInterfaces.remove(transmitter)
-//              transmitter.dispose();
-                }
-            });
+                        transmitters.stream().filter(t -> transmitter.equals((OSCTransmitter) t.value)).forEach(match -> {
+                            removal_list.add(match);
+                        });
+
+                    }
+                });
+
+                removal_list.forEach(pair -> {
+                    netInterfaces.remove(pair.networkInterface);
+                    transmitters.remove(pair);
+                    pair.value.dispose();
+                });
+
+                removal_list.clear();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.warn("Removing broadcaster interface due to error:", ex );
         }
     }
 
