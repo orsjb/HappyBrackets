@@ -199,40 +199,55 @@ public class NetworkCommunication {
             BroadcastManager.OnTransmitter keepAlive = new BroadcastManager.OnTransmitter() {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
-					OSCPacket msg = new OSCMessage(
-							OSCVocabulary.Device.ALIVE,
-							new Object[] {
-									Device.getDeviceName(),
-									Device.selectHostname(ni),
-									Device.selectIP(ni),
-									Synchronizer.time(),
-									hb.myIndex()
-							}
-					);
+					if (ni.isUp()) {
+						OSCPacket msg = new OSCMessage(
+								OSCVocabulary.Device.ALIVE,
+								new Object[]{
+										Device.getDeviceName(),
+										Device.selectHostname(ni),
+										Device.selectIP(ni),
+										Synchronizer.time(),
+										hb.myIndex()
+								}
+						);
 
-                	transmitter.send(
-                        msg
-                    );
+						transmitter.send(
+								msg
+						);
 
-					OSCPacketCodec codec = transmitter.getCodec();
+						OSCPacketCodec codec = transmitter.getCodec();
 
-					byteBuf.clear();
-					codec.encode( msg, byteBuf );
-					byteBuf.flip();
-
-					try {
+						byteBuf.clear();
+						codec.encode(msg, byteBuf);
+						byteBuf.flip();
 						byte[] buf = new byte[byteBuf.limit()];
 						byteBuf.get(buf);
+						try {
+							DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
+							broadcastSocket.send(packet);
+						} catch (Exception ex) {
+							System.out.println(ex.getMessage());
+						}
 
-						DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
-						broadcastSocket.send(packet);
+						// Now we are going to broadcast on network interface specific
+						if (!ni.isLoopback()) {
+							// Now do broadcast for that NI
+							for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
+								InetAddress broadcast = interface_address.getBroadcast();
+								if (broadcast == null) {
+									continue;
+								}
+								try {
+									DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit(), broadcast, hb.broadcast.getPort());
+									broadcastSocket.send(packet);
+								} catch (Exception ex) {
+								}
+							}
+						}
 					}
-					catch (Exception ex)
-					{
-						System.out.println(ex.getMessage());
-					}
-                }
+				}
             };
+
             while(true) {
                 hb.broadcast.forAllTransmitters(keepAlive);
                 try {

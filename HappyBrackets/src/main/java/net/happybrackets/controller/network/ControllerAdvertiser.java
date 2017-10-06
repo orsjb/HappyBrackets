@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.util.Enumeration;
 
 public class ControllerAdvertiser {
 
@@ -62,39 +63,56 @@ public class ControllerAdvertiser {
             BroadcastManager.OnTransmitter advertisement = new BroadcastManager.OnTransmitter() {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
+					// no point doing it if interface is not up
+                	if (ni.isUp()) {
 
-					OSCPacket msg = new OSCMessage(
-							"/hb/controller",
-							new Object[] {
-									Device.selectHostname(ni),
-									Device.selectIP(ni)
-							}
-					);
+						OSCPacket msg = new OSCMessage(
+								"/hb/controller",
+								new Object[]{
+										Device.selectHostname(ni),
+										Device.selectIP(ni)
+								}
+						);
 
-					OSCPacketCodec codec = transmitter.getCodec();
+						OSCPacketCodec codec = transmitter.getCodec();
 
-					byteBuf.clear();
-					codec.encode( msg, byteBuf );
-					byteBuf.flip();
+						byteBuf.clear();
+						codec.encode(msg, byteBuf);
+						byteBuf.flip();
 
-                	transmitter.send(
-							msg
-                    );
+						transmitter.send(
+								msg
+						);
 
-
-
-					try {
 						byte[] buf = new byte[byteBuf.limit()];
 						byteBuf.get(buf);
 
-						DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
-						broadcastSocket.send(packet);
+						// THis is probably supurfluous here as we are sening over network
+						try {
+							DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
+							broadcastSocket.send(packet);
+						} catch (Exception ex) {
+							System.out.println(ex.getMessage());
+						}
+
+						// Now we are going to broadcast on network interface specific
+						if (!ni.isLoopback()) {
+							// Now do broadcast for that NI
+							for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
+								InetAddress broadcast = interface_address.getBroadcast();
+								if (broadcast == null) {
+									continue;
+								}
+								try {
+									DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit(), broadcast, broadcast_manager.getPort());
+									broadcastSocket.send(packet);
+								} catch (Exception ex) {
+								}
+							}
+						}
 					}
-					catch (Exception ex)
-					{
-						System.out.println(ex.getMessage());
-					}
-                }
+
+				}
             };
 
 
