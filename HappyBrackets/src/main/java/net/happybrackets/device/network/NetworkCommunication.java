@@ -17,6 +17,7 @@
 package net.happybrackets.device.network;
 
 import de.sciss.net.*;
+import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.core.*;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
@@ -26,10 +27,7 @@ import net.happybrackets.device.config.LocalConfigManagement;
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +36,50 @@ import org.slf4j.LoggerFactory;
  * This class takes care of communication between the device and the controller. You would mainly use it to send OSC messages to the controller and listen for incoming OSC messages from the controller. However, these methods are both wrapped in the {@link HB} class.
  */
 public class NetworkCommunication {
+
+	/**
+	 * Class that contains a cached message to send to UDP to reduce garbage
+	 */
+	private class CachedMessage{
+		DatagramPacket cachedPacket;
+		OSCMessage cachedMessage;
+
+		int deviceId;
+
+		public CachedMessage (OSCMessage msg, DatagramPacket packet, int device_id)
+		{
+			cachedPacket = packet;
+			cachedMessage = msg;
+			deviceId = device_id;
+		}
+
+		/**
+		 * Get the cached packet
+		 * @return
+		 */
+		public DatagramPacket getCachedPacket() {
+			return cachedPacket;
+		}
+
+		/**
+		 * The cached OSC Message
+		 * @return the msg
+		 */
+		public OSCMessage getCachedMessage() {
+			return cachedMessage;
+		}
+
+		/**
+		 * Get the last device ID we were made with
+		 * @return
+		 */
+		public int getDeviceId() {
+			return deviceId;
+		}
+	}
+
+
+	private Map<Integer, CachedMessage> cachedNetworkMessage;
 
 	final static Logger logger = LoggerFactory.getLogger(NetworkCommunication.class);
 
@@ -61,6 +103,8 @@ public class NetworkCommunication {
      */
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
+
+		cachedNetworkMessage = new Hashtable<Integer, CachedMessage>();
 
 		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
 
@@ -200,49 +244,76 @@ public class NetworkCommunication {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
 					if (ni.isUp()) {
-						OSCPacket msg = new OSCMessage(
-								OSCVocabulary.Device.ALIVE,
-								new Object[]{
-										Device.getDeviceName(),
-										Device.selectHostname(ni),
-										Device.selectIP(ni),
-										Synchronizer.time(),
-										hb.myIndex()
+						int ni_hash = ni.hashCode();
+
+						CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
+
+						if (cached_message != null) {
+							if (hb.myIndex() != cached_message.getDeviceId())
+							{
+								cachedNetworkMessage.remove(ni_hash);
+								cached_message = null;
+							}
+						}
+						if (cached_message == null) {
+
+							OSCMessage msg = new OSCMessage(
+									OSCVocabulary.Device.ALIVE,
+									new Object[]{
+											Device.getDeviceName(),
+											Device.selectHostname(ni),
+											Device.selectIP(ni),
+											Synchronizer.time(),
+											hb.myIndex()
+									}
+							);
+
+							OSCPacketCodec codec = transmitter.getCodec();
+
+							byteBuf.clear();
+							codec.encode(msg, byteBuf);
+							byteBuf.flip();
+							byte[] buff = new byte[byteBuf.limit()];
+							byteBuf.get(buff);
+
+							// Now we are going to broadcast on network interface specific
+							if (!ni.isLoopback()) {
+								// Now do broadcast for that NI
+								for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
+									InetAddress broadcast = interface_address.getBroadcast();
+									if (broadcast == null) {
+										continue;
+									}
+									try {
+										DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, _hb.broadcast.getPort());
+										cached_message = new CachedMessage(msg, packet, hb.myIndex());
+										cachedNetworkMessage.put(ni_hash, cached_message);
+
+									} catch (Exception ex) {
+									}
 								}
-						);
+							} else // just use normal broadcast
+							{
+								DatagramPacket packet = new DatagramPacket(buff, buff.length);
+								cached_message = new CachedMessage(msg, packet, hb.myIndex());
+								cachedNetworkMessage.put(ni_hash, cached_message);
+							}
+
+						}
+
 
 						transmitter.send(
-								msg
+								cached_message.getCachedMessage()
 						);
 
-						OSCPacketCodec codec = transmitter.getCodec();
+						DatagramPacket packet = cached_message.getCachedPacket();
 
-						byteBuf.clear();
-						codec.encode(msg, byteBuf);
-						byteBuf.flip();
-						byte[] buf = new byte[byteBuf.limit()];
-						byteBuf.get(buf);
+						// Now send a broadcast
 						try {
-							DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit());
+
 							broadcastSocket.send(packet);
 						} catch (Exception ex) {
 							System.out.println(ex.getMessage());
-						}
-
-						// Now we are going to broadcast on network interface specific
-						if (!ni.isLoopback()) {
-							// Now do broadcast for that NI
-							for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
-								InetAddress broadcast = interface_address.getBroadcast();
-								if (broadcast == null) {
-									continue;
-								}
-								try {
-									DatagramPacket packet = new DatagramPacket(buf, byteBuf.limit(), broadcast, hb.broadcast.getPort());
-									broadcastSocket.send(packet);
-								} catch (Exception ex) {
-								}
-							}
 						}
 					}
 				}
