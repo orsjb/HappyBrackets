@@ -112,7 +112,6 @@ public class NetworkCommunication {
 			broadcastSocket = new DatagramSocket();
 			broadcastSocket.setBroadcast(true);
 			broadcastSocket.setReuseAddress(true);
-			broadcastSocket.connect(InetAddress.getByName("255.255.255.255"), _hb.broadcast.getPort());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -294,7 +293,7 @@ public class NetworkCommunication {
 								}
 							} else // just use normal broadcast
 							{
-								DatagramPacket packet = new DatagramPacket(buff, buff.length);
+								DatagramPacket packet = new DatagramPacket(buff, buff.length, InetAddress.getByName("255.255.255.255"), _hb.broadcast.getPort());
 								cached_message = new CachedMessage(msg, packet, hb.myIndex());
 								cachedNetworkMessage.put(ni_hash, cached_message);
 							}
