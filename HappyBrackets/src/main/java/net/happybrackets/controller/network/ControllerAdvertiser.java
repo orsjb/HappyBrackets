@@ -86,7 +86,6 @@ public class ControllerAdvertiser {
 			broadcastSocket = new DatagramSocket();
 			broadcastSocket.setBroadcast(true);
 			broadcastSocket.setReuseAddress(true);
-			broadcastSocket.connect(InetAddress.getByName("255.255.255.255"), broadcast_manager.getPort());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -141,7 +140,7 @@ public class ControllerAdvertiser {
 									}
 								} else // just use normal broadcast
 								{
-									DatagramPacket packet = new DatagramPacket(buff, buff.length);
+									DatagramPacket packet = new DatagramPacket(buff, buff.length, InetAddress.getByName("255.255.255.255"), broadcast_manager.getPort());
 									cached_message = new CachedMessage(msg, packet);
 									cachedNetworkMessage.put(ni_hash, cached_message);
 								}
