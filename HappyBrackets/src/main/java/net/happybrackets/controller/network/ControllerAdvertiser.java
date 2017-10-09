@@ -33,7 +33,7 @@ import java.util.Map;
 public class ControllerAdvertiser {
 
 	/**
-	 * Class that contains a cahced message to send to UDP to reduce garbage
+	 * Class that contains a cached message to send to UDP to reduce garbage
 	 */
 	private class CachedMessage{
 		DatagramPacket cachedPacket;
