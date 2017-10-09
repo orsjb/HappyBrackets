@@ -37,6 +37,7 @@ import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.BroadcastManager;
+import net.happybrackets.core.BuildVersion;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.Synchronizer;
 import net.happybrackets.core.logging.Logging;
@@ -105,6 +106,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         Content content = content_factory.createContent(jfxp, "", false);
         tool_window.getContentManager().addContent(content);
 
+        String version_text = BuildVersion.getVersionText();
+        tool_window.setTitle(" - " + version_text);
 
 
 
