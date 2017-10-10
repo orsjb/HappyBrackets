@@ -314,7 +314,7 @@ public class NetworkCommunication {
 						}
 					} // ni.isUp()
 					else if (cached_message != null) {
-						// ni is not up remove ni as broadcast address may cange
+						// ni is not up remove ni as broadcast address may change
 						cachedNetworkMessage.remove(ni_hash);
 					}
 
