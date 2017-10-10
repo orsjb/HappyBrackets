@@ -99,19 +99,20 @@ public class ControllerAdvertiser {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
 					try {
+						int ni_hash = ni.hashCode();
+
+						CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
+
 						// no point doing it if interface is not up
 						if (ni.isUp()) {
-
-							int ni_hash = ni.hashCode();
-
-							CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
 
 							if (cached_message == null) {
 								OSCMessage msg = new OSCMessage(
 										"/hb/controller",
 										new Object[]{
 												Device.selectHostname(ni),
-												Device.selectIP(ni)
+												Device.selectIP(ni),
+												transmitter.getLocalAddress().getPort()
 										}
 								);
 								OSCPacketCodec codec = transmitter.getCodec();
@@ -158,14 +159,16 @@ public class ControllerAdvertiser {
 
 							// Now send a broadcast
 							try {
-
 								broadcastSocket.send(packet);
 							} catch (Exception ex) {
 								System.out.println(ex.getMessage());
 							}
 
+						} // ni.isUp
+						else if (cached_message != null) {
+							// ni is not up remove ni as broadcast address may change
+							cachedNetworkMessage.remove(ni_hash);
 						}
-
 					}
 					catch (Exception ex){
 
