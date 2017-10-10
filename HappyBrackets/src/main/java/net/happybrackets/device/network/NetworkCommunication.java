@@ -242,11 +242,10 @@ public class NetworkCommunication {
             BroadcastManager.OnTransmitter keepAlive = new BroadcastManager.OnTransmitter() {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
+					int ni_hash = ni.hashCode();
+					CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
+
 					if (ni.isUp()) {
-						int ni_hash = ni.hashCode();
-
-						CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
-
 						if (cached_message != null) {
 							if (hb.myIndex() != cached_message.getDeviceId())
 							{
@@ -309,12 +308,16 @@ public class NetworkCommunication {
 
 						// Now send a broadcast
 						try {
-
 							broadcastSocket.send(packet);
 						} catch (Exception ex) {
 							System.out.println(ex.getMessage());
 						}
+					} // ni.isUp()
+					else if (cached_message != null) {
+						// ni is not up remove ni as broadcast address may cange
+						cachedNetworkMessage.remove(ni_hash);
 					}
+
 				}
             };
 
