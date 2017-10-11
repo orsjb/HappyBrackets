@@ -111,7 +111,6 @@ public class ControllerAdvertiser {
 										"/hb/controller",
 										new Object[]{
 												Device.selectHostname(ni),
-												Device.selectIP(ni),
 												transmitter.getLocalAddress().getPort()
 										}
 								);
