@@ -245,9 +245,8 @@ public class DeviceConnection {
 			if (msg.getArgCount() > DEVICE_ID) {
 				try {
 					device_id =  (int) msg.getArg(DEVICE_ID);
+
 				} catch (Exception ex) {}
-
-
 			}
 			else
 			{
@@ -258,6 +257,10 @@ public class DeviceConnection {
 
 			if (this_device == null) { //if not add it
 
+				//force names if useHostname is true
+				if (config.useHostname()) {
+					device_address = device_name;
+				}
 
 				if (device_id == 0) {
 					if (knownDevices.containsKey(device_name)) {
@@ -265,10 +268,6 @@ public class DeviceConnection {
 					} else {
 						device_id = newID--;
 					}
-				}
-				//force names if useHostname is true
-				if (config.useHostname()) {
-					device_address = device_name;
 				}
 
 				this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config);
@@ -302,20 +301,7 @@ public class DeviceConnection {
 				//since there is a lag in assigning an InetSocketAddress, and since this is the first
 				//message sent to the device, it should be done in a separate thread.
 				this_device.setSocketAddress(sending_address);
-				final LocalDeviceRepresentation local_device = this_device;
-
-
-				// Send Id to Device and Request status
-				new Thread() {
-					public void run() {
-						sendToDevice(local_device, OSCVocabulary.Device.SET_ID, local_device.getID());
-						logger.info("Assigning id {} to {}", local_device.getID(), local_device.hostName);
-
-						// now ask for status
-						//local_device.send(OSCVocabulary.Device.STATUS);
-						local_device.send(OSCVocabulary.Device.VERSION);
-					}
-				}.start();
+				sendIdToDevice(this_device);
 			}
 
 			//keep up to date
@@ -332,6 +318,12 @@ public class DeviceConnection {
 				else if (invalid_pi){
 					this_device.setStatus("Invalid Verion on Device PI");
 				}
+				else // we are not new but device does not have an ID
+				{
+					// Send Id to Device and Request status
+					sendIdToDevice(this_device);
+
+				}
 				this_device.setIsConnected(true);
 				this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
 
@@ -344,6 +336,18 @@ public class DeviceConnection {
 
 	}
 
+	private void sendIdToDevice(final LocalDeviceRepresentation local_device){
+		new Thread() {
+			public void run() {
+				sendToDevice(local_device, OSCVocabulary.Device.SET_ID, local_device.getID());
+				logger.info("Assigning id {} to {}", local_device.getID(), local_device.hostName);
+
+				// now ask for status
+				//local_device.send(OSCVocabulary.Device.STATUS);
+				local_device.send(OSCVocabulary.Device.VERSION);
+			}
+		}.start();
+	}
 
 	/**
 	 * The incoming OSC Message
