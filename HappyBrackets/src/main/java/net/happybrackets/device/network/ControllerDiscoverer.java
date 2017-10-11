@@ -18,6 +18,7 @@ package net.happybrackets.device.network;
 
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.config.DeviceController;
 
 import de.sciss.net.OSCListener;
@@ -30,22 +31,31 @@ import java.net.SocketAddress;
 
 public interface ControllerDiscoverer {
 
-	default void listenForController(DeviceController controller, BroadcastManager broadcastManager, Logger logger) {
-		broadcastManager.addBroadcastListener(new OSCListener(){
+	default void listenForController(DeviceConfig device_config, BroadcastManager broadcast_manager, Logger logger) {
+
+		broadcast_manager.addBroadcastListener(new OSCListener(){
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-				if (OSCVocabulary.match(msg, "/hb/controller") && msg.getArgCount() > 0) {
+				final int CONTROLLER_HOSTNAME = 0;
+				final int CONTROLLER_PORT = 1;
+
+				if (OSCVocabulary.match(msg, "/hb/controller") && msg.getArgCount() >= CONTROLLER_PORT) {
 
 					InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
 
-                    String advertisedAddress =  sending_address.getHostAddress();//  (String) msg.getArg(1);
-                    String advertisedHostname = (String) msg.getArg(0);
+                    String advertised_hostname = (String) msg.getArg(CONTROLLER_HOSTNAME);
+					String address =  sending_address.getHostAddress();//  (String) msg.getArg(1);
+					int port = (int) msg.getArg(CONTROLLER_PORT);
 
+					device_config.deviceControllerFound(advertised_hostname, address, port);
+
+					/*
                     //System.out.println("Received controller message from " + advertisedAddress);
 					if ( !controller.getAddress().equals(advertisedAddress) || !controller.getHostname().equals(advertisedHostname) ) {
                         controller.setAddress(advertisedAddress);
                         controller.setHostname(advertisedHostname);
                         logger.debug("Updated controller to {} at {}", controller.getHostname(), controller.getAddress());
                     }
+                    */
 				}
 			}
 		});

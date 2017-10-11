@@ -16,36 +16,61 @@
 
 package net.happybrackets.device.config;
 
+import java.net.InetSocketAddress;
+
 /**
- * A small class to keep our host controller's hostname and address together
+ * A small class to keep our host controller's hostname, address and port together
  */
 public class DeviceController {
     private String hostname;
-    private String address;
-    private int    deviceId;
 
-    public int getDeviceId() {
-        return deviceId;
+    private InetSocketAddress socketAddress;
+    int hash;
+
+    private long lastTimeSeen;
+
+    /**
+     * Set the last time controller seen as now
+     */
+    public void controllerSeen(){
+        lastTimeSeen = System.currentTimeMillis();
     }
 
-    public void setDeviceId(int deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public DeviceController(String hostname, String address, int deviceId) {
+    /**
+     * Create a controller based on ip address and port it wants to receive messages on
+     * @param hostname hostname provided by controller
+     * @param address ip address that we send messages to this controller
+     * @param port the port we send messages on
+     */
+    public DeviceController(String hostname, String address, int port) {
         this.hostname = hostname;
-        this.address = address;
-        this.deviceId = deviceId;
+
+        socketAddress = new InetSocketAddress(address, port);
+        String hash_build = address + port;
+        hash = hash_build.hashCode();
     }
 
-    public String getAddress() {
-        return address;
+    /**
+     * Has code based on i[ address and port
+     * @return the hashCode
+     */
+    public int hashCode() {
+        return hash;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    /**
+     * The socket address we use to send messages t this controller
+     * @return
+     */
+    public InetSocketAddress getAddress() {
+        return socketAddress;
     }
 
+
+    /**
+     * The hostname of the controller
+     * @return hostname
+     */
     public String getHostname() {
         return hostname;
     }

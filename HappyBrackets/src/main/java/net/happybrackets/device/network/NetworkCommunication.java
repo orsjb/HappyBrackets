@@ -16,6 +16,7 @@
 
 package net.happybrackets.device.network;
 
+//import com.intellij.ide.ui.EditorOptionsTopHitProvider;
 import de.sciss.net.*;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.core.*;
@@ -85,7 +86,7 @@ public class NetworkCommunication {
 
 	private int myID;							//ID assigned by the controller
 	private OSCServer oscServer;				//The OSC server
-	private InetSocketAddress controller, broadcastAddress;		//The network details of the controller
+	private InetSocketAddress broadcastAddress;		//The network details of the controller
 	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
 																//Listeners to incoming OSC messages
 	final private HB hb;
@@ -227,6 +228,7 @@ public class NetworkCommunication {
 				}
 			}
 		});
+		/*
 		//set up the controller address
 		String hostname = DeviceConfig.getInstance().getControllerHostname();
 		logger.info( "Setting up controller: {}", hostname );
@@ -235,6 +237,7 @@ public class NetworkCommunication {
 				DeviceConfig.getInstance().getStatusFromDevicePort()
 		);
 		logger.debug( "Controller resolved to address: {}", controller );
+		*/
 
 		//set up an indefinite thread to ping the controller
         new Thread() {
@@ -323,6 +326,8 @@ public class NetworkCommunication {
 
             while(true) {
                 hb.broadcast.forAllTransmitters(keepAlive);
+                // we should send to all registered controllers
+
                 try {
                     Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
                 } catch (InterruptedException e) {
@@ -340,15 +345,28 @@ public class NetworkCommunication {
      */
 	public void send(String msg, Object[] args) {
 		try {
-			oscServer.send(
-			new OSCMessage(msg, args),
-			new InetSocketAddress(
-						DeviceConfig.getInstance().getControllerAddress(),
-						DeviceConfig.getInstance().getStatusFromDevicePort()
-				)
+			DeviceConfig config = DeviceConfig.getInstance();
+
+			config.getDeviceControllers().forEach((hash, controller) ->
+					{
+						InetSocketAddress address = controller.getAddress();
+
+						try {
+							oscServer.send(
+                                    new OSCMessage(msg, args),
+    						address
+
+                            );
+						} catch (IOException e) {
+							logger.error("Error sending OSC message to Server!", e);
+						}
+					}
 			);
-		} catch (IOException e) {
-			logger.error("Error sending OSC message to Server!", e);
+
+
+
+		} catch (Exception ex) {
+			logger.error("Error sending OSC message to Server!", ex);
 		}
 	}
 

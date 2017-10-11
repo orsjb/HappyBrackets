@@ -16,37 +16,58 @@
 
 package net.happybrackets.device.config;
 
-import net.happybrackets.core.Synchronizer;
 import net.happybrackets.core.config.LoadableConfig;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.device.network.ControllerDiscoverer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.UnknownHostException;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
 
     final static Logger logger = LoggerFactory.getLogger(DeviceConfig.class);
 
+	/**
+	 * We will store controllers as a map rather than as a single controller
+	 */
+	private Map<Integer, DeviceController> deviceControllers = new Hashtable<Integer, DeviceController>();
+
+
+	/**
+	 * We need to create a default controller to pass tests
+	 */
+	DeviceController lastController = new DeviceController("", "", 0);
+
 	private int polyLimit = 4;
 	private String logFilePath = "stdout";
-	private DeviceController controller = new DeviceController("", "", 0);
+
 
 	public String getControllerHostname() {
-		return controller.getHostname();
+		return lastController.getHostname();
 	}
+
 
 	public String getControllerAddress() {
-	  return controller.getAddress();
+	  return lastController.getAddress().getAddress().getHostAddress();
 	}
 
+
+	/**
+	 * Get the list of controllers registered
+	 * @return
+	 */
+	public Map<Integer, DeviceController> getDeviceControllers(){
+		return deviceControllers;
+	}
+
+	/**
+	 * Register to listen for controllers
+	 * @param broadcastManager
+	 */
 	public void listenForController(BroadcastManager broadcastManager) {
-		ControllerDiscoverer.super.listenForController(controller, broadcastManager, logger);
-	}
-
-	public int getMyId() {
-		return controller.getDeviceId();
+		ControllerDiscoverer.super.listenForController(this, broadcastManager, logger);
 	}
 
 	public int getPolyLimit() {
@@ -63,5 +84,20 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		return LoadableConfig.load( configFile, new DeviceConfig() );
 	}
 
+	public void deviceControllerFound (String hostname, String address, int port)
+	{
+		String hash_build = address + port;
+		int hash = hash_build.hashCode();
+
+		DeviceController controller = deviceControllers.get(hash);
+		if (controller == null)
+		{
+			controller = new DeviceController(hostname, address, port);
+			deviceControllers.put(controller.hashCode(), controller);
+		}
+
+		controller.controllerSeen();
+		lastController = controller;
+	}
 
 }
