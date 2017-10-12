@@ -21,7 +21,7 @@ import net.happybrackets.core.BuildVersion;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.AudioSetup;
 
-//import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,16 +57,16 @@ public class DeviceMain {
 		// do this calulation to account for an odd amount of padding
 		int trailing_spaces = spaces_required - leading_spaces;
 
-		/*
+
 		String ret = StringUtils.repeat(BORDER_CHAR, BORDER_WIDTH) +
 				StringUtils.repeat(padding_char, leading_spaces) + print_text + StringUtils.repeat(padding_char, trailing_spaces)
 				+ StringUtils.repeat(BORDER_CHAR, BORDER_WIDTH);
 
-		*/
+		/*
 		String ret = repeatText(BORDER_CHAR, BORDER_WIDTH) +
 				repeatText(padding_char, leading_spaces) + print_text + repeatText(padding_char, trailing_spaces)
 				+ repeatText(BORDER_CHAR, BORDER_WIDTH);
-
+*/
 
 		return ret;
 
