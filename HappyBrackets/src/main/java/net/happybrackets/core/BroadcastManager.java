@@ -356,6 +356,32 @@ public class BroadcastManager {
     }
 
     /**
+     * Get the broadcast address for a particular network interface
+     * @param ni Network Intervace
+     * @return brodcast address if it exists
+     */
+    public static InetAddress getBroadcast(NetworkInterface ni)
+    {
+        InetAddress broadcast = null;
+
+        try {
+            if (ni.isLoopback()) {
+                broadcast = InetAddress.getByName("255.255.255.255");
+            } else {
+                for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
+                    broadcast = interface_address.getBroadcast();
+                    if (broadcast != null) {
+                        break;
+                    }
+                }
+            }
+        }catch (Exception ex)
+        {
+
+        }
+        return broadcast;
+    }
+    /**
      * Add a new interface aware listener
      */
     public void addOnMessage(OnListener onListener) {

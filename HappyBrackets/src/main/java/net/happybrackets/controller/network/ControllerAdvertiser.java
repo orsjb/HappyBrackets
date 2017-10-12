@@ -30,6 +30,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
+import static net.happybrackets.core.BroadcastManager.getBroadcast;
+
 public class ControllerAdvertiser {
 
 	/**
@@ -38,11 +40,13 @@ public class ControllerAdvertiser {
 	private class CachedMessage{
 		DatagramPacket cachedPacket;
 		OSCMessage cachedMessage;
+		InetAddress broadcastAddress;
 
-		public CachedMessage (OSCMessage msg, DatagramPacket packet)
+		public CachedMessage (OSCMessage msg, DatagramPacket packet, InetAddress broadcast_address)
 		{
 			cachedPacket = packet;
 			cachedMessage = msg;
+			broadcastAddress = broadcast_address;
 		}
 
 		/**
@@ -106,6 +110,18 @@ public class ControllerAdvertiser {
 						// no point doing it if interface is not up
 						if (ni.isUp()) {
 
+							InetAddress broadcast = getBroadcast(ni);
+
+							try {
+
+								if (cached_message != null) {
+									if (!broadcast.equals(cached_message.broadcastAddress)) {
+										cachedNetworkMessage.remove(ni_hash);
+										cached_message = null;
+									}
+								}
+							}catch(Exception ex){}
+
 							if (cached_message == null) {
 								OSCMessage msg = new OSCMessage(
 										"/hb/controller",
@@ -123,26 +139,14 @@ public class ControllerAdvertiser {
 								byteBuf.get(buff);
 
 								// Now we are going to broadcast on network interface specific
-								if (!ni.isLoopback()) {
-									// Now do broadcast for that NI
-									for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
-										InetAddress broadcast = interface_address.getBroadcast();
-										if (broadcast == null) {
-											continue;
-										}
-										try {
-											DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcast_manager.getPort());
-											cached_message = new CachedMessage(msg, packet);
-											cachedNetworkMessage.put(ni_hash, cached_message);
+								if (broadcast != null) {
+									try {
+										DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcast_manager.getPort());
+										cached_message = new CachedMessage(msg, packet, broadcast);
+										cachedNetworkMessage.put(ni_hash, cached_message);
 
-										} catch (Exception ex) {
-										}
+									} catch (Exception ex) {
 									}
-								} else // just use normal broadcast
-								{
-									DatagramPacket packet = new DatagramPacket(buff, buff.length, InetAddress.getByName("255.255.255.255"), broadcast_manager.getPort());
-									cached_message = new CachedMessage(msg, packet);
-									cachedNetworkMessage.put(ni_hash, cached_message);
 								}
 
 
