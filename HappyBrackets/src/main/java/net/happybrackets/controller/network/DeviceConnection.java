@@ -225,8 +225,7 @@ public class DeviceConnection {
 		final int DEVICE_NAME = 0;
 		final int DEVICE_HOSTNAME = 1;
 		final int DEVICE_ADDRESS = 2;
-		final int DEVICE_SYNCHRONIZER_TIME = 3;
-		final int DEVICE_ID = 4;
+		final int DEVICE_ID = 3;
 		try {
 			boolean invalid_pi = false;
 

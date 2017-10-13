@@ -32,6 +32,10 @@ public final class OSCVocabulary {
         public static final String VERSION = "/device/version";
     }
 
+    public final class CONTROLLER
+    {
+        public static final String CONTROLLER = "/hb/controller";
+    }
     /**
      * Test whether an OSC message matches the supplied name
      * Only simple test and does not do wildcards

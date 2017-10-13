@@ -18,6 +18,7 @@ package net.happybrackets.device.network;
 
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.device.DeviceMain;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.config.DeviceController;
 
@@ -38,15 +39,16 @@ public interface ControllerDiscoverer {
 				final int CONTROLLER_HOSTNAME = 0;
 				final int CONTROLLER_PORT = 1;
 
-				if (OSCVocabulary.match(msg, "/hb/controller") && msg.getArgCount() >= CONTROLLER_PORT) {
+				if (OSCVocabulary.match(msg, OSCVocabulary.CONTROLLER.CONTROLLER) && msg.getArgCount() >= CONTROLLER_PORT) {
 
 					InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
 
                     String advertised_hostname = (String) msg.getArg(CONTROLLER_HOSTNAME);
 					String address =  sending_address.getHostAddress();//  (String) msg.getArg(1);
 					int port = (int) msg.getArg(CONTROLLER_PORT);
+					int device_id = DeviceMain.getHB().myIndex();
 
-					device_config.deviceControllerFound(advertised_hostname, address, port);
+					device_config.deviceControllerFound(advertised_hostname, address, port, device_id);
 
 					/*
                     //System.out.println("Received controller message from " + advertisedAddress);

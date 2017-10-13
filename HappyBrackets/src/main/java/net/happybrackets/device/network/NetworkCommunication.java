@@ -40,50 +40,7 @@ import static net.happybrackets.core.BroadcastManager.getBroadcast;
  */
 public class NetworkCommunication {
 
-	/**
-	 * Class that contains a cached message to send to UDP to reduce garbage
-	 */
-	private class CachedMessage{
-		DatagramPacket cachedPacket;
-		OSCMessage cachedMessage;
-		InetAddress broadcastAddress;
-		int deviceId;
 
-		public CachedMessage (OSCMessage msg, DatagramPacket packet, int device_id, InetAddress broadcast_address)
-		{
-			cachedPacket = packet;
-			cachedMessage = msg;
-			deviceId = device_id;
-			broadcastAddress = broadcast_address;
-		}
-
-		/**
-		 * Get the cached packet
-		 * @return
-		 */
-		public DatagramPacket getCachedPacket() {
-			return cachedPacket;
-		}
-
-		/**
-		 * The cached OSC Message
-		 * @return the msg
-		 */
-		public OSCMessage getCachedMessage() {
-			return cachedMessage;
-		}
-
-		/**
-		 * Get the last device ID we were made with
-		 * @return
-		 */
-		public int getDeviceId() {
-			return deviceId;
-		}
-	}
-
-
-	private Map<Integer, CachedMessage> cachedNetworkMessage;
 
 	final static Logger logger = LoggerFactory.getLogger(NetworkCommunication.class);
 
@@ -96,9 +53,8 @@ public class NetworkCommunication {
 
 	private final LogSender logSender;
 
-	// Define variables we will use for broadcast
-	DatagramSocket broadcastSocket = null;
-	ByteBuffer byteBuf;
+
+
 
 	/**
 	 * Instantiate a new {@link NetworkCommunication} object.
@@ -108,18 +64,7 @@ public class NetworkCommunication {
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
 
-		cachedNetworkMessage = new Hashtable<Integer, CachedMessage>();
 
-		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
-
-		try {
-			broadcastSocket = new DatagramSocket();
-			broadcastSocket.setBroadcast(true);
-			broadcastSocket.setReuseAddress(true);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		//init the OSCServer
 		logger.info("Setting up OSC server");
 		try {
@@ -248,6 +193,7 @@ public class NetworkCommunication {
             BroadcastManager.OnTransmitter keepAlive = new BroadcastManager.OnTransmitter() {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
+                	/*
 					int ni_hash = ni.hashCode();
 					CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
 
@@ -272,7 +218,6 @@ public class NetworkCommunication {
 											Device.getDeviceName(),
 											Device.selectHostname(ni),
 											Device.selectIP(ni),
-											Synchronizer.time(),
 											hb.myIndex()
 									}
 							);
@@ -316,13 +261,14 @@ public class NetworkCommunication {
 						// ni is not up remove ni as broadcast address may change
 						cachedNetworkMessage.remove(ni_hash);
 					}
-
+*/
 				}
             };
 
             while(true) {
-                hb.broadcast.forAllTransmitters(keepAlive);
+                //hb.broadcast.forAllTransmitters(keepAlive);
                 // we should send to all registered controllers
+
 
                 try {
                     Thread.sleep(DeviceConfig.getInstance().getAliveInterval());

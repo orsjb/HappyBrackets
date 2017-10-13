@@ -40,6 +40,7 @@ public class DeviceMain {
 	final static String BORDER_CHAR = "*";
 	final static String BLANK_CHAR = " ";
 
+	static HB HBInstance;
 	/**
 	 * Get a line of text for a banner with the text in the centrem with a border and padded
 	 * @param print_text The text we want displayed
@@ -71,6 +72,11 @@ public class DeviceMain {
 		return ret;
 
 
+	}
+
+	public static final HB getHB()
+	{
+		return HBInstance;
 	}
 
 	static String repeatText(String s, int count)
@@ -131,6 +137,7 @@ public class DeviceMain {
         logger.debug("Loading config file: {}", configFile);
 		DeviceConfig config = DeviceConfig.load(configFile);
 		HB hb = new HB(AudioSetup.getAudioContext(args), mode);
+		HBInstance = hb;
 		//deal with autostart and parse arguments
 		boolean autostart = true;
 		for(String s : args) {

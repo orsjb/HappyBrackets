@@ -22,10 +22,17 @@ import net.happybrackets.device.network.ControllerDiscoverer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.util.Hashtable;
 import java.util.Map;
 
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
+
+
+	// Define variables we will use for broadcast
+	DatagramSocket broadcastSocket = null;
 
     final static Logger logger = LoggerFactory.getLogger(DeviceConfig.class);
 
@@ -38,11 +45,23 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	/**
 	 * We need to create a default controller to pass tests
 	 */
-	DeviceController lastController = new DeviceController("", "", 0);
+	DeviceController lastController = new DeviceController("", "", 0, 0);
 
 	private int polyLimit = 4;
 	private String logFilePath = "stdout";
 
+
+	public DeviceConfig(){
+		try {
+			broadcastSocket = new DatagramSocket();
+			broadcastSocket.setBroadcast(true);
+			broadcastSocket.setReuseAddress(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	public String getControllerHostname() {
 		return lastController.getHostname();
@@ -84,20 +103,28 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		return LoadableConfig.load( configFile, new DeviceConfig() );
 	}
 
-	public void deviceControllerFound (String hostname, String address, int port)
+	public void deviceControllerFound (String hostname, String address, int port, int device_id)
 	{
-		String hash_build = address + port;
-		int hash = hash_build.hashCode();
+
+		int hash = DeviceController.buildHashCode(address, port, device_id);
 
 		DeviceController controller = deviceControllers.get(hash);
 		if (controller == null)
 		{
-			controller = new DeviceController(hostname, address, port);
+			controller = new DeviceController(hostname, address, port, device_id);
 			deviceControllers.put(controller.hashCode(), controller);
 		}
 
 		controller.controllerSeen();
 		lastController = controller;
+
+		DeviceController.CachedMessage cached_message = lastController.getCachedMessage();
+		DatagramPacket packet = cached_message.getCachedPacket();
+		try {
+			broadcastSocket.send(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

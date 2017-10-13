@@ -20,6 +20,7 @@ import de.sciss.net.*;
 import net.happybrackets.core.BroadcastManager;
 
 import net.happybrackets.core.Device;
+import net.happybrackets.core.OSCVocabulary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,13 +125,13 @@ public class ControllerAdvertiser {
 
 							if (cached_message == null) {
 								OSCMessage msg = new OSCMessage(
-										"/hb/controller",
+										OSCVocabulary.CONTROLLER.CONTROLLER,
 										new Object[]{
 												Device.selectHostname(ni),
 												transmitter.getLocalAddress().getPort()
 										}
 								);
-								OSCPacketCodec codec = transmitter.getCodec();
+								OSCPacketCodec codec = new OSCPacketCodec();
 
 								byteBuf.clear();
 								codec.encode(msg, byteBuf);
@@ -184,7 +185,7 @@ public class ControllerAdvertiser {
 				broadcast_manager.forAllTransmitters(advertisement);
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 }
                 catch (InterruptedException e) {
                     logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
