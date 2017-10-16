@@ -45,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.net.DatagramSocket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
@@ -255,15 +256,27 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         logger.debug("Compositions path: {}", config.getCompositionsPath());
 
 
-        //setup controller broadcast
+        int listen_port = config.getBroadcastPort();
+
+        try {
+            //setup controller broadcast
+            DatagramSocket alive_socket = new DatagramSocket();
+            alive_socket.setReuseAddress(true);
+            listen_port = alive_socket.getLocalPort();
+        }
+        catch (Exception ex)
+        {
+            logger.error("Unable to create unique socket ", ex );
+        }
+
         logger.info("Starting ControllerAdvertiser");
-        broadcastManager = new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+        broadcastManager = new BroadcastManager(config.getMulticastAddr(), listen_port);
         broadcastManager.startRefreshThread();
 
         //set up device connection
         deviceConnection = new DeviceConnection(config, broadcastManager);
 
-        controllerAdvertiser = new ControllerAdvertiser(broadcastManager);
+        controllerAdvertiser = new ControllerAdvertiser(listen_port);
         controllerAdvertiser.start();
 
         //setup http httpServer

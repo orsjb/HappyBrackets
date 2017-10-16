@@ -21,6 +21,7 @@ import net.happybrackets.core.BroadcastManager;
 
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.config.LoadableConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,13 +77,20 @@ public class ControllerAdvertiser {
 
 	private Map <Integer, CachedMessage> cachedNetworkMessage;
 
+
+	CachedMessage cachedMessage = null;
+
 	DatagramSocket broadcastSocket = null;
 	ByteBuffer byteBuf;
 
-	//set up an indefinite thread to advertise the controller
-	DatagramSocket finalBroadcastSocket = broadcastSocket;
-	public ControllerAdvertiser(BroadcastManager broadcast_manager) {
 
+	/**
+	 * Create a controller advertiser that also tells the device what port to send reply to
+	 * @param reply_port The port we want the device to respond to
+	 */
+	public ControllerAdvertiser(int reply_port) {
+
+		int port = LoadableConfig.getInstance().getBroadcastPort();
 		cachedNetworkMessage = new Hashtable<Integer, CachedMessage>();
 
 		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
@@ -96,94 +104,44 @@ public class ControllerAdvertiser {
 			e.printStackTrace();
 		}
 
+		OSCMessage msg = new OSCMessage(
+				OSCVocabulary.CONTROLLER.CONTROLLER,
+				new Object[]{
+						Device.getDeviceName(),
+						reply_port
+				}
+		);
+		OSCPacketCodec codec = new OSCPacketCodec();
+
+		try {
+			byteBuf.clear();
+			codec.encode(msg, byteBuf);
+			byteBuf.flip();
+			byte[] buff = new byte[byteBuf.limit()];
+			byteBuf.get(buff);
+			InetAddress broadcast = InetAddress.getByName("255.255.255.255");
+
+			// Now we are going to broadcast on network interface specific
+			DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, port);
+			cachedMessage = new CachedMessage(msg, packet, broadcast);
+		}
+		catch (Exception ex){
+			logger.error("Unable to create cached message", ex);
+		}
 
 		//set up an indefinite thread to advertise the controller
 		advertisementService = new Thread() {
 			public void run() {
-            BroadcastManager.OnTransmitter advertisement = new BroadcastManager.OnTransmitter() {
-                @Override
-                public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
-					try {
-						int ni_hash = ni.hashCode();
-
-						CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
-
-						// no point doing it if interface is not up
-						if (ni.isUp()) {
-
-							InetAddress broadcast = getBroadcast(ni);
-
-							try {
-
-								if (cached_message != null) {
-									if (!broadcast.equals(cached_message.broadcastAddress)) {
-										cachedNetworkMessage.remove(ni_hash);
-										cached_message = null;
-									}
-								}
-							}catch(Exception ex){}
-
-							if (cached_message == null) {
-								OSCMessage msg = new OSCMessage(
-										OSCVocabulary.CONTROLLER.CONTROLLER,
-										new Object[]{
-												Device.selectHostname(ni),
-												transmitter.getLocalAddress().getPort()
-										}
-								);
-								OSCPacketCodec codec = new OSCPacketCodec();
-
-								byteBuf.clear();
-								codec.encode(msg, byteBuf);
-								byteBuf.flip();
-								byte[] buff = new byte[byteBuf.limit()];
-								byteBuf.get(buff);
-
-								// Now we are going to broadcast on network interface specific
-								if (broadcast != null) {
-									try {
-										DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcast_manager.getPort());
-										cached_message = new CachedMessage(msg, packet, broadcast);
-										cachedNetworkMessage.put(ni_hash, cached_message);
-
-									} catch (Exception ex) {
-									}
-								}
-
-
-							}
-
-
-							transmitter.send(
-									cached_message.getCachedMessage()
-							);
-
-
-							DatagramPacket packet = cached_message.getCachedPacket();
-
-							// Now send a broadcast
-							try {
-								broadcastSocket.send(packet);
-							} catch (Exception ex) {
-								System.out.println(ex.getMessage());
-							}
-
-						} // ni.isUp
-						else if (cached_message != null) {
-							// ni is not up remove ni as broadcast address may change
-							cachedNetworkMessage.remove(ni_hash);
-						}
-					}
-					catch (Exception ex){
-
-					}
-				}
-            };
-
 
             while (keepAlive) {
-				broadcast_manager.forAllTransmitters(advertisement);
+				DatagramPacket packet = cachedMessage.getCachedPacket();
 
+				// Now send a broadcast
+				try {
+					broadcastSocket.send(packet);
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
                 try {
                     Thread.sleep(1000);
                 }

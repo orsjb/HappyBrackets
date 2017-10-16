@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ public class ControllerMain extends Application {
 	protected ControllerConfig config;
 	protected ControllerAdvertiser controllerAdvert;
     private FileServer httpServer;
+	DatagramSocket aliveSocket;
 
     @Override
     public void start(Stage stage) {
@@ -60,11 +62,24 @@ public class ControllerMain extends Application {
 			config = LoadableConfig.load("config/controller-config.json", config);
 	    if (!config.useHostname()) logger.info("Use host names is disabled");
 
+		int reply_port = config.getBroadcastPort();
+
+		try {
+			aliveSocket = new DatagramSocket();
+			aliveSocket.setReuseAddress(true);
+			reply_port = aliveSocket.getLocalPort();
+
+		}
+		catch (Exception ex){
+
+		}
+
 	    //setup controller broadcast
-			broadcastManager = new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
+		broadcastManager = new BroadcastManager(config.getMulticastAddr(), config.getBroadcastPort());
 		broadcastManager.startRefreshThread();
-			controllerAdvert = new ControllerAdvertiser(broadcastManager);
-	    controllerAdvert.start();
+			controllerAdvert = new ControllerAdvertiser(reply_port);
+
+			controllerAdvert.start();
 
 		piConnection = new DeviceConnection(config, broadcastManager);
 
@@ -97,6 +112,7 @@ public class ControllerMain extends Application {
     public void stop() throws Exception {
         //ensure our http server ends
         httpServer.stop();
+		aliveSocket.close();
     }
 
     public static void main(String[] args) {
