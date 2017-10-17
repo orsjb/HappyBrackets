@@ -276,7 +276,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         //set up device connection
         deviceConnection = new DeviceConnection(config, broadcastManager);
 
-        controllerAdvertiser = new ControllerAdvertiser(listen_port);
+        controllerAdvertiser = new ControllerAdvertiser(config.getBroadcastPort(), listen_port);
         controllerAdvertiser.start();
 
         //setup http httpServer

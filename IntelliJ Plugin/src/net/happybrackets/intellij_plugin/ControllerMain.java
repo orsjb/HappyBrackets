@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author ollie
  */
-
+/*
 public class ControllerMain extends Application {
 
 	final static Logger logger = LoggerFactory.getLogger(ControllerMain.class);
@@ -121,3 +121,4 @@ public class ControllerMain extends Application {
 
 
 }
+*/

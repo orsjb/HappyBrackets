@@ -76,6 +76,7 @@ public class ControllerAdvertiser {
 
 	private boolean keepAlive = true;
 	int replyPort; // leave it undefined so we can see a warning if it does not get assigned
+	int broadcastPort;
 
 	private Map <Integer, CachedMessage> cachedNetworkMessage;
 
@@ -118,7 +119,7 @@ public class ControllerAdvertiser {
 				if (broadcast != null) {
                     try {
                         // Now we are going to broadcast on network interface specific
-                        DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, replyPort);
+                        DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
                         CachedMessage message = new CachedMessage(msg, packet, broadcast);
                         cachedNetworkMessage.put(ni.hashCode(), message);
                     } catch (Exception ex) {
@@ -138,12 +139,14 @@ public class ControllerAdvertiser {
 
 	/**
 	 * Create a controller advertiser that also tells the device what port to send reply to
-	 * @param reply_port The port we want the device to respond to
+	 * @param broadcast_port The port we will send to
+	 * @param reply_port  The port we want the device to respond to
 	 */
-	public ControllerAdvertiser(int reply_port) {
+	public ControllerAdvertiser(int broadcast_port, int reply_port) {
 
 		replyPort = reply_port;
-		int port = LoadableConfig.getInstance().getBroadcastPort();
+		broadcastPort = broadcast_port;
+
 		cachedNetworkMessage = new Hashtable<Integer, CachedMessage>();
 
 		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
@@ -175,7 +178,7 @@ public class ControllerAdvertiser {
 			InetAddress broadcast = InetAddress.getByName("255.255.255.255");
 
 			// Now we are going to broadcast on network interface specific
-			DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, port);
+			DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
 			cachedMessage = new CachedMessage(msg, packet, broadcast);
 			loadNetworkBroadcastAdverticements();
 		}
