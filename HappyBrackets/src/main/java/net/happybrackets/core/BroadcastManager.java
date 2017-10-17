@@ -366,7 +366,7 @@ public class BroadcastManager {
 
         try {
             if (ni.isLoopback()) {
-                broadcast = InetAddress.getByName("255.255.255.255");
+                broadcast = InetAddress.getByName("localhost");
             } else {
                 for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
                     broadcast = interface_address.getBroadcast();

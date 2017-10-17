@@ -30,7 +30,9 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import static net.happybrackets.core.BroadcastManager.getBroadcast;
 
@@ -73,7 +75,7 @@ public class ControllerAdvertiser {
 	private Thread advertisementService;
 
 	private boolean keepAlive = true;
-
+	int replyPort; // leave it undefined so we can see a warning if it does not get assigned
 
 	private Map <Integer, CachedMessage> cachedNetworkMessage;
 
@@ -85,11 +87,62 @@ public class ControllerAdvertiser {
 
 
 	/**
+	 * Load a set of Broadcast messages in the standard broadcast message fails
+	 */
+	void loadNetworkBroadcastAdverticements() {
+		cachedNetworkMessage.clear();
+		OSCMessage msg = new OSCMessage(
+				OSCVocabulary.CONTROLLER.CONTROLLER,
+				new Object[]{
+						Device.getDeviceName(),
+						replyPort
+				}
+		);
+		OSCPacketCodec codec = new OSCPacketCodec();
+
+		try {
+			byteBuf.clear();
+			codec.encode(msg, byteBuf);
+			byteBuf.flip();
+			byte[] buff = new byte[byteBuf.limit()];
+			byteBuf.get(buff);
+
+
+			List<NetworkInterface> interfaces = Device.viableInterfaces();
+
+			interfaces.forEach(ni -> {
+
+				InetAddress broadcast = BroadcastManager.getBroadcast(ni);
+
+
+				if (broadcast != null) {
+                    try {
+                        // Now we are going to broadcast on network interface specific
+                        DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, replyPort);
+                        CachedMessage message = new CachedMessage(msg, packet, broadcast);
+                        cachedNetworkMessage.put(ni.hashCode(), message);
+                    } catch (Exception ex) {
+                        logger.error("Unable to create cached message", ex);
+                    }
+
+                }
+
+			});
+
+		} catch (Exception ex) {
+			logger.error("Unable to create cached message", ex);
+		}
+
+	}
+
+
+	/**
 	 * Create a controller advertiser that also tells the device what port to send reply to
 	 * @param reply_port The port we want the device to respond to
 	 */
 	public ControllerAdvertiser(int reply_port) {
 
+		replyPort = reply_port;
 		int port = LoadableConfig.getInstance().getBroadcastPort();
 		cachedNetworkMessage = new Hashtable<Integer, CachedMessage>();
 
@@ -108,7 +161,7 @@ public class ControllerAdvertiser {
 				OSCVocabulary.CONTROLLER.CONTROLLER,
 				new Object[]{
 						Device.getDeviceName(),
-						reply_port
+						replyPort
 				}
 		);
 		OSCPacketCodec codec = new OSCPacketCodec();
@@ -124,6 +177,7 @@ public class ControllerAdvertiser {
 			// Now we are going to broadcast on network interface specific
 			DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, port);
 			cachedMessage = new CachedMessage(msg, packet, broadcast);
+			loadNetworkBroadcastAdverticements();
 		}
 		catch (Exception ex){
 			logger.error("Unable to create cached message", ex);
@@ -141,6 +195,24 @@ public class ControllerAdvertiser {
 					broadcastSocket.send(packet);
 				} catch (Exception ex) {
 					System.out.println(ex.getMessage());
+
+					try{
+						cachedNetworkMessage.forEach(new BiConsumer<Integer, CachedMessage>() {
+							@Override
+							public void accept(Integer integer, CachedMessage cachedMessage) {
+								DatagramPacket packet = cachedMessage.cachedPacket;
+								try {
+									broadcastSocket.send(packet);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+						});
+					}
+					catch (Exception ex_all)
+					{
+
+					}
 				}
                 try {
                     Thread.sleep(1000);

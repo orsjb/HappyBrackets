@@ -19,6 +19,7 @@ package net.happybrackets.device.network;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.device.DeviceMain;
+import net.happybrackets.device.HB;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.config.DeviceController;
 
@@ -46,7 +47,16 @@ public interface ControllerDiscoverer {
                     String advertised_hostname = (String) msg.getArg(CONTROLLER_HOSTNAME);
 					String address =  sending_address.getHostAddress();//  (String) msg.getArg(1);
 					int port = (int) msg.getArg(CONTROLLER_PORT);
-					int device_id = DeviceMain.getHB().myIndex();
+
+					int device_id = 0;
+
+
+					HB device_instance = DeviceMain.getHB();
+
+					if (device_instance != null)
+					{
+						device_id = device_instance.myIndex();
+					}
 
 					device_config.deviceControllerFound(advertised_hostname, address, port, device_id);
 

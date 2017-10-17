@@ -62,6 +62,9 @@ public class ControllerDiscoveryTest {
 	@Test
 	public void testGetControllerHostname() {
         ArrayList<String> controllerHostName = new ArrayList<>();
+
+        String our_hostname = Device.getDeviceName();
+
         try {
             Device.viableInterfaces().forEach( ni -> controllerHostName.add(Device.selectHostname(ni)) );
         } catch (Exception e) {
@@ -69,9 +72,17 @@ public class ControllerDiscoveryTest {
             e.printStackTrace();
         }
 
+        int max_retries = 5;
 		//give some time to catch the name of the controller
 		try {
-			Thread.sleep(500);
+        	for (int i = 0; i < max_retries; i++) {
+				Thread.sleep(500);
+				String controller_hostname = deviceEnv.getControllerHostname();
+				if (!controller_hostname.isEmpty())
+				{
+					break;
+				}
+			}
 		}
 		catch (InterruptedException e) {
 			System.err.println("Sleep was interupted during ControllerDiscoveryTest.");
@@ -83,13 +94,16 @@ public class ControllerDiscoveryTest {
         //stop advertising so we do not change mid test
         advertiser.stop();
         //check that one of our host names matches
-		/*
+
+		String controller_hostname = deviceEnv.getControllerHostname();
+
+
         assertTrue(
-                controllerHostName.stream().anyMatch(name -> deviceEnv.getControllerHostname().equals(name))
+                controllerHostName.stream().anyMatch(name -> controller_hostname.equals(name)) || our_hostname.equals(controller_hostname)
         );
 
 		System.out.println("Found controller: " + deviceEnv.getControllerHostname());
-	*/
+
 	}
 
 }
