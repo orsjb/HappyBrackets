@@ -45,11 +45,20 @@ public class ControllerAdvertiser {
 		DatagramPacket cachedPacket;
 		OSCMessage cachedMessage;
 		InetAddress broadcastAddress;
+		byte [] msgBuff; // Just the data inside the packet
 
-		public CachedMessage (OSCMessage msg, DatagramPacket packet, InetAddress broadcast_address)
+		/**
+		 * Crate a chached message to send
+		 * @param msg The OSC Message
+		 * @param msg_buff The Bytes inside OSC Message
+		 * @param packet The Message as a datagram packet
+		 * @param broadcast_address The address were packet is going
+		 */
+		public CachedMessage (OSCMessage msg, byte[] msg_buff, DatagramPacket packet, InetAddress broadcast_address)
 		{
 			cachedPacket = packet;
 			cachedMessage = msg;
+			msgBuff = msg_buff;
 			broadcastAddress = broadcast_address;
 		}
 
@@ -59,6 +68,10 @@ public class ControllerAdvertiser {
 		 */
 		public DatagramPacket getCachedPacket() {
 			return cachedPacket;
+		}
+
+		public byte[] getMsgBuff() {
+			return msgBuff;
 		}
 
 		/**
@@ -120,7 +133,7 @@ public class ControllerAdvertiser {
                     try {
                         // Now we are going to broadcast on network interface specific
                         DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
-                        CachedMessage message = new CachedMessage(msg, packet, broadcast);
+                        CachedMessage message = new CachedMessage(msg, buff, packet, broadcast);
                         cachedNetworkMessage.put(ni.hashCode(), message);
                     } catch (Exception ex) {
                         logger.error("Unable to create cached message", ex);
@@ -179,7 +192,7 @@ public class ControllerAdvertiser {
 
 			// Now we are going to broadcast on network interface specific
 			DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
-			cachedMessage = new CachedMessage(msg, packet, broadcast);
+			cachedMessage = new CachedMessage(msg, buff, packet, broadcast);
 			loadNetworkBroadcastAdverticements();
 		}
 		catch (Exception ex){
@@ -216,6 +229,8 @@ public class ControllerAdvertiser {
 					{
 
 					}
+
+					// Now send a message to each device we have
 				}
                 try {
                     Thread.sleep(1000);

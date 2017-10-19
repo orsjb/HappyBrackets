@@ -103,20 +103,48 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		return LoadableConfig.load( configFile, new DeviceConfig() );
 	}
 
+
+	/**
+	 * We will send all our known controllers an alive message
+	 */
+	public void notifyAllControllers()
+	{
+		synchronized (this)
+		{
+			deviceControllers.forEach((hash, controller) -> {
+				DeviceController.CachedMessage cached_message = controller.getCachedMessage();
+				DatagramPacket packet = cached_message.getCachedPacket();
+				try {
+					broadcastSocket.send(packet);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+	/**
+	 * Add the contoller to our list of known controllers
+	 * @param hostname hostname
+	 * @param address IP address
+	 * @param port Port that it wants message transmitted to
+	 * @param device_id our device ID
+	 */
 	public void deviceControllerFound (String hostname, String address, int port, int device_id)
 	{
 
 		int hash = DeviceController.buildHashCode(address, port, device_id);
 
-		DeviceController controller = deviceControllers.get(hash);
-		if (controller == null)
-		{
-			controller = new DeviceController(hostname, address, port, device_id);
-			deviceControllers.put(controller.hashCode(), controller);
-		}
+		synchronized (this) {
+			DeviceController controller = deviceControllers.get(hash);
+			if (controller == null) {
+				controller = new DeviceController(hostname, address, port, device_id);
+				deviceControllers.put(controller.hashCode(), controller);
+			}
 
-		controller.controllerSeen();
-		lastController = controller;
+
+			controller.controllerSeen();
+			lastController = controller;
+		}
 
 		DeviceController.CachedMessage cached_message = lastController.getCachedMessage();
 		DatagramPacket packet = cached_message.getCachedPacket();

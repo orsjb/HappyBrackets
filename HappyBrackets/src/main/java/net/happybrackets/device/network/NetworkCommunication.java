@@ -268,7 +268,7 @@ public class NetworkCommunication {
             while(true) {
                 //hb.broadcast.forAllTransmitters(keepAlive);
                 // we should send to all registered controllers
-
+				DeviceConfig.getInstance().notifyAllControllers();
 
                 try {
                     Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
