@@ -40,7 +40,7 @@ public class ControllerAdvertiserTest {
 
 		env 				= new ControllerConfig();
 		env 				= env.load("src/test/config/test-controller-config.json", env);
-		advertiser 			= new ControllerAdvertiser(env.getBroadcastPort(), reply_port);
+		advertiser 			= new ControllerAdvertiser(env.getMulticastAddr(), env.getBroadcastPort(), reply_port);
 		advertiser.start();
 	}
 

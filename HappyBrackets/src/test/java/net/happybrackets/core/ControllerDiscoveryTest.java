@@ -48,7 +48,7 @@ public class ControllerDiscoveryTest {
 		broadcastManager = new BroadcastManager(controllerEnv.getMulticastAddr(), controllerEnv.getBroadcastPort());
 		broadcastManager.startRefreshThread();
 
-		advertiser = new ControllerAdvertiser(deviceEnv.getBroadcastPort(), deviceEnv.getBroadcastPort());
+		advertiser = new ControllerAdvertiser(deviceEnv.getMulticastAddr(), deviceEnv.getBroadcastPort(), deviceEnv.getBroadcastPort());
 		advertiser.start();
 
 		deviceEnv.listenForController(broadcastManager);

@@ -21,20 +21,16 @@ import net.happybrackets.core.BroadcastManager;
 
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.core.config.LoadableConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-
-import static net.happybrackets.core.BroadcastManager.getBroadcast;
 
 public class ControllerAdvertiser {
 
@@ -94,7 +90,8 @@ public class ControllerAdvertiser {
 	private Map <Integer, CachedMessage> cachedNetworkMessage;
 
 
-	CachedMessage cachedMessage = null;
+	CachedMessage cachedBroadcastMessage = null;
+	CachedMessage cachedMulticasttMessage = null;
 
 	DatagramSocket broadcastSocket = null;
 	ByteBuffer byteBuf;
@@ -155,7 +152,7 @@ public class ControllerAdvertiser {
 	 * @param broadcast_port The port we will send to
 	 * @param reply_port  The port we want the device to respond to
 	 */
-	public ControllerAdvertiser(int broadcast_port, int reply_port) {
+	public ControllerAdvertiser(String multicast_address, int broadcast_port, int reply_port) {
 
 		replyPort = reply_port;
 		broadcastPort = broadcast_port;
@@ -189,10 +186,15 @@ public class ControllerAdvertiser {
 			byte[] buff = new byte[byteBuf.limit()];
 			byteBuf.get(buff);
 			InetAddress broadcast = InetAddress.getByName("255.255.255.255");
+			InetAddress multicast = InetAddress.getByName(multicast_address);
 
 			// Now we are going to broadcast on network interface specific
 			DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
-			cachedMessage = new CachedMessage(msg, buff, packet, broadcast);
+			cachedBroadcastMessage = new CachedMessage(msg, buff, packet, broadcast);
+
+			DatagramPacket multicast_packet = new DatagramPacket(buff, buff.length, multicast, broadcastPort);
+			cachedBroadcastMessage = new CachedMessage(msg, buff, multicast_packet, multicast);
+
 			loadNetworkBroadcastAdverticements();
 		}
 		catch (Exception ex){
@@ -204,8 +206,16 @@ public class ControllerAdvertiser {
 			public void run() {
 
             while (keepAlive) {
-				DatagramPacket packet = cachedMessage.getCachedPacket();
+				
+            	// firt send to our multicast
+				try {
+					broadcastSocket.send(cachedBroadcastMessage.cachedPacket);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
+				DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
+				
 				// Now send a broadcast
 				try {
 					broadcastSocket.send(packet);
