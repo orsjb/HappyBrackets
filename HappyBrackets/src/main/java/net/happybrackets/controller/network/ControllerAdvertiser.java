@@ -93,7 +93,7 @@ public class ControllerAdvertiser {
 	CachedMessage cachedBroadcastMessage = null;
 	CachedMessage cachedMulticasttMessage = null;
 
-	DatagramSocket broadcastSocket = null;
+	DatagramSocket advertiseTxSocket = null;
 	ByteBuffer byteBuf;
 
 
@@ -162,9 +162,9 @@ public class ControllerAdvertiser {
 		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
 
 		try {
-			broadcastSocket = new DatagramSocket();
-			broadcastSocket.setBroadcast(true);
-			broadcastSocket.setReuseAddress(true);
+			advertiseTxSocket = new DatagramSocket();
+			advertiseTxSocket.setBroadcast(true);
+			advertiseTxSocket.setReuseAddress(true);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -209,7 +209,7 @@ public class ControllerAdvertiser {
 				
             	// firt send to our multicast
 				try {
-					broadcastSocket.send(cachedBroadcastMessage.cachedPacket);
+					advertiseTxSocket.send(cachedBroadcastMessage.cachedPacket);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -218,7 +218,7 @@ public class ControllerAdvertiser {
 				
 				// Now send a broadcast
 				try {
-					broadcastSocket.send(packet);
+					advertiseTxSocket.send(packet);
 				} catch (Exception ex) {
 					System.out.println(ex.getMessage());
 
@@ -228,7 +228,7 @@ public class ControllerAdvertiser {
 							public void accept(Integer integer, CachedMessage cachedMessage) {
 								DatagramPacket packet = cachedMessage.cachedPacket;
 								try {
-									broadcastSocket.send(packet);
+									advertiseTxSocket.send(packet);
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
