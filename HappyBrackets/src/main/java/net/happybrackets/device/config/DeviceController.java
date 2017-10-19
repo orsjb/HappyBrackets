@@ -145,12 +145,11 @@ public class DeviceController {
      * Create a hash code we can use to compare that we are equal
      * @param address ip address
      * @param port  port
-     * @param device_id device ID
      * @return a hash code that combines these factors
      */
-    public static int buildHashCode(String address, int port, int device_id)
+    public static int buildHashCode(String address, int port)
     {
-        String hash_build = address + port + device_id;
+        String hash_build = address + port;
         return hash_build.hashCode();
     }
     /**
@@ -166,12 +165,25 @@ public class DeviceController {
         this.hostname = hostname;
 
         socketAddress = new InetSocketAddress(address, port);
-        hash = buildHashCode(address, port, device_id);
+        hash = buildHashCode(address, port);
+        lastTimeSeen = System.currentTimeMillis();
 
         deviceId = device_id;
         cachedMessage = rebuildCachedMessage();
     }
 
+
+    /**
+     * Sets the new device ID and rebuilds cached message for it if required
+     * @param new_id
+     */
+    public void setDeviceId (int new_id){
+        if (new_id != deviceId)
+        {
+            deviceId = new_id;
+            cachedMessage = rebuildCachedMessage();
+        }
+    }
     /**
      * Has code based on i[ address and port
      * @return the hashCode

@@ -109,16 +109,16 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	 */
 	public void notifyAllControllers()
 	{
-		synchronized (this)
+		synchronized (deviceControllers)
 		{
 			deviceControllers.forEach((hash, controller) -> {
-				DeviceController.CachedMessage cached_message = controller.getCachedMessage();
-				DatagramPacket packet = cached_message.getCachedPacket();
-				try {
-					broadcastSocket.send(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+					DeviceController.CachedMessage cached_message = controller.getCachedMessage();
+					DatagramPacket packet = cached_message.getCachedPacket();
+					try {
+						broadcastSocket.send(packet);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 			});
 		}
 	}
@@ -132,17 +132,22 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	public void deviceControllerFound (String hostname, String address, int port, int device_id)
 	{
 
-		int hash = DeviceController.buildHashCode(address, port, device_id);
+		int hash = DeviceController.buildHashCode(address, port);
 
-		synchronized (this) {
+		synchronized (deviceControllers) {
 			DeviceController controller = deviceControllers.get(hash);
 			if (controller == null) {
 				controller = new DeviceController(hostname, address, port, device_id);
 				deviceControllers.put(controller.hashCode(), controller);
 			}
+			else
+			{
+				controller.setDeviceId(device_id);
+				controller.controllerSeen();
+			}
 
 
-			controller.controllerSeen();
+
 			lastController = controller;
 		}
 

@@ -4,6 +4,7 @@ net.happybrackets.controller.http
 net.happybrackets.controller.network
 net.happybrackets.core
 net.happybrackets.core.config
+net.happybrackets.core.control
 net.happybrackets.core.logging
 net.happybrackets.device
 net.happybrackets.device.config

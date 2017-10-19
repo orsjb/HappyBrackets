@@ -44,7 +44,6 @@ public class NetworkCommunication {
 
 	final static Logger logger = LoggerFactory.getLogger(NetworkCommunication.class);
 
-	private int myID;							//ID assigned by the controller
 	private OSCServer oscServer;				//The OSC server
 	private InetSocketAddress broadcastAddress;		//The network details of the controller
 	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
@@ -97,9 +96,10 @@ public class NetworkCommunication {
 					logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
 
 					if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ID)) {
-						myID = (Integer) msg.getArg(0);
-						logger.info("I have been given an ID by the controller: {}", myID);
-						hb.setStatus("ID " + myID);
+						int new_id = (Integer) msg.getArg(0);
+						hb.setMyIndex(new_id);
+						logger.info("I have been given an ID by the controller: {}", new_id);
+						hb.setStatus("ID " + new_id);
 					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
 						boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
 						logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");
@@ -368,7 +368,7 @@ public class NetworkCommunication {
 	 * @return the ID of this device.
      */
 	public int getID() {
-		return myID;
+		return hb.myIndex();
 	}
 
 

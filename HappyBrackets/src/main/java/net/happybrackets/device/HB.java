@@ -134,6 +134,7 @@ public class HB {
 	public final Synchronizer synch;
 
 	private AccessMode accessMode;
+	private int myId = 0;
 
 	/**
 	 * Creates the HB.
@@ -675,9 +676,16 @@ public class HB {
 	 * @return the ID of this device, as assigned by the current controller.
      */
 	public int myIndex() {
-		return controller.getID();
+		return myId;
 	}
 
+	/**
+	 * We will set the index of the device here. It may be set by a controller
+	 * @param val new value
+	 */
+	public void setMyIndex(int val){
+		myId = val;
+	}
 	/**
 	 * Reboots the device immediately.
 	 */
