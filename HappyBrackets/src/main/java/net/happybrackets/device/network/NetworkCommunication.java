@@ -91,89 +91,95 @@ public class NetworkCommunication {
 //				}
 //				System.out.println("Mesage received: " + msg.getName());
 
-				InetAddress sending_address = ((InetSocketAddress) src).getAddress();
+				try {
+					InetAddress sending_address = ((InetSocketAddress) src).getAddress();
 
-                logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
+					logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
 
-				if(OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ID)) {
-					myID = (Integer)msg.getArg(0);
-					logger.info("I have been given an ID by the controller: {}", myID);
-					hb.setStatus("ID " + myID);
-				} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
-					boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
-					logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");
-					sendLogs(sendLogs);
-				} else {
-					//master commands...
-					if(OSCVocabulary.match(msg, OSCVocabulary.Device.SYNC)) {
-						long timeToAct = 1000;
-						if(msg.getArgCount() > 0) {
-							timeToAct = (Integer)msg.getArg(0);
-						}
-						hb.syncAudioStart(timeToAct);
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.REBOOT)) {
-						HB.rebootDevice();
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.SHUTDOWN)) {
-						HB.shutdownDevice();
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
-						hb.masterGainEnv.addSegment((Float)msg.getArg(0), (Float)msg.getArg(1));
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
-						hb.reset();
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.RESET_SOUNDING)) {
-						hb.resetLeaveSounding();
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.CLEAR_SOUND)) {
-						hb.clearSound();
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_RESET)) {
-						hb.fadeOutReset((Float)msg.getArg(0));
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
-						hb.fadeOutClearSound((Float)msg.getArg(0));
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.BLEEP)) {
-						hb.testBleep();
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
-						send(OSCVocabulary.Device.STATUS,
-								new Object[] {
-										Device.getDeviceName(),
-										hb.getStatus()
-								},
-								sending_address);
-					} else if(OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
-						send(OSCVocabulary.Device.VERSION,
-								new Object[] {
-										Device.getDeviceName(),
-										BuildVersion.getMajor(),
-										BuildVersion.getMinor(),
-										BuildVersion.getBuild(),
-										BuildVersion.getDate()
-								},
-								sending_address);
-
-						System.out.println("Version sent " + BuildVersion.getVersionText());
-
-					} else if ( OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
-                        //TODO: add interfaces path to device config
-                        boolean status = LocalConfigManagement.updateInterfaces(
-                                "/etc/network/interfaces",
-                                (String) msg.getArg(0),
-                                (String) msg.getArg(1)
-                        );
-                        if (status) logger.info("Updated interfaces file");
-                        else logger.error("Unable to update interfaces file");
-					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
-						//ignore
+					if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ID)) {
+						myID = (Integer) msg.getArg(0);
+						logger.info("I have been given an ID by the controller: {}", myID);
+						hb.setStatus("ID " + myID);
+					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
+						boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
+						logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");
+						sendLogs(sendLogs);
 					} else {
-						//all other messages getInstance forwarded to delegate listeners
-						synchronized (listeners) {
-							Iterator<OSCListener> i = listeners.iterator();
-							while (i.hasNext()) {
-								try {
-									i.next().messageReceived(msg, src, time);
-								} catch (Exception e) {
-									logger.error("Error delegating OSC message!", e);
+						//master commands...
+						if (OSCVocabulary.match(msg, OSCVocabulary.Device.SYNC)) {
+							long timeToAct = 1000;
+							if (msg.getArgCount() > 0) {
+								timeToAct = (Integer) msg.getArg(0);
+							}
+							hb.syncAudioStart(timeToAct);
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.REBOOT)) {
+							HB.rebootDevice();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SHUTDOWN)) {
+							HB.shutdownDevice();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
+							hb.masterGainEnv.addSegment((Float) msg.getArg(0), (Float) msg.getArg(1));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
+							hb.reset();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET_SOUNDING)) {
+							hb.resetLeaveSounding();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CLEAR_SOUND)) {
+							hb.clearSound();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_RESET)) {
+							hb.fadeOutReset((Float) msg.getArg(0));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
+							hb.fadeOutClearSound((Float) msg.getArg(0));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.BLEEP)) {
+							hb.testBleep();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
+							send(OSCVocabulary.Device.STATUS,
+									new Object[]{
+											Device.getDeviceName(),
+											hb.getStatus()
+									},
+									sending_address);
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
+							send(OSCVocabulary.Device.VERSION,
+									new Object[]{
+											Device.getDeviceName(),
+											BuildVersion.getMajor(),
+											BuildVersion.getMinor(),
+											BuildVersion.getBuild(),
+											BuildVersion.getDate()
+									},
+									sending_address);
+
+							System.out.println("Version sent " + BuildVersion.getVersionText());
+
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
+							//TODO: add interfaces path to device config
+							boolean status = LocalConfigManagement.updateInterfaces(
+									"/etc/network/interfaces",
+									(String) msg.getArg(0),
+									(String) msg.getArg(1)
+							);
+							if (status) logger.info("Updated interfaces file");
+							else logger.error("Unable to update interfaces file");
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
+							//ignore
+						} else {
+							//all other messages getInstance forwarded to delegate listeners
+							synchronized (listeners) {
+								Iterator<OSCListener> i = listeners.iterator();
+								while (i.hasNext()) {
+									try {
+										i.next().messageReceived(msg, src, time);
+									} catch (Exception e) {
+										logger.error("Error delegating OSC message!", e);
+									}
 								}
 							}
 						}
 					}
+				} catch (Exception ex)
+				{
+					logger.error("Error processing OSC message!", ex);
 				}
+
 			}
 		});
 		/*
