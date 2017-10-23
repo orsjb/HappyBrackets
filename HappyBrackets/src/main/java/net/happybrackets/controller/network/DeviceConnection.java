@@ -34,6 +34,7 @@ import de.sciss.net.OSCServer;
 
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -301,6 +302,7 @@ public class DeviceConnection {
 				//message sent to the device, it should be done in a separate thread.
 				this_device.setSocketAddress(sending_address);
 				sendIdToDevice(this_device);
+				sendControlRequestToDevice(this_device);
 			}
 
 			//keep up to date
@@ -315,7 +317,7 @@ public class DeviceConnection {
 					this_device.setID(device_id);
 				}
 				else if (invalid_pi){
-					this_device.setStatus("Invalid Verion on Device PI");
+					this_device.setStatus("Invalid Version on Device PI");
 				}
 				else // we are not new but device does not have an ID
 				{
@@ -348,6 +350,13 @@ public class DeviceConnection {
 		}.start();
 	}
 
+	private void sendControlRequestToDevice(final LocalDeviceRepresentation local_device){
+		new Thread() {
+			public void run() {
+				local_device.send(OSCVocabulary.DynamicControlMessage.GET);
+			}
+		}.start();
+	}
 	/**
 	 * The incoming OSC Message
 	 * Must be synchronised to prevent multiple copies going in case we get a message in response to this and we are not ready for it yet
@@ -364,8 +373,30 @@ public class DeviceConnection {
 			} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
 				processVersionMessage(msg, sender);
 			}
+			else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DynamicControlMessage.CONTROL))
+			{
+				processDynamicControlMessgage (msg, sender);
+			}
 		}
 //		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
+	}
+
+	private void processDynamicControlMessgage(OSCMessage msg, SocketAddress sender) {
+		final int DEVICE_NAME = 0;
+		String device_name = (String) msg.getArg(DEVICE_NAME);
+		LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
+
+		try {
+			if (this_device != null)
+			{
+				DynamicControl new_control = new DynamicControl(msg);
+				this_device.addDynamicControl(new_control);
+			}
+
+		}catch (Exception ex){
+
+		}
+
 	}
 
 	/**

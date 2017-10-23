@@ -19,9 +19,7 @@ package net.happybrackets.controller.network;
 import java.io.IOException;
 import java.net.*;
 import java.nio.channels.UnresolvedAddressException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import de.sciss.net.OSCListener;
 import net.happybrackets.controller.config.ControllerConfig;
@@ -30,6 +28,7 @@ import de.sciss.net.OSCServer;
 
 import net.happybrackets.core.ErrorListener;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +51,7 @@ public class LocalDeviceRepresentation {
 	private ControllerConfig controllerConfig;
 
 
+	private Map<Integer, DynamicControl> dynamicControls = new Hashtable<Integer, DynamicControl>();
 
 	private boolean isConnected = true;
 
@@ -103,6 +103,13 @@ public class LocalDeviceRepresentation {
 
 
 
+	public void addDynamicControl(DynamicControl control)
+	{
+		synchronized (dynamicControls)
+		{
+			dynamicControls.put(control.getControlHashCode(), control);
+		}
+	}
 
 	// Overload constructors. Construct with a SocketAddress
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress) {

@@ -20,6 +20,7 @@ package net.happybrackets.device.network;
 import de.sciss.net.*;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.core.*;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.HB;
@@ -188,7 +189,11 @@ public class NetworkCommunication {
 
 							System.out.println("Version sent " + BuildVersion.getVersionText());
 
-						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GET)){
+							DynamicControl.sendAllControlsToController();
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
 							//TODO: add interfaces path to device config
 							boolean status = LocalConfigManagement.updateInterfaces(
 									"/etc/network/interfaces",

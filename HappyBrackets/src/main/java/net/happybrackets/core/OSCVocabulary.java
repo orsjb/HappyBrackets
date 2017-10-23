@@ -32,6 +32,18 @@ public final class OSCVocabulary {
         public static final String VERSION = "/device/version";
     }
 
+    public final class DynamicControlMessage
+    {
+        public static final String CONTROL = "/control";
+        public static final String GET = "/get";
+        public static final String UPDATE = CONTROL + "/update";
+        public static final String CREATE = CONTROL + "/create";
+        public static final String DESTROY = CONTROL + "/destroy";
+
+
+
+    }
+
     public final class CONTROLLER
     {
         public static final String CONTROLLER = "/hb/controller";
@@ -47,5 +59,18 @@ public final class OSCVocabulary {
     {
         return msg.getName().equals(name);
     }
+
+    /**
+     * Test to see whether a message starts with a particular name
+     * @param msg the OSC Message
+     * @param name the name to test for
+     * @return true if message name starts with the name
+     */
+    static public boolean startsWith(OSCMessage msg, String name)
+    {
+        return msg.getName().startsWith(name);
+    }
+
+
 
 }
