@@ -8,20 +8,58 @@ import java.util.Map;
  */
 public class ControlMap {
 
-    static private Map<Integer, DynamicControl> dynamicControls = new Hashtable<Integer, DynamicControl>();
+    // We will enforce singleton by instatiating it once
+    private static ControlMap singletonInstance = null;
+
+    private Map<Integer, DynamicControl> dynamicControls = new Hashtable<Integer, DynamicControl>();
 
 
     private ControlMap(){}
 
     /**
+     * Get the Control Map
+     * @return the singletonInstance
+     */
+    public static synchronized ControlMap  getInstance()
+    {
+        if (singletonInstance == null)
+        {
+            singletonInstance = new ControlMap();
+        }
+        return  singletonInstance;
+    }
+    /**
      * Add a control to our map
      * @param control
      */
-    static public void addControl(DynamicControl control)
+    public void addControl(DynamicControl control)
     {
         synchronized (dynamicControls)
         {
             dynamicControls.put(control.hashCode(), control);
         }
+    }
+
+    /**
+     * Get the Dynamic Control based on HashCode
+     * @param hash_code the hash_code we are using as the key
+     * @return the Dynamic control associated, otherwise null if does not exist
+     */
+    public DynamicControl getControl(int hash_code)
+    {
+        synchronized (dynamicControls)
+        {
+            return  dynamicControls.getOrDefault(hash_code, null);
+        }
+    }
+
+
+    /**
+     * Get all our controls
+     * @return
+     */
+    public Map<Integer, DynamicControl> getAllControlls()
+    {
+        return dynamicControls;
     }
 }

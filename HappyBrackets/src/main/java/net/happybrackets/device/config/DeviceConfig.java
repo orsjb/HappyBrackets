@@ -19,6 +19,7 @@ package net.happybrackets.device.config;
 import net.happybrackets.core.config.LoadableConfig;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.device.network.ControllerDiscoverer;
+import net.happybrackets.device.network.UDPCachedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,8 +113,11 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		synchronized (deviceControllers)
 		{
 			deviceControllers.forEach((hash, controller) -> {
-					DeviceController.CachedMessage cached_message = controller.getCachedMessage();
-					DatagramPacket packet = cached_message.getCachedPacket();
+				UDPCachedMessage cached_message = lastController.getCachedMessage();
+
+				DatagramPacket packet = cached_message.getCachedPacket();
+				packet.setSocketAddress(lastController.getAddress());
+
 					try {
 						broadcastSocket.send(packet);
 					} catch (IOException e) {
@@ -151,8 +155,11 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 			lastController = controller;
 		}
 
-		DeviceController.CachedMessage cached_message = lastController.getCachedMessage();
+		UDPCachedMessage cached_message = lastController.getCachedMessage();
+
 		DatagramPacket packet = cached_message.getCachedPacket();
+		packet.setSocketAddress(lastController.getAddress());
+
 		try {
 			broadcastSocket.send(packet);
 		} catch (IOException e) {

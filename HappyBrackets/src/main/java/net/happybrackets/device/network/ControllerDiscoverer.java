@@ -60,14 +60,6 @@ public interface ControllerDiscoverer {
 
 					device_config.deviceControllerFound(advertised_hostname, address, port, device_id);
 
-					/*
-                    //System.out.println("Received controller message from " + advertisedAddress);
-					if ( !controller.getAddress().equals(advertisedAddress) || !controller.getHostname().equals(advertisedHostname) ) {
-                        controller.setAddress(advertisedAddress);
-                        controller.setHostname(advertisedHostname);
-                        logger.debug("Updated controller to {} at {}", controller.getHostname(), controller.getAddress());
-                    }
-                    */
 				}
 			}
 		});

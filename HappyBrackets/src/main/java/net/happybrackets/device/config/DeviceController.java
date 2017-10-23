@@ -21,6 +21,7 @@ import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCPacketCodec;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.device.network.UDPCachedMessage;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -33,46 +34,6 @@ import java.nio.ByteBuffer;
  */
 public class DeviceController {
 
-    /**
-     * Class that contains a cached message to send to UDP to reduce garbage
-     */
-    class CachedMessage{
-        DatagramPacket cachedPacket;
-        OSCMessage cachedMessage;
-        int deviceId;
-
-
-        public CachedMessage (OSCMessage msg, DatagramPacket packet, int device_id)
-        {
-            cachedPacket = packet;
-            cachedMessage = msg;
-            deviceId = device_id;
-        }
-
-        /**
-         * Get the cached packet
-         * @return
-         */
-        public DatagramPacket getCachedPacket() {
-            return cachedPacket;
-        }
-
-        /**
-         * The cached OSC Message
-         * @return the msg
-         */
-        public OSCMessage getCachedMessage() {
-            return cachedMessage;
-        }
-
-        /**
-         * Get the last device ID we were made with
-         * @return
-         */
-        public int getDeviceId() {
-            return deviceId;
-        }
-    }
 
     private String hostname;
 
@@ -82,7 +43,7 @@ public class DeviceController {
     int deviceId; // the device ID we were when we were made
 
 
-    private CachedMessage cachedMessage = null;
+    private UDPCachedMessage cachedMessage = null;
 
     private long lastTimeSeen;
 
@@ -100,7 +61,7 @@ public class DeviceController {
      * Get the cached message we are going to send
      * @return
      */
-    public CachedMessage getCachedMessage(){
+    public UDPCachedMessage getCachedMessage(){
         return cachedMessage;
     }
 
@@ -108,7 +69,7 @@ public class DeviceController {
      * Rebuild the cached message that we use to send messages to controller
      * @return the new cachedMessage
      */
-    CachedMessage rebuildCachedMessage() {
+    UDPCachedMessage rebuildCachedMessage() {
         try {
 
             OSCMessage msg = new OSCMessage(
@@ -121,17 +82,13 @@ public class DeviceController {
                     }
             );
 
-            OSCPacketCodec codec = new OSCPacketCodec();
-
-            byteBuf.clear();
-            codec.encode(msg, byteBuf);
-            byteBuf.flip();
-            byte[] buff = new byte[byteBuf.limit()];
-            byteBuf.get(buff);
-
-
-            DatagramPacket packet = new DatagramPacket(buff, buff.length, socketAddress);
-            cachedMessage = new CachedMessage(msg, packet, deviceId);
+            if (cachedMessage == null) {
+                cachedMessage = new UDPCachedMessage(msg);
+            }
+            else
+            {
+                cachedMessage.setMessage(msg);
+            }
 
         } catch (Exception ex) {
         }
@@ -177,7 +134,7 @@ public class DeviceController {
      * Sets the new device ID and rebuilds cached message for it if required
      * @param new_id
      */
-    public void setDeviceId (int new_id){
+    public synchronized void setDeviceId (int new_id){
         if (new_id != deviceId)
         {
             deviceId = new_id;
