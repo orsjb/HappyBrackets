@@ -53,7 +53,36 @@ public class NetworkCommunication {
 	private final LogSender logSender;
 
 
+	private UDPCachedMessage cachedStatusMessage = null;
 
+
+	/**
+	 * Create a status Message
+	 * @return the Cached Message Created
+	 */
+	UDPCachedMessage buildStatusMessage()
+	{
+		OSCMessage msg = new OSCMessage(OSCVocabulary.Device.STATUS,
+				new Object[]{
+						Device.getDeviceName(),
+						hb.getStatus()
+				});
+
+
+			try {
+				if (cachedStatusMessage == null) {
+					cachedStatusMessage = new UDPCachedMessage(msg);
+				}
+				else
+				{
+					cachedStatusMessage.setMessage(msg);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			return  cachedStatusMessage;
+	}
 
 	/**
 	 * Instantiate a new {@link NetworkCommunication} object.
@@ -63,6 +92,14 @@ public class NetworkCommunication {
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
 
+		_hb.addStatusChangedListener(new HB.StatusChangedListener() {
+			@Override
+			public void statusChanged(String new_status) {
+				DeviceConfig.getInstance().sendMessageToAllControllers(buildStatusMessage().cachedPacket);
+			}
+		});
+
+		buildStatusMessage();
 
 		//init the OSCServer
 		logger.info("Setting up OSC server");
@@ -100,6 +137,7 @@ public class NetworkCommunication {
 						hb.setMyIndex(new_id);
 						logger.info("I have been given an ID by the controller: {}", new_id);
 						hb.setStatus("ID " + new_id);
+
 					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
 						boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
 						logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");

@@ -25,7 +25,9 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 
 import de.sciss.net.OSCListener;
@@ -58,9 +60,30 @@ import org.slf4j.LoggerFactory;
  */
 public class HB {
 
+
+	public interface StatusChangedListener{
+		void statusChanged(String new_status);
+	}
+
+	private List<StatusChangedListener> statusChangedListenerList  = new ArrayList<>();
+
+
+	/**
+	 * Add Listeners for status change event
+	 * @param listener
+	 */
+	public void addStatusChangedListener (StatusChangedListener listener)
+	{
+		synchronized (statusChangedListenerList)
+		{
+			statusChangedListenerList.add(listener);
+		}
+	}
+
 	final static Logger logger = LoggerFactory.getLogger(HB.class);
 
 	// audio stuff
+
 
 	/**
 	 * The {@link AudioContext} used by HappyBrackets. This is autorun by default from the start script, but that can be controlled by a commandline flag.
@@ -718,6 +741,12 @@ public class HB {
      */
 	public void setStatus(String s) {
 		status = s;
+		synchronized (statusChangedListenerList)
+		{
+			for (StatusChangedListener listener : statusChangedListenerList) {
+				listener.statusChanged(s);
+			}
+		}
 	}
 
 	/**

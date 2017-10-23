@@ -40,10 +40,11 @@ public class DeviceController {
     private InetSocketAddress socketAddress;
 
     int hash; // Unique hash
-    int deviceId; // the device ID we were when we were made
+
+    static int deviceId; // the device ID we were when we were made
 
 
-    private UDPCachedMessage cachedMessage = null;
+    static private UDPCachedMessage cachedMessage = null;
 
     private long lastTimeSeen;
 
@@ -61,7 +62,12 @@ public class DeviceController {
      * Get the cached message we are going to send
      * @return
      */
-    public UDPCachedMessage getCachedMessage(){
+    static public UDPCachedMessage getCachedMessage(){
+        if (cachedMessage == null)
+        {
+            rebuildCachedMessage();
+        }
+
         return cachedMessage;
     }
 
@@ -69,7 +75,7 @@ public class DeviceController {
      * Rebuild the cached message that we use to send messages to controller
      * @return the new cachedMessage
      */
-    UDPCachedMessage rebuildCachedMessage() {
+    static UDPCachedMessage rebuildCachedMessage() {
         try {
 
             OSCMessage msg = new OSCMessage(
@@ -134,7 +140,7 @@ public class DeviceController {
      * Sets the new device ID and rebuilds cached message for it if required
      * @param new_id
      */
-    public synchronized void setDeviceId (int new_id){
+    public static synchronized void setDeviceId (int new_id){
         if (new_id != deviceId)
         {
             deviceId = new_id;

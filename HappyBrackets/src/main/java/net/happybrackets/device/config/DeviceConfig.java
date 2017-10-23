@@ -110,21 +110,31 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	 */
 	public void notifyAllControllers()
 	{
+		UDPCachedMessage cached_message = lastController.getCachedMessage();
+
+		DatagramPacket packet = cached_message.getCachedPacket();
+		sendMessageToAllControllers(packet);
+	}
+
+	/**
+	 * We will send a datagram packet to all controllers
+	 * @param packet
+	 */
+	public void sendMessageToAllControllers (DatagramPacket packet)
+	{
 		synchronized (deviceControllers)
 		{
 			deviceControllers.forEach((hash, controller) -> {
-				UDPCachedMessage cached_message = lastController.getCachedMessage();
+				packet.setSocketAddress(controller.getAddress());
 
-				DatagramPacket packet = cached_message.getCachedPacket();
-				packet.setSocketAddress(lastController.getAddress());
-
-					try {
-						broadcastSocket.send(packet);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+				try {
+					broadcastSocket.send(packet);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			});
 		}
+
 	}
 	/**
 	 * Add the contoller to our list of known controllers
