@@ -70,7 +70,7 @@ public class ControlMap {
             // We are going to add ourseleves as a listener to the update value so we can send any updates to controller
             control.addControlListener(new DynamicControl.DynamicControlListener() {
                 @Override
-                public void update(DynamicControl control, Object val) {
+                public void update(DynamicControl control) {
                     if (controlListenerList.size() > 0)
                     {
                         OSCMessage msg = control.buildUpdateMessage();

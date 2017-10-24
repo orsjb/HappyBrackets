@@ -91,6 +91,8 @@ public class LocalDeviceRepresentation {
 	private List<DeviceIdUpdateListener> deviceIdUpdateListenerList = new ArrayList<>();
 	private List<DeviceRemovedListener> deviceRemovedListenerList = new ArrayList<>();
 
+	private List<DynamicControl.DynamicControlListener> addDynamicControlListenerList = new ArrayList<>();
+	private List<DynamicControl.DynamicControlListener> removeDynamicControlListenerList = new ArrayList<>();
 
 	private List<ErrorListener> errorListenerList = new ArrayList<>();
 
@@ -110,9 +112,15 @@ public class LocalDeviceRepresentation {
 		synchronized (dynamicControls)
 		{
 			dynamicControls.put(control.getControlHashCode(), control);
+			synchronized (removeDynamicControlListenerList)
+			{
+				for (DynamicControl.DynamicControlListener listener : removeDynamicControlListenerList) {
+					listener.update(control);
+				}
+			}
 			control.addControlListener(new DynamicControl.DynamicControlListener() {
 				@Override
-				public void update(DynamicControl control, Object val) {
+				public void update(DynamicControl control) {
 					System.out.println("Dynamic Control value changed");
 				}
 			});

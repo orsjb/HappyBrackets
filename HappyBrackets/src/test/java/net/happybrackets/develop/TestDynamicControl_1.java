@@ -32,8 +32,8 @@ public class TestDynamicControl_1 implements HBAction {
 
         new_control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
-            public void update(DynamicControl control, Object val) {
-                floatVal = (float)val;
+            public void update(DynamicControl control) {
+                floatVal = (float)control.getValue();
             }
         });
 

@@ -21,7 +21,7 @@ public class DynamicControl {
      * Create an Interface to listen to
      */
     public interface DynamicControlListener {
-        public void update(DynamicControl control, Object val);
+        public void update(DynamicControl control);
     }
 
 
@@ -232,6 +232,18 @@ public class DynamicControl {
     }
 
 
+    public Object getValue(){
+        return objVal;
+    }
+
+    public Object getMaximumValue(){
+        return maximumValue;
+    }
+
+    public Object getMinimumValue(){
+        return minimumValue;
+    }
+
     /**
      * Register Listener
      * @param listener Listener to register for events
@@ -269,7 +281,7 @@ public class DynamicControl {
             {
                 try
                 {
-                    listener.update(this, objVal);
+                    listener.update(this);
                 }
                 catch (Exception ex)
                 {
