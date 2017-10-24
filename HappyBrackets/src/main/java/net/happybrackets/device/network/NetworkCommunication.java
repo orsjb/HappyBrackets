@@ -20,6 +20,7 @@ package net.happybrackets.device.network;
 import de.sciss.net.*;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.core.*;
+import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
@@ -92,6 +93,19 @@ public class NetworkCommunication {
      */
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
+
+		ControlMap.getInstance().addDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
+			@Override
+			public void dynamicControlEvent(OSCMessage msg) {
+				// Send all Dynamic Control Messages to the respective controllers
+				try {
+					UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+					DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 
 		_hb.addStatusChangedListener(new HB.StatusChangedListener() {
 			@Override
@@ -191,7 +205,7 @@ public class NetworkCommunication {
 
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GET)){
-							DynamicControl.sendAllControlsToController();
+							ControlMap.getInstance().sendAllControlsToController();
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
 							//TODO: add interfaces path to device config

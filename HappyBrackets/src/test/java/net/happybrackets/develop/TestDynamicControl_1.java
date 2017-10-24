@@ -28,9 +28,11 @@ public class TestDynamicControl_1 implements HBAction {
 
 
         DynamicControl new_control = new DynamicControl(this, ControlType.FLOAT, "Control1", 2000, 100, 4000);
+
+
         new_control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
-            public void update(Object val) {
+            public void update(DynamicControl control, Object val) {
                 floatVal = (float)val;
             }
         });

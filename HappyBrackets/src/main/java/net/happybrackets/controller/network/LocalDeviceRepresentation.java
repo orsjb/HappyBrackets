@@ -66,50 +66,72 @@ public class LocalDeviceRepresentation {
 
 
 	public interface StatusUpdateListener {
-		public void update(String state);
+		void update(String state);
 	}
 
     public interface ConnectedUpdateListener{
-        public void update(boolean connected);
+        void update(boolean connected);
     }
 
 	public interface DeviceIdUpdateListener{
-		public void update(int new_id);
+		void update(int new_id);
 	}
 
     public interface SocketAddressChangedListener{
-		public void socketChanged(InetAddress old_address, InetAddress inet_address);
+		void socketChanged(InetAddress old_address, InetAddress inet_address);
 	}
 
 	public interface DeviceRemovedListener{
-		public void deviceRemoved(LocalDeviceRepresentation device);
+		void deviceRemoved(LocalDeviceRepresentation device);
 	}
 
-	private List<StatusUpdateListener> statusUpdateListenerList;
-    private List<ConnectedUpdateListener> connectedUpdateListenerList;
-	private List<SocketAddressChangedListener> socketAddressChangedListenerList;
-	private List<DeviceIdUpdateListener> deviceIdUpdateListenerList;
-	private List<DeviceRemovedListener> deviceRemovedListenerList;
+	private List<StatusUpdateListener> statusUpdateListenerList = new ArrayList<>();
+    private List<ConnectedUpdateListener> connectedUpdateListenerList = new ArrayList<>();
+	private List<SocketAddressChangedListener> socketAddressChangedListenerList = new ArrayList<>();
+	private List<DeviceIdUpdateListener> deviceIdUpdateListenerList = new ArrayList<>();
+	private List<DeviceRemovedListener> deviceRemovedListenerList = new ArrayList<>();
 
 
-	private List<ErrorListener> errorListenerList;
+	private List<ErrorListener> errorListenerList = new ArrayList<>();
 
 	private String log;
 	public interface LogListener {
-		public void newLogMessage(String message);
+		void newLogMessage(String message);
 	}
-	private List<LogListener> logListenerList;
+	private List<LogListener> logListenerList = new ArrayList<>();
 
 
-
-
+	/**
+	 * Add A dynamic Control
+	 * @param control The DynamicControl we are making
+	 */
 	public void addDynamicControl(DynamicControl control)
 	{
 		synchronized (dynamicControls)
 		{
 			dynamicControls.put(control.getControlHashCode(), control);
+			control.addControlListener(new DynamicControl.DynamicControlListener() {
+				@Override
+				public void update(DynamicControl control, Object val) {
+					System.out.println("Dynamic Control value changed");
+				}
+			});
 		}
 	}
+
+	/**
+	 * Remove A dynamic Control
+	 * @param control The DynamicControl we are making
+	 */
+	public void removeDynamicControl(DynamicControl control)
+	{
+		synchronized (dynamicControls)
+		{
+			dynamicControls.remove(control.getControlHashCode());
+		}
+	}
+
+
 
 	// Overload constructors. Construct with a SocketAddress
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress) {
@@ -127,13 +149,8 @@ public class LocalDeviceRepresentation {
 		this.server     					= server;
 		this.controllerConfig     			= config;
 		groups          					= new boolean[4];
-		statusUpdateListenerList  = new ArrayList<>();
-        connectedUpdateListenerList = new ArrayList<>();
-		socketAddressChangedListenerList = new ArrayList<>();
-		deviceIdUpdateListenerList = new ArrayList<>();
-		deviceRemovedListenerList = new ArrayList<>();
-		logListenerList = new ArrayList<>();
-		errorListenerList = new ArrayList<>();
+
+
         this.isConnected = true;
 
 		// Set-up log monitor.

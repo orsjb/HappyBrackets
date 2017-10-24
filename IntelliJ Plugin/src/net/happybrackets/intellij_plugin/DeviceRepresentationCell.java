@@ -20,11 +20,13 @@ package net.happybrackets.intellij_plugin;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -46,7 +48,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         this.username = val;
     }
 
-
+	Scene dynamicControlScene = null;
 
 
 	String buildSSHCommand(String device_name)
@@ -54,6 +56,24 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         return "ssh " + username + "@" + device_name + ".local";
     }
 
+    void displayControls()
+	{
+		if (dynamicControlScene == null)
+		{
+			Label secondLabel = new Label("Hello");
+
+			StackPane secondaryLayout = new StackPane();
+			secondaryLayout.getChildren().add(secondLabel);
+
+			dynamicControlScene = new Scene(secondaryLayout, 200, 100);
+
+			Stage secondStage = new Stage();
+			secondStage.setTitle("Second Stage");
+			secondStage.setScene(dynamicControlScene);
+
+			secondStage.show();
+		}
+	}
     @Override
     public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
         super.updateItem(item, empty);

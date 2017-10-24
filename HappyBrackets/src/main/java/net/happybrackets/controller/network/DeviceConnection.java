@@ -34,6 +34,7 @@ import de.sciss.net.OSCServer;
 
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -383,14 +384,35 @@ public class DeviceConnection {
 
 	private void processDynamicControlMessgage(OSCMessage msg, SocketAddress sender) {
 		final int DEVICE_NAME = 0;
+		final int CONTROL_HASH = 1;
+
 		String device_name = (String) msg.getArg(DEVICE_NAME);
+		int hash_code = (int) msg.getArg(CONTROL_HASH);
+
 		LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
 
 		try {
 			if (this_device != null)
 			{
-				DynamicControl new_control = new DynamicControl(msg);
-				this_device.addDynamicControl(new_control);
+				if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.CREATE)) {
+					DynamicControl new_control = new DynamicControl(msg);
+					this_device.addDynamicControl(new_control);
+				}
+				else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DESTROY)) {
+					DynamicControl control = ControlMap.getInstance().getControl(hash_code);
+					if (control != null)
+					{
+						control.eraseListeners();
+						this_device.removeDynamicControl(control);
+						ControlMap.getInstance().removeControl(control);
+					}
+				}
+				else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)) {
+					// This call will send an update to all listeners
+					DynamicControl.processUpdateMessage(msg);
+				}
+
+
 			}
 
 		}catch (Exception ex){

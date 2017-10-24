@@ -43,6 +43,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.*;
+import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
@@ -665,7 +666,7 @@ public class HB {
 		broadcast.clearBroadcastListeners();
 
 		// clear dynamic control listeners
-		DynamicControl.clearAllListeners();
+		ControlMap.getInstance().clearAllListeners();
 	}
 
 	/**
