@@ -35,14 +35,24 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.control.DynamicControl;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
+	static int num_items = 0;
     // define the username to use for SSH Command
     final String DEF_USERNAME = "pi";
     private String username = DEF_USERNAME;
 
-    //in case the user is not using pi as the default username for ssh
+    // we need to store our Item and listeners here so we can remove them
+	private LocalDeviceRepresentation localDevice = null;
+	private LocalDeviceRepresentation.StatusUpdateListener updateListener = null;
+	private LocalDeviceRepresentation.DeviceIdUpdateListener deviceIdUpdateListener = null;
+	private DynamicControl.DynamicControlListener dynamicControlListenerCreated = null;
+	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
+
+
+	//in case the user is not using pi as the default username for ssh
     public void setUsername(String val)
     {
         this.username = val;
@@ -56,7 +66,16 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         return "ssh " + username + "@" + device_name + ".local";
     }
 
-    void displayControls()
+    public DeviceRepresentationCell(){
+		num_items++;
+		System.out.println("DeviceRepresentationCell Constructor " + num_items);
+
+	}
+	/**
+	 * Add A dynamic Control to window. Must be called in context of main thread
+	 * @param control
+	 */
+	void addDynamicControl(DynamicControl control)
 	{
 		if (dynamicControlScene == null)
 		{
@@ -73,10 +92,24 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 			secondStage.show();
 		}
+
 	}
+
     @Override
     public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
         super.updateItem(item, empty);
+
+        if (localDevice != null)
+		{
+			// This is where we will clear out all old listeners
+			localDevice.removeStatusUpdateListener(updateListener);
+			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
+			localDevice.removeDynamicControlListenerCreated(dynamicControlListenerCreated);
+			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
+		}
+
+		localDevice = item;
+
         setGraphic(null);
 		//gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
         if (item != null) {
@@ -98,7 +131,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			//if item not currently active, make that obvious by putting strikethrough through disconnected device
 			name.setStrikethrough(!item.getIsConnected());
 
-            item.addConnectedUpdateListener(new LocalDeviceRepresentation.ConnectedUpdateListener() {
+            item.addConnectedUpdateListener(connectedUpdateListener = new LocalDeviceRepresentation.ConnectedUpdateListener() {
                 @Override
                 public void update(boolean connected) {
                     Platform.runLater(new Runnable() {
@@ -189,7 +222,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			Text id_text = new Text("ID " + item.getID());
 			main.add(id_text, 1, 0);
 			main.setHalignment(id_text, HPos.CENTER);
-			item.addDeviceIdUpdateListener(new LocalDeviceRepresentation.DeviceIdUpdateListener() {
+			item.addDeviceIdUpdateListener(deviceIdUpdateListener = new LocalDeviceRepresentation.DeviceIdUpdateListener() {
 				@Override
 				public void update(int new_id) {
 					Platform.runLater(new Runnable() {
@@ -207,7 +240,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			main.add(statusText, 2, 0);
 			main.setHalignment(statusText, HPos.RIGHT);
 
-			item.addStatusUpdateListener(new LocalDeviceRepresentation.StatusUpdateListener() {
+			item.addStatusUpdateListener(updateListener = new LocalDeviceRepresentation.StatusUpdateListener() {
 				@Override
 				public void update(String state) {
 					Platform.runLater(new Runnable() {
@@ -217,6 +250,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					});
 				}
 			});
+
 
             controls.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 				@Override
@@ -279,6 +313,18 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				}
 
 			});
+
+            item.addDynamicControlListenerCreated(dynamicControlListenerCreated = new DynamicControl.DynamicControlListener() {
+				@Override
+				public void update(DynamicControl control) {
+					Platform.runLater(new Runnable() {
+						public void run() {
+							addDynamicControl(control);
+						}
+					});
+				}
+			});
+
 
 			setGraphic(main);
 		}

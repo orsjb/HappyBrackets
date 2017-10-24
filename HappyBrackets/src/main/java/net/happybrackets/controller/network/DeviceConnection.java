@@ -45,9 +45,9 @@ public class DeviceConnection {
 	public static final boolean verbose = false;
 
 	private OSCServer oscServer;
-	private ObservableList<LocalDeviceRepresentation> theDevices;
-	private Map<String, LocalDeviceRepresentation> devicesByHostname;
-	private Map<String, Integer> knownDevices;
+	private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
+	private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();;
+	private Map<String, Integer> knownDevices = new Hashtable<String, Integer>();
 	private int newID = -1;
 	private ControllerConfig config;
 	private boolean loggingEnabled;
@@ -60,9 +60,8 @@ public class DeviceConnection {
 	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
 		this.config = config;
 		broadcastManager = broadcast;
-		theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
-		devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
-		knownDevices = new Hashtable<String, Integer>();
+
+
 		//read the known devices from file
 		try {
 			Scanner s = new Scanner(new File(config.getKnownDevicesFile()));

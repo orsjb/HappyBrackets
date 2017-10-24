@@ -102,6 +102,34 @@ public class LocalDeviceRepresentation {
 	}
 	private List<LogListener> logListenerList = new ArrayList<>();
 
+	public void addDynamicControlListenerCreated(DynamicControl.DynamicControlListener listener){
+		synchronized (addDynamicControlListenerList)
+		{
+			addDynamicControlListenerList.add(listener);
+		}
+	}
+
+	public void removeDynamicControlListenerCreated(DynamicControl.DynamicControlListener listener){
+		synchronized (addDynamicControlListenerList)
+		{
+			addDynamicControlListenerList.remove(listener);
+		}
+	}
+
+	public void addDynamicControlListenerRemoved(DynamicControl.DynamicControlListener listener){
+		synchronized (removeDynamicControlListenerList)
+		{
+			removeDynamicControlListenerList.add(listener);
+		}
+	}
+
+	public void removeDynamicControlListenerRemoved(DynamicControl.DynamicControlListener listener){
+		synchronized (removeDynamicControlListenerList)
+		{
+			removeDynamicControlListenerList.add(listener);
+		}
+	}
+
 
 	/**
 	 * Add A dynamic Control
@@ -112,15 +140,16 @@ public class LocalDeviceRepresentation {
 		synchronized (dynamicControls)
 		{
 			dynamicControls.put(control.getControlHashCode(), control);
-			synchronized (removeDynamicControlListenerList)
+			synchronized (addDynamicControlListenerList)
 			{
-				for (DynamicControl.DynamicControlListener listener : removeDynamicControlListenerList) {
+				for (DynamicControl.DynamicControlListener listener : addDynamicControlListenerList) {
 					listener.update(control);
 				}
 			}
 			control.addControlListener(new DynamicControl.DynamicControlListener() {
 				@Override
 				public void update(DynamicControl control) {
+
 					System.out.println("Dynamic Control value changed");
 				}
 			});
@@ -136,6 +165,12 @@ public class LocalDeviceRepresentation {
 		synchronized (dynamicControls)
 		{
 			dynamicControls.remove(control.getControlHashCode());
+			synchronized (removeDynamicControlListenerList)
+			{
+				for (DynamicControl.DynamicControlListener listener : removeDynamicControlListenerList) {
+					listener.update(control);
+				}
+			}
 		}
 	}
 
@@ -204,11 +239,12 @@ public class LocalDeviceRepresentation {
 		{
 			this.socketAddress = new InetSocketAddress(new_socket_address, controllerConfig.getControlToDevicePort());
 
-			// now raise event
-			for(SocketAddressChangedListener listener : socketAddressChangedListenerList) {
-				listener.socketChanged(old, new_socket_address);
+			synchronized (socketAddressChangedListenerList) {
+				// now raise event
+				for (SocketAddressChangedListener listener : socketAddressChangedListenerList) {
+					listener.socketChanged(old, new_socket_address);
+				}
 			}
-
 		}
 	}
 
@@ -216,12 +252,14 @@ public class LocalDeviceRepresentation {
 	 * Lets device that know about this to remove their listeners
 	 * It then removes all listeners from list
 	 */
-	public void deviceRemoved(){
-		for (DeviceRemovedListener listener: deviceRemovedListenerList){
-			listener.deviceRemoved(this);
-		}
+	public void deviceRemoved() {
+		synchronized (deviceRemovedListenerList) {
+			for (DeviceRemovedListener listener : deviceRemovedListenerList) {
+				listener.deviceRemoved(this);
+			}
 
-		deviceRemovedListenerList.clear();
+			deviceRemovedListenerList.clear();
+		}
 	}
 
 	/**
@@ -335,57 +373,103 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void addStatusUpdateListener(StatusUpdateListener listener) {
-		statusUpdateListenerList.add(listener);
+		synchronized (statusUpdateListenerList) {
+			statusUpdateListenerList.add(listener);
+		}
 	}
 
-	public void addConnectedUpdateListener(ConnectedUpdateListener listener){
-        connectedUpdateListenerList.add(listener);
-    }
+	public void removeStatusUpdateListener(StatusUpdateListener listener) {
+		StatusUpdateListener removal_object = null;
 
-    public void addSocketAddressChangedListener(SocketAddressChangedListener listener){
-		socketAddressChangedListenerList.add(listener);
+		synchronized (statusUpdateListenerList) {
+			statusUpdateListenerList.remove(listener);
+		}
 	}
 
-	public void addDeviceRemovedListener(DeviceRemovedListener listener){
-    	deviceRemovedListenerList.add(listener);
+	public void addConnectedUpdateListener(ConnectedUpdateListener listener) {
+		synchronized (connectedUpdateListenerList) {
+			connectedUpdateListenerList.add(listener);
+		}
 	}
 
-	public void addDeviceIdUpdateListener(DeviceIdUpdateListener listener) {deviceIdUpdateListenerList.add(listener);}
+	public void removeConnectedUpdateListener(ConnectedUpdateListener listener) {
+		synchronized (connectedUpdateListenerList) {
+			connectedUpdateListenerList.remove(listener);
+		}
+	}
+
+    public void addSocketAddressChangedListener(SocketAddressChangedListener listener) {
+		synchronized (socketAddressChangedListenerList) {
+			socketAddressChangedListenerList.add(listener);
+		}
+	}
+
+	public void addDeviceRemovedListener(DeviceRemovedListener listener) {
+		synchronized (deviceRemovedListenerList) {
+			deviceRemovedListenerList.add(listener);
+		}
+	}
+
+
+	public void addDeviceIdUpdateListener(DeviceIdUpdateListener listener) {
+		synchronized (deviceIdUpdateListenerList) {
+			deviceIdUpdateListenerList.add(listener);
+		}
+	}
+
+	public void removeDeviceIdUpdateListener(DeviceIdUpdateListener listener) {
+		synchronized (deviceIdUpdateListenerList) {
+			deviceIdUpdateListenerList.remove(listener);
+		}
+	}
 
 	public void addErrorListener(ErrorListener listener) {
-		errorListenerList.add(listener);
+		synchronized (errorListenerList) {
+			errorListenerList.add(listener);
+		}
 	}
 
 	public void removeErrorListener(ErrorListener listener) {
-		errorListenerList.remove(listener);
+		synchronized (errorListenerList) {
+			errorListenerList.remove(listener);
+		}
 	}
 
 	public void setStatus(String arg) {
 		status = arg;
+		synchronized (statusUpdateListenerList){
 		for(StatusUpdateListener statusUpdateListener : statusUpdateListenerList) {
 			statusUpdateListener.update(status);
 		}
-	}
+	}}
 
     public void setIsConnected(boolean connected) {
         this.isConnected = connected;
-        for(ConnectedUpdateListener listener : connectedUpdateListenerList) {
-            listener.update(connected);
-        }
-
+        synchronized (connectedUpdateListenerList) {
+			for (ConnectedUpdateListener listener : connectedUpdateListenerList) {
+				listener.update(connected);
+			}
+		}
     }
 
 	private void sendError(String description, Exception ex) {
-		for (ErrorListener l : errorListenerList) {
-			l.errorOccurred(this.getClass(), description, ex);
+		synchronized (errorListenerList) {
+			for (ErrorListener l : errorListenerList) {
+				l.errorOccurred(this.getClass(), description, ex);
+			}
 		}
 	}
 
 	public void addLogListener(LogListener listener) {
-		logListenerList.add(listener);
+		synchronized (logListenerList) {
+			logListenerList.add(listener);
+		}
 	}
+
 	public void removeLogListener(LogListener listener) {
-		logListenerList.remove(listener);
+		synchronized (logListenerList) {
+			logListenerList.remove(listener);
+		}
 	}
 
 	public String getDeviceLog() {
