@@ -35,6 +35,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
@@ -58,8 +59,9 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         this.username = val;
     }
 
-	Scene dynamicControlScene = null;
-
+	Stage dynamicControlStage = null;
+	VBox dynamicControlPane = null;
+	Scene dynamicControlScenen = null;
 
 	String buildSSHCommand(String device_name)
     {
@@ -77,21 +79,67 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	 */
 	void addDynamicControl(DynamicControl control)
 	{
-		if (dynamicControlScene == null)
-		{
-			Label secondLabel = new Label("Hello");
+		if (dynamicControlStage == null) {
 
-			StackPane secondaryLayout = new StackPane();
-			secondaryLayout.getChildren().add(secondLabel);
-
-			dynamicControlScene = new Scene(secondaryLayout, 200, 100);
-
-			Stage secondStage = new Stage();
-			secondStage.setTitle("Second Stage");
-			secondStage.setScene(dynamicControlScene);
-
-			secondStage.show();
+			dynamicControlStage = new Stage();
+			dynamicControlStage.setTitle(localDevice.deviceName);
+			dynamicControlPane = new VBox();
+			dynamicControlScenen = new Scene(dynamicControlPane, 200, 100);
+			dynamicControlStage.setScene(dynamicControlScenen);
 		}
+
+		Label control_label = new Label(control.getControlName());
+
+		HBox control_group = new HBox();
+		control_group.getChildren().add(control_label);
+
+
+		dynamicControlPane.getChildren().add(control_group);
+
+		ControlType control_type = control.getControlType();
+
+		switch (control_type) {
+			case BUTTON:
+				Button b = new Button();
+				b.setText("Send");
+				control_group.getChildren().add(b);
+				break;
+
+			case SLIDER:
+				Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
+				s.setMaxWidth(100);
+				s.setOrientation(Orientation.HORIZONTAL);
+				control_group.getChildren().add(s);
+				break;
+
+			case CHECKBOX:
+				CheckBox c = new CheckBox();
+				int i_val = (int) control.getValue();
+				c.setSelected(i_val != 0);
+				control_group.getChildren().add(c);
+				break;
+
+			case FLOAT:
+				Slider f = new Slider((float) control.getMinimumValue(), (float) control.getMaximumValue(), (float) control.getValue());
+				f.setMaxWidth(100);
+				f.setOrientation(Orientation.HORIZONTAL);
+				control_group.getChildren().add(f);
+				break;
+
+			case TEXT:
+				TextField t = new TextField();
+				t.setMaxWidth(100);
+				t.setText((String) control.getValue());
+				control_group.getChildren().add(t);
+				break;
+
+			default:
+				break;
+		}
+
+
+		dynamicControlStage.show();
+		dynamicControlStage.toFront();
 
 	}
 
@@ -106,6 +154,11 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
 			localDevice.removeDynamicControlListenerCreated(dynamicControlListenerCreated);
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
+			if (dynamicControlStage != null)
+			{
+				dynamicControlStage.close();
+				dynamicControlStage = null;
+			}
 		}
 
 		localDevice = item;

@@ -33,9 +33,9 @@ public class DynamicControl {
     String controlName;
     ControlScope controlScope = ControlScope.SKETCH;
 
-    Object objVal = null;
-    Object maximumValue = null;
-    Object minimumValue = null;
+    Object objVal = 0;
+    Object maximumValue = 0;
+    Object minimumValue = 0;
 
     private void Init(String parent_sketch, ControlType control_type, String name, Object initial_value) {
         parentSketch = parent_sketch;
@@ -91,7 +91,14 @@ public class DynamicControl {
 
 
     /**
-     * Get teh scope of this control. Can be Sketch, Class, Device, or global
+     * Get the type of control we want
+     * @return
+     */
+    public ControlType getControlType(){
+        return controlType;
+    }
+    /**
+     * Get the scope of this control. Can be Sketch, Class, Device, or global
      * @return
      */
     public ControlScope getControlScope(){
@@ -244,6 +251,9 @@ public class DynamicControl {
         return minimumValue;
     }
 
+    public String getControlName(){
+        return controlName;
+    }
     /**
      * Register Listener
      * @param listener Listener to register for events

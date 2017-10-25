@@ -375,13 +375,13 @@ public class DeviceConnection {
 			}
 			else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DynamicControlMessage.CONTROL))
 			{
-				processDynamicControlMessgage (msg, sender);
+				processDynamicControlMessage(msg, sender);
 			}
 		}
 //		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
 	}
 
-	private void processDynamicControlMessgage(OSCMessage msg, SocketAddress sender) {
+	private void processDynamicControlMessage(OSCMessage msg, SocketAddress sender) {
 		final int DEVICE_NAME = 0;
 		final int CONTROL_HASH = 1;
 
