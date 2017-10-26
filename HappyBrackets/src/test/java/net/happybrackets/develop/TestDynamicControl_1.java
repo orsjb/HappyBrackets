@@ -27,12 +27,12 @@ public class TestDynamicControl_1 implements HBAction {
     public void action(HB hb) {
 
 
-        DynamicControl new_control = new DynamicControl(this, ControlType.SLIDER, "Slider", 2000, 100, 4000);
+        DynamicControl new_control = hb.createDynamicControl(this, ControlType.SLIDER, "Slider", 2000, 100, 4000);
 
-        new DynamicControl(this, ControlType.TEXT, "Text", "Hello Text");
-        new DynamicControl(this, ControlType.FLOAT, "Float", 200.0, 100.0, 300.0);
-        new DynamicControl(this, ControlType.BUTTON, "Button", 0);
-        new DynamicControl(this, ControlType.CHECKBOX, "Checkbox", 1);
+        hb.createDynamicControl(this, ControlType.TEXT, "Text", "Hello Text");
+        hb.createDynamicControl(this, ControlType.FLOAT, "Float", 200.0, 100.0, 300.0);
+        hb.createDynamicControl(this, ControlType.BUTTON, "Button", 0);
+        hb.createDynamicControl(this, ControlType.CHECKBOX, "Checkbox", 1);
 
 
         new_control.addControlListener(new DynamicControl.DynamicControlListener() {

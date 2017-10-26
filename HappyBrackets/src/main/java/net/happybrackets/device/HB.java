@@ -44,6 +44,7 @@ import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.*;
 import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
@@ -773,4 +774,34 @@ public class HB {
 		 */
 		CLOSED
 	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param parent_sketch the object calling - typically this
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 */
+	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value)
+	{
+		return new DynamicControl(parent_sketch, control_type, name, initial_value);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param parent_sketch the object calling - typically this
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @param min_value     The minimum value of the control
+	 * @param max_value     The maximum value of the control
+	 */
+	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
+		return new DynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value);
+	}
+
 }
