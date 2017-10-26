@@ -324,52 +324,52 @@ public class LocalDeviceRepresentation {
 	}
 
 	public synchronized void send(byte[]... data) {
-		lazySetupAddressStrings();
-		boolean success = false;
-		int count = 0;
-		boolean possible_IP_vIssue = false;
-		List<Exception> exceptions = new ArrayList<>(5);
-		while(!success) {
-			try {
-				String client_address = null;
-				if (this.socketAddress != null)
-				{
-					client_address = this.socketAddress.getHostName();
-				}
-				else
-				{
-					client_address = preferredAddressStrings.get(0);
-				}
+		if (isConnected) {
+			lazySetupAddressStrings();
+			boolean success = false;
+			int count = 0;
+			boolean possible_IP_vIssue = false;
+			List<Exception> exceptions = new ArrayList<>(5);
+			while (!success) {
+				try {
+					String client_address = null;
+					if (this.socketAddress != null) {
+						//client_address = this.socketAddress.getHostName();
+						client_address = this.socketAddress.getAddress().getHostAddress();
+					} else {
+						client_address = preferredAddressStrings.get(0);
+					}
 
-				Socket s = new Socket(client_address, ControllerConfig.getInstance().getCodeToDevicePort());
-				for (byte[] d : data) {
-					s.getOutputStream().write(d);
-				}
-				s.close();
-				success = true;
-				logger.debug("Success sending to device {} using address {}!",
-						deviceName, preferredAddressStrings.get(0));
-			} catch (IOException | IllegalArgumentException e1) {
-				logger.error("Error sending to device {} using address {}! (Setting socketAddress back to null).",
-						deviceName, preferredAddressStrings.get(0), e1);
-				//set the socketAddress back to null as it will need to be rebuilt
-				this.setSocketAddress(null);//socketAddress = null;
-				//rotate the preferredAddressStrings list to try the next one in the list
-				String failedString = preferredAddressStrings.remove(0);	//remove from front
-				preferredAddressStrings.add(failedString);		//add to end
+					Socket s = new Socket(client_address, ControllerConfig.getInstance().getCodeToDevicePort());
+					for (byte[] d : data) {
+						s.getOutputStream().write(d);
+					}
+					s.close();
+					success = true;
+					logger.debug("Success sending to device {} using address {}!",
+							deviceName, preferredAddressStrings.get(0));
+				} catch (IOException | IllegalArgumentException e1) {
+					logger.error("Error sending to device {} using address {}! (Setting socketAddress back to null).",
+							deviceName, preferredAddressStrings.get(0), e1);
+					//set the socketAddress back to null as it will need to be rebuilt
+					this.setSocketAddress(null);//socketAddress = null;
+					//rotate the preferredAddressStrings list to try the next one in the list
+					String failedString = preferredAddressStrings.remove(0);    //remove from front
+					preferredAddressStrings.add(failedString);        //add to end
 
-				exceptions.add(e1);
-				possible_IP_vIssue |= e1 instanceof java.net.SocketException && e1.getMessage().contains("rotocol");
-				if(count > 4) break;
-				count++;
+					exceptions.add(e1);
+					possible_IP_vIssue |= e1 instanceof java.net.SocketException && e1.getMessage().contains("rotocol");
+					if (count > 4) break;
+					count++;
+				}
 			}
-		}
 
-		if (possible_IP_vIssue) {
-			logger.error("It looks like there might be an IPv4/IPv6 incompatibility, try setting the JVM option -Djava.net.preferIPv6Addresses=true or -Djava.net.preferIPv4Addresses=true");
+			if (possible_IP_vIssue) {
+				logger.error("It looks like there might be an IPv4/IPv6 incompatibility, try setting the JVM option -Djava.net.preferIPv6Addresses=true or -Djava.net.preferIPv4Addresses=true");
+			}
+			// Communicate the errors to the plugin gui if it's running (and anything else that's listening).
+			exceptions.forEach((e) -> sendError("Error sending to device!", e));
 		}
-		// Communicate the errors to the plugin gui if it's running (and anything else that's listening).
-		exceptions.forEach((e) -> sendError("Error sending to device!", e));
 	}
 
 	public void addStatusUpdateListener(StatusUpdateListener listener) {

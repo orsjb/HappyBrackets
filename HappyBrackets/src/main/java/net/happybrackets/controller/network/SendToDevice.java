@@ -61,15 +61,21 @@ public abstract class SendToDevice {
 		//now we have all the files as byte arrays
 		//time to send
 		for(LocalDeviceRepresentation device : devices) {
-        	try {
-				//send all of the files to this hostname
-				for (byte[][] bytes : all_files_as_bytes) {
-					device.send(bytes);
+			if (device.getIsConnected()) {
+				try {
+					//send all of the files to this hostname
+					for (byte[][] bytes : all_files_as_bytes) {
+						device.send(bytes);
+					}
+					logger.debug("SendToDevice: sent to {}", device);
+				} catch (Exception e) {
+					logger.error("SendToDevice: unable to send to {}", device, e);
 				}
-				logger.debug("SendToDevice: sent to {}", device);
-        	} catch(Exception e) {
-        		logger.error("SendToDevice: unable to send to {}", device, e);
-        	}
+			}
+			else
+			{
+				logger.debug("SendToDevice: device " + device.deviceName + " is not connected");
+			}
         }
 	}
 
