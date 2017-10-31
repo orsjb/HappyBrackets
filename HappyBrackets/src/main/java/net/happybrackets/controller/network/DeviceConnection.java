@@ -74,7 +74,7 @@ public class DeviceConnection {
 		} catch (FileNotFoundException e1) {
 			logger.error("Unable to read '{}'", config.getKnownDevicesFile());
 		}
-		broadcast.addBroadcastListener(new OSCListener() {
+		broadcast.addPersistentBroadcastLsitener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
 				incomingMessage(msg, sender);

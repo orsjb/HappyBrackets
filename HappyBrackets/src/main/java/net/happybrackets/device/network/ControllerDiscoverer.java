@@ -35,7 +35,7 @@ public interface ControllerDiscoverer {
 
 	default void listenForController(DeviceConfig device_config, BroadcastManager broadcast_manager, Logger logger) {
 
-		broadcast_manager.addBroadcastListener(new OSCListener(){
+		broadcast_manager.addPersistentBroadcastLsitener(new OSCListener(){
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
 				final int CONTROLLER_HOSTNAME = 0;
 				final int CONTROLLER_PORT = 1;

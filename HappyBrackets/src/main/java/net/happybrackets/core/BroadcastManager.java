@@ -42,6 +42,7 @@ public class BroadcastManager {
     List<NetworkInterfacePair<OSCTransmitter>>    transmitters;
     List<NetworkInterfacePair<OSCReceiver>>       receivers;
     List<OSCListener>                             listeners;
+    List<OSCListener>                             peristentListeners = new ArrayList<>();
     List<OnListener>                              interfaceListeners; //listeners who care what interface the message arrived at.
     List<NetworkInterface>                        netInterfaces;
 
@@ -346,6 +347,16 @@ public class BroadcastManager {
     }
 
     /**
+     * Add Listeners that do not get cleared when HB is reset
+     * @param bl
+     */
+    public void addPersistentBroadcastLsitener(OSCListener bl){
+
+        peristentListeners.add(bl);
+        listeners.add(bl);
+    }
+
+    /**
      * Add a new {@link OSCListener}.
      *
      * @param bl the new {@link OSCListener}.
@@ -406,6 +417,10 @@ public class BroadcastManager {
         //     receiver.removeOSCListener(listener);
         // }
         listeners.clear();
+        for (OSCListener listener : peristentListeners) {
+            listeners.add(listener);
+
+        }
     }
 
     private class NetworkInterfacePair<T> {

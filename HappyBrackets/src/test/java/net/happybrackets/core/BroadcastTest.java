@@ -48,7 +48,7 @@ public class BroadcastTest {
 		receivedMulticastMessage 		= false;
 
         //setup test listener
-        broadcastManager.addBroadcastListener(new OSCListener() {
+        broadcastManager.addPersistentBroadcastLsitener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 if(msg.getName().equals("/test")) {
