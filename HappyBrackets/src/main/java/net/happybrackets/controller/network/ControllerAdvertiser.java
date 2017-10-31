@@ -206,41 +206,41 @@ public class ControllerAdvertiser {
 			public void run() {
 
             while (keepAlive) {
-				
-            	// firt send to our multicast
-				try {
-					advertiseTxSocket.send(cachedBroadcastMessage.cachedPacket);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 
-				DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
-				
-				// Now send a broadcast
-				try {
-					advertiseTxSocket.send(packet);
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
+            	if (!DeviceConnection.getDisabledAdvertise()) {
+					// first send to our multicast
+					try {
+						advertiseTxSocket.send(cachedBroadcastMessage.cachedPacket);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 
-					try{
-						cachedNetworkMessage.forEach(new BiConsumer<Integer, CachedMessage>() {
-							@Override
-							public void accept(Integer integer, CachedMessage cachedMessage) {
-								DatagramPacket packet = cachedMessage.cachedPacket;
-								try {
-									advertiseTxSocket.send(packet);
-								} catch (IOException e) {
-									e.printStackTrace();
+					DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
+
+					// Now send a broadcast
+					try {
+						advertiseTxSocket.send(packet);
+					} catch (Exception ex) {
+						System.out.println(ex.getMessage());
+
+						try {
+							cachedNetworkMessage.forEach(new BiConsumer<Integer, CachedMessage>() {
+								@Override
+								public void accept(Integer integer, CachedMessage cachedMessage) {
+									DatagramPacket packet = cachedMessage.cachedPacket;
+									try {
+										advertiseTxSocket.send(packet);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
 								}
-							}
-						});
-					}
-					catch (Exception ex_all)
-					{
+							});
+						} catch (Exception ex_all) {
 
-					}
+						}
 
-					// Now send a message to each device we have
+						// Now send a message to each device we have
+					}
 				}
                 try {
                     Thread.sleep(1000);

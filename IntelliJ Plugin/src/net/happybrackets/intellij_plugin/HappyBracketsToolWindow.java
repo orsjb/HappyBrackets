@@ -261,7 +261,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         try {
             //setup controller broadcast
             DatagramSocket alive_socket = new DatagramSocket();
-            alive_socket.setReuseAddress(true);
+            alive_socket.setReuseAddress(false);
             listen_port = alive_socket.getLocalPort();
         }
         catch (Exception ex)

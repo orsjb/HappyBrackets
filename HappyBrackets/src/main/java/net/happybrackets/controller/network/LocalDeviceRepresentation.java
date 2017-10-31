@@ -102,28 +102,28 @@ public class LocalDeviceRepresentation {
 	}
 	private List<LogListener> logListenerList = new ArrayList<>();
 
-	public void addDynamicControlListenerCreated(DynamicControl.DynamicControlListener listener){
+	public void addDynamicControlListenerCreatedListener(DynamicControl.DynamicControlListener listener){
 		synchronized (addDynamicControlListenerList)
 		{
 			addDynamicControlListenerList.add(listener);
 		}
 	}
 
-	public void removeDynamicControlListenerCreated(DynamicControl.DynamicControlListener listener){
+	public void removeDynamicControlListenerCreatedListener(DynamicControl.DynamicControlListener listener){
 		synchronized (addDynamicControlListenerList)
 		{
 			addDynamicControlListenerList.remove(listener);
 		}
 	}
 
-	public void addDynamicControlListenerRemoved(DynamicControl.DynamicControlListener listener){
+	public void addDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener){
 		synchronized (removeDynamicControlListenerList)
 		{
 			removeDynamicControlListenerList.add(listener);
 		}
 	}
 
-	public void removeDynamicControlListenerRemoved(DynamicControl.DynamicControlListener listener){
+	public void removeDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener){
 		synchronized (removeDynamicControlListenerList)
 		{
 			removeDynamicControlListenerList.add(listener);
@@ -156,6 +156,33 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
+	/**
+	 * Reset the device and clear dynamic controls
+	 */
+	public void resetDevice()
+	{
+		this.send(OSCVocabulary.Device.RESET);
+		clearDynamicControls();
+	}
+
+	/**
+	 * We need to remove all dynamic controls From This device
+	 */
+	public void clearDynamicControls()
+	{
+		// we need to get the collection synchronised with map
+		// or we will get an access vioaltion
+
+		Collection<DynamicControl> removal_list;
+		synchronized (dynamicControls)
+		{
+			removal_list = dynamicControls.values();
+		}
+
+		for (DynamicControl control : removal_list) {
+			removeDynamicControl(control);
+		}
+	}
 	/**
 	 * Remove A dynamic Control
 	 * @param control The DynamicControl we are making

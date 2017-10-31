@@ -34,6 +34,8 @@ public class TestDynamicControl_1 implements HBAction {
         hb.createDynamicControl(this, ControlType.BUTTON, "Button", 0);
         hb.createDynamicControl(this, ControlType.CHECKBOX, "Checkbox", 1);
 
+        //hb.setPresetValue("Name", 1);
+        //hb.setPresetValue("Name", 1);
 
         new_control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override

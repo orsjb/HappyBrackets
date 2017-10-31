@@ -272,6 +272,7 @@ public class DynamicControl {
         synchronized (controlListenerList) {controlListenerList.remove(listener);}
     }
 
+
     /**
      * Erase all listeners from this control
      */

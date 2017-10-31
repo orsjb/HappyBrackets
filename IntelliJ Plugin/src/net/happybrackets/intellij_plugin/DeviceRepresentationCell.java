@@ -19,7 +19,9 @@ package net.happybrackets.intellij_plugin;
 //import com.sun.org.apache.bcel.internal.generic.NEW;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
@@ -38,9 +40,20 @@ import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
-	static int num_items = 0;
+	private class ControlCellPair {
+
+		public ControlCellPair(Node label, Node control){
+			labelNode = label;
+			controlNode = control;
+		}
+		Node labelNode;
+		Node controlNode;
+	}
     // define the username to use for SSH Command
     final String DEF_USERNAME = "pi";
     private String username = DEF_USERNAME;
@@ -51,7 +64,9 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	private LocalDeviceRepresentation.DeviceIdUpdateListener deviceIdUpdateListener = null;
 	private DynamicControl.DynamicControlListener dynamicControlListenerCreated = null;
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
+	private DynamicControl.DynamicControlListener dynamicControlListenerRemoved = null;
 
+	private Map<Integer, ControlCellPair> dynamicControlsList = new Hashtable<Integer, ControlCellPair>();
 
 	//in case the user is not using pi as the default username for ssh
     public void setUsername(String val)
@@ -60,19 +75,38 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
     }
 
 	Stage dynamicControlStage = null;
-	VBox dynamicControlPane = null;
+	GridPane dynamicControlPane = null;
 	Scene dynamicControlScenen = null;
+	int next_control_row = 0;
 
 	String buildSSHCommand(String device_name)
     {
         return "ssh " + username + "@" + device_name + ".local";
     }
 
-    public DeviceRepresentationCell(){
-		num_items++;
-		System.out.println("DeviceRepresentationCell Constructor " + num_items);
 
+    void removeDynamicControlScene()
+	{
+		if (dynamicControlStage != null)
+		{
+			dynamicControlStage.close();
+			dynamicControlStage = null;
+		}
+		next_control_row = 0;
 	}
+
+	void removeDynamicControl(DynamicControl control)
+	{
+		// find the control based on its hash from control table
+		ControlCellPair control_pair = dynamicControlsList.get(control.getControlHashCode());
+
+		if (control_pair != null)
+		{
+			dynamicControlPane.getChildren().remove(control_pair.controlNode);
+			dynamicControlPane.getChildren().remove(control_pair.labelNode);
+		}
+	}
+
 	/**
 	 * Add A dynamic Control to window. Must be called in context of main thread
 	 * @param control
@@ -83,18 +117,18 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 			dynamicControlStage = new Stage();
 			dynamicControlStage.setTitle(localDevice.deviceName);
-			dynamicControlPane = new VBox();
-			dynamicControlScenen = new Scene(dynamicControlPane, 200, 100);
+			dynamicControlPane = new GridPane();
+			dynamicControlPane.setHgap(10);
+			dynamicControlPane.setVgap(10);
+			dynamicControlPane.setPadding(new Insets(20, 20, 0, 20));
+			dynamicControlScenen = new Scene(dynamicControlPane, 500, 500);
 			dynamicControlStage.setScene(dynamicControlScenen);
 		}
 
 		Label control_label = new Label(control.getControlName());
 
-		HBox control_group = new HBox();
-		control_group.getChildren().add(control_label);
+		dynamicControlPane.add(control_label, 0,next_control_row);
 
-
-		dynamicControlPane.getChildren().add(control_group);
 
 		ControlType control_type = control.getControlType();
 
@@ -102,42 +136,47 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			case BUTTON:
 				Button b = new Button();
 				b.setText("Send");
-				control_group.getChildren().add(b);
+				dynamicControlPane.add(b, 1, next_control_row);
+				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, b));
 				break;
 
 			case SLIDER:
 				Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
 				s.setMaxWidth(100);
 				s.setOrientation(Orientation.HORIZONTAL);
-				control_group.getChildren().add(s);
+				dynamicControlPane.add(s, 1, next_control_row);
+				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, s));
 				break;
 
 			case CHECKBOX:
 				CheckBox c = new CheckBox();
 				int i_val = (int) control.getValue();
 				c.setSelected(i_val != 0);
-				control_group.getChildren().add(c);
+				dynamicControlPane.add(c, 1, next_control_row);
+				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, c));
 				break;
 
 			case FLOAT:
 				Slider f = new Slider((float) control.getMinimumValue(), (float) control.getMaximumValue(), (float) control.getValue());
 				f.setMaxWidth(100);
 				f.setOrientation(Orientation.HORIZONTAL);
-				control_group.getChildren().add(f);
+				dynamicControlPane.add(f, 1, next_control_row);
+				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, f));
 				break;
 
 			case TEXT:
 				TextField t = new TextField();
 				t.setMaxWidth(100);
 				t.setText((String) control.getValue());
-				control_group.getChildren().add(t);
+				dynamicControlPane.add(t, 1, next_control_row);
+				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, t));
 				break;
 
 			default:
 				break;
 		}
 
-
+		next_control_row++;
 		dynamicControlStage.show();
 		dynamicControlStage.toFront();
 
@@ -152,13 +191,11 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			// This is where we will clear out all old listeners
 			localDevice.removeStatusUpdateListener(updateListener);
 			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
-			localDevice.removeDynamicControlListenerCreated(dynamicControlListenerCreated);
+			localDevice.removeDynamicControlListenerCreatedListener(dynamicControlListenerCreated);
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
-			if (dynamicControlStage != null)
-			{
-				dynamicControlStage.close();
-				dynamicControlStage = null;
-			}
+			localDevice.removeDynamicControlListenerRemovedListener(dynamicControlListenerRemoved);
+
+			removeDynamicControlScene();
 		}
 
 		localDevice = item;
@@ -207,7 +244,9 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			resetButton.setMaxHeight(5);
 			resetButton.setOnAction(new EventHandler<ActionEvent>() {
 				@Override public void handle(ActionEvent e) {
-					item.send(OSCVocabulary.Device.RESET);
+
+					item.resetDevice();
+					removeDynamicControlScene();
 				}
 			});
 			controls.getChildren().add(resetButton);
@@ -367,7 +406,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 			});
 
-            item.addDynamicControlListenerCreated(dynamicControlListenerCreated = new DynamicControl.DynamicControlListener() {
+            item.addDynamicControlListenerCreatedListener(dynamicControlListenerCreated = new DynamicControl.DynamicControlListener() {
 				@Override
 				public void update(DynamicControl control) {
 					Platform.runLater(new Runnable() {
@@ -378,6 +417,17 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				}
 			});
 
+
+            item.addDynamicControlListenerRemovedListener(dynamicControlListenerRemoved = new DynamicControl.DynamicControlListener(){
+				@Override
+				public void update(DynamicControl control) {
+					Platform.runLater(new Runnable() {
+						public void run() {
+							removeDynamicControl(control);
+						}
+					});
+				}
+			});
 
 			setGraphic(main);
 		}

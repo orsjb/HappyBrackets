@@ -55,7 +55,7 @@ public class DeviceConnection {
 	BroadcastManager broadcastManager;
 
 	// flag to disable sending and receiving OSC
-	private boolean disableAdvertising = false;
+	private static boolean disableAdvertising = false;
 
 	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
 		this.config = config;
@@ -117,7 +117,7 @@ public class DeviceConnection {
 	 * Flag if we are disabling OSC
 	 * @return
 	 */
-	public final boolean getDisabledAdvertise(){
+	public static final boolean getDisabledAdvertise(){
 		return disableAdvertising;
 	}
 

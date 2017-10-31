@@ -61,7 +61,7 @@ public abstract class SendToDevice {
 		//now we have all the files as byte arrays
 		//time to send
 		for(LocalDeviceRepresentation device : devices) {
-			if (device.getIsConnected()) {
+			if (device.getIsConnected() || DeviceConnection.getDisabledAdvertise()) {
 				try {
 					//send all of the files to this hostname
 					for (byte[][] bytes : all_files_as_bytes) {

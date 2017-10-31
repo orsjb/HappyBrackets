@@ -35,7 +35,7 @@ public class ControllerAdvertiserTest {
 	@Before
 	public void setUp() throws Exception {
 		aliveSocket = new DatagramSocket();
-		aliveSocket.setReuseAddress(true);
+		aliveSocket.setReuseAddress(false);
 		int reply_port = aliveSocket.getLocalPort();
 
 		env 				= new ControllerConfig();

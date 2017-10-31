@@ -141,7 +141,9 @@ public class ControlMap {
                 sendDynamicControlMessage(msg);
 
             }
+            dynamicControls.clear();
         }
+
     }
 
     /**
