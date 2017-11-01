@@ -346,30 +346,17 @@ public class NetworkCommunication {
 
 	/**
 	 * Send an OSC message to the controller. This assumes that you have implemented code on the controller side to respond to this message.
-	 * @param msg the message name.
+	 * @param msg_name the message name.
 	 * @param args the message arguments.
      */
-	public void send(String msg, Object[] args) {
+	public void send(String msg_name, Object[] args) {
 		try {
 			DeviceConfig config = DeviceConfig.getInstance();
 
-			config.getDeviceControllers().forEach((hash, controller) ->
-					{
-						InetSocketAddress address = controller.getAddress();
+			OSCMessage msg = new OSCMessage(msg_name, args);
 
-						try {
-							oscServer.send(
-                                    new OSCMessage(msg, args),
-    						address
-
-                            );
-						} catch (IOException e) {
-							logger.error("Error sending OSC message to Server!", e);
-						}
-					}
-			);
-
-
+			UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+			DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
 
 		} catch (Exception ex) {
 			logger.error("Error sending OSC message to Server!", ex);

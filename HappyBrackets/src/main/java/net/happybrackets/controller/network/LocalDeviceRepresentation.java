@@ -28,6 +28,7 @@ import de.sciss.net.OSCServer;
 
 import net.happybrackets.core.ErrorListener;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class LocalDeviceRepresentation {
 	public final String deviceName;
 	public final String hostName;
 	public final String address;
-	public List<String> preferredAddressStrings; 	//This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
+	public List<String> preferredAddressStrings;    //This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
 	private int deviceId; //
 	private String status = "Status unknown"; // This is the displayed ID
 
@@ -69,24 +70,24 @@ public class LocalDeviceRepresentation {
 		void update(String state);
 	}
 
-    public interface ConnectedUpdateListener{
-        void update(boolean connected);
-    }
+	public interface ConnectedUpdateListener {
+		void update(boolean connected);
+	}
 
-	public interface DeviceIdUpdateListener{
+	public interface DeviceIdUpdateListener {
 		void update(int new_id);
 	}
 
-    public interface SocketAddressChangedListener{
+	public interface SocketAddressChangedListener {
 		void socketChanged(InetAddress old_address, InetAddress inet_address);
 	}
 
-	public interface DeviceRemovedListener{
+	public interface DeviceRemovedListener {
 		void deviceRemoved(LocalDeviceRepresentation device);
 	}
 
 	private List<StatusUpdateListener> statusUpdateListenerList = new ArrayList<>();
-    private List<ConnectedUpdateListener> connectedUpdateListenerList = new ArrayList<>();
+	private List<ConnectedUpdateListener> connectedUpdateListenerList = new ArrayList<>();
 	private List<SocketAddressChangedListener> socketAddressChangedListenerList = new ArrayList<>();
 	private List<DeviceIdUpdateListener> deviceIdUpdateListenerList = new ArrayList<>();
 	private List<DeviceRemovedListener> deviceRemovedListenerList = new ArrayList<>();
@@ -97,35 +98,33 @@ public class LocalDeviceRepresentation {
 	private List<ErrorListener> errorListenerList = new ArrayList<>();
 
 	private String log;
+
 	public interface LogListener {
 		void newLogMessage(String message);
 	}
+
 	private List<LogListener> logListenerList = new ArrayList<>();
 
-	public void addDynamicControlListenerCreatedListener(DynamicControl.DynamicControlListener listener){
-		synchronized (addDynamicControlListenerList)
-		{
+	public void addDynamicControlListenerCreatedListener(DynamicControl.DynamicControlListener listener) {
+		synchronized (addDynamicControlListenerList) {
 			addDynamicControlListenerList.add(listener);
 		}
 	}
 
-	public void removeDynamicControlListenerCreatedListener(DynamicControl.DynamicControlListener listener){
-		synchronized (addDynamicControlListenerList)
-		{
+	public void removeDynamicControlListenerCreatedListener(DynamicControl.DynamicControlListener listener) {
+		synchronized (addDynamicControlListenerList) {
 			addDynamicControlListenerList.remove(listener);
 		}
 	}
 
-	public void addDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener){
-		synchronized (removeDynamicControlListenerList)
-		{
+	public void addDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener) {
+		synchronized (removeDynamicControlListenerList) {
 			removeDynamicControlListenerList.add(listener);
 		}
 	}
 
-	public void removeDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener){
-		synchronized (removeDynamicControlListenerList)
-		{
+	public void removeDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener) {
+		synchronized (removeDynamicControlListenerList) {
 			removeDynamicControlListenerList.add(listener);
 		}
 	}
@@ -133,15 +132,13 @@ public class LocalDeviceRepresentation {
 
 	/**
 	 * Add A dynamic Control
+	 *
 	 * @param control The DynamicControl we are making
 	 */
-	public void addDynamicControl(DynamicControl control)
-	{
-		synchronized (dynamicControls)
-		{
+	public void addDynamicControl(DynamicControl control) {
+		synchronized (dynamicControls) {
 			dynamicControls.put(control.getControlHashCode(), control);
-			synchronized (addDynamicControlListenerList)
-			{
+			synchronized (addDynamicControlListenerList) {
 				for (DynamicControl.DynamicControlListener listener : addDynamicControlListenerList) {
 					listener.update(control);
 				}
@@ -159,8 +156,7 @@ public class LocalDeviceRepresentation {
 	/**
 	 * Reset the device and clear dynamic controls
 	 */
-	public void resetDevice()
-	{
+	public void resetDevice() {
 		this.send(OSCVocabulary.Device.RESET);
 		clearDynamicControls();
 	}
@@ -168,14 +164,12 @@ public class LocalDeviceRepresentation {
 	/**
 	 * We need to remove all dynamic controls From This device
 	 */
-	public void clearDynamicControls()
-	{
+	public void clearDynamicControls() {
 		// we need to get the collection synchronised with map
 		// or we will get an access vioaltion
 
 		Collection<DynamicControl> removal_list;
-		synchronized (dynamicControls)
-		{
+		synchronized (dynamicControls) {
 			removal_list = dynamicControls.values();
 		}
 
@@ -183,24 +177,22 @@ public class LocalDeviceRepresentation {
 			removeDynamicControl(control);
 		}
 	}
+
 	/**
 	 * Remove A dynamic Control
+	 *
 	 * @param control The DynamicControl we are making
 	 */
-	public void removeDynamicControl(DynamicControl control)
-	{
-		synchronized (dynamicControls)
-		{
+	public void removeDynamicControl(DynamicControl control) {
+		synchronized (dynamicControls) {
 			dynamicControls.remove(control.getControlHashCode());
-			synchronized (removeDynamicControlListenerList)
-			{
+			synchronized (removeDynamicControlListenerList) {
 				for (DynamicControl.DynamicControlListener listener : removeDynamicControlListenerList) {
 					listener.update(control);
 				}
 			}
 		}
 	}
-
 
 
 	// Overload constructors. Construct with a SocketAddress
@@ -211,17 +203,17 @@ public class LocalDeviceRepresentation {
 
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
 
-		this.deviceName						= deviceName;
-		this.hostName   					= hostname;
-    	this.address    					= addr;
-		this.socketAddress 					= null;
-		this.deviceId     					= id;
-		this.server     					= server;
-		this.controllerConfig     			= config;
-		groups          					= new boolean[4];
+		this.deviceName = deviceName;
+		this.hostName = hostname;
+		this.address = addr;
+		this.socketAddress = null;
+		this.deviceId = id;
+		this.server = server;
+		this.controllerConfig = config;
+		groups = new boolean[4];
 
 
-        this.isConnected = true;
+		this.isConnected = true;
 
 		// Set-up log monitor.
 		log = "";
@@ -239,6 +231,99 @@ public class LocalDeviceRepresentation {
 			}
 		});
 	}
+
+
+	/**
+	 * Process and incoming OSC Message for this device
+	 *
+	 * @param msg    the OSC Message
+	 * @param sender Socket address of sender
+	 */
+	public synchronized void incomingMessage(OSCMessage msg, SocketAddress sender) {
+		if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
+			processStatusMessage(msg, sender);
+		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
+			processVersionMessage(msg, sender);
+		} else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DynamicControlMessage.CONTROL)) {
+			processDynamicControlMessage(msg, sender);
+		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.LOG)) {
+			processLogMessage(msg, sender);
+		}
+
+	}
+
+	private void processLogMessage(OSCMessage msg, SocketAddress sender) {
+		String new_log_output = (String) msg.getArg(1);
+		log = log + "\n" + new_log_output;
+		logger.debug("Received new log output from device {} ({}): {}", deviceName, socketAddress, new_log_output);
+		for (LogListener listener : logListenerList) {
+			listener.newLogMessage(new_log_output);
+		}
+	}
+
+	/**
+	 * process alive message from device
+	 *
+	 * @param msg    OSC Message
+	 * @param sender the Socket Address of where the message originated
+	 */
+	private void processStatusMessage(OSCMessage msg, SocketAddress sender) {
+		// Lets put some constants here so we can read them
+		final int DEVICE_STATUS = 1;
+
+		String status = (String) msg.getArg(DEVICE_STATUS);
+		setStatus(status);
+	}
+
+	/**
+	 * Process the Build Version message of this device
+	 * @param msg OSC Message
+	 * @param sender Socket address of sender
+	 */
+	private void processVersionMessage(OSCMessage msg, SocketAddress sender) {
+		final int DEVICE_NAME = 0;
+		final int DEVICE_MAJOR = 1;
+		final int DEVICE_MINOR = 2;
+		final int DEVICE_BUILD = 3;
+		final int DEVICE_DATE = 4;
+
+		int major, minor, build, date;
+
+		major = (int) msg.getArg(DEVICE_MAJOR);
+		minor = (int) msg.getArg(DEVICE_MINOR);
+		build = (int) msg.getArg(DEVICE_BUILD);
+		date = (int) msg.getArg(DEVICE_DATE);
+
+		setVersion(major, minor, build, date);
+	}
+
+
+	/**
+	 * Process Messages with Dynamic Control
+	 * @param msg OSC Message
+	 * @param sender socket addrss of sender
+	 */
+	private void processDynamicControlMessage(OSCMessage msg, SocketAddress sender) {
+		final int CONTROL_HASH = 1;
+		int hash_code = (int) msg.getArg(CONTROL_HASH);
+
+		if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.CREATE)) {
+			DynamicControl new_control = new DynamicControl(msg);
+			addDynamicControl(new_control);
+		} else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DESTROY)) {
+			DynamicControl control = ControlMap.getInstance().getControl(hash_code);
+			if (control != null) {
+				control.eraseListeners();
+				removeDynamicControl(control);
+				ControlMap.getInstance().removeControl(control);
+			}
+		} else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)) {
+			// This call will send an update to all listeners
+			DynamicControl.processUpdateMessage(msg);
+		}
+
+	}
+
 
 
 	public final InetSocketAddress getSocketAddress()

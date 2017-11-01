@@ -193,28 +193,6 @@ public class DeviceConnection {
         return addresses;
     }
 
-	/**
-	 * process alive message from device
-	 * @param msg OSC Message
-	 * @param sender the Socket Address of where the message originated
-	 */
-	private void processStatusMessage(OSCMessage msg, SocketAddress sender) {
-		// Lets put some constants here so we can read them
-		final int DEVICE_NAME = 0;
-		final int DEVICE_STATUS = 1;
-
-		try {
-			String device_name = (String) msg.getArg(DEVICE_NAME);
-			LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
-
-			if (this_device != null) {
-				String status = (String) msg.getArg(DEVICE_STATUS);
-				this_device.setStatus(status);
-			}
-
-		}
-		catch (Exception ex){}
-	}
 
 		/**
          * process alive message from device
@@ -368,88 +346,26 @@ public class DeviceConnection {
 		if (!disableAdvertising) {
 			if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
 				processAliveMessage(msg, sender);
-			} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
-				processStatusMessage(msg, sender);
-			} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
-				processVersionMessage(msg, sender);
+			} else {
+				final int DEVICE_NAME = 0;
+				try {
+					String device_name = (String) msg.getArg(DEVICE_NAME);
+					LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
+
+					if (this_device != null) {
+
+						this_device.incomingMessage(msg, sender);
+					}
+
+				}
+				catch (Exception ex){}
 			}
-			else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DynamicControlMessage.CONTROL))
-			{
-				processDynamicControlMessage(msg, sender);
-			}
+
 		}
 //		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
 	}
 
-	private void processDynamicControlMessage(OSCMessage msg, SocketAddress sender) {
-		final int DEVICE_NAME = 0;
-		final int CONTROL_HASH = 1;
 
-		String device_name = (String) msg.getArg(DEVICE_NAME);
-		int hash_code = (int) msg.getArg(CONTROL_HASH);
-
-		LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
-
-		try {
-			if (this_device != null)
-			{
-				if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.CREATE)) {
-					DynamicControl new_control = new DynamicControl(msg);
-					this_device.addDynamicControl(new_control);
-				}
-				else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DESTROY)) {
-					DynamicControl control = ControlMap.getInstance().getControl(hash_code);
-					if (control != null)
-					{
-						control.eraseListeners();
-						this_device.removeDynamicControl(control);
-						ControlMap.getInstance().removeControl(control);
-					}
-				}
-				else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)) {
-					// This call will send an update to all listeners
-					DynamicControl.processUpdateMessage(msg);
-				}
-
-
-			}
-
-		}catch (Exception ex){
-
-		}
-
-	}
-
-	/**
-	 *
-	 * @param msg
-	 * @param sender
-	 */
-	private void processVersionMessage(OSCMessage msg, SocketAddress sender) {
-		final int DEVICE_NAME = 0;
-		final int DEVICE_MAJOR = 1;
-		final int DEVICE_MINOR = 2;
-		final int DEVICE_BUILD = 3;
-		final int DEVICE_DATE = 4;
-
-		try {
-			String device_name = (String) msg.getArg(DEVICE_NAME);
-			LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
-
-			if (this_device != null) {
-				int major, minor, build, date;
-
-				major =(int)msg.getArg(DEVICE_MAJOR);
-				minor =  (int)msg.getArg(DEVICE_MINOR);
-				build = (int)msg.getArg(DEVICE_BUILD);
-				date = (int)msg.getArg(DEVICE_DATE);
-
-				this_device.setVersion (major, minor, build, date);
-			}
-
-		}
-		catch (Exception ex){}
-	}
 
 	public void sendToDevice(LocalDeviceRepresentation device, String msg_name, Object... args) {
 		device.send(msg_name, args);

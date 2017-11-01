@@ -172,7 +172,7 @@ public class LogSender {
 
                 networkCommunication.send(OSCVocabulary.Device.LOG,
                         new Object[] {
-                                networkCommunication.getID(),
+                                Device.getDeviceName(),
                                 sb.toString()
                         });
             }
