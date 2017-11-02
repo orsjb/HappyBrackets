@@ -56,6 +56,8 @@ sourceSets {
 
 task development
 
+task fastbuild
+
 task config {
     //select the appropriate resources includes
     gradle.taskGraph.whenReady { graph ->
@@ -162,6 +164,13 @@ deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
 deploy.dependsOn deployPlugin
 deploy.dependsOn packDeviceRuntime
+
+// Faster build without tests
+fastbuild.dependsOn build
+fastbuild.dependsOn shadowJar
+fastbuild.dependsOn deployPlugin
+fastbuild.dependsOn packDeviceRuntime
+
 
 packDevKit.dependsOn packDeviceRuntime
 
