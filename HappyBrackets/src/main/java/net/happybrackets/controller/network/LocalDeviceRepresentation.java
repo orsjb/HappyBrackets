@@ -325,6 +325,14 @@ public class LocalDeviceRepresentation {
 	}
 
 
+	/**
+	 * We will recieve this message and send the dynamic control message back to the device
+	 * @param dynamic_control The Dynamic Control
+	 */
+	public void sendDynamicControl(DynamicControl dynamic_control){
+		OSCMessage msg = dynamic_control.buildUpdateMessage();
+		sendOscMsg(msg);
+	}
 
 	public final InetSocketAddress getSocketAddress()
 	{
@@ -405,11 +413,8 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
-	public synchronized void send(String msg_name, Object... args) {
-		if(hostName.startsWith("Virtual Test Device")) {
-			return;
-		}
-		OSCMessage msg = new OSCMessage(msg_name, args);
+	public synchronized void sendOscMsg(OSCMessage msg)
+	{
 		lazySetupAddressStrings();
 		boolean success = false;
 		int count = 0;
@@ -433,6 +438,14 @@ public class LocalDeviceRepresentation {
 				count++;
 			}
 		}
+
+	}
+	public synchronized void send(String msg_name, Object... args) {
+		if(hostName.startsWith("Virtual Test Device")) {
+			return;
+		}
+		OSCMessage msg = new OSCMessage(msg_name, args);
+		sendOscMsg(msg);
 	}
 
 	public synchronized void send(byte[]... data) {

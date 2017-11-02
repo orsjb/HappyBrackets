@@ -24,9 +24,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
@@ -138,6 +136,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				b.setText("Send");
 				dynamicControlPane.add(b, 1, next_control_row);
 				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, b));
+				b.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e) {
+						control.setValue(1);
+						localDevice.sendDynamicControl(control);
+					}
+				});
+
 				break;
 
 			case SLIDER:
@@ -146,6 +152,13 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				s.setOrientation(Orientation.HORIZONTAL);
 				dynamicControlPane.add(s, 1, next_control_row);
 				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, s));
+				s.valueProperty().addListener(new ChangeListener<Number>() {
+					@Override
+					public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
+						control.setValue(newval.intValue());
+						localDevice.sendDynamicControl(control);
+					}
+				});
 				break;
 
 			case CHECKBOX:
@@ -154,6 +167,13 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				c.setSelected(i_val != 0);
 				dynamicControlPane.add(c, 1, next_control_row);
 				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, c));
+				c.selectedProperty().addListener(new ChangeListener<Boolean>() {
+					public void changed(ObservableValue<? extends Boolean> ov,
+										Boolean oldval, Boolean newval) {
+						control.setValue(newval? 1: 0);
+						localDevice.sendDynamicControl(control);
+					}
+				});
 				break;
 
 			case FLOAT:
@@ -162,6 +182,13 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				f.setOrientation(Orientation.HORIZONTAL);
 				dynamicControlPane.add(f, 1, next_control_row);
 				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, f));
+				f.valueProperty().addListener(new ChangeListener<Number>() {
+					@Override
+					public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
+						control.setValue(newval.floatValue());
+						localDevice.sendDynamicControl(control);
+					}
+				});
 				break;
 
 			case TEXT:
@@ -170,6 +197,28 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				t.setText((String) control.getValue());
 				dynamicControlPane.add(t, 1, next_control_row);
 				dynamicControlsList.put(control.getControlHashCode(), new ControlCellPair(control_label, t));
+
+				t.setOnKeyTyped(new EventHandler<KeyEvent>() {
+					@Override
+					public void handle(KeyEvent event) {
+						if (event.getCode().equals(KeyCode.ENTER))
+						{
+							String text_val = t.getText();
+							control.setValue(text_val);
+							localDevice.sendDynamicControl(control);
+						}
+					}
+				});
+
+				// set handlers
+				t.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent actionEvent) {
+						String text_val = t.getText();
+						control.setValue(text_val);
+						localDevice.sendDynamicControl(control);
+					}
+				});
 				break;
 
 			default:

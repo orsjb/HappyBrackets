@@ -29,7 +29,7 @@ public class TestDynamicControl_1 implements HBAction {
 
         DynamicControl new_control = hb.createDynamicControl(this, ControlType.SLIDER, "Slider", 2000, 100, 4000);
 
-        hb.createDynamicControl(this, ControlType.TEXT, "Text", "Hello Text");
+        DynamicControl text_control = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Hello Text");
         hb.createDynamicControl(this, ControlType.FLOAT, "Float", 200.0, 100.0, 300.0);
         hb.createDynamicControl(this, ControlType.BUTTON, "Button", 0);
         hb.createDynamicControl(this, ControlType.CHECKBOX, "Checkbox", 1);
@@ -40,10 +40,18 @@ public class TestDynamicControl_1 implements HBAction {
         new_control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
-                floatVal = (float)control.getValue();
+                int i = (int) control.getValue();
+                floatVal = (float) i;
             }
         });
 
+        text_control.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+                String s = (String) control.getValue();
+                System.out.println("Control Listener received :" + s);
+            }
+        });
         controlHashCode = new_control.hashCode();
 
 

@@ -207,6 +207,9 @@ public class NetworkCommunication {
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GET)){
 							ControlMap.getInstance().sendAllControlsToController();
 						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)){
+							DynamicControl.processUpdateMessage(msg);
+						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
 							//TODO: add interfaces path to device config
 							boolean status = LocalConfigManagement.updateInterfaces(
