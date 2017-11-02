@@ -260,7 +260,11 @@ public class DynamicControl {
      */
     public void addControlListener(DynamicControlListener listener)
     {
-        synchronized (controlListenerList) {controlListenerList.add(listener);}
+        if (listener != null) {
+            synchronized (controlListenerList) {
+                controlListenerList.add(listener);
+            }
+        }
     }
 
     /**
@@ -269,7 +273,11 @@ public class DynamicControl {
      */
     public void removeControlListener(DynamicControlListener listener)
     {
-        synchronized (controlListenerList) {controlListenerList.remove(listener);}
+        if (listener != null) {
+            synchronized (controlListenerList) {
+                controlListenerList.remove(listener);
+            }
+        }
     }
 
 

@@ -16,6 +16,7 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
+import javax.swing.plaf.synth.SynthDesktopIconUI;
 import java.net.SocketAddress;
 
 public class TestDynamicControl_1 implements HBAction {
@@ -27,24 +28,32 @@ public class TestDynamicControl_1 implements HBAction {
     public void action(HB hb) {
 
 
-        DynamicControl new_control = hb.createDynamicControl(this, ControlType.SLIDER, "Slider", 2000, 100, 4000);
+        DynamicControl slider_control = hb.createDynamicControl(this, ControlType.SLIDER, "Slider", 2000, 100, 4000);
 
         DynamicControl text_control = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Hello Text");
-        hb.createDynamicControl(this, ControlType.FLOAT, "Float", 200.0, 100.0, 300.0);
-        hb.createDynamicControl(this, ControlType.BUTTON, "Button", 0);
-        hb.createDynamicControl(this, ControlType.CHECKBOX, "Checkbox", 1);
+        DynamicControl float_control = hb.createDynamicControl(this, ControlType.FLOAT, "Float", 200.0, 100.0, 300.0);
+        DynamicControl button_control = hb.createDynamicControl(this, ControlType.BUTTON, "Button", 0);
+        DynamicControl checkbox_control = hb.createDynamicControl(this, ControlType.CHECKBOX, "Checkbox", 0);
 
         //hb.setPresetValue("Name", 1);
         //hb.setPresetValue("Name", 1);
 
-        new_control.addControlListener(new DynamicControl.DynamicControlListener() {
+        slider_control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
                 int i = (int) control.getValue();
                 floatVal = (float) i;
+                System.out.println("Slider val " + i);
             }
         });
 
+        float_control.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+                float f = (float) control.getValue();
+                System.out.println("Float Val "  + f);
+            }
+        });
         text_control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
@@ -52,7 +61,27 @@ public class TestDynamicControl_1 implements HBAction {
                 System.out.println("Control Listener received :" + s);
             }
         });
-        controlHashCode = new_control.hashCode();
+
+        checkbox_control.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+                int i = (int) control.getValue();
+                System.out.println("Checkbox val " + i);
+
+            }
+        });
+        button_control.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+                System.out.println("Button Value Reset Sliders to zero and erase text");
+                checkbox_control.setValue(0);
+                text_control.setValue("Reset Text");
+                float_control.setValue(float_control.getMinimumValue());
+                slider_control.setValue(slider_control.getMinimumValue());
+            }
+        });
+
+        controlHashCode = slider_control.hashCode();
 
 
         hb.controller.addListener(new OSCListener() {
