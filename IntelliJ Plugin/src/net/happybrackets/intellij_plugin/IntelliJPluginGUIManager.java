@@ -99,6 +99,7 @@ public class IntelliJPluginGUIManager {
 	private static final int ALL = -1; // Send to all devices.
 	private static final int SELECTED = -2; // Send to selected device(s).
 
+
 	public IntelliJPluginGUIManager(Project project) {
 		this.project = project;
 		init();
@@ -138,6 +139,21 @@ public class IntelliJPluginGUIManager {
 		});
 	}
 
+
+	/**
+	 * A function to enable or disable a control in context of main thread
+	 * @param c control to modify
+	 * @param disable whether to disable
+	 */
+	private void disableControl(Control c, boolean disable)
+	{
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				c.setDisable(disable);
+			}
+		});
+	}
 
 
 	public Scene setupGUI() {
@@ -190,33 +206,74 @@ public class IntelliJPluginGUIManager {
 		globalcommands.setAlignment(Pos.TOP_LEFT);
 		{
 			Button b = new Button("Reboot");
+			b.setDisable(true);
 			b.setOnMouseClicked(event -> deviceConnection.deviceReboot());
 			b.setTooltip(new Tooltip("Reboot all devices."));
 			globalcommands.getChildren().add(b);
+			// Disable the Button if there are no devices
+			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+				@Override
+				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+					disableControl(b, deviceListView.getItems().size() < 1);
+				}
+			});
+
 		}
 		{
 			Button b = new Button("Shutdown");
+			b.setDisable(true);
 			b.setOnMouseClicked(event -> deviceConnection.deviceShutdown());
 			b.setTooltip(new Tooltip("Shutdown all devices."));
 			globalcommands.getChildren().add(b);
+			// Disable the Button if there are no devices
+			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+				@Override
+				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+					disableControl(b, deviceListView.getItems().size() < 1);
+				}
+			});
 		}
 		{
 			Button b = new Button("Reset");
+			b.setDisable(true);
 			b.setOnMouseClicked(e -> deviceConnection.deviceReset());
 			b.setTooltip(new Tooltip("Reset all devices to their initial state (same as Reset Sounding + Clear Sound)."));
 			globalcommands.getChildren().add(b);
+			// Disable the Button if there are no devices
+			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+				@Override
+				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+					disableControl(b, deviceListView.getItems().size() < 1);
+				}
+			});
 		}
 		{
 			Button b = new Button("Reset Sounding");
+			b.setDisable(true);
 			b.setOnMouseClicked(e -> deviceConnection.deviceResetSounding());
 			b.setTooltip(new Tooltip("Reset all devices to their initial state except for audio that is currently playing."));
 			globalcommands.getChildren().add(b);
+			// Disable the Button if there are no devices
+			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+				@Override
+				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+					disableControl(b, deviceListView.getItems().size() < 1);
+				}
+			});
 		}
 		{
 			Button b = new Button("Clear Sound");
+			b.setDisable(true);
 			b.setOnMouseClicked(e -> deviceConnection.deviceClearSound());
 			b.setTooltip(new Tooltip("Clears all of the audio that is currently playing on all devices."));
 			globalcommands.getChildren().add(b);
+			// Disable the Button if there are no devices
+			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+				@Override
+				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+					disableControl(b, deviceListView.getItems().size() < 1);
+				}
+			});
 		}
 		return globalcommands;
 	}
@@ -571,17 +628,28 @@ public class IntelliJPluginGUIManager {
 		});
 		composition_send_pane.add(compositionSelector, 0, 0, 6, 1);
 
-		Button composition_send_button = new Button("All");
-		composition_send_button.setTooltip(new Tooltip("Send the selected composition to all devices."));
-		composition_send_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		Button composition_send_all_button = new Button("All");
+		composition_send_all_button.setDisable(true);
+		composition_send_all_button.setTooltip(new Tooltip("Send the selected composition to all devices."));
+		composition_send_all_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				sendSelectedComposition(deviceConnection.getDevices());
 			}
 		});
-		composition_send_pane.add(composition_send_button, 0, 1);
+		composition_send_pane.add(composition_send_all_button, 0, 1);
+		// Disable the all Button if there are none
+		deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+			@Override
+			public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+				disableControl(composition_send_all_button, deviceListView.getItems().size() < 1);
+			}
+		});
+
 
 		Button composition_send_selected_button = new Button("Selected");
+		// we do not want send to selected until we have one selected
+		composition_send_selected_button.setDisable(true);
 		composition_send_selected_button.setTooltip(new Tooltip("Send the selected composition to the selected devices."));
 		composition_send_selected_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -589,6 +657,16 @@ public class IntelliJPluginGUIManager {
 				sendSelectedComposition(deviceListView.getSelectionModel().getSelectedItems());
 			}
 		});
+
+		// If we have none selected, we need to have selected Buttons Disabled
+		deviceListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<LocalDeviceRepresentation>() {
+			@Override
+			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation old_value, LocalDeviceRepresentation new_value) {
+				disableControl(composition_send_selected_button, new_value == null);
+			}
+		});
+
+
 		composition_send_pane.add(composition_send_selected_button, 1, 1);
 
 		for (int i = 0; i < 4; i++) {
@@ -607,6 +685,16 @@ public class IntelliJPluginGUIManager {
 					sendSelectedComposition(devices);
 				}
 			});
+
+			composition_send_group_button.setDisable(true);
+			// Disable the Button if there are no devices
+			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+				@Override
+				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+					disableControl(composition_send_group_button, deviceListView.getItems().size() < 1);
+				}
+			});
+
 			composition_send_pane.add(composition_send_group_button, 2 + group, 1);
 		}
 
@@ -662,23 +750,45 @@ public class IntelliJPluginGUIManager {
 		FlowPane messagepaths = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 		messagepaths.setAlignment(Pos.TOP_LEFT);
 
-		Button send_all_button = new Button("All");
-		send_all_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		Button send_all_OSC_button = new Button("All");
+		send_all_OSC_button.setDisable(true);
+		send_all_OSC_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				sendCustomCommand(code_field.getText(), ALL);
 			}
 		});
-		messagepaths.getChildren().add(send_all_button);
 
-		Button send_selected_button = new Button("Selected");
-		send_selected_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		// Disable the all Button if there are none
+		deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+			@Override
+			public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+				disableControl(send_all_OSC_button, deviceListView.getItems().size() < 1);
+			}
+
+		});
+
+
+		messagepaths.getChildren().add(send_all_OSC_button);
+
+		Button send_selected_OSC_button = new Button("Selected");
+		send_selected_OSC_button.setDisable(true);
+		send_selected_OSC_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				sendCustomCommand(code_field.getText(), SELECTED);
 			}
 		});
-		messagepaths.getChildren().add(send_selected_button);
+		// If we have none selected, we need to have selected Buttons Disabled
+		deviceListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<LocalDeviceRepresentation>() {
+			@Override
+			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation old_value, LocalDeviceRepresentation new_value) {
+				disableControl(send_selected_OSC_button, new_value == null);
+
+			}
+		});
+
+		messagepaths.getChildren().add(send_selected_OSC_button);
 
 		for(int i = 0; i < 4; i++) {
 			Button b = new Button();
@@ -691,6 +801,14 @@ public class IntelliJPluginGUIManager {
 			});
 			b.setText("" + (i + 1));
 			messagepaths.getChildren().add(b);
+			b.setDisable(true);
+			// Disable the Button if there are no devices
+			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
+				@Override
+				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
+					disableControl(b, deviceListView.getItems().size() < 1);
+				}
+			});
 		}
 
 		VBox custom_command_pane = new VBox(defaultElementSpacing);
