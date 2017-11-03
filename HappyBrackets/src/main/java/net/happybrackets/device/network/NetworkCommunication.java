@@ -142,6 +142,9 @@ public class NetworkCommunication {
 //				}
 //				System.out.println("Mesage received: " + msg.getName());
 
+				// this is our default target ports
+				int target_port = DeviceConfig.getInstance().getStatusFromDevicePort();
+
 				try {
 					InetAddress sending_address = ((InetSocketAddress) src).getAddress();
 
@@ -184,13 +187,25 @@ public class NetworkCommunication {
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.BLEEP)) {
 							hb.testBleep();
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
+							if (msg.getArgCount() > 0) {
+								target_port = (Integer) msg.getArg(0);
+							}
+
+							InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
 							send(OSCVocabulary.Device.STATUS,
 									new Object[]{
 											Device.getDeviceName(),
 											hb.getStatus()
 									},
-									sending_address);
+									target_address);
+
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
+							if (msg.getArgCount() > 0) {
+								target_port = (Integer) msg.getArg(0);
+							}
+							InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
 							send(OSCVocabulary.Device.VERSION,
 									new Object[]{
 											Device.getDeviceName(),
@@ -199,13 +214,37 @@ public class NetworkCommunication {
 											BuildVersion.getBuild(),
 											BuildVersion.getDate()
 									},
-									sending_address);
+									target_address);
 
-							System.out.println("Version sent " + BuildVersion.getVersionText());
+							System.out.println("Version sent " + BuildVersion.getVersionText() + " to port " + target_port) ;
 
 						}
-						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GET)){
-							ControlMap.getInstance().sendAllControlsToController();
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GET)) {
+							if (msg.getArgCount() > 0) {
+								target_port = (Integer) msg.getArg(0);
+							}
+
+							InetSocketAddress target_address = new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
+
+							ControlMap control_map = ControlMap.getInstance();
+
+							List<Integer> control_keys = control_map.GetSortedControls();
+
+							for (Integer control_key : control_keys) {
+								DynamicControl control = control_map.getControl(control_key);
+								if (control != null) {
+									OSCMessage send_msg = control.buildCreateMessage();
+									send(send_msg, target_address);
+								}
+								else{
+									System.out.println("Unable to Get Control Map key " +  control_key);
+								}
+							}
+
+
+
+
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)){
 							DynamicControl.processUpdateMessage(msg);
@@ -372,21 +411,30 @@ public class NetworkCommunication {
 	 * @param args the message arguments
 	 * @param requester the Address of the device making request
 	 */
-	public void send (String msg, Object[] args, InetAddress requester)
+	public void send (String msg, Object[] args, InetSocketAddress requester)
+	{
+		send(
+				new OSCMessage(msg, args),
+				requester
+		);
+	}
+
+	/**
+	 * Send a Built OSC Message to server
+	 * @param msg OSC Message
+	 * @param target, where we need to send message
+	 */
+	public void send (OSCMessage msg, InetSocketAddress target)
 	{
 		try {
-			oscServer.send(
-					new OSCMessage(msg, args),
-					new InetSocketAddress(
-							requester.getHostAddress(),
-							DeviceConfig.getInstance().getStatusFromDevicePort()
-					)
+			oscServer.send(msg,
+					target
 			);
 		} catch (IOException e) {
 			logger.error("Error sending OSC message to Server!", e);
 		}
-	}
 
+	}
 	/**
 	 * Add a @{@link OSCListener} that will respond to incoming OSC messages from the controller. Note that this will not listen to broadcast messages from other devices, for which you should use TODO!.
 	 * @param l the listener.

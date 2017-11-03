@@ -1,7 +1,9 @@
 package net.happybrackets.core.control;
 
 import de.sciss.net.OSCMessage;
+import net.happybrackets.device.network.UDPCachedMessage;
 
+import java.net.InetSocketAddress;
 import java.util.*;
 
 /**
@@ -147,19 +149,20 @@ public class ControlMap {
     }
 
     /**
-     * Send all Create messages to controller
+     * get all Dynamic Controls
      */
-    public void sendAllControlsToController()
+    public List<Integer> GetSortedControls()
     {
-        if (controlListenerList.size() > 0) {
-            synchronized (dynamicControls) {
-                Collection<DynamicControl> controls = dynamicControls.values();
-                for (DynamicControl control : controls) {
-                    OSCMessage msg = control.buildCreateMessage();
-                    sendDynamicControlMessage(msg);
-                }
-            }
+        List<Integer> sorted_list = new ArrayList<Integer>();
+
+        Set<Integer> key_set =  dynamicControls.keySet();
+
+        for (Integer key : key_set) {
+            sorted_list.add(key);
         }
+
+        java.util.Collections.sort(sorted_list);
+        return sorted_list;
     }
 
 }
