@@ -52,7 +52,9 @@ public class DeviceConnection {
 	private ControllerConfig config;
 	private boolean loggingEnabled;
 
+
 	BroadcastManager broadcastManager;
+	private final int replyPort; // this is the port we want the device to return calls to
 
 	// flag to disable sending and receiving OSC
 	private static boolean disableAdvertising = false;
@@ -60,7 +62,7 @@ public class DeviceConnection {
 	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
 		this.config = config;
 		broadcastManager = broadcast;
-
+		replyPort = broadcast.getPort();
 
 		//read the known devices from file
 		try {
@@ -248,7 +250,7 @@ public class DeviceConnection {
 					}
 				}
 
-				this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config);
+				this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config, replyPort);
 
 				this_device.addDeviceRemovedListener(new LocalDeviceRepresentation.DeviceRemovedListener() {
 					@Override
@@ -280,7 +282,9 @@ public class DeviceConnection {
 				//message sent to the device, it should be done in a separate thread.
 				this_device.setSocketAddress(sending_address);
 				sendIdToDevice(this_device);
-				sendControlRequestToDevice(this_device);
+
+				// we can't do this here as the loading and unloading of the DeviceRepresentation cell
+				//sendControlRequestToDevice(this_device);
 			}
 
 			//keep up to date
@@ -323,7 +327,7 @@ public class DeviceConnection {
 
 				// now ask for status
 				//local_device.send(OSCVocabulary.Device.STATUS);
-				local_device.send(OSCVocabulary.Device.VERSION);
+				local_device.sendVersionRequest();
 			}
 		}.start();
 	}
@@ -331,7 +335,7 @@ public class DeviceConnection {
 	private void sendControlRequestToDevice(final LocalDeviceRepresentation local_device){
 		new Thread() {
 			public void run() {
-				local_device.send(OSCVocabulary.DynamicControlMessage.GET);
+				local_device.sendControlsRequest();
 			}
 		}.start();
 	}
@@ -487,7 +491,7 @@ public class DeviceConnection {
 		String name     = "Virtual Test Device #" + virtualDeviceCount++;
 		String hostname = "myHostname!";
         String address  = "127.0.0.1";
-		LocalDeviceRepresentation virtual_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, this.oscServer, this.config);
+		LocalDeviceRepresentation virtual_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, this.oscServer, this.config, replyPort);
 		theDevices.add(virtual_test_device);
 		devicesByHostname.put(name, virtual_test_device);
 	}
