@@ -35,6 +35,8 @@ public class TestDynamicControl_1 implements HBAction {
         DynamicControl button_control = hb.createDynamicControl(this, ControlType.BUTTON, "Button", 0);
         DynamicControl checkbox_control = hb.createDynamicControl(this, ControlType.CHECKBOX, "Checkbox", 0);
 
+        DynamicControl text_mirror = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Text Mirror");
+
         //hb.setPresetValue("Name", 1);
         //hb.setPresetValue("Name", 1);
 
@@ -59,6 +61,7 @@ public class TestDynamicControl_1 implements HBAction {
             public void update(DynamicControl control) {
                 String s = (String) control.getValue();
                 System.out.println("Control Listener received :" + s);
+                text_mirror.setValue("Miiror: " + s);
             }
         });
 
@@ -81,7 +84,7 @@ public class TestDynamicControl_1 implements HBAction {
             }
         });
 
-        controlHashCode = slider_control.hashCode();
+        controlHashCode = slider_control.getControlHashCode();
 
 
         hb.controller.addListener(new OSCListener() {
