@@ -91,7 +91,6 @@ public class ControllerAdvertiser {
 
 
 	CachedMessage cachedBroadcastMessage = null;
-	CachedMessage cachedMulticasttMessage = null;
 
 	DatagramSocket advertiseTxSocket = null;
 	ByteBuffer byteBuf;
