@@ -284,7 +284,7 @@ public class DeviceConnection {
 				sendIdToDevice(this_device);
 
 				// we can't do this here as the loading and unloading of the DeviceRepresentation cell
-				//sendControlRequestToDevice(this_device);
+				sendControlRequestToDevice(this_device);
 			}
 
 			//keep up to date

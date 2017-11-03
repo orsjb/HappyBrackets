@@ -175,6 +175,7 @@ public class LocalDeviceRepresentation {
 		}
 
 		for (DynamicControl control : removal_list) {
+			control.eraseListeners();
 			removeDynamicControl(control);
 		}
 	}
@@ -182,7 +183,7 @@ public class LocalDeviceRepresentation {
 	/**
 	 * Remove A dynamic Control
 	 *
-	 * @param control The DynamicControl we are making
+	 * @param control The DynamicControl we are removing
 	 */
 	public void removeDynamicControl(DynamicControl control) {
 		synchronized (dynamicControls) {
