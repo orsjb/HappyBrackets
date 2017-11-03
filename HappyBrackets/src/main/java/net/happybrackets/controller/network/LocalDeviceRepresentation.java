@@ -50,7 +50,8 @@ public class LocalDeviceRepresentation {
 	private final OSCServer server;
 	public final boolean[] groups;
 	private ControllerConfig controllerConfig;
-
+	private final int replyPort; // this is the port where we will tell devices to send our messages
+	private final Object[] replyPortObject; //we will use this as a cached Object to send in OSC Message
 
 	private Map<Integer, DynamicControl> dynamicControls = new Hashtable<Integer, DynamicControl>();
 
@@ -196,13 +197,15 @@ public class LocalDeviceRepresentation {
 
 
 	// Overload constructors. Construct with a SocketAddress
-	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress) {
-		this(deviceName, hostname, addr, id, server, config);
+	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress, int reply_port) {
+		this(deviceName, hostname, addr, id, server, config, reply_port);
 		this.socketAddress = socketAddress;
 	}
 
-	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config) {
+	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, int reply_port) {
 
+		replyPort = reply_port;
+		replyPortObject = new Object[] {replyPort};
 		this.deviceName = deviceName;
 		this.hostName = hostname;
 		this.address = addr;
@@ -402,6 +405,29 @@ public class LocalDeviceRepresentation {
 		return deviceId;
 	}
 
+
+	/**
+	 * Send a request to get version number of HappyBrackets from device
+	 */
+	public void sendVersionRequest(){
+		send(OSCVocabulary.Device.VERSION, replyPortObject);
+	}
+
+	/**
+	 * Send a request to get the dynamic controls on this device
+	 */
+	public void sendControlsRequest(){
+		clearDynamicControls();
+		send(OSCVocabulary.DynamicControlMessage.GET, replyPortObject);
+	}
+
+	/**
+	 * Send a status request to the device
+	 */
+	public void sendStatusRequest(){
+		send(OSCVocabulary.Device.STATUS, replyPortObject);
+	}
+
 	private void lazySetupAddressStrings() {
 		if(preferredAddressStrings == null) {
 			preferredAddressStrings = new LinkedList<>();
@@ -440,6 +466,7 @@ public class LocalDeviceRepresentation {
 		}
 
 	}
+
 	public synchronized void send(String msg_name, Object... args) {
 		if(hostName.startsWith("Virtual Test Device")) {
 			return;

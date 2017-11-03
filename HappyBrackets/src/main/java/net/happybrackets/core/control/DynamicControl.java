@@ -15,6 +15,9 @@ public class DynamicControl {
 
     static ControlMap controlMap = ControlMap.getInstance();
 
+    static int instanceCounter = 0; // we will use this to order the creation of our objects and give them a unique number on device
+    Object instanceCounterLock = new Object();
+
     private final int controlHashCode;
 
     /**
@@ -64,7 +67,10 @@ public class DynamicControl {
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
         Init(parent_sketch.getClass().getName(), control_type, name, initial_value);
-        controlHashCode = hashCode();
+        synchronized (instanceCounterLock) {
+            controlHashCode = instanceCounter;
+            instanceCounter++;
+        }
         controlMap.addControl(this);
         //sendCreateMessage();
     }
@@ -84,7 +90,11 @@ public class DynamicControl {
         Init(parent_sketch.getClass().getName(), control_type, name, initial_value);
         minimumValue = min_value;
         maximumValue = max_value;
-        controlHashCode = hashCode();
+
+        synchronized (instanceCounterLock) {
+            controlHashCode = instanceCounter;
+            instanceCounter++;
+        }
         controlMap.addControl(this);
         //sendCreateMessage();
     }
@@ -181,7 +191,7 @@ public class DynamicControl {
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.CREATE,
                 new Object[]{
                         Device.getDeviceName(),
-                        hashCode(),
+                        controlHashCode,
                         controlName,
                         parentSketch,
                         controlType.ordinal(),

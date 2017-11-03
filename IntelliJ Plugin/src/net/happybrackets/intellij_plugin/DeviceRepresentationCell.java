@@ -528,7 +528,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					request_status_menu.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
-							item.send(OSCVocabulary.Device.STATUS);
+							item.sendStatusRequest();
 						}
 					});
 
@@ -537,7 +537,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					request_version_menu.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
-							item.send(OSCVocabulary.Device.VERSION);
+							item.sendVersionRequest();
 						}
 					});
 
