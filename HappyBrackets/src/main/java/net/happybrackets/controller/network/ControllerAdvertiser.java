@@ -91,6 +91,7 @@ public class ControllerAdvertiser {
 
 
 	CachedMessage cachedBroadcastMessage = null;
+	CachedMessage cachedMulticastMessage = null;
 
 	DatagramSocket advertiseTxSocket = null;
 	ByteBuffer byteBuf;
@@ -192,7 +193,7 @@ public class ControllerAdvertiser {
 			cachedBroadcastMessage = new CachedMessage(msg, buff, packet, broadcast);
 
 			DatagramPacket multicast_packet = new DatagramPacket(buff, buff.length, multicast, broadcastPort);
-			cachedBroadcastMessage = new CachedMessage(msg, buff, multicast_packet, multicast);
+			cachedMulticastMessage = new CachedMessage(msg, buff, multicast_packet, multicast);
 
 			loadNetworkBroadcastAdverticements();
 		}
@@ -209,7 +210,7 @@ public class ControllerAdvertiser {
             	if (!DeviceConnection.getDisabledAdvertise()) {
 					// first send to our multicast
 					try {
-						advertiseTxSocket.send(cachedBroadcastMessage.cachedPacket);
+						advertiseTxSocket.send(cachedMulticastMessage.cachedPacket);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
