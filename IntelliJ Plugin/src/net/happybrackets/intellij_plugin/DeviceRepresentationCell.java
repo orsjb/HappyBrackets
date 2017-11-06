@@ -44,17 +44,7 @@ import java.util.Map;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
-	private class ControlCellPair {
 
-		public ControlCellPair(Node label, Node control){
-			labelNode = label;
-			controlNode = control;
-		}
-		Node labelNode;
-		Node controlNode;
-		DynamicControl.DynamicControlListener listener = null;
-
-	}
     // define the username to use for SSH Command
     final String DEF_USERNAME = "pi";
     private String username = DEF_USERNAME;
@@ -67,283 +57,20 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
 	private DynamicControl.DynamicControlListener dynamicControlListenerRemoved = null;
 
-	private Map<Integer, ControlCellPair> dynamicControlsList = new Hashtable<Integer, ControlCellPair>();
-
 	//in case the user is not using pi as the default username for ssh
-    public void setUsername(String val)
-    {
-        this.username = val;
-    }
-
-	Stage dynamicControlStage = null;
-	GridPane dynamicControlPane = null;
-	Scene dynamicControlScenen = null;
-	int next_control_row = 0;
-	Object controlCreateLock = new Object();
-
+	public void setUsername(String val)
+	{
+		this.username = val;
+	}
 	String buildSSHCommand(String device_name)
     {
         return "ssh " + username + "@" + device_name + ".local";
     }
 
-
-    void removeDynamicControlScene()
-	{
-		synchronized (controlCreateLock) {
-			if (dynamicControlStage != null) {
-				dynamicControlStage.close();
-				dynamicControlStage = null;
-				dynamicControlsList.clear();
-			}
-			next_control_row = 0;
-		}
-	}
-
-	void rebuildGridList()
-	{
-		dynamicControlPane.getChildren().clear();
-		next_control_row = 0;
-		Collection <ControlCellPair> control_pairs =  dynamicControlsList.values();
-		for (ControlCellPair control_pair : control_pairs) {
-			dynamicControlPane.add(control_pair.labelNode, 0, next_control_row);
-			dynamicControlPane.add(control_pair.controlNode, 1, next_control_row);
-			next_control_row++;
-		}
-	}
-
-	void  removeDynamicControl(DynamicControl control)
-	{
-		// find the control based on its hash from control table
-		ControlCellPair control_pair = dynamicControlsList.get(control.getControlHashCode());
-
-		if (control_pair != null)
-		{
-			dynamicControlPane.getChildren().remove(control_pair.controlNode);
-			dynamicControlPane.getChildren().remove(control_pair.labelNode);
-			dynamicControlsList.remove(control.getControlHashCode());
-
-			if (control_pair.listener != null) {
-				control.removeControlListener(control_pair.listener);
-			}
-			rebuildGridList();
-		}
-	}
-
-	void createDynamicControlStage(){
-		synchronized (controlCreateLock)
-		{
-			if (dynamicControlStage == null) {
-
-				dynamicControlStage = new Stage();
-				dynamicControlStage.setTitle(localDevice.deviceName);
-				dynamicControlPane = new GridPane();
-				dynamicControlPane.setHgap(10);
-				dynamicControlPane.setVgap(10);
-				dynamicControlPane.setPadding(new Insets(20, 20, 0, 20));
-				dynamicControlScenen = new Scene(dynamicControlPane, 500, 500);
-				dynamicControlStage.setScene(dynamicControlScenen);
-			}
-
-		}
-	}
-
-	/**
-	 * Add A dynamic Control to window. Must be called in context of main thread
-	 * @param control
-	 */
-	void addDynamicControl(DynamicControl control)
-	{
+    private DynamicControlScreen dynamicControlScreen = null;
 
 
-
-
-		ControlCellPair control_pair = dynamicControlsList.get(control.getControlHashCode());
-
-		if (control_pair == null) {
-
-			Label control_label = new Label(control.getControlName());
-
-			dynamicControlPane.add(control_label, 0, next_control_row);
-
-
-			ControlType control_type = control.getControlType();
-			switch (control_type) {
-				case BUTTON:
-					Button b = new Button();
-					b.setText("Send");
-					dynamicControlPane.add(b, 1, next_control_row);
-					control_pair = new ControlCellPair(control_label, b);
-					dynamicControlsList.put(control.getControlHashCode(), control_pair);
-					b.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent e) {
-							control.setValue(1);
-							localDevice.sendDynamicControl(control);
-						}
-					});
-
-
-					break;
-
-				case SLIDER:
-					Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
-					s.setMaxWidth(100);
-					s.setOrientation(Orientation.HORIZONTAL);
-					dynamicControlPane.add(s, 1, next_control_row);
-					control_pair = new ControlCellPair(control_label, s);
-					dynamicControlsList.put(control.getControlHashCode(), control_pair);
-
-					s.valueProperty().addListener(new ChangeListener<Number>() {
-						@Override
-						public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-							if (s.isFocused()) {
-								if (oldval != newval) {
-									control.setValue(newval.intValue());
-									localDevice.sendDynamicControl(control);
-								}
-							}
-						}
-					});
-
-					control_pair.listener = new DynamicControl.DynamicControlListener() {
-						@Override
-						public void update(DynamicControl control) {
-							Platform.runLater(new Runnable() {
-								public void run() {
-									if (!s.isFocused()) {
-										s.setValue((int) control.getValue());
-									}
-								}
-							});
-						}
-					};
-
-					break;
-
-				case CHECKBOX:
-					CheckBox c = new CheckBox();
-					int i_val = (int) control.getValue();
-					c.setSelected(i_val != 0);
-					dynamicControlPane.add(c, 1, next_control_row);
-
-					control_pair = new ControlCellPair(control_label, c);
-					dynamicControlsList.put(control.getControlHashCode(), control_pair);
-
-					c.selectedProperty().addListener(new ChangeListener<Boolean>() {
-						public void changed(ObservableValue<? extends Boolean> ov,
-											Boolean oldval, Boolean newval) {
-							if (oldval != newval) {
-								control.setValue(newval ? 1 : 0);
-								localDevice.sendDynamicControl(control);
-							}
-						}
-					});
-
-					control_pair.listener = new DynamicControl.DynamicControlListener() {
-						@Override
-						public void update(DynamicControl control) {
-							Platform.runLater(new Runnable() {
-								public void run() {
-									if (!c.isFocused()) {
-										int i_val = (int) control.getValue();
-										c.setSelected(i_val != 0);
-									}
-								}
-							});
-						}
-					};
-					break;
-
-				case FLOAT:
-					Slider f = new Slider((float) control.getMinimumValue(), (float) control.getMaximumValue(), (float) control.getValue());
-					f.setMaxWidth(100);
-					f.setOrientation(Orientation.HORIZONTAL);
-					dynamicControlPane.add(f, 1, next_control_row);
-					control_pair = new ControlCellPair(control_label, f);
-					dynamicControlsList.put(control.getControlHashCode(), control_pair);
-
-					f.valueProperty().addListener(new ChangeListener<Number>() {
-						@Override
-						public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-							if (f.isFocused()) {
-								if (oldval != newval) {
-									control.setValue(newval.floatValue());
-									localDevice.sendDynamicControl(control);
-								}
-							}
-						}
-					});
-
-					control_pair.listener = new DynamicControl.DynamicControlListener() {
-						@Override
-						public void update(DynamicControl control) {
-							Platform.runLater(new Runnable() {
-								public void run() {
-									if (!f.isFocused()) {
-										f.setValue((float) control.getValue());
-									}
-								}
-							});
-						}
-					};
-					break;
-
-				case TEXT:
-					TextField t = new TextField();
-					t.setMaxWidth(100);
-					t.setText((String) control.getValue());
-					dynamicControlPane.add(t, 1, next_control_row);
-					control_pair = new ControlCellPair(control_label, t);
-					dynamicControlsList.put(control.getControlHashCode(), control_pair);
-					t.setOnKeyTyped(new EventHandler<KeyEvent>() {
-						@Override
-						public void handle(KeyEvent event) {
-							if (event.getCode().equals(KeyCode.ENTER)) {
-								String text_val = t.getText();
-								control.setValue(text_val);
-								localDevice.sendDynamicControl(control);
-							}
-						}
-					});
-
-					// set handlers
-					t.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent actionEvent) {
-							String text_val = t.getText();
-							control.setValue(text_val);
-							localDevice.sendDynamicControl(control);
-						}
-					});
-
-					control_pair.listener = new DynamicControl.DynamicControlListener() {
-						@Override
-						public void update(DynamicControl control) {
-							Platform.runLater(new Runnable() {
-								public void run() {
-
-									t.setText((String) control.getValue());
-								}
-							});
-						}
-					};
-					break;
-
-				default:
-					break;
-			}
-
-			if (control_pair.listener != null) {
-				control.addControlListener(control_pair.listener);
-			}
-
-			next_control_row++;
-			dynamicControlStage.show();
-			dynamicControlStage.toFront();
-		}
-	}
-
-	void addCellRow(LocalDeviceRepresentation item) {
+	synchronized void  addCellRow(LocalDeviceRepresentation item) {
 		//set up main panel
 		GridPane main = new GridPane();
 		main.setStyle("-fx-font-family: sample; -fx-font-size: 10;");
@@ -387,7 +114,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			public void handle(ActionEvent e) {
 
 				item.resetDevice();
-				removeDynamicControlScene();
+				dynamicControlScreen.removeDynamicControlScene();
 			}
 		});
 		controls.getChildren().add(resetButton);
@@ -555,7 +282,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			public void update(DynamicControl control) {
 				Platform.runLater(new Runnable() {
 					public void run() {
-						addDynamicControl(control);
+						dynamicControlScreen.addDynamicControl(control);
 					}
 				});
 			}
@@ -567,15 +294,13 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			public void update(DynamicControl control) {
 				Platform.runLater(new Runnable() {
 					public void run() {
-						removeDynamicControl(control);
+						dynamicControlScreen.removeDynamicControl(control);
 					}
 				});
 			}
 		});
 
 		setGraphic(main);
-
-		createDynamicControlStage();
 
 	}
 
@@ -592,7 +317,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
 			localDevice.removeDynamicControlListenerRemovedListener(dynamicControlListenerRemoved);
 
-			removeDynamicControlScene();
+			dynamicControlScreen.removeDynamicControlScene();
 		}
 
 		localDevice = item;
@@ -601,6 +326,13 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
         //gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
         if (item != null) {
+			if (dynamicControlScreen == null)
+			{
+				dynamicControlScreen = new DynamicControlScreen(item);
+			}
+
+			dynamicControlScreen.createDynamicControlStage();
+
 			addCellRow(item);
 		}
 

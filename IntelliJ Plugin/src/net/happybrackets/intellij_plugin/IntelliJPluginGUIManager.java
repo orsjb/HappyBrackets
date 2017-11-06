@@ -206,7 +206,7 @@ public class IntelliJPluginGUIManager {
 		globalcommands.setAlignment(Pos.TOP_LEFT);
 		{
 			Button b = new Button("Reboot");
-			b.setDisable(true);
+
 			b.setOnMouseClicked(event -> deviceConnection.deviceReboot());
 			b.setTooltip(new Tooltip("Reboot all devices."));
 			globalcommands.getChildren().add(b);
@@ -221,7 +221,7 @@ public class IntelliJPluginGUIManager {
 		}
 		{
 			Button b = new Button("Shutdown");
-			b.setDisable(true);
+
 			b.setOnMouseClicked(event -> deviceConnection.deviceShutdown());
 			b.setTooltip(new Tooltip("Shutdown all devices."));
 			globalcommands.getChildren().add(b);
@@ -235,7 +235,7 @@ public class IntelliJPluginGUIManager {
 		}
 		{
 			Button b = new Button("Reset");
-			b.setDisable(true);
+
 			b.setOnMouseClicked(e -> deviceConnection.deviceReset());
 			b.setTooltip(new Tooltip("Reset all devices to their initial state (same as Reset Sounding + Clear Sound)."));
 			globalcommands.getChildren().add(b);
@@ -249,7 +249,7 @@ public class IntelliJPluginGUIManager {
 		}
 		{
 			Button b = new Button("Reset Sounding");
-			b.setDisable(true);
+
 			b.setOnMouseClicked(e -> deviceConnection.deviceResetSounding());
 			b.setTooltip(new Tooltip("Reset all devices to their initial state except for audio that is currently playing."));
 			globalcommands.getChildren().add(b);
@@ -263,7 +263,7 @@ public class IntelliJPluginGUIManager {
 		}
 		{
 			Button b = new Button("Clear Sound");
-			b.setDisable(true);
+
 			b.setOnMouseClicked(e -> deviceConnection.deviceClearSound());
 			b.setTooltip(new Tooltip("Clears all of the audio that is currently playing on all devices."));
 			globalcommands.getChildren().add(b);
@@ -629,7 +629,6 @@ public class IntelliJPluginGUIManager {
 		composition_send_pane.add(compositionSelector, 0, 0, 6, 1);
 
 		Button composition_send_all_button = new Button("All");
-		composition_send_all_button.setDisable(true);
 		composition_send_all_button.setTooltip(new Tooltip("Send the selected composition to all devices."));
 		composition_send_all_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -751,7 +750,6 @@ public class IntelliJPluginGUIManager {
 		messagepaths.setAlignment(Pos.TOP_LEFT);
 
 		Button send_all_OSC_button = new Button("All");
-		send_all_OSC_button.setDisable(true);
 		send_all_OSC_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
