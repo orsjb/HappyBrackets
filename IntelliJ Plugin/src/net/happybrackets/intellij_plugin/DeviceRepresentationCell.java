@@ -79,6 +79,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	GridPane dynamicControlPane = null;
 	Scene dynamicControlScenen = null;
 	int next_control_row = 0;
+	Object controlCreateLock = new Object();
 
 	String buildSSHCommand(String device_name)
     {
@@ -88,13 +89,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
     void removeDynamicControlScene()
 	{
-		if (dynamicControlStage != null)
-		{
-			dynamicControlStage.close();
-			dynamicControlStage = null;
-			dynamicControlsList.clear();
+		synchronized (controlCreateLock) {
+			if (dynamicControlStage != null) {
+				dynamicControlStage.close();
+				dynamicControlStage = null;
+				dynamicControlsList.clear();
+			}
+			next_control_row = 0;
 		}
-		next_control_row = 0;
 	}
 
 	void rebuildGridList()
@@ -127,23 +129,31 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		}
 	}
 
+	void createDynamicControlStage(){
+		synchronized (controlCreateLock)
+		{
+			if (dynamicControlStage == null) {
+
+				dynamicControlStage = new Stage();
+				dynamicControlStage.setTitle(localDevice.deviceName);
+				dynamicControlPane = new GridPane();
+				dynamicControlPane.setHgap(10);
+				dynamicControlPane.setVgap(10);
+				dynamicControlPane.setPadding(new Insets(20, 20, 0, 20));
+				dynamicControlScenen = new Scene(dynamicControlPane, 500, 500);
+				dynamicControlStage.setScene(dynamicControlScenen);
+			}
+
+		}
+	}
+
 	/**
 	 * Add A dynamic Control to window. Must be called in context of main thread
 	 * @param control
 	 */
 	void addDynamicControl(DynamicControl control)
 	{
-		if (dynamicControlStage == null) {
 
-			dynamicControlStage = new Stage();
-			dynamicControlStage.setTitle(localDevice.deviceName);
-			dynamicControlPane = new GridPane();
-			dynamicControlPane.setHgap(10);
-			dynamicControlPane.setVgap(10);
-			dynamicControlPane.setPadding(new Insets(20, 20, 0, 20));
-			dynamicControlScenen = new Scene(dynamicControlPane, 500, 500);
-			dynamicControlStage.setScene(dynamicControlScenen);
-		}
 
 
 
@@ -565,6 +575,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		setGraphic(main);
 
+		createDynamicControlStage();
 
 	}
 

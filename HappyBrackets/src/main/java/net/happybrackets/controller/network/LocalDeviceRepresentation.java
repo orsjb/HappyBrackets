@@ -35,8 +35,12 @@ import org.slf4j.LoggerFactory;
 
 public class LocalDeviceRepresentation {
 
+	final int MILLISECONDS_TO_REQUEST_CONTROLS = 2000;
+
+
 	final static Logger logger = LoggerFactory.getLogger(LocalDeviceRepresentation.class);
 
+	private final long timeCreated;
 	public long lastTimeSeen;
 	public final String deviceName;
 	public final String hostName;
@@ -44,6 +48,8 @@ public class LocalDeviceRepresentation {
 	public List<String> preferredAddressStrings;    //This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
 	private int deviceId; //
 	private String status = "Status unknown"; // This is the displayed ID
+
+	boolean controlRequestSent = false;
 
 	private InetSocketAddress socketAddress;
 
@@ -130,7 +136,22 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
+	void sendInitialControlRequest(){
+		if (!controlRequestSent && timeActive() > MILLISECONDS_TO_REQUEST_CONTROLS)
+		{
+			controlRequestSent = true;
+			sendControlsRequest();
+		}
+	}
 
+	/**
+	 * Return the time in milliseconds that we have had this appeared
+	 * @return
+	 */
+	public long timeActive()
+	{
+		return System.currentTimeMillis() - timeCreated;
+	}
 	/**
 	 * Add A dynamic Control
 	 *
@@ -205,6 +226,8 @@ public class LocalDeviceRepresentation {
 
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, int reply_port) {
 
+		//timeCreated = System.nanoTime();
+		timeCreated = System.currentTimeMillis();
 		replyPort = reply_port;
 		replyPortObject = new Object[] {replyPort};
 		this.deviceName = deviceName;
@@ -602,6 +625,14 @@ public class LocalDeviceRepresentation {
 			for (ConnectedUpdateListener listener : connectedUpdateListenerList) {
 				listener.update(connected);
 			}
+		}
+		if (connected)
+		{
+			sendInitialControlRequest();
+		}
+		else
+		{
+			controlRequestSent = false; // we will force to reload
 		}
     }
 
