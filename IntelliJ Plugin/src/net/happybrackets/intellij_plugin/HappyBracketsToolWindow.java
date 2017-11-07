@@ -110,6 +110,11 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         String version_text = BuildVersion.getVersionText();
         tool_window.setTitle(" - " + version_text);
 
+        // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them
+        if (controllerAdvertiser != null)
+        {
+            controllerAdvertiser.start();
+        }
 
 
     }
@@ -277,7 +282,9 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         deviceConnection = new DeviceConnection(config, broadcastManager);
 
         controllerAdvertiser = new ControllerAdvertiser(config.getMulticastAddr(), config.getBroadcastPort(), listen_port);
-        controllerAdvertiser.start();
+
+        // Do Not start until we are at the end of initialisation
+        //controllerAdvertiser.start();
 
         //setup http httpServer
         try {
