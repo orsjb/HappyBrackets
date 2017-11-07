@@ -334,6 +334,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			dynamicControlScreen.createDynamicControlStage();
 
 			addCellRow(item);
+			item.setDeviceHasDisplayed();
 		}
 
 		this.prefWidthProperty().bind(this.getListView().widthProperty().subtract(4));

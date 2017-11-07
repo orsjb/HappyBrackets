@@ -10,6 +10,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -23,6 +24,10 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class DynamicControlScreen {
+    // define default height and width
+    static final int DEFAULT_SCREEN_WIDTH = 500;
+    static final int DEFAULT_SCREEN_HEIGHT = 500;
+
     private class ControlCellGroup {
 
         public ControlCellGroup(Node label, Node control){
@@ -39,11 +44,11 @@ public class DynamicControlScreen {
 
     private final LocalDeviceRepresentation localDevice;
     Stage dynamicControlStage = null;
-    GridPane dynamicControlPane = null;
+    GridPane dynamicControlPane = new GridPane();
     Scene dynamicControlScenen = null;
     int next_control_row = 0;
     Object controlCreateLock = new Object();
-
+    final ScrollBar scrollBar = new ScrollBar();
 
     /**
      * Create a screen to display controls for a LocalDevice
@@ -58,7 +63,7 @@ public class DynamicControlScreen {
         synchronized (controlCreateLock) {
             if (dynamicControlStage != null) {
                 dynamicControlStage.close();
-                dynamicControlStage = null;
+                dynamicControlPane.getChildren().clear();
                 dynamicControlsList.clear();
             }
             next_control_row = 0;
@@ -75,6 +80,9 @@ public class DynamicControlScreen {
             dynamicControlPane.add(control_pair.controlNode, 1, next_control_row);
             next_control_row++;
         }
+
+        setScrollPreferences();
+
     }
 
     void  removeDynamicControl(DynamicControl control)
@@ -100,14 +108,37 @@ public class DynamicControlScreen {
         {
             if (dynamicControlStage == null) {
 
+                Group root = new Group();
                 dynamicControlStage = new Stage();
-                dynamicControlStage.setTitle(localDevice.deviceName);
-                dynamicControlPane = new GridPane();
+                dynamicControlStage.setTitle(localDevice.deviceName);;
                 dynamicControlPane.setHgap(10);
                 dynamicControlPane.setVgap(10);
                 dynamicControlPane.setPadding(new Insets(20, 20, 0, 20));
-                dynamicControlScenen = new Scene(dynamicControlPane, 500, 500);
+
+                dynamicControlScenen = new Scene(root, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
+                //dynamicControlScenen = new Scene(dynamicControlPane, 500, 500);
+
                 dynamicControlStage.setScene(dynamicControlScenen);
+
+                root.getChildren().addAll(dynamicControlPane, scrollBar);
+
+                setScrollPreferences();
+
+                scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
+                    public void changed(ObservableValue<? extends Number> ov,
+                                        Number old_val, Number new_val) {
+                        dynamicControlPane.setLayoutY(-new_val.doubleValue());
+                    }
+                });
+
+                // Modify scroll bar position if we resize the window
+                dynamicControlStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+                    setScrollPreferences();
+                });
+
+                dynamicControlStage.heightProperty().addListener((obs, oldVal, newVal) -> {
+                    setScrollPreferences();
+                });
             }
 
         }
@@ -119,10 +150,6 @@ public class DynamicControlScreen {
      */
     void addDynamicControl(DynamicControl control)
     {
-
-
-
-
         ControlCellGroup control_pair = dynamicControlsList.get(control.getControlHashCode());
 
         if (control_pair == null) {
@@ -304,9 +331,21 @@ public class DynamicControlScreen {
             }
 
             next_control_row++;
+            setScrollPreferences();
+
             dynamicControlStage.show();
             dynamicControlStage.toFront();
         }
     }
+
+    private void setScrollPreferences() {
+        scrollBar.setLayoutX(dynamicControlScenen.getWidth()- scrollBar.getWidth());
+        scrollBar.setMin(0);
+        scrollBar.setOrientation(Orientation.VERTICAL);
+
+        scrollBar.setPrefHeight(dynamicControlScenen.getHeight());
+        scrollBar.setMax(dynamicControlPane.getHeight() - dynamicControlScenen.getHeight() / 2);
+    }
+
 
 }

@@ -40,7 +40,7 @@ public class LocalDeviceRepresentation {
 
 	final static Logger logger = LoggerFactory.getLogger(LocalDeviceRepresentation.class);
 
-	private final long timeCreated;
+	private long timeDisplayed; // we will set the thime this device was displayed
 	public long lastTimeSeen;
 	public final String deviceName;
 	public final String hostName;
@@ -150,7 +150,7 @@ public class LocalDeviceRepresentation {
 	 */
 	public long timeActive()
 	{
-		return System.currentTimeMillis() - timeCreated;
+		return System.currentTimeMillis() - timeDisplayed;
 	}
 	/**
 	 * Add A dynamic Control
@@ -227,7 +227,8 @@ public class LocalDeviceRepresentation {
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, int reply_port) {
 
 		//timeCreated = System.nanoTime();
-		timeCreated = System.currentTimeMillis();
+		// We will set timeDisplayed so it will not make a request for a control until it has been set by the display Cell
+		timeDisplayed = Long.MAX_VALUE;
 		replyPort = reply_port;
 		replyPortObject = new Object[] {replyPort};
 		this.deviceName = deviceName;
@@ -260,6 +261,12 @@ public class LocalDeviceRepresentation {
 	}
 
 
+	/**
+	 * Notifiy Device that it has been displayed and we can start any functions that required the item to be displayed
+	 */
+	public void setDeviceHasDisplayed(){
+		timeDisplayed = System.currentTimeMillis();
+	}
 	/**
 	 * Process and incoming OSC Message for this device
 	 *
