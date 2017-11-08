@@ -3,12 +3,8 @@ package net.happybrackets.core.control;
 import de.sciss.net.OSCMessage;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.device.network.UDPCachedMessage;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class DynamicControl {
@@ -31,7 +27,9 @@ public class DynamicControl {
     private List<DynamicControlListener> controlListenerList = new ArrayList();
 
     // The Object sketch that this control was created in
-    String parentSketch;
+    Object parentSketch = null;
+    final int parentId;
+    String parentSketchName;
     ControlType controlType;
     String controlName;
     ControlScope controlScope = ControlScope.SKETCH;
@@ -40,8 +38,9 @@ public class DynamicControl {
     Object maximumValue = 0;
     Object minimumValue = 0;
 
-    private void Init(String parent_sketch, ControlType control_type, String name, Object initial_value) {
+    private void Init(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
         parentSketch = parent_sketch;
+        parentSketchName = parent_sketch.getClass().getName();
         controlType = control_type;
         controlName = name;
         objVal = initial_value;
@@ -67,6 +66,7 @@ public class DynamicControl {
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
         Init(parent_sketch.getClass().getName(), control_type, name, initial_value);
+        parentId = parent_sketch.hashCode();
         synchronized (instanceCounterLock) {
             controlHashCode = instanceCounter;
             instanceCounter++;
@@ -90,6 +90,7 @@ public class DynamicControl {
         Init(parent_sketch.getClass().getName(), control_type, name, initial_value);
         minimumValue = min_value;
         maximumValue = max_value;
+        parentId = parent_sketch.hashCode();
 
         synchronized (instanceCounterLock) {
             controlHashCode = instanceCounter;
@@ -193,7 +194,8 @@ public class DynamicControl {
                         Device.getDeviceName(),
                         controlHashCode,
                         controlName,
-                        parentSketch,
+                        parentSketchName,
+                        parentId,
                         controlType.ordinal(),
                         objVal,
                         minimumValue,
@@ -213,16 +215,18 @@ public class DynamicControl {
     {
         final int HASH_CODE = 1;
         final int CONTROL_NAME = 2;
-        final int PARENT_SKETCH = 3;
-        final int CONTROL_TYPE = 4;
-        final int OBJ_VAL = 5;
-        final int MIN_VAL = 6;
-        final int MAX_VAL = 7;
-        final int CONTROL_SCOPE = 8;
+        final int PARENT_SKETCH_NAME = 3;
+        final int PARENT_SKETCH_ID = 4;
+        final int CONTROL_TYPE = 5;
+        final int OBJ_VAL = 6;
+        final int MIN_VAL = 7;
+        final int MAX_VAL = 8;
+        final int CONTROL_SCOPE = 9;
 
         controlHashCode = (int) msg.getArg(HASH_CODE);
         controlName = (String) msg.getArg(CONTROL_NAME);
-        parentSketch = (String) msg.getArg(PARENT_SKETCH);
+        parentSketchName = (String) msg.getArg(PARENT_SKETCH_NAME);
+        parentId =  (int) msg.getArg(PARENT_SKETCH_ID);
         controlType = ControlType.values ()[(int) msg.getArg(CONTROL_TYPE)];
         objVal = msg.getArg(OBJ_VAL);
         minimumValue = msg.getArg(MIN_VAL);
