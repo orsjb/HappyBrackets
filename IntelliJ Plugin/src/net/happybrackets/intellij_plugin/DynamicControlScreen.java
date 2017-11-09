@@ -13,7 +13,10 @@ import javafx.scene.control.*;
 import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.core.control.ControlType;
@@ -27,6 +30,9 @@ public class DynamicControlScreen {
     // define default height and width
     static final int DEFAULT_SCREEN_WIDTH = 500;
     static final int DEFAULT_SCREEN_HEIGHT = 500;
+
+    private static final int MIN_TEXT_AREA_HEIGHT = 200;
+    private final int DEFAULT_ELEMENT_SPACING = 10;
 
     private class ControlCellGroup {
 
@@ -43,12 +49,20 @@ public class DynamicControlScreen {
     private Map<Integer, ControlCellGroup> dynamicControlsList = new Hashtable<Integer, ControlCellGroup>();
 
     private final LocalDeviceRepresentation localDevice;
-    Stage dynamicControlStage = null;
-    GridPane dynamicControlPane = new GridPane();
-    Scene dynamicControlScenen = null;
-    int next_control_row = 0;
-    Object controlCreateLock = new Object();
-    final ScrollBar scrollBar = new ScrollBar();
+    private Stage dynamicControlStage = null;
+    private GridPane dynamicControlPane = new GridPane();
+    private Scene dynamicControlScene = null;
+    private int next_control_row = 0;
+    private Object controlCreateLock = new Object();
+    private final ScrollBar scrollBar = new ScrollBar();
+    private BorderPane main_container = new BorderPane();
+    private ScrollPane scrollPane;
+
+    TitledPane debugPane = null;
+
+    private TextArea logOutputTextArea = new TextArea();
+    private LocalDeviceRepresentation.LogListener deviceLogListener = null;
+
 
     /**
      * Create a screen to display controls for a LocalDevice
@@ -67,6 +81,7 @@ public class DynamicControlScreen {
                 dynamicControlsList.clear();
             }
             next_control_row = 0;
+            localDevice.removeLogListener(deviceLogListener);
         }
     }
 
@@ -80,9 +95,6 @@ public class DynamicControlScreen {
             dynamicControlPane.add(control_pair.controlNode, 1, next_control_row);
             next_control_row++;
         }
-
-        setScrollPreferences();
-
     }
 
     void  removeDynamicControl(DynamicControl control)
@@ -108,21 +120,26 @@ public class DynamicControlScreen {
         {
             if (dynamicControlStage == null) {
 
-                Group root = new Group();
+
+                debugPane = new TitledPane("Debug", makeDebugPane());
+
+                debugPane.setExpanded(false);
+
                 dynamicControlStage = new Stage();
                 dynamicControlStage.setTitle(localDevice.deviceName);;
-                dynamicControlPane.setHgap(10);
-                dynamicControlPane.setVgap(10);
-                dynamicControlPane.setPadding(new Insets(20, 20, 0, 20));
+                dynamicControlPane.setHgap(DEFAULT_ELEMENT_SPACING);
+                dynamicControlPane.setVgap(DEFAULT_ELEMENT_SPACING);
+                dynamicControlPane.setPadding(new Insets(DEFAULT_ELEMENT_SPACING * 2, DEFAULT_ELEMENT_SPACING * 2, 0, DEFAULT_ELEMENT_SPACING * 2));
 
-                dynamicControlScenen = new Scene(root, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
-                //dynamicControlScenen = new Scene(dynamicControlPane, 500, 500);
+                dynamicControlScene = new Scene(main_container, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
 
-                dynamicControlStage.setScene(dynamicControlScenen);
+                dynamicControlStage.setScene(dynamicControlScene);
 
-                root.getChildren().addAll(dynamicControlPane, scrollBar);
+                scrollPane = new ScrollPane(dynamicControlPane);
+                scrollPane.setFitToHeight(true);
 
-                setScrollPreferences();
+                main_container.setTop(debugPane);
+                main_container.setCenter(scrollPane);
 
                 scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
                     public void changed(ObservableValue<? extends Number> ov,
@@ -131,14 +148,7 @@ public class DynamicControlScreen {
                     }
                 });
 
-                // Modify scroll bar position if we resize the window
-                dynamicControlStage.widthProperty().addListener((obs, oldVal, newVal) -> {
-                    setScrollPreferences();
-                });
 
-                dynamicControlStage.heightProperty().addListener((obs, oldVal, newVal) -> {
-                    setScrollPreferences();
-                });
             }
 
         }
@@ -331,24 +341,56 @@ public class DynamicControlScreen {
             }
 
             next_control_row++;
-            setScrollPreferences();
 
             show();
         }
     }
 
-    private void setScrollPreferences() {
-        scrollBar.setLayoutX(dynamicControlScenen.getWidth()- scrollBar.getWidth());
-        scrollBar.setMin(0);
-        scrollBar.setOrientation(Orientation.VERTICAL);
-
-        scrollBar.setPrefHeight(dynamicControlScenen.getHeight());
-        scrollBar.setMax(dynamicControlPane.getHeight() - dynamicControlScenen.getHeight() / 2);
-    }
 
     public void show(){
         dynamicControlStage.show();
         dynamicControlStage.toFront();
+    }
+
+    /**
+     * Add a debug pane
+     * @return
+     */
+    private Node makeDebugPane() {
+        String start_text = "Start device logging";
+        Tooltip start_tooltip = new Tooltip("Tell this devices to start sending its logging information.");
+        Tooltip stop_tooltip = new Tooltip("Tell this devices to stop sending its logging information.");
+        String stop_text = "Stop device logging";
+        boolean logging_enabled = localDevice.isLoggingEnabled();
+
+
+        Button enable_button = new Button(logging_enabled ? stop_text : start_text);
+        enable_button.setTooltip(logging_enabled ? stop_tooltip : start_tooltip);
+        enable_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                boolean logging_enabled = !localDevice.isLoggingEnabled();
+
+                localDevice.setLogging(logging_enabled);
+                enable_button.setText(logging_enabled ? stop_text : start_text);
+                enable_button.setTooltip(logging_enabled ? stop_tooltip : start_tooltip);
+            }
+        });
+
+        logOutputTextArea.setMinHeight(MIN_TEXT_AREA_HEIGHT);
+
+        localDevice.addLogListener(deviceLogListener = new LocalDeviceRepresentation.LogListener() {
+            @Override
+            public void newLogMessage(String message) {
+                logOutputTextArea.appendText(message);
+
+            }
+        });
+
+
+        VBox pane = new VBox(DEFAULT_ELEMENT_SPACING);
+        pane.getChildren().addAll(enable_button, logOutputTextArea);
+        return pane;
     }
 
 }

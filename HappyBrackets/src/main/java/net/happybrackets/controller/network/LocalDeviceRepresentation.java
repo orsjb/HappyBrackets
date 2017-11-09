@@ -58,6 +58,7 @@ public class LocalDeviceRepresentation {
 	private ControllerConfig controllerConfig;
 	private final int replyPort; // this is the port where we will tell devices to send our messages
 	private final Object[] replyPortObject; //we will use this as a cached Object to send in OSC Message
+	private boolean loggingEnabled = false;
 
 	private Map<Integer, DynamicControl> dynamicControls = new Hashtable<Integer, DynamicControl>();
 
@@ -144,6 +145,7 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
+
 	/**
 	 * Return the time in milliseconds that we have had this appeared
 	 * @return
@@ -203,7 +205,6 @@ public class LocalDeviceRepresentation {
 
 	/**
 	 * Remove A dynamic Control
-	 *
 	 * @param control The DynamicControl we are removing
 	 */
 	public void removeDynamicControl(DynamicControl control) {
@@ -245,6 +246,7 @@ public class LocalDeviceRepresentation {
 
 		// Set-up log monitor.
 		log = "";
+		/*
 		server.addOSCListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
@@ -257,7 +259,7 @@ public class LocalDeviceRepresentation {
 					}
 				}
 			}
-		});
+		});*/
 	}
 
 
@@ -290,10 +292,11 @@ public class LocalDeviceRepresentation {
 
 	}
 
+
 	private void processLogMessage(OSCMessage msg, SocketAddress sender) {
 		String new_log_output = (String) msg.getArg(1);
 		log = log + "\n" + new_log_output;
-		logger.debug("Received new log output from device {} ({}): {}", deviceName, socketAddress, new_log_output);
+		//logger.debug("Received new log output from device {} ({}): {}", deviceName, socketAddress, new_log_output);
 		for (LogListener listener : logListenerList) {
 			listener.newLogMessage(new_log_output);
 		}
@@ -669,5 +672,24 @@ public class LocalDeviceRepresentation {
 
 	public String getDeviceLog() {
 		return log;
+	}
+
+	/**
+	 * Is Device Logging available for this device
+	 * @return
+	 */
+	public boolean isLoggingEnabled(){
+		return loggingEnabled;
+	}
+
+	/**
+	 * Tell the device to start or stop sending log messages
+	 * @param enable true if we want logs
+	 */
+	public void setLogging (boolean enable){
+
+		// we need to send a start logging message to the device
+
+		loggingEnabled = enable;
 	}
 }
