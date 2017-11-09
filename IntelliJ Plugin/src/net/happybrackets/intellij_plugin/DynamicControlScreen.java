@@ -333,8 +333,7 @@ public class DynamicControlScreen {
             next_control_row++;
             setScrollPreferences();
 
-            dynamicControlStage.show();
-            dynamicControlStage.toFront();
+            show();
         }
     }
 
@@ -347,5 +346,9 @@ public class DynamicControlScreen {
         scrollBar.setMax(dynamicControlPane.getHeight() - dynamicControlScenen.getHeight() / 2);
     }
 
+    public void show(){
+        dynamicControlStage.show();
+        dynamicControlStage.toFront();
+    }
 
 }

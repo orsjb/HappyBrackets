@@ -267,6 +267,10 @@ public class LocalDeviceRepresentation {
 	public void setDeviceHasDisplayed(){
 		timeDisplayed = System.currentTimeMillis();
 	}
+
+	public void resetDeviceHasDisplayed(){
+		timeDisplayed = Long.MAX_VALUE;
+	}
 	/**
 	 * Process and incoming OSC Message for this device
 	 *

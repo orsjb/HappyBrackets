@@ -316,6 +316,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			localDevice.removeDynamicControlListenerCreatedListener(dynamicControlListenerCreated);
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
 			localDevice.removeDynamicControlListenerRemovedListener(dynamicControlListenerRemoved);
+			localDevice.resetDeviceHasDisplayed();
 
 			dynamicControlScreen.removeDynamicControlScene();
 		}
