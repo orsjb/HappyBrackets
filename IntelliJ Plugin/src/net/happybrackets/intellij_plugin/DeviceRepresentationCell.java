@@ -271,7 +271,18 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				});
 
 
-				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, remove_item_menu);
+				MenuItem show_controls_item_menu = new MenuItem("Show Controls");
+				show_controls_item_menu.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						dynamicControlScreen.show();
+					}
+				});
+
+
+
+
+				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, remove_item_menu, show_controls_item_menu);
 				contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 			}
 
@@ -308,7 +319,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
     public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
         super.updateItem(item, empty);
 
-        if (localDevice != null)
+        if (localDevice != null && empty)
 		{
 			// This is where we will clear out all old listeners
 			localDevice.removeStatusUpdateListener(updateListener);
