@@ -50,7 +50,7 @@ public class DynamicControl {
 
     String parentSketchName;
     ControlType controlType;
-    String controlName;
+    final String controlName;
     ControlScope controlScope = ControlScope.SKETCH;
 
     Object objVal = 0;
@@ -61,13 +61,30 @@ public class DynamicControl {
     public String getDeviceName() {
         return deviceName;
     }
-    
-    private void Init(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
+
+
+    /**
+     * This is a private constructor used to initialise constant attributes of this object
+     *
+     * @param parent_sketch the object calling - typically this
+     * @param control_type  The type of control you want to create
+     * @param name          The name we will give to differentiate between different controls in this class
+     * @param initial_value The initial value of the control
+     * @param init_only This is unused and just used because be cannot add default parameters to
+     *                  a constructor - hence, a private constructor
+     */
+    private DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, boolean init_only) {
         parentSketch = parent_sketch;
         parentSketchName = parent_sketch.getClass().getName();
         controlType = control_type;
         controlName = name;
         objVal = initial_value;
+        parentId = parent_sketch.hashCode();
+        deviceName = Device.getDeviceName();
+        synchronized (instanceCounterLock) {
+            controlMapKey = Device.getDeviceName() +  instanceCounter;
+            instanceCounter++;
+        }
 
     }
 
@@ -89,16 +106,11 @@ public class DynamicControl {
      * @param initial_value The initial value of the control
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
-        Init(parent_sketch.getClass().getName(), control_type, name, initial_value);
-        parentId = parent_sketch.hashCode();
-        deviceName = Device.getDeviceName();
-        synchronized (instanceCounterLock) {
-            controlMapKey = Device.getDeviceName() +  instanceCounter;
-            instanceCounter++;
-        }
+        this(parent_sketch, control_type, name, initial_value, true);
         controlMap.addControl(this);
-        //sendCreateMessage();
     }
+
+
 
     /**
      * A dynamic control that can be accessed from outside
@@ -112,17 +124,11 @@ public class DynamicControl {
      * @param max_value     The maximum value of the control
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
-        Init(parent_sketch.getClass().getName(), control_type, name, initial_value);
+        this(parent_sketch, control_type, name, initial_value, true);
         minimumValue = min_value;
         maximumValue = max_value;
-        parentId = parent_sketch.hashCode();
-        deviceName = Device.getDeviceName();
-        synchronized (instanceCounterLock) {
-            controlMapKey = Device.getDeviceName() + instanceCounter;
-            instanceCounter++;
-        }
+
         controlMap.addControl(this);
-        //sendCreateMessage();
     }
 
 
