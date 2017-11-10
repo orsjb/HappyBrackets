@@ -63,6 +63,21 @@ public class DynamicControlScreen {
     private TextArea logOutputTextArea = new TextArea();
     private LocalDeviceRepresentation.LogListener deviceLogListener = null;
 
+    public boolean isAlwaysOnTop() {
+        return alwaysOnTop;
+    }
+
+    public void setAlwaysOnTop(boolean always_on_top) {
+        try {
+            if (dynamicControlStage != null) {
+                dynamicControlStage.setAlwaysOnTop(always_on_top);
+                alwaysOnTop = always_on_top;
+            }
+        }
+        catch (Exception ex){}
+    }
+
+    private boolean alwaysOnTop = false;
 
     /**
      * Create a screen to display controls for a LocalDevice
@@ -149,6 +164,24 @@ public class DynamicControlScreen {
                 });
 
 
+                final ContextMenu contextMenu = new ContextMenu();
+                CheckMenuItem always_on_top = new CheckMenuItem("Always on top");
+                always_on_top.setSelected(alwaysOnTop);
+                contextMenu.getItems().addAll(always_on_top);
+
+                scrollPane.setContextMenu(contextMenu);
+                debugPane.setContextMenu(contextMenu);
+                always_on_top.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        Platform.runLater(new Runnable() {
+                            public void run() {
+                                setAlwaysOnTop(!alwaysOnTop);
+                                always_on_top.setSelected(alwaysOnTop);
+                            }
+                        });
+                    }
+                });
             }
 
         }
