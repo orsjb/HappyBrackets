@@ -46,6 +46,8 @@ public class DynamicControl {
     Object parentSketch = null;
     final int parentId;
 
+    final String deviceName;
+
     String parentSketchName;
     ControlType controlType;
     String controlName;
@@ -55,6 +57,11 @@ public class DynamicControl {
     Object maximumValue = 0;
     Object minimumValue = 0;
 
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+    
     private void Init(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
         parentSketch = parent_sketch;
         parentSketchName = parent_sketch.getClass().getName();
@@ -84,6 +91,7 @@ public class DynamicControl {
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
         Init(parent_sketch.getClass().getName(), control_type, name, initial_value);
         parentId = parent_sketch.hashCode();
+        deviceName = Device.getDeviceName();
         synchronized (instanceCounterLock) {
             controlMapKey = Device.getDeviceName() +  instanceCounter;
             instanceCounter++;
@@ -108,7 +116,7 @@ public class DynamicControl {
         minimumValue = min_value;
         maximumValue = max_value;
         parentId = parent_sketch.hashCode();
-
+        deviceName = Device.getDeviceName();
         synchronized (instanceCounterLock) {
             controlMapKey = Device.getDeviceName() + instanceCounter;
             instanceCounter++;
@@ -208,7 +216,7 @@ public class DynamicControl {
     public OSCMessage buildCreateMessage() {
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.CREATE,
                 new Object[]{
-                        Device.getDeviceName(),
+                        deviceName,
                         controlMapKey,
                         controlName,
                         parentSketchName,
@@ -230,7 +238,7 @@ public class DynamicControl {
      */
     public DynamicControl (OSCMessage msg)
     {
-
+        deviceName = (String) msg.getArg(CREATE_MESSAGE_ARGS.DEVICE_NAME.ordinal());
         controlMapKey = (String) msg.getArg(CREATE_MESSAGE_ARGS.MAP_KEY.ordinal());
         controlName = (String) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_NAME.ordinal());
         parentSketchName = (String) msg.getArg(CREATE_MESSAGE_ARGS.PARENT_SKETCH_NAME.ordinal());
