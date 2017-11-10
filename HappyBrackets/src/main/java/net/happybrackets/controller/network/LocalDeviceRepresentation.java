@@ -21,7 +21,6 @@ import java.net.*;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.*;
 
-import de.sciss.net.OSCListener;
 import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
@@ -162,7 +161,7 @@ public class LocalDeviceRepresentation {
 	 */
 	public void addDynamicControl(DynamicControl control) {
 		synchronized (dynamicControls) {
-			dynamicControls.put(control.getControlHashCode(), control);
+			dynamicControls.put(control.getControlMapKey(), control);
 			synchronized (addDynamicControlListenerList) {
 				for (DynamicControl.DynamicControlListener listener : addDynamicControlListenerList) {
 					listener.update(control);
@@ -210,7 +209,7 @@ public class LocalDeviceRepresentation {
 	 */
 	public void removeDynamicControl(DynamicControl control) {
 		synchronized (dynamicControls) {
-			dynamicControls.remove(control.getControlHashCode());
+			dynamicControls.remove(control.getControlMapKey());
 			synchronized (removeDynamicControlListenerList) {
 				for (DynamicControl.DynamicControlListener listener : removeDynamicControlListenerList) {
 					listener.update(control);
@@ -346,14 +345,14 @@ public class LocalDeviceRepresentation {
 	 * @param sender socket addrss of sender
 	 */
 	private void processDynamicControlMessage(OSCMessage msg, SocketAddress sender) {
-		final int CONTROL_HASH = 1;
-		String hash_code = (String) msg.getArg(CONTROL_HASH);
+		final int CONTROL_MAP_KEY = 1;
+		String map_key = (String) msg.getArg(CONTROL_MAP_KEY);
 
 		if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.CREATE)) {
 			DynamicControl new_control = new DynamicControl(msg);
 			addDynamicControl(new_control);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DESTROY)) {
-			DynamicControl control = ControlMap.getInstance().getControl(hash_code);
+			DynamicControl control = ControlMap.getInstance().getControl(map_key);
 			if (control != null) {
 				control.eraseListeners();
 				removeDynamicControl(control);

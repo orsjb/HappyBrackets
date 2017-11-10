@@ -16,7 +16,6 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
-import javax.swing.plaf.synth.SynthDesktopIconUI;
 import java.net.SocketAddress;
 
 public class TestDynamicControl_1 implements HBAction {
@@ -84,7 +83,7 @@ public class TestDynamicControl_1 implements HBAction {
             }
         });
 
-        controlHashCode = slider_control.getControlHashCode();
+        controlHashCode = slider_control.getControlMapKey();
 
 
         hb.controller.addListener(new OSCListener() {

@@ -39,7 +39,6 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Map;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {

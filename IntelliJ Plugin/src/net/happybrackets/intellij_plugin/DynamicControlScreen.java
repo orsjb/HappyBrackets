@@ -10,7 +10,6 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -115,13 +114,13 @@ public class DynamicControlScreen {
     void  removeDynamicControl(DynamicControl control)
     {
         // find the control based on its hash from control table
-        ControlCellGroup control_pair = dynamicControlsList.get(control.getControlHashCode());
+        ControlCellGroup control_pair = dynamicControlsList.get(control.getControlMapKey());
 
         if (control_pair != null)
         {
             dynamicControlPane.getChildren().remove(control_pair.controlNode);
             dynamicControlPane.getChildren().remove(control_pair.labelNode);
-            dynamicControlsList.remove(control.getControlHashCode());
+            dynamicControlsList.remove(control.getControlMapKey());
 
             if (control_pair.listener != null) {
                 control.removeControlListener(control_pair.listener);
@@ -193,7 +192,7 @@ public class DynamicControlScreen {
      */
     void addDynamicControl(DynamicControl control)
     {
-        ControlCellGroup control_pair = dynamicControlsList.get(control.getControlHashCode());
+        ControlCellGroup control_pair = dynamicControlsList.get(control.getControlMapKey());
 
         if (control_pair == null) {
 
@@ -209,7 +208,7 @@ public class DynamicControlScreen {
                     b.setText("Send");
                     dynamicControlPane.add(b, 1, next_control_row);
                     control_pair = new ControlCellGroup(control_label, b);
-                    dynamicControlsList.put(control.getControlHashCode(), control_pair);
+                    dynamicControlsList.put(control.getControlMapKey(), control_pair);
                     b.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent e) {
@@ -227,7 +226,7 @@ public class DynamicControlScreen {
                     s.setOrientation(Orientation.HORIZONTAL);
                     dynamicControlPane.add(s, 1, next_control_row);
                     control_pair = new ControlCellGroup(control_label, s);
-                    dynamicControlsList.put(control.getControlHashCode(), control_pair);
+                    dynamicControlsList.put(control.getControlMapKey(), control_pair);
 
                     s.valueProperty().addListener(new ChangeListener<Number>() {
                         @Override
@@ -263,7 +262,7 @@ public class DynamicControlScreen {
                     dynamicControlPane.add(c, 1, next_control_row);
 
                     control_pair = new ControlCellGroup(control_label, c);
-                    dynamicControlsList.put(control.getControlHashCode(), control_pair);
+                    dynamicControlsList.put(control.getControlMapKey(), control_pair);
 
                     c.selectedProperty().addListener(new ChangeListener<Boolean>() {
                         public void changed(ObservableValue<? extends Boolean> ov,
@@ -296,7 +295,7 @@ public class DynamicControlScreen {
                     f.setOrientation(Orientation.HORIZONTAL);
                     dynamicControlPane.add(f, 1, next_control_row);
                     control_pair = new ControlCellGroup(control_label, f);
-                    dynamicControlsList.put(control.getControlHashCode(), control_pair);
+                    dynamicControlsList.put(control.getControlMapKey(), control_pair);
 
                     f.valueProperty().addListener(new ChangeListener<Number>() {
                         @Override
@@ -330,7 +329,7 @@ public class DynamicControlScreen {
                     t.setText((String) control.getValue());
                     dynamicControlPane.add(t, 1, next_control_row);
                     control_pair = new ControlCellGroup(control_label, t);
-                    dynamicControlsList.put(control.getControlHashCode(), control_pair);
+                    dynamicControlsList.put(control.getControlMapKey(), control_pair);
                     t.setOnKeyTyped(new EventHandler<KeyEvent>() {
                         @Override
                         public void handle(KeyEvent event) {

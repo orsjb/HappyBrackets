@@ -5,7 +5,7 @@ import de.sciss.net.OSCMessage;
 import java.util.*;
 
 /**
- * Control Map is a singleton that will store dynamic controls and allow us to access them via their hash code
+ * Control Map is a singleton that will store dynamic controls and allow us to access them via their unique map key string
  */
 public class ControlMap {
 
@@ -40,6 +40,7 @@ public class ControlMap {
     // We will enforce singleton by instatiating it once
     private static ControlMap singletonInstance = null;
 
+    // create a map based on Device name and instance number
     private LinkedHashMap<String, DynamicControl> dynamicControls = new LinkedHashMap<>();
 
 
@@ -66,7 +67,7 @@ public class ControlMap {
     {
         synchronized (dynamicControls)
         {
-            dynamicControls.put(control.getControlHashCode(), control);
+            dynamicControls.put(control.getControlMapKey(), control);
             // We are going to add ourseleves as a listener to the update value so we can send any updates to controller
             control.addControlListener(new DynamicControl.DynamicControlListener() {
                 @Override
@@ -88,14 +89,14 @@ public class ControlMap {
 
     /**
      * Get the Dynamic Control based on HashCode
-     * @param hash_code the hash_code we are using as the key
+     * @param map_key the String we are using as the key
      * @return the Dynamic control associated, otherwise null if does not exist
      */
-    public DynamicControl getControl(String hash_code)
+    public DynamicControl getControl(String map_key)
     {
         synchronized (dynamicControls)
         {
-            return  dynamicControls.getOrDefault(hash_code, null);
+            return  dynamicControls.getOrDefault(map_key, null);
         }
     }
 
@@ -122,7 +123,7 @@ public class ControlMap {
             control.eraseListeners();
             OSCMessage msg = control.buildRemoveMessage();
             sendDynamicControlMessage(msg);
-            dynamicControls.remove(control.getControlHashCode());
+            dynamicControls.remove(control.getControlMapKey());
         }
     }
 
