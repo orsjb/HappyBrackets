@@ -138,7 +138,7 @@ public class DynamicControlScreen {
                 scrollPane = new ScrollPane(dynamicControlPane);
                 scrollPane.setFitToHeight(true);
 
-                main_container.setTop(debugPane);
+                main_container.setBottom(debugPane);
                 main_container.setCenter(scrollPane);
 
                 scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
