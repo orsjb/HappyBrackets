@@ -85,6 +85,10 @@ public class ControlMap {
                     }
                 }
             });
+
+            String name = control.getControlName();
+            getControlsByName(name).add(control);
+
         }
         if (controlListenerList.size() > 0)
         {
@@ -93,6 +97,23 @@ public class ControlMap {
         }
     }
 
+    /**
+     * Get the Control list by name.
+     * If no list exists, it will create a list and add it to controlScopedDevices
+     * @param name the name used as a search key
+     * @return the List of DynamicControls that have that name
+     */
+    List<DynamicControl> getControlsByName(String name)
+    {
+        List<DynamicControl> name_list = controlScopedDevices.get(name);
+        if (name_list == null)
+        {
+            name_list = new ArrayList<>();
+            controlScopedDevices.put(name, name_list);
+        }
+
+        return name_list;
+    }
     /**
      * Get the Dynamic Control based on HashCode
      * @param map_key the String we are using as the key
@@ -130,6 +151,12 @@ public class ControlMap {
             OSCMessage msg = control.buildRemoveMessage();
             sendDynamicControlMessage(msg);
             dynamicControls.remove(control.getControlMapKey());
+
+            // now remove from named Objects
+            String name = control.getControlName();
+
+            List<DynamicControl> name_list = getControlsByName(name);
+            name_list.remove(control);
         }
     }
 
@@ -149,6 +176,13 @@ public class ControlMap {
 
             }
             dynamicControls.clear();
+
+            // Clear all Control scope Objects
+            controlScopedDevices.forEach((name, named_list)->{
+                named_list.clear();
+            });
+
+            // No need to clear the actual lists themselves
         }
 
     }
