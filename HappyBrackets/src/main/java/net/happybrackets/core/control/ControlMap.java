@@ -19,6 +19,17 @@ public class ControlMap {
     private List<dynamicControlAdvertiseListener> controlListenerList = new ArrayList();
 
 
+    // We will enforce singleton by instatiating it once
+    private static ControlMap singletonInstance = null;
+
+    // create a map based on Device name and instance number
+    private LinkedHashMap<String, DynamicControl> dynamicControls = new LinkedHashMap<>();
+
+    // Devices are mapped based on name
+    private LinkedHashMap<String, List<DynamicControl>> controlScopedDevices = new LinkedHashMap<>();
+
+
+
     public void addDynamicControlAdvertiseListener(dynamicControlAdvertiseListener listener){
         synchronized (controlListenerList)
         {
@@ -37,11 +48,6 @@ public class ControlMap {
         }
     }
 
-    // We will enforce singleton by instatiating it once
-    private static ControlMap singletonInstance = null;
-
-    // create a map based on Device name and instance number
-    private LinkedHashMap<String, DynamicControl> dynamicControls = new LinkedHashMap<>();
 
 
     private ControlMap(){}
