@@ -50,12 +50,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
     private String username = DEF_USERNAME;
 
     // we need to store our Item and listeners here so we can remove them
+	// anything you add here will need to get reset if item is updated
 	private LocalDeviceRepresentation localDevice = null;
 	private LocalDeviceRepresentation.StatusUpdateListener updateListener = null;
 	private LocalDeviceRepresentation.DeviceIdUpdateListener deviceIdUpdateListener = null;
 	private DynamicControl.DynamicControlListener dynamicControlListenerCreated = null;
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
 	private DynamicControl.DynamicControlListener dynamicControlListenerRemoved = null;
+	private DynamicControlScreen dynamicControlScreen = null;
 
 	//in case the user is not using pi as the default username for ssh
 	public void setUsername(String val)
@@ -67,8 +69,58 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         return "ssh " + username + "@" + device_name + ".local";
     }
 
-    private DynamicControlScreen dynamicControlScreen = null;
 
+	/**
+	 * The cell parameters need to be reset every time a device is updated because they are bound to the olde LocalDevicerepresentation
+	 */
+	private void resetCellParameters(){
+		localDevice = null;
+		updateListener = null;
+		deviceIdUpdateListener = null;
+		dynamicControlListenerCreated = null;
+		connectedUpdateListener = null;
+		dynamicControlListenerRemoved = null;
+		dynamicControlScreen = null;
+	}
+
+	@Override
+	public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
+		super.updateItem(item, empty);
+
+		if (localDevice != null && empty)
+		{
+			// This is where we will clear out all old listeners
+			localDevice.removeStatusUpdateListener(updateListener);
+			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
+			localDevice.removeDynamicControlListenerCreatedListener(dynamicControlListenerCreated);
+			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
+			localDevice.removeDynamicControlListenerRemovedListener(dynamicControlListenerRemoved);
+			localDevice.resetDeviceHasDisplayed();
+
+			dynamicControlScreen.removeDynamicControlScene();
+		}
+
+		resetCellParameters();
+
+		localDevice = item;
+
+		setGraphic(null);
+
+		//gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
+		if (item != null) {
+			if (dynamicControlScreen == null)
+			{
+				dynamicControlScreen = new DynamicControlScreen(item);
+			}
+
+			dynamicControlScreen.createDynamicControlStage();
+
+			addCellRow(item);
+			item.setDeviceHasDisplayed();
+		}
+
+		this.prefWidthProperty().bind(this.getListView().widthProperty().subtract(4));
+	}
 
 	synchronized void  addCellRow(LocalDeviceRepresentation item) {
 		//set up main panel
@@ -315,40 +367,4 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 	}
 
-    @Override
-    public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
-        super.updateItem(item, empty);
-
-        if (localDevice != null && empty)
-		{
-			// This is where we will clear out all old listeners
-			localDevice.removeStatusUpdateListener(updateListener);
-			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
-			localDevice.removeDynamicControlListenerCreatedListener(dynamicControlListenerCreated);
-			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
-			localDevice.removeDynamicControlListenerRemovedListener(dynamicControlListenerRemoved);
-			localDevice.resetDeviceHasDisplayed();
-
-			dynamicControlScreen.removeDynamicControlScene();
-		}
-
-		localDevice = item;
-
-        setGraphic(null);
-
-        //gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
-        if (item != null) {
-			if (dynamicControlScreen == null)
-			{
-				dynamicControlScreen = new DynamicControlScreen(item);
-			}
-
-			dynamicControlScreen.createDynamicControlStage();
-
-			addCellRow(item);
-			item.setDeviceHasDisplayed();
-		}
-
-		this.prefWidthProperty().bind(this.getListView().widthProperty().subtract(4));
-    }
 }

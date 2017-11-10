@@ -46,7 +46,7 @@ public class DynamicControlScreen {
 
     }
 
-    private Map<Integer, ControlCellGroup> dynamicControlsList = new Hashtable<Integer, ControlCellGroup>();
+    private Map<String, ControlCellGroup> dynamicControlsList = new Hashtable<String, ControlCellGroup>();
 
     private final LocalDeviceRepresentation localDevice;
     private Stage dynamicControlStage = null;

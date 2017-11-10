@@ -22,7 +22,7 @@ import java.net.SocketAddress;
 public class TestDynamicControl_1 implements HBAction {
 
     float floatVal = 2000; // must be a class variable to access inside inner classes
-    int controlHashCode = 0; // we are just using this now as our real control will have a hash code
+    String controlHashCode = ""; // we are just using this now as our real control will have a hash code
 
     @Override
     public void action(HB hb) {

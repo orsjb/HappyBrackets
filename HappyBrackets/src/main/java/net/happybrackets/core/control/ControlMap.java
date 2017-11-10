@@ -1,9 +1,7 @@
 package net.happybrackets.core.control;
 
 import de.sciss.net.OSCMessage;
-import net.happybrackets.device.network.UDPCachedMessage;
 
-import java.net.InetSocketAddress;
 import java.util.*;
 
 /**
@@ -42,7 +40,7 @@ public class ControlMap {
     // We will enforce singleton by instatiating it once
     private static ControlMap singletonInstance = null;
 
-    private Map<Integer, DynamicControl> dynamicControls = new Hashtable<Integer, DynamicControl>();
+    private LinkedHashMap<String, DynamicControl> dynamicControls = new LinkedHashMap<>();
 
 
     private ControlMap(){}
@@ -93,7 +91,7 @@ public class ControlMap {
      * @param hash_code the hash_code we are using as the key
      * @return the Dynamic control associated, otherwise null if does not exist
      */
-    public DynamicControl getControl(int hash_code)
+    public DynamicControl getControl(String hash_code)
     {
         synchronized (dynamicControls)
         {
@@ -148,20 +146,21 @@ public class ControlMap {
 
     }
 
+    public LinkedHashMap<String, DynamicControl> getDynamicControls(){
+        return dynamicControls;
+    }
+
     /**
      * get all Dynamic Controls
      */
-    public List<Integer> GetSortedControls()
+    public List<DynamicControl> GetSortedControls()
     {
-        List<Integer> sorted_list = new ArrayList<Integer>();
+        List<DynamicControl> sorted_list = new ArrayList<DynamicControl>();
 
-        Set<Integer> key_set =  dynamicControls.keySet();
+        dynamicControls.forEach((key, value) -> {
+            sorted_list.add(value);
+        });
 
-        for (Integer key : key_set) {
-            sorted_list.add(key);
-        }
-
-        java.util.Collections.sort(sorted_list);
         return sorted_list;
     }
 

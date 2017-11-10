@@ -61,7 +61,7 @@ public class LocalDeviceRepresentation {
 	private final Object[] replyPortObject; //we will use this as a cached Object to send in OSC Message
 	private boolean loggingEnabled = false;
 
-	private Map<Integer, DynamicControl> dynamicControls = new Hashtable<Integer, DynamicControl>();
+	private Map<String, DynamicControl> dynamicControls = new Hashtable<String, DynamicControl>();
 
 	private boolean isConnected = true;
 
@@ -347,7 +347,7 @@ public class LocalDeviceRepresentation {
 	 */
 	private void processDynamicControlMessage(OSCMessage msg, SocketAddress sender) {
 		final int CONTROL_HASH = 1;
-		int hash_code = (int) msg.getArg(CONTROL_HASH);
+		String hash_code = (String) msg.getArg(CONTROL_HASH);
 
 		if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.CREATE)) {
 			DynamicControl new_control = new DynamicControl(msg);

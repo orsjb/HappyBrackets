@@ -191,16 +191,12 @@ public class NetworkCommunication {
 
 							ControlMap control_map = ControlMap.getInstance();
 
-							List<Integer> control_keys = control_map.GetSortedControls();
+							List<DynamicControl> controls = control_map.GetSortedControls();
 
-							for (Integer control_key : control_keys) {
-								DynamicControl control = control_map.getControl(control_key);
+							for (DynamicControl control : controls) {
 								if (control != null) {
 									OSCMessage send_msg = control.buildCreateMessage();
 									send(send_msg, target_address);
-								}
-								else{
-									System.out.println("Unable to Get Control Map key " +  control_key);
 								}
 							}
 

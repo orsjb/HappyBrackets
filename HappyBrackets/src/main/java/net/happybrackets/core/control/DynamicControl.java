@@ -9,12 +9,28 @@ import java.util.List;
 
 public class DynamicControl {
 
+    /**
+     * The way Create Messages are sent
+     */
+    enum CREATE_MESSAGE_ARGS {
+        DEVICE_NAME,
+        HASH_CODE,
+        CONTROL_NAME,
+        PARENT_SKETCH_NAME,
+        PARENT_SKETCH_ID,
+        CONTROL_TYPE,
+        OBJ_VAL,
+        MIN_VAL,
+        MAX_VAL,
+        CONTROL_SCOPE
+    }
+
     static ControlMap controlMap = ControlMap.getInstance();
 
     static int instanceCounter = 0; // we will use this to order the creation of our objects and give them a unique number on device
     Object instanceCounterLock = new Object();
 
-    private final int controlHashCode;
+    private final String controlHashCode;
 
     /**
      * Create an Interface to listen to
@@ -29,6 +45,7 @@ public class DynamicControl {
     // The Object sketch that this control was created in
     Object parentSketch = null;
     final int parentId;
+
     String parentSketchName;
     ControlType controlType;
     String controlName;
@@ -68,7 +85,7 @@ public class DynamicControl {
         Init(parent_sketch.getClass().getName(), control_type, name, initial_value);
         parentId = parent_sketch.hashCode();
         synchronized (instanceCounterLock) {
-            controlHashCode = instanceCounter;
+            controlHashCode = Device.getDeviceName() +  instanceCounter;
             instanceCounter++;
         }
         controlMap.addControl(this);
@@ -93,7 +110,7 @@ public class DynamicControl {
         parentId = parent_sketch.hashCode();
 
         synchronized (instanceCounterLock) {
-            controlHashCode = instanceCounter;
+            controlHashCode = Device.getDeviceName() + instanceCounter;
             instanceCounter++;
         }
         controlMap.addControl(this);
@@ -135,7 +152,7 @@ public class DynamicControl {
      * @param hash_code the hash_code that we are using as the key
      * @return the Object associated with this control
      */
-    public static DynamicControl getControl(int hash_code) {
+    public static DynamicControl getControl(String hash_code) {
 
         return controlMap.getControl(hash_code);
     }
@@ -147,7 +164,7 @@ public class DynamicControl {
     public static void processUpdateMessage(OSCMessage msg){
         final int HASH_CODE = 1;
         final int OBJ_VAL = 2;
-        int hash_code = (int) msg.getArg(HASH_CODE);
+        String hash_code = (String) msg.getArg(HASH_CODE);
         Object obj_val = msg.getArg(OBJ_VAL);
         DynamicControl control = getControl(hash_code);
         if (control != null)
@@ -213,25 +230,16 @@ public class DynamicControl {
      */
     public DynamicControl (OSCMessage msg)
     {
-        final int HASH_CODE = 1;
-        final int CONTROL_NAME = 2;
-        final int PARENT_SKETCH_NAME = 3;
-        final int PARENT_SKETCH_ID = 4;
-        final int CONTROL_TYPE = 5;
-        final int OBJ_VAL = 6;
-        final int MIN_VAL = 7;
-        final int MAX_VAL = 8;
-        final int CONTROL_SCOPE = 9;
 
-        controlHashCode = (int) msg.getArg(HASH_CODE);
-        controlName = (String) msg.getArg(CONTROL_NAME);
-        parentSketchName = (String) msg.getArg(PARENT_SKETCH_NAME);
-        parentId =  (int) msg.getArg(PARENT_SKETCH_ID);
-        controlType = ControlType.values ()[(int) msg.getArg(CONTROL_TYPE)];
-        objVal = msg.getArg(OBJ_VAL);
-        minimumValue = msg.getArg(MIN_VAL);
-        maximumValue = msg.getArg(MAX_VAL);
-        controlScope = ControlScope.values ()[(int) msg.getArg(CONTROL_SCOPE)];
+        controlHashCode = (String) msg.getArg(CREATE_MESSAGE_ARGS.HASH_CODE.ordinal());
+        controlName = (String) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_NAME.ordinal());
+        parentSketchName = (String) msg.getArg(CREATE_MESSAGE_ARGS.PARENT_SKETCH_NAME.ordinal());
+        parentId =  (int) msg.getArg(CREATE_MESSAGE_ARGS.PARENT_SKETCH_ID.ordinal());
+        controlType = ControlType.values ()[(int) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
+        objVal = msg.getArg(CREATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
+        minimumValue = msg.getArg(CREATE_MESSAGE_ARGS.MIN_VAL.ordinal());
+        maximumValue = msg.getArg(CREATE_MESSAGE_ARGS.MAX_VAL.ordinal());
+        controlScope = ControlScope.values ()[(int) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
         controlMap.addControl(this);
     }
 
@@ -239,7 +247,7 @@ public class DynamicControl {
      * Get the hash code created in the device as a method for mapping back
      * @return
      */
-    public int getControlHashCode(){
+    public String getControlHashCode(){
         return  controlHashCode;
     }
     /**
