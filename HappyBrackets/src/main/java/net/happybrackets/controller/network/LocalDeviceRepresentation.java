@@ -26,6 +26,7 @@ import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
+import net.happybrackets.core.DeviceStatus;
 import net.happybrackets.core.ErrorListener;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.control.ControlMap;
@@ -310,10 +311,10 @@ public class LocalDeviceRepresentation {
 	 */
 	private void processStatusMessage(OSCMessage msg, SocketAddress sender) {
 		// Lets put some constants here so we can read them
-		final int DEVICE_STATUS = 1;
+		DeviceStatus status = new DeviceStatus(msg);
 
-		String status = (String) msg.getArg(DEVICE_STATUS);
-		setStatus(status);
+		setStatus(status.getStatusText());
+		loggingEnabled = status.isLoggingEnabled();
 	}
 
 	/**
@@ -691,5 +692,8 @@ public class LocalDeviceRepresentation {
 		// we need to send a start logging message to the device
 
 		loggingEnabled = enable;
+
+		send(OSCVocabulary.Device.GET_LOGS, new Object[]{enable ? 1 : 0});
+
 	}
 }

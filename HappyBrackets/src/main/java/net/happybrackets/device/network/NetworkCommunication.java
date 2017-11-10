@@ -18,7 +18,6 @@ package net.happybrackets.device.network;
 
 //import com.intellij.ide.ui.EditorOptionsTopHitProvider;
 import de.sciss.net.*;
-import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.core.*;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
@@ -29,13 +28,10 @@ import net.happybrackets.device.config.LocalConfigManagement;
 
 import java.io.IOException;
 import java.net.*;
-import java.nio.ByteBuffer;
 import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static net.happybrackets.core.BroadcastManager.getBroadcast;
 
 /**
  * This class takes care of communication between the device and the controller. You would mainly use it to send OSC messages to the controller and listen for incoming OSC messages from the controller. However, these methods are both wrapped in the {@link HB} class.
@@ -55,36 +51,6 @@ public class NetworkCommunication {
 	private final LogSender logSender;
 
 
-	private UDPCachedMessage cachedStatusMessage = null;
-
-
-	/**
-	 * Create a status Message
-	 * @return the Cached Message Created
-	 */
-	UDPCachedMessage buildStatusMessage()
-	{
-		OSCMessage msg = new OSCMessage(OSCVocabulary.Device.STATUS,
-				new Object[]{
-						Device.getDeviceName(),
-						hb.getStatus()
-				});
-
-
-			try {
-				if (cachedStatusMessage == null) {
-					cachedStatusMessage = new UDPCachedMessage(msg);
-				}
-				else
-				{
-					cachedStatusMessage.setMessage(msg);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			return  cachedStatusMessage;
-	}
 
 	/**
 	 * Instantiate a new {@link NetworkCommunication} object.
@@ -110,11 +76,11 @@ public class NetworkCommunication {
 		_hb.addStatusChangedListener(new HB.StatusChangedListener() {
 			@Override
 			public void statusChanged(String new_status) {
-				DeviceConfig.getInstance().sendMessageToAllControllers(buildStatusMessage().cachedPacket);
+				DeviceStatus.getInstance().setStatusText(new_status);
+				DeviceConfig.getInstance().sendMessageToAllControllers(DeviceStatus.getInstance().getCachedStatusMessage().cachedPacket);
 			}
 		});
 
-		buildStatusMessage();
 
 		//init the OSCServer
 		logger.info("Setting up OSC server");
@@ -193,11 +159,7 @@ public class NetworkCommunication {
 
 							InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
 
-							send(OSCVocabulary.Device.STATUS,
-									new Object[]{
-											Device.getDeviceName(),
-											hb.getStatus()
-									},
+							send(DeviceStatus.getInstance().getOSCMessage(),
 									target_address);
 
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
@@ -473,9 +435,11 @@ public class NetworkCommunication {
 	 * Upon subsequent starts any new log messages will be sent that were created since the last stop.
 	 * Until the process is stopped, as new log messages appear they will be sent to the controller.
 	 *
-	 * @param sendLogs true to start, false to stop.
+	 * @param send_logs true to start, false to stop.
 	 */
-	public void sendLogs(boolean sendLogs) {
-		logSender.setSend(sendLogs);
+	public void sendLogs(boolean send_logs) {
+		logSender.setSend(send_logs);
+		DeviceStatus.getInstance().setLoggingEnabled(send_logs);
+
 	}
 }

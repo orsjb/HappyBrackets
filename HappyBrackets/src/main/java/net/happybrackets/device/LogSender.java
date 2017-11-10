@@ -16,19 +16,14 @@
 
 package net.happybrackets.device;
 
-import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.core.Synchronizer;
 import net.happybrackets.device.network.NetworkCommunication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 /**
  * Manages sending log messages to the controller as they appear in a log file.
@@ -45,7 +40,7 @@ public class LogSender {
     private File logPath; // path to log file.
     private File logPathDir; // path to log file folder.
 
-    private volatile boolean send;
+    private volatile boolean sendEnabled;
     private volatile boolean dispose = false;
 
     RandomAccessFile fileReader;
@@ -56,7 +51,7 @@ public class LogSender {
 
     public LogSender(NetworkCommunication networkCommunication, String logLocation) {
         this.networkCommunication = networkCommunication;
-        send = false;
+        sendEnabled = false;
 
         try {
             // Set-up a file change monitor.
@@ -85,20 +80,28 @@ public class LogSender {
     }
 
     /**
-     * @param send true to start sending log messages to the controller.
+     * @param send_enabled true to start sending log messages to the controller.
      */
-    public void setSend(boolean send) {
-        this.send = send;
+    public void setSend(boolean send_enabled) {
+        this.sendEnabled = send_enabled;
         synchronized (sender) {
             sender.notify();
         }
     }
 
     /**
+     * Whether we have logging enabled
+     * @return
+     */
+    public boolean getSend(){
+        return sendEnabled;
+    }
+
+    /**
      * Dispose of the thread handling sending of messages.
      */
     public void dispose() {
-        send = false;
+        sendEnabled = false;
         dispose = true;
         synchronized (sender) {
             sender.notify();
@@ -112,7 +115,7 @@ public class LogSender {
             boolean sentInitial = false;
 
             while (!dispose) {
-                while (send) {
+                while (sendEnabled) {
                     // Send initial file contents if we haven't already.
                     if (!sentInitial) {
                         sendLatest();

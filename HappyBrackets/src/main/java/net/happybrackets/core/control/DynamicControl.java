@@ -170,7 +170,7 @@ public class DynamicControl {
     }
 
     /**
-     * Build OSC Message that sepecifies an update
+     * Build OSC Message that specifies an update
      * @return
      */
     public OSCMessage buildUpdateMessage(){

@@ -74,6 +74,10 @@ public class DeviceMain {
 
 	}
 
+	/**
+	 * Return the global Intstance of HB
+	 * @return
+	 */
 	public static final HB getHB()
 	{
 		return HBInstance;
