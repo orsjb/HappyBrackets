@@ -25,6 +25,7 @@ import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
+import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.DeviceStatus;
 import net.happybrackets.core.ErrorListener;
 import net.happybrackets.core.OSCVocabulary;
@@ -48,6 +49,8 @@ public class LocalDeviceRepresentation {
 	public List<String> preferredAddressStrings;    //This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
 	private int deviceId; //
 	private String status = "Status unknown"; // This is the displayed ID
+
+	private DynamicControlScreen dynamicControlScreen = null;
 
 	boolean controlRequestSent = false;
 
@@ -146,6 +149,10 @@ public class LocalDeviceRepresentation {
 	}
 
 
+	public void showControlScreen()
+	{
+		dynamicControlScreen.show();
+	}
 	/**
 	 * Return the time in milliseconds that we have had this appeared
 	 * @return
@@ -162,6 +169,8 @@ public class LocalDeviceRepresentation {
 	public void addDynamicControl(DynamicControl control) {
 		synchronized (dynamicControls) {
 			dynamicControls.put(control.getControlMapKey(), control);
+			dynamicControlScreen.addDynamicControl(control);
+
 			synchronized (addDynamicControlListenerList) {
 				for (DynamicControl.DynamicControlListener listener : addDynamicControlListenerList) {
 					listener.update(control);
@@ -192,6 +201,7 @@ public class LocalDeviceRepresentation {
 		// we need to get the collection synchronised with map
 		// or we will get an access vioaltion
 
+		dynamicControlScreen.removeDynamicControlScene();
 		Collection<DynamicControl> removal_list;
 		synchronized (dynamicControls) {
 			removal_list = dynamicControls.values();
@@ -210,6 +220,9 @@ public class LocalDeviceRepresentation {
 	public void removeDynamicControl(DynamicControl control) {
 		synchronized (dynamicControls) {
 			dynamicControls.remove(control.getControlMapKey());
+
+			dynamicControlScreen.removeDynamicControl(control);
+
 			synchronized (removeDynamicControlListenerList) {
 				for (DynamicControl.DynamicControlListener listener : removeDynamicControlListenerList) {
 					listener.update(control);
@@ -243,6 +256,10 @@ public class LocalDeviceRepresentation {
 
 
 		this.isConnected = true;
+
+		dynamicControlScreen = new DynamicControlScreen(this);
+
+		dynamicControlScreen.createDynamicControlStage();
 
 		// Set-up log monitor.
 		log = "";
@@ -420,6 +437,9 @@ public class LocalDeviceRepresentation {
 			}
 
 			deviceRemovedListenerList.clear();
+			dynamicControlScreen.removeDynamicControlScene();
+			dynamicControlScreen = null;
+
 		}
 	}
 

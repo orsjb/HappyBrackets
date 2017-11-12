@@ -19,14 +19,11 @@ package net.happybrackets.intellij_plugin;
 //import com.sun.org.apache.bcel.internal.generic.NEW;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -35,11 +32,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
 import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
-
-import java.util.Collection;
-import java.util.Map;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
@@ -53,10 +46,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	private LocalDeviceRepresentation localDevice = null;
 	private LocalDeviceRepresentation.StatusUpdateListener updateListener = null;
 	private LocalDeviceRepresentation.DeviceIdUpdateListener deviceIdUpdateListener = null;
-	private DynamicControl.DynamicControlListener dynamicControlListenerCreated = null;
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
-	private DynamicControl.DynamicControlListener dynamicControlListenerRemoved = null;
-	private DynamicControlScreen dynamicControlScreen = null;
 
 	//in case the user is not using pi as the default username for ssh
 	public void setUsername(String val)
@@ -76,10 +66,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		localDevice = null;
 		updateListener = null;
 		deviceIdUpdateListener = null;
-		dynamicControlListenerCreated = null;
 		connectedUpdateListener = null;
-		dynamicControlListenerRemoved = null;
-		dynamicControlScreen = null;
 	}
 
 	@Override
@@ -91,12 +78,10 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			// This is where we will clear out all old listeners
 			localDevice.removeStatusUpdateListener(updateListener);
 			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
-			localDevice.removeDynamicControlListenerCreatedListener(dynamicControlListenerCreated);
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
-			localDevice.removeDynamicControlListenerRemovedListener(dynamicControlListenerRemoved);
 			localDevice.resetDeviceHasDisplayed();
 
-			dynamicControlScreen.removeDynamicControlScene();
+
 		}
 
 		resetCellParameters();
@@ -107,13 +92,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		//gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
 		if (item != null) {
-			if (dynamicControlScreen == null)
-			{
-				dynamicControlScreen = new DynamicControlScreen(item);
-			}
-
-			dynamicControlScreen.createDynamicControlStage();
-
 			addCellRow(item);
 			item.setDeviceHasDisplayed();
 		}
@@ -165,7 +143,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			public void handle(ActionEvent e) {
 
 				item.resetDevice();
-				dynamicControlScreen.removeDynamicControlScene();
 			}
 		});
 		controls.getChildren().add(resetButton);
@@ -326,40 +303,15 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				show_controls_item_menu.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						dynamicControlScreen.show();
+						localDevice.showControlScreen();
 					}
 				});
-
-
 
 
 				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, remove_item_menu, show_controls_item_menu);
 				contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 			}
 
-		});
-
-		item.addDynamicControlListenerCreatedListener(dynamicControlListenerCreated = new DynamicControl.DynamicControlListener() {
-			@Override
-			public void update(DynamicControl control) {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						dynamicControlScreen.addDynamicControl(control);
-					}
-				});
-			}
-		});
-
-
-		item.addDynamicControlListenerRemovedListener(dynamicControlListenerRemoved = new DynamicControl.DynamicControlListener() {
-			@Override
-			public void update(DynamicControl control) {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						dynamicControlScreen.removeDynamicControl(control);
-					}
-				});
-			}
 		});
 
 		setGraphic(main);
