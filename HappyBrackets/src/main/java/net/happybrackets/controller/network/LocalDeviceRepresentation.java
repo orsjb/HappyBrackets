@@ -242,7 +242,7 @@ public class LocalDeviceRepresentation {
 
 		//timeCreated = System.nanoTime();
 		// We will set timeDisplayed so it will not make a request for a control until it has been set by the display Cell
-		timeDisplayed = Long.MAX_VALUE;
+		timeDisplayed = System.currentTimeMillis();
 		replyPort = reply_port;
 		replyPortObject = new Object[] {replyPort};
 		this.deviceName = deviceName;
@@ -288,7 +288,7 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void resetDeviceHasDisplayed(){
-		timeDisplayed = Long.MAX_VALUE;
+		timeDisplayed = System.currentTimeMillis();
 	}
 	/**
 	 * Process and incoming OSC Message for this device
