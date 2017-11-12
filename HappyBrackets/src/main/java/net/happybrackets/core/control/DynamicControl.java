@@ -25,6 +25,16 @@ public class DynamicControl {
         CONTROL_SCOPE
     }
 
+    // Define the Arguments used in an Update message
+    enum UPDATE_MESSAGE_ARGS {
+        DEVICE_NAME,
+        MAP_KEY,
+        OBJ_VAL,
+        MIN_VAL,
+        MAX_VAL,
+        CONTROL_SCOPE
+    }
+
     static ControlMap controlMap = ControlMap.getInstance();
 
     static int instanceCounter = 0; // we will use this to order the creation of our objects and give them a unique number on device
@@ -156,14 +166,15 @@ public class DynamicControl {
         ControlScope old_scope = controlScope;
         if (old_scope != new_scope) {
             controlScope = new_scope;
-            ControlMap.getInstance().updateControlScope(this, old_scope);
+            notifyListeners();
+            //ControlMap.getInstance().updateControlScope(this, old_scope);
         }
     }
 
     /**
      * Get the Dynamic control based on Map key
      *
-     * @param map_key the hstring that we are using as the key
+     * @param map_key the string that we are using as the key
      * @return the Object associated with this control
      */
     public static DynamicControl getControl(String map_key) {
@@ -176,14 +187,23 @@ public class DynamicControl {
      * @param msg OSC message with new value
      */
     public static void processUpdateMessage(OSCMessage msg){
-        final int MAP_KEY = 1;
-        final int OBJ_VAL = 2;
-        String map_key = (String) msg.getArg(MAP_KEY);
-        Object obj_val = msg.getArg(OBJ_VAL);
+
+        String map_key = (String) msg.getArg(UPDATE_MESSAGE_ARGS.MAP_KEY.ordinal());
+        Object obj_val = msg.getArg(UPDATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
+        Object min_val = msg.getArg(UPDATE_MESSAGE_ARGS.MIN_VAL.ordinal());
+        Object max_val = msg.getArg(UPDATE_MESSAGE_ARGS.MAX_VAL.ordinal());
+        ControlScope control_scope = ControlScope.values ()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
+
         DynamicControl control = getControl(map_key);
         if (control != null)
         {
-            control.setValue(obj_val);
+            // do not use setters as we only want to generate one notifyListeners
+            control.objVal = obj_val;
+            control.maximumValue = max_val;
+            control.maximumValue = min_val;
+            control.controlScope = control_scope;
+
+            control.notifyListeners();
         }
     }
 
@@ -194,8 +214,8 @@ public class DynamicControl {
     public OSCMessage buildRemoveMessage(){
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.DESTROY,
                 new Object[]{
-                        Device.getDeviceName(),
-                        getControlMapKey()
+                        deviceName,
+                        controlMapKey
                 });
 
     }
@@ -207,9 +227,12 @@ public class DynamicControl {
     public OSCMessage buildUpdateMessage(){
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.UPDATE,
                 new Object[]{
-                        Device.getDeviceName(),
-                        getControlMapKey(),
-                        objVal
+                        deviceName,
+                        controlMapKey,
+                        objVal,
+                        maximumValue ,
+                        maximumValue,
+                        controlScope.ordinal()
                 });
 
     }

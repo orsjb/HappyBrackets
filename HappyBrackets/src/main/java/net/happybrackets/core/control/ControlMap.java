@@ -129,18 +129,6 @@ public class ControlMap {
 
 
     /**
-     * Update the control scope in the maps. Removes from old scope map and adds to new
-     * Still needs to be implemented
-     * @param control the control being updated
-     * @param old_scope the scope this control used to have
-     */
-    public void updateControlScope(DynamicControl control, ControlScope old_scope) {
-        synchronized (dynamicControls) {
-
-        }
-    }
-
-    /**
      * Remove all listeners and reference to Dynamic Control
      * @param control the control to remove
      */
