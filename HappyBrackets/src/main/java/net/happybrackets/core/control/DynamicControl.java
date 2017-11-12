@@ -198,12 +198,31 @@ public class DynamicControl {
         if (control != null)
         {
             // do not use setters as we only want to generate one notifyListeners
-            control.objVal = obj_val;
-            control.maximumValue = max_val;
-            control.maximumValue = min_val;
-            control.controlScope = control_scope;
+            boolean changed = false;
 
-            control.notifyListeners();
+            if (!obj_val.equals(control.objVal)) {
+                control.objVal = obj_val;
+                changed = true;
+            }
+
+            if (!max_val.equals(control.maximumValue)) {
+                control.maximumValue = max_val;
+                changed = true;
+            }
+
+            if (!min_val.equals(control.minimumValue)) {
+                control.maximumValue = min_val;
+                changed = true;
+            }
+
+            if (!control_scope.equals(control.controlScope)) {
+                control.controlScope = control_scope;
+                changed = true;
+            }
+
+            if (changed) {
+                control.notifyListeners();
+            }
         }
     }
 
@@ -230,7 +249,7 @@ public class DynamicControl {
                         deviceName,
                         controlMapKey,
                         objVal,
-                        maximumValue ,
+                        minimumValue ,
                         maximumValue,
                         controlScope.ordinal()
                 });
@@ -293,8 +312,10 @@ public class DynamicControl {
      */
     public void setValue(Object val)
     {
-        objVal = val;
-        notifyListeners();
+        if (!objVal.equals(val)) {
+            objVal = val;
+            notifyListeners();
+        }
     }
 
 
