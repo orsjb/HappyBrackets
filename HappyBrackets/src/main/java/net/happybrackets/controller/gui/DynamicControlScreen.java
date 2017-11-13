@@ -220,7 +220,7 @@ public class DynamicControlScreen {
 
                     ControlType control_type = control.getControlType();
                     switch (control_type) {
-                        case BUTTON:
+                        case TRIGGER:
                             Button b = new Button();
                             b.setText("Send");
                             dynamicControlPane.add(b, 1, next_control_row);
@@ -237,7 +237,7 @@ public class DynamicControlScreen {
 
                             break;
 
-                        case SLIDER:
+                        case INT:
                             Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
                             s.setMaxWidth(100);
                             s.setOrientation(Orientation.HORIZONTAL);
@@ -272,7 +272,7 @@ public class DynamicControlScreen {
 
                             break;
 
-                        case CHECKBOX:
+                        case BOOLEAN:
                             CheckBox c = new CheckBox();
                             int i_val = (int) control.getValue();
                             c.setSelected(i_val != 0);
