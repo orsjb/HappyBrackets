@@ -183,6 +183,60 @@ public class DynamicControl {
     }
 
     /**
+     * Update the parameters of this control with another. This would have been caused by an object having other than SKETCH control scope
+     * If the parameters are changed, this object will notify it's listeners that a change has occured
+     * @param mirror_control The synamic control that we are copying from
+     */
+    public void updateControl(DynamicControl mirror_control){
+        if (mirror_control != null) {
+
+            // first check our scope and type are the same
+            boolean scope_matches = getControlScope() == mirror_control.getControlScope() && getControlType() == mirror_control.getControlType();
+
+            if (scope_matches)
+            {
+                // Now we need to check whether the scope matches us
+                if (getControlScope() == ControlScope.CLASS)
+                {
+                    scope_matches = this.parentSketchName.equals(mirror_control.parentSketchName);
+                }
+                else if (getControlScope() == ControlScope.DEVICE){
+                    scope_matches = this.deviceName.equals(mirror_control.deviceName);
+                }
+                // Otherwise it must e global. We have a match
+
+            }
+            if (scope_matches){
+                // do not use setters as we only want to generate one notifyListeners
+                boolean changed = false;
+
+                if (!objVal.equals(mirror_control.objVal)) {
+                    objVal = mirror_control.objVal;
+                    changed = true;
+                }
+
+                if (!minimumValue.equals(mirror_control.minimumValue)) {
+                    minimumValue = mirror_control.minimumValue;
+                    changed = true;
+                }
+
+                if (!maximumValue.equals(mirror_control.maximumValue)) {
+                    maximumValue = mirror_control.maximumValue;
+                    changed = true;
+                }
+
+                if (!controlScope.equals(mirror_control.controlScope)) {
+                    controlScope = mirror_control.controlScope;
+                    changed = true;
+                }
+
+                if (changed) {
+                    notifyListeners();
+                }
+            }
+        }
+    }
+    /**
      * Process the Update Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
      * @param msg OSC message with new value
      */

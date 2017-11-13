@@ -82,6 +82,18 @@ public class ControlMap {
                     {
                         OSCMessage msg = control.buildUpdateMessage();
                         sendDynamicControlMessage(msg);
+
+                        // We need to update all the identical controls if this control is not sk
+                        if (control.controlScope != ControlScope.SKETCH) {
+                            List<DynamicControl> name_list = getControlsByName(control.getControlName());
+                            for (DynamicControl mimic_control : name_list) {
+                                if (mimic_control != control){ // Make sure it is not us
+                                    mimic_control.updateControl(control);
+                                }
+
+
+                            }
+                        }
                     }
                 }
             });
