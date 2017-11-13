@@ -238,38 +238,95 @@ public class DynamicControlScreen {
                             break;
 
                         case INT:
-                            Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
-                            s.setMaxWidth(100);
-                            s.setOrientation(Orientation.HORIZONTAL);
-                            dynamicControlPane.add(s, 1, next_control_row);
-                            control_pair = new ControlCellGroup(control_label, s);
-                            dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                            int control_value = (int) control.getValue();
+                            // If we have no difference between Maximum and Minimum, we will make a textboox
+                            if (control.getMinimumValue().equals(control.getMaximumValue())) {
+                                TextField t = new TextField();
+                                t.setMaxWidth(100);
+                                t.setText(Integer.toString(control_value));
+                                dynamicControlPane.add(t, 1, next_control_row);
+                                control_pair = new ControlCellGroup(control_label, t);
+                                dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                                t.setOnKeyTyped(new EventHandler<KeyEvent>() {
+                                    @Override
+                                    public void handle(KeyEvent event) {
+                                        if (event.getCode().equals(KeyCode.ENTER)) {
+                                            String text_val = t.getText();
+                                            try {
+                                                int control_value = Integer.valueOf(text_val);
 
-                            s.valueProperty().addListener(new ChangeListener<Number>() {
-                                @Override
-                                public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                    if (s.isFocused()) {
-                                        if (oldval != newval) {
-                                            control.setValue(newval.intValue());
-                                            localDevice.sendDynamicControl(control);
-                                        }
-                                    }
-                                }
-                            });
-
-                            control_pair.listener = new DynamicControl.DynamicControlListener() {
-                                @Override
-                                public void update(DynamicControl control) {
-                                    Platform.runLater(new Runnable() {
-                                        public void run() {
-                                            if (!s.isFocused()) {
-                                                s.setValue((int) control.getValue());
+                                                control.setValue(control_value);
+                                                localDevice.sendDynamicControl(control);
+                                            }
+                                            catch (Exception ex){
+                                                // we might want to put an exception here
                                             }
                                         }
-                                    });
-                                }
-                            };
+                                    }
+                                });
 
+                                // set handlers
+                                t.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent actionEvent) {
+                                        String text_val = t.getText();
+                                        try {
+                                            int control_value = Integer.valueOf(text_val);
+
+                                            control.setValue(control_value);
+                                            localDevice.sendDynamicControl(control);
+                                        }
+                                        catch (Exception ex){
+                                            // we might want to put an exception here
+                                        }
+                                    }
+                                });
+
+                                control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                    @Override
+                                    public void update(DynamicControl control) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+
+                                                t.setText(Integer.toString((int) control.getValue()));
+                                            }
+                                        });
+                                    }
+                                };
+                            }
+                            else {
+                                Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
+                                s.setMaxWidth(100);
+                                s.setOrientation(Orientation.HORIZONTAL);
+                                dynamicControlPane.add(s, 1, next_control_row);
+                                control_pair = new ControlCellGroup(control_label, s);
+                                dynamicControlsList.put(control.getControlMapKey(), control_pair);
+
+                                s.valueProperty().addListener(new ChangeListener<Number>() {
+                                    @Override
+                                    public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
+                                        if (s.isFocused()) {
+                                            if (oldval != newval) {
+                                                control.setValue(newval.intValue());
+                                                localDevice.sendDynamicControl(control);
+                                            }
+                                        }
+                                    }
+                                });
+
+                                control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                    @Override
+                                    public void update(DynamicControl control) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                if (!s.isFocused()) {
+                                                    s.setValue((int) control.getValue());
+                                                }
+                                            }
+                                        });
+                                    }
+                                };
+                            }
                             break;
 
                         case BOOLEAN:
@@ -307,37 +364,95 @@ public class DynamicControlScreen {
                             break;
 
                         case FLOAT:
-                            Slider f = new Slider((float) control.getMinimumValue(), (float) control.getMaximumValue(), (float) control.getValue());
-                            f.setMaxWidth(100);
-                            f.setOrientation(Orientation.HORIZONTAL);
-                            dynamicControlPane.add(f, 1, next_control_row);
-                            control_pair = new ControlCellGroup(control_label, f);
-                            dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                            float f_control_value = (float) control.getValue();
+                            // If we have no difference between Maximum and Minimum, we will make a textboox
+                            if (control.getMinimumValue().equals(control.getMaximumValue())) {
+                                TextField t = new TextField();
+                                t.setMaxWidth(100);
+                                t.setText(Float.toString(f_control_value));
+                                dynamicControlPane.add(t, 1, next_control_row);
+                                control_pair = new ControlCellGroup(control_label, t);
+                                dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                                t.setOnKeyTyped(new EventHandler<KeyEvent>() {
+                                    @Override
+                                    public void handle(KeyEvent event) {
+                                        if (event.getCode().equals(KeyCode.ENTER)) {
+                                            String text_val = t.getText();
+                                            try {
+                                                float control_value = Float.valueOf(text_val);
 
-                            f.valueProperty().addListener(new ChangeListener<Number>() {
-                                @Override
-                                public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                    if (f.isFocused()) {
-                                        if (oldval != newval) {
-                                            control.setValue(newval.floatValue());
-                                            localDevice.sendDynamicControl(control);
-                                        }
-                                    }
-                                }
-                            });
-
-                            control_pair.listener = new DynamicControl.DynamicControlListener() {
-                                @Override
-                                public void update(DynamicControl control) {
-                                    Platform.runLater(new Runnable() {
-                                        public void run() {
-                                            if (!f.isFocused()) {
-                                                f.setValue((float) control.getValue());
+                                                control.setValue(control_value);
+                                                localDevice.sendDynamicControl(control);
+                                            }
+                                            catch (Exception ex){
+                                                // we might want to put an exception here
                                             }
                                         }
-                                    });
-                                }
-                            };
+                                    }
+                                });
+
+                                // set handlers
+                                t.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent actionEvent) {
+                                        String text_val = t.getText();
+                                        try {
+                                            float control_value = Float.valueOf(text_val);
+
+                                            control.setValue(control_value);
+                                            localDevice.sendDynamicControl(control);
+                                        }
+                                        catch (Exception ex){
+                                            // we might want to put an exception here
+                                        }
+                                    }
+                                });
+
+                                control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                    @Override
+                                    public void update(DynamicControl control) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+
+                                                t.setText(Float.toString((float) control.getValue()));
+                                            }
+                                        });
+                                    }
+                                };
+                            }
+                            else {
+                                Slider f = new Slider((float) control.getMinimumValue(), (float) control.getMaximumValue(), (float) control.getValue());
+                                f.setMaxWidth(100);
+                                f.setOrientation(Orientation.HORIZONTAL);
+                                dynamicControlPane.add(f, 1, next_control_row);
+                                control_pair = new ControlCellGroup(control_label, f);
+                                dynamicControlsList.put(control.getControlMapKey(), control_pair);
+
+                                f.valueProperty().addListener(new ChangeListener<Number>() {
+                                    @Override
+                                    public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
+                                        if (f.isFocused()) {
+                                            if (oldval != newval) {
+                                                control.setValue(newval.floatValue());
+                                                localDevice.sendDynamicControl(control);
+                                            }
+                                        }
+                                    }
+                                });
+
+                                control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                    @Override
+                                    public void update(DynamicControl control) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                if (!f.isFocused()) {
+                                                    f.setValue((float) control.getValue());
+                                                }
+                                            }
+                                        });
+                                    }
+                                };
+                            }
                             break;
 
                         case TEXT:

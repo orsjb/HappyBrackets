@@ -37,12 +37,33 @@ public class TestDynamicControl_1 implements HBAction {
 
         DynamicControl text_mirror = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Text Mirror");
 
+        DynamicControl int_text = hb.createDynamicControl(this, ControlType.INT, "Int", 2000);
+        DynamicControl float_text = hb.createDynamicControl(this, ControlType.FLOAT, "Float", 100.0);
+
         slider_control.setControlScope(ControlScope.CLASS);
         float_control.setControlScope(ControlScope.DEVICE);
         checkbox_control.setControlScope(ControlScope.GLOBAL);
 
         //hb.setPresetValue("Name", 1);
         //hb.setPresetValue("Name", 1);
+
+        int_text.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+                int i = (int) control.getValue();
+                System.out.println("Int val " + i);
+
+            }
+        });
+
+        float_text.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+                float f = (float) control.getValue();
+                System.out.println("Float val " + f);
+
+            }
+        });
 
         slider_control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
