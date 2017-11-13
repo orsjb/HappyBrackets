@@ -18,6 +18,8 @@ public class ControlMap {
 
     private List<dynamicControlAdvertiseListener> controlListenerList = new ArrayList();
 
+    // create a group of listeners for global controls over network
+    private List<dynamicControlAdvertiseListener> globalControlListenerList = new ArrayList();
 
     // We will enforce singleton by instatiating it once
     private static ControlMap singletonInstance = null;
@@ -36,6 +38,15 @@ public class ControlMap {
             controlListenerList.add(listener);
         }
     }
+
+    public void addGlobalDynamicControlAdvertiseListener(dynamicControlAdvertiseListener listener){
+        synchronized (globalControlListenerList)
+        {
+            globalControlListenerList.add(listener);
+        }
+    }
+
+
 
     /**
      * Sennd OSC Message to controllers. Using an event based interface allows us to reduce coupling
@@ -93,6 +104,13 @@ public class ControlMap {
 
 
                             }
+                            // we need to see if this was a global scope
+
+                            if (control.getControlScope() == ControlScope.GLOBAL)
+                            {
+                                // needs to be broadcast
+                                sendGlobalDynamicControlMessage (msg);
+                            }
                         }
                     }
                 }
@@ -110,12 +128,24 @@ public class ControlMap {
     }
 
     /**
+     * Send OSC Message across to global senders - this message is for Global Scope controls
+     * @param msg the Control Message to send
+     */
+    private synchronized void sendGlobalDynamicControlMessage(OSCMessage msg) {
+
+        for (dynamicControlAdvertiseListener listener : globalControlListenerList) {
+            listener.dynamicControlEvent(msg);
+        }
+    }
+
+
+    /**
      * Get the Control list by name.
      * If no list exists, it will create a list and add it to controlScopedDevices
      * @param name the name used as a search key
      * @return the List of DynamicControls that have that name
      */
-    List<DynamicControl> getControlsByName(String name)
+    public List<DynamicControl> getControlsByName(String name)
     {
         List<DynamicControl> name_list = controlScopedDevices.get(name);
         if (name_list == null)

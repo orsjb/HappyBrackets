@@ -43,13 +43,13 @@ public class NetworkCommunication {
 	final static Logger logger = LoggerFactory.getLogger(NetworkCommunication.class);
 
 	private OSCServer oscServer;				//The OSC server
-	private InetSocketAddress broadcastAddress;		//The network details of the controller
+	private InetAddress broadcastAddress;		//Global Broadcast address
 	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
 																//Listeners to incoming OSC messages
 	final private HB hb;
 
 	private final LogSender logSender;
-
+	DatagramSocket advertiseTxSocket = null;
 
 
 	/**
@@ -59,6 +59,14 @@ public class NetworkCommunication {
      */
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
+
+		broadcastAddress = BroadcastManager.getBroadcast(null);
+
+		try {
+			advertiseTxSocket = new DatagramSocket();
+			advertiseTxSocket.setBroadcast(true);
+		}
+		catch (Exception ex){}
 
 		ControlMap.getInstance().addDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
 			@Override
@@ -72,6 +80,31 @@ public class NetworkCommunication {
 				}
 			}
 		});
+
+
+		ControlMap.getInstance().addGlobalDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
+			@Override
+			public void dynamicControlEvent(OSCMessage msg) {
+				// Send all Dynamic Control Messages to the respective controllers
+				try {
+					UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+					// We need to send message On broadcast channel on the standard listening port. We are sending to device, not controller
+					// this is why we are using control to device port
+					if (advertiseTxSocket != null) {
+						int device_port = DeviceConfig.getInstance().getControlToDevicePort();
+						DatagramPacket packet = cached_message.getCachedPacket();
+						packet.setAddress(broadcastAddress);
+						packet.setPort(device_port);
+						advertiseTxSocket.send(packet);
+					}
+
+					//DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
 
 		_hb.addStatusChangedListener(new HB.StatusChangedListener() {
 			@Override

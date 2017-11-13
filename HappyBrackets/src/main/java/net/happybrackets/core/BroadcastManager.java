@@ -368,7 +368,7 @@ public class BroadcastManager {
 
     /**
      * Get the broadcast address for a particular network interface
-     * @param ni Network Intervace
+     * @param ni Network Intervace. If we set as NULL, we will use 255.255.255.255
      * @return brodcast address if it exists
      */
     public static InetAddress getBroadcast(NetworkInterface ni)
@@ -376,13 +376,19 @@ public class BroadcastManager {
         InetAddress broadcast = null;
 
         try {
-            if (ni.isLoopback()) {
-                broadcast = InetAddress.getByName("localhost");
-            } else {
-                for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
-                    broadcast = interface_address.getBroadcast();
-                    if (broadcast != null) {
-                        break;
+            if (ni == null)
+            {
+                broadcast = InetAddress.getByName("255.255.255.255");
+            }
+            else {
+                if (ni.isLoopback()) {
+                    broadcast = InetAddress.getByName("localhost");
+                } else {
+                    for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
+                        broadcast = interface_address.getBroadcast();
+                        if (broadcast != null) {
+                            break;
+                        }
                     }
                 }
             }
@@ -392,7 +398,7 @@ public class BroadcastManager {
         }
         return broadcast;
     }
-    /**
+    /**r
      * Add a new interface aware listener
      */
     public void addOnMessage(OnListener onListener) {

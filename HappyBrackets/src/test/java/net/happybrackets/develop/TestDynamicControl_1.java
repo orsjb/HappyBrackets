@@ -12,6 +12,7 @@ import net.beadsproject.beads.ugens.Noise;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
@@ -35,6 +36,10 @@ public class TestDynamicControl_1 implements HBAction {
         DynamicControl checkbox_control = hb.createDynamicControl(this, ControlType.CHECKBOX, "Checkbox", 0);
 
         DynamicControl text_mirror = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Text Mirror");
+
+        slider_control.setControlScope(ControlScope.CLASS);
+        float_control.setControlScope(ControlScope.DEVICE);
+        checkbox_control.setControlScope(ControlScope.GLOBAL);
 
         //hb.setPresetValue("Name", 1);
         //hb.setPresetValue("Name", 1);

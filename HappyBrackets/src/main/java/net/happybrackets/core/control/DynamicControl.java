@@ -28,6 +28,8 @@ public class DynamicControl {
     // Define the Arguments used in an Update message
     enum UPDATE_MESSAGE_ARGS {
         DEVICE_NAME,
+        CONTROL_NAME,
+        CONTROL_TYPE,
         MAP_KEY,
         OBJ_VAL,
         MIN_VAL,
@@ -243,6 +245,12 @@ public class DynamicControl {
     public static void processUpdateMessage(OSCMessage msg){
 
         String map_key = (String) msg.getArg(UPDATE_MESSAGE_ARGS.MAP_KEY.ordinal());
+        String control_name = (String) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_NAME.ordinal());
+
+
+        ControlType control_type = ControlType.values()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
+
+
         Object obj_val = msg.getArg(UPDATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
         Object min_val = msg.getArg(UPDATE_MESSAGE_ARGS.MIN_VAL.ordinal());
         Object max_val = msg.getArg(UPDATE_MESSAGE_ARGS.MAX_VAL.ordinal());
@@ -278,10 +286,19 @@ public class DynamicControl {
                 control.notifyListeners();
             }
         }
+        else if (control_scope == ControlScope.GLOBAL)
+        {
+            List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
+            for (DynamicControl named_control : named_controls) {
+                if (control_scope.equals(named_control.controlScope) && control_type.equals(named_control.controlType)) {
+                    named_control.setValue(obj_val);
+                }
+            }
+        }
     }
 
     /**
-     * Build OSC Message that sepecifies a removal
+     * Build OSC Message that specifies a removal
      * @return
      */
     public OSCMessage buildRemoveMessage(){
@@ -301,6 +318,8 @@ public class DynamicControl {
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.UPDATE,
                 new Object[]{
                         deviceName,
+                        controlName,
+                        controlType.ordinal(),
                         controlMapKey,
                         objVal,
                         minimumValue ,
