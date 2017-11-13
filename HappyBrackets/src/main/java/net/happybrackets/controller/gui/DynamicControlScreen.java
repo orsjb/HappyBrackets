@@ -222,6 +222,7 @@ public class DynamicControlScreen {
                     switch (control_type) {
                         case TRIGGER:
                             Button b = new Button();
+                            b.setTooltip(new Tooltip("Press button to generate a trigger event for this control"));
                             b.setText("Send");
                             dynamicControlPane.add(b, 1, next_control_row);
                             control_pair = new ControlCellGroup(control_label, b);
@@ -242,6 +243,7 @@ public class DynamicControlScreen {
                             // If we have no difference between Maximum and Minimum, we will make a textboox
                             if (control.getMinimumValue().equals(control.getMaximumValue())) {
                                 TextField t = new TextField();
+                                t.setTooltip(new Tooltip("Type in an integer value and press enter to generate an event for this control"));
                                 t.setMaxWidth(100);
                                 t.setText(Integer.toString(control_value));
                                 dynamicControlPane.add(t, 1, next_control_row);
@@ -296,6 +298,7 @@ public class DynamicControlScreen {
                             }
                             else {
                                 Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
+                                s.setTooltip(new Tooltip("Change the slider value to generate an event for this control"));
                                 s.setMaxWidth(100);
                                 s.setOrientation(Orientation.HORIZONTAL);
                                 dynamicControlPane.add(s, 1, next_control_row);
@@ -331,6 +334,7 @@ public class DynamicControlScreen {
 
                         case BOOLEAN:
                             CheckBox c = new CheckBox();
+                            c.setTooltip(new Tooltip("Change the check state to generate an event for this control"));
                             int i_val = (int) control.getValue();
                             c.setSelected(i_val != 0);
                             dynamicControlPane.add(c, 1, next_control_row);
@@ -368,6 +372,7 @@ public class DynamicControlScreen {
                             // If we have no difference between Maximum and Minimum, we will make a textboox
                             if (control.getMinimumValue().equals(control.getMaximumValue())) {
                                 TextField t = new TextField();
+                                t.setTooltip(new Tooltip("Type in a float value and press enter to generate an event for this control"));
                                 t.setMaxWidth(100);
                                 t.setText(Float.toString(f_control_value));
                                 dynamicControlPane.add(t, 1, next_control_row);
@@ -423,6 +428,7 @@ public class DynamicControlScreen {
                             else {
                                 Slider f = new Slider((float) control.getMinimumValue(), (float) control.getMaximumValue(), (float) control.getValue());
                                 f.setMaxWidth(100);
+                                f.setTooltip(new Tooltip("Change the slider value to generate an event for this control"));
                                 f.setOrientation(Orientation.HORIZONTAL);
                                 dynamicControlPane.add(f, 1, next_control_row);
                                 control_pair = new ControlCellGroup(control_label, f);
@@ -457,6 +463,7 @@ public class DynamicControlScreen {
 
                         case TEXT:
                             TextField t = new TextField();
+                            t.setTooltip(new Tooltip("Type in text and press enter to generate an event for this control"));
                             t.setMaxWidth(100);
                             t.setText((String) control.getValue());
                             dynamicControlPane.add(t, 1, next_control_row);
