@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package mappings;
+package net.happybrackets.develop;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;

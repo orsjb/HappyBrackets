@@ -21,15 +21,16 @@ import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlScope;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.LSM9DS1;
-import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
  * For this example we want to look at the accelerometer and use it to trigger a sound when you turn over the
  * accelerometer.
  */
-public class Woosh implements HBAction {
+public class WooshMimic implements HBAction {
 
     public enum Orientation {UP, DOWN}
 
@@ -41,6 +42,14 @@ public class Woosh implements HBAction {
 
         hb.reset();
         hb.testBleep();
+
+        DynamicControl gyro_x = hb.createDynamicControl(this, ControlType.FLOAT, "Gyro-x", 0.0);
+        DynamicControl gyro_y = hb.createDynamicControl(this, ControlType.FLOAT, "Gyro-y", 0.0);
+        DynamicControl gyro_z = hb.createDynamicControl(this, ControlType.FLOAT, "Gyro-z", 0.0);
+
+        gyro_x.setControlScope(ControlScope.GLOBAL);
+        gyro_y.setControlScope(ControlScope.GLOBAL);
+        gyro_z.setControlScope(ControlScope.GLOBAL);
 
         Glide modFreq = new Glide(hb.ac, 20);
         WavePlayer mod = new WavePlayer(hb.ac, modFreq, Buffer.SAW);
@@ -88,19 +97,17 @@ public class Woosh implements HBAction {
         Sample s2 = SampleManager.fromGroup("Guitar", 5);
         Sample s3 = SampleManager.fromGroup("Guitar", 1);
 
-        LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
-
-
+        // We are just going to use one listener and any change to any of the globals will read value
+        DynamicControl.DynamicControlListener gyro_control_listener = new DynamicControl.DynamicControlListener(){
             double prevMag = 0;
             double val = 0;
 
+
             @Override
-            public void sensorUpdated() {
-                // Get the data from Z.
-                double zAxis = mySensor.getGyroscopeData()[2];
-                double yAxis = mySensor.getGyroscopeData()[1];
-                double xAxis = mySensor.getGyroscopeData()[0];
+            public void update(DynamicControl control) {
+                double zAxis = (float) gyro_z.getValue();
+                double yAxis = (float) gyro_y.getValue();
+                double xAxis = (float) gyro_x.getValue();
 
                 modFreq.setValue((float)Math.abs(zAxis*zAxis) * 3f);
                 baseFreq.setValue((float)(xAxis*xAxis) * 400f + 20);
@@ -125,8 +132,11 @@ public class Woosh implements HBAction {
 
                 prevMag = mag;
 
-
             }
-        });
+        };
+
+        gyro_x.addControlListener(gyro_control_listener);
+        gyro_y.addControlListener(gyro_control_listener);
+        gyro_z.addControlListener(gyro_control_listener);
     }
 }
