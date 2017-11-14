@@ -82,6 +82,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     static private FileServer httpServer;
     static protected IntelliJControllerConfig config;
     static protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
+    static private boolean controllerStarted = false;
+
     static protected BroadcastManager broadcastManager;
     private JFXPanel jfxp;
     private Scene scene;
@@ -111,14 +113,23 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         tool_window.setTitle(" - " + version_text);
 
         // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them
-        if (controllerAdvertiser != null)
-        {
-            controllerAdvertiser.start();
-        }
+        startAdvertiser();
 
 
     }
 
+    /**
+     * Start the Advertiser if it has not been started yet
+     * WE MUST ONLY START ONCE
+     */
+    synchronized static void startAdvertiser()
+    {
+        if (controllerAdvertiser != null && !controllerStarted)
+        {
+            controllerStarted = true;
+            controllerAdvertiser.start();
+        }
+    }
     /**
      * Load singletons when loading first project
      * @param project_dir
