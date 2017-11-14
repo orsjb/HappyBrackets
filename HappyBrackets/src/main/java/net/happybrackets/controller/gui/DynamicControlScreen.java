@@ -241,7 +241,7 @@ public class DynamicControlScreen {
                         case INT:
                             int control_value = (int) control.getValue();
                             // If we have no difference between Maximum and Minimum, we will make a textboox
-                            if (control.getMinimumValue().equals(control.getMaximumValue())) {
+                            if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
                                 TextField t = new TextField();
                                 t.setTooltip(new Tooltip("Type in an integer value and press enter to generate an event for this control"));
                                 t.setMaxWidth(100);
@@ -297,7 +297,7 @@ public class DynamicControlScreen {
                                 };
                             }
                             else {
-                                Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
+                                Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
                                 s.setTooltip(new Tooltip("Change the slider value to generate an event for this control"));
                                 s.setMaxWidth(100);
                                 s.setOrientation(Orientation.HORIZONTAL);
@@ -370,7 +370,7 @@ public class DynamicControlScreen {
                         case FLOAT:
                             float f_control_value = (float) control.getValue();
                             // If we have no difference between Maximum and Minimum, we will make a textboox
-                            if (control.getMinimumValue().equals(control.getMaximumValue())) {
+                            if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
                                 TextField t = new TextField();
                                 t.setTooltip(new Tooltip("Type in a float value and press enter to generate an event for this control"));
                                 t.setMaxWidth(100);
@@ -426,7 +426,7 @@ public class DynamicControlScreen {
                                 };
                             }
                             else {
-                                Slider f = new Slider((float) control.getMinimumValue(), (float) control.getMaximumValue(), (float) control.getValue());
+                                Slider f = new Slider((float) control.getMinimumDisplayValue(), (float) control.getMaximumDisplayValue(), (float) control.getValue());
                                 f.setMaxWidth(100);
                                 f.setTooltip(new Tooltip("Change the slider value to generate an event for this control"));
                                 f.setOrientation(Orientation.HORIZONTAL);

@@ -7,12 +7,30 @@ import net.happybrackets.core.OSCVocabulary;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class facilitates sending message values between sketches,
+ * devices, and a graphical environment
+ * The values can be represented as sliders, text boxes, check boxes, and buttons
+ *
+ * A message can either be an integer, a float, a string, a boolean, or a trigger
+ *
+ * The messages are send and received via DynamicControlListener
+ *
+ * The ControlScope determines wehther the control can be seen in other classes or even other devices on the network
+ */
 public class DynamicControl {
+
+    /**
+     * Create an Interface to listen to
+     */
+    public interface DynamicControlListener {
+        public void update(DynamicControl control);
+    }
 
     /**
      * The way Create Messages are sent
      */
-    enum CREATE_MESSAGE_ARGS {
+    private enum CREATE_MESSAGE_ARGS {
         DEVICE_NAME,
         MAP_KEY,
         CONTROL_NAME,
@@ -26,7 +44,7 @@ public class DynamicControl {
     }
 
     // Define the Arguments used in an Update message
-    enum UPDATE_MESSAGE_ARGS {
+    private enum UPDATE_MESSAGE_ARGS {
         DEVICE_NAME,
         CONTROL_NAME,
         CONTROL_TYPE,
@@ -37,42 +55,33 @@ public class DynamicControl {
         CONTROL_SCOPE
     }
 
+
     static ControlMap controlMap = ControlMap.getInstance();
 
-    static int instanceCounter = 0; // we will use this to order the creation of our objects and give them a unique number on device
-    Object instanceCounterLock = new Object();
+    private static int instanceCounter = 0; // we will use this to order the creation of our objects and give them a unique number on device
+    private Object instanceCounterLock = new Object();
 
     private final String controlMapKey;
 
-    /**
-     * Create an Interface to listen to
-     */
-    public interface DynamicControlListener {
-        public void update(DynamicControl control);
-    }
 
 
     private List<DynamicControlListener> controlListenerList = new ArrayList();
 
     // The Object sketch that this control was created in
-    Object parentSketch = null;
+    private Object parentSketch = null;
     final int parentId;
 
-    final String deviceName;
+    private final String deviceName;
 
-    String parentSketchName;
-    ControlType controlType;
+    private String parentSketchName;
+    private ControlType controlType;
     final String controlName;
-    ControlScope controlScope = ControlScope.SKETCH;
+    private ControlScope controlScope = ControlScope.SKETCH;
 
-    Object objVal = 0;
-    Object maximumValue = 0;
-    Object minimumValue = 0;
+    private Object objVal = 0;
+    private Object maximumDisplayValue = 0;
+    private Object minimumDisplayValue = 0;
 
-
-    public String getDeviceName() {
-        return deviceName;
-    }
 
 
     /**
@@ -109,12 +118,12 @@ public class DynamicControl {
     }
 
     /**
-     * A dynamic control that can be accessed from outside
+     * A dynamic control that can be accessed from outside this sketch
      * it is created with the sketch object that contains it along with the type
      *
-     * @param parent_sketch the object calling - typically this
-     * @param control_type  The type of control you want to create
-     * @param name          The name we will give to differentiate between different controls in this class
+     * @param parent_sketch the object calling - typically this, however, you can use any class object
+     * @param control_type  The type of control message you want to send
+     * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
      * @param initial_value The initial value of the control
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
@@ -128,17 +137,17 @@ public class DynamicControl {
      * A dynamic control that can be accessed from outside
      * it is created with the sketch object that contains it along with the type
      *
-     * @param parent_sketch the object calling - typically this
-     * @param control_type  The type of control you want to create
-     * @param name          The name we will give to differentiate between different controls in this class
+     * @param parent_sketch the object calling - typically this, however, you can use any class object
+     * @param control_type  The type of control message you want to send
+     * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
      * @param initial_value The initial value of the control
-     * @param min_value     The minimum value of the control
-     * @param max_value     The maximum value of the control
+     * @param min_value     The minimum display value of the control. Only used for display purposes
+     * @param max_value     The maximum display value of the control. Only used for display purposes
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
         this(parent_sketch, control_type, name, initial_value, true);
-        minimumValue = min_value;
-        maximumValue = max_value;
+        minimumDisplayValue = min_value;
+        maximumDisplayValue = max_value;
 
         controlMap.addControl(this);
     }
@@ -169,7 +178,6 @@ public class DynamicControl {
         if (old_scope != new_scope) {
             controlScope = new_scope;
             notifyListeners();
-            //ControlMap.getInstance().updateControlScope(this, old_scope);
         }
     }
 
@@ -187,7 +195,7 @@ public class DynamicControl {
     /**
      * Update the parameters of this control with another. This would have been caused by an object having other than SKETCH control scope
      * If the parameters are changed, this object will notify it's listeners that a change has occured
-     * @param mirror_control The synamic control that we are copying from
+     * @param mirror_control The control that we are copying from
      */
     public void updateControl(DynamicControl mirror_control){
         if (mirror_control != null) {
@@ -217,13 +225,13 @@ public class DynamicControl {
                     changed = true;
                 }
 
-                if (!minimumValue.equals(mirror_control.minimumValue)) {
-                    minimumValue = mirror_control.minimumValue;
+                if (!minimumDisplayValue.equals(mirror_control.minimumDisplayValue)) {
+                    minimumDisplayValue = mirror_control.minimumDisplayValue;
                     changed = true;
                 }
 
-                if (!maximumValue.equals(mirror_control.maximumValue)) {
-                    maximumValue = mirror_control.maximumValue;
+                if (!maximumDisplayValue.equals(mirror_control.maximumDisplayValue)) {
+                    maximumDisplayValue = mirror_control.maximumDisplayValue;
                     changed = true;
                 }
 
@@ -238,6 +246,8 @@ public class DynamicControl {
             }
         }
     }
+
+
     /**
      * Process the Update Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
      * @param msg OSC message with new value
@@ -267,13 +277,13 @@ public class DynamicControl {
                 changed = true;
             }
 
-            if (!max_val.equals(control.maximumValue)) {
-                control.maximumValue = max_val;
+            if (!max_val.equals(control.maximumDisplayValue)) {
+                control.maximumDisplayValue = max_val;
                 changed = true;
             }
 
-            if (!min_val.equals(control.minimumValue)) {
-                control.maximumValue = min_val;
+            if (!min_val.equals(control.minimumDisplayValue)) {
+                control.maximumDisplayValue = min_val;
                 changed = true;
             }
 
@@ -298,7 +308,7 @@ public class DynamicControl {
     }
 
     /**
-     * Build OSC Message that specifies a removal
+     * Build OSC Message that specifies a removal of a control
      * @return
      */
     public OSCMessage buildRemoveMessage(){
@@ -322,8 +332,8 @@ public class DynamicControl {
                         controlType.ordinal(),
                         controlMapKey,
                         objVal,
-                        minimumValue ,
-                        maximumValue,
+                        minimumDisplayValue,
+                        maximumDisplayValue,
                         controlScope.ordinal()
                 });
 
@@ -344,8 +354,8 @@ public class DynamicControl {
                         parentId,
                         controlType.ordinal(),
                         objVal,
-                        minimumValue,
-                        maximumValue,
+                        minimumDisplayValue,
+                        maximumDisplayValue,
                         controlScope.ordinal()
                 });
 
@@ -355,7 +365,7 @@ public class DynamicControl {
     /**
      * Create a DynamicControl based on OSC Message. This will keep OSC implementation inside this class
      * The buildUpdateMessage shows how messages are constructed
-     * @param msg the OSC Message with the paramaters to make Control
+     * @param msg the OSC Message with the parameters to make Control
      */
     public DynamicControl (OSCMessage msg)
     {
@@ -366,8 +376,8 @@ public class DynamicControl {
         parentId =  (int) msg.getArg(CREATE_MESSAGE_ARGS.PARENT_SKETCH_ID.ordinal());
         controlType = ControlType.values ()[(int) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
         objVal = msg.getArg(CREATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
-        minimumValue = msg.getArg(CREATE_MESSAGE_ARGS.MIN_VAL.ordinal());
-        maximumValue = msg.getArg(CREATE_MESSAGE_ARGS.MAX_VAL.ordinal());
+        minimumDisplayValue = msg.getArg(CREATE_MESSAGE_ARGS.MIN_VAL.ordinal());
+        maximumDisplayValue = msg.getArg(CREATE_MESSAGE_ARGS.MAX_VAL.ordinal());
         controlScope = ControlScope.values ()[(int) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
         controlMap.addControl(this);
     }
@@ -379,8 +389,11 @@ public class DynamicControl {
     public String getControlMapKey(){
         return controlMapKey;
     }
+
+
     /**
-     * Set the value of the object and notify any lsiteners
+     * Set the value of the object and notify any listeners
+     * Additionally, the value will propagate to any controls that match the control scope
      * @param val the value to set
      */
     public void setValue(Object val)
@@ -392,23 +405,40 @@ public class DynamicControl {
     }
 
 
+    /**
+     * Gets the value of the control. The type needs to be cast to the required type in the listener
+     * @return Control Value
+     */
     public Object getValue(){
         return objVal;
     }
 
-    public Object getMaximumValue(){
-        return maximumValue;
+    /**
+     * The maximum value that we want as a display, for example, in a slider control. Does not limit values in the messages
+     * @return The maximum value we want a graphical display to be set to
+     */
+    public Object getMaximumDisplayValue(){
+        return maximumDisplayValue;
     }
 
-    public Object getMinimumValue(){
-        return minimumValue;
+    /**
+     * The minimum value that we want as a display, for example, in a slider control. Does not limit values in the messages
+     * @return The minimum value we want a graphical display to be set to
+     */
+    public Object getMinimumDisplayValue(){
+        return minimumDisplayValue;
     }
 
+    /**
+     * Get the name of the control used for ControlScope matching. Also displayed in GUI
+     * @return
+     */
     public String getControlName(){
         return controlName;
     }
+
     /**
-     * Register Listener
+     * Register Listener to receive changed values in the control
      * @param listener Listener to register for events
      */
     public void addControlListener(DynamicControlListener listener)
@@ -421,7 +451,7 @@ public class DynamicControl {
     }
 
     /**
-     * Deregister listener
+     * Deregister listener so it no longer receives messages from this control
      * @param listener
      */
     public void removeControlListener(DynamicControlListener listener)

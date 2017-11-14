@@ -104,8 +104,8 @@ public class TestDynamicControl_1 implements HBAction {
                 System.out.println("Button Value Reset Sliders to zero and erase text");
                 checkbox_control.setValue(0);
                 text_control.setValue("Reset Text");
-                float_control.setValue(float_control.getMinimumValue());
-                slider_control.setValue(slider_control.getMinimumValue());
+                float_control.setValue(float_control.getMinimumDisplayValue());
+                slider_control.setValue(slider_control.getMinimumDisplayValue());
             }
         });
 
