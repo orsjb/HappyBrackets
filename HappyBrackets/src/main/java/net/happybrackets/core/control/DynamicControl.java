@@ -67,6 +67,17 @@ public class DynamicControl {
 
     private List<DynamicControlListener> controlListenerList = new ArrayList();
 
+    /**
+     * Create the text we will display at the beginning of tooltip
+     * @param tooltipPrefix
+     */
+    public void setTooltipPrefix(String tooltipPrefix) {
+        this.tooltipPrefix = tooltipPrefix;
+    }
+
+    private String tooltipPrefix = "";
+
+
     // The Object sketch that this control was created in
     private Object parentSketch = null;
     final int parentId;
@@ -491,6 +502,36 @@ public class DynamicControl {
                 }
             });
         }
+    }
+
+    /**
+     * Get the tooltip to display
+     * @return
+     */
+    public String getTooltipText(){
+
+        String control_scope_text = "";
+
+        if (getControlScope() == ControlScope.SKETCH)
+        {
+            control_scope_text = "SKETCH scope";
+        }
+        else if (getControlScope() == ControlScope.CLASS)
+        {
+            control_scope_text = "CLASS scope - " + parentSketchName;
+        }
+
+        else if (getControlScope() == ControlScope.DEVICE)
+        {
+            control_scope_text = "DEVICE scope - " + deviceName;
+        }
+        else if (getControlScope() == ControlScope.GLOBAL)
+        {
+            control_scope_text = "GLOBAL scope";
+        }
+
+
+        return tooltipPrefix + "\n" + control_scope_text;
     }
 
 }

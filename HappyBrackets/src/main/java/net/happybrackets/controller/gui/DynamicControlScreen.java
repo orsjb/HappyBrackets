@@ -207,8 +207,11 @@ public class DynamicControlScreen {
      */
     public void addDynamicControl(DynamicControl control)
     {
+
+
         Platform.runLater(new Runnable() {
             public void run() {
+
                 ControlCellGroup control_pair = dynamicControlsList.get(control.getControlMapKey());
 
                 if (control_pair == null) {
@@ -222,7 +225,9 @@ public class DynamicControlScreen {
                     switch (control_type) {
                         case TRIGGER:
                             Button b = new Button();
-                            b.setTooltip(new Tooltip("Press button to generate a trigger event for this control"));
+
+                            control.setTooltipPrefix("Press button to generate a trigger event for this control");
+                            b.setTooltip(new Tooltip(control.getTooltipText()));
                             b.setText("Send");
                             dynamicControlPane.add(b, 1, next_control_row);
                             control_pair = new ControlCellGroup(control_label, b);
@@ -235,6 +240,16 @@ public class DynamicControlScreen {
                                 }
                             });
 
+                            control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                @Override
+                                public void update(DynamicControl control) {
+                                    Platform.runLater(new Runnable() {
+                                        public void run() {
+                                            b.setTooltip(new Tooltip(control.getTooltipText()));
+                                        }
+                                    });
+                                }
+                            };
 
                             break;
 
@@ -243,7 +258,8 @@ public class DynamicControlScreen {
                             // If we have no difference between Maximum and Minimum, we will make a textboox
                             if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
                                 TextField t = new TextField();
-                                t.setTooltip(new Tooltip("Type in an integer value and press enter to generate an event for this control"));
+                                control.setTooltipPrefix("Type in an integer value and press enter to generate an event for this control");
+                                t.setTooltip(new Tooltip(control.getTooltipText()));
                                 t.setMaxWidth(100);
                                 t.setText(Integer.toString(control_value));
                                 dynamicControlPane.add(t, 1, next_control_row);
@@ -289,7 +305,7 @@ public class DynamicControlScreen {
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
-
+                                                t.setTooltip(new Tooltip(control.getTooltipText()));
                                                 t.setText(Integer.toString((int) control.getValue()));
                                             }
                                         });
@@ -298,7 +314,8 @@ public class DynamicControlScreen {
                             }
                             else {
                                 Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
-                                s.setTooltip(new Tooltip("Change the slider value to generate an event for this control"));
+                                control.setTooltipPrefix("Change the slider value to generate an event for this control");
+                                s.setTooltip(new Tooltip(control.getTooltipText()));
                                 s.setMaxWidth(100);
                                 s.setOrientation(Orientation.HORIZONTAL);
                                 dynamicControlPane.add(s, 1, next_control_row);
@@ -323,6 +340,7 @@ public class DynamicControlScreen {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
                                                 if (!s.isFocused()) {
+                                                    s.setTooltip(new Tooltip(control.getTooltipText()));
                                                     s.setValue((int) control.getValue());
                                                 }
                                             }
@@ -334,7 +352,8 @@ public class DynamicControlScreen {
 
                         case BOOLEAN:
                             CheckBox c = new CheckBox();
-                            c.setTooltip(new Tooltip("Change the check state to generate an event for this control"));
+                            control.setTooltipPrefix("Change the check state to generate an event for this control");
+                            c.setTooltip(new Tooltip(control.getTooltipText()));
                             int i_val = (int) control.getValue();
                             c.setSelected(i_val != 0);
                             dynamicControlPane.add(c, 1, next_control_row);
@@ -359,6 +378,7 @@ public class DynamicControlScreen {
                                         public void run() {
                                             if (!c.isFocused()) {
                                                 int i_val = (int) control.getValue();
+                                                c.setTooltip(new Tooltip(control.getTooltipText()));
                                                 c.setSelected(i_val != 0);
                                             }
                                         }
@@ -372,7 +392,8 @@ public class DynamicControlScreen {
                             // If we have no difference between Maximum and Minimum, we will make a textboox
                             if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
                                 TextField t = new TextField();
-                                t.setTooltip(new Tooltip("Type in a float value and press enter to generate an event for this control"));
+                                control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
+                                t.setTooltip(new Tooltip(control.getTooltipText()));
                                 t.setMaxWidth(100);
                                 t.setText(Float.toString(f_control_value));
                                 dynamicControlPane.add(t, 1, next_control_row);
@@ -418,7 +439,7 @@ public class DynamicControlScreen {
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
-
+                                                t.setTooltip(new Tooltip(control.getTooltipText()));
                                                 t.setText(Float.toString((float) control.getValue()));
                                             }
                                         });
@@ -428,7 +449,8 @@ public class DynamicControlScreen {
                             else {
                                 Slider f = new Slider((float) control.getMinimumDisplayValue(), (float) control.getMaximumDisplayValue(), (float) control.getValue());
                                 f.setMaxWidth(100);
-                                f.setTooltip(new Tooltip("Change the slider value to generate an event for this control"));
+                                control.setTooltipPrefix("Change the slider value to generate an event for this control");
+                                f.setTooltip(new Tooltip(control.getTooltipText()));
                                 f.setOrientation(Orientation.HORIZONTAL);
                                 dynamicControlPane.add(f, 1, next_control_row);
                                 control_pair = new ControlCellGroup(control_label, f);
@@ -452,6 +474,7 @@ public class DynamicControlScreen {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
                                                 if (!f.isFocused()) {
+                                                    f.setTooltip(new Tooltip(control.getTooltipText()));
                                                     f.setValue((float) control.getValue());
                                                 }
                                             }
@@ -463,7 +486,8 @@ public class DynamicControlScreen {
 
                         case TEXT:
                             TextField t = new TextField();
-                            t.setTooltip(new Tooltip("Type in text and press enter to generate an event for this control"));
+                            control.setTooltipPrefix("Type in text and press enter to generate an event for this control");
+                            t.setTooltip(new Tooltip(control.getTooltipText()));
                             t.setMaxWidth(100);
                             t.setText((String) control.getValue());
                             dynamicControlPane.add(t, 1, next_control_row);
@@ -495,7 +519,7 @@ public class DynamicControlScreen {
                                 public void update(DynamicControl control) {
                                     Platform.runLater(new Runnable() {
                                         public void run() {
-
+                                            t.setTooltip(new Tooltip(control.getTooltipText()));
                                             t.setText((String) control.getValue());
                                         }
                                     });
