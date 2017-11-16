@@ -52,12 +52,25 @@ public class DeviceConnection {
 	private ControllerConfig config;
 	private boolean loggingEnabled;
 
+	List<DisableAdvertiseChangedListener> disabledAdvertiseListener = new ArrayList();
+
+	public DisableAdvertiseChangedListener addDisabledAdvertiserListener(DisableAdvertiseChangedListener listener){
+		synchronized (disabledAdvertiseListener){
+			disabledAdvertiseListener.add(listener);
+		}
+
+		return listener;
+	}
 
 	BroadcastManager broadcastManager;
 	private final int replyPort; // this is the port we want the device to return calls to
 
 	// flag to disable sending and receiving OSC
 	private static boolean disableAdvertising = false;
+
+	public interface DisableAdvertiseChangedListener{
+		void isDisabled(boolean disabled);
+	}
 
 	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
 		this.config = config;
@@ -126,6 +139,13 @@ public class DeviceConnection {
 	public void setDisableAdvertise(boolean disable){
 		disableAdvertising = disable;
 		broadcastManager.setDisableSend(disable);
+
+		synchronized (disabledAdvertiseListener)
+		{
+			for (DisableAdvertiseChangedListener listener : disabledAdvertiseListener) {
+				listener.isDisabled(disable);
+			}
+		}
 		logger.debug("OSC Advertising Disabled: " + disable);
 
 	}
