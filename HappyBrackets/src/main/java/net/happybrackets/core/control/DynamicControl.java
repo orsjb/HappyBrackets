@@ -443,9 +443,9 @@ public class DynamicControl {
     /**
      * Register Listener to receive changed values in the control
      * @param listener Listener to register for events
-     * @return this object
+     * @return this listener that has been created
      */
-    public DynamicControl addControlListener(DynamicControlListener listener)
+    public DynamicControlListener addControlListener(DynamicControlListener listener)
     {
         if (listener != null) {
             synchronized (controlListenerList) {
@@ -453,7 +453,7 @@ public class DynamicControl {
             }
         }
 
-        return  this;
+        return  listener;
     }
 
     /**

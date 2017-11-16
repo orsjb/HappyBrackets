@@ -19,6 +19,7 @@ public class FreqChangeClock implements HBAction {
     int freq = 500;
     Clock clock;
     final String CONTROL_PREFIX = "Accel-";
+    int muliplier = 2;
     //AudioContext ac;
 
     boolean playSound = true;
@@ -27,6 +28,9 @@ public class FreqChangeClock implements HBAction {
 
         DynamicControl freq_control = hb.createDynamicControl(this, ControlType.INT, "freq", 500, 100, 10000);
         DynamicControl speed_control = hb.createDynamicControl(this, ControlType.INT, "speed", 16, 2, 64);
+        DynamicControl range_control = hb.createDynamicControl(this, ControlType.INT, "range", muliplier, 1, 12);
+
+        DynamicControl x_simulator = hb.createDynamicControl(this, ControlType.FLOAT, "x-Simulator", 0.0, -1.0, 1.0);
 
         DynamicControl on_off = hb.createDynamicControl(this, ControlType.BOOLEAN, "On", 1);
 
@@ -38,19 +42,32 @@ public class FreqChangeClock implements HBAction {
         control_y.setControlScope(ControlScope.GLOBAL);
         control_z.setControlScope(ControlScope.GLOBAL);
 
+        DynamicControl output_freq_contol = hb.createDynamicControl(this, ControlType.INT,   "Output Freq", 0);
+
         // accelerometer values typically go from -1 to +1
-        control_x.addControlListener(new DynamicControl.DynamicControlListener() {
+        DynamicControl.DynamicControlListener x_listener = control_x.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
                 float val = (float)control.getValue();
+                float abs = val + 1; // This will give us values from 1 to greater
                 int central_freq = (int) freq_control.getValue();
-                float variation = central_freq / 2 * val;
-                float new_freq = central_freq - variation;
+                //float variation = central_freq / 2 * val;
+                float new_freq = central_freq  *  (float) Math.pow(muliplier, abs);
                 freq = Math.round(new_freq);
                 System.out.println("New Freq " + freq);
-
+                output_freq_contol.setValue(freq);
             }
         });
+
+        x_simulator.addControlListener(x_listener);
+
+        range_control.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+                muliplier = (int)control.getValue();
+            }
+        });
+
         //freq_control.setControlScope(ControlScope.GLOBAL);
         //speed_control.setControlScope(ControlScope.GLOBAL);
 
