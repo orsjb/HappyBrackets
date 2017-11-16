@@ -16,20 +16,14 @@
 
 package net.happybrackets.intellij_plugin;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
-import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.intellij.util.PathUtil;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -38,15 +32,12 @@ import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.BuildVersion;
-import net.happybrackets.core.Device;
 import net.happybrackets.core.Synchronizer;
 import net.happybrackets.core.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.net.DatagramSocket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -77,18 +68,34 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     static boolean staticSetup = false;
     static String currentConfigString;
     static IntelliJPluginSettings settings;
-    static DeviceConnection deviceConnection;
+    static DeviceConnection deviceConnection = null;
     static Synchronizer synchronizer;                               //runs independently, no interaction needed
     static private FileServer httpServer;
     static protected IntelliJControllerConfig config;
     static protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
+    static private boolean controllerStarted = false;
+
     static protected BroadcastManager broadcastManager;
     private JFXPanel jfxp;
     private Scene scene;
     final static Logger logger = LoggerFactory.getLogger(HappyBracketsToolWindow.class);
 
+
+    static int numberStartingToolwindows = 0;
+    static final Object advertiseStopLock = new Object();
+
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow tool_window) {
+
+        synchronized (advertiseStopLock) {
+            // Increment our count
+            updateNumToolwindowsCreated(1);
+
+            if (deviceConnection != null) {
+                deviceConnection.setDisableAdvertise(true);
+            }
+        }
+
         //awful hack but we need to prompt JavaFX to initialise itself, this will do it
         new JFXPanel();
         Logging.AddFileAppender( (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root"), "Plugin", getPluginLocation() + "/controller.log", Level.DEBUG);
@@ -111,14 +118,40 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         tool_window.setTitle(" - " + version_text);
 
         // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them
-        if (controllerAdvertiser != null)
-        {
-            controllerAdvertiser.start();
+        startAdvertiser();
+
+        synchronized (advertiseStopLock) {
+            // Increment our count
+            int new_active_creates = updateNumToolwindowsCreated(-1);
+
+            if (deviceConnection != null) {
+                deviceConnection.setDisableAdvertise(new_active_creates > 0);
+            }
         }
-
-
     }
 
+    /**
+     * Create a simple tally to determine how many toolwindws are currently in the create process
+
+     * @param tally increment while creating and decrement when leaving
+     * @return the crrent number of numberStartingToolwindows
+     */
+    static int updateNumToolwindowsCreated(int tally){
+        numberStartingToolwindows += tally;
+        return numberStartingToolwindows;
+    }
+    /**
+     * Start the Advertiser if it has not been started yet
+     * WE MUST ONLY START ONCE
+     */
+    synchronized static void startAdvertiser()
+    {
+        if (controllerAdvertiser != null && !controllerStarted)
+        {
+            controllerStarted = true;
+            controllerAdvertiser.start();
+        }
+    }
     /**
      * Load singletons when loading first project
      * @param project_dir

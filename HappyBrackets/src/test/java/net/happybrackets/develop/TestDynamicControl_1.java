@@ -28,12 +28,12 @@ public class TestDynamicControl_1 implements HBAction {
     public void action(HB hb) {
 
 
-        DynamicControl slider_control = hb.createDynamicControl(this, ControlType.INT, "Slider", 2000, 100, 4000);
+        DynamicControl slider_control = hb.createDynamicControl(this, ControlType.INT, "Slider-class", 2000, 100, 4000);
 
         DynamicControl text_control = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Hello Text");
-        DynamicControl float_control = hb.createDynamicControl(this, ControlType.FLOAT, "Float", 200.0, 100.0, 300.0);
+        DynamicControl float_control = hb.createDynamicControl(this, ControlType.FLOAT, "Float-device", 200.0, 100.0, 300.0);
         DynamicControl button_control = hb.createDynamicControl(this, ControlType.TRIGGER, "Button", 0);
-        DynamicControl checkbox_control = hb.createDynamicControl(this, ControlType.BOOLEAN, "Checkbox", 0);
+        DynamicControl checkbox_control = hb.createDynamicControl(this, ControlType.BOOLEAN, "Checkbox-global", 0);
 
         DynamicControl text_mirror = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Text Mirror");
 
@@ -104,8 +104,8 @@ public class TestDynamicControl_1 implements HBAction {
                 System.out.println("Button Value Reset Sliders to zero and erase text");
                 checkbox_control.setValue(0);
                 text_control.setValue("Reset Text");
-                float_control.setValue(float_control.getMinimumValue());
-                slider_control.setValue(slider_control.getMinimumValue());
+                float_control.setValue(float_control.getMinimumDisplayValue());
+                slider_control.setValue(slider_control.getMinimumDisplayValue());
             }
         });
 

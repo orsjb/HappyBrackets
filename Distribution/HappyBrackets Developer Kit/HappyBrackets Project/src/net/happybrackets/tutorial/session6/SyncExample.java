@@ -22,6 +22,8 @@ import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
 /**
@@ -34,6 +36,7 @@ public class SyncExample implements HBAction {
     @Override
     public void action(HB hb) {
 
+        DynamicControl control = hb.createDynamicControl(this, ControlType.INT, "Test", 0);
         hb.clock.getIntervalUGen().setValue(1000);
 
         hb.doAtTime(new Runnable() {

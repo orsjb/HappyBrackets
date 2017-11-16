@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 
@@ -42,6 +43,7 @@ public class DynamicControlScreen {
         Node labelNode;
         Node controlNode;
         DynamicControl.DynamicControlListener listener = null;
+        DynamicControl.ControlScopeChangedListener scopeChangedListener = null;
 
     }
 
@@ -134,6 +136,10 @@ public class DynamicControlScreen {
                     if (control_pair.listener != null) {
                         control.removeControlListener(control_pair.listener);
                     }
+
+                    if (control_pair.scopeChangedListener != null){
+                        control.removeControlScopeChangedListener(control_pair.scopeChangedListener);
+                    }
                     rebuildGridList();
                 }
             }
@@ -203,12 +209,15 @@ public class DynamicControlScreen {
 
     /**
      * Add A dynamic Control to window. Will execute in main thread
-     * @param control
+     * @param control The DynamicControl to add
      */
     public void addDynamicControl(DynamicControl control)
     {
+
+
         Platform.runLater(new Runnable() {
             public void run() {
+
                 ControlCellGroup control_pair = dynamicControlsList.get(control.getControlMapKey());
 
                 if (control_pair == null) {
@@ -222,7 +231,9 @@ public class DynamicControlScreen {
                     switch (control_type) {
                         case TRIGGER:
                             Button b = new Button();
-                            b.setTooltip(new Tooltip("Press button to generate a trigger event for this control"));
+
+                            control.setTooltipPrefix("Press button to generate a trigger event for this control");
+                            b.setTooltip(new Tooltip(control.getTooltipText()));
                             b.setText("Send");
                             dynamicControlPane.add(b, 1, next_control_row);
                             control_pair = new ControlCellGroup(control_label, b);
@@ -236,14 +247,27 @@ public class DynamicControlScreen {
                             });
 
 
+                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                @Override
+                                public void controlScopeChanged(ControlScope new_scope) {
+                                    Platform.runLater(new Runnable() {
+                                        public void run() {
+                                            b.setTooltip(new Tooltip(control.getTooltipText()));
+                                        }
+                                    });
+
+                                }
+                            };
+
                             break;
 
                         case INT:
                             int control_value = (int) control.getValue();
                             // If we have no difference between Maximum and Minimum, we will make a textboox
-                            if (control.getMinimumValue().equals(control.getMaximumValue())) {
+                            if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
                                 TextField t = new TextField();
-                                t.setTooltip(new Tooltip("Type in an integer value and press enter to generate an event for this control"));
+                                control.setTooltipPrefix("Type in an integer value and press enter to generate an event for this control");
+                                t.setTooltip(new Tooltip(control.getTooltipText()));
                                 t.setMaxWidth(100);
                                 t.setText(Integer.toString(control_value));
                                 dynamicControlPane.add(t, 1, next_control_row);
@@ -289,16 +313,30 @@ public class DynamicControlScreen {
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
-
                                                 t.setText(Integer.toString((int) control.getValue()));
+
                                             }
                                         });
                                     }
                                 };
+
+                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                    @Override
+                                    public void controlScopeChanged(ControlScope new_scope) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                t.setTooltip(new Tooltip(control.getTooltipText()));
+                                            }
+                                        });
+
+                                    }
+                                };
+
                             }
                             else {
-                                Slider s = new Slider((int) control.getMinimumValue(), (int) control.getMaximumValue(), (int) control.getValue());
-                                s.setTooltip(new Tooltip("Change the slider value to generate an event for this control"));
+                                Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
+                                control.setTooltipPrefix("Change the slider value to generate an event for this control");
+                                s.setTooltip(new Tooltip(control.getTooltipText()));
                                 s.setMaxWidth(100);
                                 s.setOrientation(Orientation.HORIZONTAL);
                                 dynamicControlPane.add(s, 1, next_control_row);
@@ -308,7 +346,7 @@ public class DynamicControlScreen {
                                 s.valueProperty().addListener(new ChangeListener<Number>() {
                                     @Override
                                     public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                        if (s.isFocused()) {
+                                        if (s.isFocused() && s.isValueChanging()) {
                                             if (oldval != newval) {
                                                 control.setValue(newval.intValue());
                                                 localDevice.sendDynamicControl(control);
@@ -329,12 +367,25 @@ public class DynamicControlScreen {
                                         });
                                     }
                                 };
+
+                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                    @Override
+                                    public void controlScopeChanged(ControlScope new_scope) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                s.setTooltip(new Tooltip(control.getTooltipText()));
+                                            }
+                                        });
+
+                                    }
+                                };
                             }
                             break;
 
                         case BOOLEAN:
                             CheckBox c = new CheckBox();
-                            c.setTooltip(new Tooltip("Change the check state to generate an event for this control"));
+                            control.setTooltipPrefix("Change the check state to generate an event for this control");
+                            c.setTooltip(new Tooltip(control.getTooltipText()));
                             int i_val = (int) control.getValue();
                             c.setSelected(i_val != 0);
                             dynamicControlPane.add(c, 1, next_control_row);
@@ -365,14 +416,27 @@ public class DynamicControlScreen {
                                     });
                                 }
                             };
+
+                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                @Override
+                                public void controlScopeChanged(ControlScope new_scope) {
+                                    Platform.runLater(new Runnable() {
+                                        public void run() {
+                                            c.setTooltip(new Tooltip(control.getTooltipText()));
+                                        }
+                                    });
+
+                                }
+                            };
                             break;
 
                         case FLOAT:
                             float f_control_value = (float) control.getValue();
                             // If we have no difference between Maximum and Minimum, we will make a textboox
-                            if (control.getMinimumValue().equals(control.getMaximumValue())) {
+                            if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
                                 TextField t = new TextField();
-                                t.setTooltip(new Tooltip("Type in a float value and press enter to generate an event for this control"));
+                                control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
+                                t.setTooltip(new Tooltip(control.getTooltipText()));
                                 t.setMaxWidth(100);
                                 t.setText(Float.toString(f_control_value));
                                 dynamicControlPane.add(t, 1, next_control_row);
@@ -418,17 +482,31 @@ public class DynamicControlScreen {
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
-
                                                 t.setText(Float.toString((float) control.getValue()));
                                             }
                                         });
                                     }
                                 };
+
+
+                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                    @Override
+                                    public void controlScopeChanged(ControlScope new_scope) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                t.setTooltip(new Tooltip(control.getTooltipText()));
+
+                                            }
+                                        });
+
+                                    }
+                                };
                             }
                             else {
-                                Slider f = new Slider((float) control.getMinimumValue(), (float) control.getMaximumValue(), (float) control.getValue());
+                                Slider f = new Slider((float) control.getMinimumDisplayValue(), (float) control.getMaximumDisplayValue(), (float) control.getValue());
                                 f.setMaxWidth(100);
-                                f.setTooltip(new Tooltip("Change the slider value to generate an event for this control"));
+                                control.setTooltipPrefix("Change the slider value to generate an event for this control");
+                                f.setTooltip(new Tooltip(control.getTooltipText()));
                                 f.setOrientation(Orientation.HORIZONTAL);
                                 dynamicControlPane.add(f, 1, next_control_row);
                                 control_pair = new ControlCellGroup(control_label, f);
@@ -437,7 +515,7 @@ public class DynamicControlScreen {
                                 f.valueProperty().addListener(new ChangeListener<Number>() {
                                     @Override
                                     public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                        if (f.isFocused()) {
+                                        if (f.isFocused() && f.isValueChanging()) {
                                             if (oldval != newval) {
                                                 control.setValue(newval.floatValue());
                                                 localDevice.sendDynamicControl(control);
@@ -452,10 +530,23 @@ public class DynamicControlScreen {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
                                                 if (!f.isFocused()) {
+
                                                     f.setValue((float) control.getValue());
                                                 }
                                             }
                                         });
+                                    }
+                                };
+
+                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                    @Override
+                                    public void controlScopeChanged(ControlScope new_scope) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                f.setTooltip(new Tooltip(control.getTooltipText()));
+                                            }
+                                        });
+
                                     }
                                 };
                             }
@@ -463,7 +554,8 @@ public class DynamicControlScreen {
 
                         case TEXT:
                             TextField t = new TextField();
-                            t.setTooltip(new Tooltip("Type in text and press enter to generate an event for this control"));
+                            control.setTooltipPrefix("Type in text and press enter to generate an event for this control");
+                            t.setTooltip(new Tooltip(control.getTooltipText()));
                             t.setMaxWidth(100);
                             t.setText((String) control.getValue());
                             dynamicControlPane.add(t, 1, next_control_row);
@@ -495,10 +587,21 @@ public class DynamicControlScreen {
                                 public void update(DynamicControl control) {
                                     Platform.runLater(new Runnable() {
                                         public void run() {
-
                                             t.setText((String) control.getValue());
                                         }
                                     });
+                                }
+                            };
+
+                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                @Override
+                                public void controlScopeChanged(ControlScope new_scope) {
+                                    Platform.runLater(new Runnable() {
+                                        public void run() {
+                                            t.setTooltip(new Tooltip(control.getTooltipText()));
+                                        }
+                                    });
+
                                 }
                             };
                             break;
@@ -509,6 +612,9 @@ public class DynamicControlScreen {
 
                     if (control_pair.listener != null) {
                         control.addControlListener(control_pair.listener);
+                    }
+                    if (control_pair.scopeChangedListener != null){
+                        control.addControlScopeListener(control_pair.scopeChangedListener);
                     }
 
                     next_control_row++;

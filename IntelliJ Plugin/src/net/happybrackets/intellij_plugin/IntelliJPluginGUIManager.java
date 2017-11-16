@@ -100,6 +100,7 @@ public class IntelliJPluginGUIManager {
 	private static final int SELECTED = -2; // Send to selected device(s).
 
 
+
 	public IntelliJPluginGUIManager(Project project) {
 		this.project = project;
 		init();
@@ -288,6 +289,16 @@ public class IntelliJPluginGUIManager {
 				deviceConnection.setDisableAdvertise((!deviceConnection.getDisabledAdvertise()));
 				disable_osc_button.setText(deviceConnection.getDisabledAdvertise() ?  enable_osc_text :disable_osc_text);
 			}
+		});
+
+		deviceConnection.addDisabledAdvertiserListener(new DeviceConnection.DisableAdvertiseChangedListener() {
+			@Override
+			public void isDisabled(boolean disabled) {
+				Platform.runLater(() -> {
+					disable_osc_button.setText(deviceConnection.getDisabledAdvertise() ?  enable_osc_text :disable_osc_text);
+				});
+			}
+
 		});
 
 		globalcommands.getChildren().add(disable_osc_button);
