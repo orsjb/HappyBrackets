@@ -34,12 +34,19 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
  */
 public class AcelerometerSend implements HBAction {
 
+
+    final int MIN_SENSOR_WAIT = 10; // we will not send messages greater than one per 10ms
+
+    long lastSendTime;
+
     final String CONTROL_PREFIX = "Accel-";
     @Override
     public void action(HB hb) {
 
         hb.reset();
         hb.testBleep();
+
+        lastSendTime = System.currentTimeMillis();
 
         DynamicControl control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0);
         DynamicControl control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0);
@@ -68,56 +75,65 @@ public class AcelerometerSend implements HBAction {
 
             @Override
             public void sensorUpdated() {
-                // Get the data from Z.
-                double zAxis = mySensor.getAccelerometerData()[2];
-                double yAxis = mySensor.getAccelerometerData()[1];
-                double xAxis = mySensor.getAccelerometerData()[0];
+
+                // We are going to see if we have expired
+
+                long expired = System.currentTimeMillis() - lastSendTime;
+
+                if (expired > MIN_SENSOR_WAIT) {
+                    lastSendTime = System.currentTimeMillis();
+
+                    // Get the data from Z.
+                    double zAxis = mySensor.getAccelerometerData()[2];
+                    double yAxis = mySensor.getAccelerometerData()[1];
+                    double xAxis = mySensor.getAccelerometerData()[0];
 
 
-                if (!init)
-                {
-                    min_x = xAxis;
-                    max_x = xAxis;
-                    min_y = yAxis;
-                    max_x = yAxis;
-                    min_z = zAxis;
-                    max_z = zAxis;
-                    init = true;
-                }
+                    if (!init) {
+                        min_x = xAxis;
+                        max_x = xAxis;
+                        min_y = yAxis;
+                        max_x = yAxis;
+                        min_z = zAxis;
+                        max_z = zAxis;
+                        init = true;
+                    }
 
-                control_x.setValue((float) xAxis);
-                control_y.setValue((float)yAxis);
-                control_z.setValue((float)zAxis);
+                    control_x.setValue((float) xAxis);
+                    control_y.setValue((float) yAxis);
+                    control_z.setValue((float) zAxis);
 
-                if (xAxis > max_x){
-                    max_x = xAxis;
-                    max_control_x.setValue((float)max_x);
-                }
+                    if (xAxis > max_x) {
+                        max_x = xAxis;
+                        max_control_x.setValue((float) max_x);
+                    }
 
-                if (yAxis > max_y){
-                    max_y = yAxis;
-                    max_control_y.setValue((float)max_y);
-                }
+                    if (yAxis > max_y) {
+                        max_y = yAxis;
+                        max_control_y.setValue((float) max_y);
+                    }
 
-                if (zAxis > max_z){
-                    max_z = zAxis;
-                    max_control_z.setValue((float)max_z);
-                }
+                    if (zAxis > max_z) {
+                        max_z = zAxis;
+                        max_control_z.setValue((float) max_z);
+                    }
 
-                // now show mini
-                if (xAxis < min_x){
-                    min_x = xAxis;
-                    min_control_x.setValue((float)min_x);
-                }
+                    // now show mini
+                    if (xAxis < min_x) {
+                        min_x = xAxis;
+                        min_control_x.setValue((float) min_x);
+                    }
 
-                if (yAxis < min_y){
-                    min_y = yAxis;
-                    min_control_y.setValue((float)min_y);
-                }
+                    if (yAxis < min_y) {
+                        min_y = yAxis;
+                        min_control_y.setValue((float) min_y);
+                    }
 
-                if (zAxis < min_z){
-                    min_z = zAxis;
-                    min_control_z.setValue((float)min_z);
+                    if (zAxis < min_z) {
+                        min_z = zAxis;
+                        min_control_z.setValue((float) min_z);
+                    }
+
                 }
 
             }

@@ -99,7 +99,7 @@ public class DynamicControlScreen {
                         dynamicControlsList.clear();
                     }
                     next_control_row = 0;
-                    localDevice.removeLogListener(deviceLogListener);
+                    //localDevice.removeLogListener(deviceLogListener);
                 }
             }
         });
