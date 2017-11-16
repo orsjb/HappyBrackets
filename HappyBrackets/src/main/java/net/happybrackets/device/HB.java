@@ -783,6 +783,7 @@ public class HB {
 	 * @param control_type  The type of control you want to create
 	 * @param name          The name we will give to differentiate between different controls in this class
 	 * @param initial_value The initial value of the control
+	 * @return Creates a DynamicControl for sending values to other sketches
 	 */
 	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value)
 	{

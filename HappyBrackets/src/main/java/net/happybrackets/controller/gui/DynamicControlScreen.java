@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 
@@ -42,6 +43,7 @@ public class DynamicControlScreen {
         Node labelNode;
         Node controlNode;
         DynamicControl.DynamicControlListener listener = null;
+        DynamicControl.ControlScopeChangedListener scopeChangedListener = null;
 
     }
 
@@ -134,6 +136,10 @@ public class DynamicControlScreen {
                     if (control_pair.listener != null) {
                         control.removeControlListener(control_pair.listener);
                     }
+
+                    if (control_pair.scopeChangedListener != null){
+                        control.removeControlScopeChangedListener(control_pair.scopeChangedListener);
+                    }
                     rebuildGridList();
                 }
             }
@@ -203,7 +209,7 @@ public class DynamicControlScreen {
 
     /**
      * Add A dynamic Control to window. Will execute in main thread
-     * @param control
+     * @param control The DynamicControl to add
      */
     public void addDynamicControl(DynamicControl control)
     {
@@ -240,14 +246,16 @@ public class DynamicControlScreen {
                                 }
                             });
 
-                            control_pair.listener = new DynamicControl.DynamicControlListener() {
+
+                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
                                 @Override
-                                public void update(DynamicControl control) {
+                                public void controlScopeChanged(ControlScope new_scope) {
                                     Platform.runLater(new Runnable() {
                                         public void run() {
                                             b.setTooltip(new Tooltip(control.getTooltipText()));
                                         }
                                     });
+
                                 }
                             };
 
@@ -305,12 +313,25 @@ public class DynamicControlScreen {
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
-                                                t.setTooltip(new Tooltip(control.getTooltipText()));
                                                 t.setText(Integer.toString((int) control.getValue()));
+
                                             }
                                         });
                                     }
                                 };
+
+                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                    @Override
+                                    public void controlScopeChanged(ControlScope new_scope) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                t.setTooltip(new Tooltip(control.getTooltipText()));
+                                            }
+                                        });
+
+                                    }
+                                };
+
                             }
                             else {
                                 Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
@@ -340,11 +361,22 @@ public class DynamicControlScreen {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
                                                 if (!s.isFocused()) {
-                                                    s.setTooltip(new Tooltip(control.getTooltipText()));
                                                     s.setValue((int) control.getValue());
                                                 }
                                             }
                                         });
+                                    }
+                                };
+
+                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                    @Override
+                                    public void controlScopeChanged(ControlScope new_scope) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                s.setTooltip(new Tooltip(control.getTooltipText()));
+                                            }
+                                        });
+
                                     }
                                 };
                             }
@@ -378,11 +410,22 @@ public class DynamicControlScreen {
                                         public void run() {
                                             if (!c.isFocused()) {
                                                 int i_val = (int) control.getValue();
-                                                c.setTooltip(new Tooltip(control.getTooltipText()));
                                                 c.setSelected(i_val != 0);
                                             }
                                         }
                                     });
+                                }
+                            };
+
+                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                @Override
+                                public void controlScopeChanged(ControlScope new_scope) {
+                                    Platform.runLater(new Runnable() {
+                                        public void run() {
+                                            c.setTooltip(new Tooltip(control.getTooltipText()));
+                                        }
+                                    });
+
                                 }
                             };
                             break;
@@ -439,10 +482,23 @@ public class DynamicControlScreen {
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
-                                                t.setTooltip(new Tooltip(control.getTooltipText()));
                                                 t.setText(Float.toString((float) control.getValue()));
                                             }
                                         });
+                                    }
+                                };
+
+
+                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                    @Override
+                                    public void controlScopeChanged(ControlScope new_scope) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                t.setTooltip(new Tooltip(control.getTooltipText()));
+
+                                            }
+                                        });
+
                                     }
                                 };
                             }
@@ -474,11 +530,23 @@ public class DynamicControlScreen {
                                         Platform.runLater(new Runnable() {
                                             public void run() {
                                                 if (!f.isFocused()) {
-                                                    f.setTooltip(new Tooltip(control.getTooltipText()));
+
                                                     f.setValue((float) control.getValue());
                                                 }
                                             }
                                         });
+                                    }
+                                };
+
+                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                    @Override
+                                    public void controlScopeChanged(ControlScope new_scope) {
+                                        Platform.runLater(new Runnable() {
+                                            public void run() {
+                                                f.setTooltip(new Tooltip(control.getTooltipText()));
+                                            }
+                                        });
+
                                     }
                                 };
                             }
@@ -519,10 +587,21 @@ public class DynamicControlScreen {
                                 public void update(DynamicControl control) {
                                     Platform.runLater(new Runnable() {
                                         public void run() {
-                                            t.setTooltip(new Tooltip(control.getTooltipText()));
                                             t.setText((String) control.getValue());
                                         }
                                     });
+                                }
+                            };
+
+                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                @Override
+                                public void controlScopeChanged(ControlScope new_scope) {
+                                    Platform.runLater(new Runnable() {
+                                        public void run() {
+                                            t.setTooltip(new Tooltip(control.getTooltipText()));
+                                        }
+                                    });
+
                                 }
                             };
                             break;
@@ -533,6 +612,9 @@ public class DynamicControlScreen {
 
                     if (control_pair.listener != null) {
                         control.addControlListener(control_pair.listener);
+                    }
+                    if (control_pair.scopeChangedListener != null){
+                        control.addControlScopeListener(control_pair.scopeChangedListener);
                     }
 
                     next_control_row++;

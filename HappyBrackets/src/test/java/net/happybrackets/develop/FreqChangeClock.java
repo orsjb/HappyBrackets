@@ -18,6 +18,7 @@ import net.happybrackets.device.HB;
 public class FreqChangeClock implements HBAction {
     int freq = 500;
     Clock clock;
+    final String CONTROL_PREFIX = "Accel-";
     //AudioContext ac;
 
     boolean playSound = true;
@@ -29,7 +30,27 @@ public class FreqChangeClock implements HBAction {
 
         DynamicControl on_off = hb.createDynamicControl(this, ControlType.BOOLEAN, "On", 1);
 
+        DynamicControl control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0);
+        DynamicControl control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0);
+        DynamicControl control_z = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0);
 
+        control_x.setControlScope(ControlScope.GLOBAL);
+        control_y.setControlScope(ControlScope.GLOBAL);
+        control_z.setControlScope(ControlScope.GLOBAL);
+
+        // accelerometer values typically go from -1 to +1
+        control_x.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+                float val = (float)control.getValue();
+                int central_freq = (int) freq_control.getValue();
+                float variation = central_freq / 2 * val;
+                float new_freq = central_freq - variation;
+                freq = Math.round(new_freq);
+                System.out.println("New Freq " + freq);
+
+            }
+        });
         //freq_control.setControlScope(ControlScope.GLOBAL);
         //speed_control.setControlScope(ControlScope.GLOBAL);
 

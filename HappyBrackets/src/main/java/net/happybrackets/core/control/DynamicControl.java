@@ -24,9 +24,12 @@ public class DynamicControl {
      * Create an Interface to listen to
      */
     public interface DynamicControlListener {
-        public void update(DynamicControl control);
+        void update(DynamicControl control);
     }
 
+    public interface ControlScopeChangedListener {
+        void controlScopeChanged(ControlScope new_scope);
+    }
     /**
      * The way Create Messages are sent
      */
@@ -50,8 +53,6 @@ public class DynamicControl {
         CONTROL_TYPE,
         MAP_KEY,
         OBJ_VAL,
-        MIN_VAL,
-        MAX_VAL,
         CONTROL_SCOPE
     }
 
@@ -66,16 +67,20 @@ public class DynamicControl {
 
 
     private List<DynamicControlListener> controlListenerList = new ArrayList();
+    private List<ControlScopeChangedListener> controlScopeChangedList = new ArrayList();
 
     /**
      * Create the text we will display at the beginning of tooltip
      * @param tooltipPrefix
+     * @return this object
      */
-    public void setTooltipPrefix(String tooltipPrefix) {
+    public DynamicControl setTooltipPrefix(String tooltipPrefix) {
         this.tooltipPrefix = tooltipPrefix;
+        return this;
     }
 
     private String tooltipPrefix = "";
+
 
 
     // The Object sketch that this control was created in
@@ -118,14 +123,6 @@ public class DynamicControl {
             instanceCounter++;
         }
 
-    }
-
-    /**
-     * Dispose of this object and have it removed from control map and listeners
-     */
-    public void dispose()
-    {
-        controlMap.removeControl(this);
     }
 
     /**
@@ -182,14 +179,17 @@ public class DynamicControl {
     /**
      * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
      * @param new_scope
+     * @return this object
      */
-    public synchronized void setControlScope(ControlScope new_scope)
+    public synchronized DynamicControl setControlScope(ControlScope new_scope)
     {
         ControlScope old_scope = controlScope;
         if (old_scope != new_scope) {
             controlScope = new_scope;
             notifyListeners();
+            notifyControlChangeListeners();
         }
+        return this;
     }
 
     /**
@@ -207,8 +207,9 @@ public class DynamicControl {
      * Update the parameters of this control with another. This would have been caused by an object having other than SKETCH control scope
      * If the parameters are changed, this object will notify it's listeners that a change has occured
      * @param mirror_control The control that we are copying from
+     * @return this object
      */
-    public void updateControl(DynamicControl mirror_control){
+    public DynamicControl updateControl(DynamicControl mirror_control){
         if (mirror_control != null) {
 
             // first check our scope and type are the same
@@ -246,16 +247,13 @@ public class DynamicControl {
                     changed = true;
                 }
 
-                if (!controlScope.equals(mirror_control.controlScope)) {
-                    controlScope = mirror_control.controlScope;
-                    changed = true;
-                }
 
                 if (changed) {
                     notifyListeners();
                 }
             }
         }
+        return this;
     }
 
 
@@ -273,8 +271,6 @@ public class DynamicControl {
 
 
         Object obj_val = msg.getArg(UPDATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
-        Object min_val = msg.getArg(UPDATE_MESSAGE_ARGS.MIN_VAL.ordinal());
-        Object max_val = msg.getArg(UPDATE_MESSAGE_ARGS.MAX_VAL.ordinal());
         ControlScope control_scope = ControlScope.values ()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
 
         DynamicControl control = getControl(map_key);
@@ -282,29 +278,25 @@ public class DynamicControl {
         {
             // do not use setters as we only want to generate one notifyListeners
             boolean changed = false;
+            boolean control_scope_changed = false;
 
             if (!obj_val.equals(control.objVal)) {
                 control.objVal = obj_val;
                 changed = true;
             }
 
-            if (!max_val.equals(control.maximumDisplayValue)) {
-                control.maximumDisplayValue = max_val;
-                changed = true;
-            }
-
-            if (!min_val.equals(control.minimumDisplayValue)) {
-                control.maximumDisplayValue = min_val;
-                changed = true;
-            }
-
             if (!control_scope.equals(control.controlScope)) {
                 control.controlScope = control_scope;
                 changed = true;
+                control_scope_changed = true;
             }
 
             if (changed) {
                 control.notifyListeners();
+            }
+            if (control_scope_changed)
+            {
+                control.notifyControlChangeListeners();
             }
         }
         else if (control_scope == ControlScope.GLOBAL)
@@ -343,8 +335,6 @@ public class DynamicControl {
                         controlType.ordinal(),
                         controlMapKey,
                         objVal,
-                        minimumDisplayValue,
-                        maximumDisplayValue,
                         controlScope.ordinal()
                 });
 
@@ -406,13 +396,15 @@ public class DynamicControl {
      * Set the value of the object and notify any listeners
      * Additionally, the value will propagate to any controls that match the control scope
      * @param val the value to set
+     * @return this object
      */
-    public void setValue(Object val)
+    public DynamicControl setValue(Object val)
     {
         if (!objVal.equals(val)) {
             objVal = val;
             notifyListeners();
         }
+        return this;
     }
 
 
@@ -451,42 +443,79 @@ public class DynamicControl {
     /**
      * Register Listener to receive changed values in the control
      * @param listener Listener to register for events
+     * @return this object
      */
-    public void addControlListener(DynamicControlListener listener)
+    public DynamicControl addControlListener(DynamicControlListener listener)
     {
         if (listener != null) {
             synchronized (controlListenerList) {
                 controlListenerList.add(listener);
             }
         }
+
+        return  this;
     }
 
     /**
      * Deregister listener so it no longer receives messages from this control
      * @param listener
+     * @return this object
      */
-    public void removeControlListener(DynamicControlListener listener)
-    {
+    public DynamicControl removeControlListener(DynamicControlListener listener) {
         if (listener != null) {
             synchronized (controlListenerList) {
                 controlListenerList.remove(listener);
             }
         }
+        return this;
+    }
+
+    /**
+     * Register Listener to receive changed values in the control scope
+     * @param listener Listener to register for events
+     * @return this object
+     */
+    public  DynamicControl addControlScopeListener(ControlScopeChangedListener listener){
+        if (listener != null) {
+            synchronized (controlScopeChangedList) {
+                controlScopeChangedList.add(listener);
+            }
+        }
+
+        return  this;
     }
 
 
     /**
-     * Erase all listeners from this control
+     * Deregister listener so it no longer receives messages from this control
+     * @param listener the listener
+     * @return this object
      */
-    public void eraseListeners()
+    public DynamicControl removeControlScopeChangedListener(ControlScopeChangedListener listener) {
+        if (listener != null) {
+            synchronized (controlScopeChangedList) {
+                controlScopeChangedList.remove(listener);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Erase all listeners from this control
+     * @return this object
+     */
+    public DynamicControl eraseListeners()
     {
         synchronized (controlListenerList) {controlListenerList.clear();}
+        synchronized (controlScopeChangedList) {controlScopeChangedList.clear();}
+        return this;
     }
 
     /**
      * Notify all registered listeners of object value
+     * @return this object
      */
-    public void notifyListeners()
+    public DynamicControl notifyListeners()
     {
         synchronized (controlListenerList)
         {
@@ -502,11 +531,36 @@ public class DynamicControl {
                 }
             });
         }
+        return this;
     }
 
     /**
+     * Notify all registered listeners of object value
+     * @return this object
+     */
+    public DynamicControl notifyControlChangeListeners()
+    {
+        synchronized (controlScopeChangedList)
+        {
+            controlScopeChangedList.forEach(listener ->
+            {
+                try
+                {
+                    listener.controlScopeChanged(this.getControlScope());
+                }
+                catch (Exception ex)
+                {
+                    System.out.println(ex.getMessage());
+                }
+            });
+        }
+        return this;
+    }
+
+
+    /**
      * Get the tooltip to display
-     * @return
+     * @return the tooltip to display
      */
     public String getTooltipText(){
 
