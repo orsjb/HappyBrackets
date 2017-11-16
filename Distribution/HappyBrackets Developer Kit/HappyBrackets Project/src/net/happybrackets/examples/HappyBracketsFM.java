@@ -35,10 +35,10 @@ public class HappyBracketsFM implements HBAction {
     public void action(HB hb) {
 
         //these are the parameters that control the FM synth
-        Glide modFreq = new Glide(hb.ac, 1000);
-        Glide modDepth = new Glide(hb.ac, 1);
+        Glide modFreq = new Glide(hb.ac, 666);
+        Glide modDepth = new Glide(hb.ac, 100);
         Glide baseFreq = new Glide(hb.ac, 1000);
-        Glide gain = new Glide(hb.ac, 1);
+        Glide gain = new Glide(hb.ac, 0.1f);
 
         //this is the FM synth
         WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
@@ -61,8 +61,9 @@ public class HappyBracketsFM implements HBAction {
                 float x = (float)mySensor.getAccelerometerData()[0];
                 float y = (float)mySensor.getAccelerometerData()[1];
                 float z = (float)mySensor.getAccelerometerData()[2];
+                hb.setStatus(x + " " + y + " " + z);
                 // update values
-                modFreq.setValue(x);
+                modFreq.setValue(x * 1000);
             }
         });
 

@@ -22,6 +22,8 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
@@ -37,10 +39,10 @@ public class HappyBracketsFMControls implements HBAction {
     public void action(HB hb) {
 
         //these are the parameters that control the FM synth
-        Glide modFreq = new Glide(hb.ac, 1000);
-        Glide modDepth = new Glide(hb.ac, 1);
+        Glide modFreq = new Glide(hb.ac, 666);
+        Glide modDepth = new Glide(hb.ac, 100);
         Glide baseFreq = new Glide(hb.ac, 1000);
-        Glide gain = new Glide(hb.ac, 1);
+        Glide gain = new Glide(hb.ac, 0.1f);
 
         //this is the FM synth
         WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
@@ -63,10 +65,22 @@ public class HappyBracketsFMControls implements HBAction {
                 float x = (float)mySensor.getAccelerometerData()[0];
                 float y = (float)mySensor.getAccelerometerData()[1];
                 float z = (float)mySensor.getAccelerometerData()[2];
+                hb.setStatus(x + " " + y + " " + z);
+                System.out.println("xxx");
                 // update values
-                modFreq.setValue(x);
+                modFreq.setValue(x * 1000);
             }
         });
+
+        //this is the GUI
+        DynamicControl control = hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", 4000, 10, 10000);
+        control.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl dynamicControl) {
+                baseFreq.setValue((float)dynamicControl.getValue());
+            }
+        });
+
 
     }
 

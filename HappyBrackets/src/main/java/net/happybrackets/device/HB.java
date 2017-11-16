@@ -62,7 +62,6 @@ import org.slf4j.LoggerFactory;
  */
 public class HB {
 
-
 	public interface StatusChangedListener{
 		void statusChanged(String new_status);
 	}
