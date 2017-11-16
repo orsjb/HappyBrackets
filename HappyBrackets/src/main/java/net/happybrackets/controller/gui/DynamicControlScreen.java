@@ -346,7 +346,7 @@ public class DynamicControlScreen {
                                 s.valueProperty().addListener(new ChangeListener<Number>() {
                                     @Override
                                     public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                        if (s.isFocused()) {
+                                        if (s.isFocused() && s.isValueChanging()) {
                                             if (oldval != newval) {
                                                 control.setValue(newval.intValue());
                                                 localDevice.sendDynamicControl(control);
@@ -515,7 +515,7 @@ public class DynamicControlScreen {
                                 f.valueProperty().addListener(new ChangeListener<Number>() {
                                     @Override
                                     public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                        if (f.isFocused()) {
+                                        if (f.isFocused() && f.isValueChanging()) {
                                             if (oldval != newval) {
                                                 control.setValue(newval.floatValue());
                                                 localDevice.sendDynamicControl(control);

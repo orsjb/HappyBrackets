@@ -128,7 +128,7 @@ public class DeviceStatus {
 
 	/**
 	 * Return the static DeviceStatus for device
-	 * @return
+	 * @return The Device status text
 	 */
 	static synchronized public DeviceStatus getInstance(){
 		if (gDeviceStatus == null)

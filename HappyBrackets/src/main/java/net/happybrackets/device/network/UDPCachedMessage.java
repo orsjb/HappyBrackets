@@ -23,7 +23,7 @@ public class UDPCachedMessage {
     /**
      * Make a cached UDP message to stop having to allocate and deallocate. Also, makes faster re-sending
      * @param msg the OSC message we want to cache
-     * @throws IOException
+     * @throws IOException 
      */
     public UDPCachedMessage (OSCMessage msg) throws IOException {
 
@@ -34,7 +34,7 @@ public class UDPCachedMessage {
      * We will compare current message the new one. If message has changed, we will rebuild the message
      * @param msg the OSC Message
      * @return The cachedDatagram to send
-     * @throws IOException
+     * @throws IOException exception if unable to create the address
      */
     public DatagramPacket setMessage(OSCMessage msg) throws IOException {
         if (cachedMessage == null || !msg.equals(cachedMessage)) {
@@ -63,7 +63,7 @@ public class UDPCachedMessage {
 
     /**
      * Get the cached packet
-     * @return
+     * @return a cached verion of the packet
      */
     public DatagramPacket getCachedPacket() {
         return cachedPacket;
