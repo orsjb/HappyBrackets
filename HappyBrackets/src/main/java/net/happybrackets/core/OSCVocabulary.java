@@ -37,6 +37,7 @@ public final class OSCVocabulary {
         public static final String CONTROL = "/control";
         public static final String GET = "/get";
         public static final String UPDATE = CONTROL + "/update";
+        public static final String GLOBAL = CONTROL + "/global";
         public static final String CREATE = CONTROL + "/create";
         public static final String DESTROY = CONTROL + "/destroy";
 
