@@ -26,6 +26,7 @@ import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 
 import net.happybrackets.controller.gui.DynamicControlScreen;
+import net.happybrackets.core.BuildVersion;
 import net.happybrackets.core.DeviceStatus;
 import net.happybrackets.core.ErrorListener;
 import net.happybrackets.core.OSCVocabulary;
@@ -71,8 +72,52 @@ public class LocalDeviceRepresentation {
 		return this.isConnected;
 	}
 
+	/**
+	 * If our major and minor version do not match plugin, we will be an invalid version
+	 * @return true if plugin and device do not match major and minor
+	 */
+	public boolean isInvalidVersion() {
+		return invalidVersion;
+	}
+
+	boolean invalidVersion = false;
+
+	private int majorVersion = 0;
+	private int minorVersion = 0;
+	private int buildVersion = 0;
+	private int dateVersion = 0;
+
+	/**
+	 * Get the HB Version of this device as a string
+	 * @return Device HB Version
+	 */
+	public String getVersionText(){
+		return majorVersion + "." + minorVersion + "." + buildVersion + "." + dateVersion;
+	}
+
+	/**
+	 * Return a message to display to the user that their device veriosn is incompatible
+	 * with plugin
+	 * @return warning message
+	 */
+	public String getInvalidVersionWarning(){
+		return  "Invalid device version. Device has "  + getVersionText() + ". Must be " + BuildVersion.getMinimumCompatibilityVersion();
+	}
+
 	public void setVersion(int major, int minor, int build, int date) {
-		String status_text = "V: " + major + "." + minor + "." + build + "." + date;
+		majorVersion = major;
+		minorVersion = minor;
+		buildVersion = build;
+		dateVersion = date;
+
+		if (BuildVersion.getMajor() != majorVersion ||
+				BuildVersion.getMinor() != minorVersion)
+		{
+			invalidVersion = true;
+		}
+
+
+		String status_text = "V: " + getVersionText();
 		setStatus(status_text);
 	}
 
@@ -645,12 +690,18 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
-	public void setStatus(String arg) {
-		status = arg;
-		synchronized (statusUpdateListenerList){
-		for(StatusUpdateListener statusUpdateListener : statusUpdateListenerList) {
-			statusUpdateListener.update(status);
-		}
+	/**
+	 * Store new status. If status has changed, will generate an event
+	 * @param new_status the new status to write
+	 */
+	public void setStatus(String new_status) {
+
+
+		status = new_status;
+		synchronized (statusUpdateListenerList) {
+			for (StatusUpdateListener statusUpdateListener : statusUpdateListenerList) {
+				statusUpdateListener.update(status);
+			}
 	}}
 
     public void setIsConnected(boolean connected) {

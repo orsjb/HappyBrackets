@@ -31,6 +31,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
+import net.happybrackets.core.BuildVersion;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.control.DynamicControl;
 
@@ -58,6 +59,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         return "ssh " + username + "@" + device_name + ".local";
     }
 
+    Text invalidTextWarning = null;
+
 
 	/**
 	 * The cell parameters need to be reset every time a device is updated because they are bound to the olde LocalDevicerepresentation
@@ -67,6 +70,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		updateListener = null;
 		deviceIdUpdateListener = null;
 		connectedUpdateListener = null;
+		invalidTextWarning = null;
 	}
 
 	@Override
@@ -231,12 +235,31 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		main.add(statusText, 2, 0);
 		main.setHalignment(statusText, HPos.RIGHT);
 
+		if (localDevice.isInvalidVersion())
+		{
+			if (invalidTextWarning == null)
+			{
+				invalidTextWarning = new Text(localDevice.getInvalidVersionWarning());
+
+				main.add(invalidTextWarning, 0, 2);
+			}
+		}
+
 		item.addStatusUpdateListener(updateListener = new LocalDeviceRepresentation.StatusUpdateListener() {
 			@Override
 			public void update(String state) {
 				Platform.runLater(new Runnable() {
 					public void run() {
 						statusText.setText(state);
+
+						if (localDevice.isInvalidVersion())
+						{
+							if (invalidTextWarning == null)
+							{
+								invalidTextWarning = new Text(localDevice.getInvalidVersionWarning());
+								main.add(invalidTextWarning, 0, 2);
+							}
+						}
 					}
 				});
 			}
