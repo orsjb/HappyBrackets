@@ -77,6 +77,15 @@ public class ControlMap {
     }
 
     /**
+     * Send Control Specific Update Message
+     * @param control Control that had value set
+     */
+    void sendUpdateMessage (DynamicControl control)
+    {
+        OSCMessage msg = control.buildUpdateMessage();
+        sendDynamicControlMessage(msg);
+    }
+    /**
      * Add a control to our map. Generate a control added event
      * @param control
      */
@@ -85,36 +94,41 @@ public class ControlMap {
         synchronized (dynamicControls)
         {
             dynamicControls.put(control.getControlMapKey(), control);
-            // We are going to add ourseleves as a listener to the update value so we can send any updates to controller
-            control.addControlListener(new DynamicControl.DynamicControlListener() {
+            // We are going to add ourselves as a listener to the update value so we can send any updates to controller
+            control.addGlobalControlListener(new DynamicControl.DynamicControlListener() {
                 @Override
                 public void update(DynamicControl control) {
-                    if (controlListenerList.size() > 0)
-                    {
-                        OSCMessage msg = control.buildUpdateMessage();
-                        sendDynamicControlMessage(msg);
 
-                        // We need to update all the identical controls if this control is not sk
-                        if (control.getControlScope() != ControlScope.SKETCH) {
-                            List<DynamicControl> name_list = getControlsByName(control.getControlName());
-                            for (DynamicControl mimic_control : name_list) {
-                                if (mimic_control != control){ // Make sure it is not us
-                                    mimic_control.updateControl(control);
-                                }
-
-
+                    // We need to update all the identical controls if this control is not sk
+                    if (control.getControlScope() != ControlScope.SKETCH) {
+                        List<DynamicControl> name_list = getControlsByName(control.getControlName());
+                        for (DynamicControl mimic_control : name_list) {
+                            if (mimic_control != control) { // Make sure it is not us
+                                mimic_control.updateControl(control);
                             }
-                            // we need to see if this was a global scope
 
-                            if (control.getControlScope() == ControlScope.GLOBAL)
-                            {
+
+                        }
+                        // we need to see if this was a global scope
+                        if (globalControlListenerList.size() > 0) {
+
+                            if (control.getControlScope() == ControlScope.GLOBAL) {
                                 // needs to be broadcast
-                                sendGlobalDynamicControlMessage (msg);
+                                OSCMessage msg = control.buildGlobalMessage();
+                                sendGlobalDynamicControlMessage(msg);
                             }
                         }
                     }
                 }
             });
+
+            control.addValueSetListener(new DynamicControl.DynamicControlListener() {
+                @Override
+                public void update(DynamicControl control) {
+                    sendUpdateMessage(control);
+                }
+            });
+
 
             String name = control.getControlName();
             getControlsByName(name).add(control);

@@ -85,7 +85,7 @@ public class NetworkCommunication {
 		ControlMap.getInstance().addGlobalDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
 			@Override
 			public void dynamicControlEvent(OSCMessage msg) {
-				// Send all Dynamic Control Messages to the respective controllers
+				// Send all Dynamic Control Messages to the Broadcast Address so all will receive them
 				try {
 					UDPCachedMessage cached_message = new UDPCachedMessage(msg);
 					// We need to send message On broadcast channel on the standard listening port. We are sending to device, not controller
@@ -239,6 +239,9 @@ public class NetworkCommunication {
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)){
 							DynamicControl.processUpdateMessage(msg);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GLOBAL)){
+							DynamicControl.processGlobalMessage(msg);
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
 							//TODO: add interfaces path to device config

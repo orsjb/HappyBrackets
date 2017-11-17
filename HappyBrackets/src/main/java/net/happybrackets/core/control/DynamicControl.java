@@ -57,6 +57,14 @@ public class DynamicControl {
     }
 
 
+    // Define  Global Message arguments
+    private enum GLOBAL_MESSAGE_ARGS {
+        DEVICE_NAME,
+        CONTROL_NAME,
+        CONTROL_TYPE,
+        OBJ_VAL
+    }
+
     static ControlMap controlMap = ControlMap.getInstance();
 
     private static int instanceCounter = 0; // we will use this to order the creation of our objects and give them a unique number on device
@@ -67,7 +75,11 @@ public class DynamicControl {
 
 
     private List<DynamicControlListener> controlListenerList = new ArrayList();
+    private List<DynamicControlListener> globalControlListenerList = new ArrayList();
     private List<ControlScopeChangedListener> controlScopeChangedList = new ArrayList();
+
+    // This listener is only called when value on control set
+    private List<DynamicControlListener> valueSetListenerList = new ArrayList();
 
     /**
      * Create the text we will display at the beginning of tooltip
@@ -186,8 +198,10 @@ public class DynamicControl {
         ControlScope old_scope = controlScope;
         if (old_scope != new_scope) {
             controlScope = new_scope;
-            notifyListeners();
+            notifyValueSetListeners();
+            notifyLocalListeners();
             notifyControlChangeListeners();
+
         }
         return this;
     }
@@ -229,7 +243,7 @@ public class DynamicControl {
 
             }
             if (scope_matches){
-                // do not use setters as we only want to generate one notifyListeners
+                // do not use setters as we only want to generate one notifyLocalListeners
                 boolean changed = false;
 
                 if (!objVal.equals(mirror_control.objVal)) {
@@ -249,7 +263,7 @@ public class DynamicControl {
 
 
                 if (changed) {
-                    notifyListeners();
+                    notifyLocalListeners();
                 }
             }
         }
@@ -257,8 +271,39 @@ public class DynamicControl {
     }
 
 
+
+
+    /**
+     * Process the Global Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
+     * We will not process messages that have come from this device because they will be actioned through local listeners
+     * @param msg OSC message with new value
+     */
+    public static void processGlobalMessage(OSCMessage msg) {
+
+        String device_name = (String) msg.getArg(GLOBAL_MESSAGE_ARGS.DEVICE_NAME.ordinal());
+        String control_name = (String) msg.getArg(GLOBAL_MESSAGE_ARGS.CONTROL_NAME.ordinal());
+        ControlType control_type = ControlType.values()[(int) msg.getArg(GLOBAL_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
+        Object obj_val = msg.getArg(GLOBAL_MESSAGE_ARGS.OBJ_VAL.ordinal());
+
+        // Make sure we ignore messages from this device
+        if (!device_name.equals(Device.getDeviceName())) {
+            List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
+            for (DynamicControl named_control : named_controls) {
+                if (named_control.controlScope == ControlScope.GLOBAL && control_type.equals(named_control.controlType)) {
+                    // we must NOT call setVal as this will generate a global series again.
+                    // Just notifyListeners specific to this control but not globally
+                    named_control.objVal = obj_val;
+                    named_control.notifyLocalListeners();
+                }
+            }
+        }
+
+    }
+
+
     /**
      * Process the Update Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
+     * The message is directed as a specific control defined by the MAP_KEY parameter in the OSC Message
      * @param msg OSC message with new value
      */
     public static void processUpdateMessage(OSCMessage msg){
@@ -276,7 +321,7 @@ public class DynamicControl {
         DynamicControl control = getControl(map_key);
         if (control != null)
         {
-            // do not use setters as we only want to generate one notifyListeners
+            // do not use setters as we only want to generate one notifyLocalListeners
             boolean changed = false;
             boolean control_scope_changed = false;
 
@@ -292,20 +337,15 @@ public class DynamicControl {
             }
 
             if (changed) {
-                control.notifyListeners();
+                control.notifyLocalListeners();
+                if (control.getControlScope() != ControlScope.SKETCH){
+                    control.notifyGlobalListeners();
+                }
+
             }
             if (control_scope_changed)
             {
                 control.notifyControlChangeListeners();
-            }
-        }
-        else if (control_scope == ControlScope.GLOBAL)
-        {
-            List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
-            for (DynamicControl named_control : named_controls) {
-                if (control_scope.equals(named_control.controlScope) && control_type.equals(named_control.controlType)) {
-                    named_control.setValue(obj_val);
-                }
             }
         }
     }
@@ -325,7 +365,7 @@ public class DynamicControl {
 
     /**
      * Build OSC Message that specifies an update
-     * @return
+     * @return OSC Message To send to specific control
      */
     public OSCMessage buildUpdateMessage(){
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.UPDATE,
@@ -340,7 +380,20 @@ public class DynamicControl {
 
     }
 
+    /**
+     * Build OSC Message that specifies a Global update
+     * @return OSC Message directed to controls with same name, scope, but on different devices
+     */
+    public OSCMessage buildGlobalMessage(){
+        return new OSCMessage(OSCVocabulary.DynamicControlMessage.GLOBAL,
+                new Object[]{
+                        deviceName,
+                        controlName,
+                        controlType.ordinal(),
+                        objVal,
+                });
 
+    }
     /**
      * Build the OSC Message for a create message
      * @return OSC Message required to create the object
@@ -402,7 +455,9 @@ public class DynamicControl {
     {
         if (!objVal.equals(val)) {
             objVal = val;
-            notifyListeners();
+            notifyValueSetListeners();
+            notifyLocalListeners();
+            notifyGlobalListeners();
         }
         return this;
     }
@@ -456,6 +511,43 @@ public class DynamicControl {
         return  listener;
     }
 
+
+    /**
+     * Register Listener to receive changed values in the control that need to be global type messages
+     * @param listener Listener to register for events
+     * @return this listener that has been created
+     */
+    public DynamicControlListener addGlobalControlListener(DynamicControlListener listener)
+    {
+        if (listener != null) {
+            synchronized (globalControlListenerList) {
+                globalControlListenerList.add(listener);
+            }
+        }
+
+        return  listener;
+    }
+
+    /**
+     * Register Listener to receive changed values in the control that need to be received when value is specifically set from
+     * Within sketch
+     * @param listener Listener to register for events
+     * @return this listener that has been created
+     */
+    public DynamicControlListener addValueSetListener(DynamicControlListener listener)
+    {
+        if (listener != null) {
+            synchronized (valueSetListenerList) {
+                valueSetListenerList.add(listener);
+            }
+        }
+
+        return  listener;
+    }
+
+
+
+
     /**
      * Deregister listener so it no longer receives messages from this control
      * @param listener
@@ -470,6 +562,20 @@ public class DynamicControl {
         return this;
     }
 
+
+    /**
+     * Deregister listener so it no longer receives messages from this control
+     * @param listener
+     * @return this object
+     */
+    public DynamicControl removeGlobalControlListener(DynamicControlListener listener) {
+        if (listener != null) {
+            synchronized (globalControlListenerList) {
+                globalControlListenerList.remove(listener);
+            }
+        }
+        return this;
+    }
     /**
      * Register Listener to receive changed values in the control scope
      * @param listener Listener to register for events
@@ -512,10 +618,10 @@ public class DynamicControl {
     }
 
     /**
-     * Notify all registered listeners of object value
+     * Notify all registered listeners of object value on this device
      * @return this object
      */
-    public DynamicControl notifyListeners()
+    public DynamicControl notifyLocalListeners()
     {
         synchronized (controlListenerList)
         {
@@ -534,6 +640,47 @@ public class DynamicControl {
         return this;
     }
 
+
+
+    /**
+     * Send Update Message when value set
+     */
+    public void notifyValueSetListeners(){
+        synchronized (valueSetListenerList)
+        {
+            valueSetListenerList.forEach(listener ->
+            {
+                try
+                {
+                    listener.update(this);
+                }
+                catch (Exception ex)
+                {
+                    System.out.println(ex.getMessage());
+                }
+            });
+        }
+    }
+
+    /**
+     * Send Global Update Message
+     */
+    public void notifyGlobalListeners(){
+        synchronized (globalControlListenerList)
+        {
+            globalControlListenerList.forEach(listener ->
+            {
+                try
+                {
+                    listener.update(this);
+                }
+                catch (Exception ex)
+                {
+                    System.out.println(ex.getMessage());
+                }
+            });
+        }
+    }
     /**
      * Notify all registered listeners of object value
      * @return this object

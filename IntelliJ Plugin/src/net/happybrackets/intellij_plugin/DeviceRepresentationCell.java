@@ -215,7 +215,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		// add ID Text
 		Text id_text = new Text("ID " + item.getID());
-		main.add(id_text, 1, 0);
+		main.add(id_text, 2, 0);
 		main.setHalignment(id_text, HPos.CENTER);
 		item.addDeviceIdUpdateListener(deviceIdUpdateListener = new LocalDeviceRepresentation.DeviceIdUpdateListener() {
 			@Override
@@ -232,8 +232,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		//a status string
 		Text statusText = new Text("status unknown");
-		main.add(statusText, 2, 0);
-		main.setHalignment(statusText, HPos.RIGHT);
+		main.add(statusText, 1, 0);
+		main.setHalignment(statusText, HPos.CENTER);
 
 		if (localDevice.isInvalidVersion())
 		{
