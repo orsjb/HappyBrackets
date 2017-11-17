@@ -75,16 +75,8 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 
 
 	/**
-	 * Get the list of controllers registered
-	 * @return
-	 */
-	public Map<Integer, DeviceController> getDeviceControllers(){
-		return deviceControllers;
-	}
-
-	/**
 	 * Register to listen for controllers
-	 * @param broadcastManager
+	 * @param broadcastManager The broadcast manager
 	 */
 	public void listenForController(BroadcastManager broadcastManager) {
 		ControllerDiscoverer.super.listenForController(this, broadcastManager, logger);
@@ -118,7 +110,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 
 	/**
 	 * We will send a datagram packet to all controllers
-	 * @param packet
+	 * @param packet The datagram packet we are sending
 	 */
 	public void sendMessageToAllControllers (DatagramPacket packet)
 	{

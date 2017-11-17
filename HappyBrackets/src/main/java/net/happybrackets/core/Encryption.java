@@ -68,6 +68,7 @@ public class Encryption {
      * @param offset The offset into the data to encrypt.
      * @param length The length of the data to encrypt, from offset.
      * @return The initialisation vector (index 0) and the encrypted data (index 1).
+     * @throws Exception Encryption error
      */
     public static byte[][] encrypt(String key, byte[] input, int offset, int length) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithm);
@@ -86,6 +87,7 @@ public class Encryption {
      * @param offset The offset into the data to decrypt (starting at IV).
      * @param length The length of the data to encrypt, from offset (NOT including length of IV).
      * @return The decrypted data.
+     * @throws Exception Encryption error
      */
     public static byte[] decrypt(String key, byte[] input, int offset, int length) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithm);

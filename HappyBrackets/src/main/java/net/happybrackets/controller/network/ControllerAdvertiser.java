@@ -149,6 +149,7 @@ public class ControllerAdvertiser {
 
 	/**
 	 * Create a controller advertiser that also tells the device what port to send reply to
+	 * @param multicast_address the multicast address we will use
 	 * @param broadcast_port The port we will send to
 	 * @param reply_port  The port we want the device to respond to
 	 */

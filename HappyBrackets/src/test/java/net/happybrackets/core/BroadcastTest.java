@@ -20,7 +20,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.controller.config.ControllerConfig;
 
 import java.net.SocketAddress;
@@ -48,7 +47,7 @@ public class BroadcastTest {
 		receivedMulticastMessage 		= false;
 
         //setup test listener
-        broadcastManager.addPersistentBroadcastLsitener(new OSCListener() {
+        broadcastManager.addPersistentBroadcastListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
                 if(msg.getName().equals("/test")) {

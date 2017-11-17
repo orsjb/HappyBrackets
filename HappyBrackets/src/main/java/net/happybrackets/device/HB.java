@@ -71,7 +71,7 @@ public class HB {
 
 	/**
 	 * Add Listeners for status change event
-	 * @param listener
+	 * @param listener The listener to add
 	 */
 	public void addStatusChangedListener (StatusChangedListener listener)
 	{
@@ -121,7 +121,7 @@ public class HB {
 	/**
 	 * Status string used to send to the controller periodically.
 	 */
-	String status = "No ID set";
+	private String status = "No ID set";
 
 	// sensor stuffs
 	/**
@@ -403,6 +403,7 @@ public class HB {
 						}
 						logger.debug("Code from host IP " + incomingIP + " ALLOWED.");
 
+						setStatus("Received class load request");
 						Class<? extends HBAction> incomingClass = null;
 						try {
 							InputStream input = s.getInputStream();
@@ -416,10 +417,12 @@ public class HB {
 							byte[] dataRaw = buffer.toByteArray();
 							byte[] classData;
 
+							setStatus("Decrypting");
 							try {
 								classData = Encryption.decrypt(DeviceConfig.getInstance().getEncryptionKey(), dataRaw, 32, dataRaw.length - 32 - Encryption.getIVLength());
 							}
 							catch (Exception e) {
+								setStatus("Error decrypt class");
 								logger.error("Error decrypting received class. Check that the encryptionKey in this device's configuration and the controller's configuration match.");
 								throw e;
 							}
@@ -429,6 +432,7 @@ public class HB {
 							byte[] hash = sha256.digest(classData);
 							for (int i = 0; i < hash.length; i++) {
 								if (hash[i] != dataRaw[i]) {
+									setStatus("Error hash mismatch");
 									throw new Exception("Hash mismatch for received class data.");
 								}
 							}
@@ -447,11 +451,13 @@ public class HB {
 							}
 							if (isHBActionClass) {
 								incomingClass = (Class<? extends HBAction>) c;
-								logger.debug("new HBAction >> " + incomingClass.getName());
+								String class_name = incomingClass.getSimpleName();
+								logger.debug("new HBAction >> " + class_name);
+								setStatus("Loading " + class_name);
 								// this means we're done with the sequence, time to recreate
 								// the classloader to avoid duplicate errors
 								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-								status = "Last HBAction: " + incomingClass.getCanonicalName();
+								setStatus("Successful Load  " + class_name);
 							} else {
 								logger.debug("new object (not HBAction) >> " + c.getName());
 							}
@@ -482,11 +488,11 @@ public class HB {
 
 	/**
 	 * Attempts to load the given class as an {@link HBAction}. If an {@link HBAction} can be found matching the fully qualified Java classname then this is loaded and its {@link HBAction#action(HB)} method is run.
-	 * @param s
+	 * @param class_name The class name
 	 */
-	public void attemptHBActionFromClassName(String s) {
+	public void attemptHBActionFromClassName(String class_name) {
 		try {
-			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(s);
+			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(class_name);
 			HBAction action = hbActionClass.newInstance();
 			action.action(this);
 		} catch (Exception e) {
@@ -641,6 +647,7 @@ public class HB {
 	public void reset() {
 		resetLeaveSounding();
 		clearSound();
+		setStatus("Reset");
 	}
 
 	/**
@@ -799,6 +806,7 @@ public class HB {
 	 * @param initial_value The initial value of the control
 	 * @param min_value     The minimum value of the control
 	 * @param max_value     The maximum value of the control
+	 * @return Creates a DynamicControl for sending values to other sketches
 	 */
 	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
 		return new DynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value);

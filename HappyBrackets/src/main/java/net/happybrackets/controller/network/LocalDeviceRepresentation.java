@@ -198,9 +198,10 @@ public class LocalDeviceRepresentation {
 	{
 		dynamicControlScreen.show();
 	}
+
 	/**
 	 * Return the time in milliseconds that we have had this appeared
-	 * @return
+	 * @return The time the device has been active in our list
 	 */
 	public long timeActive()
 	{
@@ -490,7 +491,7 @@ public class LocalDeviceRepresentation {
 
 	/**
 	 * Set the device Id of the this. If it has changed, it will notify any listeners
-	 * @param id
+	 * @param id The ID set for this device
 	 */
 	public void setID(int id) {
 		boolean changed = this.deviceId != id;
@@ -747,7 +748,7 @@ public class LocalDeviceRepresentation {
 
 	/**
 	 * Is Device Logging available for this device
-	 * @return
+	 * @return Whether logging is enabled for device
 	 */
 	public boolean isLoggingEnabled(){
 		return loggingEnabled;

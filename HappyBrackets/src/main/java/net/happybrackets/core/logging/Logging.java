@@ -33,10 +33,10 @@ public class Logging {
     /**
      * Add a new log file to a logger.
      * The new log file will be setup with append false, so it will overwrite old log content.
-     * @param logger
-     * @param appenderName
-     * @param outFilePath
-     * @param logLevel
+     * @param logger The Logger
+     * @param appenderName Appender Name
+     * @param outFilePath Output File path
+     * @param logLevel Log Level
      */
     public static void AddFileAppender(Logger logger, String appenderName, String outFilePath, Level logLevel) {
 

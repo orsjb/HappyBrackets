@@ -21,7 +21,6 @@ import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.device.DeviceMain;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.device.config.DeviceController;
 
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
@@ -35,7 +34,7 @@ public interface ControllerDiscoverer {
 
 	default void listenForController(DeviceConfig device_config, BroadcastManager broadcast_manager, Logger logger) {
 
-		broadcast_manager.addPersistentBroadcastLsitener(new OSCListener(){
+		broadcast_manager.addPersistentBroadcastListener(new OSCListener(){
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
 				final int CONTROLLER_HOSTNAME = 0;
 				final int CONTROLLER_PORT = 1;

@@ -87,7 +87,7 @@ public class ControlMap {
     }
     /**
      * Add a control to our map. Generate a control added event
-     * @param control
+     * @param control The Dynamic Control we are adding
      */
     public void addControl(DynamicControl control)
     {
@@ -236,7 +236,8 @@ public class ControlMap {
     }
 
     /**
-     * get all Dynamic Controls
+     * get all Dynamic Controls sorted by creation order
+     * @return List of dynamic controls on the device.
      */
     public List<DynamicControl> GetSortedControls()
     {

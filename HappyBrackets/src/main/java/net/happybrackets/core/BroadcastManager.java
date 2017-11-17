@@ -61,6 +61,7 @@ public class BroadcastManager {
      * Create a new BroadcastManager.
      *
      * @param address should be a multicast address.
+     * @param port The port we are sending on
      */
     public BroadcastManager(String address, int port) {
         this.address = address;
@@ -315,7 +316,7 @@ public class BroadcastManager {
 
     /**
      * Execute onTransmitter.cb(NetworkInterface, OSCTransmitter) for all transmitters.
-     * @param onTransmitter
+     * @param onTransmitter Interface message
      */
     public void forAllTransmitters(OnTransmitter onTransmitter) {
         if (!disableSend) {
@@ -348,9 +349,9 @@ public class BroadcastManager {
 
     /**
      * Add Listeners that do not get cleared when HB is reset
-     * @param bl
+     * @param bl The broadcast listener
      */
-    public void addPersistentBroadcastLsitener(OSCListener bl){
+    public void addPersistentBroadcastListener(OSCListener bl){
 
         peristentListeners.add(bl);
         listeners.add(bl);
@@ -398,8 +399,10 @@ public class BroadcastManager {
         }
         return broadcast;
     }
-    /**r
+
+    /**
      * Add a new interface aware listener
+     * @param onListener the listener
      */
     public void addOnMessage(OnListener onListener) {
         interfaceListeners.add(onListener);

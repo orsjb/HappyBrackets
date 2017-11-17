@@ -138,6 +138,10 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
     /**
      * Creates a new runtime type adapter using for {@code baseType} using {@code
      * typeFieldName} as the type field name. Type field names are case sensitive.
+     * @param baseType Base Type
+     * @param typeFieldName Type FieldName
+     * @param <T> Template Parameter
+     * @return New Adapter
      */
     public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName) {
         return new RuntimeTypeAdapterFactory<T>(baseType, typeFieldName);
@@ -146,10 +150,14 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
     /**
      * Creates a new runtime type adapter for {@code baseType} using {@code "type"} as
      * the type field name.
+     * @param baseType Base type
+     * @param <T> Template Parameter
+     * @return New Adapter
      */
     public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType) {
         return new RuntimeTypeAdapterFactory<T>(baseType, "type");
     }
+
 
     /**
      * Registers {@code type} identified by {@code label}. Labels are case
@@ -157,6 +165,9 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
      *
      * @throws IllegalArgumentException if either {@code type} or {@code label}
      *     have already been registered on this type adapter.
+     * @param type The Type
+     * @param label The label
+     * @return Adapter
      */
     public RuntimeTypeAdapterFactory<T> registerSubtype(Class<? extends T> type, String label) {
         if (type == null || label == null) {
@@ -176,6 +187,8 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
      *
      * @throws IllegalArgumentException if either {@code type} or its simple name
      *     have already been registered on this type adapter.
+     * @param type The type
+     * @return Adapter
      */
     public RuntimeTypeAdapterFactory<T> registerSubtype(Class<? extends T> type) {
         return registerSubtype(type, type.getSimpleName());

@@ -280,7 +280,7 @@ public abstract class Device {
 
     /**
      * Decide what my MAC address should be
-     * @param ni
+     * @param ni Network Interface
      * @return MAC address as String
      */
     public static String selectMAC(NetworkInterface ni) {

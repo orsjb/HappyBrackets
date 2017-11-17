@@ -34,8 +34,6 @@ import de.sciss.net.OSCServer;
 
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.core.control.ControlMap;
-import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +87,7 @@ public class DeviceConnection {
 		} catch (FileNotFoundException e1) {
 			logger.error("Unable to read '{}'", config.getKnownDevicesFile());
 		}
-		broadcast.addPersistentBroadcastLsitener(new OSCListener() {
+		broadcast.addPersistentBroadcastListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
 				incomingMessage(msg, sender);
@@ -130,7 +128,7 @@ public class DeviceConnection {
 
 	/**
 	 * Flag if we are disabling OSC
-	 * @return
+	 * @return true if we are disabled
 	 */
 	public static final boolean getDisabledAdvertise(){
 		return disableAdvertising;
@@ -190,6 +188,7 @@ public class DeviceConnection {
 
 	/**
 	 * Get the mapping of known device host names to device IDs. The returned map is not modifiable.
+	 * @return Map of Known devices
 	 */
 	public Map<String, Integer> getKnownDevices() {
 		return Collections.unmodifiableMap(knownDevices);

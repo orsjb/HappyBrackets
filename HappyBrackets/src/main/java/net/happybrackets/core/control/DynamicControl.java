@@ -83,7 +83,7 @@ public class DynamicControl {
 
     /**
      * Create the text we will display at the beginning of tooltip
-     * @param tooltipPrefix
+     * @param tooltipPrefix The starting text of the tooltip
      * @return this object
      */
     public DynamicControl setTooltipPrefix(String tooltipPrefix) {
@@ -175,14 +175,14 @@ public class DynamicControl {
 
     /**
      * Get the type of control we want
-     * @return
+     * @return The type of value this control is
      */
     public ControlType getControlType(){
         return controlType;
     }
     /**
      * Get the scope of this control. Can be Sketch, Class, Device, or global
-     * @return
+     * @return The Scope
      */
     public ControlScope getControlScope(){
         return controlScope;
@@ -190,7 +190,7 @@ public class DynamicControl {
 
     /**
      * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
-     * @param new_scope
+     * @param new_scope The new Control Scope
      * @return this object
      */
     public synchronized DynamicControl setControlScope(ControlScope new_scope)
@@ -352,7 +352,7 @@ public class DynamicControl {
 
     /**
      * Build OSC Message that specifies a removal of a control
-     * @return
+     * @return OSC Message to notify removal
      */
     public OSCMessage buildRemoveMessage(){
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.DESTROY,
@@ -438,7 +438,7 @@ public class DynamicControl {
 
     /**
      * Get the map key created in the device as a method for mapping back
-     * @return
+     * @return The unique key to identify this object
      */
     public String getControlMapKey(){
         return controlMapKey;
@@ -489,7 +489,7 @@ public class DynamicControl {
 
     /**
      * Get the name of the control used for ControlScope matching. Also displayed in GUI
-     * @return
+     * @return The name of the control for scope matching
      */
     public String getControlName(){
         return controlName;
@@ -550,7 +550,7 @@ public class DynamicControl {
 
     /**
      * Deregister listener so it no longer receives messages from this control
-     * @param listener
+     * @param listener The lsitener we are removing
      * @return this object
      */
     public DynamicControl removeControlListener(DynamicControlListener listener) {
@@ -565,7 +565,7 @@ public class DynamicControl {
 
     /**
      * Deregister listener so it no longer receives messages from this control
-     * @param listener
+     * @param listener the listener we are remmoving
      * @return this object
      */
     public DynamicControl removeGlobalControlListener(DynamicControlListener listener) {

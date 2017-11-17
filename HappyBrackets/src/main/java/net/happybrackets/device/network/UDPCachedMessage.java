@@ -23,7 +23,7 @@ public class UDPCachedMessage {
     /**
      * Make a cached UDP message to stop having to allocate and deallocate. Also, makes faster re-sending
      * @param msg the OSC message we want to cache
-     * @throws IOException 
+     * @throws IOException Address error
      */
     public UDPCachedMessage (OSCMessage msg) throws IOException {
 

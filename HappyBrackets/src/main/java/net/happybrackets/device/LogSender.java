@@ -91,7 +91,7 @@ public class LogSender {
 
     /**
      * Whether we have logging enabled
-     * @return
+     * @return whether send is enabled
      */
     public boolean getSend(){
         return sendEnabled;

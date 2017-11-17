@@ -60,7 +60,7 @@ public class DeviceController {
 
     /**
      * Get the cached message we are going to send
-     * @return
+     * @return the Cached message
      */
     static public UDPCachedMessage getCachedMessage(){
         if (cachedMessage == null)
@@ -138,7 +138,7 @@ public class DeviceController {
 
     /**
      * Sets the new device ID and rebuilds cached message for it if required
-     * @param new_id
+     * @param new_id the new ID
      */
     public static synchronized void setDeviceId (int new_id){
         if (new_id != deviceId)
@@ -157,7 +157,7 @@ public class DeviceController {
 
     /**
      * The socket address we use to send messages t this controller
-     * @return
+     * @return the socketAddress
      */
     public InetSocketAddress getAddress() {
         return socketAddress;
