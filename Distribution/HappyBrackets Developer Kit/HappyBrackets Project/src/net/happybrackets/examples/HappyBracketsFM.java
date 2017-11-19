@@ -42,7 +42,9 @@ public class HappyBracketsFM implements HBAction {
         Glide baseFreq = new Glide(hb.ac, 1000);
         Glide gain = new Glide(hb.ac, 0.1f);
 
-        DynamicControl display_sensor = hb.createDynamicControl(this, ControlType.TEXT, "Sensor", "");
+        DynamicControl display_x = hb.createDynamicControl(this, ControlType.FLOAT, "X", 0.0);
+        DynamicControl display_y = hb.createDynamicControl(this, ControlType.FLOAT, "Y", 0.0);
+        DynamicControl display_z = hb.createDynamicControl(this, ControlType.FLOAT, "Z", 0.0);
         DynamicControl display_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod freq", 0.0);
         //this is the FM synth
         WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
@@ -65,8 +67,12 @@ public class HappyBracketsFM implements HBAction {
                 float x = (float)mySensor.getAccelerometerData()[0];
                 float y = (float)mySensor.getAccelerometerData()[1];
                 float z = (float)mySensor.getAccelerometerData()[2];
-                //hb.setStatus(x + " " + y + " " + z);
-                display_sensor.setValue(x + " " + y + " " + z);
+                hb.setStatus(x + " " + y + " " + z);
+
+                display_x.setValue(x);
+                display_y.setValue(y);
+                display_z.setValue(z);
+
                 // update values
                 float mod_freq = x * 1000;
                 modFreq.setValue(mod_freq);
