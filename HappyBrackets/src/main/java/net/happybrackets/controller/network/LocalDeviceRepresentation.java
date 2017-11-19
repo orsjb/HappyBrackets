@@ -229,6 +229,14 @@ public class LocalDeviceRepresentation {
 					System.out.println("Dynamic Control value changed");
 				}
 			});
+
+			// add listener so we will send changes that occu to control back to device
+			control.addValueSetListener(new DynamicControl.DynamicControlListener() {
+				@Override
+				public void update(DynamicControl control) {
+					sendDynamicControl(control);
+				}
+			});
 		}
 	}
 
@@ -433,7 +441,7 @@ public class LocalDeviceRepresentation {
 	 * We will recieve this message and send the dynamic control message back to the device
 	 * @param dynamic_control The Dynamic Control
 	 */
-	public void sendDynamicControl(DynamicControl dynamic_control){
+	void sendDynamicControl(DynamicControl dynamic_control){
 		OSCMessage msg = dynamic_control.buildUpdateMessage();
 		sendOscMsg(msg);
 	}
@@ -689,6 +697,10 @@ public class LocalDeviceRepresentation {
 		synchronized (errorListenerList) {
 			errorListenerList.remove(listener);
 		}
+	}
+
+	public String getStatus(){
+		return status;
 	}
 
 	/**

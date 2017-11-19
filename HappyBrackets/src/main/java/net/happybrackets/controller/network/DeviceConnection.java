@@ -434,6 +434,7 @@ public class DeviceConnection {
 					//devicesToRemove.add(deviceName);
                     if (this_device.getIsConnected()) {
 						this_device.setIsConnected(false);
+						this_device.setStatus("Disconected");
                         // we need to invoke the update of GUI here
                     }
 				}

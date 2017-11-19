@@ -61,7 +61,6 @@ public class DynamicControlScreen {
 
     TitledPane debugPane = null;
 
-    private TextArea logOutputTextArea = new TextArea();
     private LocalDeviceRepresentation.LogListener deviceLogListener = null;
 
     public boolean isAlwaysOnTop() {
@@ -241,8 +240,9 @@ public class DynamicControlScreen {
                             b.setOnAction(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent e) {
-                                    control.setValue(1);
-                                    localDevice.sendDynamicControl(control);
+                                    // This is a number so we have a stop condition
+                                    control.setValue(System.currentTimeMillis());
+                                    //localDevice.sendDynamicControl(control);
                                 }
                             });
 
@@ -282,7 +282,7 @@ public class DynamicControlScreen {
                                                 int control_value = Integer.valueOf(text_val);
 
                                                 control.setValue(control_value);
-                                                localDevice.sendDynamicControl(control);
+                                                //localDevice.sendDynamicControl(control);
                                             }
                                             catch (Exception ex){
                                                 // we might want to put an exception here
@@ -300,7 +300,7 @@ public class DynamicControlScreen {
                                             int control_value = Integer.valueOf(text_val);
 
                                             control.setValue(control_value);
-                                            localDevice.sendDynamicControl(control);
+                                            //localDevice.sendDynamicControl(control);
                                         }
                                         catch (Exception ex){
                                             // we might want to put an exception here
@@ -349,7 +349,7 @@ public class DynamicControlScreen {
                                         if (s.isFocused()) {
                                             if (oldval != newval) {
                                                 control.setValue(newval.intValue());
-                                                localDevice.sendDynamicControl(control);
+                                                //localDevice.sendDynamicControl(control);
                                             }
                                         }
                                     }
@@ -398,7 +398,7 @@ public class DynamicControlScreen {
                                                     Boolean oldval, Boolean newval) {
                                     if (oldval != newval) {
                                         control.setValue(newval ? 1 : 0);
-                                        localDevice.sendDynamicControl(control);
+                                        //localDevice.sendDynamicControl(control);
                                     }
                                 }
                             });
@@ -451,7 +451,7 @@ public class DynamicControlScreen {
                                                 float control_value = Float.valueOf(text_val);
 
                                                 control.setValue(control_value);
-                                                localDevice.sendDynamicControl(control);
+                                                //localDevice.sendDynamicControl(control);
                                             }
                                             catch (Exception ex){
                                                 // we might want to put an exception here
@@ -469,7 +469,7 @@ public class DynamicControlScreen {
                                             float control_value = Float.valueOf(text_val);
 
                                             control.setValue(control_value);
-                                            localDevice.sendDynamicControl(control);
+                                            //localDevice.sendDynamicControl(control);
                                         }
                                         catch (Exception ex){
                                             // we might want to put an exception here
@@ -518,7 +518,7 @@ public class DynamicControlScreen {
                                         if (f.isFocused()) {
                                             if (oldval != newval) {
                                                 control.setValue(newval.floatValue());
-                                                localDevice.sendDynamicControl(control);
+                                                //localDevice.sendDynamicControl(control);
                                             }
                                         }
                                     }
@@ -567,7 +567,7 @@ public class DynamicControlScreen {
                                     if (event.getCode().equals(KeyCode.ENTER)) {
                                         String text_val = t.getText();
                                         control.setValue(text_val);
-                                        localDevice.sendDynamicControl(control);
+                                        ///localDevice.sendDynamicControl(control);
                                     }
                                 }
                             });
@@ -578,7 +578,7 @@ public class DynamicControlScreen {
                                 public void handle(ActionEvent actionEvent) {
                                     String text_val = t.getText();
                                     control.setValue(text_val);
-                                    localDevice.sendDynamicControl(control);
+                                    //localDevice.sendDynamicControl(control);
                                 }
                             });
 
@@ -636,6 +636,7 @@ public class DynamicControlScreen {
      * @return
      */
     private Node makeDebugPane() {
+        TextArea log_output_text_area = new TextArea();
         String start_text = "Start device logging";
         Tooltip start_tooltip = new Tooltip("Tell this devices to start sending its logging information.");
         Tooltip stop_tooltip = new Tooltip("Tell this devices to stop sending its logging information.");
@@ -656,19 +657,19 @@ public class DynamicControlScreen {
             }
         });
 
-        logOutputTextArea.setMinHeight(MIN_TEXT_AREA_HEIGHT);
+        log_output_text_area.setMinHeight(MIN_TEXT_AREA_HEIGHT);
 
         localDevice.addLogListener(deviceLogListener = new LocalDeviceRepresentation.LogListener() {
             @Override
             public void newLogMessage(String message) {
-                logOutputTextArea.appendText(message);
+                log_output_text_area.appendText(message);
 
             }
         });
 
 
         VBox pane = new VBox(DEFAULT_ELEMENT_SPACING);
-        pane.getChildren().addAll(enable_button, logOutputTextArea);
+        pane.getChildren().addAll(enable_button, log_output_text_area);
         return pane;
     }
 

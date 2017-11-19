@@ -448,6 +448,7 @@ public class DynamicControl {
     /**
      * Set the value of the object and notify any listeners
      * Additionally, the value will propagate to any controls that match the control scope
+     * If we are using a trigger, send a random number or a unique value
      * @param val the value to set
      * @return this object
      */

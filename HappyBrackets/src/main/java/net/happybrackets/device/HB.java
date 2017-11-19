@@ -388,6 +388,7 @@ public class HB {
 					ServerSocket server = new ServerSocket(DeviceConfig.getInstance().getCodeToDevicePort());
 					//dynamically loads a class from byte[] data. TODO error if we receive two of the same NON-HBAction classes.
 					DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+					int display_count = 0;
 					// start socket server listening loop
 					while (true) {
 						// must reopen socket each time
@@ -417,7 +418,8 @@ public class HB {
 							byte[] dataRaw = buffer.toByteArray();
 							byte[] classData;
 
-							setStatus("Decrypting");
+							display_count ++;
+							setStatus("Decrypting " + TextOutput.getProgressChar(display_count));
 							try {
 								classData = Encryption.decrypt(DeviceConfig.getInstance().getEncryptionKey(), dataRaw, 32, dataRaw.length - 32 - Encryption.getIVLength());
 							}

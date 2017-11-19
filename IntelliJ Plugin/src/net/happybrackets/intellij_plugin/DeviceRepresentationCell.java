@@ -231,7 +231,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 
 		//a status string
-		Text statusText = new Text("status unknown");
+		Text statusText = new Text(localDevice.getStatus());
 		main.add(statusText, 1, 0);
 		main.setHalignment(statusText, HPos.CENTER);
 
@@ -264,6 +264,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				});
 			}
 		});
+
 
 
 		controls.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
