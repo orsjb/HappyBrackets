@@ -20,6 +20,8 @@ import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
@@ -40,6 +42,8 @@ public class HappyBracketsFM implements HBAction {
         Glide baseFreq = new Glide(hb.ac, 1000);
         Glide gain = new Glide(hb.ac, 0.1f);
 
+        DynamicControl display_sensor = hb.createDynamicControl(this, ControlType.TEXT, "Sensor", "");
+        DynamicControl display_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod freq", 0.0);
         //this is the FM synth
         WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
         Function modFunction = new Function(modulator, modDepth, baseFreq) {
@@ -61,9 +65,12 @@ public class HappyBracketsFM implements HBAction {
                 float x = (float)mySensor.getAccelerometerData()[0];
                 float y = (float)mySensor.getAccelerometerData()[1];
                 float z = (float)mySensor.getAccelerometerData()[2];
-                hb.setStatus(x + " " + y + " " + z);
+                //hb.setStatus(x + " " + y + " " + z);
+                display_sensor.setValue(x + " " + y + " " + z);
                 // update values
-                modFreq.setValue(x * 1000);
+                float mod_freq = x * 1000;
+                modFreq.setValue(mod_freq);
+                display_freq.setValue (mod_freq);
             }
         });
 
