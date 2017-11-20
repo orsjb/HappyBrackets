@@ -386,8 +386,8 @@ public class DynamicControlScreen {
                             CheckBox c = new CheckBox();
                             control.setTooltipPrefix("Change the check state to generate an event for this control");
                             c.setTooltip(new Tooltip(control.getTooltipText()));
-                            int i_val = (int) control.getValue();
-                            c.setSelected(i_val != 0);
+                            boolean b_val = (boolean) control.getValue();
+                            c.setSelected(b_val);
                             dynamicControlPane.add(c, 1, next_control_row);
 
                             control_pair = new ControlCellGroup(control_label, c);
@@ -397,7 +397,7 @@ public class DynamicControlScreen {
                                 public void changed(ObservableValue<? extends Boolean> ov,
                                                     Boolean oldval, Boolean newval) {
                                     if (oldval != newval) {
-                                        control.setValue(newval ? 1 : 0);
+                                        control.setValue(newval);
                                         //localDevice.sendDynamicControl(control);
                                     }
                                 }
@@ -409,8 +409,8 @@ public class DynamicControlScreen {
                                     Platform.runLater(new Runnable() {
                                         public void run() {
                                             if (!c.isFocused()) {
-                                                int i_val = (int) control.getValue();
-                                                c.setSelected(i_val != 0);
+                                                boolean b_val = (boolean) control.getValue();
+                                                c.setSelected(b_val);
                                             }
                                         }
                                     });

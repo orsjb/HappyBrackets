@@ -104,13 +104,48 @@ public class DynamicControl {
     private String parentSketchName;
     private ControlType controlType;
     final String controlName;
-    private ControlScope controlScope = ControlScope.SKETCH;
+    private ControlScope controlScope = ControlScope.UNIQUE;
 
     private Object objVal = 0;
     private Object maximumDisplayValue = 0;
     private Object minimumDisplayValue = 0;
 
 
+    /**
+     * Convert a float or int into required number type based on control. If not a FLOAT or INT, will just return value
+     * @param control_type the control type
+     * @param source_value the value we want
+     * @return the converted value
+     */
+    static private Object convertValue (ControlType control_type, Object source_value) {
+        Object ret = source_value;
+
+        if (control_type == ControlType.FLOAT) {
+            if (source_value instanceof Integer) {
+                Integer i = (Integer) source_value;
+                float f = i.floatValue();
+                ret = f;
+            }
+
+        } else if (control_type == ControlType.FLOAT) {
+            if (source_value instanceof Float) {
+                float f = (float) source_value;
+                Integer i = ((Float) source_value).intValue();
+                ret = i;
+            }
+
+
+        } else if (control_type == ControlType.BOOLEAN) {
+            if (source_value instanceof Integer) {
+                Integer i = (Integer) source_value;
+                Boolean b = i != 0;
+                ret = b;
+            }
+        }
+
+
+        return ret;
+    }
 
     /**
      * This is a private constructor used to initialise constant attributes of this object
@@ -127,7 +162,9 @@ public class DynamicControl {
         parentSketchName = parent_sketch.getClass().getName();
         controlType = control_type;
         controlName = name;
-        objVal = initial_value;
+
+        objVal = convertValue (control_type, initial_value);
+
         parentId = parent_sketch.hashCode();
         deviceName = Device.getDeviceName();
         synchronized (instanceCounterLock) {
@@ -166,8 +203,9 @@ public class DynamicControl {
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
         this(parent_sketch, control_type, name, initial_value, true);
-        minimumDisplayValue = min_value;
-        maximumDisplayValue = max_value;
+
+        minimumDisplayValue = convertValue (control_type, min_value);
+        maximumDisplayValue  = convertValue (control_type, max_value);
 
         controlMap.addControl(this);
     }
@@ -232,7 +270,12 @@ public class DynamicControl {
             if (scope_matches)
             {
                 // Now we need to check whether the scope matches us
-                if (getControlScope() == ControlScope.CLASS)
+                if (getControlScope() == ControlScope.SKETCH)
+                {
+                    scope_matches = this.parentSketch == mirror_control.parentSketch;
+                }
+                // Now we need to check whether the scope matches us
+                else if (getControlScope() == ControlScope.CLASS)
                 {
                     scope_matches = this.parentSketchName.equals(mirror_control.parentSketchName);
                 }
@@ -312,7 +355,7 @@ public class DynamicControl {
         String control_name = (String) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_NAME.ordinal());
 
 
-        ControlType control_type = ControlType.values()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
+
 
 
         Object obj_val = msg.getArg(UPDATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
@@ -326,7 +369,7 @@ public class DynamicControl {
             boolean control_scope_changed = false;
 
             if (!obj_val.equals(control.objVal)) {
-                control.objVal = obj_val;
+                control.objVal = convertValue(control.controlType, obj_val);
                 changed = true;
             }
 
@@ -338,7 +381,7 @@ public class DynamicControl {
 
             if (changed) {
                 control.notifyLocalListeners();
-                if (control.getControlScope() != ControlScope.SKETCH){
+                if (control.getControlScope() != ControlScope.UNIQUE){
                     control.notifyGlobalListeners();
                 }
 
@@ -363,6 +406,23 @@ public class DynamicControl {
 
     }
 
+
+    /**
+     * Return an object that can be sent by OSC based on control TYpe
+     * @param obj_val The object value we want to send
+     * @return the type we will actually send
+     */
+    private Object OSCArgumentObject (Object obj_val){
+        Object ret = obj_val;
+
+        if (obj_val instanceof Boolean)
+        {
+            boolean b = (Boolean) obj_val;
+            return b? 1:0;
+        }
+        return ret;
+
+    }
     /**
      * Build OSC Message that specifies an update
      * @return OSC Message To send to specific control
@@ -374,7 +434,7 @@ public class DynamicControl {
                         controlName,
                         controlType.ordinal(),
                         controlMapKey,
-                        objVal,
+                        OSCArgumentObject(objVal),
                         controlScope.ordinal()
                 });
 
@@ -390,7 +450,7 @@ public class DynamicControl {
                         deviceName,
                         controlName,
                         controlType.ordinal(),
-                        objVal,
+                        OSCArgumentObject(objVal),
                 });
 
     }
@@ -407,9 +467,9 @@ public class DynamicControl {
                         parentSketchName,
                         parentId,
                         controlType.ordinal(),
-                        objVal,
-                        minimumDisplayValue,
-                        maximumDisplayValue,
+                        OSCArgumentObject(objVal),
+                        OSCArgumentObject(minimumDisplayValue),
+                        OSCArgumentObject(maximumDisplayValue),
                         controlScope.ordinal()
                 });
 
@@ -429,9 +489,9 @@ public class DynamicControl {
         parentSketchName = (String) msg.getArg(CREATE_MESSAGE_ARGS.PARENT_SKETCH_NAME.ordinal());
         parentId =  (int) msg.getArg(CREATE_MESSAGE_ARGS.PARENT_SKETCH_ID.ordinal());
         controlType = ControlType.values ()[(int) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
-        objVal = msg.getArg(CREATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
-        minimumDisplayValue = msg.getArg(CREATE_MESSAGE_ARGS.MIN_VAL.ordinal());
-        maximumDisplayValue = msg.getArg(CREATE_MESSAGE_ARGS.MAX_VAL.ordinal());
+        objVal = convertValue  (controlType, msg.getArg(CREATE_MESSAGE_ARGS.OBJ_VAL.ordinal()));
+        minimumDisplayValue = convertValue  (controlType, msg.getArg(CREATE_MESSAGE_ARGS.MIN_VAL.ordinal()));
+        maximumDisplayValue = convertValue  (controlType, msg.getArg(CREATE_MESSAGE_ARGS.MAX_VAL.ordinal()));
         controlScope = ControlScope.values ()[(int) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
         controlMap.addControl(this);
     }
@@ -454,8 +514,16 @@ public class DynamicControl {
      */
     public DynamicControl setValue(Object val)
     {
+        val = convertValue (controlType, val);
+
         if (!objVal.equals(val)) {
-            objVal = val;
+            if (controlType == ControlType.FLOAT)
+            {
+                objVal = (Float) val;
+            }
+            else {
+                objVal = val;
+            }
             notifyValueSetListeners();
             notifyLocalListeners();
             notifyGlobalListeners();
@@ -713,8 +781,11 @@ public class DynamicControl {
     public String getTooltipText(){
 
         String control_scope_text = "";
-
-        if (getControlScope() == ControlScope.SKETCH)
+        if (getControlScope() == ControlScope.UNIQUE)
+        {
+            control_scope_text = "UNIQUE scope";
+        }
+        else if (getControlScope() == ControlScope.SKETCH)
         {
             control_scope_text = "SKETCH scope";
         }

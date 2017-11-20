@@ -31,9 +31,9 @@ public class TestDynamicControl_1 implements HBAction {
         DynamicControl slider_control = hb.createDynamicControl(this, ControlType.INT, "Slider-class", 2000, 100, 4000);
 
         DynamicControl text_control = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Hello Text");
-        DynamicControl float_control = hb.createDynamicControl(this, ControlType.FLOAT, "Float-device", 0.0, -1.0, 1.0);
+        DynamicControl float_control = hb.createDynamicControl(this, ControlType.FLOAT, "Float-device", 0, -1, 1);
         DynamicControl button_control = hb.createDynamicControl(this, ControlType.TRIGGER, "Button", 0);
-        DynamicControl checkbox_control = hb.createDynamicControl(this, ControlType.BOOLEAN, "Checkbox-global", 0);
+        DynamicControl checkbox_control = hb.createDynamicControl(this, ControlType.BOOLEAN, "Checkbox-global", false);
 
         DynamicControl text_mirror = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Text Mirror");
 
@@ -93,8 +93,8 @@ public class TestDynamicControl_1 implements HBAction {
         checkbox_control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
-                int i = (int) control.getValue();
-                System.out.println("Checkbox val " + i);
+                boolean b = (Boolean) control.getValue();
+                System.out.println("Checkbox val " + b);
 
             }
         });
