@@ -27,6 +27,19 @@ public class TestDynamicControl_2 implements HBAction {
     @Override
     public void action(HB hb) {
 
+        DynamicControl base_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Sketch Scope", 1000, 10, 10000);
+
+        base_freq.addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl dynamicControl) {
+                float new_val = (float)dynamicControl.getValue();
+                System.out.println("Base Freq " +  new_val);
+            }
+        });
+
+        base_freq.setControlScope(ControlScope.SKETCH);
+        // we can do a create an object with same name and scope and it's value will be mirrored in this sketch but without max and min
+        hb.createDynamicControl(this, ControlType.FLOAT, "Sketch Scope", 1000).setControlScope(ControlScope.SKETCH);
 
         DynamicControl slider_control = hb.createDynamicControl(this, ControlType.INT, "Slider-class", 2000, 100, 4000);
 

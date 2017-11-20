@@ -421,7 +421,7 @@ public class LocalDeviceRepresentation {
 
 		if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.CREATE)) {
 			DynamicControl new_control = new DynamicControl(msg);
-			addDynamicControl(new_control);
+				addDynamicControl(new_control);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DESTROY)) {
 			DynamicControl control = ControlMap.getInstance().getControl(map_key);
 			if (control != null) {

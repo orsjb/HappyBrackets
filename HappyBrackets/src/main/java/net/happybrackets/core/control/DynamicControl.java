@@ -127,7 +127,7 @@ public class DynamicControl {
                 ret = f;
             }
 
-        } else if (control_type == ControlType.FLOAT) {
+        } else if (control_type == ControlType.INT) {
             if (source_value instanceof Float) {
                 float f = (float) source_value;
                 Integer i = ((Float) source_value).intValue();
@@ -291,16 +291,6 @@ public class DynamicControl {
 
                 if (!objVal.equals(mirror_control.objVal)) {
                     objVal = mirror_control.objVal;
-                    changed = true;
-                }
-
-                if (!minimumDisplayValue.equals(mirror_control.minimumDisplayValue)) {
-                    minimumDisplayValue = mirror_control.minimumDisplayValue;
-                    changed = true;
-                }
-
-                if (!maximumDisplayValue.equals(mirror_control.maximumDisplayValue)) {
-                    maximumDisplayValue = mirror_control.maximumDisplayValue;
                     changed = true;
                 }
 

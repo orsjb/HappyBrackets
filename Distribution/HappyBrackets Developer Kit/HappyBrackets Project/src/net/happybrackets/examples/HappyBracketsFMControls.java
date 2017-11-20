@@ -76,7 +76,7 @@ public class HappyBracketsFMControls implements HBAction {
         });
 
         //this is the GUI
-        DynamicControl control = hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", 4000f, 10f, 10000f);
+        DynamicControl control = hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", 4000, 10, 10000);
         control.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl dynamicControl) {
