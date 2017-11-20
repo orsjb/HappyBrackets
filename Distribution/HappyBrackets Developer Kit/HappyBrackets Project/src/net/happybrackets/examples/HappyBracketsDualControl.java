@@ -23,8 +23,6 @@ public class HappyBracketsDualControl implements HBAction {
     @Override
     public void action(HB hb) {
 
-        DynamicControl display_status = hb.createDynamicControl(this, ControlType.TEXT, "Status", "");
-
         //these are the parameters that control the FM synth
         Glide modFreq = new Glide(hb.ac, INITIAL_MOD_FREQ);
         Glide modDepth = new Glide(hb.ac, INITIAL_MOD_DEPTH);
@@ -54,7 +52,6 @@ public class HappyBracketsDualControl implements HBAction {
                 float new_val = (float)dynamicControl.getValue();
                 baseFreq.setValue(new_val);
                 System.out.println("Base Freq " +  new_val);
-                display_status.setValue("" + baseFreq.getCurrentValue() + ", " + modFreq.getCurrentValue() + ", " + modDepth.getCurrentValue());
             }
         });
 
@@ -76,7 +73,6 @@ public class HappyBracketsDualControl implements HBAction {
                 float new_val = (float)dynamicControl.getValue();
                 modFreq.setValue(new_val);
                 System.out.println("Mod Freq " +  new_val);
-                display_status.setValue("" + baseFreq.getCurrentValue() + ", " + modFreq.getCurrentValue() + ", " + modDepth.getCurrentValue());
             }
         });
         // Create the mirror for it
@@ -92,7 +88,6 @@ public class HappyBracketsDualControl implements HBAction {
                 float new_val = (float)dynamicControl.getValue();
                 modDepth.setValue(new_val);
                 System.out.println("Base Depth " +  new_val);
-                display_status.setValue("" + baseFreq.getCurrentValue() + ", " + modFreq.getCurrentValue() + ", " + modDepth.getCurrentValue());
             }
         });
 
