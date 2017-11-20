@@ -58,7 +58,7 @@ public class TestFmControls implements HBAction {
 
         base_freq.setControlScope(ControlScope.CLASS);
         // we can do a create an object with same name and scope and it's value will be mirrored in this sketch but without max and min
-        DynamicControl base_mirror = hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", INITIAL_BASE_FREQ).setControlScope(ControlScope.CLASS);
+        hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", INITIAL_BASE_FREQ).setControlScope(ControlScope.CLASS);
 
 
         DynamicControl mod_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod Freq", INITIAL_MOD_FREQ);
