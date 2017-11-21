@@ -60,7 +60,7 @@ public class DisplayAccelerometer implements HBAction {
                 long expired = System.currentTimeMillis() - lastSendTime;
 
                 // we are putting this delay in so we do not overload the network with messages
-                if (expired > MIN_SENSOR_WAIT) {
+                if (true || expired > MIN_SENSOR_WAIT) {
                     lastSendTime = System.currentTimeMillis();
 
                     // Get the data from Z.
