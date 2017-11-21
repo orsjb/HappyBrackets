@@ -37,10 +37,10 @@ public class HappyBracketsFM implements HBAction {
     public void action(HB hb) {
 
         //these are the parameters that control the FM synth
-        Glide modFreq = new Glide(hb.ac, 666);
-        Glide modDepth = new Glide(hb.ac, 100);
-        Glide baseFreq = new Glide(hb.ac, 1000);
-        Glide gain = new Glide(hb.ac, 0.1f);
+        Glide modFMFreq = new Glide(hb.ac, 666);
+        Glide modFMDepth = new Glide(hb.ac, 100);
+        Glide baseFmFreq = new Glide(hb.ac, 1000);
+        Glide FmGain = new Glide(hb.ac, 0.1f);
 
         DynamicControl display_status = hb.createDynamicControl(this, ControlType.TEXT, "Status", "");
 
@@ -48,18 +48,26 @@ public class HappyBracketsFM implements HBAction {
         DynamicControl display_y = hb.createDynamicControl(this, ControlType.FLOAT, "Y", 0.0);
         DynamicControl display_z = hb.createDynamicControl(this, ControlType.FLOAT, "Z", 0.0);
         DynamicControl display_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod initialFreq", 0.0);
+
         //this is the FM synth
-        WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
-        Function modFunction = new Function(modulator, modDepth, baseFreq) {
+        WavePlayer FM_modulator = new WavePlayer(hb.ac, modFMFreq, Buffer.SINE);
+        Function modFunction = new Function(FM_modulator, modFMDepth, baseFmFreq) {
             @Override
             public float calculate() {
                 return x[0] * x[1] + x[2];
             }
         };
-        WavePlayer carrier = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
-        Gain g = new Gain(hb.ac, 1, gain);
-        g.addInput(carrier);
+        WavePlayer FM_carrier = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
+        Gain g = new Gain(hb.ac, 1, FmGain);
+        g.addInput(FM_carrier);
         hb.sound(g);
+
+        hb.createDynamicControl(this, ControlType.BOOLEAN, "On / OFF", true).addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl dynamicControl) {
+                FM_carrier.pause(!(Boolean) dynamicControl.getValue());
+            }
+        });
 
         //this is the sensor
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
@@ -77,7 +85,7 @@ public class HappyBracketsFM implements HBAction {
 
                 // update values
                 float mod_freq = x * 1000;
-                modFreq.setValue(mod_freq);
+                modFMFreq.setValue(mod_freq);
                 display_freq.setValue (mod_freq);
             }
         });

@@ -32,7 +32,7 @@ public class FreqChangeClock implements HBAction {
 
         DynamicControl x_simulator = hb.createDynamicControl(this, ControlType.FLOAT, "x-Simulator", 0.0, -1.0, 1.0);
 
-        DynamicControl on_off = hb.createDynamicControl(this, ControlType.BOOLEAN, "On", 1);
+        DynamicControl on_off = hb.createDynamicControl(this, ControlType.BOOLEAN, "On", true);
 
         DynamicControl control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0);
         DynamicControl control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0);
@@ -95,7 +95,7 @@ public class FreqChangeClock implements HBAction {
         on_off.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
-                playSound = (int) control.getValue() != 0;
+                playSound = (Boolean)control.getValue();
 
             }
         });
