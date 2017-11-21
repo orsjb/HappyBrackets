@@ -74,35 +74,46 @@ public class HappyBracketsSwitchModes  implements HBAction {
                 double xAxis = mySensor.getAccelerometerData()[0];
 
                 // X was Freq
-                float val = (float) xAxis;
-                float base_freq = (float) Math.pow(100, val + 1) + 50; // this will give us values from 50 to 10050
+                float x_val = (float) xAxis;
+                float base_freq = (float) Math.pow(100, x_val + 1) + 50; // this will give us values from 50 to 10050
                 baseFreq.setValue(base_freq);
 
                 // Y was Speed
-                val = (float) yAxis;
+                float y_val = (float) yAxis;
                 // we want to make it an int ranging from 8 to 512
-                val += 2; // Now it is 1 t0 3
-                float speed = (float) Math.pow(2, val * 3);
+                float speed = (float) Math.pow(2, (y_val + 2) * 3);
                 clock.setTicksPerBeat((int) speed);
 
                 // Z was Modulation
-                val = (float) zAxis;
-                boolean bounce_mode = zAxis < 0;
+                float z_val = (float) zAxis;
 
                 float mod_freq = (float)xAxis * 1000;
-                modFMFreq.setValue(mod_freq);
 
 
+                // we will swap Modes Based on Z Value
+                boolean bounce_mode = zAxis < 0;
                 FM_carrier.pause(bounce_mode);
                 playSound = bounce_mode;
 
                 // anything off zero will give us a value
                 //Ranging from 0 to 1
-                float abs_val = Math.abs(val);
+                float abs_val = Math.abs(z_val);
                 float depth_freq = abs_val * 5000;
                 mod_freq = abs_val * 10;
                 modDepth.setValue(depth_freq);
                 modFreq.setValue(mod_freq);
+
+                // Do FM Parameters Now
+                float fm_freq = (float) Math.pow(100, x_val + 1) + 50; // this will give us values from 50 to 10050
+                baseFmFreq.setValue(fm_freq);
+
+                float fm_depth_freq =  Math.abs(z_val) * 5000;
+                modDepth.setValue(fm_depth_freq);
+
+                // we want to make it an int ranging from 8 to 512
+
+                float freq = (float) Math.pow(2, (y_val +2 )* 3);
+                modFMDepth.setValue(freq);
             }
         });
 
