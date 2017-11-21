@@ -814,4 +814,44 @@ public class HB {
 		return new DynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value);
 	}
 
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @param min_value     The minimum value of the control
+	 * @param max_value     The maximum value of the control
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
+		return new DynamicControl(control_type, name, initial_value, min_value, max_value);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(ControlType control_type, String name, Object initial_value) {
+		return new DynamicControl(control_type, name, initial_value);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(ControlType control_type, String name) {
+		return new DynamicControl(control_type, name);
+	}
+
 }

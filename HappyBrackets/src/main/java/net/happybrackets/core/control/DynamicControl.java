@@ -121,14 +121,18 @@ public class DynamicControl {
         Object ret = source_value;
 
         if (control_type == ControlType.FLOAT) {
-            if (source_value instanceof Integer) {
+            if (source_value == null){
+                ret = 0f;
+            }else if (source_value instanceof Integer) {
                 Integer i = (Integer) source_value;
                 float f = i.floatValue();
                 ret = f;
             }
 
         } else if (control_type == ControlType.INT) {
-            if (source_value instanceof Float) {
+            if (source_value == null){
+                ret = 0;
+            }if (source_value instanceof Float) {
                 float f = (float) source_value;
                 Integer i = ((Float) source_value).intValue();
                 ret = i;
@@ -136,10 +140,20 @@ public class DynamicControl {
 
 
         } else if (control_type == ControlType.BOOLEAN) {
-            if (source_value instanceof Integer) {
+            if (source_value == null){
+                ret = 0;
+            }if (source_value instanceof Integer) {
                 Integer i = (Integer) source_value;
                 Boolean b = i != 0;
                 ret = b;
+            }
+        }else if (control_type == ControlType.TRIGGER) {
+            if (source_value == null) {
+                ret = System.currentTimeMillis();
+            }
+        }else if (control_type == ControlType.TEXT) {
+            if (source_value == null) {
+                ret = "";
             }
         }
 
@@ -158,6 +172,9 @@ public class DynamicControl {
      *                  a constructor - hence, a private constructor
      */
     private DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, boolean init_only) {
+        if (parent_sketch == null){
+            parent_sketch = new Object();
+        }
         parentSketch = parent_sketch;
         parentSketchName = parent_sketch.getClass().getName();
         controlType = control_type;
@@ -178,6 +195,31 @@ public class DynamicControl {
      * A dynamic control that can be accessed from outside this sketch
      * it is created with the sketch object that contains it along with the type
      *
+     * @param control_type  The type of control message you want to send
+     * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
+     * @param initial_value The initial value of the control
+     */
+    public DynamicControl(ControlType control_type, String name, Object initial_value) {
+        this(new Object(), control_type, name, initial_value, true);
+        controlMap.addControl(this);
+    }
+
+    /**
+     * A dynamic control that can be accessed from outside this sketch
+     * it is created with the sketch object that contains it along with the type
+     *
+     * @param control_type  The type of control message you want to send
+     * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
+     */
+    public DynamicControl(ControlType control_type, String name) {
+        this(new Object(), control_type, name, convertValue(control_type, null), true);
+        controlMap.addControl(this);
+    }
+
+    /**
+     * A dynamic control that can be accessed from outside this sketch
+     * it is created with the sketch object that contains it along with the type
+     *
      * @param parent_sketch the object calling - typically this, however, you can use any class object
      * @param control_type  The type of control message you want to send
      * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
@@ -187,7 +229,6 @@ public class DynamicControl {
         this(parent_sketch, control_type, name, initial_value, true);
         controlMap.addControl(this);
     }
-
 
 
     /**
@@ -203,6 +244,23 @@ public class DynamicControl {
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
         this(parent_sketch, control_type, name, initial_value, true);
+
+        minimumDisplayValue = convertValue (control_type, min_value);
+        maximumDisplayValue  = convertValue (control_type, max_value);
+
+        controlMap.addControl(this);
+    }    /**
+     * A dynamic control that can be accessed from outside
+     * it is created with the sketch object that contains it along with the type
+     *
+     * @param control_type  The type of control message you want to send
+     * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
+     * @param initial_value The initial value of the control
+     * @param min_value     The minimum display value of the control. Only used for display purposes
+     * @param max_value     The maximum display value of the control. Only used for display purposes
+     */
+    public DynamicControl(ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
+        this(new Object(), control_type, name, initial_value, true);
 
         minimumDisplayValue = convertValue (control_type, min_value);
         maximumDisplayValue  = convertValue (control_type, max_value);
