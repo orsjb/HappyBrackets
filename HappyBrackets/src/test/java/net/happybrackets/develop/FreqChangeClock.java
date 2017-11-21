@@ -45,7 +45,7 @@ public class FreqChangeClock implements HBAction {
         DynamicControl output_freq_contol = hb.createDynamicControl(this, ControlType.INT,   "Output Freq", 0);
 
         // accelerometer values typically go from -1 to +1
-        DynamicControl.DynamicControlListener x_listener = control_x.addControlListener(new DynamicControl.DynamicControlListener() {
+        DynamicControl.DynamicControlListener x_listener = new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
                 float val = (float)control.getValue();
@@ -57,7 +57,9 @@ public class FreqChangeClock implements HBAction {
                 System.out.println("New Freq " + freq);
                 output_freq_contol.setValue(freq);
             }
-        });
+        };
+
+        control_x.addControlListener(x_listener);
 
         x_simulator.addControlListener(x_listener);
 

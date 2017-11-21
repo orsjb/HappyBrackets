@@ -86,10 +86,19 @@ public class TestDynamicControl_3 implements HBAction {
             }
         });
 
-        hb.createDynamicControl(ControlType.TRIGGER, "Test No Parent").addControlListener(new DynamicControl.DynamicControlListener() {
+        DynamicControl test_sender = new DynamicControl(ControlType.TRIGGER, "Remote Trigger").addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
+                System.out.println("Remote Trigger");
+            }
+        });
+
+        hb.createDynamicControl(ControlType.TRIGGER, "Trigger").addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl control) {
+
                 System.out.println("Trigger");
+                test_sender.setValue(null);
             }
         });
 
@@ -102,6 +111,7 @@ public class TestDynamicControl_3 implements HBAction {
                 System.out.println("Buddy val " + (int)control.getValue());
             }
         });
+
 
     }
 }

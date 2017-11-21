@@ -615,9 +615,9 @@ public class DynamicControl {
     /**
      * Register Listener to receive changed values in the control
      * @param listener Listener to register for events
-     * @return this listener that has been created
+     * @return this
      */
-    public DynamicControlListener addControlListener(DynamicControlListener listener)
+    public DynamicControl addControlListener(DynamicControlListener listener)
     {
         if (listener != null) {
             synchronized (controlListenerList) {
@@ -625,7 +625,7 @@ public class DynamicControl {
             }
         }
 
-        return  listener;
+        return  this;
     }
 
 
@@ -634,7 +634,7 @@ public class DynamicControl {
      * @param listener Listener to register for events
      * @return this listener that has been created
      */
-    public DynamicControlListener addGlobalControlListener(DynamicControlListener listener)
+    public DynamicControl addGlobalControlListener(DynamicControlListener listener)
     {
         if (listener != null) {
             synchronized (globalControlListenerList) {
@@ -642,16 +642,16 @@ public class DynamicControl {
             }
         }
 
-        return  listener;
+        return this;
     }
 
     /**
      * Register Listener to receive changed values in the control that need to be received when value is specifically set from
      * Within sketch
      * @param listener Listener to register for events
-     * @return this listener that has been created
+     * @return this
      */
-    public DynamicControlListener addValueSetListener(DynamicControlListener listener)
+    public DynamicControl addValueSetListener(DynamicControlListener listener)
     {
         if (listener != null) {
             synchronized (valueSetListenerList) {
@@ -659,7 +659,7 @@ public class DynamicControl {
             }
         }
 
-        return  listener;
+        return  this;
     }
 
 
