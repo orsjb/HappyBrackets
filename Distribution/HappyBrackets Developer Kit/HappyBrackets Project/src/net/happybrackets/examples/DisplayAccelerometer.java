@@ -16,24 +16,23 @@ public class DisplayAccelerometer implements HBAction {
     boolean initialisedMaxMin = false;
 
 
-    final String CONTROL_PREFIX = "Accel-";
     @Override
     public void action(HB hb) {
 
         lastSendTime = System.currentTimeMillis();
 
-        DynamicControl control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0);
-        DynamicControl control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0);
-        DynamicControl control_z = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0);
+        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT,  "x");
+        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT,  "y");
+        DynamicControl control_z = hb.createDynamicControl( ControlType.FLOAT,  "z");
 
 
-        DynamicControl min_control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-x", 0.0);
-        DynamicControl min_control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-y", 0.0);
-        DynamicControl min_control_z = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-z", 0.0);
+        DynamicControl min_control_x = hb.createDynamicControl( ControlType.FLOAT,  "min-x");
+        DynamicControl min_control_y = hb.createDynamicControl( ControlType.FLOAT,  "min-y");
+        DynamicControl min_control_z = hb.createDynamicControl( ControlType.FLOAT, "min-z");
 
-        DynamicControl max_control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-x", 0.0);
-        DynamicControl max_control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-y", 0.0);
-        DynamicControl max_control_z = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-z", 0.0);
+        DynamicControl max_control_x = hb.createDynamicControl( ControlType.FLOAT,  "max-x");
+        DynamicControl max_control_y = hb.createDynamicControl( ControlType.FLOAT, "max-y");
+        DynamicControl max_control_z = hb.createDynamicControl( ControlType.FLOAT,  "max-z");
 
 
         // Create a reset button
