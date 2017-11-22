@@ -331,8 +331,18 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					}
 				});
 
+				final String IGNORE_TEXT = "Ignore this Device";
+				final String STOP_IGNORE_TEXT = "Stop Ignoring this Device";
 
-				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, remove_item_menu, show_controls_item_menu);
+				MenuItem ignore_controls_item_menu = new MenuItem(localDevice.isIgnoringDevice()? STOP_IGNORE_TEXT: IGNORE_TEXT);
+				ignore_controls_item_menu.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						localDevice.setIgnoreDevice(!localDevice.isIgnoringDevice());
+					}
+				});
+
+				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, show_controls_item_menu, ignore_controls_item_menu, remove_item_menu);
 				contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 			}
 

@@ -10,6 +10,8 @@ import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.LSM9DS1;
+import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
  * The class will utilise two mirroring controls
@@ -94,5 +96,6 @@ public class HappyBracketsDualControl implements HBAction {
         // Now create its mirror
         hb.createDynamicControl(this, ControlType.FLOAT, "Mod Depth", INITIAL_MOD_DEPTH).setControlScope(ControlScope.SKETCH);
     }
+
 
 }

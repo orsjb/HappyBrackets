@@ -41,7 +41,8 @@ public class HappyBracketsDevelopFM implements HBAction {
 
         //this is the GUI
         // Creating with no minimum and maximum enables you to just type in correct values
-        DynamicControl base_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", INITIAL_BASE_FREQ, 10, 10000);
+        DynamicControl base_freq = hb.createDynamicControl(this, ControlType.FLOAT,
+                "Base Freq", INITIAL_BASE_FREQ, 10, 10000);
 
         base_freq.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override

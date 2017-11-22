@@ -311,24 +311,23 @@ public class DeviceConnection {
 				// we need to update Host address
 				// we will check that the InetAddress that we have stored is the same - IP address may have changed
 
-				this_device.setSocketAddress(sending_address);
+				if (!this_device.isIgnoringDevice()) {
+					this_device.setSocketAddress(sending_address);
 
-				// Make sure we don't have a zero device_id from device
-				if (device_id != 0) {
-					this_device.setID(device_id);
-				}
-				else if (invalid_pi){
-					this_device.setStatus("Invalid Version on Device PI");
-				}
-				else // we are not new but device does not have an ID
-				{
-					// Send Id to Device and Request status
-					sendIdToDevice(this_device);
+					// Make sure we don't have a zero device_id from device
+					if (device_id != 0) {
+						this_device.setID(device_id);
+					} else if (invalid_pi) {
+						this_device.setStatus("Invalid Version on Device PI");
+					} else // we are not new but device does not have an ID
+					{
+						// Send Id to Device and Request status
+						sendIdToDevice(this_device);
 
+					}
+					this_device.setIsConnected(true);
+					this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
 				}
-				this_device.setIsConnected(true);
-				this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
-
 
 			}
 		} catch (Exception e) {
@@ -377,7 +376,9 @@ public class DeviceConnection {
 
 					if (this_device != null) {
 
-						this_device.incomingMessage(msg, sender);
+						if (!this_device.isIgnoringDevice()) {
+							this_device.incomingMessage(msg, sender);
+						}
 					}
 
 				}
@@ -429,14 +430,12 @@ public class DeviceConnection {
 		for(String deviceName : devicesByHostname.keySet()) {
 			if(!deviceName.startsWith("Virtual Test Device")) {
 				LocalDeviceRepresentation this_device = devicesByHostname.get(deviceName);
-				long time_since_seen = timeNow - this_device.lastTimeSeen;
-				if(time_since_seen > config.getAliveInterval() * 5) {	//config this number?
-					//devicesToRemove.add(deviceName);
-                    if (this_device.getIsConnected()) {
+				if (!this_device.isIgnoringDevice()) {
+					long time_since_seen = timeNow - this_device.lastTimeSeen;
+					if (time_since_seen > config.getAliveInterval() * 5) {    //config this number?
 						this_device.setIsConnected(false);
-						this_device.setStatus("Disconected");
-                        // we need to invoke the update of GUI here
-                    }
+					}
+
 				}
 			}
 		}

@@ -68,6 +68,33 @@ public class LocalDeviceRepresentation {
 
 	private boolean isConnected = true;
 
+	/**
+	 * If true, we will ignore this device and not respond to any of its messages
+	 * @return true if we are ignoring
+	 */
+	public boolean isIgnoringDevice() {
+		return ignoreDevice;
+	}
+
+	/**
+	 * Set whether we will ignore this device. We will set status of device
+	 * @param ignoreDevice true if we want to ignore
+	 */
+	public void setIgnoreDevice(boolean ignoreDevice) {
+		this.ignoreDevice = ignoreDevice;
+		if (ignoreDevice){
+			setStatus("Ignore Device");
+		}
+		else
+		{
+			setStatus("Stoped Ignoring");
+			sendStatusRequest();
+		}
+	}
+
+	private boolean ignoreDevice = false;
+
+
 	public boolean getIsConnected() {
 		return this.isConnected;
 	}
@@ -718,11 +745,15 @@ public class LocalDeviceRepresentation {
 	}}
 
     public void setIsConnected(boolean connected) {
-        this.isConnected = connected;
-        synchronized (connectedUpdateListenerList) {
-			for (ConnectedUpdateListener listener : connectedUpdateListenerList) {
-				listener.update(connected);
+
+		if (isConnected != connected) {
+			this.isConnected = connected;
+			synchronized (connectedUpdateListenerList) {
+				for (ConnectedUpdateListener listener : connectedUpdateListenerList) {
+					listener.update(connected);
+				}
 			}
+			setStatus(isConnected? "Connected" : "Disconnected");
 		}
 		if (connected)
 		{
