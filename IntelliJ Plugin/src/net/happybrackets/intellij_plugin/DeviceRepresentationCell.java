@@ -297,6 +297,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				});
 
 				MenuItem request_status_menu = new MenuItem("Request status");
+				request_status_menu.setDisable(localDevice.isIgnoringDevice());
 				request_status_menu.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -306,6 +307,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 
 				MenuItem request_version_menu = new MenuItem("Request Version");
+				request_version_menu.setDisable(localDevice.isIgnoringDevice());
 				request_version_menu.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -324,6 +326,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 
 				MenuItem show_controls_item_menu = new MenuItem("Show Controls");
+				show_controls_item_menu.setDisable(localDevice.isIgnoringDevice());
 				show_controls_item_menu.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
