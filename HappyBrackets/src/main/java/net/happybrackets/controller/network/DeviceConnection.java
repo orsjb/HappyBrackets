@@ -24,6 +24,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
+import com.intellij.util.containers.ArrayListSet;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,16 +51,55 @@ public class DeviceConnection {
 	private ControllerConfig config;
 	private boolean loggingEnabled;
 
-	List<DisableAdvertiseChangedListener> disabledAdvertiseListener = new ArrayList();
+	private boolean showOnlyFavourites = false;
 
-	public DisableAdvertiseChangedListener addDisabledAdvertiserListener(DisableAdvertiseChangedListener listener){
+
+	public boolean isShowOnlyFavourites() {
+		return showOnlyFavourites;
+	}
+
+
+
+
+	// If we only want to show favourites, we will also want to remove them from our list
+	public void setShowOnlyFavourites(boolean enable) {
+		if (showOnlyFavourites != enable) {
+			this.showOnlyFavourites = enable;
+
+			synchronized (favouritesChangedListeners){
+				for(FavouritesChangedListener listener:  favouritesChangedListeners ){
+					listener.isFavourite(showOnlyFavourites);
+				}
+			}
+
+			// Now we will erase non favourites if we are set to true
+			if (showOnlyFavourites){
+				clearDevices(false);
+			}
+		}
+	}
+
+
+
+
+	List<DisableAdvertiseChangedListener> disabledAdvertiseListener = new ArrayList();
+	List<FavouritesChangedListener> favouritesChangedListeners = new ArrayList<>();
+
+	Set<String> favouriteDevices = new ArrayListSet<>();
+
+	public void addDisabledAdvertiserListener(DisableAdvertiseChangedListener listener){
 		synchronized (disabledAdvertiseListener){
 			disabledAdvertiseListener.add(listener);
 		}
 
-		return listener;
 	}
 
+	public void addFavouritesChangedListener(FavouritesChangedListener listener){
+		synchronized (favouritesChangedListeners){
+			favouritesChangedListeners.add(listener);
+		}
+
+	}
 	BroadcastManager broadcastManager;
 	private final int replyPort; // this is the port we want the device to return calls to
 
@@ -70,13 +110,24 @@ public class DeviceConnection {
 	 * Remove all devices from List and make them become rescanned;
 	 */
 	public void rescanDevices() {
+		setShowOnlyFavourites(false);
+		clearDevices(true);
+	}
+
+
+	/**
+	 * Remove the devices from list
+	 * @param clear_favourites true if we are also removing favourite devices
+	 */
+	public void clearDevices(boolean clear_favourites){
 		List<LocalDeviceRepresentation> devices_to_remove = new ArrayList<LocalDeviceRepresentation>();
 
 		for(LocalDeviceRepresentation device : devicesByHostname.values())
 		{
-			if (device != null)
-			{
-				devices_to_remove.add(device);
+			if (device != null) {
+				if (clear_favourites || !device.isFavouriteDevice()) {
+					devices_to_remove.add(device);
+				}
 			}
 		}
 
@@ -89,6 +140,10 @@ public class DeviceConnection {
 
 	public interface DisableAdvertiseChangedListener{
 		void isDisabled(boolean disabled);
+	}
+
+	public interface FavouritesChangedListener{
+		void isFavourite(boolean enabled);
 	}
 
 	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
@@ -254,103 +309,119 @@ public class DeviceConnection {
 			int device_id = 0;
 
 			String device_name = (String) msg.getArg(DEVICE_NAME);
-			String device_hostname = (String) msg.getArg(DEVICE_HOSTNAME);
-			String device_address = (String) msg.getArg(DEVICE_ADDRESS);
-			logger.debug("Received message from device: " + device_name);
-			//			System.out.println("Device Alive Message: " + deviceName);
-			//see if we have this device yet
-			LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
 
-			// we need to prevent overwriting an ID that has already been set
-			if (msg.getArgCount() > DEVICE_ID) {
-				try {
-					device_id =  (int) msg.getArg(DEVICE_ID);
+			// if we only want to look at our favourites, then ignore what we do not have as a favourite
+			if (!showOnlyFavourites || favouriteDevices.contains(device_name)) {
+				String device_hostname = (String) msg.getArg(DEVICE_HOSTNAME);
+				String device_address = (String) msg.getArg(DEVICE_ADDRESS);
+				logger.debug("Received message from device: " + device_name);
+				//			System.out.println("Device Alive Message: " + deviceName);
+				//see if we have this device yet
+				LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
 
-				} catch (Exception ex) {}
-			}
-			else
-			{
-				invalid_pi = true;
-			}
+				// we need to prevent overwriting an ID that has already been set
+				if (msg.getArgCount() > DEVICE_ID) {
+					try {
+						device_id = (int) msg.getArg(DEVICE_ID);
 
-			logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
-
-			if (this_device == null) { //if not add it
-
-				//force names if useHostname is true
-				if (config.useHostname()) {
-					device_address = device_name;
-				}
-
-				if (device_id == 0) {
-					if (knownDevices.containsKey(device_name)) {
-						device_id = knownDevices.get(device_name);
-					} else {
-						device_id = newID--;
+					} catch (Exception ex) {
 					}
+				} else {
+					invalid_pi = true;
 				}
 
-				this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config, replyPort);
+				logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
 
-				this_device.addDeviceRemovedListener(new LocalDeviceRepresentation.DeviceRemovedListener() {
-					@Override
-					public void deviceRemoved(LocalDeviceRepresentation device) {
-						Platform.runLater(new Runnable() {
-							@Override
-							public void run() {
-								String device_name = device.deviceName;
-								theDevices.remove(devicesByHostname.get(device_name));
-								devicesByHostname.remove(device_name);
-								logger.info("Removed Device from list: {}", device_name);
+				if (this_device == null) { //if not add it
+
+					//force names if useHostname is true
+					if (config.useHostname()) {
+						device_address = device_name;
+					}
+
+					if (device_id == 0) {
+						if (knownDevices.containsKey(device_name)) {
+							device_id = knownDevices.get(device_name);
+						} else {
+							device_id = newID--;
+						}
+					}
+
+					this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config, replyPort);
+
+					if (favouriteDevices.contains(device_name)) {
+						this_device.setFavouriteDevice(true);
+					}
+
+					this_device.addFavouriteListener(new LocalDeviceRepresentation.FavouriteChangedListener() {
+						@Override
+						public void favouriteChanged(LocalDeviceRepresentation device) {
+							if (device.isFavouriteDevice()) {
+								favouriteDevices.add(device.deviceName);
+							} else {
+								favouriteDevices.remove(device.deviceName);
 							}
-						});
-					}
-				});
+						}
+					});
+					this_device.addDeviceRemovedListener(new LocalDeviceRepresentation.DeviceRemovedListener() {
+						@Override
+						public void deviceRemoved(LocalDeviceRepresentation device) {
+							Platform.runLater(new Runnable() {
+								@Override
+								public void run() {
+									String device_name = device.deviceName;
+									theDevices.remove(devicesByHostname.get(device_name));
+									devicesByHostname.remove(device_name);
+									logger.info("Removed Device from list: {}", device_name);
+								}
+							});
+						}
+					});
 
-				devicesByHostname.put(device_name, this_device);
-				logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
-				final LocalDeviceRepresentation device_to_add = this_device;
-				//adding needs to be done in an "app" thread because it affects the GUI.
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						theDevices.add(device_to_add);
-					}
-				});
-				//make sure this device knows its ID
-				//since there is a lag in assigning an InetSocketAddress, and since this is the first
-				//message sent to the device, it should be done in a separate thread.
-				this_device.setSocketAddress(sending_address);
-				sendIdToDevice(this_device);
-
-				// we can't do this here as the loading and unloading of the DeviceRepresentation cell
-				//sendControlRequestToDevice(this_device);
-			}
-
-			//keep up to date
-			if (this_device != null) {
-				// we need to update Host address
-				// we will check that the InetAddress that we have stored is the same - IP address may have changed
-
-				if (!this_device.isIgnoringDevice()) {
+					devicesByHostname.put(device_name, this_device);
+					logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
+					final LocalDeviceRepresentation device_to_add = this_device;
+					//adding needs to be done in an "app" thread because it affects the GUI.
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							theDevices.add(device_to_add);
+						}
+					});
+					//make sure this device knows its ID
+					//since there is a lag in assigning an InetSocketAddress, and since this is the first
+					//message sent to the device, it should be done in a separate thread.
 					this_device.setSocketAddress(sending_address);
+					sendIdToDevice(this_device);
 
-					// Make sure we don't have a zero device_id from device
-					if (device_id != 0) {
-						this_device.setID(device_id);
-					} else if (invalid_pi) {
-						this_device.setStatus("Invalid Version on Device PI");
-					} else // we are not new but device does not have an ID
-					{
-						// Send Id to Device and Request status
-						sendIdToDevice(this_device);
-
-					}
-					this_device.setIsConnected(true);
-					this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
+					// we can't do this here as the loading and unloading of the DeviceRepresentation cell
+					//sendControlRequestToDevice(this_device);
 				}
 
-			}
+				//keep up to date
+				if (this_device != null) {
+					// we need to update Host address
+					// we will check that the InetAddress that we have stored is the same - IP address may have changed
+
+					if (!this_device.isIgnoringDevice()) {
+						this_device.setSocketAddress(sending_address);
+
+						// Make sure we don't have a zero device_id from device
+						if (device_id != 0) {
+							this_device.setID(device_id);
+						} else if (invalid_pi) {
+							this_device.setStatus("Invalid Version on Device PI");
+						} else // we are not new but device does not have an ID
+						{
+							// Send Id to Device and Request status
+							sendIdToDevice(this_device);
+
+						}
+						this_device.setIsConnected(true);
+						this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
+					}
+				}
+			} //if (!showOnlyFavourites || favouriteDevices.contains(device_name))
 		} catch (Exception e) {
 			logger.error("Error reading incoming OSC message", e);
 			return;

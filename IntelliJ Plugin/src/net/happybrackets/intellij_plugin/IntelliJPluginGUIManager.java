@@ -282,7 +282,7 @@ public class IntelliJPluginGUIManager {
 		String enable_osc_text = "Enable Advertise";
 
 		Button disable_osc_button = new Button(deviceConnection.getDisabledAdvertise() ?  enable_osc_text :disable_osc_text);
-
+		disable_osc_button.setTooltip (new Tooltip("Stop our plugin from communicating on the network"));
 		disable_osc_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -304,6 +304,7 @@ public class IntelliJPluginGUIManager {
 		globalcommands.getChildren().add(disable_osc_button);
 
 		Button reset_plugin = new Button("Refresh");
+		reset_plugin.setTooltip (new Tooltip("Clear devices and rescan"));
 		reset_plugin.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -314,6 +315,29 @@ public class IntelliJPluginGUIManager {
 		globalcommands.getChildren().add(reset_plugin);
 
 
+		CheckBox favourites_only = new CheckBox("Favourites Only");
+		favourites_only.setTooltip (new Tooltip("Only display the devices we have selected as favourites"));
+		favourites_only.setSelected(deviceConnection.isShowOnlyFavourites());
+		favourites_only.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			public void changed(ObservableValue<? extends Boolean> ov,
+								Boolean oldval, Boolean newval) {
+				if (favourites_only.isFocused()) {
+					deviceConnection.setShowOnlyFavourites(newval);
+
+				}
+			}
+		});
+
+		deviceConnection.addFavouritesChangedListener(new DeviceConnection.FavouritesChangedListener() {
+			@Override
+			public void isFavourite(boolean enabled) {
+				Platform.runLater(() -> {
+					favourites_only.setSelected(enabled);
+				});
+			}
+		});
+
+		globalcommands.getChildren().add(favourites_only);
 		return globalcommands;
 	}
 

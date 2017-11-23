@@ -23,7 +23,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
-import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -31,9 +30,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
-import net.happybrackets.core.BuildVersion;
 import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.core.control.DynamicControl;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
@@ -334,18 +331,35 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					}
 				});
 
-				final String IGNORE_TEXT = "Ignore this Device";
-				final String STOP_IGNORE_TEXT = "Stop Ignoring this Device";
 
-				MenuItem ignore_controls_item_menu = new MenuItem(localDevice.isIgnoringDevice()? STOP_IGNORE_TEXT: IGNORE_TEXT);
+				CheckMenuItem ignore_controls_item_menu = new CheckMenuItem("Ignore this Device");
+				ignore_controls_item_menu.setSelected(localDevice.isIgnoringDevice());
 				ignore_controls_item_menu.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
 						localDevice.setIgnoreDevice(!localDevice.isIgnoringDevice());
+						Platform.runLater(() -> {
+
+							ignore_controls_item_menu.setSelected(localDevice.isIgnoringDevice());
+						});
+
 					}
 				});
 
-				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, show_controls_item_menu, ignore_controls_item_menu, remove_item_menu);
+				CheckMenuItem favourite_item_menu = new CheckMenuItem("Favourite");
+				favourite_item_menu.setSelected(localDevice.isFavouriteDevice());
+				favourite_item_menu.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+
+						localDevice.setFavouriteDevice(!localDevice.isFavouriteDevice());
+						Platform.runLater(() -> {
+							favourite_item_menu.setSelected(localDevice.isFavouriteDevice());
+						});
+					}
+				});
+
+				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, remove_item_menu);
 				contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 			}
 

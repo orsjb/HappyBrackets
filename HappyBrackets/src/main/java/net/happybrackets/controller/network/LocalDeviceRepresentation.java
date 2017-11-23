@@ -67,7 +67,8 @@ public class LocalDeviceRepresentation {
 	private Map<String, DynamicControl> dynamicControls = new Hashtable<String, DynamicControl>();
 
 	private boolean isConnected = true;
-
+	private boolean ignoreDevice = false;
+	private boolean isFavouriteDevice = false;
 	/**
 	 * If true, we will ignore this device and not respond to any of its messages
 	 * @return true if we are ignoring
@@ -92,7 +93,24 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
-	private boolean ignoreDevice = false;
+
+
+
+	public boolean isFavouriteDevice() {
+		return isFavouriteDevice;
+	}
+
+
+	public void setFavouriteDevice(boolean enabled) {
+		if (isFavouriteDevice != enabled) {
+			this.isFavouriteDevice = enabled;
+			synchronized (favouriteChangedListeners) {
+				for (FavouriteChangedListener deviceModifiedListener : favouriteChangedListeners) {
+					deviceModifiedListener.favouriteChanged(this);
+				}
+			}
+		}
+	}
 
 
 	public boolean getIsConnected() {
@@ -169,12 +187,17 @@ public class LocalDeviceRepresentation {
 		void deviceRemoved(LocalDeviceRepresentation device);
 	}
 
+	public interface FavouriteChangedListener {
+		void favouriteChanged(LocalDeviceRepresentation device);
+	}
+
 	private List<StatusUpdateListener> statusUpdateListenerList = new ArrayList<>();
 	private List<ConnectedUpdateListener> connectedUpdateListenerList = new ArrayList<>();
 	private List<SocketAddressChangedListener> socketAddressChangedListenerList = new ArrayList<>();
 	private List<DeviceIdUpdateListener> deviceIdUpdateListenerList = new ArrayList<>();
 	private List<DeviceRemovedListener> deviceRemovedListenerList = new ArrayList<>();
-
+	private List<FavouriteChangedListener> favouriteChangedListeners = new ArrayList<>()
+;
 	private List<DynamicControl.DynamicControlListener> addDynamicControlListenerList = new ArrayList<>();
 	private List<DynamicControl.DynamicControlListener> removeDynamicControlListenerList = new ArrayList<>();
 
@@ -205,6 +228,14 @@ public class LocalDeviceRepresentation {
 			removeDynamicControlListenerList.add(listener);
 		}
 	}
+
+	public void addFavouriteListener(FavouriteChangedListener listener){
+		synchronized (favouriteChangedListeners)
+		{
+			favouriteChangedListeners.add(listener);
+		}
+	}
+
 
 	public void removeDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener) {
 		synchronized (removeDynamicControlListenerList) {
@@ -516,7 +547,8 @@ public class LocalDeviceRepresentation {
 			for (DeviceRemovedListener listener : deviceRemovedListenerList) {
 				listener.deviceRemoved(this);
 			}
-
+			// Just because a device is removed does not mean it is no longer a favourite
+			favouriteChangedListeners.clear();
 			deviceRemovedListenerList.clear();
 			dynamicControlScreen.removeDynamicControlScene();
 			dynamicControlScreen = null;
