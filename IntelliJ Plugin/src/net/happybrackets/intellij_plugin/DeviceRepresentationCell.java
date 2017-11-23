@@ -320,7 +320,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				remove_item_menu.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						item.deviceRemoved();
+						item.removeDevice();
 					}
 				});
 

@@ -302,6 +302,18 @@ public class IntelliJPluginGUIManager {
 		});
 
 		globalcommands.getChildren().add(disable_osc_button);
+
+		Button reset_plugin = new Button("Refresh");
+		reset_plugin.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				deviceConnection.rescanDevices();
+			}
+		});
+
+		globalcommands.getChildren().add(reset_plugin);
+
+
 		return globalcommands;
 	}
 

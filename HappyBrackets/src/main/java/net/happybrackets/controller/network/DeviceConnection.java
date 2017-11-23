@@ -66,6 +66,27 @@ public class DeviceConnection {
 	// flag to disable sending and receiving OSC
 	private static boolean disableAdvertising = false;
 
+	/**
+	 * Remove all devices from List and make them become rescanned;
+	 */
+	public void rescanDevices() {
+		List<LocalDeviceRepresentation> devices_to_remove = new ArrayList<LocalDeviceRepresentation>();
+
+		for(LocalDeviceRepresentation device : devicesByHostname.values())
+		{
+			if (device != null)
+			{
+				devices_to_remove.add(device);
+			}
+		}
+
+		for (LocalDeviceRepresentation device:  devices_to_remove)
+		{
+			device.removeDevice();
+		}
+
+	}
+
 	public interface DisableAdvertiseChangedListener{
 		void isDisabled(boolean disabled);
 	}
@@ -439,17 +460,7 @@ public class DeviceConnection {
 				}
 			}
 		}
-		for(final String deviceName : devices_to_remove) {
-			//removal needs to be done in an "app" thread because it affects the GUI.
-			Platform.runLater(new Runnable() {
-		        @Override
-		        public void run() {
-					theDevices.remove(devicesByHostname.get(deviceName));
-					devicesByHostname.remove(deviceName);
-					logger.info("Removed Device from list: {}", deviceName);
-		        }
-		   });
-		}
+
 	}
 
 

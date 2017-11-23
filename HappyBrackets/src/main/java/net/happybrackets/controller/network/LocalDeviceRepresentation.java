@@ -511,7 +511,7 @@ public class LocalDeviceRepresentation {
 	 * Lets device that know about this to remove their listeners
 	 * It then removes all listeners from list
 	 */
-	public void deviceRemoved() {
+	public void removeDevice() {
 		synchronized (deviceRemovedListenerList) {
 			for (DeviceRemovedListener listener : deviceRemovedListenerList) {
 				listener.deviceRemoved(this);
