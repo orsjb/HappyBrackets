@@ -359,7 +359,21 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					}
 				});
 
-				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, remove_item_menu);
+				CheckMenuItem encrypt_item_menu = new CheckMenuItem("Encrypt Classes");
+				encrypt_item_menu.setSelected(localDevice.isEncryptionEnabled());
+				encrypt_item_menu.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+
+						localDevice.setEncryptionEnabled(!localDevice.isEncryptionEnabled());
+						Platform.runLater(() -> {
+							encrypt_item_menu.setSelected(localDevice.isFavouriteDevice());
+						});
+					}
+				});
+
+
+				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, encrypt_item_menu, remove_item_menu);
 				contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 			}
 

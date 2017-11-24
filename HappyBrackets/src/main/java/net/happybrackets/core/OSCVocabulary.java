@@ -30,6 +30,7 @@ public final class OSCVocabulary {
         public static final String ALIVE = "/device/alive";
         public static final String STATUS = "/device/status";
         public static final String VERSION = "/device/version";
+        public static final String SET_ENCRYPTION = "/device/encrypt";
     }
 
     public final class DynamicControlMessage

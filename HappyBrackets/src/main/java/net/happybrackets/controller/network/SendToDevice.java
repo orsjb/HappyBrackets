@@ -41,9 +41,11 @@ public abstract class SendToDevice {
 		send(package_path, simple_class_name, devices);
 	}
 
-	public static void send(String package_path, String class_name, List<LocalDeviceRepresentation> devices) throws Exception {
+
+	private static ArrayList<byte[][]> AllFilesAsBytes (String package_path, String class_name, boolean encrypted)throws Exception	{
 		File package_dir = new File(package_path);
 		File[] contents = package_dir.listFiles(); //This used to have a hard codded bin/ prepended to it but this is incompatible with the composition path being configurable now
+
 		ArrayList<byte[][]> all_files_as_bytes = new ArrayList<byte[][]>();
 		logger.debug("The following files are being sent:");
 		for(File f : contents) {
@@ -51,17 +53,50 @@ public abstract class SendToDevice {
 			String fname = f.getName();
 			if((
 					fname.startsWith(class_name + "$") ||
-					fname.toLowerCase().contains("hbperm")	//this is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the device along with any HBAction classes when something else from that package gets sent.
-				) && fname.endsWith(".class")) {
-				all_files_as_bytes.add(getClassFileAsEncryptedByteArray(package_path + "/" + fname));
+							fname.toLowerCase().contains("hbperm")	//this is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the device along with any HBAction classes when something else from that package gets sent.
+			) && fname.endsWith(".class"))
+			{
+				all_files_as_bytes.add(encrypted? getClassFileAsEncryptedByteArray(package_path + "/" + fname): getClassFileAsUnencryptedByteArray(package_path + "/" + fname));
 			}
 		}
 
-		all_files_as_bytes.add(getClassFileAsEncryptedByteArray(package_path + "/" + class_name + ".class"));
+		all_files_as_bytes.add(encrypted? getClassFileAsEncryptedByteArray(package_path + "/" + class_name + ".class"): getClassFileAsUnencryptedByteArray(package_path + "/" + class_name + ".class"));
+
+		return  all_files_as_bytes;
+	}
+
+	public static void send(String package_path, String class_name, List<LocalDeviceRepresentation> devices) throws Exception {
+		//File package_dir = new File(package_path);
+		//File[] contents = package_dir.listFiles(); //This used to have a hard codded bin/ prepended to it but this is incompatible with the composition path being configurable now
+
+		ArrayList<byte[][]> encrypted_all_files_as_bytes = null;
+		ArrayList<byte[][]> unencrypted_all_files_as_bytes = null;
+
 		//now we have all the files as byte arrays
 		//time to send
 		for(LocalDeviceRepresentation device : devices) {
 			if (device.getIsConnected() || DeviceConnection.getDisabledAdvertise()) {
+				ArrayList<byte[][]> all_files_as_bytes;
+				if (device.isEncryptionEnabled())
+				{
+					// see if we have already packed encrypted
+					if (encrypted_all_files_as_bytes == null)
+					{
+						encrypted_all_files_as_bytes = AllFilesAsBytes(package_path, class_name, true);
+					}
+					all_files_as_bytes = encrypted_all_files_as_bytes;
+				}
+				else
+				{
+					// see if we have already packed unencrypted
+					if (unencrypted_all_files_as_bytes == null)
+					{
+						unencrypted_all_files_as_bytes = AllFilesAsBytes(package_path, class_name, false);
+					}
+					all_files_as_bytes = unencrypted_all_files_as_bytes;
+
+				}
+
 				try {
 					//send all of the files to this hostname
 					for (byte[][] bytes : all_files_as_bytes) {
@@ -102,6 +137,12 @@ public abstract class SendToDevice {
 		byte[][] iv_and_enc_data = Encryption.encrypt(ControllerConfig.getInstance().getEncryptionKey(), bytes, 0, bytes.length);
 
 		return new byte[][] {hash, iv_and_enc_data[0], iv_and_enc_data[1]};
+	}
+
+	public static byte[][] getClassFileAsUnencryptedByteArray(String full_class_file_name) throws Exception {
+		byte[] bytes = getClassFileAsByteArray(full_class_file_name);
+
+		return new byte[][] {bytes};
 	}
 
 	public static byte[] objectToByteArray(Object object) {

@@ -24,7 +24,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
-import com.intellij.util.containers.ArrayListSet;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -85,7 +84,7 @@ public class DeviceConnection {
 	List<DisableAdvertiseChangedListener> disabledAdvertiseListener = new ArrayList();
 	List<FavouritesChangedListener> favouritesChangedListeners = new ArrayList<>();
 
-	Set<String> favouriteDevices = new ArrayListSet<>();
+	Set<String> favouriteDevices = new HashSet<>();
 
 	public void addDisabledAdvertiserListener(DisableAdvertiseChangedListener listener){
 		synchronized (disabledAdvertiseListener){

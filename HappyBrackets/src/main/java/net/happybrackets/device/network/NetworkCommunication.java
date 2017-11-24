@@ -60,6 +60,8 @@ public class NetworkCommunication {
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
 
+		hb.setUseEncryption(DeviceStatus.getInstance().isClassEncryption());
+
 		broadcastAddress = BroadcastManager.getBroadcast(null);
 
 		try {
@@ -156,9 +158,14 @@ public class NetworkCommunication {
 						hb.setStatus("ID " + new_id);
 
 					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
-						boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
-						logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");
-						sendLogs(sendLogs);
+						boolean enabled = ((Integer) msg.getArg(0)) == 1;
+						logger.info("I have been requested to " + (enabled ? "start" : "stop") + " sending logs to the controller.");
+						sendLogs(enabled);
+					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ENCRYPTION)) {
+						boolean enabled = ((Integer) msg.getArg(0)) == 1;
+						DeviceStatus.getInstance().setClassEncryption(enabled);
+						hb.setUseEncryption(enabled);
+
 					} else {
 						//master commands...
 						if (OSCVocabulary.match(msg, OSCVocabulary.Device.SYNC)) {

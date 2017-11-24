@@ -30,13 +30,15 @@ public class DeviceStatus {
 		DEVICE_NAME,
 		STATUS_TEXT,
 		LOG_ENABLED,
-		DEBUG_LEVEL
+		DEBUG_LEVEL,
+		ENCYPTION_ENABLED
 	}
 
 	String statusText = "";
 	boolean loggingEnabled = false;
 	int debugLevel = 0;
 	String deviceName = "";
+	boolean classEncryption = false;
 
 
 	private static DeviceStatus gDeviceStatus = null;
@@ -96,6 +98,18 @@ public class DeviceStatus {
 
 		loggingEnabled = logging_enabled;
 	}
+	public boolean isClassEncryption() {
+		return classEncryption;
+	}
+
+	public void setClassEncryption(boolean enabled) {
+		if (classEncryption != enabled)
+		{
+			cachedStatusMessage = null;
+		}
+
+		classEncryption = enabled;
+	}
 
 	public int getDebugLevel() {
 		return debugLevel;
@@ -145,7 +159,8 @@ public class DeviceStatus {
 						deviceName,
 						statusText,
 						loggingEnabled? 1:0,
-						debugLevel
+						debugLevel,
+						classEncryption? 1:0
 				});
 
 
@@ -162,6 +177,7 @@ public class DeviceStatus {
 			statusText = (String) msg.getArg(MESSAGE_PARAMETERS.STATUS_TEXT.ordinal());
 			loggingEnabled = ((int)msg.getArg(MESSAGE_PARAMETERS.LOG_ENABLED.ordinal())) == 0 ? false: true;
 			debugLevel = (int)msg.getArg(MESSAGE_PARAMETERS.DEBUG_LEVEL.ordinal());
+			classEncryption = ((int)msg.getArg(MESSAGE_PARAMETERS.ENCYPTION_ENABLED.ordinal())) == 0 ? false: true;
 
 		}
 		catch (Exception ex){}

@@ -69,6 +69,28 @@ public class LocalDeviceRepresentation {
 	private boolean isConnected = true;
 	private boolean ignoreDevice = false;
 	private boolean isFavouriteDevice = false;
+	private boolean encryptionEnabled = false;
+
+
+	public boolean isEncryptionEnabled() {
+		return encryptionEnabled;
+	}
+
+	public void setEncryptionEnabled(boolean enabled) {
+		encryptionEnabled = enabled;
+		if (encryptionEnabled){
+			setStatus("Encryption Enabled");
+		}
+		else
+		{
+			setStatus("Encryption Disabled");
+		}
+		send(OSCVocabulary.Device.SET_ENCRYPTION, new Object[]{enabled ? 1 : 0});
+	}
+
+
+
+
 	/**
 	 * If true, we will ignore this device and not respond to any of its messages
 	 * @return true if we are ignoring
@@ -443,6 +465,7 @@ public class LocalDeviceRepresentation {
 
 		setStatus(status.getStatusText());
 		loggingEnabled = status.isLoggingEnabled();
+		encryptionEnabled = status.isClassEncryption();
 	}
 
 	/**

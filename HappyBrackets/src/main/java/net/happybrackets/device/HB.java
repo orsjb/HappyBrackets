@@ -68,6 +68,15 @@ public class HB {
 
 	private List<StatusChangedListener> statusChangedListenerList  = new ArrayList<>();
 
+	/**
+	 * Whether we will use encryption in transferring class data
+	 * @param enable true if we want to use encryption
+	 */
+	public void setUseEncryption(boolean enable) {
+		useEncryption = enable;
+	}
+
+	private boolean useEncryption = false;
 
 	/**
 	 * Add Listeners for status change event
@@ -419,24 +428,30 @@ public class HB {
 							byte[] classData;
 
 							display_count ++;
-							setStatus("Decrypting " + TextOutput.getProgressChar(display_count));
-							try {
-								classData = Encryption.decrypt(DeviceConfig.getInstance().getEncryptionKey(), dataRaw, 32, dataRaw.length - 32 - Encryption.getIVLength());
-							}
-							catch (Exception e) {
-								setStatus("Error decrypt class");
-								logger.error("Error decrypting received class. Check that the encryptionKey in this device's configuration and the controller's configuration match.");
-								throw e;
-							}
-
-							// Check given hash matches hash of (decrypted) data.
-							MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-							byte[] hash = sha256.digest(classData);
-							for (int i = 0; i < hash.length; i++) {
-								if (hash[i] != dataRaw[i]) {
-									setStatus("Error hash mismatch");
-									throw new Exception("Hash mismatch for received class data.");
+							if (useEncryption) {
+								setStatus("Decrypting " + TextOutput.getProgressChar(display_count));
+								try {
+									classData = Encryption.decrypt(DeviceConfig.getInstance().getEncryptionKey(), dataRaw, 32, dataRaw.length - 32 - Encryption.getIVLength());
+								} catch (Exception e) {
+									setStatus("Error decrypt class");
+									logger.error("Error decrypting received class. Check that the encryptionKey in this device's configuration and the controller's configuration match.");
+									throw e;
 								}
+
+								// Check given hash matches hash of (decrypted) data.
+								MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+								byte[] hash = sha256.digest(classData);
+								for (int i = 0; i < hash.length; i++) {
+									if (hash[i] != dataRaw[i]) {
+										setStatus("Error hash mismatch");
+										throw new Exception("Hash mismatch for received class data.");
+									}
+								}
+							}
+							else
+							{
+								setStatus("Loading " + TextOutput.getProgressChar(display_count));
+								classData = dataRaw;
 							}
 
 							logger.debug("Received class data hash matches given hash.");
