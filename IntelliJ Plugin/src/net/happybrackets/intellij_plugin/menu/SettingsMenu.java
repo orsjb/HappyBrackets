@@ -1,4 +1,4 @@
-package net.happybrackets.intellij_plugin;
+package net.happybrackets.intellij_plugin.menu;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -6,15 +6,9 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.project.Project;
 import javafx.application.Platform;
+import net.happybrackets.intellij_plugin.ConfigurationScreen;
 
-public class IntelliJPluginMenu extends AnAction {
-
-    public IntelliJPluginMenu() {
-        // Set the menu item name.
-        super("HappyBrackets");
-        // Set the menu item name, description and icon.
-        // super("Text _Boxes","Item description",IconLoader.getIcon("/Mypackage/icon.png"));
-    }
+public class SettingsMenu extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
