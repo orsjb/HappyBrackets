@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="58.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="0.0" prefWidth="600.0">
+         <children>
+            <AnchorPane prefHeight="30.0" prefWidth="25.0">
+               <children>
+                  <Circle fill="#2eff1f" layoutX="15.0" layoutY="15.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="8.0" />
+                  <Arc fill="#ebebeb" layoutX="12.0" layoutY="13.0" length="130.0" radiusX="5.0" radiusY="5.0" startAngle="-270.0" stroke="#a8a8a8" strokeType="INSIDE" type="ROUND" />
+               </children>
+            </AnchorPane>
+            <Label prefHeight="27.0" prefWidth="180.0" text="hb-abcd1234.local" textOverrun="CENTER_WORD_ELLIPSIS">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+            <Label prefHeight="27.0" prefWidth="24.0" text="ID">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+            <Label layoutX="210.0" layoutY="10.0" prefHeight="27.0" prefWidth="21.0" text="1">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+            <Label layoutX="210.0" layoutY="10.0" prefHeight="27.0" prefWidth="50.0" text="Reset" textFill="BLUE" underline="true">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+            <Label layoutX="286.0" layoutY="10.0" prefHeight="27.0" prefWidth="41.0" text="Ping" textFill="BLUE" underline="true">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+            <Label layoutX="271.0" layoutY="10.0" prefHeight="27.0" prefWidth="56.0" text="Send" textFill="BLUE" underline="true">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+            <Slider>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Slider>
+            <Button mnemonicParsing="false" prefWidth="30.0" text="...">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="4.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+      <HBox prefHeight="23.0" prefWidth="600.0">
+         <children>
+            <Label prefHeight="27.0" prefWidth="55.0" text="Status:">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+            <Label text="I am happy do doo daaah the text here etc.etc." HBox.hgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
+</VBox>

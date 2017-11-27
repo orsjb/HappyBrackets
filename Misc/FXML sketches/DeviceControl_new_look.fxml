@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab text="hb-abcd1234.local">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="33.0" prefWidth="600.0">
+                                 <children>
+                                    <HBox prefHeight="0.0" prefWidth="600.0">
+                                       <children>
+                                          <AnchorPane prefHeight="30.0" prefWidth="25.0">
+                                             <children>
+                                                <Circle fill="#2eff1f" layoutX="15.0" layoutY="15.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="8.0" />
+                                                <Arc fill="#ebebeb" layoutX="12.0" layoutY="13.0" length="130.0" radiusX="5.0" radiusY="5.0" startAngle="-270.0" stroke="#a8a8a8" strokeType="INSIDE" type="ROUND" />
+                                             </children>
+                                          </AnchorPane>
+                                          <Label prefHeight="27.0" prefWidth="180.0" text="hb-abcd1234.local" textOverrun="CENTER_WORD_ELLIPSIS">
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </Label>
+                                          <Label prefHeight="27.0" prefWidth="24.0" text="ID">
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </Label>
+                                          <Label layoutX="210.0" layoutY="10.0" prefHeight="27.0" prefWidth="21.0" text="1">
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </Label>
+                                          <Label layoutX="210.0" layoutY="10.0" prefHeight="27.0" prefWidth="50.0" text="Reset" textFill="BLUE" underline="true">
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </Label>
+                                          <Label layoutX="286.0" layoutY="10.0" prefHeight="27.0" prefWidth="41.0" text="Ping" textFill="BLUE" underline="true">
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </Label>
+                                          <Label layoutX="271.0" layoutY="10.0" prefHeight="27.0" prefWidth="56.0" text="Send" textFill="BLUE" underline="true">
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </Label>
+                                          <Slider>
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </Slider>
+                                          <Button mnemonicParsing="false" prefWidth="30.0" text="...">
+                                             <font>
+                                                <Font size="10.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="4.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+                                <items>
+                                  <AnchorPane minHeight="25.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                       <children>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Label text="Controls" />
+                                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" VBox.vgrow="ALWAYS">
+                                                   <children>
+                                                      <Slider orientation="VERTICAL" />
+                                                      <Slider layoutX="10.0" layoutY="10.0" orientation="VERTICAL" />
+                                                      <Slider layoutX="26.0" layoutY="10.0" orientation="VERTICAL" />
+                                                      <Slider layoutX="42.0" layoutY="10.0" orientation="VERTICAL" />
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </padding>
+                                                </HBox>
+                                                <HBox prefHeight="9.0" prefWidth="600.0">
+                                                   <children>
+                                                      <Label text="Custom OSC">
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </padding>
+                                                      </Label>
+                                                      <TextField HBox.hgrow="ALWAYS" />
+                                                      <Label layoutX="10.0" layoutY="10.0" text="Send" textFill="BLUE" underline="true">
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </padding>
+                                                      </Label>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </VBox.margin>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                  <AnchorPane minHeight="25.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                       <children>
+                                          <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Label text="Console">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </VBox.margin>
+                                                </Label>
+                                                <HBox prefHeight="23.0" prefWidth="600.0">
+                                                   <children>
+                                                      <Label prefHeight="27.0" prefWidth="55.0" text="Status:">
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </padding>
+                                                      </Label>
+                                                      <Label text="I am happy do doo daaah the text here etc.etc." HBox.hgrow="ALWAYS">
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </padding>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <TextArea AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </VBox.margin>
+                                                </TextArea>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="group?">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <HBox layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="600.0">
+         <children>
+            <Label text="HappyBrackets Version 1.11.1">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+         </children>
+      </HBox>
+   </children>
+</VBox>
