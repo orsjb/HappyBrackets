@@ -48,6 +48,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Popup;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.config.ControllerConfig;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
@@ -109,7 +110,7 @@ public class IntelliJPluginGUIManager {
 
 	private void init() {
 		config = HappyBracketsToolWindow.config;
-		deviceConnection = HappyBracketsToolWindow.deviceConnection;
+		deviceConnection = ControllerEngine.getInstance().getDeviceConnection();
 		//initial compositions path
 		//assume that this path is a path to a root classes folder, relative to the project
 		//e.g., build/classes/tutorial or build/classes/compositions
@@ -372,7 +373,7 @@ public class IntelliJPluginGUIManager {
 			final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor().withShowHiddenFiles(true);
 			descriptor.setTitle("Select " + label.toLowerCase() + " file");
 
-			String currentFile = HappyBracketsToolWindow.getSettings().getString(setting);
+			String currentFile = ControllerEngine.getInstance().getSettings().getString(setting);
 			VirtualFile vfile = currentFile == null ? null : LocalFileSystem.getInstance().findFileByPath(currentFile.replace(File.separatorChar, '/'));
 
 			//needs to run in Swing event dispatch thread, and then back again to JFX thread!!
@@ -394,8 +395,8 @@ public class IntelliJPluginGUIManager {
 			fsd.withShowHiddenFiles(true);
 			final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, project);
 
-			String current_file_path = HappyBracketsToolWindow.getSettings().getString(setting);
-			File currentFile = current_file_path != null ? new File(HappyBracketsToolWindow.getSettings().getString(setting)) : null;
+			String current_file_path = ControllerEngine.getInstance().getSettings().getString(setting);
+			File currentFile = current_file_path != null ? new File(ControllerEngine.getInstance().getSettings().getString(setting)) : null;
 			VirtualFile base_dir = null;
 			String current_name = null;
 			if (currentFile != null && currentFile.exists()) {
@@ -426,7 +427,7 @@ public class IntelliJPluginGUIManager {
 						try (PrintWriter out = new PrintWriter(config_file.getAbsolutePath())) {
 							out.print(config_field.getText());
 
-							HappyBracketsToolWindow.getSettings().set(setting, config_file.getAbsolutePath());
+							ControllerEngine.getInstance().getSettings().set(setting, config_file.getAbsolutePath());
 						} catch (Exception ex) {
 							showPopup("Error saving " + label.toLowerCase() + ": " + ex.getMessage(), save_button, 5, event);
 						}
@@ -438,7 +439,7 @@ public class IntelliJPluginGUIManager {
 		Button reset_button = new Button("Reset");
 		reset_button.setTooltip(new Tooltip("Reset these " + label.toLowerCase() + " settings to their defaults."));
 		reset_button.setOnMouseClicked(event -> {
-			HappyBracketsToolWindow.getSettings().clear(setting);
+			ControllerEngine.getInstance().getSettings().clear(setting);
 
 			if (file_type == 0) {
 				loadConfigFile(HappyBracketsToolWindow.getDefaultControllerConfigPath(), label, config_field, setting, reset_button, event);
@@ -564,7 +565,7 @@ public class IntelliJPluginGUIManager {
 		try {
 			String config_JSON = (new Scanner(config_file)).useDelimiter("\\Z").next();
 			config_field.setText(config_JSON);
-			HappyBracketsToolWindow.getSettings().set(setting, config_file.getAbsolutePath());
+			ControllerEngine.getInstance().getSettings().set(setting, config_file.getAbsolutePath());
 		} catch (FileNotFoundException ex) {
 			showPopup("Error loading " + label.toLowerCase() + ": " + ex.getMessage(), triggering_element, 5, event);
 		}

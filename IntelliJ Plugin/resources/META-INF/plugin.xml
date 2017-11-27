@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>1.13.0</version>
+  <version>1.13.3</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -32,4 +32,15 @@
   <project-components>
 
   </project-components>
+  <actions>
+    <group id="HappyBracketsIntellijPligin.MainMenu" text="HappyBrackets" description="HappyBrackets Settings">
+      <add-to-group group-id="MainMenu" anchor="after" relative-to-action="WindowMenu"/>
+
+      <action id="HappyBrackets." class="net.happybrackets.intellij_plugin.IntelliJPluginMenu" text="HappyBracketsMenu"
+              description="HappyBrackets Plugin Menu">
+
+      </action>
+
+    </group>
+  </actions>
 </idea-plugin>

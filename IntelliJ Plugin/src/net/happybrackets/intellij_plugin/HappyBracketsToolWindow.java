@@ -27,6 +27,8 @@ import com.intellij.ui.content.ContentFactory;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import net.happybrackets.controller.ControllerEngine;
+import net.happybrackets.controller.config.ControllerSettings;
 import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
@@ -67,15 +69,14 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     static boolean staticSetup = false;
     static String currentConfigString;
-    static IntelliJPluginSettings settings;
-    static DeviceConnection deviceConnection = null;
-    static Synchronizer synchronizer;                               //runs independently, no interaction needed
-    static private FileServer httpServer;
+    //static ControllerSettings settings;
     static protected IntelliJControllerConfig config;
-    static protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
+    static Synchronizer synchronizer;                               //runs independently, no interaction needed
+
+
     static private boolean controllerStarted = false;
 
-    static protected BroadcastManager broadcastManager;
+
     private JFXPanel jfxp;
     private Scene scene;
     final static Logger logger = LoggerFactory.getLogger(HappyBracketsToolWindow.class);
@@ -87,12 +88,14 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow tool_window) {
 
+        ControllerEngine controller_engine = ControllerEngine.getInstance();
+
         synchronized (advertiseStopLock) {
             // Increment our count
             updateNumToolwindowsCreated(1);
 
-            if (deviceConnection != null) {
-                deviceConnection.setDisableAdvertise(true);
+            if (controller_engine.getDeviceConnection() != null) {
+                controller_engine.getDeviceConnection().setDisableAdvertise(true);
             }
         }
 
@@ -124,8 +127,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             // Increment our count
             int new_active_creates = updateNumToolwindowsCreated(-1);
 
-            if (deviceConnection != null) {
-                deviceConnection.setDisableAdvertise(new_active_creates > 0);
+            if (controller_engine.getDeviceConnection() != null) {
+                controller_engine.getDeviceConnection().setDisableAdvertise(new_active_creates > 0);
             }
         }
     }
@@ -146,10 +149,12 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
      */
     synchronized static void startAdvertiser()
     {
-        if (controllerAdvertiser != null && !controllerStarted)
+        ControllerAdvertiser advertiser = ControllerEngine.getInstance().getControllerAdvertiser();
+
+        if (advertiser != null && !controllerStarted)
         {
             controllerStarted = true;
-            controllerAdvertiser.start();
+            advertiser.start();
         }
     }
     /**
@@ -161,9 +166,12 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         if(!staticSetup) {          //only run this stuff once per JVM
             logger.info("Running static setup (first instance of HappyBrackets)");
 
+            ControllerEngine controller_engine = ControllerEngine.getInstance();
 
-            logger.info("Loading plugin settings from " + IntelliJPluginSettings.getDefaultSettingsLocation());
-            settings = IntelliJPluginSettings.load();
+            //ControllerSettings.setDefaultSettingsFolder(getPluginLocation());
+
+            logger.info("Loading plugin settings from " + ControllerSettings.getDefaultSettingsLocation());
+            ControllerSettings settings = controller_engine.loadSettings(getPluginLocation());
             // Save settings on exit.
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
@@ -255,8 +263,11 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
      * @throws IllegalArgumentException If there is an error loading or parsing the given config file.
      */
     static void setConfig(String config_JSON, String config_dir) {
+        ControllerEngine controller_engine = ControllerEngine.getInstance();
+
         try {
             config = IntelliJControllerConfig.loadFromString(config_JSON);
+            controller_engine.setControllerConfig(config);
         } catch (JsonSyntaxException e) {
             throw new IllegalArgumentException("Could not parse specified configuration.", e);
         }
@@ -266,72 +277,22 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         config.setConfigDir(config_dir);
 
         // If a custom known devices path has been loaded/saved previously, reload it and apply/override that possibly specified in the controller config file.
-        String known_devices_path = HappyBracketsToolWindow.getSettings().getString("knownDevicesPath");
+        String known_devices_path = ControllerEngine.getInstance().getSettings().getString("knownDevicesPath");
         if (known_devices_path == null) {
             // Otherwise get default known devices file.
             known_devices_path = HappyBracketsToolWindow.getDefaultKnownDevicesPath();
         }
+
         config.setKnownDevicesFile(known_devices_path);
 
-        // Dispose of previous components if necessary.
-        if (httpServer != null) {
-            logger.debug("Stopping FileServer.");
-            httpServer.stop();
-        }
-        if (controllerAdvertiser != null) {
-            logger.debug("Stopping ControllerAdvertiser");
-            controllerAdvertiser.stop();
-        }
-        if (broadcastManager != null) {
-            logger.debug("Disposing of BroadcastManager");
-            broadcastManager.dispose();
-        }
-        if (deviceConnection != null) {
-            logger.debug("Disposing of DeviceConnection");
-            deviceConnection.dispose();
-        }
 
-        logger.debug("Compositions path: {}", config.getCompositionsPath());
-
-
-        int listen_port = config.getBroadcastPort();
-
-        try {
-            //setup controller broadcast
-            DatagramSocket alive_socket = new DatagramSocket();
-            alive_socket.setReuseAddress(true);
-            listen_port = alive_socket.getLocalPort();
-        }
-        catch (Exception ex)
-        {
-            logger.error("Unable to create unique socket ", ex );
-        }
-
-        logger.info("Starting ControllerAdvertiser");
-        broadcastManager = new BroadcastManager(config.getMulticastAddr(), listen_port);
-        broadcastManager.startRefreshThread();
-
-        //set up device connection
-        deviceConnection = new DeviceConnection(config, broadcastManager);
-
-        controllerAdvertiser = new ControllerAdvertiser(config.getMulticastAddr(), config.getBroadcastPort(), listen_port);
-
-        // Do Not start until we are at the end of initialisation
-        //controllerAdvertiser.start();
-
-        //setup http httpServer
-        try {
-            httpServer = new FileServer(config);
-        } catch (IOException e) {
-            logger.error("Unable to start HTTP server!", e);
-        }
     }
 
-
-    public static IntelliJPluginSettings getSettings() {
+/*
+    public static ControllerSettings getSettings() {
         return settings;
     }
-
+*/
 
     /**
      * Returns the JSON String used to create the current {@link IntelliJControllerConfig} for this HappyBracketsToolWindow.
