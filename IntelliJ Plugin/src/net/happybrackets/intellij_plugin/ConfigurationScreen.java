@@ -1,4 +1,4 @@
-package net.happybrackets.controller.gui;
+package net.happybrackets.intellij_plugin;
 
 
 import javafx.scene.control.TitledPane;
@@ -6,28 +6,83 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.fileChooser.*;
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileWrapper;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Popup;
+import javafx.util.Duration;
+import net.happybrackets.controller.ControllerEngine;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
+
+import javax.swing.SwingUtilities;
 
 public class ConfigurationScreen {
 
     private static final int DEFAULT_ELEMENT_SPACING = 10;
     private static final int MIN_TEXT_AREA_HEIGHT = 200;
 
-    private Stage DisplayStage = new Stage();
+    private Button[] configApplyButton = new Button[2]; // 0 = overall config, 1 = known devices.
+    private Stage displayStage = new Stage();
+    private Project currentProject;
 
     final static Logger logger = LoggerFactory.getLogger(ConfigurationScreen.class);
 
-    public ConfigurationScreen()
+    public ConfigurationScreen(Project project)
     {
-        DisplayStage.setTitle("HappyBrackets Settings");
+        currentProject = project;
+        displayStage.setTitle("HappyBrackets Settings");
         TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
+        TitledPane known_devices_pane = new TitledPane("Known Devices", makeConfigurationPane(1));
+        VBox main_container = new VBox(5);
+        main_container.setFillWidth(true);
+        main_container.getChildren().addAll(config_pane, known_devices_pane);
+        ScrollPane main_scroll = new ScrollPane();
+        main_scroll.setFitToWidth(true);
+        main_scroll.setFitToHeight(true);
+        main_scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        main_scroll.setStyle("-fx-font-family: sample; -fx-font-size: 12;");
+        main_scroll.setMinHeight(100);
+        main_scroll.setContent(main_container);
+
+        displayStage.setScene(new Scene(main_scroll));
     }
 
+    public void show(){
+        //displayStage.setAlwaysOnTop(true);
+        displayStage.show();
+    }
     /**
      * Make Configuration/Known devices pane.
      * @param file_type 0 == configuration, 1 == known devices.
      */
     private Pane makeConfigurationPane(final int file_type) {
-        /*
+
+        ControllerEngine control_engine = ControllerEngine.getInstance();
         final TextArea config_field = new TextArea();
         final String label = file_type == 0 ? "Configuration" : "Known Devices";
         final String setting = file_type == 0 ? "controllerConfigPath" : "knownDevicesPath";
@@ -36,11 +91,11 @@ public class ConfigurationScreen {
         config_field.setMinHeight(MIN_TEXT_AREA_HEIGHT);
         // Load initial config into text field.
         if (file_type == 0) {
-            config_field.setText(HappyBracketsToolWindow.getCurrentConfigString());
+            config_field.setText(control_engine.getCurrentConfigString());
         }
         else {
             StringBuilder map = new StringBuilder();
-            deviceConnection.getKnownDevices().forEach((hostname, id) -> map.append(hostname + " " + id + "\n"));
+            control_engine.getDeviceConnection().getKnownDevices().forEach((hostname, id) -> map.append(hostname + " " + id + "\n"));
             config_field.setText(map.toString());
         }
         config_field.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -54,18 +109,33 @@ public class ConfigurationScreen {
             final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor().withShowHiddenFiles(true);
             descriptor.setTitle("Select " + label.toLowerCase() + " file");
 
-            String currentFile = HappyBracketsToolWindow.getSettings().getString(setting);
+            String currentFile = control_engine.getSettings().getString(setting);
             VirtualFile vfile = currentFile == null ? null : LocalFileSystem.getInstance().findFileByPath(currentFile.replace(File.separatorChar, '/'));
+
+            displayStage.hide();
 
             //needs to run in Swing event dispatch thread, and then back again to JFX thread!!
             SwingUtilities.invokeLater(() -> {
+
+
                 VirtualFile[] virtual_file = FileChooser.chooseFiles(descriptor, null, vfile);
                 if (virtual_file != null && virtual_file.length > 0 && virtual_file[0] != null) {
                     Platform.runLater(() -> {
                         loadConfigFile(virtual_file[0].getCanonicalPath(), label, config_field, setting, load_button, event);
+                        displayStage.show();
                     });
                 }
+                else
+                {
+                    Platform.runLater(() -> {
+                        displayStage.show();
+                    });
+                }
+
+
             });
+
+
         });
 
         Button save_button = new Button("Save");
@@ -74,10 +144,10 @@ public class ConfigurationScreen {
             //select a file
             FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
             fsd.withShowHiddenFiles(true);
-            final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, project);
+            final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, currentProject);
 
-            String current_file_path = HappyBracketsToolWindow.getSettings().getString(setting);
-            File currentFile = current_file_path != null ? new File(HappyBracketsToolWindow.getSettings().getString(setting)) : null;
+            String current_file_path = control_engine.getSettings().getString(setting);
+            File currentFile = current_file_path != null ? new File(control_engine.getSettings().getString(setting)) : null;
             VirtualFile base_dir = null;
             String current_name = null;
             if (currentFile != null && currentFile.exists()) {
@@ -91,6 +161,7 @@ public class ConfigurationScreen {
             final VirtualFile base_dir_final = base_dir;
             final String current_name_final = current_name;
 
+            displayStage.hide();
             //needs to run in Swing event dispatch thread, and then back again to JFX thread!!
             SwingUtilities.invokeLater(() -> {
                 final VirtualFileWrapper wrapper = dialog.save(base_dir_final, current_name_final);
@@ -108,10 +179,17 @@ public class ConfigurationScreen {
                         try (PrintWriter out = new PrintWriter(config_file.getAbsolutePath())) {
                             out.print(config_field.getText());
 
-                            HappyBracketsToolWindow.getSettings().set(setting, config_file.getAbsolutePath());
+                            control_engine.getSettings().set(setting, config_file.getAbsolutePath());
                         } catch (Exception ex) {
                             showPopup("Error saving " + label.toLowerCase() + ": " + ex.getMessage(), save_button, 5, event);
                         }
+
+                        displayStage.show();
+                    });
+                }
+                else{
+                    Platform.runLater(() -> {
+                        displayStage.show();
                     });
                 }
             });
@@ -120,10 +198,11 @@ public class ConfigurationScreen {
         Button reset_button = new Button("Reset");
         reset_button.setTooltip(new Tooltip("Reset these " + label.toLowerCase() + " settings to their defaults."));
         reset_button.setOnMouseClicked(event -> {
-            HappyBracketsToolWindow.getSettings().clear(setting);
+            control_engine.getSettings().clear(setting);
 
             if (file_type == 0) {
                 loadConfigFile(HappyBracketsToolWindow.getDefaultControllerConfigPath(), label, config_field, setting, reset_button, event);
+
                 applyConfig(config_field.getText());
             }
             else {
@@ -150,96 +229,61 @@ public class ConfigurationScreen {
         buttons.getChildren().addAll(load_button, save_button, reset_button, configApplyButton[file_type]);
 
 
-        // If this is the main configuration pane, include buttons to set preferred IP version.
-        FlowPane ipv_buttons = null;
-        if (file_type == 0) {
-            // Set IP version buttons.
-            ipv_buttons = new FlowPane(DEFAULT_ELEMENT_SPACING, DEFAULT_ELEMENT_SPACING);
-            ipv_buttons.setAlignment(Pos.TOP_LEFT);
-
-            for (int ipv = 4; ipv <= 6; ipv += 2) {
-                final int ipv_final = ipv;
-
-                Button set_IPv = new Button("Set IntelliJ to prefer IPv" + ipv);
-                String current_setting = System.getProperty("java.net.preferIPv" + ipv + "Addresses");
-
-                if (current_setting != null && current_setting.toLowerCase().equals("true")) {
-                    set_IPv.setDisable(true);
-                }
-
-                set_IPv.setTooltip(new Tooltip("Set the JVM used by IntelliJ to prefer IPv" + ipv + " addresses by default.\nThis can help resolve IPv4/Ipv6 incompatibility issues in some cases."));
-                set_IPv.setOnMouseClicked(event -> {
-                    // for the 32 and 64 bit versions of the options files.
-                    for (String postfix : new String[]{"", "64"}) {
-                        String postfix2 = "";
-                        String filename = "/idea" + postfix + postfix2 + ".vmoptions";
-                        // If this (Linux (and Mac?)) version of the file doesn't exist, try the Windows version.
-                        if (!Paths.get(PathManager.getBinPath() + filename).toFile().exists()) {
-                            postfix2 = ".exe";
-                            filename = "/idea" + postfix + postfix2 + ".vmoptions";
-
-                            if (!Paths.get(PathManager.getBinPath() + filename).toFile().exists()) {
-                                showPopup("An error occurred: could not find default configuration file.", set_IPv, 5, event);
-                                return;
-                            }
-                        }
-
-                        // Create custom options files if they don't already exist.
-                        File cust_opts_file = new File(PathManager.getCustomOptionsDirectory() + "/idea" + postfix + postfix2 + ".vmoptions");
-                        if (!cust_opts_file.exists()) {
-                            // Create copy of default.
-                            try {
-                                Files.copy(Paths.get(PathManager.getBinPath() + filename), cust_opts_file.toPath());
-                            } catch (IOException e) {
-                                logger.error("Error creating custom options file.", e);
-                                showPopup("Error creating custom options file: " + e.getMessage(), set_IPv, 5, event);
-                                return;
-                            }
-                        }
-
-                        if (cust_opts_file.exists()) {
-                            StringBuilder new_opts = new StringBuilder();
-                            try (Stream<String> stream = Files.lines(cust_opts_file.toPath())) {
-                                stream.forEach((line) -> {
-                                    // Remove any existing preferences.
-                                    if (!line.contains("java.net.preferIPv")) {
-                                        new_opts.append(line + "\n");
-                                    }
-                                });
-                                // Add new preference to end.
-                                new_opts.append("-Djava.net.preferIPv" + ipv_final + "Addresses=true");
-                            } catch (IOException e) {
-                                logger.error("Error creating custom options file.", e);
-                                showPopup("Error creating custom options file: " + e.getMessage(), set_IPv, 5, event);
-                                return;
-                            }
-
-                            // Write new options to file.
-                            try (PrintWriter out = new PrintWriter(cust_opts_file.getAbsolutePath())) {
-                                out.println(new_opts);
-                            } catch (FileNotFoundException e) {
-                                // This totally shouldn't happen.
-                            }
-                        }
-                    }
-
-                    showPopup("You must restart IntelliJ for the changes to take effect.", set_IPv, 5, event);
-                });
-
-                ipv_buttons.getChildren().add(set_IPv);
-            }
-        }
-
         VBox config_pane = new VBox(DEFAULT_ELEMENT_SPACING);
         config_pane.setAlignment(Pos.TOP_LEFT);
         config_pane.getChildren().addAll(makeTitle(label), config_field, buttons);
-        if (ipv_buttons != null) {
-            config_pane.getChildren().add(ipv_buttons);
-        }
 
         return config_pane;
-        */
-        return null;
     }
 
+    private void loadConfigFile(String path, String label, TextArea config_field, String setting, Node triggering_element, MouseEvent event) {
+        File config_file = new File(path);
+        try {
+            String config_JSON = (new Scanner(config_file)).useDelimiter("\\Z").next();
+            config_field.setText(config_JSON);
+            ControllerEngine.getInstance().getSettings().set(setting, config_file.getAbsolutePath());
+        } catch (FileNotFoundException ex) {
+            showPopup("Error loading " + label.toLowerCase() + ": " + ex.getMessage(), triggering_element, 5, event);
+        }
+    }
+
+    private void showPopup(String message, Node element, int timeout, MouseEvent event) {
+        showPopup(message, element, timeout, event.getScreenX(), event.getScreenY());
+    }
+
+    private void showPopup(String message, Node element, int timeout, double x, double y) {
+        Text t = new Text(message);
+
+        VBox pane = new VBox();
+        pane.setPadding(new Insets(10));
+        pane.getChildren().add(t);
+
+        Popup p = new Popup();
+        p.getScene().setFill(Color.ORANGE);
+        p.getContent().add(pane);
+        p.show(element, x, y);
+        p.setAutoHide(true);
+
+        if (timeout >= 0) {
+            PauseTransition pause = new PauseTransition(Duration.seconds(timeout));
+            pause.setOnFinished(e -> p.hide());
+            pause.play();
+        }
+    }
+
+    private void applyKnownDevices(String kd) {
+        ControllerEngine.getInstance().getDeviceConnection().setKnownDevices(kd.split("\\r?\\n"));
+    }
+
+    private void applyConfig(String config){
+        HappyBracketsToolWindow.setConfig(config, null);
+    }
+
+    private Text makeTitle(String title) {
+        Text text = new Text(title);
+        text.setTextAlignment(TextAlignment.CENTER);
+        text.setTextOrigin(VPos.CENTER);
+        text.setStyle("-fx-font-weight: bold;");
+        return text;
+    }
 }

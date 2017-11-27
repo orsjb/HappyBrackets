@@ -84,6 +84,7 @@ public class ControllerSettings {
 
     /**
      * Save settings to specified location (overwriting if already present).
+     * @param path The Path to save to
      */
     public void save(String path) {
         File file = new File(path);
@@ -106,7 +107,8 @@ public class ControllerSettings {
 
 
     /**
-     * Returns the path to the default settings file. This is currently HappyBracketsToolWindow.getPluginLocation() + "/settings".
+     *
+     * @return Returns the path to the default settings file. This is currently HappyBracketsToolWindow.getPluginLocation() + "/settings".
      */
     public static String getDefaultSettingsLocation() {
         return defaultSettingsFolder + "/settings";
@@ -114,6 +116,7 @@ public class ControllerSettings {
 
     /**
      * Removes the specified setting from these settings (if it exists).
+     * @param setting the setting to remove
      */
     public void clear(String setting) {
         props.remove(setting);
@@ -121,6 +124,8 @@ public class ControllerSettings {
 
     /**
      * Get the String value for the specified setting. Returns null if the setting has not been set.
+     * @param setting The setting name to find
+     * @return the setting value
      */
     public String getString(String setting) {
         return (String) props.get(setting);
@@ -128,6 +133,9 @@ public class ControllerSettings {
 
     /**
      * Get the String value for the specified setting. Returns defaultValue if the setting has not been set.
+     * @param setting The setting name to find
+     * @param default_value the default value to return if not found
+     * @return the setting value
      */
     public String getString(String setting, String default_value) {
         if (props.containsKey(setting)) {
@@ -138,6 +146,8 @@ public class ControllerSettings {
 
     /**
      * Set the value for the specified setting.
+     * @param setting the setting name to change
+     * @param value the value to set it to
      */
     public void set(String setting, String value) {
         props.put(setting, value);

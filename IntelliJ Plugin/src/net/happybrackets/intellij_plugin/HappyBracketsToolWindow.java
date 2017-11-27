@@ -68,7 +68,7 @@ import ch.qos.logback.classic.Level;
 public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     static boolean staticSetup = false;
-    static String currentConfigString;
+    //static String currentConfigString;
     //static ControllerSettings settings;
     static protected IntelliJControllerConfig config;
     static Synchronizer synchronizer;                               //runs independently, no interaction needed
@@ -272,7 +272,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             throw new IllegalArgumentException("Could not parse specified configuration.", e);
         }
 
-        currentConfigString = config_JSON;
+        controller_engine.setCurrentConfigString(config_JSON);
 
         config.setConfigDir(config_dir);
 
@@ -294,12 +294,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     }
 */
 
-    /**
-     * Returns the JSON String used to create the current {@link IntelliJControllerConfig} for this HappyBracketsToolWindow.
-     */
-    public static String getCurrentConfigString() {
-        return currentConfigString;
-    }
 
     /**
      * Returns the absolute path to the plugin folder.

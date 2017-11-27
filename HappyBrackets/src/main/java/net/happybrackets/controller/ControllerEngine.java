@@ -33,6 +33,17 @@ public class ControllerEngine {
     protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
     ControllerConfig controllerConfig;
     ControllerSettings settings;
+    String currentConfigString;
+
+    public String getCurrentConfigString() {
+        return currentConfigString;
+    }
+
+    public void setCurrentConfigString(String current_config_string) {
+        currentConfigString = current_config_string;
+    }
+
+
 
 
     public DeviceConnection getDeviceConnection() {

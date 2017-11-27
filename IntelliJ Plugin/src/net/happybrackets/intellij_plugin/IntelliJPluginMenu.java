@@ -2,6 +2,10 @@ package net.happybrackets.intellij_plugin;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.project.Project;
+import javafx.application.Platform;
 
 public class IntelliJPluginMenu extends AnAction {
 
@@ -14,7 +18,16 @@ public class IntelliJPluginMenu extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        // TODO: insert action logic here
-        System.out.println("IntelliJPluginMenu");
+        DataContext dataContext = e.getDataContext();
+        Project project = DataKeys.PROJECT.getData(dataContext);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ConfigurationScreen settings = new  ConfigurationScreen(project);
+                settings.show();
+
+            }
+        });
     }
+
 }
