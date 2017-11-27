@@ -10,6 +10,7 @@ import net.happybrackets.intellij_plugin.ConfigurationScreen;
 
 public class SettingsMenu extends AnAction {
 
+
     @Override
     public void actionPerformed(AnActionEvent e) {
         DataContext dataContext = e.getDataContext();
@@ -23,5 +24,6 @@ public class SettingsMenu extends AnAction {
             }
         });
     }
+
 
 }
