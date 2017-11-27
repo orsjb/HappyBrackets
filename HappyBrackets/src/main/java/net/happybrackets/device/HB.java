@@ -428,6 +428,7 @@ public class HB {
 							byte[] classData;
 
 							display_count ++;
+
 							if (useEncryption) {
 								setStatus("Decrypting " + TextOutput.getProgressChar(display_count));
 								try {
@@ -447,6 +448,8 @@ public class HB {
 										throw new Exception("Hash mismatch for received class data.");
 									}
 								}
+								logger.debug("Received class data hash matches given hash.");
+
 							}
 							else
 							{
@@ -454,29 +457,35 @@ public class HB {
 								classData = dataRaw;
 							}
 
-							logger.debug("Received class data hash matches given hash.");
 
-							//at this stage we have the class data in a byte array
-							Class<?> c = loader.createNewClass(classData);
-							Class<?>[] interfaces = c.getInterfaces();
-							boolean isHBActionClass = false;
-							for (Class<?> cc : interfaces) {
-								if (cc.equals(HBAction.class)) {
-									isHBActionClass = true;
-									break;
+							try {
+								//at this stage we have the class data in a byte array
+								Class<?> c = loader.createNewClass(classData);
+								Class<?>[] interfaces = c.getInterfaces();
+								boolean isHBActionClass = false;
+								for (Class<?> cc : interfaces) {
+									if (cc.equals(HBAction.class)) {
+										isHBActionClass = true;
+										break;
+									}
+								}
+								if (isHBActionClass) {
+									incomingClass = (Class<? extends HBAction>) c;
+									String class_name = incomingClass.getSimpleName();
+									logger.debug("new HBAction >> " + class_name);
+									setStatus("Loading " + class_name);
+									// this means we're done with the sequence, time to recreate
+									// the classloader to avoid duplicate errors
+									loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+									setStatus("Successful Load  " + class_name);
+								} else {
+									logger.debug("new object (not HBAction) >> " + c.getName());
 								}
 							}
-							if (isHBActionClass) {
-								incomingClass = (Class<? extends HBAction>) c;
-								String class_name = incomingClass.getSimpleName();
-								logger.debug("new HBAction >> " + class_name);
-								setStatus("Loading " + class_name);
-								// this means we're done with the sequence, time to recreate
-								// the classloader to avoid duplicate errors
-								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-								setStatus("Successful Load  " + class_name);
-							} else {
-								logger.debug("new object (not HBAction) >> " + c.getName());
+							catch (ClassFormatError e)
+							{
+								logger.debug("Class Load error >> " + e.getMessage());
+								setStatus("Error Loading Class");
 							}
 						} catch (Exception e) {
 							logger.error("An error occurred while trying to read object from socket.", e);
