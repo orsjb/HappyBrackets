@@ -42,5 +42,12 @@
       </action>
 
     </group>
+
+
+    <action id="HappyBrackets.Refresh" class="net.happybrackets.intellij_plugin.menu.RefreshDevicesMenu"
+            text="Refresh Devices"
+            description="Refreshes the devices list by displaying only devices that are connected">
+      <add-to-group group-id="HappyBracketsIntellijPligin.MainMenu" anchor="after" relative-to-action="HappyBrackets."/>
+    </action>
   </actions>
 </idea-plugin>

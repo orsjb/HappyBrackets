@@ -305,17 +305,6 @@ public class IntelliJPluginGUIManager {
 
 		globalcommands.getChildren().add(disable_osc_button);
 
-		Button reset_plugin = new Button("Refresh");
-		reset_plugin.setTooltip (new Tooltip("Clear devices and rescan"));
-		reset_plugin.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				deviceConnection.rescanDevices();
-			}
-		});
-
-		globalcommands.getChildren().add(reset_plugin);
-
 
 		CheckBox favourites_only = new CheckBox("Favourites Only");
 		favourites_only.setTooltip (new Tooltip("Only display the devices we have selected as favourites"));
