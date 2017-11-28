@@ -278,57 +278,6 @@ public class IntelliJPluginGUIManager {
 				}
 			});
 		}
-
-
-		String disable_osc_text = "Disable Advertise";
-		String enable_osc_text = "Enable Advertise";
-
-		Button disable_osc_button = new Button(deviceConnection.getDisabledAdvertise() ?  enable_osc_text :disable_osc_text);
-		disable_osc_button.setTooltip (new Tooltip("Stop our plugin from communicating on the network"));
-		disable_osc_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				deviceConnection.setDisableAdvertise((!deviceConnection.getDisabledAdvertise()));
-				disable_osc_button.setText(deviceConnection.getDisabledAdvertise() ?  enable_osc_text :disable_osc_text);
-			}
-		});
-
-		deviceConnection.addDisabledAdvertiserListener(new DeviceConnection.DisableAdvertiseChangedListener() {
-			@Override
-			public void isDisabled(boolean disabled) {
-				Platform.runLater(() -> {
-					disable_osc_button.setText(deviceConnection.getDisabledAdvertise() ?  enable_osc_text :disable_osc_text);
-				});
-			}
-
-		});
-
-		globalcommands.getChildren().add(disable_osc_button);
-
-
-		CheckBox favourites_only = new CheckBox("Favourites Only");
-		favourites_only.setTooltip (new Tooltip("Only display the devices we have selected as favourites"));
-		favourites_only.setSelected(deviceConnection.isShowOnlyFavourites());
-		favourites_only.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			public void changed(ObservableValue<? extends Boolean> ov,
-								Boolean oldval, Boolean newval) {
-				if (favourites_only.isFocused()) {
-					deviceConnection.setShowOnlyFavourites(newval);
-
-				}
-			}
-		});
-
-		deviceConnection.addFavouritesChangedListener(new DeviceConnection.FavouritesChangedListener() {
-			@Override
-			public void isFavourite(boolean enabled) {
-				Platform.runLater(() -> {
-					favourites_only.setSelected(enabled);
-				});
-			}
-		});
-
-		globalcommands.getChildren().add(favourites_only);
 		return globalcommands;
 	}
 
