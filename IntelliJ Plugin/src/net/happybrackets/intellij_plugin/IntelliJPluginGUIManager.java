@@ -164,7 +164,9 @@ public class IntelliJPluginGUIManager {
 		//TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
 		//TitledPane known_devices_pane = new TitledPane("Known Devices", makeConfigurationPane(1));
 		TitledPane global_pane = new TitledPane("Global Management", makeGlobalPane());
-		TitledPane composition_pane = new TitledPane("Compositions and Commands", makeCompositionPane());
+		TitledPane composition_pane = new TitledPane("Compositions", makeCompositionPane());
+		TitledPane commands_pane = new TitledPane("Commands", makeCustomCommandsPane());
+
 		TitledPane debug_pane = new TitledPane("Debug", makeDebugPane());
 
 		//config_pane.setExpanded(false);
@@ -174,7 +176,7 @@ public class IntelliJPluginGUIManager {
 		VBox main_container = new VBox(5);
 		main_container.setFillWidth(true);
 		//main_container.getChildren().addAll(config_pane, known_devices_pane, global_pane, composition_pane,  device_pane);
-		main_container.getChildren().addAll(global_pane, composition_pane,  device_pane);
+		main_container.getChildren().addAll(global_pane, composition_pane,  commands_pane, device_pane);
 
 		ScrollPane main_scroll = new ScrollPane();
 		main_scroll.setFitToWidth(true);
@@ -526,6 +528,20 @@ public class IntelliJPluginGUIManager {
 	}
 
 
+	private Node makeCustomCommandsPane(){
+		VBox container = new VBox(defaultElementSpacing);
+		container.getChildren().addAll(
+				makeTitle("Send Custom Command"),
+				makeCustomCommandPane()
+		);
+
+		// Work around. On Mac the layout doesn't allow enough height in some instances.
+		container.setMinHeight(100);
+
+		return container;
+
+	}
+
 	private Node makeCompositionPane() {
 		VBox container = new VBox(defaultElementSpacing);
 		container.getChildren().addAll(
@@ -533,14 +549,11 @@ public class IntelliJPluginGUIManager {
 				makeCompositionFolderPane(),
 				new Separator(),
 				makeTitle("Send Composition"),
-				makeCompositionSendPane(),
-				new Separator(),
-				makeTitle("Send Custom Command"),
-				makeCustomCommandPane()
+				makeCompositionSendPane()
 		);
 
 		// Work around. On Mac the layout doesn't allow enough height in some instances.
-		container.setMinHeight(300);
+		container.setMinHeight(200);
 
 		return container;
 	}
@@ -631,6 +644,8 @@ public class IntelliJPluginGUIManager {
 		});
 		composition_send_pane.add(compositionSelector, 0, 0, 6, 1);
 
+		int button_column = 0;
+
 		Button composition_send_all_button = new Button("All");
 		composition_send_all_button.setTooltip(new Tooltip("Send the selected composition to all devices."));
 		composition_send_all_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -639,7 +654,8 @@ public class IntelliJPluginGUIManager {
 				sendSelectedComposition(deviceConnection.getDevices());
 			}
 		});
-		composition_send_pane.add(composition_send_all_button, 0, 1);
+		composition_send_pane.add(composition_send_all_button, button_column, 1);
+		button_column++;
 		// Disable the all Button if there are none
 		deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
 			@Override
@@ -669,7 +685,8 @@ public class IntelliJPluginGUIManager {
 		});
 
 
-		composition_send_pane.add(composition_send_selected_button, 1, 1);
+		composition_send_pane.add(composition_send_selected_button, button_column, 1);
+		button_column++;
 
 		for (int i = 0; i < 4; i++) {
 			final int group = i;
@@ -697,7 +714,8 @@ public class IntelliJPluginGUIManager {
 				}
 			});
 
-			composition_send_pane.add(composition_send_group_button, 2 + group, 1);
+			composition_send_pane.add(composition_send_group_button, button_column, 1);
+			button_column++;
 		}
 
 		return composition_send_pane;
@@ -751,6 +769,8 @@ public class IntelliJPluginGUIManager {
 
 		FlowPane messagepaths = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 		messagepaths.setAlignment(Pos.TOP_LEFT);
+
+		int button_column = 0;
 
 		Button send_all_OSC_button = new Button("All");
 		send_all_OSC_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
