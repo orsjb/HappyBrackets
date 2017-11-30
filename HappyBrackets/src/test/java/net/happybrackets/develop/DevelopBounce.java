@@ -22,7 +22,7 @@ import java.lang.invoke.MethodHandles;
  * Y Axis will change the speed
  * Z Axis will change modulation of Pitch
  */
-public class DevelopBounce extends Application implements HBAction{
+public class DevelopBounce implements HBAction{
     float initialFreq = 500;
 
     Clock clock;
@@ -33,13 +33,26 @@ public class DevelopBounce extends Application implements HBAction{
     boolean playSound = true;
     boolean isPlayingSound;
 
+    public static void main(String[] args) {
 
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    If you want to display any JavaFX, you need to extend Application. However, these do no run
+    In PI - We can have this as something to investigate later
     @Override
     public void start(Stage primaryStage) throws Exception {
         //set up the AudioContext and start it
-        DevelopBounce autoClass = new DevelopBounce();
-        HB hb = HB.runDebug(MethodHandles.lookup().lookupClass());
+
+
+        HB.runDebug(MethodHandles.lookup().lookupClass());
     }
+    */
 
 
     @Override
@@ -202,7 +215,7 @@ public class DevelopBounce extends Application implements HBAction{
         });
 
 
-        WaveformVisualiser.open(hb.ac);
+        //WaveformVisualiser.open(hb.ac);
 
     }
 

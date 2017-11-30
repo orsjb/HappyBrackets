@@ -32,6 +32,8 @@ import java.util.Random;
 
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
@@ -42,6 +44,7 @@ import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
+import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.*;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.ControlType;
@@ -68,6 +71,9 @@ public class HB {
 
 	private List<StatusChangedListener> statusChangedListenerList  = new ArrayList<>();
 
+	// We will create a static one to know whether we are in Debug or run
+	// If we are in a PI, this ill already be set when we try to debug
+	static HB HBInstance = null;
 	/**
 	 * Whether we will use encryption in transferring class data
 	 * @param enable true if we want to use encryption
@@ -92,7 +98,7 @@ public class HB {
 
 	final static Logger logger = LoggerFactory.getLogger(HB.class);
 
-	// audio stuff
+
 
 
 	/**
@@ -181,54 +187,122 @@ public class HB {
 	}
 
 	/**
-	 * Run HB in a debug mode so we can debug sample code in INtelliJ
-	 * @return HB object that will be used as parameter to Debugger
-	 * @throws IOException
+  	 * Run HB in a debug mode so we can debug sample code in INtelliJ
+	 * run the command like this: HB.runDebug(MethodHandles.lookup().lookupClass());
+	 * @param action_class The class that we are debugging. use MethodHandles.lookup().lookupClass()
+	 * @return true if we are debugging
+	 * @throws IOException if there is a problem with the debug
 	 */
-	public static HB runDebug(Class<?> c) throws Exception {
-		HB.AccessMode mode = HB.AccessMode.LOCAL;
-		String [] start_args = new String[]{
-				"buf=1024",
-				"sr=44100",
-				"bits=16",
-				"ins=0",
-				"outs=1",
-				"start=true",
-				"access=local"
-		};
+	public static boolean runDebug(Class<?> action_class) throws Exception {
 
-		HB hb = new HB(AudioSetup.getAudioContext(start_args), mode, false);
-		hb.startAudio();
+		boolean ret = false;
 
-		Class<? extends HBAction> incomingClass = null;
-		DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+		if (HBInstance == null) {
 
-		Class<?>[] interfaces = c.getInterfaces();
-		boolean isHBActionClass = false;
-		for (Class<?> cc : interfaces) {
-			if (cc.equals(HBAction.class)) {
-				isHBActionClass = true;
-				break;
+			HB.AccessMode mode = HB.AccessMode.LOCAL;
+			String[] start_args = new String[]{
+					"buf=1024",
+					"sr=44100",
+					"bits=16",
+					"ins=0",
+					"outs=1",
+					"start=true",
+					"access=local"
+			};
+
+			HB hb = new HB(AudioSetup.getAudioContext(start_args), mode, false);
+			hb.startAudio();
+
+			if (action_class != null) {
+
+				Class<? extends HBAction> incomingClass = null;
+				DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+
+				Class<?>[] interfaces = action_class.getInterfaces();
+				boolean isHBActionClass = false;
+				for (Class<?> cc : interfaces) {
+					if (cc.equals(HBAction.class)) {
+						isHBActionClass = true;
+						break;
+					}
+				}
+				if (isHBActionClass) {
+					incomingClass = (Class<? extends HBAction>) action_class;
+
+				} else {
+					throw new Exception("Class does not have HBAction");
+				}
+
+				if (incomingClass != null) {
+					HBAction action = null;
+					try {
+						action = incomingClass.newInstance();
+						action.action(hb);
+						ret = true;
+
+						try
+						{
+							// now we try and JavaFX calls
+							DynamicControlScreen debugControlsScreen = new DynamicControlScreen("Debug");
+
+
+							debugControlsScreen.addDynamicControlScreenLoadedListener(new DynamicControlScreen.DynamicControlScreenLoaded() {
+								@Override
+								public void loadComplete(DynamicControlScreen screen, boolean loaded) {
+									// screen load is complete.
+									//Now Add all controls
+									ControlMap control_map = ControlMap.getInstance();
+
+									List<DynamicControl> controls = control_map.GetSortedControls();
+
+									for (DynamicControl control : controls) {
+										if (control != null) {
+											debugControlsScreen.addDynamicControl(control);
+											debugControlsScreen.show();
+										}
+									}
+
+									// Now make a listener for Dynamic Controls that are made during the HB Action event
+									control_map.addDynamicControlCreatedListener(new ControlMap.dynamicControlCreatedListener() {
+										@Override
+										public void controlCreated(DynamicControl control) {
+											debugControlsScreen.addDynamicControl(control);
+											debugControlsScreen.show();
+										}
+									});
+
+								}
+							});
+
+							// now we have a listener to see when stage is made, let us load the stage
+							debugControlsScreen.createDynamicControlStage();
+						}catch (Exception ex)
+						{
+							System.out.println("Unable to display Dynamic Control Screen in NON JavaFX Application");
+						}
+
+
+					} catch (Exception e) {
+						throw new Exception("Error instantiating received HBAction!", e);
+					}
+				}
+
 			}
 		}
-		if (isHBActionClass) {
-			incomingClass = (Class<? extends HBAction>) c;
-
-		} else {
-			throw new Exception("Class does not have HBAction");
-		}
-
-		if (incomingClass != null) {
-			HBAction action = null;
-			try {
-				action = incomingClass.newInstance();
-				action.action(hb);
-			} catch (Exception e) {
-				throw new Exception("Error instantiating received HBAction!", e);
-			}
-		}
-		return hb;
+		return ret;
 	}
+
+	/**
+	 * Creates the HB.
+	 *
+	 * @param _ac the {@link AudioContext} for audio.
+	 * @param _am The access mode.
+	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
+	 */
+	public HB(AudioContext _ac, AccessMode _am)  throws IOException {
+		this(_ac, _am, true);
+	}
+
 	/**
 	 * Creates the HB.
 	 *
@@ -297,6 +371,8 @@ public class HB {
 		//notify started (happens immeidately or when audio starts)
 
 		logger.info("HB initialised");
+
+		HBInstance = this;
 	}
 
 

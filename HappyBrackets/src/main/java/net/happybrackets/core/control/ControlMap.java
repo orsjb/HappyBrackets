@@ -16,7 +16,17 @@ public class ControlMap {
         void dynamicControlEvent(OSCMessage msg);
     }
 
+    /**
+     * Create an Interface where we can look for created Dynamic Controls
+     */
+    public interface dynamicControlCreatedListener{
+        void controlCreated(DynamicControl control);
+    }
+
+    private List<dynamicControlCreatedListener> controlCreatedListenerList = new ArrayList<>();
+
     private List<dynamicControlAdvertiseListener> controlListenerList = new ArrayList();
+
 
     // create a group of listeners for global controls over network
     private List<dynamicControlAdvertiseListener> globalControlListenerList = new ArrayList();
@@ -31,6 +41,9 @@ public class ControlMap {
     private LinkedHashMap<String, List<DynamicControl>> controlScopedDevices = new LinkedHashMap<>();
 
 
+    public void addDynamicControlCreatedListener(dynamicControlCreatedListener listener){
+        controlCreatedListenerList.add(listener);
+    }
 
     public void addDynamicControlAdvertiseListener(dynamicControlAdvertiseListener listener){
         synchronized (controlListenerList)
@@ -138,6 +151,10 @@ public class ControlMap {
         {
             OSCMessage msg = control.buildCreateMessage();
             sendDynamicControlMessage(msg);
+        }
+
+        for (dynamicControlCreatedListener dynamicControlCreatedListener : controlCreatedListenerList) {
+            dynamicControlCreatedListener.controlCreated(control);
         }
     }
 

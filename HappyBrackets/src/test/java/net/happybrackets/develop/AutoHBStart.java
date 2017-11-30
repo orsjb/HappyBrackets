@@ -1,7 +1,10 @@
 package net.happybrackets.develop;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.happybrackets.core.AudioSetup;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlType;
 import net.happybrackets.device.HB;
 
 import java.io.IOException;
@@ -34,24 +37,20 @@ start=true access=local
 public class AutoHBStart implements HBAction{
 
     public static void main(String[] args) {
-        //set up the AudioContext and start it
-        AutoHBStart autoClass = new AutoHBStart();
 
-        HB hb = null;
         try {
-
-            hb = HB.runDebug(MethodHandles.lookup().lookupClass());
-
+            HB.runDebug(MethodHandles.lookup().lookupClass());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
     public void action(HB hb) {
 
         System.out.println("Hello World! We are running HB Action.");
+        //hb.createDynamicControl(ControlType.FLOAT, "Test");
     }
+
+
 }

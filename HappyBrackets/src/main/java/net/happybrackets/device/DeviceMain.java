@@ -83,7 +83,7 @@ public class DeviceMain {
 		String configFile = "config/device-config.json";
         logger.debug("Loading config file: {}", configFile);
 		DeviceConfig config = DeviceConfig.load(configFile);
-		HB hb = new HB(AudioSetup.getAudioContext(args), mode, true);
+		HB hb = new HB(AudioSetup.getAudioContext(args), mode);
 		HBInstance = hb;
 		//deal with autostart and parse arguments
 		boolean autostart = true;

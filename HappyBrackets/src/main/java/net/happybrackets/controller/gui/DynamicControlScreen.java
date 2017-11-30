@@ -22,9 +22,7 @@ import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 public class DynamicControlScreen {
     // define default height and width
@@ -33,6 +31,10 @@ public class DynamicControlScreen {
 
     private static final int MIN_TEXT_AREA_HEIGHT = 200;
     private final int DEFAULT_ELEMENT_SPACING = 10;
+
+    public interface DynamicControlScreenLoaded{
+        void loadComplete(DynamicControlScreen screen, boolean loaded);
+    }
 
     private class ControlCellGroup {
 
@@ -59,7 +61,11 @@ public class DynamicControlScreen {
     private BorderPane main_container = new BorderPane();
     private ScrollPane scrollPane;
 
+    private String screenTitle;
+
     TitledPane debugPane = null;
+
+    private List<DynamicControlScreenLoaded> dynamicControlScreenLoadedList = new ArrayList<>();
 
     private LocalDeviceRepresentation.LogListener deviceLogListener = null;
 
@@ -79,16 +85,32 @@ public class DynamicControlScreen {
 
     private boolean alwaysOnTop = false;
 
+    public void addDynamicControlScreenLoadedListener(DynamicControlScreenLoaded listener){
+        dynamicControlScreenLoadedList.add(listener);
+    }
     /**
      * Create a screen to display controls for a LocalDevice
      * @param local_device the local device we are displaying controls for
      */
     public DynamicControlScreen(LocalDeviceRepresentation local_device){
         localDevice = local_device;
+        screenTitle = localDevice.deviceName;
+    }
+
+    /**
+     * Create a Dynamic ControlScreen without a LocalDeviceRepresentation
+     * This means that it will run independantly
+     * @param title The title to display on the screen
+     */
+    public DynamicControlScreen (String title){
+        localDevice = null;
+        screenTitle = title;
     }
 
     public void removeDynamicControlScene()
     {
+        DynamicControlScreen this_screen = this;
+
         Platform.runLater(new Runnable() {
             public void run() {
                 synchronized (controlCreateLock) {
@@ -98,7 +120,10 @@ public class DynamicControlScreen {
                         dynamicControlsList.clear();
                     }
                     nextControlRow = 0;
-                    //localDevice.removeLogListener(deviceLogListener);
+                    for (DynamicControlScreenLoaded dynamicControlScreenLoaded : dynamicControlScreenLoadedList) {
+                        dynamicControlScreenLoaded.loadComplete (this_screen, false);
+                    }
+
                 }
             }
         });
@@ -146,18 +171,22 @@ public class DynamicControlScreen {
     }
 
     public void createDynamicControlStage(){
+        DynamicControlScreen this_screen = this;
+
         Platform.runLater(new Runnable() {
             public void run() {
                 synchronized (controlCreateLock) {
                     if (dynamicControlStage == null) {
 
 
-                        debugPane = new TitledPane("Debug", makeDebugPane());
+                        if (localDevice != null) {
+                            debugPane = new TitledPane("Debug", makeDebugPane());
 
-                        debugPane.setExpanded(false);
+                            debugPane.setExpanded(false);
+                        }
 
                         dynamicControlStage = new Stage();
-                        dynamicControlStage.setTitle(localDevice.deviceName);
+                        dynamicControlStage.setTitle(screenTitle);
                         ;
                         dynamicControlPane.setHgap(DEFAULT_ELEMENT_SPACING);
                         dynamicControlPane.setVgap(DEFAULT_ELEMENT_SPACING);
@@ -170,7 +199,10 @@ public class DynamicControlScreen {
                         scrollPane = new ScrollPane(dynamicControlPane);
                         scrollPane.setFitToHeight(true);
 
-                        main_container.setBottom(debugPane);
+                        if (debugPane != null) {
+                            main_container.setBottom(debugPane);
+                        }
+
                         main_container.setCenter(scrollPane);
 
                         scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
@@ -187,7 +219,10 @@ public class DynamicControlScreen {
                         contextMenu.getItems().addAll(always_on_top);
 
                         scrollPane.setContextMenu(contextMenu);
-                        debugPane.setContextMenu(contextMenu);
+                        if (debugPane != null) {
+                            debugPane.setContextMenu(contextMenu);
+                        }
+
                         always_on_top.setOnAction(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent event) {
@@ -201,6 +236,9 @@ public class DynamicControlScreen {
                         });
                     }
 
+                    for (DynamicControlScreenLoaded dynamicControlScreenLoaded : dynamicControlScreenLoadedList) {
+                        dynamicControlScreenLoaded.loadComplete (this_screen, true);
+                    }
                 }
             }
         });
@@ -244,7 +282,6 @@ public class DynamicControlScreen {
                                 public void handle(ActionEvent e) {
                                     // This is a number so we have a stop condition
                                     control.setValue(System.currentTimeMillis());
-                                    //localDevice.sendDynamicControl(control);
                                 }
                             });
 
@@ -284,7 +321,6 @@ public class DynamicControlScreen {
                                                 int control_value = Integer.valueOf(text_val);
 
                                                 control.setValue(control_value);
-                                                //localDevice.sendDynamicControl(control);
                                             }
                                             catch (Exception ex){
                                                 // we might want to put an exception here
@@ -302,7 +338,6 @@ public class DynamicControlScreen {
                                             int control_value = Integer.valueOf(text_val);
 
                                             control.setValue(control_value);
-                                            //localDevice.sendDynamicControl(control);
                                         }
                                         catch (Exception ex){
                                             // we might want to put an exception here
