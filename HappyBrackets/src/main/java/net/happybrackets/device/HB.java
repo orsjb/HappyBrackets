@@ -242,40 +242,42 @@ public class HB {
 
 						try
 						{
-							// now we try and JavaFX calls
-							DynamicControlScreen debugControlsScreen = new DynamicControlScreen("Debug");
+							if (incomingClass.isAssignableFrom(Application.class)) {
+								// now we try and JavaFX calls
+								DynamicControlScreen debugControlsScreen = new DynamicControlScreen("Debug");
 
 
-							debugControlsScreen.addDynamicControlScreenLoadedListener(new DynamicControlScreen.DynamicControlScreenLoaded() {
-								@Override
-								public void loadComplete(DynamicControlScreen screen, boolean loaded) {
-									// screen load is complete.
-									//Now Add all controls
-									ControlMap control_map = ControlMap.getInstance();
+								debugControlsScreen.addDynamicControlScreenLoadedListener(new DynamicControlScreen.DynamicControlScreenLoaded() {
+									@Override
+									public void loadComplete(DynamicControlScreen screen, boolean loaded) {
+										// screen load is complete.
+										//Now Add all controls
+										ControlMap control_map = ControlMap.getInstance();
 
-									List<DynamicControl> controls = control_map.GetSortedControls();
+										List<DynamicControl> controls = control_map.GetSortedControls();
 
-									for (DynamicControl control : controls) {
-										if (control != null) {
-											debugControlsScreen.addDynamicControl(control);
-											debugControlsScreen.show();
+										for (DynamicControl control : controls) {
+											if (control != null) {
+												debugControlsScreen.addDynamicControl(control);
+												debugControlsScreen.show();
+											}
 										}
+
+										// Now make a listener for Dynamic Controls that are made during the HB Action event
+										control_map.addDynamicControlCreatedListener(new ControlMap.dynamicControlCreatedListener() {
+											@Override
+											public void controlCreated(DynamicControl control) {
+												debugControlsScreen.addDynamicControl(control);
+												debugControlsScreen.show();
+											}
+										});
+
 									}
+								});
 
-									// Now make a listener for Dynamic Controls that are made during the HB Action event
-									control_map.addDynamicControlCreatedListener(new ControlMap.dynamicControlCreatedListener() {
-										@Override
-										public void controlCreated(DynamicControl control) {
-											debugControlsScreen.addDynamicControl(control);
-											debugControlsScreen.show();
-										}
-									});
-
-								}
-							});
-
-							// now we have a listener to see when stage is made, let us load the stage
-							debugControlsScreen.createDynamicControlStage();
+								// now we have a listener to see when stage is made, let us load the stage
+								debugControlsScreen.createDynamicControlStage();
+							}
 						}catch (Exception ex)
 						{
 							System.out.println("Unable to display Dynamic Control Screen in NON JavaFX Application");
