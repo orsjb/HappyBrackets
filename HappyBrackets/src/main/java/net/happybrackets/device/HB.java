@@ -160,7 +160,7 @@ public class HB {
 	/**
 	 * The {@link BroadcastManager}object used to communicate with other devices using 1-many broadcasts. The important methods are provided directly from {@link HB}, e.g., {@link HB#broadcast(String, Object...)} and {@link HB#addBroadcastListener(OSCListener)}.
 	 */
-	public static BroadcastManager broadcast = new BroadcastManager(DeviceConfig.getInstance().getMulticastAddr(), DeviceConfig.getInstance().getBroadcastPort());
+	public static BroadcastManager broadcast;
 
 	/**
 	 * The {@link Synchronizer} object used to manage time synch between devices. The important methods are provided directly from {@link HB}, e.g., {@link HB#doAtTime(Runnable, long)} and {@link HB#getSynchTime()}.
@@ -177,17 +177,67 @@ public class HB {
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
 	 */
 	public HB(AudioContext _ac) throws IOException {
-		this(_ac, AccessMode.OPEN);
+		this(_ac, AccessMode.OPEN, false);
 	}
 
+	/**
+	 * Run HB in a debug mode so we can debug sample code in INtelliJ
+	 * @return HB object that will be used as parameter to Debugger
+	 * @throws IOException
+	 */
+	public static HB runDebug(Class<?> c) throws Exception {
+		HB.AccessMode mode = HB.AccessMode.LOCAL;
+		String [] start_args = new String[]{
+				"buf=1024",
+				"sr=44100",
+				"bits=16",
+				"ins=0",
+				"outs=1",
+				"start=true",
+				"access=local"
+		};
+
+		HB hb = new HB(AudioSetup.getAudioContext(start_args), mode, false);
+		hb.startAudio();
+
+		Class<? extends HBAction> incomingClass = null;
+		DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+
+		Class<?>[] interfaces = c.getInterfaces();
+		boolean isHBActionClass = false;
+		for (Class<?> cc : interfaces) {
+			if (cc.equals(HBAction.class)) {
+				isHBActionClass = true;
+				break;
+			}
+		}
+		if (isHBActionClass) {
+			incomingClass = (Class<? extends HBAction>) c;
+
+		} else {
+			throw new Exception("Class does not have HBAction");
+		}
+
+		if (incomingClass != null) {
+			HBAction action = null;
+			try {
+				action = incomingClass.newInstance();
+				action.action(hb);
+			} catch (Exception e) {
+				throw new Exception("Error instantiating received HBAction!", e);
+			}
+		}
+		return hb;
+	}
 	/**
 	 * Creates the HB.
 	 *
 	 * @param _ac the {@link AudioContext} for audio.
 	 * @param _am The access mode.
+	 * @param start_network true if we are to start networking
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
      */
-	public HB(AudioContext _ac, AccessMode _am) throws IOException {
+	public HB(AudioContext _ac, AccessMode _am, boolean start_network) throws IOException {
 		ac = _ac;
 		// default audio setup (note we don't start the audio context yet)
 		masterGainEnv = new Envelope(ac, 0);
@@ -195,7 +245,20 @@ public class HB {
 		ac.out.setGain(masterGainEnv);
 		clockInterval = new Envelope(ac, 500);
 		clock = new Clock(ac, clockInterval);
-		pl = new PolyLimit(ac, ac.out.getOuts(), DeviceConfig.getInstance().getPolyLimit());
+
+		int poly_limit = 0;
+		String multi_cast_address = "::FFFF:225.2.2.5";
+		int broadcast_port = 2222;
+		int status_port = 2223;
+
+		if (DeviceConfig.getInstance() != null)
+		{
+			poly_limit = DeviceConfig.getInstance().getPolyLimit();
+			multi_cast_address = DeviceConfig.getInstance().getMulticastAddr();
+			broadcast_port = DeviceConfig.getInstance().getBroadcastPort();
+		}
+
+		pl = new PolyLimit(ac, ac.out.getOuts(), poly_limit);
 		pl.setSteal(true);
 		ac.out.addInput(pl);
 		ac.out.addDependent(clock);
@@ -203,26 +266,39 @@ public class HB {
 		// sensor setup
 		sensors = new Hashtable<>();
 		System.out.print(".");
-		// start network connection
-		controller = new NetworkCommunication(this);
-		System.out.print(".");
-		synch = Synchronizer.getInstance();
-		System.out.print(".");
-		DeviceConfig.getInstance().listenForController(broadcast);
-		System.out.print(".");
 
-		this.accessMode = _am;
-		if (accessMode != AccessMode.CLOSED) {
-			// start listening for code
-			startListeningForCode();
+		if (start_network) {
+			// start network connection
+			broadcast = new BroadcastManager(multi_cast_address, broadcast_port);
+
+			controller = new NetworkCommunication(this);
+			System.out.print(".");
+			synch = Synchronizer.getInstance();
+			System.out.print(".");
+			DeviceConfig.getInstance().listenForController(broadcast);
+			System.out.print(".");
+
+			this.accessMode = _am;
+			if (accessMode != AccessMode.CLOSED) {
+				// start listening for code
+				startListeningForCode();
+			}
+			System.out.print(".");
+
+
+			broadcast.startRefreshThread();
+			testBleep3();
 		}
-		System.out.print(".");
-
+		else
+		{
+			synch = null;
+			controller = null;
+		}
 		//notify started (happens immeidately or when audio starts)
-		testBleep3();
-        broadcast.startRefreshThread();
+
 		logger.info("HB initialised");
 	}
+
 
 	/**
 	 * Broadcast an {@link OSCMessage} msg over the multicast group.

@@ -47,7 +47,7 @@ public class HappyBracketsFM implements HBAction {
         //DynamicControl display_x = hb.createDynamicControl(this, ControlType.FLOAT, "X", 0.0);
         //DynamicControl display_y = hb.createDynamicControl(this, ControlType.FLOAT, "Y", 0.0);
         //DynamicControl display_z = hb.createDynamicControl(this, ControlType.FLOAT, "Z", 0.0);
-        //DynamicControl display_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod initialFreq", 0.0);
+        //DynamicControl display_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod INITIAL_FREQ", 0.0);
 
         //this is the FM synth
         WavePlayer FM_modulator = new WavePlayer(hb.ac, modFMFreq, Buffer.SINE);

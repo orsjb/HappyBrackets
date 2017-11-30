@@ -2,12 +2,8 @@ package net.happybrackets.examples;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
-import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlScope;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
@@ -18,8 +14,8 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
  * Y Axis will change the speed
  * Z Axis will change modulation of Pitch
  */
-public class HappyBracketsBounce implements HBAction {
-    float initialFreq = 500;
+public class HappyBracketsBounce     implements HBAction {
+    float INITIAL_FREQ = 500;
 
     Clock clock;
     final String CONTROL_PREFIX = "Accel-";
@@ -27,6 +23,7 @@ public class HappyBracketsBounce implements HBAction {
 
 
     boolean playSound = true;
+    private boolean isPlayingSound = false;
 
     @Override
     public void action(HB hb) {
@@ -35,7 +32,7 @@ public class HappyBracketsBounce implements HBAction {
 
         Glide modFreq = new Glide(hb.ac, 1);
         Glide modDepth = new Glide(hb.ac, 0);
-        Glide baseFreq = new Glide(hb.ac, initialFreq);
+        Glide baseFreq = new Glide(hb.ac, INITIAL_FREQ);
 
         // Create Our Sound Controls
 
@@ -76,8 +73,8 @@ public class HappyBracketsBounce implements HBAction {
          });
 
 
-                //this is the FM synth
-                WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
+        //this is the FM synth
+        WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
         Function modFunction = new Function(modulator, modDepth, baseFreq) {
             @Override
             public float calculate() {
@@ -86,20 +83,36 @@ public class HappyBracketsBounce implements HBAction {
         };
 
 
+        WavePlayer wp = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
+        //add the gain
+        Glide glide = new Glide(hb.ac, 0);
+        Gain g = new Gain(hb.ac, 1, glide);
+
+        //connect together
+        g.addInput(wp);
+        hb.ac.out.addInput(g);
+
+
         clock.addMessageListener(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                if (clock.getCount() % 16 == 0 && playSound) {
-                    //add the waveplayer
+                long clock_count = clock.getCount();
+                if (clock_count % 16 == 0) {
+                    // Set Gain on or off
+                    if (isPlayingSound) {
+                        glide.setGlideTime(100);
+                        glide.setValue(0);
+                        isPlayingSound = false;
+                    }
+                    else {
+                        if (playSound) {
+                            glide.setGlideTime(10);
+                            glide.setValue(0.1f);
+                            isPlayingSound = true;
+                        }
 
-                    WavePlayer wp = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
-                    //add the gain
-                    Envelope e = new Envelope(hb.ac, 0.1f);
-                    Gain g = new Gain(hb.ac, 1, e);
-                    e.addSegment(0, 200, new KillTrigger(g));
-                    //connect together
-                    g.addInput(wp);
-                    hb.ac.out.addInput(g);
+                    }
+
                 }
             }
         });

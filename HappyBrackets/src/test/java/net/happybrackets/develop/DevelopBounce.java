@@ -1,14 +1,20 @@
-package net.happybrackets.examples;
+package net.happybrackets.develop;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
-import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.*;
+import net.happybrackets.controller.gui.WaveformVisualiser;
+import net.happybrackets.core.AudioSetup;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 /**
  * The purpose of this Sketch is to develop the appropriate Sketch for running a bouncing Sound On PI
@@ -16,7 +22,7 @@ import net.happybrackets.device.HB;
  * Y Axis will change the speed
  * Z Axis will change modulation of Pitch
  */
-public class HappybracketsDevelopBounce implements HBAction{
+public class DevelopBounce extends Application implements HBAction{
     float initialFreq = 500;
 
     Clock clock;
@@ -25,11 +31,22 @@ public class HappybracketsDevelopBounce implements HBAction{
 
 
     boolean playSound = true;
-    boolean isPlayingSound = false;
+    boolean isPlayingSound;
+
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        //set up the AudioContext and start it
+        DevelopBounce autoClass = new DevelopBounce();
+        HB hb = HB.runDebug(MethodHandles.lookup().lookupClass());
+    }
+
 
     @Override
     public void action(HB hb) {
 
+        HBPermExternalClass perm = new HBPermExternalClass();
+        perm.sendText("THis is the Perm Class");
         clock = new Clock(hb.ac, 500);
 
         Glide modFreq = new Glide(hb.ac, 1);
@@ -96,27 +113,27 @@ public class HappybracketsDevelopBounce implements HBAction{
 
         // We said X would be Pitch
         hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0, -1, 1)
-            .addControlListener(new DynamicControl.DynamicControlListener() {
-                @Override
-                public void update(DynamicControl dynamicControl) {
-                    float val = (float) dynamicControl.getValue();
-                    float base_freq = (float) Math.pow(100, val + 1) + 50; // this will give us values from 50 to 10050
-                    freq_control.setValue((base_freq));
-                }
-            });
+                .addControlListener(new DynamicControl.DynamicControlListener() {
+                    @Override
+                    public void update(DynamicControl dynamicControl) {
+                        float val = (float) dynamicControl.getValue();
+                        float base_freq = (float) Math.pow(100, val + 1) + 50; // this will give us values from 50 to 10050
+                        freq_control.setValue((base_freq));
+                    }
+                });
 
         // Y will control the speed
         hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0, -1, 1)
-            .addControlListener(new DynamicControl.DynamicControlListener() {
-                @Override
-                public void update(DynamicControl dynamicControl) {
-                    float val = (float) dynamicControl.getValue();
-                    // we want to make it an int ranging from 8 to 512
-                    val += 2; // Now it is 1 t0 3
-                    float speed = (float) Math.pow(2, val * 3);
-                    speed_control.setValue(speed);
-                }
-            });
+                .addControlListener(new DynamicControl.DynamicControlListener() {
+                    @Override
+                    public void update(DynamicControl dynamicControl) {
+                        float val = (float) dynamicControl.getValue();
+                        // we want to make it an int ranging from 8 to 512
+                        val += 2; // Now it is 1 t0 3
+                        float speed = (float) Math.pow(2, val * 3);
+                        speed_control.setValue(speed);
+                    }
+                });
 
         // Z axis will Change mod speed and depth
         hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0, -1, 1)
@@ -155,34 +172,39 @@ public class HappybracketsDevelopBounce implements HBAction{
         //add the gain
         Glide glide = new Glide(hb.ac, 0);
         Gain g = new Gain(hb.ac, 1, glide);
-        
+
         //connect together
         g.addInput(wp);
         hb.ac.out.addInput(g);
 
-        
+        isPlayingSound = false;
+
         clock.addMessageListener(new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
-                    long clock_count = clock.getCount();
-                    if (clock_count % 16 == 0) {
-                        //set gain via glide
-                        if (isPlayingSound) {
-                            glide.setGlideTime(100);
-                            glide.setValue(0);
-                            isPlayingSound = false;
-                        }
-                        else {
-                            if (playSound) {
-                                glide.setGlideTime(10);
-                                glide.setValue(0.1f);
-                                isPlayingSound = true;
-                            }
-                            
-                        }
-                        
+                long clock_count = clock.getCount();
+                if (clock_count % 16 == 0) {
+                    //add the waveplayer
+                    if (isPlayingSound) {
+                        glide.setValue(0);
+                        isPlayingSound = false;
                     }
+                    else {
+                        if (playSound) {
+                            glide.setValue(0.1f);
+                            isPlayingSound = true;
+                        }
+
+                    }
+
                 }
+            }
         });
+
+
+        WaveformVisualiser.open(hb.ac);
+
     }
+
+
 }
