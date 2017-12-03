@@ -3,6 +3,7 @@ package net.happybrackets.device;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import net.happybrackets.controller.gui.DynamicControlScreen;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 
@@ -54,5 +55,7 @@ public class DebugApplication extends Application {
 
         // now we have a listener to see when stage is made, let us load the stage
         debugControlsScreen.createDynamicControlStage();
+
+        WaveformVisualiser.open(HB.HBInstance.ac);
     }
 }

@@ -10,6 +10,8 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
+import java.lang.invoke.MethodHandles;
+
 /**
  * The purpose of this Sketch is to develop the appropriate Sketch for running a bouncing Sound On PI
  * X Axis will change the pitch
@@ -17,7 +19,7 @@ import net.happybrackets.device.HB;
  * Z Axis will change modulation of Pitch
  */
 public class HappybracketsDevelopBounce implements HBAction{
-    float initialFreq = 500;
+    float initialFreq = 1000;
 
     Clock clock;
     final String CONTROL_PREFIX = "Accel-";
@@ -26,6 +28,16 @@ public class HappybracketsDevelopBounce implements HBAction{
 
     boolean playSound = true;
     boolean isPlayingSound = false;
+
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void action(HB hb) {
