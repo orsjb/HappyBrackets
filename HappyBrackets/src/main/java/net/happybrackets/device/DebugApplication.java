@@ -8,6 +8,9 @@ import net.happybrackets.core.control.DynamicControl;
 
 import java.util.List;
 
+/**
+ * THis class enables us to Display the Dynamic Controls during Debug of Happy Brackets Program
+ */
 public class DebugApplication extends Application {
 
     public static void main(String[] args) {

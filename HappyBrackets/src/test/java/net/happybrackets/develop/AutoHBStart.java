@@ -1,38 +1,12 @@
 package net.happybrackets.develop;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-import net.happybrackets.core.AudioSetup;
+
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlType;
 import net.happybrackets.device.HB;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandle;
+
 import java.lang.invoke.MethodHandles;
 
-/*
-BUF=1024
-SR=44100
-BITS=16
-INS=0
-OUTS=1
-AUTOSTART=true
-ACCESSMODE=local
-ACTION=
-
-echo “Running HappyBrackets”
-
-java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain
-
-buf=1024
-sr=44100
-bits=16
-ins=0
-outs=1
-start=true access=local
-
- */
 
 public class AutoHBStart implements HBAction{
 

@@ -278,6 +278,10 @@ public class HB {
 								// now we have a listener to see when stage is made, let us load the stage
 								debugControlsScreen.createDynamicControlStage();
 							}
+							else
+							{
+								Application.launch(DebugApplication.class);
+							}
 						}catch (Exception ex)
 						{
 							System.out.println("Unable to display Dynamic Control Screen in NON JavaFX Application");
