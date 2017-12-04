@@ -120,6 +120,7 @@ public class DynamicControl {
     static private Object convertValue (ControlType control_type, Object source_value) {
         Object ret = source_value;
 
+        // Convert if we are a float control
         if (control_type == ControlType.FLOAT) {
             if (source_value == null){
                 ret = 0f;
@@ -127,8 +128,14 @@ public class DynamicControl {
                 Integer i = (Integer) source_value;
                 float f = i.floatValue();
                 ret = f;
+
+            }else if (source_value instanceof Double) {
+                Double d = (Double) source_value;
+                float f = d.floatValue();
+                ret = f;
             }
 
+            // Convert if we are an int control
         } else if (control_type == ControlType.INT) {
             if (source_value == null){
                 ret = 0;
@@ -138,7 +145,7 @@ public class DynamicControl {
                 ret = i;
             }
 
-
+        // Convert if we are a BOOLEAN control
         } else if (control_type == ControlType.BOOLEAN) {
             if (source_value == null){
                 ret = 0;
@@ -147,16 +154,20 @@ public class DynamicControl {
                 Boolean b = i != 0;
                 ret = b;
             }
+
+        // Convert if we are a TRIGGER control
         }else if (control_type == ControlType.TRIGGER) {
             if (source_value == null) {
                 ret = System.currentTimeMillis();
             }
+
+        // Convert if we are a TEXT control
         }else if (control_type == ControlType.TEXT) {
             if (source_value == null) {
                 ret = "";
             }
-        }
 
+        }
 
         return ret;
     }
