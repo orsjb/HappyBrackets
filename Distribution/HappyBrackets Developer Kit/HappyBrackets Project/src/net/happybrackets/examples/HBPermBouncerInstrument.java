@@ -9,8 +9,10 @@ import net.happybrackets.device.HB;
  * This class encapsulates the bouncer into a separate class
  * We are able to make various instances of the class, and this, facilitate
  * polyphony
+ * The Modulator frequency and depth are based on the base frequency, thus creating
+ * a predictable timbre for the sound
  */
-public class HBPermBouncer {
+public class HBPermBouncerInstrument {
 
     private Clock clock;
     private Glide modFreq;
@@ -18,6 +20,9 @@ public class HBPermBouncer {
     private  Glide baseFreq;
     private boolean isPlayingSound = false;
     private boolean playSound = true;
+    private float modFreqMultiplier = 0;
+    private float modDepthMultiplier = 0;
+
 
     public void setSpeed(int rate){
         clock.setTicksPerBeat( rate);
@@ -33,36 +38,57 @@ public class HBPermBouncer {
     public void stop(){playSound = false;}
 
     /**
-     * Set Modulatore Frequency
-     * @param freq the frequency to set to
+     * Set Modulator Frequency factor.
+     * @param multiplier value to multiply with the carrier frequency
      */
-    public void setModFreq(float freq){
-        modFreq.setValue(freq);
+    public void setModFreqFactor(float multiplier){
+        modFreqMultiplier = multiplier;
+        setModFreqency();
+
     }
 
     /**
-     * Sets the depth of modulation.
-     * Eg, if depth is 500 and the carrier frequency is 2KHz,
-     * The freque will swing from 1.5KHz to 2.5KHz
-     * @param depth The depth frequency
+     * Set the actual Modulator frequency
      */
-    public void setModDepth(float depth){
-        modDepth.setValue(depth);
+    private void setModFreqency() {
+        modFreq.setValue(modFreqMultiplier * baseFreq.getValue());
+
+    }
+    /**
+     * Sets the depth of modulation multiplied by the  base frequency.
+     * Eg, if depth_factor is 0.5 and the carrier frequency is 2KHz,
+     * The frequency will swing from 1KHz to 3KHz
+     * @param depth_multiplier The depth frequency factor
+     */
+    public void setModDepthMultiplier(float depth_multiplier){
+        modDepthMultiplier = depth_multiplier;
+        setModDepth();
     }
 
+    /**
+     * Set the actual Modulator Depth Frequency
+     */
+    private void setModDepth(){
+        modDepth.setValue(modDepthMultiplier * baseFreq.getValue());
+
+    }
     /**
      * Sets the carrier frequency of the sound
      * @param freq
      */
     public void setBaseFreq(float freq){
+
         baseFreq.setValue(freq);
+        // we need to update the actual mdoulators based on these values
+        setModDepth();
+        setModFreqency();
     }
     /**
      * create a bouncer class so we can modularise
      * @param hb HappyBracket instance
      * @param initial_freq initial frequency to bounce
      */
-    public HBPermBouncer(HB hb, float initial_freq) {
+    public HBPermBouncerInstrument(HB hb, float initial_freq) {
         clock = new Clock(hb.ac, 500);
 
         modFreq = new Glide(hb.ac, 0);

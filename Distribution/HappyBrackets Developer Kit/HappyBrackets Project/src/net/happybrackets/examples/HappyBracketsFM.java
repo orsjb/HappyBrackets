@@ -26,12 +26,24 @@ import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
+import java.lang.invoke.MethodHandles;
+
 /**
  * To run this code, make sure you have installed the HappyBrackets IntelliJ plugin.
  * Ensure you have a device set up and connected. It should be visible in the devices list in the HappyBrackets plugin.
  * From the Send Composition dropdown menu in the plugin select HappyBracketsHelloWorld and click All.
  */
 public class HappyBracketsFM implements HBAction {
+
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void action(HB hb) {
@@ -71,25 +83,26 @@ public class HappyBracketsFM implements HBAction {
 
         //this is the sensor
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
-            @Override
-            public void sensorUpdated() {
-                float x = (float)mySensor.getAccelerometerData()[0];
-                float y = (float)mySensor.getAccelerometerData()[1];
-                float z = (float)mySensor.getAccelerometerData()[2];
-                //hb.setStatus(x + " " + y + " " + z);
-                display_status.setValue(x + " " + y + " " + z);
-                //display_x.setValue(x);
-                //display_y.setValue(y);
-                //display_z.setValue(z);
+        if (mySensor != null) {
+            mySensor.addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
+                    float x = (float) mySensor.getAccelerometerData()[0];
+                    float y = (float) mySensor.getAccelerometerData()[1];
+                    float z = (float) mySensor.getAccelerometerData()[2];
+                    //hb.setStatus(x + " " + y + " " + z);
+                    display_status.setValue(x + " " + y + " " + z);
+                    //display_x.setValue(x);
+                    //display_y.setValue(y);
+                    //display_z.setValue(z);
 
-                // update values
-                float mod_freq = x * 1000;
-                modFMFreq.setValue(mod_freq);
-                //display_freq.setValue (mod_freq);
-            }
-        });
-
+                    // update values
+                    float mod_freq = x * 1000;
+                    modFMFreq.setValue(mod_freq);
+                    //display_freq.setValue (mod_freq);
+                }
+            });
+        }
     }
 
 }

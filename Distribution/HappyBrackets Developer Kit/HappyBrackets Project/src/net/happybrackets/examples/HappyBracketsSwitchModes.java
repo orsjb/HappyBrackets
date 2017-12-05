@@ -12,6 +12,8 @@ import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
+import java.lang.invoke.MethodHandles;
+
 public class HappyBracketsSwitchModes  implements HBAction {
     float initialFreq = 500;
 
@@ -21,6 +23,15 @@ public class HappyBracketsSwitchModes  implements HBAction {
 
 
     boolean playSound = false;
+
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void action(HB hb) {
@@ -66,57 +77,58 @@ public class HappyBracketsSwitchModes  implements HBAction {
 
 
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
-            @Override
-            public void sensorUpdated() {
-                double zAxis = mySensor.getAccelerometerData()[2];
-                double yAxis = mySensor.getAccelerometerData()[1];
-                double xAxis = mySensor.getAccelerometerData()[0];
+        if (mySensor != null) {
+            mySensor.addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
+                    double zAxis = mySensor.getAccelerometerData()[2];
+                    double yAxis = mySensor.getAccelerometerData()[1];
+                    double xAxis = mySensor.getAccelerometerData()[0];
 
-                // X was Freq
-                float x_val = (float) xAxis;
-                float base_freq = (float) Math.pow(100, x_val + 1) + 50; // this will give us values from 50 to 10050
-                baseFreq.setValue(base_freq);
+                    // X was Freq
+                    float x_val = (float) xAxis;
+                    float base_freq = (float) Math.pow(100, x_val + 1) + 50; // this will give us values from 50 to 10050
+                    baseFreq.setValue(base_freq);
 
-                // Y was Speed
-                float y_val = (float) yAxis;
-                // we want to make it an int ranging from 8 to 512
-                float speed = (float) Math.pow(2, (y_val + 2) * 3);
-                clock.setTicksPerBeat((int) speed);
+                    // Y was Speed
+                    float y_val = (float) yAxis;
+                    // we want to make it an int ranging from 8 to 512
+                    float speed = (float) Math.pow(2, (y_val + 2) * 3);
+                    clock.setTicksPerBeat((int) speed);
 
-                // Z was Modulation
-                float z_val = (float) zAxis;
+                    // Z was Modulation
+                    float z_val = (float) zAxis;
 
-                float mod_freq = (float)xAxis * 1000;
+                    float mod_freq = (float) xAxis * 1000;
 
 
-                // we will swap Modes Based on Z Value
-                boolean bounce_mode = zAxis < 0;
-                FM_carrier.pause(bounce_mode);
-                playSound = bounce_mode;
+                    // we will swap Modes Based on Z Value
+                    boolean bounce_mode = zAxis < 0;
+                    FM_carrier.pause(bounce_mode);
+                    playSound = bounce_mode;
 
-                // anything off zero will give us a value
-                //Ranging from 0 to 1
-                float abs_val = Math.abs(z_val);
-                float depth_freq = abs_val * 5000;
-                mod_freq = abs_val * 10;
-                modDepth.setValue(depth_freq);
-                modFreq.setValue(mod_freq);
+                    // anything off zero will give us a value
+                    //Ranging from 0 to 1
+                    float abs_val = Math.abs(z_val);
+                    float depth_freq = abs_val * 5000;
+                    mod_freq = abs_val * 10;
+                    modDepth.setValue(depth_freq);
+                    modFreq.setValue(mod_freq);
 
-                // Do FM Parameters Now
-                float fm_freq = (float) Math.pow(100, x_val + 1) + 50; // this will give us values from 50 to 10050
-                baseFmFreq.setValue(fm_freq);
+                    // Do FM Parameters Now
+                    float fm_freq = (float) Math.pow(100, x_val + 1) + 50; // this will give us values from 50 to 10050
+                    baseFmFreq.setValue(fm_freq);
 
-                float fm_depth_freq =  Math.abs(z_val) * 5000;
-                modDepth.setValue(fm_depth_freq);
+                    float fm_depth_freq = Math.abs(z_val) * 5000;
+                    modDepth.setValue(fm_depth_freq);
 
-                // we want to make it an int ranging from 8 to 512
+                    // we want to make it an int ranging from 8 to 512
 
-                float freq = (float) Math.pow(2, (y_val +2 )* 3);
-                modFMDepth.setValue(freq);
-            }
-        });
-
+                    float freq = (float) Math.pow(2, (y_val + 2) * 3);
+                    modFMDepth.setValue(freq);
+                }
+            });
+        }
 
         clock.addMessageListener(new Bead() {
             @Override

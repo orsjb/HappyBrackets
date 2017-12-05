@@ -41,37 +41,39 @@ public class HappyBracketsBounce     implements HBAction {
         hb.ac.out.addDependent(clock);
 
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
-             @Override
-             public void sensorUpdated() {
-                 double zAxis = mySensor.getAccelerometerData()[2];
-                 double yAxis = mySensor.getAccelerometerData()[1];
-                 double xAxis = mySensor.getAccelerometerData()[0];
+        if (mySensor != null) {
+            mySensor.addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
+                    double zAxis = mySensor.getAccelerometerData()[2];
+                    double yAxis = mySensor.getAccelerometerData()[1];
+                    double xAxis = mySensor.getAccelerometerData()[0];
 
-                 // X was Freq
-                 float val = (float) xAxis;
-                 float base_freq = (float) Math.pow(100, val + 1) + 50; // this will give us values from 50 to 10050
-                 baseFreq.setValue(base_freq);
+                    // X was Freq
+                    float val = (float) xAxis;
+                    float base_freq = (float) Math.pow(100, val + 1) + 50; // this will give us values from 50 to 10050
+                    baseFreq.setValue(base_freq);
 
-                 // Y was Speed
-                 val = (float) yAxis;
-                 // we want to make it an int ranging from 8 to 512
-                 val += 2; // Now it is 1 t0 3
-                 float speed = (float) Math.pow(2, val * 3);
-                 clock.setTicksPerBeat((int) speed);
+                    // Y was Speed
+                    val = (float) yAxis;
+                    // we want to make it an int ranging from 8 to 512
+                    val += 2; // Now it is 1 t0 3
+                    float speed = (float) Math.pow(2, val * 3);
+                    clock.setTicksPerBeat((int) speed);
 
-                 // Z was Modulation
-                 val = (float) zAxis;
-                 // anything off zero will give us a value
-                 //Ranging from 0 to 1
-                 float abs_val = Math.abs(val);
-                 float depth_freq = abs_val * 5000;
-                 float mod_freq = abs_val * 10;
-                 modDepth.setValue(depth_freq);
-                 modFreq.setValue(mod_freq);
-             }
-         });
+                    // Z was Modulation
+                    val = (float) zAxis;
+                    // anything off zero will give us a value
+                    //Ranging from 0 to 1
+                    float abs_val = Math.abs(val);
+                    float depth_freq = abs_val * 5000;
+                    float mod_freq = abs_val * 10;
+                    modDepth.setValue(depth_freq);
+                    modFreq.setValue(mod_freq);
+                }
+            });
 
+        }
 
         //this is the FM synth
         WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);

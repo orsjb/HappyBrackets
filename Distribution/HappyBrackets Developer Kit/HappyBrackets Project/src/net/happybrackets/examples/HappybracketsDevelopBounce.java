@@ -32,6 +32,7 @@ public class HappybracketsDevelopBounce implements HBAction{
     public static void main(String[] args) {
 
         try {
+            //HB.runDebug(HappybracketsDevelopBounce.class);
             HB.runDebug(MethodHandles.lookup().lookupClass());
         } catch (Exception e) {
             e.printStackTrace();

@@ -13,7 +13,7 @@ import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
 
-public class HappyBracketsDevelopFM implements HBAction {
+public class HappyBracketsModularFM implements HBAction {
     final float INITIAL_MOD_FREQ = 0;
     final float INITIAL_MOD_DEPTH = 100;
     final float INITIAL_BASE_FREQ = 1000;
@@ -27,27 +27,14 @@ public class HappyBracketsDevelopFM implements HBAction {
             e.printStackTrace();
         }
     }
+
     @Override
     public void action(HB hb) {
 
-        //these are the parameters that control the FM synth
-        Glide modFreq = new Glide(hb.ac, INITIAL_MOD_FREQ);
-        Glide modDepth = new Glide(hb.ac, INITIAL_MOD_DEPTH);
-        Glide baseFreq = new Glide(hb.ac, INITIAL_BASE_FREQ);
-        Glide gain = new Glide(hb.ac, 0.1f);
-
-        //this is the FM synth
-        WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
-        Function modFunction = new Function(modulator, modDepth, baseFreq) {
-            @Override
-            public float calculate() {
-                return x[0] * x[1] + x[2];
-            }
-        };
-        WavePlayer carrier = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
-        Gain g = new Gain(hb.ac, 1, gain);
-        g.addInput(carrier);
-        hb.sound(g);
+        HBPermFM fm_synth = new HBPermFM(hb, INITIAL_BASE_FREQ);
+        fm_synth.setModFreq(INITIAL_MOD_FREQ);
+        fm_synth.setModDepth(INITIAL_MOD_DEPTH);
+        fm_synth.setGainLevel(0.1f);
 
         //this is the GUI
         // Creating with no minimum and maximum enables you to just type in correct values
@@ -58,7 +45,7 @@ public class HappyBracketsDevelopFM implements HBAction {
             @Override
             public void update(DynamicControl dynamicControl) {
                 float new_val = (float)dynamicControl.getValue();
-                baseFreq.setValue(new_val);
+                fm_synth.setBaseFreq(new_val);
                 System.out.println("Base Freq " +  new_val);
             }
         });
@@ -79,7 +66,7 @@ public class HappyBracketsDevelopFM implements HBAction {
             @Override
             public void update(DynamicControl dynamicControl) {
                 float new_val = (float)dynamicControl.getValue();
-                modFreq.setValue(new_val);
+                fm_synth.setModFreq(new_val);
                 System.out.println("Mod Freq " +  new_val);
             }
         });
@@ -94,7 +81,7 @@ public class HappyBracketsDevelopFM implements HBAction {
                     @Override
                     public void update(DynamicControl dynamicControl) {
                         float new_val = (float)dynamicControl.getValue();
-                        modDepth.setValue(new_val);
+                        fm_synth.setModDepth(new_val);
                         System.out.println("Base Depth " +  new_val);
                     }
                 });
@@ -102,6 +89,15 @@ public class HappyBracketsDevelopFM implements HBAction {
         // Now create its mirror
         hb.createDynamicControl(this, ControlType.FLOAT, "Mod Depth", INITIAL_MOD_DEPTH).setControlScope(ControlScope.SKETCH);
 
+
+        // Add an on off control
+        hb.createDynamicControl(ControlType.FLOAT, "Gain", 0.1, 0.0, 1.0).addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl dynamicControl) {
+                float level = (float)dynamicControl.getValue();
+                fm_synth.setGainLevel(level);
+            }
+        });
 
         // We will Simulate the accelerometer here
 
