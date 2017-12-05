@@ -21,5 +21,8 @@ package net.happybrackets.device.sensors.sensor_types;
  */
 public interface GyroscopeSensor {
 
-    public double[] getGyroscopeData();
+    double[] getGyroscopeData();
+    double getGyroscopeX();
+    double getGyroscopeY();
+    double getGyroscopeZ();
 }

@@ -84,9 +84,9 @@ public class AcelerometerSend implements HBAction {
                     lastSendTime = System.currentTimeMillis();
 
                     // Get the data from Z.
-                    double zAxis = mySensor.getAccelerometerData()[2];
-                    double yAxis = mySensor.getAccelerometerData()[1];
-                    double xAxis = mySensor.getAccelerometerData()[0];
+                    double zAxis = mySensor.getAccelerometerZ();
+                    double yAxis = mySensor.getAccelerometerY();
+                    double xAxis = mySensor.getAccelerometerX();
 
 
                     if (!init) {

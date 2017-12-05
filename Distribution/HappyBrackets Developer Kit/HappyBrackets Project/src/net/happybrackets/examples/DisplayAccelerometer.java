@@ -7,6 +7,8 @@ import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
+import java.lang.invoke.MethodHandles;
+
 public class DisplayAccelerometer implements HBAction {
 
 
@@ -15,24 +17,32 @@ public class DisplayAccelerometer implements HBAction {
     long lastSendTime;
     boolean initialisedMaxMin = false;
 
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void action(HB hb) {
 
         lastSendTime = System.currentTimeMillis();
 
-        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT,  "x");
-        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT,  "y");
-        DynamicControl control_z = hb.createDynamicControl( ControlType.FLOAT,  "z");
+        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "x");
+        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "y");
+        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "z");
 
 
-        DynamicControl min_control_x = hb.createDynamicControl( ControlType.FLOAT,  "min-x");
-        DynamicControl min_control_y = hb.createDynamicControl( ControlType.FLOAT,  "min-y");
-        DynamicControl min_control_z = hb.createDynamicControl( ControlType.FLOAT, "min-z");
+        DynamicControl min_control_x = hb.createDynamicControl(ControlType.FLOAT, "min-x");
+        DynamicControl min_control_y = hb.createDynamicControl(ControlType.FLOAT, "min-y");
+        DynamicControl min_control_z = hb.createDynamicControl(ControlType.FLOAT, "min-z");
 
-        DynamicControl max_control_x = hb.createDynamicControl( ControlType.FLOAT,  "max-x");
-        DynamicControl max_control_y = hb.createDynamicControl( ControlType.FLOAT, "max-y");
-        DynamicControl max_control_z = hb.createDynamicControl( ControlType.FLOAT,  "max-z");
+        DynamicControl max_control_x = hb.createDynamicControl(ControlType.FLOAT, "max-x");
+        DynamicControl max_control_y = hb.createDynamicControl(ControlType.FLOAT, "max-y");
+        DynamicControl max_control_z = hb.createDynamicControl(ControlType.FLOAT, "max-z");
 
 
         // Create a reset button
@@ -45,78 +55,80 @@ public class DisplayAccelerometer implements HBAction {
         });
 
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
+        if (mySensor != null) {
+            mySensor.addListener(new SensorUpdateListener() {
 
 
-            double min_x, min_y, min_z, max_x, max_y, max_z;
+                double min_x, min_y, min_z, max_x, max_y, max_z;
 
 
-            @Override
-            public void sensorUpdated() {
+                @Override
+                public void sensorUpdated() {
 
-                // We are going to see if we have expired
+                    // We are going to see if we have expired
 
-                long expired = System.currentTimeMillis() - lastSendTime;
+                    long expired = System.currentTimeMillis() - lastSendTime;
 
-                // we are putting this delay in so we do not overload the network with messages
-                if (true || expired > MIN_SENSOR_WAIT) {
-                    lastSendTime = System.currentTimeMillis();
+                    // we are putting this delay in so we do not overload the network with messages
+                    if (true || expired > MIN_SENSOR_WAIT) {
+                        lastSendTime = System.currentTimeMillis();
 
-                    // Get the data from Z.
-                    double zAxis = mySensor.getAccelerometerData()[2];
-                    double yAxis = mySensor.getAccelerometerData()[1];
-                    double xAxis = mySensor.getAccelerometerData()[0];
+                        // Get the data from Z.
+                        double zAxis = mySensor.getAccelerometerData()[2];
+                        double yAxis = mySensor.getAccelerometerData()[1];
+                        double xAxis = mySensor.getAccelerometerData()[0];
 
 
-                    if (!initialisedMaxMin) {
-                        min_x = xAxis;
-                        max_x = xAxis;
-                        min_y = yAxis;
-                        max_x = yAxis;
-                        min_z = zAxis;
-                        max_z = zAxis;
-                        initialisedMaxMin = true;
-                    }
+                        if (!initialisedMaxMin) {
+                            min_x = xAxis;
+                            max_x = xAxis;
+                            min_y = yAxis;
+                            max_x = yAxis;
+                            min_z = zAxis;
+                            max_z = zAxis;
+                            initialisedMaxMin = true;
+                        }
 
-                    control_x.setValue((float) xAxis);
-                    control_y.setValue((float) yAxis);
-                    control_z.setValue((float) zAxis);
+                        control_x.setValue((float) xAxis);
+                        control_y.setValue((float) yAxis);
+                        control_z.setValue((float) zAxis);
 
-                    if (xAxis > max_x) {
-                        max_x = xAxis;
-                        max_control_x.setValue((float) max_x);
-                    }
+                        if (xAxis > max_x) {
+                            max_x = xAxis;
+                            max_control_x.setValue((float) max_x);
+                        }
 
-                    if (yAxis > max_y) {
-                        max_y = yAxis;
-                        max_control_y.setValue((float) max_y);
-                    }
+                        if (yAxis > max_y) {
+                            max_y = yAxis;
+                            max_control_y.setValue((float) max_y);
+                        }
 
-                    if (zAxis > max_z) {
-                        max_z = zAxis;
-                        max_control_z.setValue((float) max_z);
-                    }
+                        if (zAxis > max_z) {
+                            max_z = zAxis;
+                            max_control_z.setValue((float) max_z);
+                        }
 
-                    // now show mini
-                    if (xAxis < min_x) {
-                        min_x = xAxis;
-                        min_control_x.setValue((float) min_x);
-                    }
+                        // now show mini
+                        if (xAxis < min_x) {
+                            min_x = xAxis;
+                            min_control_x.setValue((float) min_x);
+                        }
 
-                    if (yAxis < min_y) {
-                        min_y = yAxis;
-                        min_control_y.setValue((float) min_y);
-                    }
+                        if (yAxis < min_y) {
+                            min_y = yAxis;
+                            min_control_y.setValue((float) min_y);
+                        }
 
-                    if (zAxis < min_z) {
-                        min_z = zAxis;
-                        min_control_z.setValue((float) min_z);
+                        if (zAxis < min_z) {
+                            min_z = zAxis;
+                            min_control_z.setValue((float) min_z);
+                        }
+
                     }
 
                 }
-
-            }
-        });
+            });
+        }
     }
 }
 

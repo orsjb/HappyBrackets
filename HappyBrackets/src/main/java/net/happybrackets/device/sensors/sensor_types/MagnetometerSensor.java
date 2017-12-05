@@ -21,5 +21,8 @@ package net.happybrackets.device.sensors.sensor_types;
  */
 public interface MagnetometerSensor {
 
-    public double[] getMagnetometerData();
+    double[] getMagnetometerData();
+    double getMagnetometerX();
+    double getMagnetometerY();
+    double getMagnetometerZ();
 }

@@ -37,34 +37,32 @@ public class IncrementAccelerometer implements HBAction {
 
         //DynamicControl x_display = hb.createDynamicControl(ControlType.FLOAT, "X-count");
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
+        if (mySensor != null) {
+            mySensor.addListener(new SensorUpdateListener() {
+
+                double x_vals = 1;
 
 
+                @Override
+                public void sensorUpdated() {
+
+                    // We are going to see if we have expired
+
+                    long expired = System.currentTimeMillis();
 
 
-            double x_vals = 1;
+                    // Get the data from Z.
+                    double zAxis = mySensor.getAccelerometerData()[2];
+                    double yAxis = mySensor.getAccelerometerData()[1];
+                    double xAxis = mySensor.getAccelerometerData()[0];
 
 
-            @Override
-            public void sensorUpdated() {
+                    x_vals += xAxis;
 
-                // We are going to see if we have expired
-
-                long expired = System.currentTimeMillis();
-
-
-                // Get the data from Z.
-                double zAxis = mySensor.getAccelerometerData()[2];
-                double yAxis = mySensor.getAccelerometerData()[1];
-                double xAxis = mySensor.getAccelerometerData()[0];
-
-
-                x_vals += xAxis;
-
-                //x_display.setValue((float)x_vals);
-                baseFreq.setValue((float)x_vals *100);
-            }
-        });
-
+                    //x_display.setValue((float)x_vals);
+                    baseFreq.setValue((float) x_vals * 100);
+                }
+            });
+        }
     }
 }
