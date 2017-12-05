@@ -26,3 +26,4 @@ public interface GyroscopeSensor {
     double getGyroscopeY();
     double getGyroscopeZ();
 }
+

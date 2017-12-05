@@ -26,3 +26,4 @@ public interface AccelerometerSensor {
     double getAccelerometerY();
     double getAccelerometerZ();
 }
+

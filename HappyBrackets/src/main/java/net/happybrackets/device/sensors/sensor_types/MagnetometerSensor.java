@@ -26,3 +26,4 @@ public interface MagnetometerSensor {
     double getMagnetometerY();
     double getMagnetometerZ();
 }
+
