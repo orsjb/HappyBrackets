@@ -10,6 +10,8 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
+import java.lang.invoke.MethodHandles;
+
 /**
  * The class will utilise two mirroring controls
  */
@@ -17,6 +19,15 @@ public class TestFmControls implements HBAction {
     final float INITIAL_MOD_FREQ = 0;
     final float INITIAL_MOD_DEPTH = 100;
     final float INITIAL_BASE_FREQ = 1000;
+
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void action(HB hb) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.happybrackets.examples;
+package net.happybrackets.examples.FM;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.events.KillTrigger;
@@ -56,11 +56,6 @@ public class HappyBracketsFM implements HBAction {
 
         DynamicControl display_status = hb.createDynamicControl(this, ControlType.TEXT, "Status", "");
 
-        //DynamicControl display_x = hb.createDynamicControl(this, ControlType.FLOAT, "X", 0.0);
-        //DynamicControl display_y = hb.createDynamicControl(this, ControlType.FLOAT, "Y", 0.0);
-        //DynamicControl display_z = hb.createDynamicControl(this, ControlType.FLOAT, "Z", 0.0);
-        //DynamicControl display_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod INITIAL_FREQ", 0.0);
-
         //this is the FM synth
         WavePlayer FM_modulator = new WavePlayer(hb.ac, modFMFreq, Buffer.SINE);
         Function modFunction = new Function(FM_modulator, modFMDepth, baseFmFreq) {
@@ -87,9 +82,9 @@ public class HappyBracketsFM implements HBAction {
             mySensor.addListener(new SensorUpdateListener() {
                 @Override
                 public void sensorUpdated() {
-                    float x = (float) mySensor.getAccelerometerData()[0];
-                    float y = (float) mySensor.getAccelerometerData()[1];
-                    float z = (float) mySensor.getAccelerometerData()[2];
+                    float x = (float) mySensor.getAccelerometerX();
+                    float y = (float) mySensor.getAccelerometerY();
+                    float z = (float) mySensor.getAccelerometerZ();
                     //hb.setStatus(x + " " + y + " " + z);
                     display_status.setValue(x + " " + y + " " + z);
                     //display_x.setValue(x);

@@ -52,9 +52,8 @@ public class IncrementAccelerometer implements HBAction {
 
 
                     // Get the data from Z.
-                    double zAxis = mySensor.getAccelerometerData()[2];
-                    double yAxis = mySensor.getAccelerometerData()[1];
-                    double xAxis = mySensor.getAccelerometerData()[0];
+
+                    float xAxis = (float) mySensor.getAccelerometerX();
 
 
                     x_vals += xAxis;

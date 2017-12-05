@@ -1,4 +1,4 @@
-package net.happybrackets.develop;
+package net.happybrackets.develop.DynamicControls;
 
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlScope;

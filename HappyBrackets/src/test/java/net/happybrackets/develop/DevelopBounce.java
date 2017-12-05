@@ -57,9 +57,6 @@ public class DevelopBounce implements HBAction{
 
     @Override
     public void action(HB hb) {
-
-        HBPermExternalClass perm = new HBPermExternalClass();
-        perm.sendText("THis is the Perm Class");
         clock = new Clock(hb.ac, 500);
 
         Glide modFreq = new Glide(hb.ac, 1);

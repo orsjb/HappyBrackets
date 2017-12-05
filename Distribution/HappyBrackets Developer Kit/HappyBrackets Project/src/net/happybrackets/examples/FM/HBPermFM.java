@@ -1,37 +1,27 @@
-package net.happybrackets.examples;
+package net.happybrackets.examples.FM;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.device.HB;
 
-/**
- * This class encapsulates the bouncer into a separate class
- * We are able to make various instances of the class, and this, facilitate
- * polyphony
- */
-public class HBPermBouncer {
+public class HBPermFM {
 
-    private Clock clock;
     private Glide modFreq;
     private Glide modDepth;
     private  Glide baseFreq;
+    private Glide gainLevel;
     private boolean isPlayingSound = false;
     private boolean playSound = true;
 
-    public void setSpeed(int rate){
-        clock.setTicksPerBeat( rate);
+
+    /**
+     * Sets the gain of the FM Synth
+     * @param level the new level
+     */
+    public void setGainLevel(float level){
+        gainLevel.setValue(level);
     }
-    /**
-     * Commence playing
-     */
-    public void play() {playSound = true;}
-
-    /**
-     * Stop Playing
-     */
-    public void stop(){playSound = false;}
-
     /**
      * Set Modulatore Frequency
      * @param freq the frequency to set to
@@ -62,16 +52,16 @@ public class HBPermBouncer {
      * @param hb HappyBracket instance
      * @param initial_freq initial frequency to bounce
      */
-    public HBPermBouncer(HB hb, float initial_freq) {
-        clock = new Clock(hb.ac, 500);
+    public HBPermFM(HB hb, float initial_freq) {
 
         modFreq = new Glide(hb.ac, 0);
         modDepth = new Glide(hb.ac, 0);
         baseFreq = new Glide(hb.ac, initial_freq);
-        hb.ac.out.addDependent(clock);
 
         //this is the FM synth
         WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
+
+        //THis function actually determines what the wave player is doing
         Function modFunction = new Function(modulator, modDepth, baseFreq) {
             @Override
             public float calculate() {
@@ -81,36 +71,12 @@ public class HBPermBouncer {
 
         WavePlayer wp = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
         //add the gain
-        Glide gainLevel = new Glide(hb.ac, 0);
+        gainLevel = new Glide(hb.ac, 0);
         Gain g = new Gain(hb.ac, 1, gainLevel);
 
         //connect together
         g.addInput(wp);
         hb.ac.out.addInput(g);
 
-
-        clock.addMessageListener(new Bead() {
-            @Override
-            protected void messageReceived(Bead bead) {
-                long clock_count = clock.getCount();
-                if (clock_count % 16 == 0) {
-                    //add the waveplayer
-                    if (isPlayingSound) {
-                        gainLevel.setGlideTime(100);
-                        gainLevel.setValue(0);
-                        isPlayingSound = false;
-                    }
-                    else {
-                        if (playSound) {
-                            gainLevel.setGlideTime(10);
-                            gainLevel.setValue(0.1f);
-                            isPlayingSound = true;
-                        }
-
-                    }
-
-                }
-            }
-        });
     }
 }

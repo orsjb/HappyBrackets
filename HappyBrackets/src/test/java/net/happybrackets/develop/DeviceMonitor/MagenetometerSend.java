@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.happybrackets.develop;
+package net.happybrackets.develop.DeviceMonitor;
 
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlScope;

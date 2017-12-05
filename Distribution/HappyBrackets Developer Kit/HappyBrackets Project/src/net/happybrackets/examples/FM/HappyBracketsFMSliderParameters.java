@@ -1,4 +1,4 @@
-package net.happybrackets.examples;
+package net.happybrackets.examples.FM;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Function;
@@ -10,7 +10,11 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
-public class HappyBracketsFMTypedParameters  implements HBAction {
+/**
+ * This class will create an FM synthesiser and use slider controls to adjust the base frequency, the modulator frequency, and modulaor depth
+ */
+public class HappyBracketsFMSliderParameters implements HBAction {
+
     final float INITIAL_MOD_FREQ = 0;
     final float INITIAL_MOD_DEPTH = 100;
     final float INITIAL_BASE_FREQ = 1000;
@@ -40,8 +44,7 @@ public class HappyBracketsFMTypedParameters  implements HBAction {
         hb.sound(g);
 
         //this is the GUI
-        // Creating with no minimum and maximum enables you to just type in correct values
-        DynamicControl base_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", INITIAL_BASE_FREQ);
+        DynamicControl base_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", INITIAL_BASE_FREQ, 10, 10000);
 
         base_freq.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
@@ -53,7 +56,7 @@ public class HappyBracketsFMTypedParameters  implements HBAction {
             }
         });
 
-        DynamicControl mod_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod Freq", INITIAL_MOD_FREQ);
+        DynamicControl mod_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Mod Freq", INITIAL_MOD_FREQ, 0, 10000);
         mod_freq.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl dynamicControl) {
@@ -64,7 +67,8 @@ public class HappyBracketsFMTypedParameters  implements HBAction {
             }
         });
 
-        DynamicControl mod_depth = hb.createDynamicControl(this, ControlType.FLOAT, "Mod Depth", INITIAL_MOD_DEPTH);
+
+        DynamicControl mod_depth = hb.createDynamicControl(this, ControlType.FLOAT, "Mod Depth", INITIAL_MOD_DEPTH, 1, 1000);
         mod_depth.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl dynamicControl) {
@@ -76,5 +80,4 @@ public class HappyBracketsFMTypedParameters  implements HBAction {
         });
 
     }
-
 }

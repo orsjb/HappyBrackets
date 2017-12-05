@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.happybrackets.examples;
+package net.happybrackets.examples.FM;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Function;

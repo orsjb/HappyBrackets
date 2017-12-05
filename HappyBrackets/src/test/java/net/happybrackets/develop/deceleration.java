@@ -78,117 +78,120 @@ public class deceleration implements HBAction {
         Sample s3 = SampleManager.fromGroup("Guitar", 3);
 
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
-            @Override
-            public void sensorUpdated() {
-                // Get the data from Z.
-                double zAxis = mySensor.getAccelerometerData()[2];
-                double yAxis = mySensor.getAccelerometerData()[1];
-                double xAxis = mySensor.getAccelerometerData()[0];
-
-                freq.setValue((float)Math.abs(xAxis) * 3500f );
-
-                double spin = Math.sqrt(Math.sqrt(xAxis+yAxis)+zAxis);
-
-                double[] accelerometerArray = new double[10];
 
 
+        if (mySensor != null) {
+            mySensor.addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
+                    // Get the data from Z.
+                    double zAxis = mySensor.getAccelerometerData()[2];
+                    double yAxis = mySensor.getAccelerometerData()[1];
+                    double xAxis = mySensor.getAccelerometerData()[0];
 
-                for (int i = 0; i < accelerometerArray.length; i++){
-                    accelerometerArray[i] = zAxis;
-                }
+                    freq.setValue((float) Math.abs(xAxis) * 3500f);
 
-                SamplePlayer guitar1 = new SamplePlayer(hb.ac, s1);
-                SamplePlayer guitar2 = new SamplePlayer(hb.ac, s2);
-                SamplePlayer guitar3 = new SamplePlayer(hb.ac, s3);
+                    double spin = Math.sqrt(Math.sqrt(xAxis + yAxis) + zAxis);
 
-                SamplePlayer sp_flat = new SamplePlayer(hb.ac, s1);
-                SamplePlayer sp_flat_u = new SamplePlayer(hb.ac, s2);
-                SamplePlayer sp_long_edge_a = new SamplePlayer(hb.ac, s3);
-                SamplePlayer sp_long_edge_b = new SamplePlayer(hb.ac, s1);
-                SamplePlayer sp_short_edge_a = new SamplePlayer(hb.ac, s2);
-                SamplePlayer sp_short_edge_b = new SamplePlayer(hb.ac, s3);
-
-                sp_flat_u.getRateUGen().setValue(2.0f);
-                sp_long_edge_b.getRateUGen().setValue(2.0f);
-                sp_short_edge_b.getRateUGen().setValue(2.0f);
+                    double[] accelerometerArray = new double[10];
 
 
-                //sp_flat
-                Gain sp_flat_g = new Gain(hb.ac, 1, 1);
-                sp_flat_g.addInput(sp_flat);
+                    for (int i = 0; i < accelerometerArray.length; i++) {
+                        accelerometerArray[i] = zAxis;
+                    }
 
-                //sp_flat_u
-                Gain sp_flat_u_g = new Gain(hb.ac, 1, 1);
-                sp_flat_u_g.addInput(sp_flat_u);
-                //sp_long_edge_a
-                Gain sp_long_edge_a_g = new Gain(hb.ac, 1, 1);
-                sp_long_edge_a_g.addInput(sp_long_edge_a);
-                //sp_long_edge_b
-                Gain sp_long_edge_b_g = new Gain(hb.ac, 1, 1);
-                sp_long_edge_b_g.addInput(sp_long_edge_b);
-                //sp_short_edge_a
-                Gain sp_short_edge_a_g = new Gain(hb.ac, 1, 1);
-                sp_short_edge_a_g.addInput(sp_short_edge_a);
-                //sp_short_edge_b
-                Gain sp_short_edge_b_g = new Gain(hb.ac, 1, 1);
-                sp_short_edge_b_g.addInput(sp_short_edge_b);
+                    SamplePlayer guitar1 = new SamplePlayer(hb.ac, s1);
+                    SamplePlayer guitar2 = new SamplePlayer(hb.ac, s2);
+                    SamplePlayer guitar3 = new SamplePlayer(hb.ac, s3);
 
-                //System.out.println("Accelerometer: "+ " " + "x" + (xAxis * 100) + " " + "y" + (yAxis * 100) + " " +"z"+ (zAxis * 100));
-                e.addSegment((float)spin,10);
+                    SamplePlayer sp_flat = new SamplePlayer(hb.ac, s1);
+                    SamplePlayer sp_flat_u = new SamplePlayer(hb.ac, s2);
+                    SamplePlayer sp_long_edge_a = new SamplePlayer(hb.ac, s3);
+                    SamplePlayer sp_long_edge_b = new SamplePlayer(hb.ac, s1);
+                    SamplePlayer sp_short_edge_a = new SamplePlayer(hb.ac, s2);
+                    SamplePlayer sp_short_edge_b = new SamplePlayer(hb.ac, s3);
+
+                    sp_flat_u.getRateUGen().setValue(2.0f);
+                    sp_long_edge_b.getRateUGen().setValue(2.0f);
+                    sp_short_edge_b.getRateUGen().setValue(2.0f);
+
+
+                    //sp_flat
+                    Gain sp_flat_g = new Gain(hb.ac, 1, 1);
+                    sp_flat_g.addInput(sp_flat);
+
+                    //sp_flat_u
+                    Gain sp_flat_u_g = new Gain(hb.ac, 1, 1);
+                    sp_flat_u_g.addInput(sp_flat_u);
+                    //sp_long_edge_a
+                    Gain sp_long_edge_a_g = new Gain(hb.ac, 1, 1);
+                    sp_long_edge_a_g.addInput(sp_long_edge_a);
+                    //sp_long_edge_b
+                    Gain sp_long_edge_b_g = new Gain(hb.ac, 1, 1);
+                    sp_long_edge_b_g.addInput(sp_long_edge_b);
+                    //sp_short_edge_a
+                    Gain sp_short_edge_a_g = new Gain(hb.ac, 1, 1);
+                    sp_short_edge_a_g.addInput(sp_short_edge_a);
+                    //sp_short_edge_b
+                    Gain sp_short_edge_b_g = new Gain(hb.ac, 1, 1);
+                    sp_short_edge_b_g.addInput(sp_short_edge_b);
+
+                    //System.out.println("Accelerometer: "+ " " + "x" + (xAxis * 100) + " " + "y" + (yAxis * 100) + " " +"z"+ (zAxis * 100));
+                    e.addSegment((float) spin, 10);
 
                     double xAxis100 = xAxis * 100;
                     double yAxis100 = yAxis * 100;
 
 
-                //Z Axis
-                newNumberZ = zAxis;
+                    //Z Axis
+                    newNumberZ = zAxis;
 
-                numberDifferenceZ = Math.abs(newNumberZ - oldNumberZ);
+                    numberDifferenceZ = Math.abs(newNumberZ - oldNumberZ);
 
-                oldNumberZ = newNumberZ;
+                    oldNumberZ = newNumberZ;
 
-                double threshold = 1;
+                    double threshold = 1;
 
-                double thresholdZ = 1;
-                if (numberDifferenceZ > threshold && oldNumberDifferenceZ < thresholdZ){
-                    System.out.println("Z");
+                    double thresholdZ = 1;
+                    if (numberDifferenceZ > threshold && oldNumberDifferenceZ < thresholdZ) {
+                        System.out.println("Z");
 
 //                    hb.sound(guitar1);
-                    pl.addInput(guitar1);
-                }
+                        pl.addInput(guitar1);
+                    }
 
-                oldNumberDifferenceZ = numberDifferenceZ;
+                    oldNumberDifferenceZ = numberDifferenceZ;
 
-                //Y Axis
-                newNumberY = yAxis;
+                    //Y Axis
+                    newNumberY = yAxis;
 
-                numberDifferenceY = Math.abs(newNumberY - oldNumberY);
+                    numberDifferenceY = Math.abs(newNumberY - oldNumberY);
 
-                oldNumberY = newNumberY;
+                    oldNumberY = newNumberY;
 
-                double thresholdY = 1;
-                if (numberDifferenceY > threshold && oldNumberDifferenceY < thresholdY){
-                    System.out.println("Y");
+                    double thresholdY = 1;
+                    if (numberDifferenceY > threshold && oldNumberDifferenceY < thresholdY) {
+                        System.out.println("Y");
 
 //                    hb.sound(guitar2);
-                    pl.addInput(guitar2);
-                }
-                oldNumberDifferenceY = numberDifferenceY;
-                //X Axis
-                newNumberX = xAxis;
-                numberDifferenceX = Math.abs(newNumberX - oldNumberX);
-                oldNumberX = newNumberX;
-                double thresholdX = 1;
-                if (numberDifferenceX > threshold && oldNumberDifferenceX < thresholdX){
-                    System.out.println("X");
+                        pl.addInput(guitar2);
+                    }
+                    oldNumberDifferenceY = numberDifferenceY;
+                    //X Axis
+                    newNumberX = xAxis;
+                    numberDifferenceX = Math.abs(newNumberX - oldNumberX);
+                    oldNumberX = newNumberX;
+                    double thresholdX = 1;
+                    if (numberDifferenceX > threshold && oldNumberDifferenceX < thresholdX) {
+                        System.out.println("X");
 //                    hb.sound(guitar3);
-                    pl.addInput(guitar3);
-                }
-                oldNumberDifferenceX = numberDifferenceX;
+                        pl.addInput(guitar3);
+                    }
+                    oldNumberDifferenceX = numberDifferenceX;
 
-            }
-        });
+                }
+            });
+        }
     }
 
 

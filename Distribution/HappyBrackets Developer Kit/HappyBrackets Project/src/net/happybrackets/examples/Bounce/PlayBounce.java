@@ -1,4 +1,4 @@
-package net.happybrackets.examples;
+package net.happybrackets.examples.Bounce;
 
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlScope;
@@ -8,9 +8,9 @@ import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
 
-public class PlayBounceInstrument implements HBAction {
+public class PlayBounce implements HBAction {
     final float INITIAL_FREQ = 500;
-    float multiplier = 0;
+    float muliplier = 2;
     final String CONTROL_PREFIX = "Accel-";
 
     public static void main(String[] args) {
@@ -24,7 +24,7 @@ public class PlayBounceInstrument implements HBAction {
 
     @Override
     public void action(HB hb) {
-        HBPermBouncerInstrument bouncer = new HBPermBouncerInstrument(hb, INITIAL_FREQ);
+        HBPermBouncer bouncer = new HBPermBouncer(hb, INITIAL_FREQ);
 
         bouncer.play();
         // Create Our Sound Controls
@@ -52,23 +52,23 @@ public class PlayBounceInstrument implements HBAction {
                 });
 
 
-        DynamicControl range_control = hb.createDynamicControl(this, ControlType.FLOAT, "Mod Freq", multiplier, 0, 3).setControlScope(ControlScope.SKETCH);
-        hb.createDynamicControl(this, ControlType.FLOAT, range_control.getControlName(), multiplier)
+        DynamicControl range_control = hb.createDynamicControl(this, ControlType.FLOAT, "Mod Freq", muliplier, 1, 1000).setControlScope(ControlScope.SKETCH);
+        hb.createDynamicControl(this, ControlType.FLOAT, range_control.getControlName(), muliplier)
                 .setControlScope(ControlScope.SKETCH)
                 .addControlListener(new DynamicControl.DynamicControlListener() {
                     @Override
                     public void update(DynamicControl control) {
-                        bouncer.setModFreqFactor((float)control.getValue());
+                        bouncer.setModFreq((float)control.getValue());
                     }
                 });
 
-        DynamicControl depth_control = hb.createDynamicControl(this, ControlType.FLOAT, "Mod depth", multiplier, 0, 3).setControlScope(ControlScope.SKETCH);
-        hb.createDynamicControl(this, ControlType.FLOAT, depth_control.getControlName(), multiplier)
+        DynamicControl depth_control = hb.createDynamicControl(this, ControlType.FLOAT, "Mod depth", muliplier, 1, 1000).setControlScope(ControlScope.SKETCH);
+        hb.createDynamicControl(this, ControlType.FLOAT, depth_control.getControlName(), muliplier)
                 .setControlScope(ControlScope.SKETCH)
                 .addControlListener(new DynamicControl.DynamicControlListener() {
                     @Override
                     public void update(DynamicControl control) {
-                        bouncer.setModDepthMultiplier((float)control.getValue());
+                        bouncer.setModDepth ((float)control.getValue());
                     }
                 });
 

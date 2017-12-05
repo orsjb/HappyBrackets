@@ -1,13 +1,10 @@
-package net.happybrackets.examples;
+package net.happybrackets.examples.Modular;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlScope;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
@@ -18,9 +15,6 @@ public class HappyBracketsSwitchModes  implements HBAction {
     float initialFreq = 500;
 
     Clock clock;
-    final String CONTROL_PREFIX = "Accel-";
-    float muliplier = 2;
-
 
     boolean playSound = false;
 
@@ -36,15 +30,16 @@ public class HappyBracketsSwitchModes  implements HBAction {
     @Override
     public void action(HB hb) {
 
+
         clock = new Clock(hb.ac, 500);
 
 
-        Glide modFreq = new Glide(hb.ac, 1);
-        Glide modDepth = new Glide(hb.ac, 0);
-        Glide baseFreq = new Glide(hb.ac, initialFreq);
+        Glide bouncerModFreq = new Glide(hb.ac, 1);
+        Glide bouncerModDepth = new Glide(hb.ac, 0);
+        Glide bouncerBaseFreq = new Glide(hb.ac, initialFreq);
 
-        WavePlayer modulator = new WavePlayer(hb.ac, modFreq, Buffer.SINE);
-        Function modFunction = new Function(modulator, modDepth, baseFreq) {
+        WavePlayer bouncerModulator = new WavePlayer(hb.ac, bouncerModFreq, Buffer.SINE);
+        Function bouncerModFunction = new Function(bouncerModulator, bouncerModDepth, bouncerBaseFreq) {
             @Override
             public float calculate() {
                 return x[0] * x[1] + x[2];
@@ -88,7 +83,7 @@ public class HappyBracketsSwitchModes  implements HBAction {
                     // X was Freq
                     float x_val = (float) xAxis;
                     float base_freq = (float) Math.pow(100, x_val + 1) + 50; // this will give us values from 50 to 10050
-                    baseFreq.setValue(base_freq);
+                    bouncerBaseFreq.setValue(base_freq);
 
                     // Y was Speed
                     float y_val = (float) yAxis;
@@ -112,15 +107,15 @@ public class HappyBracketsSwitchModes  implements HBAction {
                     float abs_val = Math.abs(z_val);
                     float depth_freq = abs_val * 5000;
                     mod_freq = abs_val * 10;
-                    modDepth.setValue(depth_freq);
-                    modFreq.setValue(mod_freq);
+                    bouncerModDepth.setValue(depth_freq);
+                    bouncerModFreq.setValue(mod_freq);
 
                     // Do FM Parameters Now
                     float fm_freq = (float) Math.pow(100, x_val + 1) + 50; // this will give us values from 50 to 10050
                     baseFmFreq.setValue(fm_freq);
 
                     float fm_depth_freq = Math.abs(z_val) * 5000;
-                    modDepth.setValue(fm_depth_freq);
+                    bouncerModDepth.setValue(fm_depth_freq);
 
                     // we want to make it an int ranging from 8 to 512
 
@@ -136,7 +131,7 @@ public class HappyBracketsSwitchModes  implements HBAction {
                 if (clock.getCount() % 16 == 0 && playSound) {
                     //add the waveplayer
 
-                    WavePlayer wp = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
+                    WavePlayer wp = new WavePlayer(hb.ac, bouncerModFunction, Buffer.SINE);
                     //add the gain
                     Envelope e = new Envelope(hb.ac, 0.1f);
                     Gain g = new Gain(hb.ac, 1, e);

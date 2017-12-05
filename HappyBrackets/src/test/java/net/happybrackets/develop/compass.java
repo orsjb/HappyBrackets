@@ -45,57 +45,56 @@ public class compass implements HBAction {
 
 
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
-            @Override
-            public void sensorUpdated() {
+        if (mySensor != null) {
 
-                double compass = mySensor.getCompassRaw()[2];
+            mySensor.addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
 
-                SamplePlayer sp_flat = new SamplePlayer(hb.ac, d1);
-                SamplePlayer sp_flat_u = new SamplePlayer(hb.ac, d2);
-                SamplePlayer sp_long_edge_a = new SamplePlayer(hb.ac, d3);
-                SamplePlayer sp_long_edge_b = new SamplePlayer(hb.ac, d1);
-                SamplePlayer sp_short_edge_a = new SamplePlayer(hb.ac, d2);
-                SamplePlayer sp_short_edge_b = new SamplePlayer(hb.ac, d3);
+                    double compass = mySensor.getCompassRaw()[2];
 
-                sp_flat_u.getRateUGen().setValue(2.0f);
-                sp_long_edge_b.getRateUGen().setValue(2.0f);
-                sp_short_edge_b.getRateUGen().setValue(2.0f);
+                    SamplePlayer sp_flat = new SamplePlayer(hb.ac, d1);
+                    SamplePlayer sp_flat_u = new SamplePlayer(hb.ac, d2);
+                    SamplePlayer sp_long_edge_a = new SamplePlayer(hb.ac, d3);
+                    SamplePlayer sp_long_edge_b = new SamplePlayer(hb.ac, d1);
+                    SamplePlayer sp_short_edge_a = new SamplePlayer(hb.ac, d2);
+                    SamplePlayer sp_short_edge_b = new SamplePlayer(hb.ac, d3);
 
-
-
-                //sp_flat
-                Gain sp_flat_g = new Gain(hb.ac, 1, 1);
-                sp_flat_g.addInput(sp_flat);
-
-                //sp_flat_u
-                Gain sp_flat_u_g = new Gain(hb.ac, 1, 1);
-                sp_flat_u_g.addInput(sp_flat_u);
-                //sp_long_edge_a
-                Gain sp_long_edge_a_g = new Gain(hb.ac, 1, 1);
-                sp_long_edge_a_g.addInput(sp_long_edge_a);
-                //sp_long_edge_b
-                Gain sp_long_edge_b_g = new Gain(hb.ac, 1, 1);
-                sp_long_edge_b_g.addInput(sp_long_edge_b);
-                //sp_short_edge_a
-                Gain sp_short_edge_a_g = new Gain(hb.ac, 1, 1);
-                sp_short_edge_a_g.addInput(sp_short_edge_a);
-                //sp_short_edge_b
-                Gain sp_short_edge_b_g = new Gain(hb.ac, 1, 1);
-                sp_short_edge_b_g.addInput(sp_short_edge_b);
+                    sp_flat_u.getRateUGen().setValue(2.0f);
+                    sp_long_edge_b.getRateUGen().setValue(2.0f);
+                    sp_short_edge_b.getRateUGen().setValue(2.0f);
 
 
-                System.out.println("Compass:" + " " + compass);
+                    //sp_flat
+                    Gain sp_flat_g = new Gain(hb.ac, 1, 1);
+                    sp_flat_g.addInput(sp_flat);
+
+                    //sp_flat_u
+                    Gain sp_flat_u_g = new Gain(hb.ac, 1, 1);
+                    sp_flat_u_g.addInput(sp_flat_u);
+                    //sp_long_edge_a
+                    Gain sp_long_edge_a_g = new Gain(hb.ac, 1, 1);
+                    sp_long_edge_a_g.addInput(sp_long_edge_a);
+                    //sp_long_edge_b
+                    Gain sp_long_edge_b_g = new Gain(hb.ac, 1, 1);
+                    sp_long_edge_b_g.addInput(sp_long_edge_b);
+                    //sp_short_edge_a
+                    Gain sp_short_edge_a_g = new Gain(hb.ac, 1, 1);
+                    sp_short_edge_a_g.addInput(sp_short_edge_a);
+                    //sp_short_edge_b
+                    Gain sp_short_edge_b_g = new Gain(hb.ac, 1, 1);
+                    sp_short_edge_b_g.addInput(sp_short_edge_b);
 
 
-
-                   // hb.sound(guitar3);
-
+                    System.out.println("Compass:" + " " + compass);
 
 
+                    // hb.sound(guitar3);
 
-            }
-        });
+
+                }
+            });
+        }
     }
 
 

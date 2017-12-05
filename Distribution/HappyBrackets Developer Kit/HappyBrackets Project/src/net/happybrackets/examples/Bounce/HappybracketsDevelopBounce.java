@@ -1,4 +1,4 @@
-package net.happybrackets.examples;
+package net.happybrackets.examples.Bounce;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;

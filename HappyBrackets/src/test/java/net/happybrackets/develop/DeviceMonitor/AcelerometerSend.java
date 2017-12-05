@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package net.happybrackets.develop;
+package net.happybrackets.develop.DeviceMonitor;
 
+import net.beadsproject.beads.data.Buffer;
+import net.beadsproject.beads.data.Sample;
+import net.beadsproject.beads.data.SampleManager;
+import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
@@ -28,14 +32,14 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
  * For this example we want to look at the accelerometer and use it to trigger a sound when you turn over the
  * accelerometer.
  */
-public class GyroscopeSend implements HBAction {
+public class AcelerometerSend implements HBAction {
 
 
     final int MIN_SENSOR_WAIT = 10; // we will not send messages greater than one per 10ms
 
     long lastSendTime;
 
-    final String CONTROL_PREFIX = "Gyro-";
+    final String CONTROL_PREFIX = "Accel-";
     @Override
     public void action(HB hb) {
 
@@ -80,9 +84,9 @@ public class GyroscopeSend implements HBAction {
                     lastSendTime = System.currentTimeMillis();
 
                     // Get the data from Z.
-                    double zAxis = mySensor.getGyroscopeZ();
-                    double yAxis = mySensor.getGyroscopeY();
-                    double xAxis = mySensor.getGyroscopeZ();
+                    double zAxis = mySensor.getAccelerometerZ();
+                    double yAxis = mySensor.getAccelerometerY();
+                    double xAxis = mySensor.getAccelerometerX();
 
 
                     if (!init) {

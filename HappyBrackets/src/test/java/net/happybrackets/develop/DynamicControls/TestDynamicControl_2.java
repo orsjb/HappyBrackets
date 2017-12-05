@@ -1,4 +1,4 @@
-package net.happybrackets.develop;
+package net.happybrackets.develop.DynamicControls;
 
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
