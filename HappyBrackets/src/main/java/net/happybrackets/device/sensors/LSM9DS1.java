@@ -723,9 +723,8 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
                     accelData = getAccelerometerRaw();
                     magData = getCompassRaw();
                     //pass data on to listeners
-                    for(SensorUpdateListener listener : listeners) {
-                        listener.sensorUpdated();
-                    }
+
+					notifyListeners();
 
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.

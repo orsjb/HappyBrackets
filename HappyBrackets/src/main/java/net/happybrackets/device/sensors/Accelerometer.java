@@ -1,7 +1,7 @@
 package net.happybrackets.device.sensors;
 
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.sensor_types.AccelerometerListener;
+import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,11 @@ import java.util.List;
  * Default Accelerometer for HB.
  * The type of accelerometer will be detected and listeners will register to receive Accelerometer events
  */
-public class Accelerometer extends Sensor {
+public class Accelerometer extends Sensor implements AccelerometerSensor {
     private static Sensor defaultSensor = null;
 
+    private double x, y, z;
 
-    static List<AccelerometerListener> listeners = new ArrayList<>();
     /**
      * Will detect connected Sensor and return it
      * @return
@@ -31,11 +31,11 @@ public class Accelerometer extends Sensor {
                     sensor.addListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
-                            synchronized (listeners) {
-                                for (AccelerometerListener listener : listeners) {
-                                    listener.sensorUpdated(sensor.getAccelerometerX(), sensor.getAccelerometerY(), sensor.getAccelerometerZ());
-                                }
-                            }
+                            x = sensor.getAccelerometerX();
+                            y = sensor.getAccelerometerY();
+                            z = sensor.getAccelerometerZ();
+
+                            notifyListeners();
                         }
                     });
 
@@ -52,11 +52,11 @@ public class Accelerometer extends Sensor {
                         sensor.addListener(new SensorUpdateListener() {
                             @Override
                             public void sensorUpdated() {
-                                synchronized (listeners) {
-                                    for (AccelerometerListener listener : listeners) {
-                                        listener.sensorUpdated(sensor.getAccelerometerX(), sensor.getAccelerometerY(), sensor.getAccelerometerZ());
-                                    }
-                                }
+                                x = sensor.getAccelerometerX();
+                                y = sensor.getAccelerometerY();
+                                z = sensor.getAccelerometerZ();
+
+                                notifyListeners();
                             }
                         });
 
@@ -73,11 +73,11 @@ public class Accelerometer extends Sensor {
                     sensor.addListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
-                            synchronized (listeners) {
-                                for (AccelerometerListener listener : listeners) {
-                                    listener.sensorUpdated(sensor.getAccelerometerX(), sensor.getAccelerometerY(), sensor.getAccelerometerZ());
-                                }
-                            }
+                            x = sensor.getAccelerometerX();
+                            y = sensor.getAccelerometerY();
+                            z = sensor.getAccelerometerZ();
+
+                            notifyListeners();
                         }
                     });
 
@@ -102,27 +102,31 @@ public class Accelerometer extends Sensor {
     }
 
 
-    /**
-     * Adds a listener for accelerometer
-     * @param listener the listener
-     */
-    public void addAccelerometerListener(AccelerometerListener listener){
-        synchronized (listeners) {
-            listeners.add(listener);
-        }
-    }
+
 
     @Override
     public String getSensorName() {
         return "Accelerometer";
     }
 
-    /**
-     * Erases all the listeners
-     */
-    public void clearListeners(){
-        synchronized (listeners) {
-            listeners.clear();
-        }
+
+    @Override
+    public double[] getAccelerometerData() {
+        return new double[]{x, y, z};
+    }
+
+    @Override
+    public double getAccelerometerX() {
+        return x;
+    }
+
+    @Override
+    public double getAccelerometerY() {
+        return y;
+    }
+
+    @Override
+    public double getAccelerometerZ() {
+        return z;
     }
 }

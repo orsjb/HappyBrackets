@@ -1,21 +1,21 @@
 package net.happybrackets.device.sensors;
 
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.sensor_types.AccelerometerListener;
-import net.happybrackets.device.sensors.sensor_types.GyroscopeListener;
+import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
+
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Default Accelerometer for HB.
  * The type of accelerometer will be detected and listeners will register to receive Accelerometer events
  */
-public class Gyroscope extends Sensor {
+public class Gyroscope extends Sensor implements GyroscopeSensor{
     private static Sensor defaultSensor = null;
 
+    // these are our axis
+    private double x, y, z;
 
-    static List<GyroscopeListener> listeners = new ArrayList<>();
     /**
      * Will detect connected Sensor and return it
      * @return
@@ -32,11 +32,11 @@ public class Gyroscope extends Sensor {
                     sensor.addListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
-                            synchronized (listeners) {
-                                for (GyroscopeListener listener : listeners) {
-                                    listener.sensorUpdated(sensor.getGyroscopeX(), sensor.getGyroscopeY(), sensor.getGyroscopeZ());
-                                }
-                            }
+                            x = sensor.getGyroscopeX();
+                            y = sensor.getGyroscopeY();
+                            z = sensor.getGyroscopeZ();
+
+                            notifyListeners();
                         }
                     });
 
@@ -53,11 +53,11 @@ public class Gyroscope extends Sensor {
                         sensor.addListener(new SensorUpdateListener() {
                             @Override
                             public void sensorUpdated() {
-                                synchronized (listeners) {
-                                    for (GyroscopeListener listener : listeners) {
-                                        listener.sensorUpdated(sensor.getGyroscopeX(), sensor.getGyroscopeY(), sensor.getGyroscopeZ());
-                                    }
-                                }
+                                x = sensor.getGyroscopeX();
+                                y = sensor.getGyroscopeY();
+                                z = sensor.getGyroscopeZ();
+
+                                notifyListeners();
                             }
                         });
 
@@ -74,11 +74,11 @@ public class Gyroscope extends Sensor {
                     sensor.addListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
-                            synchronized (listeners) {
-                                for (GyroscopeListener listener : listeners) {
-                                    listener.sensorUpdated(sensor.getGyroscopeX(), sensor.getGyroscopeY(), sensor.getGyroscopeZ());
-                                }
-                            }
+                            x = sensor.getGyroscopeX();
+                            y = sensor.getGyroscopeY();
+                            z = sensor.getGyroscopeZ();
+
+                            notifyListeners();
                         }
                     });
 
@@ -103,27 +103,30 @@ public class Gyroscope extends Sensor {
     }
 
 
-    /**
-     * Adds a listener for accelerometer
-     * @param listener the listener
-     */
-    public void addAccelerometerListener(GyroscopeListener listener){
-        synchronized (listeners) {
-            listeners.add(listener);
-        }
-    }
-
     @Override
     public String getSensorName() {
         return "Gyroscope";
     }
 
-    /**
-     * Erases all the listeners
-     */
-    public void clearListeners(){
-        synchronized (listeners) {
-            listeners.clear();
-        }
+
+
+    @Override
+    public double[] getGyroscopeData() {
+        return new double[]{x, y, z};
+    }
+
+    @Override
+    public double getGyroscopeX() {
+        return x;
+    }
+
+    @Override
+    public double getGyroscopeY() {
+        return y;
+    }
+
+    @Override
+    public double getGyroscopeZ() {
+        return z;
     }
 }

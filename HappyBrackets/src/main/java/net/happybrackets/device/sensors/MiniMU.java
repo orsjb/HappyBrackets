@@ -183,9 +183,9 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 						accelData = readSensorsAccel();
 						magData = readSensorsMag();
 						//pass data on to listeners
-						for(SensorUpdateListener listener : listeners) {
-							listener.sensorUpdated();
-						}
+
+						notifyListeners();
+
 					} catch (IOException e) {
 							// System.out.println("MiniMU not receiving data.");
 							// Assuming we might like this in dev?

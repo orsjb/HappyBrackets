@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>1.14.3</version>
+  <version>1.15.0</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[

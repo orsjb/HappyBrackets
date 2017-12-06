@@ -1,9 +1,8 @@
 package net.happybrackets.device.sensors;
 
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.sensor_types.AccelerometerListener;
-import net.happybrackets.device.sensors.sensor_types.GyroscopeListener;
-import net.happybrackets.device.sensors.sensor_types.MagnetometerListener;
+import net.happybrackets.device.sensors.sensor_types.MagnetometerSensor;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +11,12 @@ import java.util.List;
  * Default Accelerometer for HB.
  * The type of accelerometer will be detected and listeners will register to receive Accelerometer events
  */
-public class Magnetometer extends Sensor {
+public class Magnetometer extends Sensor implements MagnetometerSensor
+{
     private static Sensor defaultSensor = null;
 
-
-    static List<MagnetometerListener> listeners = new ArrayList<>();
+    // these are our axis
+    private double x, y, z;
     /**
      * Will detect connected Sensor and return it
      * @return
@@ -33,11 +33,11 @@ public class Magnetometer extends Sensor {
                     sensor.addListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
-                            synchronized (listeners) {
-                                for (MagnetometerListener listener : listeners) {
-                                    listener.sensorUpdated(sensor.getMagnetometerX(), sensor.getMagnetometerY(), sensor.getMagnetometerZ());
-                                }
-                            }
+                            x = sensor.getMagnetometerX();
+                            y = sensor.getMagnetometerY();
+                            z = sensor.getMagnetometerZ();
+
+                            notifyListeners();
                         }
                     });
 
@@ -49,17 +49,19 @@ public class Magnetometer extends Sensor {
             if (defaultSensor == null) {
                 try {
                     MiniMU sensor =  MiniMU.class.getConstructor().newInstance();
-                    if (sensor != null){
+                    if (sensor != null) {
                         defaultSensor = sensor;
                         sensor.addListener(new SensorUpdateListener() {
                             @Override
+
                             public void sensorUpdated() {
-                                synchronized (listeners) {
-                                    for (MagnetometerListener listener : listeners) {
-                                        listener.sensorUpdated(sensor.getMagnetometerX(), sensor.getMagnetometerY(), sensor.getMagnetometerZ());
-                                    }
-                                }
+                                x = sensor.getMagnetometerX();
+                                y = sensor.getMagnetometerY();
+                                z = sensor.getMagnetometerZ();
+
+                                notifyListeners();
                             }
+
                         });
 
                     }
@@ -74,11 +76,12 @@ public class Magnetometer extends Sensor {
                 if (sensor != null) {
                     sensor.addListener(new SensorUpdateListener() {
                         @Override
-                        public void sensorUpdated() {
-                            synchronized (listeners) {
-                                for (MagnetometerListener listener : listeners) {
-                                    listener.sensorUpdated(sensor.getMagnetometerX(), sensor.getMagnetometerY(), sensor.getMagnetometerZ());
-                                }                           }
+                            public void sensorUpdated() {
+                                x = sensor.getMagnetometerX();
+                                y = sensor.getMagnetometerY();
+                                z = sensor.getMagnetometerZ();
+
+                                notifyListeners();
                         }
                     });
 
@@ -103,27 +106,29 @@ public class Magnetometer extends Sensor {
     }
 
 
-    /**
-     * Adds a listener for accelerometer
-     * @param listener the listener
-     */
-    public void addAccelerometerListener(MagnetometerListener listener){
-        synchronized (listeners) {
-            listeners.add(listener);
-        }
-    }
 
     @Override
     public String getSensorName() {
         return "Accelerometer";
     }
 
-    /**
-     * Erases all the listeners
-     */
-    public void clearListeners(){
-        synchronized (listeners) {
-            listeners.clear();
-        }
+    @Override
+    public double[] getMagnetometerData() {
+        return new double[]{x, y, z};
+    }
+
+    @Override
+    public double getMagnetometerX() {
+        return x;
+    }
+
+    @Override
+    public double getMagnetometerY() {
+        return y;
+    }
+
+    @Override
+    public double getMagnetometerZ() {
+        return z;
     }
 }

@@ -23,20 +23,18 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
             @Override
             public void update(DynamicControl control) {
                 // we will ignore the control and send all three at once
-                for(SensorUpdateListener listener : listeners) {
-                    listener.sensorUpdated();
-                }
+                notifyListeners();
             }
         };
 
         control_x_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0, -1, 1).setControlScope(ControlScope.CLASS).addControlListener(listener);
-        control_x_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0).setControlScope(ControlScope.CLASS).addControlListener(listener);
+        control_x_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0).setControlScope(ControlScope.CLASS);
 
         control_y_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0, -1, 1).setControlScope(ControlScope.CLASS).addControlListener(listener);
-        control_y_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0).setControlScope(ControlScope.CLASS).addControlListener(listener);
+        control_y_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0).setControlScope(ControlScope.CLASS);
 
         control_z_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0, -1, 1).setControlScope(ControlScope.CLASS).addControlListener(listener);
-        control_z_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0).setControlScope(ControlScope.CLASS).addControlListener(listener);
+        control_z_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0).setControlScope(ControlScope.CLASS);
 
     }
 

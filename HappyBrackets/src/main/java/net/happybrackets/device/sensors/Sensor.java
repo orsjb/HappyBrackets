@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public abstract class Sensor {
 
-    protected final Set<SensorUpdateListener> listeners = new HashSet<>();
+    private final Set<SensorUpdateListener> listeners = new HashSet<>();
 
     /**
      * Returns the sensor name, typically the make/model of the hardware sensor that this class refers to.
@@ -55,5 +55,15 @@ public abstract class Sensor {
      */
     public void clearListeners() {
         listeners.clear();
+    }
+
+    /**
+     * Notify all listeners that the sensor has updated
+     */
+    protected void notifyListeners()
+    {
+        for(SensorUpdateListener listener : listeners) {
+            listener.sensorUpdated();
+        }
     }
 }
