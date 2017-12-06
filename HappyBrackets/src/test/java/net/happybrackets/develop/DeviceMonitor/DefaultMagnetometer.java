@@ -30,7 +30,7 @@ public class DefaultMagnetometer implements HBAction{
                 public void sensorUpdated() {
                     System.out.println(sensor.getMagnetometerX());
                     System.out.println(sensor.getMagnetometerY());
-                    System.out.println(sensor.getMagnetometerZ());
+                    System.out.println(sensor.getMagnetometerZ( ));
                 }
             });
         }
