@@ -24,6 +24,7 @@ public class DefaultGyroscope implements HBAction{
 
         Gyroscope sensor = (Gyroscope)hb.getSensor(Gyroscope.class) ;
         if (sensor != null) {
+            sensor.setRounding(3);
             sensor.addListener(new SensorUpdateListener() {
                 @Override
                 public void sensorUpdated() {

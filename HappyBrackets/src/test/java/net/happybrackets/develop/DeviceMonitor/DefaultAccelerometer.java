@@ -23,6 +23,7 @@ public class DefaultAccelerometer implements HBAction{
 
         Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class) ;
         if (sensor != null) {
+            sensor.setRounding(3);
             sensor.addListener(new SensorUpdateListener() {
                 @Override
                 public void sensorUpdated() {

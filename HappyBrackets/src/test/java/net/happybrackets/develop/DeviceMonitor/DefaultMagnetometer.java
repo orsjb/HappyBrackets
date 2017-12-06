@@ -24,6 +24,7 @@ public class DefaultMagnetometer implements HBAction{
 
         Magnetometer sensor = (Magnetometer)hb.getSensor(Magnetometer.class) ;
         if (sensor != null) {
+            sensor.setRounding(3);
             sensor.addListener(new SensorUpdateListener() {
                 @Override
                 public void sensorUpdated() {
