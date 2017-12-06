@@ -65,7 +65,17 @@ import org.slf4j.LoggerFactory;
  */
 public class HB {
 
-	public interface StatusChangedListener{
+	private static boolean enableSimulators = false;
+
+	public static boolean isEnableSimulators() {
+		return enableSimulators;
+	}
+
+	public static void setEnableSimulators(boolean enableSimulators) {
+		HB.enableSimulators = enableSimulators;
+	}
+
+		public interface StatusChangedListener{
 		void statusChanged(String new_status);
 	}
 
@@ -197,6 +207,8 @@ public class HB {
 
 		boolean ret = false;
 
+		// we will enable simulators of Sensors
+		enableSimulators = true;
 		if (HBInstance == null) {
 
 			HB.AccessMode mode = HB.AccessMode.LOCAL;

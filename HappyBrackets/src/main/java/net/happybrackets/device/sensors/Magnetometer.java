@@ -1,5 +1,6 @@
 package net.happybrackets.device.sensors;
 
+import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.sensor_types.AccelerometerListener;
 import net.happybrackets.device.sensors.sensor_types.GyroscopeListener;
 import net.happybrackets.device.sensors.sensor_types.MagnetometerListener;
@@ -67,7 +68,7 @@ public class Magnetometer extends Sensor {
                 }
             }
 
-            if (defaultSensor == null) {
+            if (defaultSensor == null  && HB.isEnableSimulators()) {
                 MagnetometerSimulator sensor = new MagnetometerSimulator();
 
                 if (sensor != null) {

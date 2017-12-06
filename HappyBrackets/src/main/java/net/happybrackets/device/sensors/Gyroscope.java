@@ -1,5 +1,6 @@
 package net.happybrackets.device.sensors;
 
+import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.sensor_types.AccelerometerListener;
 import net.happybrackets.device.sensors.sensor_types.GyroscopeListener;
 
@@ -66,7 +67,7 @@ public class Gyroscope extends Sensor {
                 }
             }
 
-            if (defaultSensor == null) {
+            if (defaultSensor == null  && HB.isEnableSimulators()) {
                 GyroscopeSimulator sensor = new GyroscopeSimulator();
 
                 if (sensor != null) {

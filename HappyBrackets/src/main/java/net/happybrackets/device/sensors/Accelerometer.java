@@ -1,5 +1,6 @@
 package net.happybrackets.device.sensors;
 
+import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.sensor_types.AccelerometerListener;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class Accelerometer extends Sensor {
                 }
             }
 
-            if (defaultSensor == null) {
+            if (defaultSensor == null && HB.isEnableSimulators()) {
                 AccelerometerSimulator sensor = new AccelerometerSimulator();
 
                 if (sensor != null) {
