@@ -20,6 +20,15 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
     private int xRounding = -1, yRounding = -1, zRounding = -1;
 
     /**
+     * Remove all rounding
+     */
+    public void resetToDefault(){
+        xRounding = -1;
+        yRounding = -1;
+        zRounding = -1;
+    }
+
+    /**
      * Will detect connected Sensor and return it
      * @return
      */

@@ -32,6 +32,8 @@ public class DebugAccelerometer implements HBAction {
         Accelerometer mySensor = (Accelerometer)hb.getSensor(Accelerometer.class);
 
         if (mySensor != null) {
+            mySensor.setRounding(5);
+
             mySensor.addListener(new SensorUpdateListener() {
                 @Override
                 public void sensorUpdated() {

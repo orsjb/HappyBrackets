@@ -852,6 +852,7 @@ public class HB {
 		resetLeaveSounding();
 		clearSound();
 		setStatus("Reset");
+
 	}
 
 	/**
@@ -870,6 +871,7 @@ public class HB {
 		//clear mu listeners
 		for(Sensor sensor : sensors.values()) {
 			sensor.clearListeners();
+			sensor.resetToDefault();
 		}
 		//clear osc listeners
 		controller.clearListeners();

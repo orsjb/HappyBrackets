@@ -21,6 +21,16 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
 
 
     /**
+     * Remove all rounding
+     */
+    public void resetToDefault(){
+        xRounding = -1;
+        yRounding = -1;
+        zRounding = -1;
+    }
+
+
+    /**
      * Will detect connected Sensor and return it
      * @return
      */

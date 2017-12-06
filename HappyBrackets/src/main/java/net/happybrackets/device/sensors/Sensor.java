@@ -68,6 +68,12 @@ public abstract class Sensor {
     }
 
     /**
+     * Override this function on any sensors that have resolution or the likes set
+     */
+    public void resetToDefault(){
+    }
+
+    /**
      * Round the double value to the number of decimal places defined by rounding
      * If rounding is less than zero, we will leave value as is
      * @param val the value to round
