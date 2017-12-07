@@ -553,7 +553,7 @@ public class IntelliJPluginGUIManager {
 		);
 
 		// Work around. On Mac the layout doesn't allow enough height in some instances.
-		container.setMinHeight(200);
+		container.setMinHeight(210);
 
 		return container;
 	}
