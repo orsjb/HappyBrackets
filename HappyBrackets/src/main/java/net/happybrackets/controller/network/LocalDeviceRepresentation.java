@@ -215,6 +215,7 @@ public class LocalDeviceRepresentation {
 
 	private List<StatusUpdateListener> statusUpdateListenerList = new ArrayList<>();
 	private List<ConnectedUpdateListener> connectedUpdateListenerList = new ArrayList<>();
+	private List<ConnectedUpdateListener> loggingStateListener = new ArrayList<>();
 	private List<SocketAddressChangedListener> socketAddressChangedListenerList = new ArrayList<>();
 	private List<DeviceIdUpdateListener> deviceIdUpdateListenerList = new ArrayList<>();
 	private List<DeviceRemovedListener> deviceRemovedListenerList = new ArrayList<>();
@@ -464,7 +465,15 @@ public class LocalDeviceRepresentation {
 		DeviceStatus status = new DeviceStatus(msg);
 
 		setStatus(status.getStatusText());
-		loggingEnabled = status.isLoggingEnabled();
+		if (loggingEnabled != status.isLoggingEnabled()) {
+			loggingEnabled = status.isLoggingEnabled();
+			try {
+				for (ConnectedUpdateListener listener : loggingStateListener) {
+					listener.update(loggingEnabled);
+				}
+			}catch (Exception ex){}
+		}
+
 		encryptionEnabled = status.isClassEncryption();
 	}
 
@@ -738,12 +747,25 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
+	public void addLoggingStateListener(ConnectedUpdateListener listener){
+		synchronized (loggingStateListener)
+		{
+			loggingStateListener.add(listener);
+		}
+	}
+
 	public void removeConnectedUpdateListener(ConnectedUpdateListener listener) {
 		synchronized (connectedUpdateListenerList) {
 			connectedUpdateListenerList.remove(listener);
 		}
 	}
 
+	public void removeLoggingStateListener(ConnectedUpdateListener listener){
+		synchronized (loggingStateListener)
+		{
+			loggingStateListener.remove(listener);
+		}
+	}
     public void addSocketAddressChangedListener(SocketAddressChangedListener listener) {
 		synchronized (socketAddressChangedListenerList) {
 			socketAddressChangedListenerList.add(listener);

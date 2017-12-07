@@ -11,7 +11,7 @@ import java.io.File;
 public final class BuildVersion {
     static final int MAJOR = 1;
     static final int MINOR = 15;
-    static final int BUILD = 3;
+    static final int BUILD = 4;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}

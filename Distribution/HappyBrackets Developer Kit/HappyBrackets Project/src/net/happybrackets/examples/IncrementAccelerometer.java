@@ -63,5 +63,9 @@ public class IncrementAccelerometer implements HBAction {
                 }
             });
         }
+        else
+        {
+            System.out.println("Unable to Load LSM9DS1");
+        }
     }
 }

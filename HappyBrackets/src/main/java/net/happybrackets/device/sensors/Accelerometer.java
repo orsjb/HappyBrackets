@@ -43,6 +43,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                 LSM9DS1 sensor =  LSM9DS1.class.getConstructor().newInstance();
                 if (sensor != null){
                     if (sensor.isValidLoad()) {
+                        System.out.println("Valid Load of LSM95DS1");
                         defaultSensor = sensor;
                         sensor.addListener(new SensorUpdateListener() {
                             @Override

@@ -21,6 +21,7 @@ public class DefaultAccelerometer implements HBAction{
     @Override
     public void action(HB hb) {
 
+        hb.setEnableSimulators(true);
         Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class) ;
         if (sensor != null) {
             sensor.setRounding(3);

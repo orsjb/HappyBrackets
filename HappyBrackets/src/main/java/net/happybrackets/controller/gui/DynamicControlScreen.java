@@ -693,6 +693,15 @@ public class DynamicControlScreen {
             }
         });
 
+        localDevice.addLoggingStateListener(new LocalDeviceRepresentation.ConnectedUpdateListener() {
+            @Override
+            public void update(boolean logging_enabled) {
+                enable_button.setText(logging_enabled ? stop_text : start_text);
+                enable_button.setTooltip(logging_enabled ? stop_tooltip : start_tooltip);
+
+            }
+        });
+
         log_output_text_area.setMinHeight(MIN_TEXT_AREA_HEIGHT);
 
         localDevice.addLogListener(deviceLogListener = new LocalDeviceRepresentation.LogListener() {
