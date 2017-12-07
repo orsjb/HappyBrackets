@@ -36,33 +36,11 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
 
         if (defaultSensor == null)
         {
-
+            System.out.println("Try Load LSM95DS1");
             try {
                 LSM9DS1 sensor =  LSM9DS1.class.getConstructor().newInstance();
                 if (sensor != null){
-                    defaultSensor = sensor;
-                    sensor.addListener(new SensorUpdateListener() {
-                        @Override
-                        public void sensorUpdated() {
-                            boolean send_notify = setX(sensor.getGyroscopeX());
-                            send_notify |= setY(sensor.getGyroscopeY());
-                            send_notify |= setZ(sensor.getGyroscopeZ());
-
-                            if (send_notify) {
-                                notifyListeners();
-                            }
-                        }
-                    });
-
-                }
-
-            } catch (Exception e) {
-            }
-
-            if (defaultSensor == null) {
-                try {
-                    MiniMU sensor =  MiniMU.class.getConstructor().newInstance();
-                    if (sensor != null){
+                    if (sensor.isValidLoad()) {
                         defaultSensor = sensor;
                         sensor.addListener(new SensorUpdateListener() {
                             @Override
@@ -76,10 +54,38 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                                 }
                             }
                         });
+                    }
+                }
 
+            } catch (Exception e) {
+                System.out.println("Error loading LSM9DS1 " + e.getMessage());
+            }
+
+            if (defaultSensor == null) {
+                System.out.println("Try Load MiniMU");
+
+                try {
+                    MiniMU sensor =  MiniMU.class.getConstructor().newInstance();
+                    if (sensor != null){
+                        if (sensor.isValidLoad()) {
+                            defaultSensor = sensor;
+                            sensor.addListener(new SensorUpdateListener() {
+                                @Override
+                                public void sensorUpdated() {
+                                    boolean send_notify = setX(sensor.getGyroscopeX());
+                                    send_notify |= setY(sensor.getGyroscopeY());
+                                    send_notify |= setZ(sensor.getGyroscopeZ());
+
+                                    if (send_notify) {
+                                        notifyListeners();
+                                    }
+                                }
+                            });
+                        }
                     }
 
                 } catch (Exception e) {
+                    System.out.println("Error loading MiniMU " + e.getMessage());
                 }
             }
 

@@ -30,7 +30,7 @@ public class DisplayMagnetometer implements HBAction {
     public void action(HB hb) {
 
         Magnetometer mySensor = (Magnetometer) hb.getSensor(Magnetometer.class);
-        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
+        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Mag Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl dynamicControl) {
                 if (mySensor != null)
@@ -66,6 +66,8 @@ public class DisplayMagnetometer implements HBAction {
         });
 
         if (mySensor != null) {
+            max_control_x.setValue(1000);
+
             mySensor.addListener(new SensorUpdateListener() {
 
 
@@ -129,6 +131,10 @@ public class DisplayMagnetometer implements HBAction {
                 }
 
             });
+        }
+        else
+        {
+            max_control_x.setValue(-1000);
         }
     }
 }

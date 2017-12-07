@@ -39,37 +39,15 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
 
         if (defaultSensor == null)
         {
+            System.out.println("Try Load LSM95DS1");
 
             try {
                 LSM9DS1 sensor =  LSM9DS1.class.getConstructor().newInstance();
                 if (sensor != null){
-                    defaultSensor = sensor;
-                    sensor.addListener(new SensorUpdateListener() {
-                        @Override
-                        public void sensorUpdated() {
-                            boolean send_notify = setX(sensor.getMagnetometerX());
-                            send_notify |= setY(sensor.getMagnetometerY());
-                            send_notify |= setZ(sensor.getMagnetometerZ());
-
-                            if (send_notify) {
-                                notifyListeners();
-                            }
-                        }
-                    });
-
-                }
-
-            } catch (Exception e) {
-            }
-
-            if (defaultSensor == null) {
-                try {
-                    MiniMU sensor =  MiniMU.class.getConstructor().newInstance();
-                    if (sensor != null) {
+                    if (sensor.isValidLoad()) {
                         defaultSensor = sensor;
                         sensor.addListener(new SensorUpdateListener() {
                             @Override
-
                             public void sensorUpdated() {
                                 boolean send_notify = setX(sensor.getMagnetometerX());
                                 send_notify |= setY(sensor.getMagnetometerY());
@@ -79,12 +57,40 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
                                     notifyListeners();
                                 }
                             }
-
                         });
+                    }
+                }
 
+            } catch (Exception e) {
+                System.out.println("Error loading LSM9DS1 " + e.getMessage());
+            }
+
+            if (defaultSensor == null) {
+                System.out.println("Try Load MiniMU");
+                try {
+                    MiniMU sensor =  MiniMU.class.getConstructor().newInstance();
+                    if (sensor != null) {
+                        if (sensor.isValidLoad()) {
+                            defaultSensor = sensor;
+                            sensor.addListener(new SensorUpdateListener() {
+                                @Override
+
+                                public void sensorUpdated() {
+                                    boolean send_notify = setX(sensor.getMagnetometerX());
+                                    send_notify |= setY(sensor.getMagnetometerY());
+                                    send_notify |= setZ(sensor.getMagnetometerZ());
+
+                                    if (send_notify) {
+                                        notifyListeners();
+                                    }
+                                }
+
+                            });
+                        }
                     }
 
                 } catch (Exception e) {
+                    System.out.println("Error loading MiniMU " + e.getMessage());
                 }
             }
 
