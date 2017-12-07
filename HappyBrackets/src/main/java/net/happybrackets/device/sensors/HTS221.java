@@ -380,9 +380,8 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
                     humidityData = getHumidityData();
                     //pass data on to listeners
 
-                    for(SensorUpdateListener listener : listeners) {
-                        listener.sensorUpdated();
-                    }
+                    notifyListeners();
+
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.
                     } catch (InterruptedException e) {

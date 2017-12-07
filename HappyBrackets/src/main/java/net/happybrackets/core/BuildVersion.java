@@ -10,7 +10,7 @@ import java.io.File;
  */
 public final class BuildVersion {
     static final int MAJOR = 1;
-    static final int MINOR = 14;
+    static final int MINOR = 15;
     static final int BUILD = 3;
 
     public static int getMajor(){return MAJOR;}

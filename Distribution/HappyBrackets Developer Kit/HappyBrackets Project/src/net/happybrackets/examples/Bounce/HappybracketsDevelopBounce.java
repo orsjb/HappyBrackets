@@ -22,7 +22,6 @@ public class HappybracketsDevelopBounce implements HBAction{
     float initialFreq = 1000;
 
     Clock clock;
-    final String CONTROL_PREFIX = "Accel-";
     float muliplier = 2;
 
 
@@ -104,50 +103,6 @@ public class HappybracketsDevelopBounce implements HBAction{
                     }
                 });
 
-
-        // We will Simulate the accelerometer here
-
-        // We said X would be Pitch
-        hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0, -1, 1)
-            .addControlListener(new DynamicControl.DynamicControlListener() {
-                @Override
-                public void update(DynamicControl dynamicControl) {
-                    float val = (float) dynamicControl.getValue();
-                    float base_freq = (float) Math.pow(100, val + 1) + 50; // this will give us values from 50 to 10050
-                    freq_control.setValue((base_freq));
-                }
-            });
-
-        // Y will control the speed
-        hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0, -1, 1)
-            .addControlListener(new DynamicControl.DynamicControlListener() {
-                @Override
-                public void update(DynamicControl dynamicControl) {
-                    float val = (float) dynamicControl.getValue();
-                    // we want to make it an int ranging from 8 to 512
-                    val += 2; // Now it is 1 t0 3
-                    float speed = (float) Math.pow(2, val * 3);
-                    speed_control.setValue(speed);
-                }
-            });
-
-        // Z axis will Change mod speed and depth
-        hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0, -1, 1)
-                .addControlListener(new DynamicControl.DynamicControlListener() {
-                    @Override
-                    public void update(DynamicControl dynamicControl)            {
-                        float val = (float) dynamicControl.getValue();
-                        // anything off zero will give us a value
-                        //Ranging from 0 to 1
-                        float abs_val = Math.abs(val);
-                        float depth_freq = abs_val * 5000;
-                        float mod_freq = abs_val * 10;
-
-                        range_control.setValue(mod_freq);
-                        depth_control.setValue(depth_freq);
-
-                    }
-                });
 
 
 

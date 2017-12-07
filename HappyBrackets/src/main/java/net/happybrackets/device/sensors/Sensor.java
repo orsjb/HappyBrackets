@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public abstract class Sensor {
 
-    protected final Set<SensorUpdateListener> listeners = new HashSet<>();
+    private final Set<SensorUpdateListener> listeners = new HashSet<>();
 
     /**
      * Returns the sensor name, typically the make/model of the hardware sensor that this class refers to.
@@ -56,4 +56,40 @@ public abstract class Sensor {
     public void clearListeners() {
         listeners.clear();
     }
+
+    /**
+     * Notify all listeners that the sensor has updated
+     */
+    protected void notifyListeners()
+    {
+        for(SensorUpdateListener listener : listeners) {
+            listener.sensorUpdated();
+        }
+    }
+
+    /**
+     * Override this function on any sensors that have resolution or the likes set
+     */
+    public void resetToDefault(){
+    }
+
+    /**
+     * Round the double value to the number of decimal places defined by rounding
+     * If rounding is less than zero, we will leave value as is
+     * @param val the value to round
+     * @param rounding the number of decimal places to round to
+     * @return the new rounded value
+     */
+    protected double roundValue(double val, int rounding){
+        double ret = val;
+        if (rounding >= 0){
+            double multiplier = Math.pow(10, rounding);
+            ret = val * multiplier;
+            ret = Math.round(ret);
+            ret =  ret / multiplier;
+        }
+
+        return ret;
+    }
+
 }

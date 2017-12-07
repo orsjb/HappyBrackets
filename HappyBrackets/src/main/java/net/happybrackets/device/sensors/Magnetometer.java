@@ -1,9 +1,8 @@
 package net.happybrackets.device.sensors;
 
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.sensor_types.AccelerometerListener;
-import net.happybrackets.device.sensors.sensor_types.GyroscopeListener;
-import net.happybrackets.device.sensors.sensor_types.MagnetometerListener;
+import net.happybrackets.device.sensors.sensor_types.MagnetometerSensor;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +11,26 @@ import java.util.List;
  * Default Accelerometer for HB.
  * The type of accelerometer will be detected and listeners will register to receive Accelerometer events
  */
-public class Magnetometer extends Sensor {
+public class Magnetometer extends Sensor implements MagnetometerSensor
+{
     private static Sensor defaultSensor = null;
 
+    // these are our axis
+    private double x, y, z;
 
-    static List<MagnetometerListener> listeners = new ArrayList<>();
+    //The value we will round our sensor value to. -1 is not rounding
+    private int xRounding = -1, yRounding = -1, zRounding = -1;
+
+    /**
+     * Remove all rounding
+     */
+    public void resetToDefault(){
+        xRounding = -1;
+        yRounding = -1;
+        zRounding = -1;
+    }
+
+
     /**
      * Will detect connected Sensor and return it
      * @return
@@ -25,46 +39,58 @@ public class Magnetometer extends Sensor {
 
         if (defaultSensor == null)
         {
+            System.out.println("Try Load LSM95DS1");
 
             try {
                 LSM9DS1 sensor =  LSM9DS1.class.getConstructor().newInstance();
                 if (sensor != null){
-                    defaultSensor = sensor;
-                    sensor.addListener(new SensorUpdateListener() {
-                        @Override
-                        public void sensorUpdated() {
-                            synchronized (listeners) {
-                                for (MagnetometerListener listener : listeners) {
-                                    listener.sensorUpdated(sensor.getMagnetometerX(), sensor.getMagnetometerY(), sensor.getMagnetometerZ());
-                                }
-                            }
-                        }
-                    });
-
-                }
-
-            } catch (Exception e) {
-            }
-
-            if (defaultSensor == null) {
-                try {
-                    MiniMU sensor =  MiniMU.class.getConstructor().newInstance();
-                    if (sensor != null){
+                    if (sensor.isValidLoad()) {
                         defaultSensor = sensor;
                         sensor.addListener(new SensorUpdateListener() {
                             @Override
                             public void sensorUpdated() {
-                                synchronized (listeners) {
-                                    for (MagnetometerListener listener : listeners) {
-                                        listener.sensorUpdated(sensor.getMagnetometerX(), sensor.getMagnetometerY(), sensor.getMagnetometerZ());
-                                    }
+                                boolean send_notify = setX(sensor.getMagnetometerX());
+                                send_notify |= setY(sensor.getMagnetometerY());
+                                send_notify |= setZ(sensor.getMagnetometerZ());
+
+                                if (send_notify) {
+                                    notifyListeners();
                                 }
                             }
                         });
+                    }
+                }
 
+            } catch (Exception e) {
+                System.out.println("Error loading LSM9DS1 " + e.getMessage());
+            }
+
+            if (defaultSensor == null) {
+                System.out.println("Try Load MiniMU");
+                try {
+                    MiniMU sensor =  MiniMU.class.getConstructor().newInstance();
+                    if (sensor != null) {
+                        if (sensor.isValidLoad()) {
+                            defaultSensor = sensor;
+                            sensor.addListener(new SensorUpdateListener() {
+                                @Override
+
+                                public void sensorUpdated() {
+                                    boolean send_notify = setX(sensor.getMagnetometerX());
+                                    send_notify |= setY(sensor.getMagnetometerY());
+                                    send_notify |= setZ(sensor.getMagnetometerZ());
+
+                                    if (send_notify) {
+                                        notifyListeners();
+                                    }
+                                }
+
+                            });
+                        }
                     }
 
                 } catch (Exception e) {
+                    System.out.println("Error loading MiniMU " + e.getMessage());
                 }
             }
 
@@ -74,11 +100,14 @@ public class Magnetometer extends Sensor {
                 if (sensor != null) {
                     sensor.addListener(new SensorUpdateListener() {
                         @Override
-                        public void sensorUpdated() {
-                            synchronized (listeners) {
-                                for (MagnetometerListener listener : listeners) {
-                                    listener.sensorUpdated(sensor.getMagnetometerX(), sensor.getMagnetometerY(), sensor.getMagnetometerZ());
-                                }                           }
+                            public void sensorUpdated() {
+                            boolean send_notify = setX(sensor.getMagnetometerX());
+                            send_notify |= setY(sensor.getMagnetometerY());
+                            send_notify |= setZ(sensor.getMagnetometerZ());
+
+                            if (send_notify) {
+                                notifyListeners();
+                            }
                         }
                     });
 
@@ -87,6 +116,98 @@ public class Magnetometer extends Sensor {
             }
         }
         return  defaultSensor;
+    }
+
+    /**
+     * Set the new axis value based on resolution.
+     * If the new value causes the class value to change, we will return true
+     * so we can know that we need to send an update
+     * @param new_val the new value to test or set
+     * @return true if we are overwriting th3 value
+     */
+    private boolean setX(double new_val){
+        boolean ret = false;
+
+        new_val = roundValue(new_val, xRounding);
+        if (x != new_val) {
+            x = new_val;
+            ret = true;
+        }
+        return  ret;
+    }
+
+    /**
+     * Set the new axis value based on resolution.
+     * If the new value causes the class value to change, we will return true
+     * so we can know that we need to send an update
+     * @param new_val the new value to test or set
+     * @return true if we are overwriting th3 value
+     */
+    private boolean setZ(double new_val){
+        boolean ret = false;
+
+        new_val = roundValue(new_val, zRounding);
+        if (z != new_val) {
+            z = new_val;
+            ret = true;
+        }
+        return  ret;
+    }
+
+    /**
+     * Set the new axis value based on resolution.
+     * If the new value causes the class value to change, we will return true
+     * so we can know that we need to send an update
+     * @param new_val the new value to test or set
+     * @return true if we are overwriting th3 value
+     */
+    private boolean setY(double new_val){
+        boolean ret = false;
+
+        new_val = roundValue(new_val, yRounding);
+        if (y != new_val) {
+            y = new_val;
+            ret = true;
+        }
+        return  ret;
+    }
+
+    /**
+     * Set the resolution for all three axis to the number of decimal places
+     * set by resolution. A value of -1 will remove rounding
+     * @param resolution the number of decimal places to round to. -1 will be no rounding
+     */
+    public void setRounding(int resolution){
+        xRounding = resolution;
+        yRounding = resolution;
+        zRounding = resolution;
+    }
+
+    /**
+     * Set the resolution for X axis to the number of decimal places
+     * set by resolution. A value of -1 will remove rounding
+     * @param resolution the number of decimal places to round to. -1 will be no rounding
+     */
+    public void setXRounding(int resolution){
+        xRounding = resolution;
+    }
+
+    /**
+     * Set the resolution for Y axis to the number of decimal places
+     * set by resolution. A value of -1 will remove rounding
+     * @param resolution the number of decimal places to round to. -1 will be no rounding
+     */
+    public void setYRounding(int resolution){
+        yRounding = resolution;
+    }
+
+    /**
+     * Set the resolution for Z axis to the number of decimal places
+     * set by resolution. A value of -1 will remove rounding
+     * @param resolution the number of decimal places to round to. -1 will be no rounding
+     */
+    public void setZRounding(int resolution){
+        zRounding = resolution;
     }
 
     /**
@@ -103,27 +224,29 @@ public class Magnetometer extends Sensor {
     }
 
 
-    /**
-     * Adds a listener for accelerometer
-     * @param listener the listener
-     */
-    public void addAccelerometerListener(MagnetometerListener listener){
-        synchronized (listeners) {
-            listeners.add(listener);
-        }
-    }
 
     @Override
     public String getSensorName() {
         return "Accelerometer";
     }
 
-    /**
-     * Erases all the listeners
-     */
-    public void clearListeners(){
-        synchronized (listeners) {
-            listeners.clear();
-        }
+    @Override
+    public double[] getMagnetometerData() {
+        return new double[]{x, y, z};
+    }
+
+    @Override
+    public double getMagnetometerX() {
+        return x;
+    }
+
+    @Override
+    public double getMagnetometerY() {
+        return y;
+    }
+
+    @Override
+    public double getMagnetometerZ() {
+        return z;
     }
 }

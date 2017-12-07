@@ -211,6 +211,18 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	private double[] CompassAverage = {0.0, 0.0, 0.0};
 
+	private boolean validLoad = false;
+
+	/**
+	 * Test if the Class Loaded setting Accelerometer, Gyroscope and Magnetometer
+	 * @return TRue if loaded correctly
+	 */
+	public boolean isValidLoad() {
+		return validLoad;
+	}
+
+
+
 	public static void main(String[] args) throws Exception {
 
 		// this address found from
@@ -237,14 +249,22 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	public LSM9DS1() throws IOException {
 
+		boolean success;
         bus = I2CFactory.getInstance(I2CBus.BUS_1);
 		accI2CDevice = bus.getDevice(LSM9DS1_ACCADDRESS);
 		magI2CDevice = bus.getDevice(LSM9DS1_MAGADDRESS);
-		enableAccelerometer();
-		enableGyroscope();
-		enableMagnetometer();
-		setCalibrationData();
-        start();
+		success = enableAccelerometer();
+		if (success) {
+            success = enableGyroscope();
+            if (success) {
+                success = enableMagnetometer();
+            }
+        }
+		if (success) {
+			setCalibrationData();
+			start();
+			validLoad = true;
+		}
 	}
 
 
@@ -513,8 +533,9 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
         return b.toString();
     }
 
-	public static void enableAccelerometer() {
+	public static boolean enableAccelerometer() {
 
+		boolean ret = false;
 		// Enable accelerometer with default settings (ODR=119Hz, BW=50Hz, FS=+/-8g)
 		try {
 			disableAccelerometer();
@@ -523,9 +544,12 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 			write(ACC_DEVICE, CTRL_REG6_XL, value);
 		//} catch (KuraException e) {
 		//	System.out.println("Unable to write to I2C device.");
+			ret = true;
 		} catch (InterruptedException e) {
+			ret = false;
 			logger.error("InterruptedException encountered while trying to disable Accelerometer!", e);
 		}
+		return ret;
 	}
 //
 	public static void disableAccelerometer() {
@@ -539,8 +563,9 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	}
 
-	public static void enableGyroscope() {
+	public static boolean enableGyroscope() {
 
+		boolean ret = false;
 		// Enable gyroscope with default settings (ODR=119Hz, BW=31Hz, FSR=500, HPF=0.5Hz)
 		try {
 			disableGyroscope();
@@ -550,12 +575,15 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 			value = 0x44;
 			write(ACC_DEVICE, CTRL_REG3_G, value);
 			gyroSampleRate = 119;
+			ret = true;
 //		} catch (KuraException e){
 //			////s_logger.error.error("Unable to write to I2C device.", e);
 		} catch (InterruptedException e) {
 			////s_logger.error.error(e.toString());
+			ret = false;
 		}
 
+		return ret;
 	}
 
 	public static void disableGyroscope() {
@@ -572,8 +600,8 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	}
 
-	public static void enableMagnetometer() {
-
+	public static boolean enableMagnetometer() {
+		boolean ret = false;
 		// Enable magnetometer with default settings (TEMP_COMP=0, DO=20Hz, FS=+/-400uT)
 		try {
 			disableMagnetometer();
@@ -583,12 +611,14 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 			value = 0x00;
 			write(MAG_DEVICE, CTRL_REG2_M, value);
 			write(MAG_DEVICE, CTRL_REG3_M, value);
+			ret = true;
 //		} catch (KuraException e) {
 			////s_logger.error.error("Unable to write to I2C device.", e);
 		} catch (InterruptedException e) {
 			////s_logger.error.error(e.toString());
+			ret = false;
 		}
-
+		return ret;
 	}
 
 	public static void disableMagnetometer() {
@@ -723,9 +753,8 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
                     accelData = getAccelerometerRaw();
                     magData = getCompassRaw();
                     //pass data on to listeners
-                    for(SensorUpdateListener listener : listeners) {
-                        listener.sensorUpdated();
-                    }
+
+					notifyListeners();
 
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.

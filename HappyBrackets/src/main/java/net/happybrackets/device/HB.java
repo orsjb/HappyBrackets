@@ -67,11 +67,19 @@ public class HB {
 
 	private static boolean enableSimulators = false;
 
+	/**
+	 * Return whether we will displaysimulator sensors if no hardware sensor is found
+	 * @return true if we will display
+	 */
 	public static boolean isEnableSimulators() {
 		return enableSimulators;
 	}
 
-	public static void setEnableSimulators(boolean enableSimulators) {
+	/**
+	 * Set  whether we will displaysimulator sensors if no hardware sensor is found
+	 * @param enableSimulators true if we want to display simulator controls
+	 */
+	public void setEnableSimulators(boolean enableSimulators) {
 		HB.enableSimulators = enableSimulators;
 	}
 
@@ -844,6 +852,7 @@ public class HB {
 		resetLeaveSounding();
 		clearSound();
 		setStatus("Reset");
+
 	}
 
 	/**
@@ -862,6 +871,7 @@ public class HB {
 		//clear mu listeners
 		for(Sensor sensor : sensors.values()) {
 			sensor.clearListeners();
+			sensor.resetToDefault();
 		}
 		//clear osc listeners
 		controller.clearListeners();

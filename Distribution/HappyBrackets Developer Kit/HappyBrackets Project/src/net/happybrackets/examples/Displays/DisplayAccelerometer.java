@@ -4,6 +4,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.Accelerometer;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
@@ -28,6 +29,19 @@ public class DisplayAccelerometer implements HBAction {
     @Override
     public void action(HB hb) {
 
+        Accelerometer mySensor = (Accelerometer) hb.getSensor(Accelerometer.class);
+        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl dynamicControl) {
+                if (mySensor != null)
+                {
+                    int resolution = (int)dynamicControl.getValue();
+                    mySensor.setRounding(resolution);
+                }
+            }
+        });
+
+
         DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "x");
         DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "y");
         DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "z");
@@ -51,7 +65,6 @@ public class DisplayAccelerometer implements HBAction {
             }
         });
 
-        LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
         if (mySensor != null) {
             mySensor.addListener(new SensorUpdateListener() {
 

@@ -59,6 +59,14 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 	double[] accelData = new double[3];
 	double[] magData = new double[3];
 
+	/**
+	 * See if we have a valid load
+	 * @return true if loaded correctly
+	 */
+	public boolean isValidLoad(){
+		return bus != null & acceldevice != null;
+	}
+
 	public MiniMU () {
 		db2.put("Name","MiniMU-9");
 		db2.put("Manufacturer","Pololu");
@@ -183,9 +191,9 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 						accelData = readSensorsAccel();
 						magData = readSensorsMag();
 						//pass data on to listeners
-						for(SensorUpdateListener listener : listeners) {
-							listener.sensorUpdated();
-						}
+
+						notifyListeners();
+
 					} catch (IOException e) {
 							// System.out.println("MiniMU not receiving data.");
 							// Assuming we might like this in dev?
