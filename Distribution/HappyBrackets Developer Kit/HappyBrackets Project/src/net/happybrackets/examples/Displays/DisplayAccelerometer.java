@@ -29,6 +29,7 @@ public class DisplayAccelerometer implements HBAction {
     @Override
     public void action(HB hb) {
 
+
         Accelerometer mySensor = (Accelerometer) hb.getSensor(Accelerometer.class);
         DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
             @Override

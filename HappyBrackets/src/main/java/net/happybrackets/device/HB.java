@@ -859,27 +859,35 @@ public class HB {
 	 * Like {@link #reset()} except that any sounds currently playing are kept. This includes everything that is in the global memory store, all patterns, all dependents, all sensor behaviours and all controller listener behaviours.
  	 */
 	public void resetLeaveSounding() {
-		//clear dependencies and inputs
-		ac.out.clearDependents();
-		ac.out.addDependent(clock);
-		clock.clearMessageListeners();
-		clock.clearInputConnections();
-		clock.clearDependents();
-		pl.clearDependents();
-		//clear data store
-		share.clear();
-		//clear mu listeners
-		for(Sensor sensor : sensors.values()) {
-			sensor.clearListeners();
-			sensor.resetToDefault();
-		}
-		//clear osc listeners
-		controller.clearListeners();
-		//clear broadcast listeners
-		broadcast.clearBroadcastListeners();
+		try {
+			//clear dependencies and inputs
+			ac.out.clearDependents();
+			ac.out.addDependent(clock);
+			clock.clearMessageListeners();
+			clock.clearInputConnections();
+			clock.clearDependents();
+			pl.clearDependents();
+			//clear data store
+			share.clear();
+			//clear mu listeners
+			for (Sensor sensor : sensors.values()) {
+				sensor.clearListeners();
+				sensor.resetToDefault();
+			}
+			if (controller != null) {
+				//clear osc listeners
+				controller.clearListeners();
+			}
 
-		// clear dynamic control listeners
-		ControlMap.getInstance().clearAllListeners();
+			if (broadcast != null) {
+				//clear broadcast listeners
+				broadcast.clearBroadcastListeners();
+			}
+
+			// clear dynamic control listeners
+			ControlMap.getInstance().clearAllListeners();
+		}
+		catch (Exception ex){}
 	}
 
 	/**

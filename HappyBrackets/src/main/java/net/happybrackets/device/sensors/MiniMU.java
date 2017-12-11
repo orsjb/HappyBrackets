@@ -59,12 +59,14 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 	double[] accelData = new double[3];
 	double[] magData = new double[3];
 
+	private boolean validLoad = true;
+
 	/**
 	 * See if we have a valid load
 	 * @return true if loaded correctly
 	 */
 	public boolean isValidLoad(){
-		return bus != null & acceldevice != null;
+		return validLoad;
 	}
 
 	public MiniMU () {
@@ -159,8 +161,10 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 		} catch(IOException e) {
 			logger.error("Unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(", e);
+			validLoad = false;
 		}
-		if (bus != null & acceldevice != null) {
+
+		if (validLoad && bus != null & acceldevice != null) {
 			start();
 		}
 	}
