@@ -117,7 +117,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         Content content = content_factory.createContent(jfxp, "", false);
         tool_window.getContentManager().addContent(content);
 
-        String version_text = BuildVersion.getVersionText();
+        String version_text = BuildVersion.getVersionText() + " :" + controller_engine.getBroadcastManager().getPort();
         tool_window.setTitle(" - " + version_text);
 
         // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them
