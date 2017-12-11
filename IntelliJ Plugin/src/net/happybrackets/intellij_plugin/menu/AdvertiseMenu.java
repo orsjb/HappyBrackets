@@ -16,15 +16,17 @@ public class AdvertiseMenu extends AnAction {
 
     @Override
     public void update(AnActionEvent event) {
+        int advertise_port = ControllerEngine.getInstance().getBroadcastManager().getPort();
+
         DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
         boolean disabled = connection.getDisabledAdvertise();
 
-        String menu_text = "Disable Advertise";
+        String menu_text = "Disable Advertise: Port " + advertise_port;
         String menu_descript = "Stops Communication between Intellij and HB device";
 
         if (disabled)
         {
-            menu_text = "Enable Advertise";
+            menu_text = "Enable Advertise: Port " + advertise_port;
             menu_descript = "Resumes communcation between Intellij and HB device";
 
         }

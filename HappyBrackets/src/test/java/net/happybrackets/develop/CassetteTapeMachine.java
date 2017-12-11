@@ -5,12 +5,14 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.Accelerometer;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.Sensor;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
 
+import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 
 
@@ -50,29 +52,41 @@ public class CassetteTapeMachine implements HBAction {
             }
         };
         SampleManager.setVerbose(true);
-//        Sample sample = SampleManager.sample("data/audio/Nylon_Guitar/Clean_A_harm.wav");
-        Sample sample = SampleManager.sample("data/audio/hiphop.wav");
-        System.out.println("Is sample loaded or null? " + sample);
-        sp = new SamplePlayer(hb.ac, sample);
-        sp.setRate(rate);
-        sp.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
-        loopStart = new Glide(hb.ac, 0, 500);
-        loopEnd = new Glide(hb.ac, (float)sp.getSample().getLength(), 500);
-        sp.setLoopStart(loopStart);
-        sp.setLoopEnd(loopEnd);
-        g.addInput(sp);
-        BiquadFilter bf = new BiquadFilter(hb.ac, 1, BiquadFilter.HP);
-        bf.setFrequency(100);
-        bf.addInput(g);
-        hb.sound(bf);
-        //sensor averaging
-        sensorHistory = new LinkedList<double[]>();
-        for(int i = 0; i < 10; i++) {
-            sensorHistory.add(new double[] {0,0,0});
+
+        String sample_name = "data/audio/Nylon_Guitar/Clean_A_harm.wav";
+        //sample_name = "data/audio/hiphop.wav";
+
+
+        Sample sample = SampleManager.sample(sample_name);
+
+
+        System.out.println("Is sample loaded or null? " + sample_name);
+        if (sample == null)
+        {
+            hb.setStatus("Unable to load sample " );
+        }
+        else {
+            sp = new SamplePlayer(hb.ac, sample);
+            sp.setRate(rate);
+            sp.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+            loopStart = new Glide(hb.ac, 0, 500);
+            loopEnd = new Glide(hb.ac, (float) sp.getSample().getLength(), 500);
+            sp.setLoopStart(loopStart);
+            sp.setLoopEnd(loopEnd);
+            g.addInput(sp);
+            BiquadFilter bf = new BiquadFilter(hb.ac, 1, BiquadFilter.HP);
+            bf.setFrequency(100);
+            bf.addInput(g);
+            hb.sound(bf);
+            //sensor averaging
+            sensorHistory = new LinkedList<double[]>();
+            for (int i = 0; i < 10; i++) {
+                sensorHistory.add(new double[]{0, 0, 0});
+            }
         }
         //set up sensor
 //        AccelerometerSensor sensor = (MiniMU)hb.getSensor(MiniMU.class);
-        Sensor sensor = (LSM9DS1)hb.getSensor(LSM9DS1.class);
+        Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class);
         sensor.addListener(new SensorUpdateListener() {
             @Override
             public void sensorUpdated() {
@@ -150,5 +164,15 @@ public class CassetteTapeMachine implements HBAction {
             timeOfLastPlayToStop = System.currentTimeMillis();
         }
         previousState = currentState;
+
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

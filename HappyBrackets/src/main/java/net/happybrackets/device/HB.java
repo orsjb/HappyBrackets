@@ -214,7 +214,8 @@ public class HB {
 	public static boolean runDebug(Class<?> action_class) throws Exception {
 
 		boolean ret = false;
-
+		String current = System.getProperty("user.dir");
+		System.out.println(current);
 		// we will enable simulators of Sensors
 		enableSimulators = true;
 		if (HBInstance == null) {
