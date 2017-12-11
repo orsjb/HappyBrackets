@@ -5,10 +5,7 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.Accelerometer;
-import net.happybrackets.device.sensors.LSM9DS1;
-import net.happybrackets.device.sensors.Sensor;
-import net.happybrackets.device.sensors.SensorUpdateListener;
+import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
 
@@ -86,45 +83,62 @@ public class CassetteTapeMachine implements HBAction {
         }
         //set up sensor
 //        AccelerometerSensor sensor = (MiniMU)hb.getSensor(MiniMU.class);
-        Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class);
-        sensor.addListener(new SensorUpdateListener() {
-            @Override
-            public void sensorUpdated() {
-                count++;
-                //state stuff, with averaging
-                double[] accel = ((AccelerometerSensor)sensor).getAccelerometerData();
-                sensorHistory.removeFirst();
-                sensorHistory.add(accel);
-                double xsmooth = 0, ysmooth = 0, zsmooth = 0;
-                for(double[] histValue : sensorHistory) {
-                    xsmooth += histValue[0] / sensorHistory.size();
-                    ysmooth += histValue[1] / sensorHistory.size();
-                    zsmooth += histValue[2] / sensorHistory.size();
-                }
-                if(count % 1 == 0) {
+        Accelerometer accel_sensor = (Accelerometer)hb.getSensor(Accelerometer.class);
+        if (accel_sensor != null) {
+            accel_sensor.addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
+                    count++;
+                    //state stuff, with averaging
+                    double[] accel = accel_sensor.getAccelerometerData();
+                    sensorHistory.removeFirst();
+                    sensorHistory.add(accel);
+                    double xsmooth = 0, ysmooth = 0, zsmooth = 0;
+                    for (double[] histValue : sensorHistory) {
+                        xsmooth += histValue[0] / sensorHistory.size();
+                        ysmooth += histValue[1] / sensorHistory.size();
+                        zsmooth += histValue[2] / sensorHistory.size();
+                    }
+                    if (count % 1 == 0) {
 //                    System.out.println(xsmooth + " " + ysmooth + " " + zsmooth);
+                    }
+                    if ((Math.abs(xsmooth) > Math.abs(ysmooth)) && (Math.abs(xsmooth) > Math.abs(zsmooth))) {
+                        if (xsmooth > 0) currentState = State.FF;
+                        else currentState = State.RW;
+                    } else if (Math.abs(ysmooth) > Math.abs(zsmooth)) {
+                        if (ysmooth > 0) currentState = State.PLAY;
+                        else currentState = State.FREE;
+                    } else {
+                        if (zsmooth > 0) currentState = State.STOP;
+                        else currentState = State.REV;
+                    }
+
+                    if (currentState != previousState) {
+                        changeState();
+                    }
+
                 }
-                if ((Math.abs(xsmooth) > Math.abs(ysmooth)) && (Math.abs(xsmooth) > Math.abs(zsmooth))) {
-                    if (xsmooth > 0) currentState = State.FF;
-                    else currentState = State.RW;
-                } else if (Math.abs(ysmooth) > Math.abs(zsmooth)) {
-                    if (ysmooth > 0) currentState = State.PLAY;
-                    else currentState = State.FREE;
-                } else {
-                    if (zsmooth > 0) currentState = State.STOP;
-                    else currentState = State.REV;
+            });
+        }
+
+        Gyroscope gyroscope = (Gyroscope)hb.getSensor(Gyroscope.class);
+
+        if (gyroscope != null){
+            gyroscope.addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
+                    double[] gyr = gyroscope.getGyroscopeData();
+                    //magnitude
+                    double mag = Math.sqrt(gyr[0] * gyr[0] + gyr[1] * gyr[1] + gyr[2] * gyr[2]);
+                    double thresh = 2;
+                    System.out.println(mag);
+                    if (mag > thresh) rateMod.setValue((float) (mag - thresh) / 2f);
+                    else rateMod.setValue(0);
                 }
-                if (currentState != previousState) changeState();
-                double[] gyr = ((GyroscopeSensor)sensor).getGyroscopeData();
-                //magnitude
-                double mag = Math.sqrt(gyr[0]*gyr[0] + gyr[1]*gyr[1] + gyr[2]*gyr[2]);
-                double thresh = 2;
-                System.out.println(mag);
-                if (mag > thresh) rateMod.setValue((float) (mag - thresh) / 2f);
-                else rateMod.setValue(0);
-            }
-        });
+            });
+        }
     }
+
     public void changeState() {
         System.out.println("State changed to " + currentState);
         switch(currentState) {
