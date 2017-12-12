@@ -28,11 +28,11 @@ if [ "$DEVICE_NAME" != "" ]; then
     echo “Sending audio to ${HOST_ADDRESS}”
     scp -r ~/$FILE_PATH/audio/* $HOST_ADDRESS:~/HappyBrackets/data/audio/
 
-    echo "We need to reboot your device to prevent disk becoming corrupt. The following line will be sent when you enter you password"
+    echo "We need to flush filles to your device to prevent disk becoming corrupt. The following line will be sent when you enter you password"
 
-    echo "sudo shutdown -r now"
+    echo "sync"
 
-    ssh $HOST_ADDRESS "sudo shutdown -r now"
+    ssh $HOST_ADDRESS "sync"
 
 
 

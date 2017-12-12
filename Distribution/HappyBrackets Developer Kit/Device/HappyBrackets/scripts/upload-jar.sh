@@ -25,12 +25,12 @@ if [ "$DEVICE_NAME" != "" ]; then
     echo “Running Upload to ${HOST_ADDRESS}”
     scp HB.jar $HOST_ADDRESS:~/HappyBrackets
 
-# now we need to SSH into deviceso we can do a reboot
-    echo "We need to reboot your device to prevent disk becoming corrupt. The following line will be sent when you enter you password"
+# now we need to SSH into device so we can do a sync and restart
+    echo "We need to sync to write and then we will restart HappyBrackets"
 
-    echo "sudo shutdown -r now"
+    echo "sync ; sudo killall java ; sudo HappyBrackets/scripts/run.sh"
 
-    ssh $HOST_ADDRESS "sudo shutdown -r now"
+    ssh $HOST_ADDRESS "sync ; sudo killall java ; sudo HappyBrackets/scripts/run.sh"
 
 else
     echo "You need to enter the device name as argument to call. eg ${0} hb-001d43801b7a.local"
