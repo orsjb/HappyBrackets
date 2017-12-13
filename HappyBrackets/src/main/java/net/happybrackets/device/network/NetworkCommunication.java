@@ -19,6 +19,7 @@ package net.happybrackets.device.network;
 //import com.intellij.ide.ui.EditorOptionsTopHitProvider;
 import de.sciss.net.*;
 import net.happybrackets.core.*;
+import net.happybrackets.core.config.DefaultConfig;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.LogSender;
@@ -75,8 +76,10 @@ public class NetworkCommunication {
 			public void dynamicControlEvent(OSCMessage msg) {
 				// Send all Dynamic Control Messages to the respective controllers
 				try {
-					UDPCachedMessage cached_message = new UDPCachedMessage(msg);
-					DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+					if (DeviceConfig.getInstance() != null) {
+						UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+						DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -89,18 +92,19 @@ public class NetworkCommunication {
 			public void dynamicControlEvent(OSCMessage msg) {
 				// Send all Dynamic Control Messages to the Broadcast Address so all will receive them
 				try {
-					UDPCachedMessage cached_message = new UDPCachedMessage(msg);
-					// We need to send message On broadcast channel on the standard listening port. We are sending to device, not controller
-					// this is why we are using control to device port
-					if (advertiseTxSocket != null) {
-						int device_port = DeviceConfig.getInstance().getControlToDevicePort();
-						DatagramPacket packet = cached_message.getCachedPacket();
-						packet.setAddress(broadcastAddress);
-						packet.setPort(device_port);
-						advertiseTxSocket.send(packet);
+					if (DeviceConfig.getInstance() != null) {
+						UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+						// We need to send message On broadcast channel on the standard listening port. We are sending to device, not controller
+						// this is why we are using control to device port
+						if (advertiseTxSocket != null) {
+							int device_port = DeviceConfig.getInstance().getControlToDevicePort();
+							DatagramPacket packet = cached_message.getCachedPacket();
+							packet.setAddress(broadcastAddress);
+							packet.setPort(device_port);
+							advertiseTxSocket.send(packet);
+						}
 					}
 
-					//DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -112,7 +116,9 @@ public class NetworkCommunication {
 			@Override
 			public void statusChanged(String new_status) {
 				DeviceStatus.getInstance().setStatusText(new_status);
-				DeviceConfig.getInstance().sendMessageToAllControllers(DeviceStatus.getInstance().getCachedStatusMessage().cachedPacket);
+				if (DeviceConfig.getInstance() != null) {
+					DeviceConfig.getInstance().sendMessageToAllControllers(DeviceStatus.getInstance().getCachedStatusMessage().cachedPacket);
+				}
 			}
 		});
 
@@ -120,16 +126,25 @@ public class NetworkCommunication {
 		//init the OSCServer
 		logger.info("Setting up OSC server");
 		try {
-			oscServer = OSCServer.newUsing(OSCServer.UDP, DeviceConfig.getInstance().getControlToDevicePort());
+			if (DeviceConfig.getInstance() == null) {
+				oscServer = OSCServer.newUsing(OSCServer.UDP, DefaultConfig.CONTROL_TO_DEVICE_PORT);
+			}
+			else {
+				oscServer = OSCServer.newUsing(OSCServer.UDP, DeviceConfig.getInstance().getControlToDevicePort());
+			}
 			oscServer.start();
 		} catch (IOException e) {
 			logger.error("Error creating OSC server!", e);
 		}
 		logger.info("Started OSC server");
 
-		// Create log sender.
-		logSender = new LogSender(this,  DeviceConfig.getInstance().getLogFilePath());
-
+		if (DeviceConfig.getInstance() != null) {
+			// Create log sender.
+			logSender = new LogSender(this, DeviceConfig.getInstance().getLogFilePath());
+		}
+		else {
+			logSender = null;
+		}
 		//add a single master listener that forwards listening to delegates
 		oscServer.addOSCListener(new OSCListener() {
 			@Override
@@ -144,8 +159,12 @@ public class NetworkCommunication {
 //				System.out.println("Mesage received: " + msg.getName());
 
 				// this is our default target ports
-				int target_port = DeviceConfig.getInstance().getStatusFromDevicePort();
+				int target_port = DefaultConfig.STATUS_FROM_DEVICE_PORT;
 
+				if (DeviceConfig.getInstance() != null)
+				{
+					DeviceConfig.getInstance().getStatusFromDevicePort();
+				}
 				try {
 					InetAddress sending_address = ((InetSocketAddress) src).getAddress();
 
@@ -372,10 +391,12 @@ public class NetworkCommunication {
             };
 
             while(true) {
-                //hb.broadcast.forAllTransmitters(keepAlive);
-                // we should send to all registered controllers
-				DeviceConfig.getInstance().notifyAllControllers();
 
+            	if (DeviceConfig.getInstance() != null) {
+					//hb.broadcast.forAllTransmitters(keepAlive);
+					// we should send to all registered controllers
+					DeviceConfig.getInstance().notifyAllControllers();
+				}
                 try {
                     Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
                 } catch (InterruptedException e) {
@@ -395,15 +416,16 @@ public class NetworkCommunication {
 	public void send(String msg_name, Object[] args) {
 		try {
 			DeviceConfig config = DeviceConfig.getInstance();
+			if (config != null) {
+				OSCMessage msg = new OSCMessage(msg_name, args);
 
-			OSCMessage msg = new OSCMessage(msg_name, args);
-
-			UDPCachedMessage cached_message = new UDPCachedMessage(msg);
-			DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
-
+				UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+				DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+			}
 		} catch (Exception ex) {
 			logger.error("Error sending OSC message to Server!", ex);
 		}
+
 	}
 
 	/**
@@ -477,8 +499,9 @@ public class NetworkCommunication {
 	 * @param send_logs true to start, false to stop.
 	 */
 	public void sendLogs(boolean send_logs) {
-		logSender.setSend(send_logs);
-		DeviceStatus.getInstance().setLoggingEnabled(send_logs);
-
+		if (logSender != null) {
+			logSender.setSend(send_logs);
+			DeviceStatus.getInstance().setLoggingEnabled(send_logs);
+		}
 	}
 }
