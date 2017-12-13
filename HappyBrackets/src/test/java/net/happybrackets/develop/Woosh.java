@@ -22,8 +22,10 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.LSM9DS1;
+import net.happybrackets.device.sensors.Gyroscope;
 import net.happybrackets.device.sensors.SensorUpdateListener;
+
+import java.lang.invoke.MethodHandles;
 
 /**
  * For this example we want to look at the accelerometer and use it to trigger a sound when you turn over the
@@ -88,7 +90,7 @@ public class Woosh implements HBAction {
         Sample s2 = SampleManager.fromGroup("Guitar", 5);
         Sample s3 = SampleManager.fromGroup("Guitar", 1);
 
-        LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
+        Gyroscope mySensor = (Gyroscope) hb.getSensor(Gyroscope.class);
         mySensor.addListener(new SensorUpdateListener() {
 
 
@@ -128,5 +130,14 @@ public class Woosh implements HBAction {
 
             }
         });
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
