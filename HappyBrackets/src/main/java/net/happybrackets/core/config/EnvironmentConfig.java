@@ -30,20 +30,20 @@ public interface EnvironmentConfig {
 	//hosts and ports for network messages
 //	default public String getMyHostName() 					{ return Device.getInstance().myHostname;}
 //  default public String getMyAddress()					{ return Device.getInstance().myIP; }
-	default public String getMulticastAddr()				{ return "::FFFF:225.2.2.5"; }		//multicast address used for both synch and broadcast messages
-	default public int getBroadcastPort() 					{ return 2222; }					//broadcast port (not currently OSC)
-	default public int getStatusFromDevicePort()			{ return 2223; }					//OSC status messages from device to controller
-	default public int getClockSynchPort()					{ return 2224; }					//synch messages over multicast
-	default public int getCodeToDevicePort()				{ return 2225; }					//Java bytecode from controller to device
-	default public int getControlToDevicePort()				{ return 2226; }					//OSC messages from controller to device
-	default public int getControllerDiscoveryPort()			{ return 2227; }
-	default public int getControllerHTTPPort()				{ return 2228; }					//http requests from device to controller
+	default public String getMulticastAddr()				{ return DefaultConfig.MULTICAST_ADDRESS; }		//multicast address used for both synch and broadcast messages
+	default public int getBroadcastPort() 					{ return DefaultConfig.BROADCAST_PORT; }					//broadcast port (not currently OSC)
+	default public int getStatusFromDevicePort()			{ return DefaultConfig.STATUS_FROM_DEVICE_PORT; }					//OSC status messages from device to controller
+	default public int getClockSynchPort()					{ return DefaultConfig.CLOCK_SYNC_PORT; }					//synch messages over multicast
+	default public int getCodeToDevicePort()				{ return DefaultConfig.CODE_TO_DEVICE_PORT; }					//Java bytecode from controller to device
+	default public int getControlToDevicePort()				{ return DefaultConfig.CONTROL_TO_DEVICE_PORT; }					//OSC messages from controller to device
+	default public int getControllerDiscoveryPort()			{ return DefaultConfig.CONTROLLER_DISCOVERY_PORT; }
+	default public int getControllerHTTPPort()				{ return DefaultConfig.CONTROLLER_HTTP_PORT; }					//http requests from device to controller
 	//how often the PI sends an alive message to the server
-	default public int getAliveInterval() 					{ return 1000; }
+	default public int getAliveInterval() 					{ return DefaultConfig.ALIVE_INTERVAL; }
 	//places
-	default public String getWorkingDir()					{ return "."; }
-	default public String getAudioDir()						{ return getWorkingDir() + "/audio"; }
-	default public String getConfigDir() 			    	{ return getWorkingDir() + "/config"; }
-	default public String getKnownDevicesFile()				{ return getConfigDir() + "/known_devices"; }
-	default public String getEncryptionKey()				{ return "CHANGE ME!"; }
+	default public String getWorkingDir()					{ return DefaultConfig.WORKING_DIRECTORY; }
+	default public String getAudioDir()						{ return getWorkingDir() + DefaultConfig.WORKING_DIRECTORY; }
+	default public String getConfigDir() 			    	{ return getWorkingDir() + DefaultConfig.CONFIG_DIRECTORY; }
+	default public String getKnownDevicesFile()				{ return getConfigDir() + DefaultConfig.CONFIG_DIRECTORY; }
+	default public String getEncryptionKey()				{ return DefaultConfig.ENCRYPTION_KEY; }
 }
