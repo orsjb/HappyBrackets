@@ -62,7 +62,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                 }
 
             } catch (Exception e) {
-                System.out.println("Error loading LSM9DS1 " + e.getMessage());
+                System.out.println("LSM9DS1 not found");
             }
 
             if (defaultSensor == null) {
@@ -89,7 +89,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                     }
 
                 } catch (Exception e) {
-                    System.out.println("Error loading MiniMU " + e.getMessage());
+                    System.out.println("loading MiniMU not found");
                 }
             }
 

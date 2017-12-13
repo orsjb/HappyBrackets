@@ -58,7 +58,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                 }
 
             } catch (Exception e) {
-                System.out.println("Error loading LSM9DS1 " + e.getMessage());
+                System.out.println("LSM9DS1 not found");
             }
 
             if (defaultSensor == null) {
@@ -85,7 +85,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                     }
 
                 } catch (Exception e) {
-                    System.out.println("Error loading MiniMU " + e.getMessage());
+                    System.out.println("MiniMU not found");
                 }
             }
 
