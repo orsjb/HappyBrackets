@@ -74,8 +74,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     static Synchronizer synchronizer;                               //runs independently, no interaction needed
 
 
-    static private boolean controllerStarted = false;
-
 
     private JFXPanel jfxp;
     private Scene scene;
@@ -121,7 +119,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         tool_window.setTitle(" - " + version_text);
 
         // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them
-        startAdvertiser();
+        ControllerEngine.getInstance().startDeviceCommunication();
 
         synchronized (advertiseStopLock) {
             // Increment our count
@@ -143,20 +141,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         numberStartingToolwindows += tally;
         return numberStartingToolwindows;
     }
-    /**
-     * Start the Advertiser if it has not been started yet
-     * WE MUST ONLY START ONCE
-     */
-    synchronized static void startAdvertiser()
-    {
-        ControllerAdvertiser advertiser = ControllerEngine.getInstance().getControllerAdvertiser();
 
-        if (advertiser != null && !controllerStarted)
-        {
-            controllerStarted = true;
-            advertiser.start();
-        }
-    }
+
     /**
      * Load singletons when loading first project
      * @param project_dir

@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 
 public class ControllerEngine {
+
+    private boolean controllerStarted = false;
     private static ControllerEngine ourInstance = new ControllerEngine();
 
     public static ControllerEngine getInstance() {
@@ -101,7 +103,6 @@ public class ControllerEngine {
 
         logger.info("Starting ControllerAdvertiser");
         broadcastManager = new BroadcastManager(controllerConfig.getMulticastAddr(), listen_port);
-        broadcastManager.startRefreshThread();
 
         //set up device connection
         deviceConnection = new DeviceConnection(controllerConfig, broadcastManager);
@@ -141,5 +142,19 @@ public class ControllerEngine {
         return broadcastManager;
     }
 
+
+    public synchronized void startDeviceCommunication(){
+
+        if (controllerAdvertiser != null && !controllerStarted)
+        {
+            if (broadcastManager != null)
+            {
+                broadcastManager.startRefreshThread();
+            }
+            controllerStarted = true;
+            controllerAdvertiser.start();
+        }
     }
+}
+
 
