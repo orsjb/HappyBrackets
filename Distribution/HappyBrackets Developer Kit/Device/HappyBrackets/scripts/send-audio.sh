@@ -28,7 +28,7 @@ if [ "$DEVICE_NAME" != "" ]; then
     echo “Sending audio to ${HOST_ADDRESS}”
     scp -r ~/$FILE_PATH/audio/* $HOST_ADDRESS:~/HappyBrackets/data/audio/
 
-    echo "We need to flush filles to your device to prevent disk becoming corrupt. The following line will be sent when you enter you password"
+    echo "We need to flush files to your device to prevent disk becoming corrupt. The following line will be sent when you enter you password"
 
     echo "sync"
 
