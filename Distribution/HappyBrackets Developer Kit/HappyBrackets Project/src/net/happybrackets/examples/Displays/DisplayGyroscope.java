@@ -30,7 +30,7 @@ public class DisplayGyroscope implements HBAction {
     public void action(HB hb) {
 
         Gyroscope mySensor = (Gyroscope) hb.getSensor(Gyroscope.class);
-        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
+        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Gyro Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl dynamicControl) {
                 if (mySensor != null)
@@ -42,9 +42,9 @@ public class DisplayGyroscope implements HBAction {
         });
 
 
-        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "x");
-        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "y");
-        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "z");
+        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "Gyro x");
+        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "Gyro y");
+        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "Gyra z");
 
 
         DynamicControl min_control_x = hb.createDynamicControl(ControlType.FLOAT, "min-x");

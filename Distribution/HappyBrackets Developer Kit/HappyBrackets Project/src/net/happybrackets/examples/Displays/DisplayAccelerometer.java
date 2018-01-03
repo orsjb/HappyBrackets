@@ -31,7 +31,7 @@ public class DisplayAccelerometer implements HBAction {
 
 
         Accelerometer mySensor = (Accelerometer) hb.getSensor(Accelerometer.class);
-        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
+        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Accel Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl dynamicControl) {
                 if (mySensor != null)
@@ -43,9 +43,9 @@ public class DisplayAccelerometer implements HBAction {
         });
 
 
-        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "x");
-        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "y");
-        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "z");
+        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "accel x");
+        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "accel y");
+        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "accel z");
 
 
         DynamicControl min_control_x = hb.createDynamicControl(ControlType.FLOAT, "min-x");

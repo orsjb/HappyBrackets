@@ -213,6 +213,11 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	private boolean validLoad = false;
 
+	public static LSM9DS1 getLoadedInstance() {
+		return loadedInstance;
+	}
+
+	private static LSM9DS1 loadedInstance = null;
 	/**
 	 * Test if the Class Loaded setting Accelerometer, Gyroscope and Magnetometer
 	 * @return TRue if loaded correctly
@@ -265,6 +270,8 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 			start();
 			validLoad = true;
 		}
+
+		loadedInstance = this;
 	}
 
 

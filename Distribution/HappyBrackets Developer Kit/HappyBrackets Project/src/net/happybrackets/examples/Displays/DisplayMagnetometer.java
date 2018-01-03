@@ -42,9 +42,9 @@ public class DisplayMagnetometer implements HBAction {
         });
 
 
-        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "x");
-        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "y");
-        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "z");
+        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "Mag x");
+        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "Mag y");
+        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "Mag z");
 
 
         DynamicControl min_control_x = hb.createDynamicControl(ControlType.FLOAT, "min-x");

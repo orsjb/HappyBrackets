@@ -40,17 +40,22 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
         {
             System.out.println("Try Load LSM95DS1");
             try {
-                LSM9DS1 sensor =  LSM9DS1.class.getConstructor().newInstance();
+                LSM9DS1 sensor = LSM9DS1.getLoadedInstance();
+                if (sensor == null) {
+                    sensor = LSM9DS1.class.getConstructor().newInstance();
+                }
+
                 if (sensor != null){
                     if (sensor.isValidLoad()) {
                         System.out.println("Valid Load of LSM95DS1");
                         defaultSensor = sensor;
+                        LSM9DS1 finalSensor = sensor;
                         sensor.addListener(new SensorUpdateListener() {
                             @Override
                             public void sensorUpdated() {
-                                boolean send_notify = setX(sensor.getAccelerometerX());
-                                send_notify |= setY(sensor.getAccelerometerY());
-                                send_notify |= setZ(sensor.getAccelerometerZ());
+                                boolean send_notify = setX(finalSensor.getAccelerometerX());
+                                send_notify |= setY(finalSensor.getAccelerometerY());
+                                send_notify |= setZ(finalSensor.getAccelerometerZ());
 
                                 if (send_notify) {
                                     notifyListeners();
@@ -69,16 +74,21 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
 
                 System.out.println("Try Load MiniMU");
                 try {
-                    MiniMU sensor =  MiniMU.class.getConstructor().newInstance();
+                    MiniMU sensor = MiniMU.getLoadedInstance();
+                    if (sensor == null) {
+                        sensor = MiniMU.class.getConstructor().newInstance();
+                    }
+
                     if (sensor != null){
                         if (sensor.isValidLoad()) {
                             defaultSensor = sensor;
+                            MiniMU finalSensor = sensor;
                             sensor.addListener(new SensorUpdateListener() {
                                 @Override
                                 public void sensorUpdated() {
-                                    boolean send_notify = setX(sensor.getAccelerometerX());
-                                    send_notify |= setY(sensor.getAccelerometerY());
-                                    send_notify |= setZ(sensor.getAccelerometerZ());
+                                    boolean send_notify = setX(finalSensor.getAccelerometerX());
+                                    send_notify |= setY(finalSensor.getAccelerometerY());
+                                    send_notify |= setZ(finalSensor.getAccelerometerZ());
 
                                     if (send_notify) {
                                         notifyListeners();

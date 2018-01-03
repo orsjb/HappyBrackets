@@ -61,6 +61,11 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 	private boolean validLoad = true;
 
+	public static MiniMU getLoadedInstance() {
+		return loadedInstance;
+	}
+
+	static private MiniMU loadedInstance = null;
 	/**
 	 * See if we have a valid load
 	 * @return true if loaded correctly
@@ -167,6 +172,8 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		if (validLoad && bus != null & acceldevice != null) {
 			start();
 		}
+
+		loadedInstance = this;
 	}
 
 //	public void update() throws IOException {
