@@ -25,12 +25,12 @@ if [ "$DEVICE_NAME" != "" ]; then
     echo “Running Upload to ${HOST_ADDRESS}”
     scp HB.jar $HOST_ADDRESS:~/HappyBrackets
 
-# now we need to SSH into device so we can do a sync and restart HapyBrackets
-    echo "We need to sync to write and then we will restart HappyBrackets"
+# now we need to SSH into device so we can do a restart of PI
+    echo "We need to reboot our device"
 
-    echo "sync ; sudo killall java ; sudo HappyBrackets/scripts/run.sh"
+    echo "sudo shutdown -r now"
 
-    ssh $HOST_ADDRESS "sync ; sudo killall java ; sudo HappyBrackets/scripts/run.sh"
+    ssh $HOST_ADDRESS "sudo shutdown -r now"
 
 else
     echo "You need to enter the device name as argument to call. eg ${0} hb-001d43801b7a.local"
