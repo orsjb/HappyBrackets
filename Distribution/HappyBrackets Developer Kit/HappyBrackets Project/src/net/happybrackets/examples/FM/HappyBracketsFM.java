@@ -97,6 +97,8 @@ public class HappyBracketsFM implements HBAction {
                     // update values
                     float mod_freq = x * 1000;
                     modFMFreq.setValue(mod_freq);
+
+                    modFMDepth.setValue(y * 1000);
                     //display_freq.setValue (mod_freq);
                 }
             });
