@@ -23,6 +23,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.Accelerometer;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
@@ -77,7 +78,7 @@ public class HappyBracketsFM implements HBAction {
         });
 
         //this is the sensor
-        LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
+        Accelerometer mySensor = (Accelerometer) hb.getSensor(Accelerometer.class);
         if (mySensor != null) {
             mySensor.addListener(new SensorUpdateListener() {
                 @Override
@@ -94,6 +95,8 @@ public class HappyBracketsFM implements HBAction {
                     // update values
                     float mod_freq = x * 1000;
                     modFMFreq.setValue(mod_freq);
+
+                    modFMDepth.setValue(y * 1000);
                     //display_freq.setValue (mod_freq);
                 }
             });
