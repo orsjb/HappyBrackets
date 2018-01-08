@@ -23,6 +23,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.Accelerometer;
 import net.happybrackets.device.sensors.LSM9DS1;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
@@ -49,15 +50,17 @@ public class HappyBracketsFM implements HBAction {
     public void action(HB hb) {
 
         //these are the parameters that control the FM synth
-        Glide modFMFreq = new Glide(hb.ac, 666);
-        Glide modFMDepth = new Glide(hb.ac, 100);
+        Glide modFMFreq = new Glide(hb.ac, 1);
+        Glide modFMDepth = new Glide(hb.ac, 500);
         Glide baseFmFreq = new Glide(hb.ac, 1000);
-        Glide FmGain = new Glide(hb.ac, 0.1f);
+        Glide FmGain = new Glide(hb.ac, 0.5f);
 
         DynamicControl display_status = hb.createDynamicControl(this, ControlType.TEXT, "Status", "");
 
         //this is the FM synth
         WavePlayer FM_modulator = new WavePlayer(hb.ac, modFMFreq, Buffer.SINE);
+
+        // create a function to change the carrier's frequency
         Function modFunction = new Function(FM_modulator, modFMDepth, baseFmFreq) {
             @Override
             public float calculate() {
@@ -77,7 +80,7 @@ public class HappyBracketsFM implements HBAction {
         });
 
         //this is the sensor
-        LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
+        Accelerometer mySensor = (Accelerometer) hb.getSensor(Accelerometer.class);
         if (mySensor != null) {
             mySensor.addListener(new SensorUpdateListener() {
                 @Override

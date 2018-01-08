@@ -17,8 +17,6 @@
 package net.happybrackets.examples;
 
 import net.beadsproject.beads.data.Buffer;
-import net.beadsproject.beads.events.KillTrigger;
-import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
@@ -34,12 +32,9 @@ public class HappyBracketsHelloWorld implements HBAction {
     @Override
     public void action(HB hb) {
         WavePlayer wp = new WavePlayer(hb.ac, 1000, Buffer.SINE);
-        Envelope e = new Envelope(hb.ac, 0.1f);
-        Gain g = new Gain(hb.ac, 1, e);
-        e.addSegment(0, 5000, new KillTrigger(g));
+        Gain g = new Gain(hb.ac, 1, 0.1f);
         g.addInput(wp);
         hb.sound(g);
-        System.out.println("Hello World");
     }
 
 }
