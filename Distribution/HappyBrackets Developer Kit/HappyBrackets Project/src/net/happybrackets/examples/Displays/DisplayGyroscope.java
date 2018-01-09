@@ -1,6 +1,7 @@
 package net.happybrackets.examples.Displays;
 
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
@@ -17,6 +18,7 @@ public class DisplayGyroscope implements HBAction {
 
     boolean initialisedMaxMin = false;
 
+    final float MAX_GYRO = 1;
     public static void main(String[] args) {
 
         try {
@@ -42,10 +44,14 @@ public class DisplayGyroscope implements HBAction {
         });
 
 
-        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "Gyro x");
-        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "Gyro y");
-        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "Gyra z");
+        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "Gyro x").setControlScope(ControlScope.SKETCH);
+        hb.createDynamicControl(ControlType.FLOAT, "Gyro x", 0, -1 * MAX_GYRO, MAX_GYRO).setControlScope(ControlScope.SKETCH);
 
+        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "Gyro y").setControlScope(ControlScope.SKETCH);
+        hb.createDynamicControl(ControlType.FLOAT, "Gyro y", 0, -1* MAX_GYRO, MAX_GYRO).setControlScope(ControlScope.SKETCH);
+
+        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "Gyra z").setControlScope(ControlScope.SKETCH);
+        hb.createDynamicControl(ControlType.FLOAT, "Gyra z", 0, -1* MAX_GYRO, MAX_GYRO).setControlScope(ControlScope.SKETCH);
 
         DynamicControl min_control_x = hb.createDynamicControl(ControlType.FLOAT, "min-x");
         DynamicControl min_control_y = hb.createDynamicControl(ControlType.FLOAT, "min-y");
