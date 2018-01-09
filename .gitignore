@@ -1,8 +1,6 @@
 # all compiled classes
 *.class
 
-# all instances of HB.jar
-HB.jar
 
 # all .DS_Store files
 .DS_Store
