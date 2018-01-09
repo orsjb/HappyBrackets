@@ -17,6 +17,7 @@
 package net.happybrackets.device.sensors;
 
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 /**
@@ -25,6 +26,11 @@ import java.util.Set;
  * Created by ollie on 1/06/2016.
  */
 public abstract class Sensor {
+
+    /**
+     * A {@link Hashtable} to store sensors.
+     */
+    private static Hashtable<Class<? extends Sensor>, Sensor> loadedSensors = new Hashtable<>();
 
     private final Set<SensorUpdateListener> listeners = new HashSet<>();
 
@@ -92,4 +98,20 @@ public abstract class Sensor {
         return ret;
     }
 
+    /**
+     * Return a sensor if it has been constructed.
+     * @param sensorClass the class we are looking for
+     * @return The class if it has been stored, otherwise null
+     */
+    public static Sensor getSensor(Class sensorClass) {
+        return loadedSensors.get(sensorClass);
+    }
+
+    /**
+     * Store the sensor into our loadedSensors
+     * @param sensor the sensor we are loading
+     */
+    protected static void storeSensor(Sensor sensor){
+        loadedSensors.put(sensor.getClass(), sensor);
+    }
 }

@@ -36,7 +36,7 @@ public class GainEnvelope implements HBAction {
         WavePlayer wp = new WavePlayer(hb.ac, 1000, Buffer.SINE);
         Envelope e = new Envelope(hb.ac, 0.1f);
         Gain g = new Gain(hb.ac, 1, e);
-        e.addSegment(0, 5000, new KillTrigger(g));
+        e.addSegment(0, 5000);
         g.addInput(wp);
         g.addInput(wp);
         hb.sound(g);

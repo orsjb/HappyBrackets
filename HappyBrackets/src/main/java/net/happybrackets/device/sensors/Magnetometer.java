@@ -42,7 +42,8 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
             System.out.println("Try Load LSM95DS1");
 
             try {
-                LSM9DS1 sensor = LSM9DS1.getLoadedInstance();
+                LSM9DS1 sensor = (LSM9DS1) getSensor(LSM9DS1.class);
+
                 if (sensor == null) {
                     sensor = LSM9DS1.class.getConstructor().newInstance();
                 }
@@ -73,7 +74,7 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
             if (defaultSensor == null) {
                 System.out.println("Try Load MiniMU");
                 try {
-                    MiniMU sensor = MiniMU.getLoadedInstance();
+                    MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
                     if (sensor == null) {
                         sensor = MiniMU.class.getConstructor().newInstance();
                     }
@@ -124,6 +125,8 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
                 }
             }
         }
+
+        storeSensor(this);
         return  defaultSensor;
     }
 

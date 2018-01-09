@@ -716,7 +716,11 @@ public class HB {
 		Sensor result = sensors.get(sensorClass);
 		if(!sensors.containsKey(sensorClass)) {
 			try {
-				result = (Sensor) sensorClass.getConstructor().newInstance();
+				result = Sensor.getSensor(sensorClass);
+				if (result == null) {
+					result = (Sensor) sensorClass.getConstructor().newInstance();
+				}
+
 				if(result != null) sensors.put(sensorClass, result);
 			} catch (Exception e) {
 				logger.info("Cannot create sensor: {}", sensorClass);

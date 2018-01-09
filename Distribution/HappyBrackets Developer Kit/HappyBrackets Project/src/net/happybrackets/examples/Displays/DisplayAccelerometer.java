@@ -86,7 +86,7 @@ public class DisplayAccelerometer implements HBAction {
                         min_x = xAxis;
                         max_x = xAxis;
                         min_y = yAxis;
-                        max_x = yAxis;
+                        max_y = yAxis;
                         min_z = zAxis;
                         max_z = zAxis;
                         initialisedMaxMin = true;
@@ -98,34 +98,41 @@ public class DisplayAccelerometer implements HBAction {
 
                     if (xAxis > max_x) {
                         max_x = xAxis;
-                        max_control_x.setValue((float) max_x);
+
                     }
 
                     if (yAxis > max_y) {
                         max_y = yAxis;
-                        max_control_y.setValue((float) max_y);
+
                     }
 
                     if (zAxis > max_z) {
                         max_z = zAxis;
-                        max_control_z.setValue((float) max_z);
+
                     }
 
                     // now show mini
                     if (xAxis < min_x) {
                         min_x = xAxis;
-                        min_control_x.setValue((float) min_x);
+
                     }
 
                     if (yAxis < min_y) {
                         min_y = yAxis;
-                        min_control_y.setValue((float) min_y);
+
                     }
 
                     if (zAxis < min_z) {
                         min_z = zAxis;
-                        min_control_z.setValue((float) min_z);
+
                     }
+
+                    max_control_y.setValue((float) max_y);
+                    max_control_x.setValue((float) max_x);
+                    max_control_z.setValue((float) max_z);
+                    min_control_x.setValue((float) min_x);
+                    min_control_y.setValue((float) min_y);
+                    min_control_z.setValue((float) min_z);
 
                 }
 

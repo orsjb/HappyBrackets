@@ -36,6 +36,7 @@ public class MagnetometerSimulator extends Sensor implements MagnetometerSensor 
         control_z_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
         control_z_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
 
+        storeSensor(this);
     }
 
 

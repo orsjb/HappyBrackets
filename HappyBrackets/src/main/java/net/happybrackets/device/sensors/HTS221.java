@@ -135,6 +135,7 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
         //super(endpoint, processor, device);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         start();
+        storeSensor(this);
     }
 
     public void doStart() throws Exception {

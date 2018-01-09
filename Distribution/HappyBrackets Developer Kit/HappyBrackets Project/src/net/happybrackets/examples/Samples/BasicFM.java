@@ -8,6 +8,10 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 
+/**
+ * Basic FM wave generating a  1KHz carrier with a depth of 500Hz
+ * Modulating at a rate of 1Hz
+ */
 public class BasicFM implements HBAction {
     @Override
     public void action(HB hb) {
@@ -17,7 +21,7 @@ public class BasicFM implements HBAction {
         Glide modFMDepth = new Glide(hb.ac, 500);
         Glide baseFmFreq = new Glide(hb.ac, 1000);
 
-        WavePlayer FM_modulator = new WavePlayer(hb.ac, modFMFreq, Buffer.SQUARE);
+        WavePlayer FM_modulator = new WavePlayer(hb.ac, modFMFreq, Buffer.SINE);
 
         Function modFunction = new Function(FM_modulator, modFMDepth, baseFmFreq) {
             @Override

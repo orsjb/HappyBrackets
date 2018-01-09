@@ -40,7 +40,8 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
         {
             System.out.println("Try Load LSM95DS1");
             try {
-                LSM9DS1 sensor = LSM9DS1.getLoadedInstance();
+                LSM9DS1 sensor = (LSM9DS1) getSensor(LSM9DS1.class);
+
                 if (sensor == null) {
                     sensor = LSM9DS1.class.getConstructor().newInstance();
                 }
@@ -74,7 +75,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
 
                 System.out.println("Try Load MiniMU");
                 try {
-                    MiniMU sensor = MiniMU.getLoadedInstance();
+                    MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
                     if (sensor == null) {
                         sensor = MiniMU.class.getConstructor().newInstance();
                     }
@@ -124,6 +125,8 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                 }
             }
         }
+
+        storeSensor(this);
         return  defaultSensor;
     }
 
