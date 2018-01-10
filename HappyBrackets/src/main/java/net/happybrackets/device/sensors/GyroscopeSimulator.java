@@ -3,7 +3,6 @@ package net.happybrackets.device.sensors;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
-import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
 
 public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
@@ -51,18 +50,17 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
         return new double[]{getGyroscopeY(), getGyroscopeX(), getGyroscopeZ()};
     }
 
-    @Override
-    public double getGyroscopeX() {
+
+    private double getGyroscopeX() {
         return (float)control_x_text.getValue();
     }
 
-    @Override
-    public double getGyroscopeY() {
+
+    private double getGyroscopeY() {
         return (float)control_y_text.getValue();
     }
 
-    @Override
-    public double getGyroscopeZ() {
+    private double getGyroscopeZ() {
         return (float)control_z_text.getValue();
     }
 

@@ -35,13 +35,13 @@ public class SimpleGyroscope implements HBAction {
             sensor.addListener(new SensorUpdateListener() {
                 @Override
                 public void sensorUpdated() {
-                    float x_val = (float)sensor.getGyroscopeX();
+                    float pitch = (float)sensor.getPitch();
 
                     // Make a zero gyro value = 1 so we will move around 1Khz
-                    x_val += 1;
+                    pitch += 1;
 
                     //now set the frequency
-                    freq.setValue(x_val * 1000);
+                    freq.setValue(pitch * 1000);
                 }
             });
         }

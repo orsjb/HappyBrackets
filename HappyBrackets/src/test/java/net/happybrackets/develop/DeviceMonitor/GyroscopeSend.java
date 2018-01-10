@@ -44,21 +44,21 @@ public class GyroscopeSend implements HBAction {
 
         lastSendTime = System.currentTimeMillis();
 
-        DynamicControl control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0);
-        DynamicControl control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0);
-        DynamicControl control_z = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0);
+        DynamicControl control_pitch = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Pitch", 0.0);
+        DynamicControl control_roll = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Roll", 0.0);
+        DynamicControl control_yaw = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Yaw", 0.0);
 
-        control_x.setControlScope(ControlScope.GLOBAL);
-        control_y.setControlScope(ControlScope.GLOBAL);
-        control_z.setControlScope(ControlScope.GLOBAL);
+        control_pitch.setControlScope(ControlScope.GLOBAL);
+        control_roll.setControlScope(ControlScope.GLOBAL);
+        control_yaw.setControlScope(ControlScope.GLOBAL);
 
-        DynamicControl min_control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-x", 0.0);
-        DynamicControl min_control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-y", 0.0);
-        DynamicControl min_control_z = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-z", 0.0);
+        DynamicControl min_control_pitch = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-pitch", 0.0);
+        DynamicControl min_control_roll = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-roll", 0.0);
+        DynamicControl min_control_yaw = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-yaw", 0.0);
 
-        DynamicControl max_control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-x", 0.0);
-        DynamicControl max_control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-y", 0.0);
-        DynamicControl max_control_z = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-z", 0.0);
+        DynamicControl max_control_pitch = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-pitch", 0.0);
+        DynamicControl max_control_roll = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-roll", 0.0);
+        DynamicControl max_control_yaw = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "max-yaw", 0.0);
 
 
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
@@ -66,7 +66,7 @@ public class GyroscopeSend implements HBAction {
 
             boolean init = false;
 
-            double min_x, min_y, min_z, max_x, max_y, max_z;
+            double min_pitch, min_roll, min_yaw, max_pitch, max_roll, max_yaw;
 
 
             @Override
@@ -80,56 +80,61 @@ public class GyroscopeSend implements HBAction {
                     lastSendTime = System.currentTimeMillis();
 
                     // Get the data from Z.
-                    double zAxis = mySensor.getGyroscopeZ();
-                    double yAxis = mySensor.getGyroscopeY();
-                    double xAxis = mySensor.getGyroscopeZ();
+                    double yaw = mySensor.getYaw();
+                    double roll = mySensor.getRoll();
+                    double pitch = mySensor.getPitch();
 
 
                     if (!init) {
-                        min_x = xAxis;
-                        max_x = xAxis;
-                        min_y = yAxis;
-                        max_x = yAxis;
-                        min_z = zAxis;
-                        max_z = zAxis;
+                        min_pitch = pitch;
+                        max_pitch = pitch;
+                        min_roll = roll;
+                        max_roll = roll;
+                        min_yaw = yaw;
+                        max_yaw = yaw;
                         init = true;
                     }
 
-                    control_x.setValue((float) xAxis);
-                    control_y.setValue((float) yAxis);
-                    control_z.setValue((float) zAxis);
+                    control_pitch.setValue((float) pitch);
+                    control_roll.setValue((float) roll);
+                    control_yaw.setValue((float) yaw);
 
-                    if (xAxis > max_x) {
-                        max_x = xAxis;
-                        max_control_x.setValue((float) max_x);
+                    if (pitch > max_pitch) {
+                        max_pitch = pitch;
+
                     }
 
-                    if (yAxis > max_y) {
-                        max_y = yAxis;
-                        max_control_y.setValue((float) max_y);
+                    if (roll > max_roll) {
+                        max_roll = roll;
+
                     }
 
-                    if (zAxis > max_z) {
-                        max_z = zAxis;
-                        max_control_z.setValue((float) max_z);
+                    if (yaw > max_yaw) {
+                        max_yaw = yaw;
+
                     }
 
-                    // now show mini
-                    if (xAxis < min_x) {
-                        min_x = xAxis;
-                        min_control_x.setValue((float) min_x);
+                    // now show min
+                    if (pitch < min_pitch) {
+                        min_pitch = pitch;
+
                     }
 
-                    if (yAxis < min_y) {
-                        min_y = yAxis;
-                        min_control_y.setValue((float) min_y);
+                    if (roll < min_roll) {
+                        min_roll = roll;
                     }
 
-                    if (zAxis < min_z) {
-                        min_z = zAxis;
-                        min_control_z.setValue((float) min_z);
+                    if (yaw < min_yaw) {
+                        min_yaw = yaw;
                     }
 
+                    max_control_pitch.setValue((float) max_pitch);
+                    max_control_roll.setValue((float) max_roll);
+                    max_control_yaw.setValue((float) max_yaw);
+
+                    min_control_pitch.setValue((float) min_pitch);
+                    min_control_roll.setValue((float) min_roll);
+                    min_control_yaw.setValue((float) min_yaw);
                 }
 
             }

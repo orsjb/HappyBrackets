@@ -28,9 +28,9 @@ public class DefaultGyroscope implements HBAction{
             sensor.addListener(new SensorUpdateListener() {
                 @Override
                 public void sensorUpdated() {
-                    System.out.println(sensor.getGyroscopeX());
-                    System.out.println(sensor.getGyroscopeY());
-                    System.out.println(sensor.getGyroscopeZ());
+                    System.out.println(sensor.getPitch());
+                    System.out.println(sensor.getRoll());
+                    System.out.println(sensor.getYaw());
                 }
             });
         }

@@ -3,9 +3,6 @@ package net.happybrackets.device.sensors;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
 
-
-import java.util.ArrayList;
-
 /**
  * Default Accelerometer for HB.
  * The type of accelerometer will be detected and listeners will register to receive Accelerometer events
@@ -14,18 +11,18 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
     private static Sensor defaultSensor = null;
 
     // these are our axis
-    private double x, y, z;
+    private double pitch, roll, yaw;
 
     //The value we will round our sensor value to. -1 is not rounding
-    private int xRounding = -1, yRounding = -1, zRounding = -1;
+    private int pitchRounding = -1, rollRounding = -1, yawRounding = -1;
 
     /**
      * Remove all rounding
      */
     public void resetToDefault(){
-        xRounding = -1;
-        yRounding = -1;
-        zRounding = -1;
+        pitchRounding = -1;
+        rollRounding = -1;
+        yawRounding = -1;
     }
 
     /**
@@ -51,9 +48,9 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                         sensor.addListener(new SensorUpdateListener() {
                             @Override
                             public void sensorUpdated() {
-                                boolean send_notify = setX(finalSensor.getGyroscopeX());
-                                send_notify |= setY(finalSensor.getGyroscopeY());
-                                send_notify |= setZ(finalSensor.getGyroscopeZ());
+                                boolean send_notify = setPitch(finalSensor.getPitch());
+                                send_notify |= setRoll(finalSensor.getRoll());
+                                send_notify |= setYaw(finalSensor.getYaw());
 
                                 if (send_notify) {
                                     notifyListeners();
@@ -83,9 +80,9 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                             sensor.addListener(new SensorUpdateListener() {
                                 @Override
                                 public void sensorUpdated() {
-                                    boolean send_notify = setX(finalSensor.getGyroscopeX());
-                                    send_notify |= setY(finalSensor.getGyroscopeY());
-                                    send_notify |= setZ(finalSensor.getGyroscopeZ());
+                                    boolean send_notify = setPitch(finalSensor.getPitch());
+                                    send_notify |= setRoll(finalSensor.getRoll());
+                                    send_notify |= setYaw(finalSensor.getRoll());
 
                                     if (send_notify) {
                                         notifyListeners();
@@ -107,9 +104,9 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                     sensor.addListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
-                            boolean send_notify = setX(sensor.getGyroscopeX());
-                            send_notify |= setY(sensor.getGyroscopeY());
-                            send_notify |= setZ(sensor.getGyroscopeZ());
+                            boolean send_notify = setPitch(sensor.getPitch());
+                            send_notify |= setRoll(sensor.getRoll());
+                            send_notify |= setYaw(sensor.getYaw());
 
                             if (send_notify) {
                                 notifyListeners();
@@ -133,12 +130,12 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * @param new_val the new value to test or set
      * @return true if we are overwriting th3 value
      */
-    private boolean setX(double new_val){
+    private boolean setPitch(double new_val){
         boolean ret = false;
 
-        new_val = roundValue(new_val, xRounding);
-        if (x != new_val) {
-            x = new_val;
+        new_val = roundValue(new_val, pitchRounding);
+        if (pitch != new_val) {
+            pitch = new_val;
             ret = true;
         }
         return  ret;
@@ -151,12 +148,12 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * @param new_val the new value to test or set
      * @return true if we are overwriting th3 value
      */
-    private boolean setZ(double new_val){
+    private boolean setYaw(double new_val){
         boolean ret = false;
 
-        new_val = roundValue(new_val, zRounding);
-        if (z != new_val) {
-            z = new_val;
+        new_val = roundValue(new_val, yawRounding);
+        if (yaw != new_val) {
+            yaw = new_val;
             ret = true;
         }
         return  ret;
@@ -169,12 +166,12 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * @param new_val the new value to test or set
      * @return true if we are overwriting th3 value
      */
-    private boolean setY(double new_val){
+    private boolean setRoll(double new_val){
         boolean ret = false;
 
-        new_val = roundValue(new_val, yRounding);
-        if (y != new_val) {
-            y = new_val;
+        new_val = roundValue(new_val, rollRounding);
+        if (roll != new_val) {
+            roll = new_val;
             ret = true;
         }
         return  ret;
@@ -186,9 +183,9 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * @param resolution the number of decimal places to round to. -1 will be no rounding
      */
     public void setRounding(int resolution){
-        xRounding = resolution;
-        yRounding = resolution;
-        zRounding = resolution;
+        pitchRounding = resolution;
+        rollRounding = resolution;
+        yawRounding = resolution;
     }
 
     /**
@@ -197,7 +194,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * @param resolution the number of decimal places to round to. -1 will be no rounding
      */
     public void setXRounding(int resolution){
-        xRounding = resolution;
+        pitchRounding = resolution;
     }
 
     /**
@@ -206,7 +203,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * @param resolution the number of decimal places to round to. -1 will be no rounding
      */
     public void setYRounding(int resolution){
-        yRounding = resolution;
+        rollRounding = resolution;
     }
 
     /**
@@ -215,7 +212,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * @param resolution the number of decimal places to round to. -1 will be no rounding
      */
     public void setZRounding(int resolution){
-        zRounding = resolution;
+        yawRounding = resolution;
     }
 
 
@@ -242,37 +239,23 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
 
     @Override
     public double[] getGyroscopeData() {
-        return new double[]{x, y, z};
+        return new double[]{pitch, roll, yaw};
     }
 
-    @Override
-    public double getGyroscopeX() {
-        return x;
-    }
-
-    @Override
-    public double getGyroscopeY() {
-        return y;
-    }
-
-    @Override
-    public double getGyroscopeZ() {
-        return z;
-    }
 
     @Override
     public double getPitch() {
-        return getGyroscopeX();
+        return pitch;
     }
 
     @Override
     public double getRoll() {
-        return getGyroscopeY();
+        return roll;
     }
 
     @Override
     public double getYaw() {
-        return getGyroscopeZ();
+        return yaw;
     }
 
 }

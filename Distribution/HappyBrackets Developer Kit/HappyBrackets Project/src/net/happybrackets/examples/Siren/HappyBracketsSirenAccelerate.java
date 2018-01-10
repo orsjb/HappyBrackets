@@ -86,8 +86,8 @@ public class HappyBracketsSirenAccelerate implements HBAction {
                 @Override
                 public void sensorUpdated() {
                     // it appears that Gyro is opposite to Aceleration
-                    double x_gyro = gyroscope.getGyroscopeX() * -1;
-                    double gyro_range = (x_gyro + MAX_GYRO) / 2;
+                    double gyro_pitch = gyroscope.getPitch() * -1;
+                    double gyro_range = (gyro_pitch + MAX_GYRO) / 2;
                     // scale the acceleration to the new value
                     double new_freq = gyro_range * (MAX_BASE - MIN_BASE) + MIN_BASE;
 
