@@ -35,12 +35,15 @@ public class DisplayGyroscope implements HBAction {
 
         DynamicControl control_pitch = hb.createDynamicControl(ControlType.FLOAT, "Pitch").setControlScope(ControlScope.SKETCH);
         hb.createDynamicControl(ControlType.FLOAT, "Pitch", 0, -1 * MAX_GYRO, MAX_GYRO).setControlScope(ControlScope.SKETCH);
+        DynamicControl control_y  = hb.createDynamicControl(ControlType.FLOAT, "Gyro Y", 0, -1 * MAX_GYRO, MAX_GYRO);
 
         DynamicControl control_roll = hb.createDynamicControl(ControlType.FLOAT, "Roll").setControlScope(ControlScope.SKETCH);
         hb.createDynamicControl(ControlType.FLOAT, "Roll", 0, -1* MAX_GYRO, MAX_GYRO).setControlScope(ControlScope.SKETCH);
+        DynamicControl control_x  = hb.createDynamicControl(ControlType.FLOAT, "Gyro X", 0, -1 * MAX_GYRO, MAX_GYRO);
 
         DynamicControl control_yaw = hb.createDynamicControl(ControlType.FLOAT, "Yaw").setControlScope(ControlScope.SKETCH);
         hb.createDynamicControl(ControlType.FLOAT, "Yaw", 0, -1* MAX_GYRO, MAX_GYRO).setControlScope(ControlScope.SKETCH);
+        DynamicControl control_z  = hb.createDynamicControl(ControlType.FLOAT, "Gyro Z", 0, -1 * MAX_GYRO, MAX_GYRO);
 
         DynamicControl min_control_pitch = hb.createDynamicControl(ControlType.FLOAT, "min-pitch");
         DynamicControl min_control_roll = hb.createDynamicControl(ControlType.FLOAT, "min-roll");
@@ -101,6 +104,10 @@ public class DisplayGyroscope implements HBAction {
                     control_pitch.setValue((float) pitch);
                     control_roll.setValue((float) roll);
                     control_yaw.setValue((float) yaw);
+
+                    control_y.setValue(mySensor.getGyroscopeY());
+                    control_x.setValue(mySensor.getGyroscopeX());
+                    control_z.setValue(mySensor.getGyroscopeZ());
 
                     if (pitch > max_pitch) {
                         max_pitch = pitch;

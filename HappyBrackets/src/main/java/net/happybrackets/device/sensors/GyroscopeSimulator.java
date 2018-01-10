@@ -26,11 +26,13 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
             }
         };
 
-        control_x_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Pitch", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
-        control_x_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Pitch", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
 
-        control_y_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Roll", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
-        control_y_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Roll", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
+        control_y_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Pitch", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
+        control_y_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Pitch", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
+
+
+        control_x_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Roll", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
+        control_x_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Roll", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
 
         control_z_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Yaw", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
         control_z_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Yaw", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
@@ -67,12 +69,12 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
 
     @Override
     public double getPitch() {
-        return getGyroscopeX();
+        return getGyroscopeY();
     }
 
     @Override
     public double getRoll() {
-        return getGyroscopeY();
+        return getGyroscopeX();
     }
 
     @Override

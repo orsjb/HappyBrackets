@@ -262,12 +262,12 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
 
     @Override
     public double getPitch() {
-        return getGyroscopeX();
+        return getGyroscopeY();
     }
 
     @Override
     public double getRoll() {
-        return getGyroscopeY();
+        return getGyroscopeX();
     }
 
     @Override

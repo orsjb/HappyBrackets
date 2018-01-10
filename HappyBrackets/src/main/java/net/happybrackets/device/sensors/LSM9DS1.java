@@ -796,12 +796,12 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	@Override
 	public double getGyroscopeX() {
-		return gyroData[1];
+		return gyroData[0];
 	}
 
 	@Override
 	public double getGyroscopeY() {
-		return gyroData[0];
+		return gyroData[1];
 	}
 
 	@Override
@@ -851,12 +851,12 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	@Override
 	public double getPitch() {
-		return getGyroscopeX();
+		return getGyroscopeY();
 	}
 
 	@Override
 	public double getRoll() {
-		return getGyroscopeY();
+		return getGyroscopeX();
 	}
 
 	@Override
