@@ -1,6 +1,7 @@
 package net.happybrackets.examples.Displays;
 
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
@@ -31,21 +32,15 @@ public class DisplayAccelerometer implements HBAction {
 
 
         Accelerometer mySensor = (Accelerometer) hb.getSensor(Accelerometer.class);
-        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Accel Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
-            @Override
-            public void update(DynamicControl dynamicControl) {
-                if (mySensor != null)
-                {
-                    int resolution = (int)dynamicControl.getValue();
-                    mySensor.setRounding(resolution);
-                }
-            }
-        });
 
+        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "accel x").setControlScope(ControlScope.SKETCH);
+        hb.createDynamicControl(ControlType.FLOAT, "accel x", 0, -1, 1).setControlScope(ControlScope.SKETCH);
 
-        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "accel x");
-        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "accel y");
-        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "accel z");
+        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "accel y").setControlScope(ControlScope.SKETCH);
+        hb.createDynamicControl(ControlType.FLOAT, "accel y", 0, -1, 1).setControlScope(ControlScope.SKETCH);
+
+        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "accel z").setControlScope(ControlScope.SKETCH);
+        hb.createDynamicControl(ControlType.FLOAT, "accel z", 0, -1, 1).setControlScope(ControlScope.SKETCH);
 
 
         DynamicControl min_control_x = hb.createDynamicControl(ControlType.FLOAT, "min-x");
@@ -63,6 +58,18 @@ public class DisplayAccelerometer implements HBAction {
             public void update(DynamicControl dynamicControl) {
                 // set initialised to false
                 initialisedMaxMin = false;
+            }
+        });
+
+
+        DynamicControl resolution = hb.createDynamicControl(ControlType.INT, "Accel Resolution", -1, -1, 8).addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl dynamicControl) {
+                if (mySensor != null)
+                {
+                    int resolution = (int)dynamicControl.getValue();
+                    mySensor.setRounding(resolution);
+                }
             }
         });
 

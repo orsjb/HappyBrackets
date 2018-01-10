@@ -350,18 +350,18 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		return accelData;
 	}
 
-
-	private double getGyroscopeX() {
+	@Override
+	public double getGyroscopeX() {
 		return 0;
 	}
 
-
-	private double getGyroscopeY() {
+	@Override
+	public double getGyroscopeY() {
 		return 0;
 	}
 
-
-	private double getGyroscopeZ() {
+	@Override
+	public double getGyroscopeZ() {
 		return 0;
 	}
 

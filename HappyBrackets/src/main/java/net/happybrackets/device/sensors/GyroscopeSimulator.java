@@ -50,17 +50,18 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
         return new double[]{getGyroscopeY(), getGyroscopeX(), getGyroscopeZ()};
     }
 
-
-    private double getGyroscopeX() {
+    @Override
+    public double getGyroscopeX() {
         return (float)control_x_text.getValue();
     }
 
-
-    private double getGyroscopeY() {
+    @Override
+    public double getGyroscopeY() {
         return (float)control_y_text.getValue();
     }
 
-    private double getGyroscopeZ() {
+    @Override
+    public double getGyroscopeZ() {
         return (float)control_z_text.getValue();
     }
 

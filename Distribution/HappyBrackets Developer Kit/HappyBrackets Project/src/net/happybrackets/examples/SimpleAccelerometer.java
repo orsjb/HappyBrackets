@@ -46,13 +46,4 @@ public class SimpleAccelerometer implements HBAction {
             });
         }
     }
-
-    public static void main(String[] args) {
-
-        try {
-            HB.runDebug(MethodHandles.lookup().lookupClass());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
