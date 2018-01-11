@@ -7,6 +7,10 @@ import java.lang.invoke.MethodHandles;
 
 public class HBDebug implements HBAction {
 
+    /**
+     * This function is used when running sketch in IntelliJ for debugging or testing
+     * @param args standard args required
+     */
     public static void main(String[] args) {
 
         try {

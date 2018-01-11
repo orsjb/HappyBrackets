@@ -20,7 +20,7 @@ public class SimpleGyroscope implements HBAction {
     public void action(HB hb) {
 
         // Define where we are going to set the frequency
-        Glide freq = new Glide(hb.ac, 2000);
+        Glide freq = new Glide(hb.ac, 1000);
 
         // connect our frequency to our waveplayer
         WavePlayer wp = new WavePlayer(hb.ac, freq, Buffer.SINE);
@@ -47,12 +47,4 @@ public class SimpleGyroscope implements HBAction {
         }
     }
 
-    public static void main(String[] args) {
-
-        try {
-            HB.runDebug(MethodHandles.lookup().lookupClass());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

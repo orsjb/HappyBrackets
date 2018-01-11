@@ -6,6 +6,9 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlScope;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
 /**
@@ -34,5 +37,15 @@ public class BasicFM implements HBAction {
         Gain g = new Gain(hb.ac, 1, 0.1f);
         g.addInput(FM_carrier);
         hb.sound(g);
+
+        DynamicControl freq = hb.createDynamicControl(this, ControlType.FLOAT, "freq", baseFmFreq.getValue())
+                .addControlListener(new DynamicControl.DynamicControlListener() {
+            @Override
+            public void update(DynamicControl dynamicControl) {
+                baseFmFreq.setValue((float)dynamicControl.getValue());
+            }
+        }).setControlScope(ControlScope.SKETCH);
+
+        hb.createDynamicControl(this, ControlType.FLOAT, "freq", baseFmFreq.getValue(), 100, 10000).setControlScope(ControlScope.SKETCH);
     }
 }
