@@ -42,7 +42,7 @@ public class SyncExample implements HBAction {
                 Gain g = new Gain(hb.ac, 1, 0.3f);
                 sp.setKillListener(new KillTrigger(g));
                 g.addInput(sp);
-                hb.sound(g);
+                hb.ac.out.addInput(g);
             }
         }, hb.getSynchTime() + 5000);
 

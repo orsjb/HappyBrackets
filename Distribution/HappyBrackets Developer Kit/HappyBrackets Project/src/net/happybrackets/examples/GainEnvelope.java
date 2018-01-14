@@ -39,7 +39,7 @@ public class GainEnvelope implements HBAction {
         e.addSegment(0, 5000);
         g.addInput(wp);
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
     }
 
 }

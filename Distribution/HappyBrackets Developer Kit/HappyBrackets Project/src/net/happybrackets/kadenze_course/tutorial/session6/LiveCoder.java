@@ -48,7 +48,7 @@ public class LiveCoder implements HBAction {
                     e.addSegment(hb.rng.nextFloat() * 0.05f + 0.1f, 500 * hb.rng.nextFloat());
                     e.addSegment(0, 2000, new KillTrigger(g));
                     g.addInput(wp);
-                    hb.sound(g);
+                    hb.ac.out.addInput(g);
                 }
                 if (hb.clock.getCount() % 12 == 5) {
                     float freq = Pitch.forceFrequencyToScale(hb.rng.nextFloat() * 1000 + 100, Pitch.dorian);
@@ -58,7 +58,7 @@ public class LiveCoder implements HBAction {
                     e.addSegment(hb.rng.nextFloat() * 0.02f + 0.04f, 1000);
                     e.addSegment(0, 100, new KillTrigger(g));
                     g.addInput(wp);
-                    hb.sound(g);
+                    hb.ac.out.addInput(g);
                 }
                 if (hb.clock.getCount() % 2 == 0 || hb.rng.nextFloat() < 0.02f) {
                     Noise n = new Noise(hb.ac);
@@ -66,7 +66,7 @@ public class LiveCoder implements HBAction {
                     Gain g = new Gain(hb.ac, 1, e);
                     e.addSegment(0, 2 + hb.rng.nextInt(20), new KillTrigger(g));
                     g.addInput(n);
-                    hb.sound(g);
+                    hb.ac.out.addInput(g);
                 }
             }
         });

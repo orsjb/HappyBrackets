@@ -66,11 +66,11 @@ public class Example8_3 implements HBAction {
                     if (currentOri == Orientation.UP) {
                         // this is the up sound
                         SamplePlayer sp = new SamplePlayer(hb.ac, sUp);
-                        hb.sound(sp);
+                        hb.ac.out.addInput(sp);
                     } else if (currentOri == Orientation.DOWN) {
                         // this is the down sound
                         SamplePlayer sp = new SamplePlayer(hb.ac, sDown);
-                        hb.sound(sp);
+                        hb.ac.out.addInput(sp);
                     }
                 }
             }

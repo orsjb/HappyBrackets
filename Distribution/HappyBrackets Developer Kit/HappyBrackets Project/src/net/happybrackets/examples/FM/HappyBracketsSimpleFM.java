@@ -69,7 +69,7 @@ public class HappyBracketsSimpleFM implements HBAction {
         WavePlayer FM_carrier = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
         Gain g = new Gain(hb.ac, 1, FmGain);
         g.addInput(FM_carrier);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
         hb.createDynamicControl(this, ControlType.BOOLEAN, "On / OFF", true).addControlListener(new DynamicControl.DynamicControlListener() {
             @Override

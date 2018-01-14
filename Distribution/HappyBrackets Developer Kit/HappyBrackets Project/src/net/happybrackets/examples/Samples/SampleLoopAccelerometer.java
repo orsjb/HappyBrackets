@@ -41,7 +41,7 @@ public class SampleLoopAccelerometer implements HBAction {
             // Connect our sample player to audio
             Gain g = new Gain(hb.ac, 1, gainEnv);
             g.addInput(sp);
-            hb.sound(g);
+            hb.ac.out.addInput(g);
 
             Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class);
             if (sensor != null){

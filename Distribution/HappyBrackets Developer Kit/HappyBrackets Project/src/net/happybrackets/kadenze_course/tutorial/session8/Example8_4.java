@@ -53,7 +53,7 @@ public class Example8_4 implements HBAction {
                     Sample s = SampleManager.fromGroup("Guitar", 1);
                     SamplePlayer sp = new SamplePlayer(hb.ac, s);
                     sp.setRate(rate);
-                    hb.sound(sp);
+                    hb.ac.out.addInput(sp);
                 }
             }
         });

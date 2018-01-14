@@ -59,7 +59,7 @@ public class EnvelopeTrigger implements HBAction {
         });
 
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
     }
 
 

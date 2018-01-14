@@ -28,7 +28,7 @@ public class SamplePlay implements HBAction {
             // Connect our sample player to audio
             Gain g = new Gain(hb.ac, 1, 1);
             g.addInput(sp);
-            hb.sound(g);
+            hb.ac.out.addInput(g);
         }
     }
 

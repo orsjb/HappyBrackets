@@ -55,7 +55,7 @@ public class Example7_3 implements HBAction {
                     Sample s = SampleManager.randomFromGroup("Guitar");
                     SamplePlayer sp = new SamplePlayer(hb.ac, s);
                     sp.getRateUGen().setValue(speed);
-                    hb.sound(sp);
+                    hb.ac.out.addInput(sp);
                 }
             }
         });

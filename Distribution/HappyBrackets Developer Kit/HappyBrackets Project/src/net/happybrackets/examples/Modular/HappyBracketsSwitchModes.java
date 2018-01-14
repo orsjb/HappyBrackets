@@ -65,7 +65,7 @@ public class HappyBracketsSwitchModes  implements HBAction {
 
         Gain g = new Gain(hb.ac, 1, FmGain);
         g.addInput(FM_carrier);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
         hb.ac.out.addDependent(clock);
 

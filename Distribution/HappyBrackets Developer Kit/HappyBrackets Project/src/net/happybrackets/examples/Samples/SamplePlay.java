@@ -71,7 +71,7 @@ public class SamplePlay implements HBAction {
             // Connect our sample player to audio
             g.addInput(sp);
 
-            hb.sound(g);
+            hb.ac.out.addInput(g);
 
             play(doRewind);
 

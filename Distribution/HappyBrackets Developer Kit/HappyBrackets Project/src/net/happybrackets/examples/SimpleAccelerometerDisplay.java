@@ -27,7 +27,7 @@ public class SimpleAccelerometerDisplay implements HBAction {
 
         Gain g = new Gain(hb.ac, 1, 0.1f);
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
         Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class);
         if (sensor != null){

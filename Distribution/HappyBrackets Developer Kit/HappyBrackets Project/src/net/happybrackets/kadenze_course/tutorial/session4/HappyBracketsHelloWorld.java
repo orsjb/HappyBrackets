@@ -38,7 +38,7 @@ public class HappyBracketsHelloWorld implements HBAction {
         Gain g = new Gain(hb.ac, 1, e);
         e.addSegment(0, 5000, new KillTrigger(g));
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
         System.out.println("Hello World");
     }
 

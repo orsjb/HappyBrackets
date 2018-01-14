@@ -45,7 +45,7 @@ public class AccelerometerFM implements HBAction {
 
         Gain g = new Gain(hb.ac, 1, 0.1f);
         g.addInput(FM_carrier);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
         //now add our sensor
         Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class);

@@ -78,7 +78,7 @@ public class Woosh implements HBAction {
 
         hpf.addInput(bf);
         hpf.addInput(rb);
-        hb.sound(hpf);
+        hb.ac.out.addInput(hpf);
 
 
         //load a set of sounds

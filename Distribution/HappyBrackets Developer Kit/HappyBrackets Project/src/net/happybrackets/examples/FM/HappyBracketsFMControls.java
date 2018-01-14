@@ -57,7 +57,7 @@ public class HappyBracketsFMControls implements HBAction {
         WavePlayer carrier = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
         Gain g = new Gain(hb.ac, 1, gain);
         g.addInput(carrier);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
         //this is the sensor
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);

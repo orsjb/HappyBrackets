@@ -40,7 +40,7 @@ public class Example5_2 implements HBAction {
 
         //play a new random sound from the group
         Sample s = SampleManager.randomFromGroup("Guitar");
-        hb.sound(new SamplePlayer(hb.ac, s));
+        hb.ac.out.addInput(new SamplePlayer(hb.ac, s));
 
     }
 

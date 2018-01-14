@@ -42,7 +42,7 @@ public class Example7_2 implements HBAction {
                 if (msg.getName().equals("/play")) {
                     //play a new random sound
                     Sample s = SampleManager.randomFromGroup("Guitar");
-                    hb.sound(new SamplePlayer(hb.ac, s));
+                    hb.ac.out.addInput(new SamplePlayer(hb.ac, s));
                 }
             }
         });

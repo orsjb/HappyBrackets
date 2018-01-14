@@ -55,7 +55,7 @@ public class Example5_1 implements HBAction {
         g.addInput(sawWave);
 
         //play the sound
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
 
     }

@@ -34,7 +34,8 @@ public class HappyBracketsHelloWorld implements HBAction {
         WavePlayer wp = new WavePlayer(hb.ac, 1000, Buffer.SINE);
         Gain g = new Gain(hb.ac, 1, 0.1f);
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
     }
+
 
 }

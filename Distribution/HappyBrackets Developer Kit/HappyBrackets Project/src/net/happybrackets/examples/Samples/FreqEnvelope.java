@@ -42,7 +42,7 @@ public class FreqEnvelope implements HBAction {
         Gain g = new Gain(hb.ac, 1, 0.1f);
         e.addSegment(1500, 5000);
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
         System.out.println("There are " + hb.ac.out.getIns() + " Audio Inputs");
     }
 

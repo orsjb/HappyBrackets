@@ -67,7 +67,7 @@ public class Example7_4 implements HBAction {
                     Gain g = new Gain(hb.ac, 1, gain);
                     g.addInput(sp);
                     sp.setKillListener(new KillTrigger(g));
-                    hb.sound(g);
+                    hb.ac.out.addInput(g);
                 } else if (oscMessage.getName().equals("/guitar/base_rate")) {
                     String[] messageElements = oscMessage.getName().split("/");
                     hb.setStatus(messageElements[2]);

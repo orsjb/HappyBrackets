@@ -42,7 +42,7 @@ public class HappyBracketsHelloMod implements HBAction {
         e.addSegment(0, 5000, new KillTrigger(g));
 
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
     }
 
 }

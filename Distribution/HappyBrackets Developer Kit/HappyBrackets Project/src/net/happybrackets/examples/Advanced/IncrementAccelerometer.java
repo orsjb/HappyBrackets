@@ -38,7 +38,7 @@ public class IncrementAccelerometer implements HBAction {
 
         Gain g = new Gain(hb.ac, 1, gain);
         g.addInput(carrier);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
         //DynamicControl x_display = hb.createDynamicControl(ControlType.FLOAT, "X-count");
         Accelerometer mySensor = (Accelerometer) hb.getSensor(Accelerometer.class);

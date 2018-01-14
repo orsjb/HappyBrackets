@@ -43,7 +43,7 @@ public class Example5_3 implements HBAction {
                 if (hb.clock.getCount() % 32 == 0) {
                     //play a new random sound
                     Sample s = SampleManager.randomFromGroup("Guitar");
-                    hb.sound(new SamplePlayer(hb.ac, s));
+                    hb.ac.out.addInput(new SamplePlayer(hb.ac, s));
                 }
             }
         });

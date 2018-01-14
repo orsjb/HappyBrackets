@@ -27,7 +27,7 @@ public class SimpleGyroscope implements HBAction {
 
         Gain g = new Gain(hb.ac, 1, 0.1f);
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
         Gyroscope sensor = (Gyroscope)hb.getSensor(Gyroscope.class);
         if (sensor != null){

@@ -18,6 +18,7 @@ package net.happybrackets.examples;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
+import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.Envelope;
@@ -34,23 +35,17 @@ import java.lang.invoke.MethodHandles;
 public class ClockTrigger implements HBAction {
 
     // change this variable to 500 and you will hear popping
-    final float clockDuration = 2000;
+    final float clockDuration = 200;
 
+
+    final int centrePitch = 60;
+    int currentStartPitch = 0;
+    int nextScaleNote = 0;
 
     float currentFreq = 1000;
 
     @Override
     public void action(HB hb) {
-
-        WavePlayer wp = new WavePlayer(hb.ac, currentFreq, Buffer.SINE);
-        Envelope e = new Envelope(hb.ac, 0);
-        Gain g = new Gain(hb.ac, 1, e);
-
-        e.addSegment(0.1f, 100);
-
-        g.addInput(wp);
-
-        hb.sound(g);
 
 
         // Create a clock with beat interval of clockDuration ms
@@ -65,11 +60,21 @@ public class ClockTrigger implements HBAction {
 
                 // see if we are at the start of a beat
                 if (clock.getCount() % clock.getTicksPerBeat() == 0) {
-                    currentFreq *= 1.2;
 
-                    if (currentFreq > 15000) {
-                        currentFreq = 100;
+                    // see if we are at the start of a pattern
+                    if (nextScaleNote % Pitch.major.length == 0){
+                        // move around circle of fourths
+                        currentStartPitch = (currentStartPitch + 5) % 12;
                     }
+
+
+                    int pitch = centrePitch + currentStartPitch + Pitch.major[nextScaleNote % Pitch.major.length];
+
+                    // convert to a frequency
+                    currentFreq = Pitch.mtof(pitch);
+
+
+                    nextScaleNote++;
 
                     WavePlayer wp = new WavePlayer(hb.ac, currentFreq, Buffer.SINE);
                     Envelope e = new Envelope(hb.ac, 0);
@@ -78,11 +83,11 @@ public class ClockTrigger implements HBAction {
                     e.addSegment(0.1f, 100);
                     e.addSegment(0.1f, 500);
                     // this will kill
-                    e.addSegment(0, 1000, new KillTrigger(g));
+                    e.addSegment(0, 10, new KillTrigger(g));
 
                     g.addInput(wp);
 
-                    hb.sound(g);
+                    hb.ac.out.addInput(g);
 
                 }
             }

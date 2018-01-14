@@ -68,7 +68,7 @@ public class CassetteTapeMachine implements HBAction {
         bf.setFrequency(100);
         bf.addInput(g);
 
-        hb.sound(bf);
+        hb.ac.out.addInput(bf);
 
         //sensor averaging
         sensorHistory = new LinkedList<double[]>();

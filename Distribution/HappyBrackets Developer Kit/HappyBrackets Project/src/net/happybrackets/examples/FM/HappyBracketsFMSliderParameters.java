@@ -41,7 +41,7 @@ public class HappyBracketsFMSliderParameters implements HBAction {
         WavePlayer carrier = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
         Gain g = new Gain(hb.ac, 1, gain);
         g.addInput(carrier);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
 
         //this is the GUI
         DynamicControl base_freq = hb.createDynamicControl(this, ControlType.FLOAT, "Base Freq", INITIAL_BASE_FREQ, 10, 10000);

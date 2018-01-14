@@ -40,6 +40,6 @@ public class HappyBracketsSiren implements HBAction {
         WavePlayer FM_carrier = new WavePlayer(hb.ac, modFunction, Buffer.SQUARE);
         Gain g = new Gain(hb.ac, 1, FmGain);
         g.addInput(FM_carrier);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
     }
 }

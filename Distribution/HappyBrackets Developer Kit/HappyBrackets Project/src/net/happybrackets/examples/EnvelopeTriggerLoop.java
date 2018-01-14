@@ -58,13 +58,13 @@ public class EnvelopeTriggerLoop implements HBAction {
 
                     WavePlayer wp = new WavePlayer(hb.ac, finalCurrent_freq, Buffer.SINE);
                     g.addInput(wp);
-                    hb.sound(g);
+                    hb.ac.out.addInput(g);
                 }
             });
         }
 
         g.addInput(wp);
-        hb.sound(g);
+        hb.ac.out.addInput(g);
     }
 
 

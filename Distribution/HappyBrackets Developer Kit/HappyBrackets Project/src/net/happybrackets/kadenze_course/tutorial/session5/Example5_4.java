@@ -48,7 +48,7 @@ public class Example5_4 implements HBAction {
                     Gain g = new Gain(hb.ac, 1, e);
                     e.addSegment(0, 400, new KillTrigger(g));
                     g.addInput(wp);
-                    hb.sound(g);
+                    hb.ac.out.addInput(g);
                     hb.setStatus("Playing freq " + freq);
                 }
             }
