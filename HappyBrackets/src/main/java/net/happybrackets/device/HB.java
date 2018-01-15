@@ -443,15 +443,16 @@ public class HB {
 	/**
 	 * Causes the audio to start at a given synchronised time on all devices.
 	 *
-	 * @param time time at which to sync, according to the agreed clock time
+	 * @param intervalForSyncAction time at which to sync, according to the agreed clock time
      */
-	public void syncAudioStart(long time) {
+	public void syncAudioStart(int intervalForSyncAction) {
+		long timeToAct = (synch.correctedTimeNow() / intervalForSyncAction + 1)  * intervalForSyncAction;
 		doAtTime(new Runnable() {
 			public void run() {
 				startAudio();
 				clock.reset();		//if audio is already running, we just reset the clock
 			}
-		}, time);
+		}, timeToAct);
 	}
 
 	/**
