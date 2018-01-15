@@ -25,10 +25,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
@@ -38,6 +35,7 @@ import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.data.Buffer;
+import net.beadsproject.beads.events.IntegerBead;
 import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.Envelope;
@@ -116,9 +114,6 @@ public class HB {
 
 	final static Logger logger = LoggerFactory.getLogger(HB.class);
 
-
-
-
 	/**
 	 * The {@link AudioContext} used by HappyBrackets. This is autorun by default from the start script, but that can be controlled by a commandline flag.
 	 */
@@ -144,7 +139,6 @@ public class HB {
 	 */
 
 	public final Envelope masterGainEnv;
-
 
 	/**
 	 * Audio on status.
@@ -191,18 +185,27 @@ public class HB {
 	 */
 	public final Synchronizer synch;
 
+	/**The selected {@link AccessMode} of this instance.*/
 	private AccessMode accessMode;
+
+	/**This device's ID, allocated by the server.*/
 	private int myId = 0;
 
-	/**
-	 * Creates the HB.
-	 *
-	 * @param _ac the {@link AudioContext} for audio.
-	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
-	 */
-	public HB(AudioContext _ac) throws IOException {
-		this(_ac, AccessMode.OPEN, false);
+	public class SyncPattern extends Bead {
+		private int interval;
+		private long step;
+
+		public long getStep() {
+			return step;
+		}
+
+		public SyncPattern(int interval) {
+			this.interval = interval;
+		}
 	}
+
+	/**List of patterns being updated in the synchronised clock.*/
+	public Set<SyncPattern> synchPatterns;
 
 	/**
   	 * Run HB in a debug mode so we can debug sample code in INtelliJ
@@ -323,6 +326,17 @@ public class HB {
 	 * Creates the HB.
 	 *
 	 * @param _ac the {@link AudioContext} for audio.
+	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
+	 */
+	public HB(AudioContext _ac) throws IOException {
+		this(_ac, AccessMode.OPEN, false);
+	}
+
+
+	/**
+	 * Creates the HB.
+	 *
+	 * @param _ac the {@link AudioContext} for audio.
 	 * @param _am The access mode.
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
 	 */
@@ -367,8 +381,11 @@ public class HB {
 		// sensor setup
 		sensors = new Hashtable<>();
 		System.out.print(".");
-
+		synchPatterns = new HashSet<>();
+		setupSyncClock();
+		System.out.print(".");
 		controller = new NetworkCommunication(this);
+		System.out.print(".");
 
 		if (start_network) {
 			// start network connection
@@ -403,6 +420,28 @@ public class HB {
 		HBInstance = this;
 	}
 
+	private void setupSyncClock() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true) {
+					long time = Synchronizer.getInstance().correctedTimeNow();
+					for(SyncPattern pattern : synchPatterns) {
+						long nextUpdateTime = pattern.step * pattern.interval;
+						if(time >= nextUpdateTime) {
+							pattern.step = time / pattern.interval;
+							pattern.message(null);
+						}
+					}
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+	}
 
 	/**
 	 * Broadcast an {@link OSCMessage} msg over the multicast group.
@@ -831,6 +870,14 @@ public class HB {
 		return name;
 	}
 
+	public String synchPattern(Bead pattern) {
+
+		//
+
+		String name = "syncPattern" + nextElementID++;
+		return name;
+	}
+
 	/**
 	 * Adds a sound to the audio output. The sound, in the form of any @{@link UGen}, is played immediately. It can be killed by calling {@link #reset()}, or by manually destroying the sound with a {@link Bead#kill()} message. Note that the system automatically limits the number of sounds added using a @{@link PolyLimit} object.
 	 *
@@ -876,6 +923,8 @@ public class HB {
 			pl.clearDependents();
 			//clear data store
 			share.clear();
+			//clear sync patterns
+			synchPatterns.clear();
 			//clear mu listeners
 			for (Sensor sensor : sensors.values()) {
 				sensor.clearListeners();
