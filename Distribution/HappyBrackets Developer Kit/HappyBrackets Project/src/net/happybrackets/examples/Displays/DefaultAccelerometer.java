@@ -32,12 +32,16 @@ public class DefaultAccelerometer implements HBAction {
         DynamicControl x_axis = hb.createDynamicControl(ControlType.FLOAT, "AccelX");
 
 
-        hb.createSensor(Accelerometer.class).addListener(new SensorUpdateListener() {
-            @Override
-            public void sensorUpdated() {
-                x_axis.setValue(mySensor.getAccelerometerX());
-            }
-        });
+        try {
+            hb.createSensor(Accelerometer.class).addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
+                    //x_axis.setValue(mySensor.getAccelerometerX());
+                }
+            });
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 }
