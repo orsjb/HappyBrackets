@@ -284,7 +284,7 @@ public class DeviceConnection {
     public String[] getDeviceAddresses() {
         String[] addresses = new String[theDevices.size()];
         for(int i = 0; i < addresses.length; i++) {
-            addresses[i] = theDevices.get(i).address;
+            addresses[i] = theDevices.get(i).getAddress();
         }
         return addresses;
     }

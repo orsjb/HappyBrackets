@@ -271,13 +271,13 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				ContextMenu contextMenu = new ContextMenu();
 
 
-				MenuItem copy_name_command_menu = new MenuItem("Copy " + item.deviceName + " to clipboard");
+				MenuItem copy_name_command_menu = new MenuItem("Copy " + item.getAddress() + " to clipboard");
 				copy_name_command_menu.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
 						final Clipboard clipboard = Clipboard.getSystemClipboard();
 						final ClipboardContent content = new ClipboardContent();
-						content.putString(item.deviceName);
+						content.putString(item.getAddress());
 						clipboard.setContent(content);
 					}
 				});
@@ -292,6 +292,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 						clipboard.setContent(content);
 					}
 				});
+
 
 				MenuItem request_status_menu = new MenuItem("Request status");
 				request_status_menu.setDisable(localDevice.isIgnoringDevice());
@@ -314,12 +315,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 
 				MenuItem remove_item_menu = new MenuItem("Remove " + item.deviceName);
-				remove_item_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						item.removeDevice();
-					}
-				});
+				remove_item_menu.setOnAction(event1 -> item.removeDevice());
 
 
 				MenuItem show_controls_item_menu = new MenuItem("Show Controls");

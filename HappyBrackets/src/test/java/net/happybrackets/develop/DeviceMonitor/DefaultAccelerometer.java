@@ -1,9 +1,13 @@
 package net.happybrackets.develop.DeviceMonitor;
 
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.Accelerometer;
+import net.happybrackets.device.sensors.Sensor;
 import net.happybrackets.device.sensors.SensorUpdateListener;
+import net.happybrackets.device.sensors.SensorValueChangedListener;
 
 import java.lang.invoke.MethodHandles;
 
@@ -21,18 +25,25 @@ public class DefaultAccelerometer implements HBAction{
     @Override
     public void action(HB hb) {
 
-        hb.setEnableSimulators(true);
-        Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class) ;
-        if (sensor != null) {
-            sensor.setRounding(3);
-            sensor.addListener(new SensorUpdateListener() {
-                @Override
-                public void sensorUpdated() {
-                    System.out.println(sensor.getAccelerometerX());
-                    System.out.println(sensor.getAccelerometerY());
-                    System.out.println(sensor.getAccelerometerZ());
-                }
+        hb.reset();
+
+        try {
+            hb.createSensor(Accelerometer.class).addValueChangedListener(sensor -> {
+                Accelerometer accelerometer = (Accelerometer) sensor;
+                float x_val = accelerometer.getAccelerometerX();
+                float y_val = accelerometer.getAccelerometerY();
+                float z_val = accelerometer.getAccelerometerZ();
+
             });
+        } catch (ClassNotFoundException e) {
+            hb.setStatus("Accelerometer Fail");
         }
+
+        hb.createDynamicControl(this, ControlType.FLOAT, "Enter Control Name",
+                0, 0, 0)
+                .addControlListener(control -> {
+                    float control_val = (float) control.getValue();
+                });
+        
     }
 }

@@ -19,6 +19,7 @@ package net.happybrackets.device.misc_tests;
 import net.beadsproject.beads.data.DataBead;
 import net.happybrackets.device.sensors.*;
 
+@SuppressWarnings("deprecated")
 public class SensorTest {
 
     static DataBead HTS221dataDB, LPS25HdataDB, LSM9DS1dataDB, MinimuDataDB;

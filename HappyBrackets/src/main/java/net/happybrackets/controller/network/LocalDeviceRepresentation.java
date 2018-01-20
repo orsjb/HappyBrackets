@@ -46,7 +46,8 @@ public class LocalDeviceRepresentation {
 	public long lastTimeSeen;
 	public final String deviceName;
 	public final String hostName;
-	public final String address;
+
+	private String address;
 	public List<String> preferredAddressStrings;    //This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
 	private int deviceId; //
 	private String status = "Status unknown"; // This is the displayed ID
@@ -89,6 +90,13 @@ public class LocalDeviceRepresentation {
 	}
 
 
+	/**
+	 * Get the Address we use to access this device over the network
+	 * @return the network Address
+	 */
+	public String getAddress() {
+		return address;
+	}
 
 
 	/**
@@ -559,6 +567,7 @@ public class LocalDeviceRepresentation {
 		boolean same_address = old_host_address.equals(new_host_address);
 		if (!same_address)
 		{
+			this.address = new_host_address;
 			this.socketAddress = new InetSocketAddress(new_socket_address, controllerConfig.getControlToDevicePort());
 
 			synchronized (socketAddressChangedListenerList) {

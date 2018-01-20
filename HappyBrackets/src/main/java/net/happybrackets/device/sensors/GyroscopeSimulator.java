@@ -18,12 +18,9 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
     DynamicControl control_z_text;
 
     public GyroscopeSimulator(){
-        DynamicControl.DynamicControlListener listener = new DynamicControl.DynamicControlListener() {
-            @Override
-            public void update(DynamicControl control) {
-                // we will ignore the control and send all three at once
-                notifyListeners();
-            }
+        DynamicControl.DynamicControlListener listener = control -> {
+            // we will ignore the control and send all three at once
+            notifyListeners();
         };
 
 
@@ -53,32 +50,32 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
     }
 
     @Override
-    public double getGyroscopeX() {
+    public float getGyroscopeX() {
         return (float)control_x_text.getValue();
     }
 
     @Override
-    public double getGyroscopeY() {
+    public float getGyroscopeY() {
         return (float)control_y_text.getValue();
     }
 
     @Override
-    public double getGyroscopeZ() {
+    public float getGyroscopeZ() {
         return (float)control_z_text.getValue();
     }
 
     @Override
-    public double getPitch() {
+    public float getPitch() {
         return getGyroscopeY();
     }
 
     @Override
-    public double getRoll() {
+    public float getRoll() {
         return getGyroscopeX();
     }
 
     @Override
-    public double getYaw() {
+    public float getYaw() {
         return getGyroscopeZ();
     }
 

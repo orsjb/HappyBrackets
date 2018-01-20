@@ -31,6 +31,7 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
  * For this example we want to look at the accelerometer and use it to trigger a sound when you turn over the
  * accelerometer.
  */
+@SuppressWarnings("deprecated")
 public class move_to_play implements HBAction {
 
     public enum Orientation {UP, DOWN}

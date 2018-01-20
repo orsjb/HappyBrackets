@@ -11,7 +11,7 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
 import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 
 import java.util.LinkedList;
-
+@SuppressWarnings("deprecated")
 public class OrientationDrone2 implements HBAction {
 
 
@@ -19,6 +19,7 @@ public class OrientationDrone2 implements HBAction {
     LinkedList<double[]> sensorHistory;
 
     @Override
+    @SuppressWarnings("deprecated")
     public void action(HB hb) {
 
 

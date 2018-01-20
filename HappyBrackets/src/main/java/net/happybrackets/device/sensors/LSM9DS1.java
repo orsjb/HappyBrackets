@@ -795,18 +795,18 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
     }
 
 	@Override
-	public double getGyroscopeX() {
-		return gyroData[0];
+	public float getGyroscopeX() {
+		return (float) gyroData[0];
 	}
 
 	@Override
-	public double getGyroscopeY() {
-		return gyroData[1];
+	public float getGyroscopeY() {
+		return (float) gyroData[1];
 	}
 
 	@Override
-	public double getGyroscopeZ() {
-		return gyroData[2];
+	public float getGyroscopeZ() {
+		return (float) gyroData[2];
 	}
 
 	@Override
@@ -815,18 +815,18 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
     }
 
 	@Override
-	public double getAccelerometerX() {
-		return accelData[1];
+	public float getAccelerometerX() {
+		return (float)accelData[1];
 	}
 
 	@Override
-	public double getAccelerometerY() {
-		return accelData[0];
+	public float getAccelerometerY() {
+		return (float) accelData[0];
 	}
 
 	@Override
-	public double getAccelerometerZ() {
-		return accelData[2];
+	public float getAccelerometerZ() {
+		return (float) accelData[2];
 	}
 
 	@Override
@@ -835,32 +835,32 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
     }
 
 	@Override
-	public double getMagnetometerX() {
-		return magData[1];
+	public float getMagnetometerX() {
+		return (float)magData[1];
 	}
 
 	@Override
-	public double getMagnetometerY() {
-		return magData[0];
+	public float getMagnetometerY() {
+		return (float)magData[0];
 	}
 
 	@Override
-	public double getMagnetometerZ() {
-		return magData[2];
+	public float getMagnetometerZ() {
+		return (float)magData[2];
 	}
 
 	@Override
-	public double getPitch() {
+	public float getPitch() {
 		return getGyroscopeY();
 	}
 
 	@Override
-	public double getRoll() {
+	public float getRoll() {
 		return getGyroscopeX();
 	}
 
 	@Override
-	public double getYaw() {
+	public float getYaw() {
 		return getGyroscopeZ();
 	}
 
