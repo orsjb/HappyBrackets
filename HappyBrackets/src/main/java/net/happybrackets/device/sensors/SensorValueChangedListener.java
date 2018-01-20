@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package net.happybrackets.device.sensors.sensor_types;
+package net.happybrackets.device.sensors;
 
 /**
- * Created by ollie on 24/07/2016.
+ * Gets notified when a sensor has been updated. The sensor in this method. The implementor should independently query the sensor for data.
  */
-public interface MagnetometerSensor {
+public interface SensorValueChangedListener {
 
-    double[] getMagnetometerData();
-    float getMagnetometerX();
-    float getMagnetometerY();
-    float getMagnetometerZ();
+    /**
+     * Notify listener that the sensor has changed
+     * @param sensor the sensor that changed
+     */
+    void sensorUpdated(Sensor sensor);
+
 }
-

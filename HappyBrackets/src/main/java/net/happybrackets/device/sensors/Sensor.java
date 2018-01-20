@@ -33,7 +33,7 @@ public abstract class Sensor {
     private static Hashtable<Class<? extends Sensor>, Sensor> loadedSensors = new Hashtable<>();
 
     private final Set<SensorUpdateListener> listeners = new HashSet<>();
-
+    private final Set<SensorValueChangedListener> valueChangedListeners = new HashSet<>();
     /**
      * Returns the sensor name, typically the make/model of the hardware sensor that this class refers to.
      * @return a {@link String} representing the sensor's name.
@@ -43,10 +43,21 @@ public abstract class Sensor {
     /**
      * Add a @{@link SensorUpdateListener} that will listen to this @{@link Sensor}.
      * @param listener the listener to add.
+     * @deprecated use (@link addValueChangedListener) instead
      */
+    @Deprecated
     public void addListener(SensorUpdateListener listener) {
         listeners.add(listener);
     }
+
+    /**
+     * Add a @{@link SensorValueChangedListener} that will listen to this @{@link Sensor}.
+     * @param listener the listener to add.
+     */
+    public void addValueChangedListener(SensorValueChangedListener listener) {
+        valueChangedListeners.add(listener);
+    }
+
 
     /**
      * Remove the given @{@link SensorUpdateListener}.
@@ -57,10 +68,19 @@ public abstract class Sensor {
     }
 
     /**
+     * Remove the given @{@link SensorValueChangedListener}.
+     * @param listener the listener to remove.
+     */
+    public void removeListener(SensorValueChangedListener listener) {
+        valueChangedListeners.remove(listener);
+    }
+
+    /**
      * Clear all listeners listening to this @{@link Sensor}.
      */
     public void clearListeners() {
         listeners.clear();
+        valueChangedListeners.clear();
     }
 
     /**
@@ -69,7 +89,26 @@ public abstract class Sensor {
     protected void notifyListeners()
     {
         for(SensorUpdateListener listener : listeners) {
-            listener.sensorUpdated();
+            try {
+                listener.sensorUpdated();
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Exception in notifyListeners " +  ex.getMessage());
+            }
+
+        }
+
+        for (SensorValueChangedListener listener: valueChangedListeners)
+        {
+            try
+            {
+                listener.sensorUpdated(this);
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Exception in notifyListeners " +  ex.getMessage());
+            }
         }
     }
 

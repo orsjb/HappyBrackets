@@ -443,15 +443,16 @@ public class HB {
 	/**
 	 * Causes the audio to start at a given synchronised time on all devices.
 	 *
-	 * @param time time at which to sync, according to the agreed clock time
+	 * @param intervalForSyncAction time at which to sync, according to the agreed clock time
      */
-	public void syncAudioStart(long time) {
+	public void syncAudioStart(int intervalForSyncAction) {
+		long timeToAct = (synch.correctedTimeNow() / intervalForSyncAction + 1)  * intervalForSyncAction;
 		doAtTime(new Runnable() {
 			public void run() {
 				startAudio();
 				clock.reset();		//if audio is already running, we just reset the clock
 			}
-		}, time);
+		}, timeToAct);
 	}
 
 	/**
@@ -708,18 +709,25 @@ public class HB {
 
 	/**
 	 * Gets the sensor with the given sensor ID. This will attempt to make a connection with the given sensor.
-	 *
+	 * @deprecated use {@link #createSensor} instead.
 	 * @param sensorClass the class of the {@link Sensor} you want returned
 	 * @return the returned {@link Sensor}, if one can be found
      */
+	@Deprecated
 	public Sensor getSensor(Class sensorClass) {
 		Sensor result = sensors.get(sensorClass);
 		if(!sensors.containsKey(sensorClass)) {
 			try {
 				result = Sensor.getSensor(sensorClass);
 				if (result == null) {
-					result = (Sensor) sensorClass.getConstructor().newInstance();
+					try {
+						sensorClass.getConstructor().newInstance();
+					}
+					catch (Exception ex){}
 				}
+
+				// we will load from getSensor
+				result = Sensor.getSensor(sensorClass);
 
 				if(result != null) sensors.put(sensorClass, result);
 			} catch (Exception e) {
@@ -729,6 +737,21 @@ public class HB {
 		}
 		return result;
 	}
+
+    /**
+     *
+     * @param sensorClass the class of the {@link Sensor} you want returned
+     * @return the returned {@link Sensor}
+     * @throws ClassNotFoundException if sensor type not found
+     */
+    @SuppressWarnings("deprecation")
+	public Sensor createSensor(Class sensorClass) throws ClassNotFoundException{
+	    Sensor sensor = getSensor(sensorClass);
+	    if (sensor == null){
+	        throw new ClassNotFoundException();
+        }
+        return sensor;
+    }
 
 	/**
 	 * Puts an {@link Object} into the global memory store with a given name. This overwrites any object that was previously stored with the given name.

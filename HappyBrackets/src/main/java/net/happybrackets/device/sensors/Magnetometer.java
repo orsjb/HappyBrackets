@@ -35,6 +35,7 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
      * Will detect connected Sensor and return it
      * @return
      */
+    @SuppressWarnings("deprecation")
     Sensor loadSensor(){
 
         if (defaultSensor == null)
@@ -188,11 +189,13 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
      * Set the resolution for all three axis to the number of decimal places
      * set by resolution. A value of -1 will remove rounding
      * @param resolution the number of decimal places to round to. -1 will be no rounding
+     * @return this object
      */
-    public void setRounding(int resolution){
+    public Magnetometer setRounding(int resolution){
         xRounding = resolution;
         yRounding = resolution;
         zRounding = resolution;
+        return  this;
     }
 
     /**
@@ -248,17 +251,17 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
     }
 
     @Override
-    public double getMagnetometerX() {
-        return x;
+    public float getMagnetometerX() {
+        return (float)x;
     }
 
     @Override
-    public double getMagnetometerY() {
-        return y;
+    public float getMagnetometerY() {
+        return (float)y;
     }
 
     @Override
-    public double getMagnetometerZ() {
-        return z;
+    public float getMagnetometerZ() {
+        return (float)z;
     }
 }

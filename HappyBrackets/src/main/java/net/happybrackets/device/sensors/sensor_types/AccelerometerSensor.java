@@ -22,8 +22,8 @@ package net.happybrackets.device.sensors.sensor_types;
 public interface AccelerometerSensor {
 
     double[] getAccelerometerData();
-    double getAccelerometerX();
-    double getAccelerometerY();
-    double getAccelerometerZ();
+    float getAccelerometerX();
+    float getAccelerometerY();
+    float getAccelerometerZ();
 }
 

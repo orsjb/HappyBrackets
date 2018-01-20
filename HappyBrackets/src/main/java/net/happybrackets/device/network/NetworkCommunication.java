@@ -188,11 +188,11 @@ public class NetworkCommunication {
 					} else {
 						//master commands...
 						if (OSCVocabulary.match(msg, OSCVocabulary.Device.SYNC)) {
-							long timeToAct = 1000;
+							int intervalForSynchAction = 1000;
 							if (msg.getArgCount() > 0) {
-								timeToAct = (Integer) msg.getArg(0);
+								intervalForSynchAction = (Integer) msg.getArg(0);
 							}
-							hb.syncAudioStart(timeToAct);
+							hb.syncAudioStart(intervalForSynchAction);
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.REBOOT)) {
 							HB.rebootDevice();
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SHUTDOWN)) {

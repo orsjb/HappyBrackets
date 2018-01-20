@@ -32,6 +32,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * Will detect connected Sensor and return it
      * @return
      */
+    @SuppressWarnings("deprecation")
     Sensor loadSensor(){
 
         if (defaultSensor == null)
@@ -184,11 +185,13 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
      * Set the resolution for all three axis to the number of decimal places
      * set by resolution. A value of -1 will remove rounding
      * @param resolution the number of decimal places to round to. -1 will be no rounding
+     * @return this object
      */
-    public void setRounding(int resolution){
+    public Gyroscope setRounding(int resolution){
         xRounding = resolution;
         yRounding = resolution;
         zRounding = resolution;
+        return this;
     }
 
     /**
@@ -246,32 +249,32 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
     }
 
     @Override
-    public double getGyroscopeX() {
-        return x;
+    public float getGyroscopeX() {
+        return (float)x;
     }
 
     @Override
-    public double getGyroscopeY() {
-        return y;
+    public float getGyroscopeY() {
+        return (float)y;
     }
 
     @Override
-    public double getGyroscopeZ() {
-        return z;
+    public float getGyroscopeZ() {
+        return (float)z;
     }
 
     @Override
-    public double getPitch() {
+    public float getPitch() {
         return getGyroscopeY();
     }
 
     @Override
-    public double getRoll() {
+    public float getRoll() {
         return getGyroscopeX();
     }
 
     @Override
-    public double getYaw() {
+    public float getYaw() {
         return getGyroscopeZ();
     }
 

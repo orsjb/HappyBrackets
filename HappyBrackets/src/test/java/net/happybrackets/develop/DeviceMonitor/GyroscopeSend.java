@@ -22,7 +22,9 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.LSM9DS1;
+import net.happybrackets.device.sensors.Sensor;
 import net.happybrackets.device.sensors.SensorUpdateListener;
+import net.happybrackets.device.sensors.SensorValueChangedListener;
 
 /**
  * For this example we want to look at the accelerometer and use it to trigger a sound when you turn over the
@@ -62,7 +64,7 @@ public class GyroscopeSend implements HBAction {
 
 
         LSM9DS1 mySensor = (LSM9DS1) hb.getSensor(LSM9DS1.class);
-        mySensor.addListener(new SensorUpdateListener() {
+        mySensor.addValueChangedListener(new SensorValueChangedListener() {
 
             boolean init = false;
 
@@ -70,19 +72,20 @@ public class GyroscopeSend implements HBAction {
 
 
             @Override
-            public void sensorUpdated() {
+            public void sensorUpdated(Sensor sensor) {
 
                 // We are going to see if we have expired
 
+                LSM9DS1 lsm9DS1 = (LSM9DS1)sensor;
                 long expired = System.currentTimeMillis() - lastSendTime;
 
                 if (expired > MIN_SENSOR_WAIT) {
                     lastSendTime = System.currentTimeMillis();
 
                     // Get the data from Z.
-                    double yaw = mySensor.getYaw();
-                    double roll = mySensor.getRoll();
-                    double pitch = mySensor.getPitch();
+                    double yaw = lsm9DS1.getYaw();
+                    double roll = lsm9DS1.getRoll();
+                    double pitch = lsm9DS1.getPitch();
 
 
                     if (!init) {

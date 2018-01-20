@@ -22,17 +22,22 @@ public class DefaultMagnetometer implements HBAction{
     @Override
     public void action(HB hb) {
 
-        Magnetometer sensor = (Magnetometer)hb.getSensor(Magnetometer.class) ;
-        if (sensor != null) {
-            sensor.setRounding(3);
-            sensor.addListener(new SensorUpdateListener() {
-                @Override
-                public void sensorUpdated() {
+        try {
+            Magnetometer sensor = (Magnetometer) hb.createSensor(Magnetometer.class);
+            if (sensor != null) {
+                sensor.setRounding(3);
+                sensor.addValueChangedListener(sensor1 -> {
                     System.out.println(sensor.getMagnetometerX());
                     System.out.println(sensor.getMagnetometerY());
-                    System.out.println(sensor.getMagnetometerZ( ));
-                }
-            });
+                    System.out.println(sensor.getMagnetometerZ());
+
+                });
+
+            }
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+
         }
     }
 }

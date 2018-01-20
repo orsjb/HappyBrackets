@@ -3,9 +3,6 @@ package net.happybrackets.device.sensors;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Default Accelerometer for HB.
  * The type of accelerometer will be detected and listeners will register to receive Accelerometer events
@@ -34,7 +31,8 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
      * Will detect connected Sensor and return it
      * @return
      */
-    Sensor loadSensor(){
+    @SuppressWarnings("deprecation")
+    private Sensor loadSensor(){
 
         if (defaultSensor == null)
         {
@@ -126,7 +124,9 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
             }
         }
 
-        storeSensor(this);
+        if (defaultSensor != null) {
+            storeSensor(this);
+        }
         return  defaultSensor;
     }
 
@@ -188,11 +188,13 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
      * Set the resolution for all three axis to the number of decimal places
      * set by resolution. A value of -1 will remove rounding
      * @param resolution the number of decimal places to round to. -1 will be no rounding
+     * @return this object
      */
-    public void setRounding(int resolution){
+    public Accelerometer setRounding(int resolution){
         xRounding = resolution;
         yRounding = resolution;
         zRounding = resolution;
+        return this;
     }
 
     /**
@@ -247,21 +249,21 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
 
     @Override
     public double[] getAccelerometerData() {
-        return new double[]{x, y, z};
+        return new double[]{(float)x, (float)y, (float)z};
     }
 
     @Override
-    public double getAccelerometerX() {
-        return x;
+    public float getAccelerometerX() {
+        return (float)x;
     }
 
     @Override
-    public double getAccelerometerY() {
-        return y;
+    public float getAccelerometerY() {
+        return (float)y;
     }
 
     @Override
-    public double getAccelerometerZ() {
-        return z;
+    public float getAccelerometerZ() {
+        return (float)z;
     }
 }

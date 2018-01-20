@@ -48,17 +48,17 @@ public class MagnetometerSimulator extends Sensor implements MagnetometerSensor 
 
 
     @Override
-    public double getMagnetometerX() {
+    public float getMagnetometerX() {
         return (float)control_x_text.getValue();
     }
 
     @Override
-    public double getMagnetometerY() {
+    public float getMagnetometerY() {
         return (float)control_y_text.getValue();
     }
 
     @Override
-    public double getMagnetometerZ() {
+    public float getMagnetometerZ() {
         return (float)control_z_text.getValue();
     }
 

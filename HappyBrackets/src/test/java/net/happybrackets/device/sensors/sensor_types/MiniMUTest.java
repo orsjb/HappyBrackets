@@ -24,7 +24,7 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.AudioSetup;
 import net.happybrackets.device.sensors.MiniMU;
 import net.happybrackets.device.sensors.SensorUpdateListener;
-
+@SuppressWarnings("deprecated")
 public class MiniMUTest {
 
 	public static void main(String[] args) {

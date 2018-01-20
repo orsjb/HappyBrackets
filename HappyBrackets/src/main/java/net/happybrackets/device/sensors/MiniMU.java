@@ -351,17 +351,17 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 	}
 
 	@Override
-	public double getGyroscopeX() {
+	public float getGyroscopeX() {
 		return 0;
 	}
 
 	@Override
-	public double getGyroscopeY() {
+	public float getGyroscopeY() {
 		return 0;
 	}
 
 	@Override
-	public double getGyroscopeZ() {
+	public float getGyroscopeZ() {
 		return 0;
 	}
 
@@ -371,17 +371,17 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 	}
 
 	@Override
-	public double getAccelerometerX() {
+	public float getAccelerometerX() {
 		return 0;
 	}
 
 	@Override
-	public double getAccelerometerY() {
+	public float getAccelerometerY() {
 		return 0;
 	}
 
 	@Override
-	public double getAccelerometerZ() {
+	public float getAccelerometerZ() {
 		return 0;
 	}
 
@@ -391,32 +391,32 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 	}
 
 	@Override
-	public double getMagnetometerX() {
+	public float getMagnetometerX() {
 		return 0;
 	}
 
 	@Override
-	public double getMagnetometerY() {
+	public float getMagnetometerY() {
 		return 0;
 	}
 
 	@Override
-	public double getMagnetometerZ() {
+	public float getMagnetometerZ() {
 		return 0;
 	}
 
 	@Override
-	public double getPitch() {
+	public float getPitch() {
 		return getGyroscopeY();
 	}
 
 	@Override
-	public double getRoll() {
+	public float getRoll() {
 		return getGyroscopeX();
 	}
 
 	@Override
-	public double getYaw() {
+	public float getYaw() {
 		return getGyroscopeZ();
 	}
 

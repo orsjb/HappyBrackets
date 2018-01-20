@@ -22,17 +22,17 @@ public class DefaultGyroscope implements HBAction{
     @Override
     public void action(HB hb) {
 
-        Gyroscope sensor = (Gyroscope)hb.getSensor(Gyroscope.class) ;
-        if (sensor != null) {
+
+        try {
+            Gyroscope sensor = (Gyroscope)hb.createSensor(Gyroscope.class);
             sensor.setRounding(3);
-            sensor.addListener(new SensorUpdateListener() {
-                @Override
-                public void sensorUpdated() {
-                    System.out.println(sensor.getPitch());
-                    System.out.println(sensor.getRoll());
-                    System.out.println(sensor.getYaw());
-                }
+            sensor.addListener(() -> {
+                System.out.println(sensor.getPitch());
+                System.out.println(sensor.getRoll());
+                System.out.println(sensor.getYaw());
             });
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
