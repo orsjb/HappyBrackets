@@ -709,11 +709,11 @@ public class HB {
 
 	/**
 	 * Gets the sensor with the given sensor ID. This will attempt to make a connection with the given sensor.
-	 * @deprecated use {@link #createSensor} instead.
+	 * Note that this function will be deprecated in 3.0
+	 * deprecated use {@link #createSensor} instead.
 	 * @param sensorClass the class of the {@link Sensor} you want returned
 	 * @return the returned {@link Sensor}, if one can be found
      */
-	@Deprecated
 	public Sensor getSensor(Class sensorClass) {
 		Sensor result = sensors.get(sensorClass);
 		if(!sensors.containsKey(sensorClass)) {
@@ -1037,6 +1037,20 @@ public class HB {
 	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value)
 	{
 		return new DynamicControl(parent_sketch, control_type, name, initial_value);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param parent_sketch the object calling - typically this
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name)
+	{
+		return new DynamicControl(parent_sketch, control_type, name);
 	}
 
 	/**

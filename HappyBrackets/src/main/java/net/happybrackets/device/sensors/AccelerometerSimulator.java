@@ -21,12 +21,9 @@ public class AccelerometerSimulator extends Sensor implements AccelerometerSenso
     DynamicControl control_z_text;
 
     public AccelerometerSimulator(){
-        DynamicControl.DynamicControlListener listener = new DynamicControl.DynamicControlListener() {
-            @Override
-            public void update(DynamicControl control) {
-                // we will ignore the control and send all three at once
-                notifyListeners();
-            }
+        DynamicControl.DynamicControlListener listener = control -> {
+            // we will ignore the control and send all three at once
+            notifyListeners();
         };
 
         control_x_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);

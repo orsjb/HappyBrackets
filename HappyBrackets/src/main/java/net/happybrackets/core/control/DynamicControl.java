@@ -94,7 +94,6 @@ public class DynamicControl {
     private String tooltipPrefix = "";
 
 
-
     // The Object sketch that this control was created in
     private Object parentSketch = null;
     final int parentId;
@@ -173,6 +172,15 @@ public class DynamicControl {
     }
 
     /**
+     * Get the Sketch or class object linked to this control
+     * @return the parentSketch or Object
+     */
+    public Object getParentSketch() {
+        return parentSketch;
+    }
+
+
+    /**
      * This is a private constructor used to initialise constant attributes of this object
      *
      * @param parent_sketch the object calling - typically this
@@ -212,6 +220,19 @@ public class DynamicControl {
      */
     public DynamicControl(ControlType control_type, String name, Object initial_value) {
         this(new Object(), control_type, name, initial_value, true);
+        controlMap.addControl(this);
+    }
+
+
+    /**
+     * A dynamic control that can be accessed from outside this sketch
+     * it is created with the sketch object that contains it along with the type
+     * @param parent_sketch the object calling - typically this, however, you can use any class object
+     * @param control_type  The type of control message you want to send
+     * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
+     */
+    public DynamicControl(Object parent_sketch, ControlType control_type, String name) {
+        this(parent_sketch, control_type, name,  true);
         controlMap.addControl(this);
     }
 

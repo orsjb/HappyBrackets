@@ -42,10 +42,10 @@ public abstract class Sensor {
 
     /**
      * Add a @{@link SensorUpdateListener} that will listen to this @{@link Sensor}.
+     * Will be deprecated in 3.0
      * @param listener the listener to add.
-     * @deprecated use (@link addValueChangedListener) instead
+     * deprecated use (@link addValueChangedListener) instead
      */
-    @Deprecated
     public void addListener(SensorUpdateListener listener) {
         listeners.add(listener);
     }
