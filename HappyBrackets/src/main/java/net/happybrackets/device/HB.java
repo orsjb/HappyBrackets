@@ -33,7 +33,6 @@ import java.util.Random;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import javafx.application.Application;
-import javafx.stage.Stage;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
@@ -710,7 +709,7 @@ public class HB {
 	/**
 	 * Gets the sensor with the given sensor ID. This will attempt to make a connection with the given sensor.
 	 * Note that this function will be deprecated in 3.0
-	 * deprecated use {@link #createSensor} instead.
+	 * deprecated use {@link #findSensor} instead.
 	 * @param sensorClass the class of the {@link Sensor} you want returned
 	 * @return the returned {@link Sensor}, if one can be found
      */
@@ -742,13 +741,13 @@ public class HB {
      *
      * @param sensorClass the class of the {@link Sensor} you want returned
      * @return the returned {@link Sensor}
-     * @throws ClassNotFoundException if sensor type not found
+     * @throws SensorNotFoundException if sensor type not found
      */
     @SuppressWarnings("deprecation")
-	public Sensor createSensor(Class sensorClass) throws ClassNotFoundException{
+	public Sensor findSensor(Class sensorClass) throws SensorNotFoundException{
 	    Sensor sensor = getSensor(sensorClass);
 	    if (sensor == null){
-	        throw new ClassNotFoundException();
+	        throw new SensorNotFoundException("Unable to find " + sensorClass.getSimpleName());
         }
         return sensor;
     }

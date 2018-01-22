@@ -9,9 +9,9 @@ import java.io.File;
  * When Releasing a version, the values in this class need to be changed
  */
 public final class BuildVersion {
-    static final int MAJOR = 2;
-    static final int MINOR = 0;
-    static final int BUILD = 0;
+    static final int MAJOR = 1;
+    static final int MINOR = 18;
+    static final int BUILD = 1;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}

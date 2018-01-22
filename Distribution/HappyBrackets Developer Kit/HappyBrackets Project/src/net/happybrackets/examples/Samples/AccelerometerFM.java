@@ -48,34 +48,33 @@ public class AccelerometerFM implements HBAction {
         hb.ac.out.addInput(g);
 
         //now add our sensor
-        Accelerometer sensor = (Accelerometer)hb.getSensor(Accelerometer.class);
-        if (sensor != null){
-            // Add a Listener
-            sensor.addListener(new SensorUpdateListener() {
-                @Override
-                public void sensorUpdated() {
-                    // get our values from sensor
-                    float x_val = (float)sensor.getAccelerometerX();
-                    float y_val = (float)sensor.getAccelerometerY();
-                    float z_val = (float)sensor.getAccelerometerZ();
+        hb.setEnableSimulators(true);
+        try {
+            hb.createSensor(Accelerometer.class).addValueChangedListener(sensor -> {
 
-                    // Let us make Carrier Freq dependant on x val
-                    x_val += 1;
-                    baseFmFreq.setValue(CENTRE_CARRIER_FREQ * x_val);
+                Accelerometer accelerometer = (Accelerometer)sensor;
 
-                    // Make Modulator Freq based on Z
-                    z_val += 1;
-                    modFMFreq.setValue(CENTRE_MOD_FREQ * z_val);
+                float x_val = accelerometer.getAccelerometerX();
+                float y_val = accelerometer.getAccelerometerY();
+                float z_val = accelerometer.getAccelerometerZ();
 
-                    // Make depth based on Y
-                    //We want level to be zero, so we will make value go from 0 to +1 with zero in centre
-                    // Not really necessary to do this abs, however, for understanding we will do it
-                    y_val = Math.abs(y_val);
-                    modFMDepth.setValue(CENTRE_MOD_DEPTH * y_val);
+                // Let us make Carrier Freq dependant on x val
+                x_val += 1;
+                baseFmFreq.setValue(CENTRE_CARRIER_FREQ * x_val);
 
+                // Make Modulator Freq based on Z
+                z_val += 1;
+                modFMFreq.setValue(CENTRE_MOD_FREQ * z_val);
 
-                }
+                // Make depth based on Y
+                //We want level to be zero, so we will make value go from 0 to +1 with zero in centre
+                // Not really necessary to do this abs, however, for understanding we will do it
+                y_val = Math.abs(y_val);
+                modFMDepth.setValue(CENTRE_MOD_DEPTH * y_val);
+
             });
+        } catch (ClassNotFoundException e) {
+            hb.setStatus("Uable to create accelerometer");
         }
     }
 
