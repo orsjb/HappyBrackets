@@ -169,8 +169,16 @@ public class LogSender {
                 StringBuilder sb = new StringBuilder();
                 // Send the new lines in the log file.
                 String line;
+                int num_lines = 0;
+                final int max_lines = 100;
+
                 while ((line = fileReader.readLine()) != null) {
                     sb.append(line).append("\n");
+                    num_lines++;
+                    if (num_lines >= max_lines)
+                    {
+                        break;
+                    }
                 }
 
                 networkCommunication.send(OSCVocabulary.Device.LOG,
