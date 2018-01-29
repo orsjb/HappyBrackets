@@ -82,12 +82,19 @@ public class BroadcastManager {
         Thread t = new Thread() {
             public void run() {
                 while(true) {
-                    logger.debug("refresh loop...");
-                    refreshBroadcaster();
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         logger.error("Broadcast manager poll interval interrupted!", e);
+                    }
+
+                    if (!disableSend) {
+                        logger.debug("refresh loop...");
+                        refreshBroadcaster();
+                    }
+                    else
+                    {
+                        logger.debug("disableSend");
                     }
                 }
             }
