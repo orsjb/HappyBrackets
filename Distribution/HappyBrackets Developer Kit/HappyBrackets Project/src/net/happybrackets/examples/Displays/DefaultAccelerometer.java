@@ -6,6 +6,7 @@ import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.Accelerometer;
 import net.happybrackets.device.sensors.LSM9DS1;
+import net.happybrackets.device.sensors.SensorNotFoundException;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 import java.lang.invoke.MethodHandles;
@@ -33,13 +34,13 @@ public class DefaultAccelerometer implements HBAction {
 
 
         try {
-            hb.createSensor(Accelerometer.class).addListener(new SensorUpdateListener() {
+            hb.findSensor(Accelerometer.class).addListener(new SensorUpdateListener() {
                 @Override
                 public void sensorUpdated() {
                     //x_axis.setValue(mySensor.getAccelerometerX());
                 }
             });
-        } catch (ClassNotFoundException e) {
+        } catch (SensorNotFoundException e) {
             e.printStackTrace();
         }
 
