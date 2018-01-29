@@ -49,6 +49,9 @@ public class BroadcastManager {
 
     boolean disableSend = false;
 
+    // we will set this flag if we are running from plugin
+    boolean waitForStart = false;
+
     /**
      * Set to disable sending messages from this broadcaster
      * @param disable disable sending
@@ -57,6 +60,7 @@ public class BroadcastManager {
     {
         disableSend = disable;
     }
+
     /**
      * Create a new BroadcastManager.
      *
@@ -71,6 +75,16 @@ public class BroadcastManager {
     }
 
     /**
+     * Cause the BroadcastManager to wait before testing the network ports
+     * We need to set this here so we can do it from pluging, otherwise, tests will faile
+     * @param wait set to true if we will wait 5 seconds for a start
+     */
+    public void setWaitForStart(boolean wait) {
+        this.waitForStart = wait;
+    }
+
+
+    /**
      * Returns the port we are configured for
      * @return the port configured
      */
@@ -81,12 +95,18 @@ public class BroadcastManager {
         logger.debug("creating broadcast refresh thread...");
         Thread t = new Thread() {
             public void run() {
-                while(true) {
+
+                if (waitForStart)
+                {
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         logger.error("Broadcast manager poll interval interrupted!", e);
                     }
+                }
+
+                while(true) {
+
 
                     if (!disableSend) {
                         logger.debug("refresh loop...");
@@ -95,6 +115,12 @@ public class BroadcastManager {
                     else
                     {
                         logger.debug("disableSend");
+                    }
+
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        logger.error("Broadcast manager poll interval interrupted!", e);
                     }
                 }
             }

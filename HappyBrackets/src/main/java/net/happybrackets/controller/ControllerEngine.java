@@ -143,12 +143,17 @@ public class ControllerEngine {
     }
 
 
+    /**
+     * Make or controller start it network Communication
+     */
     public synchronized void startDeviceCommunication(){
 
         if (controllerAdvertiser != null && !controllerStarted)
         {
             if (broadcastManager != null)
             {
+                // we will make the start wait so our toolwindow can settle down
+                broadcastManager.setWaitForStart(true);
                 broadcastManager.startRefreshThread();
             }
             controllerStarted = true;
