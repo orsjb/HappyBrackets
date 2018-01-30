@@ -8,6 +8,7 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.Accelerometer;
+import net.happybrackets.device.sensors.SensorNotFoundException;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 import java.lang.invoke.MethodHandles;
@@ -50,7 +51,7 @@ public class AccelerometerFM implements HBAction {
         //now add our sensor
         hb.setEnableSimulators(true);
         try {
-            hb.createSensor(Accelerometer.class).addValueChangedListener(sensor -> {
+            hb.findSensor(Accelerometer.class).addValueChangedListener(sensor -> {
 
                 Accelerometer accelerometer = (Accelerometer)sensor;
 
@@ -73,7 +74,7 @@ public class AccelerometerFM implements HBAction {
                 modFMDepth.setValue(CENTRE_MOD_DEPTH * y_val);
 
             });
-        } catch (ClassNotFoundException e) {
+        } catch (SensorNotFoundException e) {
             hb.setStatus("Uable to create accelerometer");
         }
     }

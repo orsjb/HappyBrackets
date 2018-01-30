@@ -127,7 +127,11 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
             }
         }
 
-        storeSensor(this);
+        if (defaultSensor != null) {
+            storeSensor(this);
+        }
+        setValidLoad (defaultSensor != null);
+
         return  defaultSensor;
     }
 
@@ -232,6 +236,7 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
 
         try {
             loadSensor();
+            setValidLoad (defaultSensor != null);
         }
         catch (Exception ex){
 
@@ -244,6 +249,7 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
     public String getSensorName() {
         return "Accelerometer";
     }
+
 
     @Override
     public double[] getMagnetometerData() {

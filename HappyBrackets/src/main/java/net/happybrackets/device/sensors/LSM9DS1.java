@@ -273,6 +273,7 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 		storeSensor(this);
 		loadedInstance = this;
+		setValidLoad (true);
 	}
 
 

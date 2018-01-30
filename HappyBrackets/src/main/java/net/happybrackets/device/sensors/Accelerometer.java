@@ -127,6 +127,8 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
         if (defaultSensor != null) {
             storeSensor(this);
         }
+
+        setValidLoad (defaultSensor != null);
         return  defaultSensor;
     }
 
@@ -232,6 +234,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
 
         try {
             loadSensor();
+            setValidLoad(defaultSensor != null);
         }
         catch (Exception ex){
 

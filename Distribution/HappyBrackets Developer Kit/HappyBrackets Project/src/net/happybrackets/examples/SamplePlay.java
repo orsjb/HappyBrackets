@@ -21,7 +21,7 @@ public class SamplePlay implements HBAction {
     @Override
     public void action(HB hb) {
         // Define our sampler
-        Sample sample = SampleManager.sample("data/audio/hiphop.wav");
+        Sample sample = SampleManager.sample("data/audio/i-write.wav");
         if (sample != null) {
             SamplePlayer sp = new SamplePlayer(hb.ac, sample);
 
@@ -29,6 +29,20 @@ public class SamplePlay implements HBAction {
             Gain g = new Gain(hb.ac, 1, 1);
             g.addInput(sp);
             hb.ac.out.addInput(g);
+        }
+    }
+
+    /**
+     * This function is used when running sketch in IntelliJ IDE for debugging or testing
+     *
+     * @param args standard args required
+     */
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

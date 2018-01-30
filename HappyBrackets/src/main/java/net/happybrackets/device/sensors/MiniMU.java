@@ -175,6 +175,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 		storeSensor(this);
 		loadedInstance = this;
+		setValidLoad (true);
 	}
 
 //	public void update() throws IOException {

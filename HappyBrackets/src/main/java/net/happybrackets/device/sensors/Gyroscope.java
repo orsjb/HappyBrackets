@@ -122,8 +122,12 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                 }
             }
         }
+
         // Store into our static List
-        storeSensor(this);
+        if (defaultSensor != null) {
+            storeSensor(this);
+        }
+        setValidLoad (defaultSensor != null);
         return  defaultSensor;
     }
 
@@ -229,6 +233,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
 
         try {
             loadSensor();
+            setValidLoad (defaultSensor != null);
         }
         catch (Exception ex){
 
@@ -240,8 +245,6 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
     public String getSensorName() {
         return "Gyroscope";
     }
-
-
 
     @Override
     public double[] getGyroscopeData() {

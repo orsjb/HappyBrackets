@@ -714,9 +714,14 @@ public class HB {
 	 * @return the returned {@link Sensor}, if one can be found
      */
 	public Sensor getSensor(Class sensorClass) {
+		// see if we have a sensor stored in our list
 		Sensor result = sensors.get(sensorClass);
+
+		// check the versions we have store here
 		if(!sensors.containsKey(sensorClass)) {
+			// we do not have a copy here. See if one was called by a generic caller
 			try {
+				// check the ones we have stored inside sensor class
 				result = Sensor.getSensor(sensorClass);
 				if (result == null) {
 					try {
@@ -728,7 +733,18 @@ public class HB {
 				// we will load from getSensor
 				result = Sensor.getSensor(sensorClass);
 
-				if(result != null) sensors.put(sensorClass, result);
+				if(result != null) {
+					// let is see if it did a valid load
+					if (result.isValidLoadedSesnor()){
+						sensors.put(sensorClass, result);
+					}
+					else
+					{
+						// it was not loaded correctly. Set our result to null
+						result = null;
+					}
+
+				}
 			} catch (Exception e) {
 				logger.info("Cannot create sensor: {}", sensorClass);
 				setStatus("No sensor " + sensorClass + " available.");

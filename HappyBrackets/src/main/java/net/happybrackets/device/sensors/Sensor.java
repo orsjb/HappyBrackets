@@ -27,6 +27,13 @@ import java.util.Set;
  */
 public abstract class Sensor {
 
+
+    /**
+     * Add a validLoad flag. Every sensor will need to set it when it determines that the load is valid
+     */
+    protected boolean validLoad = false;
+
+
     /**
      * A {@link Hashtable} to store sensors.
      */
@@ -48,6 +55,24 @@ public abstract class Sensor {
      */
     public void addListener(SensorUpdateListener listener) {
         listeners.add(listener);
+    }
+
+
+    /**
+     * returns true if the sensor was loaded correctly.
+     * @return true if sensor was loaded correctly
+     */
+    public boolean isValidLoadedSesnor(){
+        // This must be set inside subclasses
+        return validLoad;
+    }
+
+    /**
+     * This needs to be set inside sensor to indicate it had a valid load
+     * @param valid set to true if loaded
+     */
+    protected  void setValidLoad(boolean valid) {
+        validLoad = valid;
     }
 
     /**

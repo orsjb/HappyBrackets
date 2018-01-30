@@ -143,6 +143,7 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         start();
         storeSensor(this);
+        setValidLoad (true);
     }
 
     public String getSensorName(){

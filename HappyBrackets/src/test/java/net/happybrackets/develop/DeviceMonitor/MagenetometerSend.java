@@ -48,9 +48,6 @@ public class MagenetometerSend implements HBAction {
         DynamicControl control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0);
         DynamicControl control_z = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0);
 
-        control_x.setControlScope(ControlScope.GLOBAL);
-        control_y.setControlScope(ControlScope.GLOBAL);
-        control_z.setControlScope(ControlScope.GLOBAL);
 
         DynamicControl min_control_x = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-x", 0.0);
         DynamicControl min_control_y = hb.createDynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "min-y", 0.0);

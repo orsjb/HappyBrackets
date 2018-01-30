@@ -35,6 +35,7 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
         control_z_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Yaw", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
 
         storeSensor(this);
+        setValidLoad(true);
     }
 
 
