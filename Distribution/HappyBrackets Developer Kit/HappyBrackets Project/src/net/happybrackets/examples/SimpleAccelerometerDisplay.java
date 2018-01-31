@@ -12,7 +12,7 @@ import net.happybrackets.device.sensors.Accelerometer;
 import net.happybrackets.device.sensors.SensorUpdateListener;
 
 /**
- * Play a sine wave whose frequency is based on Accelerometer X value
+ * Play a sine wave whose frequency is based on accelerometer X value
  */
 public class SimpleAccelerometerDisplay implements HBAction {
     @Override

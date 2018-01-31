@@ -77,7 +77,7 @@ public class HappyBracketsSirenAccelerate implements HBAction {
             });
         }
         else{
-            hb.setStatus("Unable to load Accelerometer");
+            hb.setStatus("Unable to load accelerometer");
         }
 
         Gyroscope gyroscope = (Gyroscope)hb.getSensor(Gyroscope.class);

@@ -1,4 +1,4 @@
-package net.happybrackets.V2Examples.FMSynthesis;
+package net.happybrackets.v2examples.fmsynthesis;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.*;
@@ -8,7 +8,7 @@ import net.happybrackets.device.HB;
 import java.lang.invoke.MethodHandles;
 
 /**
- * Basic FM wave generating a carrier frequency with a depth of 50% of the carriet frequency
+ * basic FM wave generating a carrier frequency with a depth of 50% of the carriet frequency
  * We will use an envelope to change the carrier frequency
  * Modulating at a rate of 0.4Hz
  * We will be using a function to calculate the frequency the carrier wavePlayer needs to be at

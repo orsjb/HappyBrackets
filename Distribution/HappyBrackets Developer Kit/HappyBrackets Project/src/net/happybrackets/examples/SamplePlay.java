@@ -21,7 +21,7 @@ public class SamplePlay implements HBAction {
     @Override
     public void action(HB hb) {
         // Define our sampler
-        Sample sample = SampleManager.sample("data/audio/i-write.wav");
+        Sample sample = SampleManager.sample("data/audio/Roje/i-write.wav");
         if (sample != null) {
             SamplePlayer sp = new SamplePlayer(hb.ac, sample);
 

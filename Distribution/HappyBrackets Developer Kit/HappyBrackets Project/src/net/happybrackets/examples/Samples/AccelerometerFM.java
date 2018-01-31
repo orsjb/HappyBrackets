@@ -14,7 +14,7 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
 import java.lang.invoke.MethodHandles;
 
 /**
- * Basic FM wave generating a  1KHz carrier with a depth of 500Hz
+ * basic FM wave generating a  1KHz carrier with a depth of 500Hz
  * Modulating at a rate of 1Hz
  * As we increase X axis, the carrier freq will increase
  * As we move away from centre Y, we will increase modulation depth

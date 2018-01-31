@@ -1,4 +1,4 @@
-package net.happybrackets.V2Examples.Basic;
+package net.happybrackets.v2examples.basic;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Gain;

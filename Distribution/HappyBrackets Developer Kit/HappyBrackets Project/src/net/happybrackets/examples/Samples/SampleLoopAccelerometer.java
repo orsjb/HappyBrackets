@@ -13,7 +13,7 @@ import net.happybrackets.device.sensors.SensorUpdateListener;
 import java.lang.invoke.MethodHandles;
 
 /**
- * Play a simple sample with a loop. Accelerometer X defines Start of Loop, Y defines duration
+ * Play a simple sample with a loop. accelerometer X defines Start of Loop, Y defines duration
  */
 public class SampleLoopAccelerometer implements HBAction {
     float sampleDuration = 500;

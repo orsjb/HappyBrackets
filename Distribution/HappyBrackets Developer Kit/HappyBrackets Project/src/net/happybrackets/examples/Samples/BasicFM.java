@@ -12,7 +12,7 @@ import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
 /**
- * Basic FM wave generating a  1KHz carrier with a depth of 500Hz
+ * basic FM wave generating a  1KHz carrier with a depth of 500Hz
  * Modulating at a rate of 1Hz
  */
 public class BasicFM implements HBAction {

@@ -1,4 +1,4 @@
-package net.happybrackets.V2Examples.FMSynthesis;
+package net.happybrackets.v2examples.fmsynthesis;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Function;
@@ -6,15 +6,12 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlScope;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
 
 /**
- * Basic FM wave generating a 1KHz carrier with a depth of 500Hz
+ * basic FM wave generating a 1KHz carrier with a depth of 500Hz
  * Modulating at a rate of 1Hz
  * We will be using a function to calculate the frequency the carrier wavePlayer needs to be at
  */

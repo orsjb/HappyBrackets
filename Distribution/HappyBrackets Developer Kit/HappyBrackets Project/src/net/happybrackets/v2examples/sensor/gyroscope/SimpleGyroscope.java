@@ -1,4 +1,4 @@
-package net.happybrackets.v2examples.sensor.accelerometer;
+package net.happybrackets.v2examples.sensor.gyroscope;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Gain;
@@ -7,6 +7,7 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.Accelerometer;
+import net.happybrackets.device.sensors.Gyroscope;
 import net.happybrackets.device.sensors.SensorNotFoundException;
 
 import java.lang.invoke.MethodHandles;
@@ -17,7 +18,7 @@ import java.lang.invoke.MethodHandles;
  * then multiply it to get a new frequency.
  * We use a Glide object as the frequency value input to a WavePlayer object
  */
-public class SimpleAccelerometer implements HBAction{
+public class SimpleGyroscope implements HBAction{
     @Override
     public void action(HB hb) {
         final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
@@ -46,38 +47,29 @@ public class SimpleAccelerometer implements HBAction{
         // create our accelerometer and connect
 
         /*****************************************************
-         * Find an accelerometer sensor. If no sensor is found
+         * Find an gyroscope sensor. If no sensor is found
          * you will receive a status message
-         * accelerometer values typically range from -1 to + 1
          *
-         * to create this code, simply type accelerometerSensor
+         * to create this code, simply type gyroscopeSensor
          *****************************************************/
         try {
-            hb.findSensor(Accelerometer.class).addValueChangedListener(sensor -> {
-                Accelerometer accelerometer = (Accelerometer) sensor;
-                float x_val = accelerometer.getAccelerometerX();
-                float y_val = accelerometer.getAccelerometerY();
-                float z_val = accelerometer.getAccelerometerZ();
+            hb.findSensor(Gyroscope.class).addValueChangedListener(sensor -> {
+                Gyroscope gyroscope = (Gyroscope) sensor;
+                float pitch = gyroscope.getPitch();
+                float roll = gyroscope.getRoll();
+                float yaw = gyroscope.getYaw();
 
                 /******** Write your code below this line ********/
-                // convert our x_value so it is between 0 and 2
-                float converted_x = x_val + 1;
 
-                // calculate our new frequency
-
-                float new_frequency = converted_x * MULTIPLIER_FREQUENCY;
-
-                // set new value to waveformFrequency
-                waveformFrequency.setValue(new_frequency);
 
                 /******** Write your code above this line ********/
 
             });
 
         } catch (SensorNotFoundException e) {
-            hb.setStatus("Unable to create accelerometer");
+            hb.setStatus("Unable to find gyroscope");
         }
-        /*** End accelerometerSensor code ***/
+        /*** End gyroscopeSensor code ***/
 
 
 
