@@ -170,12 +170,15 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		}
 
 		if (validLoad && bus != null & acceldevice != null) {
+            System.out.println("MiniMu valid Load");
 			start();
+			storeSensor(this);
+			loadedInstance = this;
+			setValidLoad (true);
 		}
 
-		storeSensor(this);
-		loadedInstance = this;
-		setValidLoad (true);
+        System.out.println("MiniMu end Load");
+
 	}
 
 //	public void update() throws IOException {
@@ -348,42 +351,42 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 	@Override
 	public double[] getGyroscopeData() {
-		return accelData;
-	}
-
-	@Override
-	public float getGyroscopeX() {
-		return 0;
-	}
-
-	@Override
-	public float getGyroscopeY() {
-		return 0;
-	}
-
-	@Override
-	public float getGyroscopeZ() {
-		return 0;
-	}
-
-	@Override
-	public double[] getAccelerometerData() {
 		return gyroData;
 	}
 
 	@Override
+	public float getGyroscopeX() {
+		return (float)gyroData[0];
+	}
+
+	@Override
+	public float getGyroscopeY() {
+		return (float)gyroData[1];
+	}
+
+	@Override
+	public float getGyroscopeZ() {
+		return (float)gyroData[1];
+	}
+
+	@Override
+	public double[] getAccelerometerData() {
+		return accelData;
+	}
+
+	@Override
 	public float getAccelerometerX() {
-		return 0;
+		return (float)(accelData [0] / Math.pow(2, 14));
 	}
 
 	@Override
 	public float getAccelerometerY() {
-		return 0;
+		return (float)(accelData [1] / Math.pow(2, 14));
 	}
 
 	@Override
 	public float getAccelerometerZ() {
-		return 0;
+		return (float)(accelData [2] / Math.pow(2, 14));
 	}
 
 	@Override
@@ -393,17 +396,17 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 	@Override
 	public float getMagnetometerX() {
-		return 0;
+		return (float) magData[0];
 	}
 
 	@Override
 	public float getMagnetometerY() {
-		return 0;
+		return (float) magData[1];
 	}
 
 	@Override
 	public float getMagnetometerZ() {
-		return 0;
+		return (float) magData[2];
 	}
 
 	@Override
