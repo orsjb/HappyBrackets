@@ -35,6 +35,9 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 	final static Logger logger = LoggerFactory.getLogger(MiniMU.class);
 
+	// This appears to be the value that gives us +/-1 accelerometer values for standard gravity
+	final int ACCELEROMETER_MULTIPLIER = 0x8000 / 2;
+
 	@Override
 	public String getSensorName() {
 		return "MiniMU";
@@ -376,17 +379,20 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 	@Override
 	public float getAccelerometerX() {
-		return (float)(accelData [0] / Math.pow(2, 14));
+		// we need to convert down to half value of 16 bits (we are using signed 16 bits
+		return (float)(accelData [0] / ACCELEROMETER_MULTIPLIER);
 	}
 
 	@Override
 	public float getAccelerometerY() {
-		return (float)(accelData [1] / Math.pow(2, 14));
+		// we need to convert down to half value of 16 bits (we are using signed 16 bits
+		return (float)(accelData [1] / ACCELEROMETER_MULTIPLIER);
 	}
 
 	@Override
 	public float getAccelerometerZ() {
-		return (float)(accelData [2] / Math.pow(2, 14));
+		// we need to convert down to half value of 16 bits (we are using signed 16 bits
+		return (float)(accelData [2] / ACCELEROMETER_MULTIPLIER);
 	}
 
 	@Override
