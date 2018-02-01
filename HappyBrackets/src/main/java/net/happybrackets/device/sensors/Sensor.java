@@ -41,6 +41,11 @@ public abstract class Sensor {
 
     private final Set<SensorUpdateListener> listeners = new HashSet<>();
     private final Set<SensorValueChangedListener> valueChangedListeners = new HashSet<>();
+
+    private final Set<SensorUpdateListener> nonResetableListeners = new HashSet<>();
+    private final Set<SensorValueChangedListener> nonResetablevValueChangedListeners = new HashSet<>();
+
+
     /**
      * Returns the sensor name, typically the make/model of the hardware sensor that this class refers to.
      * @return a {@link String} representing the sensor's name.
@@ -55,6 +60,17 @@ public abstract class Sensor {
      */
     public void addListener(SensorUpdateListener listener) {
         listeners.add(listener);
+    }
+
+    /**
+     * Add a @{@link SensorUpdateListener} that will listen to this @{@link Sensor}.
+     * Will be deprecated in 3.0
+     * These listeners are not removed when device is reset
+     * @param listener the listener to add.
+     * deprecated use (@link addValueChangedListener) instead
+     */
+    public void addNonResettableListener(SensorUpdateListener listener) {
+        nonResetableListeners.add(listener);
     }
 
 
@@ -83,6 +99,15 @@ public abstract class Sensor {
         valueChangedListeners.add(listener);
     }
 
+    /**
+     * Add a @{@link SensorValueChangedListener} that will listen to this @{@link Sensor}.
+     * These listeners are NOT removed when device is reset
+     * @param listener the listener to add.
+     */
+    public void addNonResettableValueChangedListener(SensorValueChangedListener listener) {
+        nonResetablevValueChangedListeners.add(listener);
+    }
+
 
     /**
      * Remove the given @{@link SensorUpdateListener}.
@@ -91,6 +116,7 @@ public abstract class Sensor {
     public void removeListener(SensorUpdateListener listener) {
         listeners.remove(listener);
     }
+
 
     /**
      * Remove the given @{@link SensorValueChangedListener}.
@@ -135,6 +161,32 @@ public abstract class Sensor {
                 System.out.println("Exception in notifyListeners " +  ex.getMessage());
             }
         }
+
+        // Now do nonresettable
+        for(SensorUpdateListener listener : nonResetableListeners) {
+            try {
+                listener.sensorUpdated();
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Exception in notifyListeners " +  ex.getMessage());
+            }
+
+        }
+
+        for (SensorValueChangedListener listener: nonResetablevValueChangedListeners)
+        {
+            try
+            {
+                listener.sensorUpdated(this);
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Exception in notifyListeners " +  ex.getMessage());
+            }
+        }
+
+
     }
 
     /**

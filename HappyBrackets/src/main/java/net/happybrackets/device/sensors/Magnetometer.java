@@ -53,7 +53,7 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
                     if (sensor.isValidLoad()) {
                         defaultSensor = sensor;
                         LSM9DS1 finalSensor = sensor;
-                        sensor.addListener(new SensorUpdateListener() {
+                        sensor.addNonResettableListener(new SensorUpdateListener() {
                             @Override
                             public void sensorUpdated() {
                                 boolean send_notify = setX(finalSensor.getMagnetometerX());
@@ -83,7 +83,7 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
                         if (sensor.isValidLoad()) {
                             defaultSensor = sensor;
                             MiniMU finalSensor = sensor;
-                            sensor.addListener(new SensorUpdateListener() {
+                            sensor.addNonResettableListener(new SensorUpdateListener() {
                                 @Override
 
                                 public void sensorUpdated() {
@@ -109,7 +109,7 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
                 MagnetometerSimulator sensor = new MagnetometerSimulator();
 
                 if (sensor != null) {
-                    sensor.addListener(new SensorUpdateListener() {
+                    sensor.addNonResettableListener(new SensorUpdateListener() {
                         @Override
                             public void sensorUpdated() {
                             boolean send_notify = setX(sensor.getMagnetometerX());

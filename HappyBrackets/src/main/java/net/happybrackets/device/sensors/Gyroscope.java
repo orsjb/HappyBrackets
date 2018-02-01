@@ -49,7 +49,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                     if (sensor.isValidLoad()) {
                         defaultSensor = sensor;
                         LSM9DS1 finalSensor = sensor;
-                        sensor.addListener(new SensorUpdateListener() {
+                        sensor.addNonResettableListener(new SensorUpdateListener() {
                             @Override
                             public void sensorUpdated() {
                                 boolean send_notify = setX(finalSensor.getGyroscopeX());
@@ -81,7 +81,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                         if (sensor.isValidLoad()) {
                             defaultSensor = sensor;
                             MiniMU finalSensor = sensor;
-                            sensor.addListener(new SensorUpdateListener() {
+                            sensor.addNonResettableListener(new SensorUpdateListener() {
                                 @Override
                                 public void sensorUpdated() {
                                     boolean send_notify = setX(finalSensor.getGyroscopeX());
@@ -105,7 +105,7 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                 GyroscopeSimulator sensor = new GyroscopeSimulator();
 
                 if (sensor != null) {
-                    sensor.addListener(new SensorUpdateListener() {
+                    sensor.addNonResettableListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
                             boolean send_notify = setX(sensor.getGyroscopeX());

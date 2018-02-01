@@ -49,7 +49,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                         System.out.println("Valid Load of LSM95DS1");
                         defaultSensor = sensor;
                         LSM9DS1 finalSensor = sensor;
-                        sensor.addListener(new SensorUpdateListener() {
+                        sensor.addNonResettableListener(new SensorUpdateListener() {
                             @Override
                             public void sensorUpdated() {
                                 boolean send_notify = setX(finalSensor.getAccelerometerX());
@@ -82,7 +82,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                         if (sensor.isValidLoad()) {
                             defaultSensor = sensor;
                             MiniMU finalSensor = sensor;
-                            sensor.addListener(new SensorUpdateListener() {
+                            sensor.addNonResettableListener(new SensorUpdateListener() {
                                 @Override
                                 public void sensorUpdated() {
                                     boolean send_notify = setX(finalSensor.getAccelerometerX());
@@ -106,7 +106,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                 AccelerometerSimulator sensor = new AccelerometerSimulator();
 
                 if (sensor != null) {
-                    sensor.addListener(new SensorUpdateListener() {
+                    sensor.addNonResettableListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
                             boolean send_notify = setX(sensor.getAccelerometerX());
