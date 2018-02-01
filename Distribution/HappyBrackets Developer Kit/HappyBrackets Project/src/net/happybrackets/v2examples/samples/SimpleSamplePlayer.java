@@ -26,7 +26,7 @@ public class SimpleSamplePlayer implements HBAction
         final float VOLUME = 1f; // define how loud we want the sound
 
         // Define our sample name
-        final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
+        final String SAMPLE_NAME = "data/audio/Roje/sogokuru.wav";
 
         // create our actual sample
         Sample sample = SampleManager.sample(SAMPLE_NAME);
