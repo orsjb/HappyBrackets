@@ -13,9 +13,10 @@ import net.happybrackets.device.sensors.SensorNotFoundException;
 import java.lang.invoke.MethodHandles;
 
 /**
- * This sketch will play a sine wave whose frequency is dependant upon x axis of accelerometer
- * accelerometer values typically range from -1 to +1, so we convert this value to 0 to 2, and
- * then multiply it to get a new frequency.
+ * This sketch will play a sine wave whose frequency is dependant upon yaw of gyroscope
+ * gyroscope value is zero when device is stationary, so the sound will change pitch and then go back
+ * Rotate device to change gyroscope value
+ * we will use a multiplier to change the frequency
  * We use a Glide object as the frequency value input to a WavePlayer object
  */
 public class SimpleGyroscope implements HBAction{
@@ -25,12 +26,15 @@ public class SimpleGyroscope implements HBAction{
         final float VOLUME = 0.1f; // define how loud we want the sound
 
 
-        // define the  frequency we will multiply our accelerometer value with
-        final float MULTIPLIER_FREQUENCY = 1000;
+        // define the centre frequency we will use
+        final float CENTRE_FREQUENCY = 1000;
+
+        // define the amount we will change the waveformFrequency by based on gyroscope value
+        final float MULTIPLIER_FREQUENCY = 500;
 
         // Create a Glide object so we can set the frequency of wavePlayer.
         // The initial value is our MULTIPLIER_FREQUENCY
-        Glide waveformFrequency = new Glide(hb.ac, MULTIPLIER_FREQUENCY);
+        Glide waveformFrequency = new Glide(hb.ac, CENTRE_FREQUENCY);
 
         // create a wave player to generate a waveform based on frequency and waveform type
         WavePlayer waveformGenerator = new WavePlayer(hb.ac, waveformFrequency, Buffer.SINE);
@@ -60,7 +64,8 @@ public class SimpleGyroscope implements HBAction{
                 float yaw = gyroscope.getYaw();
 
                 /******** Write your code below this line ********/
-
+                float frequency_deviation = yaw * MULTIPLIER_FREQUENCY;
+                waveformFrequency.setValue(CENTRE_FREQUENCY + frequency_deviation);
 
                 /******** Write your code above this line ********/
 
