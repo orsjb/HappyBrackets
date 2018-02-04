@@ -46,6 +46,7 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.*;
 import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
@@ -1124,4 +1125,34 @@ public class HB {
 		return new DynamicControl(control_type, name);
 	}
 
+	/**
+	 * A dynamic control pair that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 * only a single dynamic control is returned becasue the buddy is a mirror
+	 *
+	 * @param parent_sketch the object calling - typically this
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @param min_value     The minimum value of the control
+	 * @param max_value     The maximum value of the control
+	 * @return Returns the text control object, so max and min are hidden.
+	 */
+	public DynamicControl createControlBuddyPair(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value)
+	{
+		DynamicControl text_control = this.createDynamicControl(parent_sketch, control_type, name, initial_value).setControlScope(ControlScope.SKETCH);
+
+		DynamicControl slider_control = this.createDynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value).setControlScope(ControlScope.SKETCH);
+
+		text_control.addControlScopeListener(new_scope -> {
+			slider_control.setControlScope(new_scope);
+		});
+
+		/*************************************************************
+		 * We return the text control because returning the slider
+		 * sometimes displays wrong value in GUI when using a pair
+		 * Text control gives best behaviour when setting via setValue
+		 ************************************************************/
+		 return text_control;
+	}
 }
