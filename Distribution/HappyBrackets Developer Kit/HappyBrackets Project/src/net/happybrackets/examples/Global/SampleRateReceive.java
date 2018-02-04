@@ -10,9 +10,6 @@ import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.Gyroscope;
-import net.happybrackets.device.sensors.SensorUpdateListener;
-import sun.jvm.hotspot.ui.tree.FloatTreeNodeAdapter;
 
 import java.lang.invoke.MethodHandles;
 
