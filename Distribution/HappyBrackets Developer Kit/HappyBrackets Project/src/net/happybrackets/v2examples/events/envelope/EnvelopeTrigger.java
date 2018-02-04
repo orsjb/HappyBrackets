@@ -37,6 +37,8 @@ public class EnvelopeTrigger implements HBAction {
         // now add some events
         final float SEGMENT_DURATION  = 4000; // THis is how long we will make our segments
         // we will not change the volume
+
+
         eventTrigger.addSegment(VOLUME, SEGMENT_DURATION, new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
