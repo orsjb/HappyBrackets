@@ -1,0 +1,41 @@
+This file wil give a short description of the examples
+
+[basic]
+    HelloWorld              Plays a simple sound
+    GainEnvelope            Uses an envelope to modify the gain of a waveform being played
+    FrequencyEnvelope       Uses an envelope to modify the frequency of a waveform being played
+
+[sensor]
+  [accelerometer]
+    SimpleAccelerometer     Uses the x  axis of an accelerometer to change the frequency of a waveform
+
+  [gyroscope]
+    SimpleGyroscope         Uses the yaw of a gyroscope to modify the frequency of a waveform
+
+[events]
+  [clocks]
+    SimpleClock             Plays a chromatic scale using a clock.
+                            Uses Midi to Frequency function to convert a MIDI note number to a frequency
+
+    VariableClock           Uses an envelope to modify the speed of a clock. Plays a whole tone scale
+    SensorControlledClock   Uses the values of an accelerometer to vary the speed of a clock
+
+
+
+[fmsynthesis]
+    BasicFM                 Plays a basic frequency modulated sine wave with fixed modulator depth and rate
+    RatioDepthFM            Plays an FM waveform whereby the depth of modulation is a ratio of the carrier
+                            Uses an envelope to change the carrier frequency
+
+[samples]
+    SimpleSamplePlayer              Plays a basic sample
+    SamplePlayerChangeSpeed         Uses an envelope to change the playback rate of a sample
+    LoopedSamplePlayer              Loops a sample at a startb and end point
+    AltenatingLoopedSamplePlayer    Loops a sample alternating between forwards and reverse
+
+  [sensorcontrolled]
+    SampleDirectionGyroscope    Turning gyroscope one way make sample play forward.
+                                Turn other way to play reverse
+    SampleRateAccelerometer     Changing the axis of an accelerometer changes the playback rate
+    SampleSpeedAndDriection     Turning Gyroscope will change the playback to forwards or reverse
+                                while the acceleometer will modify the playback rate

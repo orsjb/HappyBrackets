@@ -40,7 +40,7 @@ public class EnvelopeTrigger implements HBAction {
 
         Gain g = new Gain(hb.ac, 1, e);
 
-        final float segment_time = 2000;
+        final float segment_time = 4000;
 
         e.addSegment(0.1f, segment_time, new Bead() {
             @Override

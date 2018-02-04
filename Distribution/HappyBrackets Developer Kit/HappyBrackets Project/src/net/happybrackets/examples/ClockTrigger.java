@@ -34,7 +34,7 @@ import java.lang.invoke.MethodHandles;
  */
 public class ClockTrigger implements HBAction {
 
-    // change this variable to 500 and you will hear popping
+
     final float clockDuration = 200;
 
 
