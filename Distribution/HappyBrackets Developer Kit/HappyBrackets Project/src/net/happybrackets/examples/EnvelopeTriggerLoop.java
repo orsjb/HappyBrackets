@@ -51,10 +51,11 @@ public class EnvelopeTriggerLoop implements HBAction {
                 @Override
                 protected void messageReceived(Bead bead) {
                     // Note that the scope of all of these are new
-                    Envelope e = new Envelope(hb.ac, 0.1f);
+                    Envelope e = new Envelope(hb.ac, 0);
 
                     Gain g = new Gain(hb.ac, 1, e);
                     e.addSegment(0.1f, 2000);
+
 
                     WavePlayer wp = new WavePlayer(hb.ac, finalCurrent_freq, Buffer.SINE);
                     g.addInput(wp);

@@ -1,4 +1,4 @@
-package net.happybrackets.v2examples.events.envelope;
+package net.happybrackets.V2Examples.events.envelope;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
@@ -10,11 +10,15 @@ import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
 
+/**
+ * This sketch layers three sounds on top of one another, triggered by an event at the completion of an envelope segment
+ * A single envelope is used, however, we add segments to the envelope. When the first segment is completed, the next segment starts
+ */
 public class EnvelopeTrigger implements HBAction {
     @Override
     public void action(HB hb) {
 
-        final float FREQUENCY = 1000; // this is the frequency of the waveform we will make
+        final float FREQUENCY = 1000; // this is the fundamental frequency of the  waveform we will make
 
         final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
         final float VOLUME = 0.1f; // define how loud we want the sound
@@ -38,11 +42,31 @@ public class EnvelopeTrigger implements HBAction {
         final float SEGMENT_DURATION  = 4000; // THis is how long we will make our segments
         // we will not change the volume
 
-
+        // Create a segment that will generate a beadMessage at the completion of the segment
+        // At the completion of the segment duration, the bead messageReceived will be called and add another WavePlayer
+        // Just type beadMessage and the code will be automatically generated for you
         eventTrigger.addSegment(VOLUME, SEGMENT_DURATION, new Bead() {
             @Override
             protected void messageReceived(Bead bead) {
                 /*** Write your code below this line ***/
+                // Create a WavePlayer that generates a waveform 2 times the frequency
+                WavePlayer wp = new WavePlayer(hb.ac, FREQUENCY * 2, Buffer.SINE);
+                gainAmplifier.addInput(wp);
+                /*** Write your code above this line ***/
+
+            }
+        });
+
+        // Create another segment that will generate a beadMessage at the completion of the segment
+        // At the completion of the segment duration, the bead messageReceived will be called and add another WavePlayer
+        // Just type beadMessage and the code will be automatically generated for you
+        eventTrigger.addSegment(VOLUME, SEGMENT_DURATION, new Bead() {
+            @Override
+            protected void messageReceived(Bead bead) {
+                /*** Write your code below this line ***/
+                // Create a WavePlayer that generates a waveform 4 times the frequency
+                WavePlayer wp = new WavePlayer(hb.ac, FREQUENCY * 4, Buffer.SINE);
+                gainAmplifier.addInput(wp);
 
                 /*** Write your code above this line ***/
 
