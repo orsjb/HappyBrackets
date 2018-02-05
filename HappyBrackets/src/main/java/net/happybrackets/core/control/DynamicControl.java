@@ -232,7 +232,7 @@ public class DynamicControl {
      * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name) {
-        this(parent_sketch, control_type, name,  true);
+        this(parent_sketch, control_type, name,  null,true);
         controlMap.addControl(this);
     }
 
