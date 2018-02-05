@@ -392,13 +392,16 @@ public class NetworkCommunication {
 
             while(true) {
 
+            	int default_alive_time = DefaultConfig.ALIVE_INTERVAL;
+
             	if (DeviceConfig.getInstance() != null) {
 					//hb.broadcast.forAllTransmitters(keepAlive);
 					// we should send to all registered controllers
 					DeviceConfig.getInstance().notifyAllControllers();
+					default_alive_time = DeviceConfig.getInstance().getAliveInterval();
 				}
                 try {
-                    Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
+                    Thread.sleep(default_alive_time);
                 } catch (InterruptedException e) {
                     logger.error(OSCVocabulary.Device.ALIVE + " message send interval interupted!", e);
                 }
