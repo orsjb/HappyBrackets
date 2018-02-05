@@ -30,18 +30,14 @@ public class DisplayAccelerometer implements HBAction {
     @Override
     public void action(HB hb) {
 
-
+        hb.reset();
         Accelerometer mySensor = (Accelerometer) hb.getSensor(Accelerometer.class);
 
-        DynamicControl control_x = hb.createDynamicControl(ControlType.FLOAT, "accel x").setControlScope(ControlScope.SKETCH);
-        hb.createDynamicControl(ControlType.FLOAT, "accel x", 0, -1, 1).setControlScope(ControlScope.SKETCH);
+        DynamicControl control_x = hb.createControlBuddyPair(this, ControlType.FLOAT, "accel x", 0, -1, 1);
 
-        DynamicControl control_y = hb.createDynamicControl(ControlType.FLOAT, "accel y").setControlScope(ControlScope.SKETCH);
-        hb.createDynamicControl(ControlType.FLOAT, "accel y", 0, -1, 1).setControlScope(ControlScope.SKETCH);
+        DynamicControl control_y = hb.createControlBuddyPair(this, ControlType.FLOAT, "accel y", 0, -1, 1);
 
-        DynamicControl control_z = hb.createDynamicControl(ControlType.FLOAT, "accel z").setControlScope(ControlScope.SKETCH);
-        hb.createDynamicControl(ControlType.FLOAT, "accel z", 0, -1, 1).setControlScope(ControlScope.SKETCH);
-
+        DynamicControl control_z = hb.createControlBuddyPair(this, ControlType.FLOAT, "accel z", 0, -1, 1);
 
         DynamicControl min_control_x = hb.createDynamicControl(ControlType.FLOAT, "min-x");
         DynamicControl min_control_y = hb.createDynamicControl(ControlType.FLOAT, "min-y");
