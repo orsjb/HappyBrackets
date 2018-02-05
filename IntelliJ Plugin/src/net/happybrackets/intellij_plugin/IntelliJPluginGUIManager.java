@@ -176,7 +176,7 @@ public class IntelliJPluginGUIManager {
 		VBox main_container = new VBox(5);
 		main_container.setFillWidth(true);
 		//main_container.getChildren().addAll(config_pane, known_devices_pane, global_pane, composition_pane,  device_pane);
-		main_container.getChildren().addAll(global_pane, composition_pane,  commands_pane, device_pane);
+		main_container.getChildren().addAll(global_pane, commands_pane, composition_pane,   device_pane);
 
 		ScrollPane main_scroll = new ScrollPane();
 		main_scroll.setFitToWidth(true);
