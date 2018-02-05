@@ -1,0 +1,110 @@
+package net.happybrackets.v2examples.controls.globalControl;
+
+import net.beadsproject.beads.data.Buffer;
+import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Glide;
+import net.beadsproject.beads.ugens.WavePlayer;
+import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.device.HB;
+
+import java.lang.invoke.MethodHandles;
+
+/**
+ * This sketch creates a simple sine wave whose frequency switches through a range of frequencies
+ * by a dynamicControl that will display as a button
+ *
+ * Each time the button is pressed, the trigger event occurs which sets the value of the global control
+ * The global control then sends its value to all listeners on the network
+ *
+ */
+public class GlobalControl implements HBAction {
+    /**********************************************
+     We need to make our counter a class variable so
+     it can be accessed within the message handler
+    ***********************************************/
+    // Now create an index counter to select a frequency
+    int counter = 0;
+
+    @Override
+    public void action(HB hb) {
+
+        final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
+        final float MAX_VOLUME = 0.1f; // define how loud we want the sound
+
+        Glide waveformFrequency = new Glide(hb.ac, INITIAL_FREQUENCY);
+        Glide gainVolume = new Glide(hb.ac, MAX_VOLUME);
+
+        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+
+        // create a wave player to generate a waveform based on frequency and waveform type
+        WavePlayer waveformGenerator = new WavePlayer(hb.ac, waveformFrequency, Buffer.SINE);
+
+        // set up a gain amplifier to control the volume. We are using the glide object to control this value
+        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, gainVolume);
+
+        // connect our WavePlayer object into the Gain object
+        gainAmplifier.addInput(waveformGenerator);
+
+        // Now plug the gain object into the audio output
+        hb.ac.out.addInput(gainAmplifier);
+
+
+        // Make an array of frequencies to switch between
+        float frequencyList [] = {500, 1000, 1500, 2000};
+
+
+        /*************************************************************
+         * Create a Float type Dynamic Control that displays as a text box
+         *
+         * Simply type globalFloatControl to generate this code
+         *************************************************************/
+        DynamicControl globalFrequencyControl = hb.createDynamicControl(this, ControlType.FLOAT, "global frequency control")
+                .addControlListener(control -> {
+                    float control_val = (float) control.getValue();
+
+                    /*** Write your DynamicControl code below this line ***/
+                    // this value has been received either from thr trigger below
+                    // or over the network
+                    waveformFrequency.setValue(control_val);
+                    /*** Write your DynamicControl code above this line ***/
+                });
+
+        // Now add a dynamicControl to switch the frequency
+
+        /*************************************************************
+         * Create a Trigger type Dynamic Control pair that displays as a check box
+         *
+         * Simply type triggerControl to generate this code
+         *************************************************************/
+        hb.createDynamicControl(this, ControlType.TRIGGER, "Change Frequency")
+                .addControlListener(control -> {
+
+                    /*** Write your DynamicControl code below this line ***/
+
+                    // get our next frequency
+                    float freq = frequencyList[counter % frequencyList.length];
+
+                    // send our new value to the global DynamicControl
+                    globalFrequencyControl.setValue(freq);
+                    counter++;
+                    /*** Write your DynamicControl code above this line ***/
+                });
+
+    }
+
+    /**
+     * This function is used when running sketch in IntelliJ IDE for debugging or testing
+     *
+     * @param args standard args required
+     */
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
