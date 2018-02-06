@@ -41,6 +41,7 @@ public class FloatTextControl implements HBAction {
 
         // Now add a dynamicControl to set the frequency
 
+
         /*************************************************************
          * Create a Float type Dynamic Control that displays as a text box
          *
@@ -56,6 +57,7 @@ public class FloatTextControl implements HBAction {
 
                     /*** Write your DynamicControl code above this line ***/
                 });
+        /*** End DynamicControl code ***/
 
         // Now add a dynamicControl to set the gain
 
@@ -74,6 +76,7 @@ public class FloatTextControl implements HBAction {
 
                     /*** Write your DynamicControl code above this line ***/
                 });
+        /*** End DynamicControl code ***/
 
 
     }

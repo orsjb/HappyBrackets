@@ -8,7 +8,9 @@ import java.lang.invoke.MethodHandles;
 public class ${NAME} implements HBAction {
     @Override
     public void action(HB hb) {
-        
+        /***** Type your HBAction code below this line ******/
+
+        /***** Type your HBAction code above this line ******/
     }
 
     /**

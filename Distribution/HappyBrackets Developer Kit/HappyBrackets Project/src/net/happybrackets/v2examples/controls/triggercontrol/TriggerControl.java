@@ -56,7 +56,7 @@ public class TriggerControl implements HBAction {
         // Now add a dynamicControl to switch the frequency
 
         /*************************************************************
-         * Create a Trigger type Dynamic Control pair that displays as a check box
+         * Create a Trigger type Dynamic Control that displays as a button
          *
          * Simply type triggerControl to generate this code
          *************************************************************/
@@ -72,6 +72,7 @@ public class TriggerControl implements HBAction {
                     counter++;
                     /*** Write your DynamicControl code above this line ***/
                 });
+        /*** End DynamicControl code ***/
 
     }
 

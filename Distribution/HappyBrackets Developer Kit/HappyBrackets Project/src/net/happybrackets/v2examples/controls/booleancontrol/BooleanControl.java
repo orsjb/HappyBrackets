@@ -56,6 +56,7 @@ public class BooleanControl implements HBAction {
                     waveformGenerator.pause(!control_val);
                     /*** Write your DynamicControl code above this line ***/
                 });
+        /*** End DynamicControl code ***/
 
 
     }

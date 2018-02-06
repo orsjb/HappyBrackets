@@ -58,6 +58,7 @@ public class FloatBuddyControl implements HBAction {
 
                    /*** Write your DynamicControl code above this line ***/
                 });
+        /*** End DynamicControl code ***/
 
         // Now add a dynamicControl to set the gain
 
@@ -76,6 +77,7 @@ public class FloatBuddyControl implements HBAction {
 
                     /*** Write your DynamicControl code above this line ***/
                 });
+        /*** End DynamicControl code ***/
 
 
     }

@@ -1,10 +1,11 @@
-package net.happybrackets.v2examples.controls.globalControl;
+package net.happybrackets.v2examples.controls.globalcontrol;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
@@ -18,6 +19,9 @@ import java.lang.invoke.MethodHandles;
  * Each time the button is pressed, the trigger event occurs which sets the value of the global control
  * The global control then sends its value to all listeners on the network
  *
+ * Additionally, changing the DynamicControl via GUI will also send global value across network
+ *
+ * Run this on two different devices
  */
 public class GlobalControl implements HBAction {
     /**********************************************
@@ -29,6 +33,8 @@ public class GlobalControl implements HBAction {
 
     @Override
     public void action(HB hb) {
+
+        hb.reset();
 
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
@@ -55,12 +61,15 @@ public class GlobalControl implements HBAction {
         float frequencyList [] = {500, 1000, 1500, 2000};
 
 
+
+
         /*************************************************************
-         * Create a Float type Dynamic Control that displays as a text box
+         * Create a Float type buddy Dynamic Control
          *
          * Simply type globalFloatControl to generate this code
          *************************************************************/
-        DynamicControl globalFrequencyControl = hb.createDynamicControl(this, ControlType.FLOAT, "global frequency control")
+        DynamicControl globalFrequencyControl = hb.createControlBuddyPair(this, ControlType.FLOAT, "global frequency control", INITIAL_FREQUENCY, 0, INITIAL_FREQUENCY * 3)
+                .setControlScope(ControlScope.GLOBAL)
                 .addControlListener(control -> {
                     float control_val = (float) control.getValue();
 
@@ -70,11 +79,36 @@ public class GlobalControl implements HBAction {
                     waveformFrequency.setValue(control_val);
                     /*** Write your DynamicControl code above this line ***/
                 });
+        /*** End DynamicControl code ***/
 
-        // Now add a dynamicControl to switch the frequency
 
         /*************************************************************
-         * Create a Trigger type Dynamic Control pair that displays as a check box
+         * Create a Boolean type Dynamic Control pair that displays as a check box
+         *
+         * Simply type globalBooleanControl to generate this code
+         *************************************************************/
+        DynamicControl globalOnOff = hb.createDynamicControl(this, ControlType.BOOLEAN, "On / Off", true)
+                .setControlScope(ControlScope.GLOBAL)
+                .addControlListener(control -> {
+                    boolean control_val = (boolean) control.getValue();
+
+                    /*** Write your DynamicControl code below this line ***/
+                    if (control_val){
+                        gainVolume.setValue(MAX_VOLUME);
+                    }
+                    else {
+                        gainVolume.setValue(0);
+                    }
+                    /*** Write your DynamicControl code above this line ***/
+                });
+        /*** End DynamicControl code ***/
+
+        // Now add a dynamicControl to switch the frequency
+        // Note that this is not a global control, however, it sets the
+        // value of a global control
+
+        /*************************************************************
+         * Create a Trigger type Dynamic Control that displays as a button
          *
          * Simply type triggerControl to generate this code
          *************************************************************/
@@ -91,6 +125,8 @@ public class GlobalControl implements HBAction {
                     counter++;
                     /*** Write your DynamicControl code above this line ***/
                 });
+        /*** End DynamicControl code ***/
+
 
     }
 

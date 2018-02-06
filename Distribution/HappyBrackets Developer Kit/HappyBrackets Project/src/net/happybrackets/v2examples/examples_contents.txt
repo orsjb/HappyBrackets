@@ -5,6 +5,31 @@ This file wil give a short description of the examples
     GainEnvelope            Uses an envelope to modify the gain of a waveform being played
     FrequencyEnvelope       Uses an envelope to modify the frequency of a waveform being played
 
+[controls] - demonstrates DynamicControls and GUI manipulation
+  [booleancontrol] - true or false controls. Display with a checkbox
+    BooleanControl          Starts and stops a sine wave with a checkbox
+    MonitorBoolean          Monitor the value of a Clock being on the beat on GUI with a checkbox
+
+  [floatcontrol] - Floating point values displayed as slider, textbox or both
+    FloatSliderControl      Control the gain and frequency of a waveplayer with floating point slider controls
+    FloatTextControl        Control the gain and frequency of a waveplayer with floating point textbox controls
+    FloatBuddyControl       Control the gain and frequency of a waveplayer with floating point slider and textbox buddy controls
+    MonitorFloats           Monitor the values of clock count and beats and display in buddy controls in GUI
+
+  [globalcontrol] - Sending and receiving values across the network
+    GlobalControl           Send global floating point values to change frequency across network
+                            and global boolean values to turn sound on and off
+
+  [integercontrol] - Integer values displayed as slider, textbox or both
+    IntegerSliderControl    Control the gain and frequency of a waveplayer with Integer slider controls
+    IntegerTextControl      Control the gain and frequency of a waveplayer with Integer textbox controls
+    IntegerBuddyControl     Control the gain and frequency of a waveplayer with Integer slider and textbox buddy controls
+    MonitorIntegers         Monitor the values of clock count and beats and display in buddy controls in GUI
+
+  [triggercontrol] - Trigger controls displayed as buttons
+    triggerControl          Sends a trigger to make a wave player switch frequencies
+
+
 [sensor]
   [accelerometer]
     SimpleAccelerometer     Uses the x  axis of an accelerometer to change the frequency of a waveform
