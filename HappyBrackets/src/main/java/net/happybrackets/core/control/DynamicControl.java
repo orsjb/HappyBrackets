@@ -132,19 +132,31 @@ public class DynamicControl {
                 Double d = (Double) source_value;
                 float f = d.floatValue();
                 ret = f;
-            }
 
+            }else if (source_value instanceof Long) {
+                Long l = (Long) source_value;
+                float f = l.floatValue();
+                ret = f;
+            }
             // Convert if we are an int control
         } else if (control_type == ControlType.INT) {
             if (source_value == null){
                 ret = 0;
-            }if (source_value instanceof Float) {
-                float f = (float) source_value;
-                Integer i = ((Float) source_value).intValue();
+            }else if (source_value instanceof Float) {
+                Float f = (Float) source_value;
+                Integer i = f.intValue();
+                ret = i;
+            }else if (source_value instanceof Double) {
+                Double d = (Double) source_value;
+                Integer i = d.intValue();
+                ret = i;
+            }else if (source_value instanceof Long) {
+                Long l = (Long) source_value;
+                Integer i = l.intValue();
                 ret = i;
             }
 
-        // Convert if we are a BOOLEAN control
+            // Convert if we are a BOOLEAN control
         } else if (control_type == ControlType.BOOLEAN) {
             if (source_value == null){
                 ret = 0;
@@ -152,7 +164,14 @@ public class DynamicControl {
                 Integer i = (Integer) source_value;
                 Boolean b = i != 0;
                 ret = b;
+
+            }else if (source_value instanceof Long) {
+                Long l = (Long) source_value;
+                Integer i = l.intValue();
+                Boolean b = i != 0;
+                ret = b;
             }
+
 
         // Convert if we are a TRIGGER control
         }else if (control_type == ControlType.TRIGGER) {
