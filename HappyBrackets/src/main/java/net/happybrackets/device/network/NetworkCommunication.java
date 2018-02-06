@@ -103,6 +103,9 @@ public class NetworkCommunication {
 							packet.setPort(device_port);
 							advertiseTxSocket.send(packet);
 						}
+
+						// Now send the message to all controllers
+						DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
 					}
 
 				} catch (IOException e) {
