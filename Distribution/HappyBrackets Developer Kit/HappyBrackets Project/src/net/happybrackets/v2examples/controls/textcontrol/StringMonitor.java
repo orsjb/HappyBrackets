@@ -9,6 +9,10 @@ import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
 
+/**
+ * This sketch runs a clock and displays the value in a text box
+ * using a text DynamicControl
+ */
 public class StringMonitor implements HBAction {
     @Override
     public void action(HB hb) {

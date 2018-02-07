@@ -1,4 +1,4 @@
-package net.happybrackets.v2examples.midi;
+package net.happybrackets.v2examples.midi.basic;
 
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
@@ -10,11 +10,11 @@ import net.happybrackets.device.HB;
 import java.lang.invoke.MethodHandles;
 /**
  * This sketch will demonstrate converting a MIDI note number to a frequency for playback as a square wave
- * Additionally, the MIDI numbers for the major third and perfect fifth are obtained using the Pitch.major array
+ * Additionally, the MIDI numbers for the minor third and perfect fifth are obtained using the Pitch.minor array
  * Each of these values are converted to a frequency and used as inputs to three wavePlayers
  * All three wavePlayers are connected to the input of the Gain object
  */
-public class MajorChord implements HBAction {
+public class MinorChord implements HBAction {
     @Override
     public void action(HB hb) {
 
@@ -30,12 +30,12 @@ public class MajorChord implements HBAction {
         WavePlayer tonicWaveform = new WavePlayer(hb.ac, tonicFrequency, Buffer.SQUARE);
 
         // create a second wavePlayer for third
-        final int MAJOR_THIRD = Pitch.major[2]; // Indexes are zero based, so a third is index 2
-        float thirdFrequency =  Pitch.mtof(MIDI_NOTE + MAJOR_THIRD);
+        final int MINOR_THIRD = Pitch.minor[2]; // Indexes are zero based, so a third is index 2
+        float thirdFrequency =  Pitch.mtof(MIDI_NOTE + MINOR_THIRD);
         WavePlayer thirdWaveform = new WavePlayer(hb.ac, thirdFrequency, Buffer.SQUARE);
 
         // create a third wavePlayer for perfect fifth
-        final int PERFECT_FIFTH = Pitch.major[4]; // Indexes are zero based, so a fifth is index 4
+        final int PERFECT_FIFTH = Pitch.minor[4]; // Indexes are zero based, so a fifth is index 4
         float fifthFrequency =  Pitch.mtof(MIDI_NOTE + PERFECT_FIFTH);
         WavePlayer fifthWaveform = new WavePlayer(hb.ac, fifthFrequency, Buffer.SQUARE);
 

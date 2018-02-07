@@ -14,6 +14,9 @@ import java.lang.invoke.MethodHandles;
 /**
  * This sketch plays a sound that will double in frequency on each iteration of the thread function
  * When the frequency is above the maximum, the frequency starts again
+ *
+ * The sleep time in the thread can be varied with a DynamicControl
+ * The thread can also be killed
  */
 public class ControlledThread implements HBAction {
 

@@ -15,7 +15,7 @@ import java.lang.invoke.MethodHandles;
  * This sketch plays a sound that will double in frequency on each iteration of the thread function
  * When the frequency is above the maximum, the frequency starts again
  */
-public class DynamicallyCreatedThread implements HBAction {
+public class CreatedThread implements HBAction {
 
     /***** Type your HBAction code below this line ******/
     final float START_FREQUENCY = 200; // this is the frequency of the waveform we will make

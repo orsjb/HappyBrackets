@@ -18,7 +18,7 @@ fi
 
 
 if [ "$DEVICE_NAME" != "" ]; then
-# run scp
+# run scp 
 
     while true
     do

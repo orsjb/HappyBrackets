@@ -1,16 +1,73 @@
 This file wil give a short description of the examples
 
-[basic]
+[basic]     - Basic sketches to get started
     HelloWorld              Plays a simple sound
     GainEnvelope            Uses an envelope to modify the gain of a waveform being played
     FrequencyEnvelope       Uses an envelope to modify the frequency of a waveform being played
+*******************************************************************
+[fmsynthesis]   - Create and control FM Synthesis waveforms
+    BasicFM                 Plays a basic frequency modulated sine wave with fixed modulator depth and rate
+    RatioDepthFM            Plays an FM waveform whereby the depth of modulation is a ratio of the carrier
+                            Uses an envelope to change the carrier frequency
+*******************************************************************
+[sensor] - Examples of using sensors
+  [accelerometer]
+    SimpleAccelerometer     Uses the x  axis of an accelerometer to change the frequency of a waveform
 
+  [gyroscope]
+    SimpleGyroscope         Uses the yaw of a gyroscope to modify the frequency of a waveform
+
+*******************************************************************
+[samples]   - Play and control audio samples
+    SimpleSamplePlayer              Plays a basic sample
+    SamplePlayerChangeSpeed         Uses an envelope to change the playback rate of a sample
+    LoopedSamplePlayer              Loops a sample at a startb and end point
+    AltenatingLoopedSamplePlayer    Loops a sample alternating between forwards and reverse
+
+  [sensorcontrolled] - Samples controlled by sensors
+    SampleDirectionGyroscope    Turning gyroscope one way make sample play forward.
+                                Turn other way to play reverse
+    SampleRateAccelerometer     Changing the axis of an accelerometer changes the playback rate
+    SampleSpeedAndDriection     Turning Gyroscope will change the playback to forwards or reverse
+                                while the acceleometer will modify the playback rate
+
+*******************************************************************
+[events]     - Different types of events that can be used
+  [clocks]   - Perform actions on clock based events
+    SimpleClock             Plays a chromatic scale using a clock.
+                            Uses Midi to Frequency function to convert a MIDI note number to a frequency
+
+    VariableClock           Uses an envelope to modify the speed of a clock. Plays a whole tone scale
+    SensorControlledClock   Uses the values of an accelerometer to vary the speed of a clock
+
+  [envelope] - Perform actions based on events that occur when an envelope segment completes
+    EnvelopeTrigger         Plays three layers of sound, with each layer commencing after a segment completes
+
+*******************************************************************
+[midi] - Generate waveforms based on Midi note numbers
+  [basic]   - very simple examples
+    SimpleMidi          Converts a Midi note number to a frequency to generate playback
+    MajorChord          Uses Pitch class to obtain major third and perfect fifth Midi numbers
+                        The numbers are converted to frequencies and played together
+    MinorChord          Uses Pitch class to obtain minor third and perfect fifth Midi numbers
+                        The numbers are converted to frequencies and played together
+
+  [scales]  -  Scale generation based on Midi note numbers
+    MajorScale          Uses a clock to increment a counter. The index is converted to the Midi note number
+                        based on the scale degree of the major scale using Pitch class, converted to a frequency and played
+
+    CustomScale         A custom scale based on Midi note numbers is defined and mapped. A clock increments a counter.
+                        The index is converted to appropriate Midi note number defined in the custom scale mapping.
+                        The Midi note number is converted to a frequency and played
+
+*******************************************************************
 [controls] - demonstrates DynamicControls and GUI manipulation
-  [booleancontrol] - true or false controls. Display with a checkbox
+
+  [booleancontrol] - true or false controls. Display or set with a checkbox
     BooleanControl          Starts and stops a sine wave with a checkbox
     MonitorBoolean          Monitor the value of a Clock being on the beat on GUI with a checkbox
 
-  [floatcontrol] - Floating point values displayed as slider, textbox or both
+  [floatcontrol] - Floating point values displayed or set as slider, textbox or both
     FloatSliderControl      Control the gain and frequency of a waveplayer with floating point slider controls
     FloatTextControl        Control the gain and frequency of a waveplayer with floating point textbox controls
     FloatBuddyControl       Control the gain and frequency of a waveplayer with floating point slider and textbox buddy controls
@@ -20,7 +77,7 @@ This file wil give a short description of the examples
     GlobalControl           Send global floating point values to change frequency across network
                             and global boolean values to turn sound on and off
 
-  [integercontrol] - Integer values displayed as slider, textbox or both
+  [integercontrol] - Integer values displayed or set as slider, textbox or both
     IntegerSliderControl    Control the gain and frequency of a waveplayer with Integer slider controls
     IntegerTextControl      Control the gain and frequency of a waveplayer with Integer textbox controls
     IntegerBuddyControl     Control the gain and frequency of a waveplayer with Integer slider and textbox buddy controls
@@ -29,38 +86,21 @@ This file wil give a short description of the examples
   [triggercontrol] - Trigger controls displayed as buttons
     triggerControl          Sends a trigger to make a wave player switch frequencies
 
+  [textcontrol] -  Text values displayed or set with a text box
+    StringMonitor           Runs a clock and displays the value in a text box
+    SampleTextControl       Controls sample playback by user entering text commands
+                            Also runs a thread to display the possible commands to the user
 
-[sensor]
-  [accelerometer]
-    SimpleAccelerometer     Uses the x  axis of an accelerometer to change the frequency of a waveform
+*******************************************************************
+[threads]   - Displays use of Java threads
+    SimpleThread        Creates a single thread that changes the frequency of a waveform at a fixed interval
+    ControlledThread    Same as SimpleThread, however, we can very the interval with a control.
+                        There is a button that enables the user to kill the thread
 
-  [gyroscope]
-    SimpleGyroscope         Uses the yaw of a gyroscope to modify the frequency of a waveform
+    CreatedThread       Same as ControlledThread, however, the ability to create a new thread after previous
+                        thread has been killed
 
-[events]
-  [clocks]
-    SimpleClock             Plays a chromatic scale using a clock.
-                            Uses Midi to Frequency function to convert a MIDI note number to a frequency
-
-    VariableClock           Uses an envelope to modify the speed of a clock. Plays a whole tone scale
-    SensorControlledClock   Uses the values of an accelerometer to vary the speed of a clock
-
-
-
-[fmsynthesis]
-    BasicFM                 Plays a basic frequency modulated sine wave with fixed modulator depth and rate
-    RatioDepthFM            Plays an FM waveform whereby the depth of modulation is a ratio of the carrier
-                            Uses an envelope to change the carrier frequency
-
-[samples]
-    SimpleSamplePlayer              Plays a basic sample
-    SamplePlayerChangeSpeed         Uses an envelope to change the playback rate of a sample
-    LoopedSamplePlayer              Loops a sample at a startb and end point
-    AltenatingLoopedSamplePlayer    Loops a sample alternating between forwards and reverse
-
-  [sensorcontrolled]
-    SampleDirectionGyroscope    Turning gyroscope one way make sample play forward.
-                                Turn other way to play reverse
-    SampleRateAccelerometer     Changing the axis of an accelerometer changes the playback rate
-    SampleSpeedAndDriection     Turning Gyroscope will change the playback to forwards or reverse
-                                while the acceleometer will modify the playback rate
+*******************************************************************
+[multiple]
+SampleController        Complex sketch that creates a sample playback with threads for updating
+                        And DynamicControls for monitoring and changing playback
