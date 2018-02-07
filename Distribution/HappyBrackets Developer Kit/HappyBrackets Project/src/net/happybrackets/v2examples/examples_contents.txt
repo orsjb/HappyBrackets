@@ -13,9 +13,11 @@ This file wil give a short description of the examples
 [sensor] - Examples of using sensors
   [accelerometer]
     SimpleAccelerometer     Uses the x  axis of an accelerometer to change the frequency of a waveform
+    MonitorAccelerometer    Displays the values of accelerometer
 
   [gyroscope]
     SimpleGyroscope         Uses the yaw of a gyroscope to modify the frequency of a waveform
+    MonitorGyroscope        Displays the values of the gyroscope
 
 *******************************************************************
 [samples]   - Play and control audio samples
