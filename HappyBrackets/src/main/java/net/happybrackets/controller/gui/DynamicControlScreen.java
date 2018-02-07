@@ -13,9 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.core.control.ControlScope;
@@ -24,6 +22,27 @@ import net.happybrackets.core.control.DynamicControl;
 
 import java.util.*;
 
+
+/**
+ * The stage looks like this
+ *
+ * dynamicControlStage
+ * dynamicControlScene
+ *
+ * BorderPane main_container
+ * ** scrollPane
+ * ** ** dynamicControlGridPane - GridPane
+ *
+ * *********
+ *      for each Control
+ *       ControlCellGroup
+ *          ** Label
+ *          ** Control
+ * *********
+ *
+ * ** debugPane
+ */
+
 public class DynamicControlScreen {
     // define default height and width
     static final int DEFAULT_SCREEN_WIDTH = 500;
@@ -31,6 +50,10 @@ public class DynamicControlScreen {
 
     private static final int MIN_TEXT_AREA_HEIGHT = 200;
     private final int DEFAULT_ELEMENT_SPACING = 10;
+
+
+    ColumnConstraints column1 = new ColumnConstraints(100,100, Double.MAX_VALUE);
+    ColumnConstraints column2 = new ColumnConstraints(200,300,Double.MAX_VALUE);
 
     public interface DynamicControlScreenLoaded{
         void loadComplete(DynamicControlScreen screen, boolean loaded);
@@ -53,7 +76,7 @@ public class DynamicControlScreen {
 
     private final LocalDeviceRepresentation localDevice;
     private Stage dynamicControlStage = null;
-    private GridPane dynamicControlPane = new GridPane();
+    private GridPane dynamicControlGridPane = new GridPane();
     private Scene dynamicControlScene = null;
     private int nextControlRow = 0;
     private Object controlCreateLock = new Object();
@@ -95,8 +118,16 @@ public class DynamicControlScreen {
     public DynamicControlScreen(LocalDeviceRepresentation local_device){
         localDevice = local_device;
         screenTitle = localDevice.deviceName;
+        setGridColumnAttributes();
     }
 
+    private void setGridColumnAttributes()
+    {
+        column1.setHgrow(Priority.ALWAYS);
+        column2.setHgrow(Priority.ALWAYS);
+
+        dynamicControlGridPane.getColumnConstraints().addAll(column1, column2);
+    }
     /**
      * Create a Dynamic ControlScreen without a LocalDeviceRepresentation
      * This means that it will run independantly
@@ -105,6 +136,7 @@ public class DynamicControlScreen {
     public DynamicControlScreen (String title){
         localDevice = null;
         screenTitle = title;
+        setGridColumnAttributes();
     }
 
     public void removeDynamicControlScene()
@@ -116,7 +148,7 @@ public class DynamicControlScreen {
                 synchronized (controlCreateLock) {
                     if (dynamicControlStage != null) {
                         dynamicControlStage.close();
-                        dynamicControlPane.getChildren().clear();
+                        dynamicControlGridPane.getChildren().clear();
                         dynamicControlsList.clear();
                     }
                     nextControlRow = 0;
@@ -131,12 +163,12 @@ public class DynamicControlScreen {
 
     void rebuildGridList()
     {
-        dynamicControlPane.getChildren().clear();
+        dynamicControlGridPane.getChildren().clear();
         nextControlRow = 0;
-        Collection<ControlCellGroup> control_pairs =  dynamicControlsList.values();
-        for (ControlCellGroup control_pair : control_pairs) {
-            dynamicControlPane.add(control_pair.labelNode, 0, nextControlRow);
-            dynamicControlPane.add(control_pair.controlNode, 1, nextControlRow);
+        Collection<ControlCellGroup> control_groupds =  dynamicControlsList.values();
+        for (ControlCellGroup control_group : control_groupds) {
+            dynamicControlGridPane.add(control_group.labelNode, 0, nextControlRow);
+            dynamicControlGridPane.add(control_group.controlNode, 1, nextControlRow);
             nextControlRow++;
         }
     }
@@ -150,19 +182,19 @@ public class DynamicControlScreen {
         Platform.runLater(new Runnable() {
             public void run() {
                 // find the control based on its hash from control table
-                ControlCellGroup control_pair = dynamicControlsList.get(control.getControlMapKey());
+                ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
 
-                if (control_pair != null) {
-                    dynamicControlPane.getChildren().remove(control_pair.controlNode);
-                    dynamicControlPane.getChildren().remove(control_pair.labelNode);
+                if (control_group != null) {
+                    dynamicControlGridPane.getChildren().remove(control_group.controlNode);
+                    dynamicControlGridPane.getChildren().remove(control_group.labelNode);
                     dynamicControlsList.remove(control.getControlMapKey());
 
-                    if (control_pair.listener != null) {
-                        control.removeControlListener(control_pair.listener);
+                    if (control_group.listener != null) {
+                        control.removeControlListener(control_group.listener);
                     }
 
-                    if (control_pair.scopeChangedListener != null){
-                        control.removeControlScopeChangedListener(control_pair.scopeChangedListener);
+                    if (control_group.scopeChangedListener != null){
+                        control.removeControlScopeChangedListener(control_group.scopeChangedListener);
                     }
                     rebuildGridList();
                 }
@@ -171,6 +203,7 @@ public class DynamicControlScreen {
     }
 
     public void createDynamicControlStage(){
+
         DynamicControlScreen this_screen = this;
 
         Platform.runLater(new Runnable() {
@@ -188,16 +221,17 @@ public class DynamicControlScreen {
                         dynamicControlStage = new Stage();
                         dynamicControlStage.setTitle(screenTitle);
                         ;
-                        dynamicControlPane.setHgap(DEFAULT_ELEMENT_SPACING);
-                        dynamicControlPane.setVgap(DEFAULT_ELEMENT_SPACING);
-                        dynamicControlPane.setPadding(new Insets(DEFAULT_ELEMENT_SPACING * 2, DEFAULT_ELEMENT_SPACING * 2, 0, DEFAULT_ELEMENT_SPACING * 2));
+                        dynamicControlGridPane.setHgap(DEFAULT_ELEMENT_SPACING);
+                        dynamicControlGridPane.setVgap(DEFAULT_ELEMENT_SPACING);
+                        dynamicControlGridPane.setPadding(new Insets(DEFAULT_ELEMENT_SPACING * 2, DEFAULT_ELEMENT_SPACING * 2, 0, DEFAULT_ELEMENT_SPACING * 2));
 
                         dynamicControlScene = new Scene(main_container, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
 
                         dynamicControlStage.setScene(dynamicControlScene);
 
-                        scrollPane = new ScrollPane(dynamicControlPane);
+                        scrollPane = new ScrollPane(dynamicControlGridPane);
                         scrollPane.setFitToHeight(true);
+                        scrollPane.setFitToWidth(true);
 
                         if (debugPane != null) {
                             main_container.setBottom(debugPane);
@@ -208,7 +242,7 @@ public class DynamicControlScreen {
                         scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
                             public void changed(ObservableValue<? extends Number> ov,
                                                 Number old_val, Number new_val) {
-                                dynamicControlPane.setLayoutY(-new_val.doubleValue());
+                                dynamicControlGridPane.setLayoutY(-new_val.doubleValue());
                             }
                         });
 
@@ -257,13 +291,13 @@ public class DynamicControlScreen {
         Platform.runLater(new Runnable() {
             public void run() {
 
-                ControlCellGroup control_pair = dynamicControlsList.get(control.getControlMapKey());
+                ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
 
-                if (control_pair == null) {
+                if (control_group == null) {
 
                     Label control_label = new Label(control.getControlName());
 
-                    dynamicControlPane.add(control_label, 0, control_row);
+                    dynamicControlGridPane.add(control_label, 0, control_row);
 
 
                     ControlType control_type = control.getControlType();
@@ -274,9 +308,9 @@ public class DynamicControlScreen {
                             control.setTooltipPrefix("Press button to generate a trigger event for this control");
                             b.setTooltip(new Tooltip(control.getTooltipText()));
                             b.setText("Send");
-                            dynamicControlPane.add(b, 1, control_row);
-                            control_pair = new ControlCellGroup(control_label, b);
-                            dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                            dynamicControlGridPane.add(b, 1, control_row);
+                            control_group = new ControlCellGroup(control_label, b);
+                            dynamicControlsList.put(control.getControlMapKey(), control_group);
                             b.setOnAction(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent e) {
@@ -286,7 +320,7 @@ public class DynamicControlScreen {
                             });
 
 
-                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                            control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
                                 @Override
                                 public void controlScopeChanged(ControlScope new_scope) {
                                     Platform.runLater(new Runnable() {
@@ -307,11 +341,11 @@ public class DynamicControlScreen {
                                 TextField t = new TextField();
                                 control.setTooltipPrefix("Type in an integer value and press enter to generate an event for this control");
                                 t.setTooltip(new Tooltip(control.getTooltipText()));
-                                t.setMaxWidth(100);
+                                //t.setMaxWidth(100);
                                 t.setText(Integer.toString(control_value));
-                                dynamicControlPane.add(t, 1, control_row);
-                                control_pair = new ControlCellGroup(control_label, t);
-                                dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                                dynamicControlGridPane.add(t, 1, control_row);
+                                control_group = new ControlCellGroup(control_label, t);
+                                dynamicControlsList.put(control.getControlMapKey(), control_group);
                                 t.setOnKeyTyped(new EventHandler<KeyEvent>() {
                                     @Override
                                     public void handle(KeyEvent event) {
@@ -345,7 +379,7 @@ public class DynamicControlScreen {
                                     }
                                 });
 
-                                control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                control_group.listener = new DynamicControl.DynamicControlListener() {
                                     @Override
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
@@ -357,7 +391,7 @@ public class DynamicControlScreen {
                                     }
                                 };
 
-                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
                                     @Override
                                     public void controlScopeChanged(ControlScope new_scope) {
                                         Platform.runLater(new Runnable() {
@@ -374,11 +408,11 @@ public class DynamicControlScreen {
                                 Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
                                 control.setTooltipPrefix("Change the slider value to generate an event for this control");
                                 s.setTooltip(new Tooltip(control.getTooltipText()));
-                                s.setMaxWidth(100);
+                                //s.setMaxWidth(100);
                                 s.setOrientation(Orientation.HORIZONTAL);
-                                dynamicControlPane.add(s, 1, control_row);
-                                control_pair = new ControlCellGroup(control_label, s);
-                                dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                                dynamicControlGridPane.add(s, 1, control_row);
+                                control_group = new ControlCellGroup(control_label, s);
+                                dynamicControlsList.put(control.getControlMapKey(), control_group);
 
                                 s.valueProperty().addListener(new ChangeListener<Number>() {
                                     @Override
@@ -392,7 +426,7 @@ public class DynamicControlScreen {
                                     }
                                 });
 
-                                control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                control_group.listener = new DynamicControl.DynamicControlListener() {
                                     @Override
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
@@ -405,7 +439,7 @@ public class DynamicControlScreen {
                                     }
                                 };
 
-                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
                                     @Override
                                     public void controlScopeChanged(ControlScope new_scope) {
                                         Platform.runLater(new Runnable() {
@@ -425,10 +459,10 @@ public class DynamicControlScreen {
                             c.setTooltip(new Tooltip(control.getTooltipText()));
                             boolean b_val = (boolean) control.getValue();
                             c.setSelected(b_val);
-                            dynamicControlPane.add(c, 1, control_row);
+                            dynamicControlGridPane.add(c, 1, control_row);
 
-                            control_pair = new ControlCellGroup(control_label, c);
-                            dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                            control_group = new ControlCellGroup(control_label, c);
+                            dynamicControlsList.put(control.getControlMapKey(), control_group);
 
                             c.selectedProperty().addListener(new ChangeListener<Boolean>() {
                                 public void changed(ObservableValue<? extends Boolean> ov,
@@ -440,7 +474,7 @@ public class DynamicControlScreen {
                                 }
                             });
 
-                            control_pair.listener = new DynamicControl.DynamicControlListener() {
+                            control_group.listener = new DynamicControl.DynamicControlListener() {
                                 @Override
                                 public void update(DynamicControl control) {
                                     Platform.runLater(new Runnable() {
@@ -454,7 +488,7 @@ public class DynamicControlScreen {
                                 }
                             };
 
-                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                            control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
                                 @Override
                                 public void controlScopeChanged(ControlScope new_scope) {
                                     Platform.runLater(new Runnable() {
@@ -474,11 +508,11 @@ public class DynamicControlScreen {
                                 TextField t = new TextField();
                                 control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
                                 t.setTooltip(new Tooltip(control.getTooltipText()));
-                                t.setMaxWidth(100);
+                                //t.setMaxWidth(100);
                                 t.setText(Float.toString(f_control_value));
-                                dynamicControlPane.add(t, 1, control_row);
-                                control_pair = new ControlCellGroup(control_label, t);
-                                dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                                dynamicControlGridPane.add(t, 1, control_row);
+                                control_group = new ControlCellGroup(control_label, t);
+                                dynamicControlsList.put(control.getControlMapKey(), control_group);
                                 t.setOnKeyTyped(new EventHandler<KeyEvent>() {
                                     @Override
                                     public void handle(KeyEvent event) {
@@ -514,7 +548,7 @@ public class DynamicControlScreen {
                                     }
                                 });
 
-                                control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                control_group.listener = new DynamicControl.DynamicControlListener() {
                                     @Override
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
@@ -526,7 +560,7 @@ public class DynamicControlScreen {
                                 };
 
 
-                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
                                     @Override
                                     public void controlScopeChanged(ControlScope new_scope) {
                                         Platform.runLater(new Runnable() {
@@ -541,13 +575,13 @@ public class DynamicControlScreen {
                             }
                             else {
                                 Slider f = new Slider((float) control.getMinimumDisplayValue(), (float) control.getMaximumDisplayValue(), (float) control.getValue());
-                                f.setMaxWidth(100);
+                                //f.setMaxWidth(100);
                                 control.setTooltipPrefix("Change the slider value to generate an event for this control");
                                 f.setTooltip(new Tooltip(control.getTooltipText()));
                                 f.setOrientation(Orientation.HORIZONTAL);
-                                dynamicControlPane.add(f, 1, control_row);
-                                control_pair = new ControlCellGroup(control_label, f);
-                                dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                                dynamicControlGridPane.add(f, 1, control_row);
+                                control_group = new ControlCellGroup(control_label, f);
+                                dynamicControlsList.put(control.getControlMapKey(), control_group);
 
                                 f.valueProperty().addListener(new ChangeListener<Number>() {
                                     @Override
@@ -561,7 +595,7 @@ public class DynamicControlScreen {
                                     }
                                 });
 
-                                control_pair.listener = new DynamicControl.DynamicControlListener() {
+                                control_group.listener = new DynamicControl.DynamicControlListener() {
                                     @Override
                                     public void update(DynamicControl control) {
                                         Platform.runLater(new Runnable() {
@@ -575,7 +609,7 @@ public class DynamicControlScreen {
                                     }
                                 };
 
-                                control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                                control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
                                     @Override
                                     public void controlScopeChanged(ControlScope new_scope) {
                                         Platform.runLater(new Runnable() {
@@ -593,11 +627,11 @@ public class DynamicControlScreen {
                             TextField t = new TextField();
                             control.setTooltipPrefix("Type in text and press enter to generate an event for this control");
                             t.setTooltip(new Tooltip(control.getTooltipText()));
-                            t.setMaxWidth(100);
+                            //t.setMaxWidth(100);
                             t.setText((String) control.getValue());
-                            dynamicControlPane.add(t, 1, control_row);
-                            control_pair = new ControlCellGroup(control_label, t);
-                            dynamicControlsList.put(control.getControlMapKey(), control_pair);
+                            dynamicControlGridPane.add(t, 1, control_row);
+                            control_group = new ControlCellGroup(control_label, t);
+                            dynamicControlsList.put(control.getControlMapKey(), control_group);
                             t.setOnKeyTyped(new EventHandler<KeyEvent>() {
                                 @Override
                                 public void handle(KeyEvent event) {
@@ -619,7 +653,7 @@ public class DynamicControlScreen {
                                 }
                             });
 
-                            control_pair.listener = new DynamicControl.DynamicControlListener() {
+                            control_group.listener = new DynamicControl.DynamicControlListener() {
                                 @Override
                                 public void update(DynamicControl control) {
                                     Platform.runLater(new Runnable() {
@@ -630,7 +664,7 @@ public class DynamicControlScreen {
                                 }
                             };
 
-                            control_pair.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                            control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
                                 @Override
                                 public void controlScopeChanged(ControlScope new_scope) {
                                     Platform.runLater(new Runnable() {
@@ -647,11 +681,11 @@ public class DynamicControlScreen {
                             break;
                     }
 
-                    if (control_pair.listener != null) {
-                        control.addControlListener(control_pair.listener);
+                    if (control_group.listener != null) {
+                        control.addControlListener(control_group.listener);
                     }
-                    if (control_pair.scopeChangedListener != null){
-                        control.addControlScopeListener(control_pair.scopeChangedListener);
+                    if (control_group.scopeChangedListener != null){
+                        control.addControlScopeListener(control_group.scopeChangedListener);
                     }
 
 

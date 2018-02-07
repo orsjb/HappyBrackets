@@ -33,7 +33,7 @@ public class TestDynamicControl_1 implements HBAction {
         try {
             DynamicControl slider_control = hb.createDynamicControl(this, ControlType.INT, "Slider-class", 2000, 100, 4000);
 
-            DynamicControl text_control = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Hello Text");
+            DynamicControl text_control = hb.createDynamicControl(this, ControlType.TEXT, "Text", "Hello Text This is going to be much longer");
             DynamicControl float_control = hb.createDynamicControl(this, ControlType.FLOAT, "Float-device", 0, -1, 1);
             DynamicControl button_control = hb.createDynamicControl(this, ControlType.TRIGGER, "Button", 0);
             DynamicControl checkbox_control = hb.createDynamicControl(this, ControlType.BOOLEAN, "Checkbox-global", false);
