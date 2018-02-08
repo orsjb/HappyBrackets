@@ -27,7 +27,7 @@ public class SampleTextControl implements HBAction {
     final String COMMAND_FORWARD = "forwards";
 
     // Give some instructions to user on the page with a thread
-    final String userInstructions [] = {"These are the instruction options:", COMMAND_PLAY, COMMAND_STOP, COMMAND_REVERSE, COMMAND_FORWARD, "" };
+    final String userInstructions [] = {"These are the Player Commands:", COMMAND_PLAY + " " + COMMAND_STOP + " " + COMMAND_REVERSE + " " + COMMAND_FORWARD};
     // create an index we can iterate our instructions with
     int instructionsIndex = 0;
 
@@ -120,7 +120,7 @@ public class SampleTextControl implements HBAction {
              * simply type threadFunction to generate this code
              ***********************************************************/
             Thread instructionsThread = new Thread(() -> {
-                int SLEEP_TIME = 1000;
+                int SLEEP_TIME = 2000;
                 while (true) {
                     /*** write your code below this line ***/
 
