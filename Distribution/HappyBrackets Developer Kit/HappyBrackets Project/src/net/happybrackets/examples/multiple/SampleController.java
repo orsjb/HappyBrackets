@@ -55,6 +55,9 @@ public class SampleController implements HBAction {
     @Override
     public void action(HB hb) {
 
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
         final float MAX_PLAYBACK_RATE = 2;
         final float START_PLAY_RATE = 1;
 

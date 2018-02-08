@@ -1,4 +1,4 @@
-package net.happybrackets.V2Examples.events.envelope;
+package net.happybrackets.examples.events.envelope;
 
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
@@ -17,6 +17,9 @@ import java.lang.invoke.MethodHandles;
 public class EnvelopeTrigger implements HBAction {
     @Override
     public void action(HB hb) {
+
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
 
         final float FREQUENCY = 1000; // this is the fundamental frequency of the  waveform we will make
 

@@ -17,6 +17,9 @@ import java.lang.invoke.MethodHandles;
 public class FloatSliderControl implements HBAction {
     @Override
     public void action(HB hb) {
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
 
         final float CENTRE_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float FREQUENCY_VARIATION = 500; // This is how much we will vary frequency around centre frequency

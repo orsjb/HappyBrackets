@@ -16,6 +16,9 @@ import java.lang.invoke.MethodHandles;
 public class MonitorBoolean implements HBAction {
     @Override
     public void action(HB hb) {
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
 
         final int TOGGLE_VALUE = 100;
 

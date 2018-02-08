@@ -19,6 +19,10 @@ public class GainEnvelope implements HBAction {
     @Override
     public void action(HB hb) {
 
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
+
         final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
         final float FREQUENCY = 1000; // define the frequency
 

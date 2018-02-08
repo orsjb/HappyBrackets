@@ -39,6 +39,8 @@ public class MajorScale implements HBAction {
     @Override
     public void action(HB hb) {
 
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
 
         // define where we will store our calulated notes. THese will modify the wavePlayer
         Glide waveformFrequency = new Glide(hb.ac, Pitch.mtof(BASE_TONIC));

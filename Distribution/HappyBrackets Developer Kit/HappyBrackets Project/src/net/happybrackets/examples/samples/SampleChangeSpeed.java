@@ -24,6 +24,9 @@ public class SampleChangeSpeed implements HBAction {
     @Override
     public void action(HB hb) {
 
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
         /**************************************************************
          * Load a sample and play it
          *

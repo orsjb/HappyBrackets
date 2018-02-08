@@ -34,6 +34,9 @@ public class SampleTextControl implements HBAction {
     @Override
     public void action(HB hb) {
         /***** Type your HBAction code below this line ******/
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
 
         /**************************************************************
          * Load a sample and play it

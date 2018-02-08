@@ -18,6 +18,9 @@ public class StringMonitor implements HBAction {
     public void action(HB hb) {
         /***** Type your HBAction code below this line ******/
 
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
 
         /*************************************************************
          * Create a string type Dynamic Control that displays as a text box

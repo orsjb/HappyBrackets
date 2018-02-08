@@ -18,6 +18,9 @@ public class MinorChord implements HBAction {
     @Override
     public void action(HB hb) {
 
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
         final int MIDI_NOTE =  60; // This is MIDI C3
 
         // convert our MIDI note to a frequency with Midi to frequency function: mtof

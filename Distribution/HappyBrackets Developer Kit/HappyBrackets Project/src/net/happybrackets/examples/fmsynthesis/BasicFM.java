@@ -18,6 +18,10 @@ import java.lang.invoke.MethodHandles;
 public class BasicFM implements HBAction {
     @Override
     public void action(HB hb) {
+
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+
         final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
         final float VOLUME = 0.1f; // define how loud we want the sound
 
