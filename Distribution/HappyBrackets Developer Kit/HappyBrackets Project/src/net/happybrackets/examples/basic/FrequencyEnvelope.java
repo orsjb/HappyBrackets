@@ -4,6 +4,7 @@ import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
@@ -26,7 +27,7 @@ public class FrequencyEnvelope implements HBAction {
 
 
         final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-        final float VOLUME = 0.1f; // Define how loud we want our sound
+        final float INITIAL_VOLUME = 0.1f; // Define how loud we want our sound
 
         // define the different frequencies we will be using in our envelope
         final float LOW_FREQUENCY = 500;   // this is the low frequency of the waveform we will make
@@ -37,6 +38,8 @@ public class FrequencyEnvelope implements HBAction {
         final float HOLD_FREQUENCY_TIME = 3000; // 3 seconds
         final float RAMP_DOWN_FREQUENCY_TIME = 5000; // 5 seconds
 
+        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+
         // Create our envelope using LOW_FREQUENCY as the starting value
         Envelope frequencyEnvelope = new Envelope(hb.ac, LOW_FREQUENCY);
 
@@ -44,7 +47,7 @@ public class FrequencyEnvelope implements HBAction {
         WavePlayer waveformGenerator = new WavePlayer(hb.ac, frequencyEnvelope, Buffer.SINE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, VOLUME);
+        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);

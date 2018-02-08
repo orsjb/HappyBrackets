@@ -3,6 +3,7 @@ package net.happybrackets.examples.samples;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
@@ -26,7 +27,8 @@ public class SimpleSamplePlayer implements HBAction
          * simpley type samplePLayer to generate this code
          **************************************************************/
         final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-        final float VOLUME = 1f; // define how loud we want the sound
+        final float INITIAL_VOLUME = 1f; // define how loud we want the sound
+        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
 
         // Define our sample name
         final String SAMPLE_NAME = "data/audio/Roje/sogokuru.wav";
@@ -43,7 +45,7 @@ public class SimpleSamplePlayer implements HBAction
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, VOLUME);
+            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
             hb.ac.out.addInput(gainAmplifier);
 

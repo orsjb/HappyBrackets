@@ -28,7 +28,8 @@ public class SampleRateAccelerometer implements HBAction {
          * simply type samplePLayer-basic to generate this code and press <ENTER> for each parameter
          **************************************************************/
         final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-        final float VOLUME = 1; // define how loud we want the sound
+        final float INITIAL_VOLUME = 1f; // define how loud we want the sound
+        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
 
         // Define our sample name
         final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
@@ -45,7 +46,7 @@ public class SampleRateAccelerometer implements HBAction {
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, VOLUME);
+            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
             hb.ac.out.addInput(gainAmplifier);
 

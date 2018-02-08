@@ -3,6 +3,7 @@ package net.happybrackets.examples.midi.basic;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
@@ -27,7 +28,8 @@ public class MajorChord implements HBAction {
         float tonicFrequency = Pitch.mtof(MIDI_NOTE);
 
         final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-        final float VOLUME = 0.1f; // define how loud we want the sound
+        final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
+        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
 
         // create a wave player to generate a waveform based on frequency and waveform type
         WavePlayer tonicWaveform = new WavePlayer(hb.ac, tonicFrequency, Buffer.SQUARE);
@@ -45,7 +47,7 @@ public class MajorChord implements HBAction {
 
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, VOLUME);
+        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(tonicWaveform);
