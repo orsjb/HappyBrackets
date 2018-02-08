@@ -27,7 +27,7 @@ public class SampleTextControl implements HBAction {
     final String COMMAND_FORWARD = "forwards";
 
     // Give some instructions to user on the page with a thread
-    final String userInstructions [] = {COMMAND_PLAY, COMMAND_STOP, COMMAND_REVERSE, COMMAND_FORWARD, "" };
+    final String userInstructions [] = {"These are the instruction options:", COMMAND_PLAY, COMMAND_STOP, COMMAND_REVERSE, COMMAND_FORWARD, "" };
     // create an index we can iterate our instructions with
     int instructionsIndex = 0;
 
