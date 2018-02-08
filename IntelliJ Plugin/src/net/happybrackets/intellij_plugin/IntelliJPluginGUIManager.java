@@ -605,8 +605,7 @@ public class IntelliJPluginGUIManager {
 				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 				alert.setTitle("Confirmation Delet");
 				alert.setHeaderText("Erasing compiled classes");
-				alert.setContentText("Do you want to erase the listed compositions?");
-				alert.initOwner(clear_button.getContextMenu());
+				alert.setContentText("This will erase the listed compositions. Is that OK?");
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.get() == ButtonType.OK){
 					eraseCompositionsList();
@@ -919,7 +918,7 @@ public class IntelliJPluginGUIManager {
 		recursivelyGatherCompositionFileNames(composition_file_names, compositionsPath);
 
 		for (String composition_name : composition_file_names){
-			String full_path =  compositionsPath + "/" + composition_name + ".";
+			String full_path =  compositionsPath + "/" + composition_name + ".class";
 
 			try
 			{
