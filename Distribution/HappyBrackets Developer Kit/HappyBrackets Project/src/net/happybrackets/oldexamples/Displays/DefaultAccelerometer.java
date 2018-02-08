@@ -1,0 +1,48 @@
+package net.happybrackets.oldexamples.Displays;
+
+import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.Accelerometer;
+import net.happybrackets.device.sensors.SensorNotFoundException;
+import net.happybrackets.device.sensors.SensorUpdateListener;
+
+import java.lang.invoke.MethodHandles;
+
+/**
+ * Display the values of the sensor in the GUI
+ */
+public class DefaultAccelerometer implements HBAction {
+
+    boolean initialisedMaxMin = false;
+
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void action(HB hb) {
+
+        DynamicControl x_axis = hb.createDynamicControl(ControlType.FLOAT, "AccelX");
+
+
+        try {
+            hb.findSensor(Accelerometer.class).addListener(new SensorUpdateListener() {
+                @Override
+                public void sensorUpdated() {
+                    //x_axis.setValue(mySensor.getAccelerometerX());
+                }
+            });
+        } catch (SensorNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+
