@@ -597,9 +597,31 @@ public class IntelliJPluginGUIManager {
 			}
 		});
 
+		Button clear_button = new Button ("Erase");
+		clear_button.setTooltip(new Tooltip("Erase all composition classes from list."));
+		clear_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+				alert.setTitle("Confirmation Delet");
+				alert.setHeaderText("Erasing compiled classes");
+				alert.setContentText("Do you want to erase the listed compositions?");
+				alert.initOwner(clear_button.getContextMenu());
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == ButtonType.OK){
+					eraseCompositionsList();
+				}
+
+
+			}
+		});
+
+
+
+
 		FlowPane composition_folder_pane = new FlowPane(10, 10);
 		composition_folder_pane.setAlignment(Pos.TOP_LEFT);
-		composition_folder_pane.getChildren().addAll(compositionPathText, change_composition_path, refresh_button);
+		composition_folder_pane.getChildren().addAll(compositionPathText, change_composition_path, refresh_button, clear_button);
 
 		return composition_folder_pane;
 	}
@@ -886,6 +908,33 @@ public class IntelliJPluginGUIManager {
 		//write the config file again
 		refreshCompositionList();
 	}
+
+	private void eraseCompositionsList(){
+		logger.debug("Clear Compositions: compositionsPath={}", compositionsPath);
+		//TODO set up the project so that it auto-compiles and auto-refreshes on file save/edit.
+		//locate the class files of composition classes
+		//the following populates a list of Strings with class files, associated with compositions
+		//populate combobox with list of compositions
+		List<String> composition_file_names = new ArrayList<String>();
+		recursivelyGatherCompositionFileNames(composition_file_names, compositionsPath);
+
+		for (String composition_name : composition_file_names){
+			String full_path =  compositionsPath + "/" + composition_name + ".";
+
+			try
+			{
+				File file = new File(full_path);
+				file.delete();
+			}
+			catch (Exception ex){
+				System.out.println("Error deleting file " +  ex.getMessage());
+			}
+
+		}
+		refreshCompositionList();
+
+	}
+
 
 	private void refreshCompositionList() {
 		logger.debug("refreshCompositionList: compositionsPath={}", compositionsPath);
