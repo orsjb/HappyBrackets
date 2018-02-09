@@ -53,7 +53,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	}
 	String buildSSHCommand(String device_name)
     {
-        return "ssh " + username + "@" + device_name + ".local";
+        return "ssh " + username + "@" + device_name;
     }
 
     Text invalidTextWarning = null;
@@ -288,7 +288,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					public void handle(ActionEvent event) {
 						final Clipboard clipboard = Clipboard.getSystemClipboard();
 						final ClipboardContent content = new ClipboardContent();
-						content.putString(buildSSHCommand(item.deviceName));
+						content.putString(buildSSHCommand(item.getAddress()));
 						clipboard.setContent(content);
 					}
 				});
