@@ -103,7 +103,7 @@ public class SampleController implements HBAction {
              *
              * Simply type booleanControl to generate this code
              *************************************************************/
-            DynamicControl stopPlayControl = hb.createDynamicControl(this, ControlType.BOOLEAN, "Start / Stop", true)
+            DynamicControl stopPlayControl = hb.createDynamicControl(this, ControlType.BOOLEAN, "Play", true)
                     .addControlListener(control -> {
                         boolean control_val = (boolean) control.getValue();
 
@@ -184,12 +184,12 @@ public class SampleController implements HBAction {
              *
              * Simply type booleanControl to generate this code
              *************************************************************/
-            DynamicControl directionControl = hb.createDynamicControl(this, ControlType.BOOLEAN, "Forward / Reverse", true)
+            DynamicControl directionControl = hb.createDynamicControl(this, ControlType.BOOLEAN, "Reverse", false)
                     .addControlListener(control -> {
                         boolean control_val = (boolean) control.getValue();
 
                         /*** Write your DynamicControl code below this line ***/
-                        if (control_val){
+                        if (!control_val){
                             playbackDirection.setValue(PLAY_FORWARD);
                         }
                         else{

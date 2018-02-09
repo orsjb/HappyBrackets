@@ -11,7 +11,7 @@ import net.happybrackets.device.HB;
 import java.lang.invoke.MethodHandles;
 
 /**
- * This sketch creates a simple sine wave whose frequency and gain are controlled
+ * This sketch creates a simple sine wave whose frequency is controlled
  * by a dynamicControl that will display as a slider
  */
 public class IntegerSliderControl implements HBAction {
@@ -23,7 +23,7 @@ public class IntegerSliderControl implements HBAction {
 
         final int CENTRE_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final int FREQUENCY_VARIATION = 500; // This is how much we will vary frequency around centre frequency
-        final int MAX_VOLUME =1; // define how loud we want the sound
+        final float  MAX_VOLUME = 0.1f; // define how loud we want the sound
 
         Glide waveformFrequency = new Glide(hb.ac, CENTRE_FREQUENCY);
         Glide gainVolume = new Glide(hb.ac, MAX_VOLUME);
@@ -60,25 +60,6 @@ public class IntegerSliderControl implements HBAction {
                     /*** Write your DynamicControl code above this line ***/
                 });
         /*** End DynamicControl code ***/
-
-
-        // Now add a dynamicControl to set the gain
-        /*************************************************************
-         * Create an integer type Dynamic Control that displays as a slider
-         *
-         * Simply type intSliderControl to generate this code
-         *************************************************************/
-        hb.createDynamicControl(this, ControlType.INT, "Gain", MAX_VOLUME, 0, MAX_VOLUME)
-                .addControlListener(control -> {
-                    int control_val = (int) control.getValue();
-
-                    /*** Write your DynamicControl code below this line ***/
-                    // change our gain according to control value
-                    gainVolume.setValue(control_val);
-                    /*** Write your DynamicControl code above this line ***/
-                });
-        /*** End DynamicControl code ***/
-
 
 
     }

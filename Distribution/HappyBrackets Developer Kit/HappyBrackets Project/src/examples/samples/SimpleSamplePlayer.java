@@ -31,7 +31,7 @@ public class SimpleSamplePlayer implements HBAction
         Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
 
         // Define our sample name
-        final String SAMPLE_NAME = "data/audio/Roje/sogokuru.wav";
+        final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
 
         // create our actual sample
         Sample sample = SampleManager.sample(SAMPLE_NAME);
