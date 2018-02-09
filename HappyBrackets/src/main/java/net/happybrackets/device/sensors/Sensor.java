@@ -33,6 +33,8 @@ public abstract class Sensor {
      */
     protected boolean validLoad = false;
 
+    protected static boolean simulatedOnly = false;
+
 
     /**
      * A {@link Hashtable} to store sensors.
@@ -45,7 +47,21 @@ public abstract class Sensor {
     private final Set<SensorUpdateListener> nonResetableListeners = new HashSet<>();
     private final Set<SensorValueChangedListener> nonResetablevValueChangedListeners = new HashSet<>();
 
+    /**
+     * Flag to indicate this is just a simulator
+     * @return true if only a simulator
+     */
+    public static boolean isSimulatedOnly() {
+        return simulatedOnly;
+    }
 
+    /**
+     * Set from inside IDE to indicate we are just simulating a sensor
+     * @param simulated set to true if we are simulating
+     */
+    public static void setSimulatedOnly(boolean simulated) {
+        simulatedOnly = simulated;
+    }
     /**
      * Returns the sensor name, typically the make/model of the hardware sensor that this class refers to.
      * @return a {@link String} representing the sensor's name.

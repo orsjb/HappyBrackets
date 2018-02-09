@@ -37,51 +37,20 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
         if (defaultSensor == null)
         {
             System.out.println("Try Load LSM95DS1");
-            try {
-                LSM9DS1 sensor = (LSM9DS1) getSensor(LSM9DS1.class);
 
-                if (sensor == null) {
-                    sensor = LSM9DS1.class.getConstructor().newInstance();
-                }
-
-                if (sensor != null){
-                    if (sensor.isValidLoad()) {
-                        System.out.println("Valid Load of LSM95DS1");
-                        defaultSensor = sensor;
-                        LSM9DS1 finalSensor = sensor;
-                        sensor.addNonResettableListener(new SensorUpdateListener() {
-                            @Override
-                            public void sensorUpdated() {
-                                boolean send_notify = setX(finalSensor.getAccelerometerX());
-                                send_notify |= setY(finalSensor.getAccelerometerY());
-                                send_notify |= setZ(finalSensor.getAccelerometerZ());
-
-                                if (send_notify) {
-                                    notifyListeners();
-                                }
-                            }
-                        });
-                    }
-
-                }
-
-            } catch (Exception e) {
-                System.out.println("LSM9DS1 not found");
-            }
-
-            if (defaultSensor == null) {
-
-                System.out.println("Try Load MiniMU");
+            if (!isSimulatedOnly()) {
                 try {
-                    MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
+                    LSM9DS1 sensor = (LSM9DS1) getSensor(LSM9DS1.class);
+
                     if (sensor == null) {
-                        sensor = MiniMU.class.getConstructor().newInstance();
+                        sensor = LSM9DS1.class.getConstructor().newInstance();
                     }
 
-                    if (sensor != null){
+                    if (sensor != null) {
                         if (sensor.isValidLoad()) {
+                            System.out.println("Valid Load of LSM95DS1");
                             defaultSensor = sensor;
-                            MiniMU finalSensor = sensor;
+                            LSM9DS1 finalSensor = sensor;
                             sensor.addNonResettableListener(new SensorUpdateListener() {
                                 @Override
                                 public void sensorUpdated() {
@@ -95,10 +64,44 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                                 }
                             });
                         }
+
                     }
 
                 } catch (Exception e) {
-                    System.out.println("loading MiniMU not found");
+                    System.out.println("LSM9DS1 not found");
+                }
+
+                if (defaultSensor == null) {
+
+                    System.out.println("Try Load MiniMU");
+                    try {
+                        MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
+                        if (sensor == null) {
+                            sensor = MiniMU.class.getConstructor().newInstance();
+                        }
+
+                        if (sensor != null) {
+                            if (sensor.isValidLoad()) {
+                                defaultSensor = sensor;
+                                MiniMU finalSensor = sensor;
+                                sensor.addNonResettableListener(new SensorUpdateListener() {
+                                    @Override
+                                    public void sensorUpdated() {
+                                        boolean send_notify = setX(finalSensor.getAccelerometerX());
+                                        send_notify |= setY(finalSensor.getAccelerometerY());
+                                        send_notify |= setZ(finalSensor.getAccelerometerZ());
+
+                                        if (send_notify) {
+                                            notifyListeners();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("loading MiniMU not found");
+                    }
                 }
             }
 
