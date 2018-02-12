@@ -23,6 +23,16 @@
   <depends>com.intellij.modules.lang</depends>
   -->
 
+  <application-components>
+    <component>
+      <!-- Component's interface class -->
+      <interface-class>net.happybrackets.intellij_plugin.ApplicationMonitor</interface-class>
+
+      <!-- Component's implementation class -->
+      <implementation-class>net.happybrackets.intellij_plugin.ApplicationMonitor</implementation-class>
+    </component>
+  </application-components>
+
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/hb.png"/>
