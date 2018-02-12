@@ -21,81 +21,89 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
 
         boolean ret = false;
 
-        ActionManager am = ActionManager.getInstance();
-        DefaultActionGroup happy_brackets_menu = (DefaultActionGroup) am.getAction("HappyBracketsIntellijPlugin.MainMenu");
+        try {
+            ActionManager am = ActionManager.getInstance();
+            DefaultActionGroup happy_brackets_menu = (DefaultActionGroup) am.getAction("HappyBracketsIntellijPlugin.MainMenu");
 
-        if (happyBracketsExamplesFolder == null) {
+            if (happyBracketsExamplesFolder == null) {
 
-            String projectName = current_project.getName();
-            StringBuilder sourceRootsList = new StringBuilder();
-            VirtualFile[] vFiles = ProjectRootManager.getInstance(current_project).getContentSourceRoots();
-            for (VirtualFile file : vFiles) {
+                String projectName = current_project.getName();
+                StringBuilder sourceRootsList = new StringBuilder();
+                VirtualFile[] vFiles = ProjectRootManager.getInstance(current_project).getContentSourceRoots();
+                for (VirtualFile file : vFiles) {
 
-                if (file.isDirectory()) {
-                    for (VirtualFile root_child : file.getChildren()) {
-                        if (root_child.getUrl().endsWith(EXAMPLES_FOLDER)) {
-                            if (root_child.isDirectory()) {
+                    if (file.isDirectory()) {
+                        for (VirtualFile root_child : file.getChildren()) {
+                            if (root_child.getUrl().endsWith(EXAMPLES_FOLDER)) {
+                                if (root_child.isDirectory()) {
 
-                                // Let us set the example project to this one
-                                examplesProject = current_project;
-                                // We are in examples folder.
-                                happyBracketsExamplesFolder = new HappyBracketsExamplesFolder(root_child);
-                                happyBracketsExamplesFolder.setPopup(true);
-                                // we need to set its folder so it can iterate and create it's sub menus
-                                //happyBracketsExamplesFolder.setFolder(root_child);
-                                happy_brackets_menu.add(happyBracketsExamplesFolder);
-                                ret = true;
+                                    // Let us set the example project to this one
+                                    examplesProject = current_project;
+                                    // We are in examples folder.
+                                    happyBracketsExamplesFolder = new HappyBracketsExamplesFolder(root_child);
+                                    happyBracketsExamplesFolder.setPopup(true);
+                                    // we need to set its folder so it can iterate and create it's sub menus
+                                    //happyBracketsExamplesFolder.setFolder(root_child);
+                                    happy_brackets_menu.add(happyBracketsExamplesFolder);
+                                    ret = true;
+                                }
                             }
                         }
+
                     }
 
                 }
 
             }
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
         return ret;
     }
 
     @Override
     public void update(AnActionEvent e) {
-        //super.update(e);
-        Project current_project = e.getProject();
-        ActionManager am = ActionManager.getInstance();
-        DefaultActionGroup happy_brackets_menu = (DefaultActionGroup) am.getAction("HappyBracketsIntellijPlugin.MainMenu");
+        try {
+            Project current_project = e.getProject();
+            ActionManager am = ActionManager.getInstance();
+            DefaultActionGroup happy_brackets_menu = (DefaultActionGroup) am.getAction("HappyBracketsIntellijPlugin.MainMenu");
 
-        if (happyBracketsExamplesFolder == null) {
+            if (happyBracketsExamplesFolder == null) {
 
-            String projectName = current_project.getName();
-            StringBuilder sourceRootsList = new StringBuilder();
-            VirtualFile[] vFiles = ProjectRootManager.getInstance(current_project).getContentSourceRoots();
-            for (VirtualFile file : vFiles) {
+                String projectName = current_project.getName();
+                StringBuilder sourceRootsList = new StringBuilder();
+                VirtualFile[] vFiles = ProjectRootManager.getInstance(current_project).getContentSourceRoots();
+                for (VirtualFile file : vFiles) {
 
-                if (file.isDirectory()) {
-                    for (VirtualFile root_child : file.getChildren()) {
-                        if (root_child.getUrl().endsWith(EXAMPLES_FOLDER)) {
-                            if (root_child.isDirectory()) {
+                    if (file.isDirectory()) {
+                        for (VirtualFile root_child : file.getChildren()) {
+                            if (root_child.getUrl().endsWith(EXAMPLES_FOLDER)) {
+                                if (root_child.isDirectory()) {
 
-                                // Let us set the example project to this one
-                                examplesProject = current_project;
-                                // We are in examples folder.
-                                happyBracketsExamplesFolder = new HappyBracketsExamplesFolder(root_child);
-                                happyBracketsExamplesFolder.setPopup(true);
-                                // we need to set its folder so it can iterate and create it's sub menus
-                                //happyBracketsExamplesFolder.setFolder(root_child);
-                                happy_brackets_menu.add(happyBracketsExamplesFolder);
+                                    // Let us set the example project to this one
+                                    examplesProject = current_project;
+                                    // We are in examples folder.
+                                    happyBracketsExamplesFolder = new HappyBracketsExamplesFolder(root_child);
+                                    happyBracketsExamplesFolder.setPopup(true);
+                                    // we need to set its folder so it can iterate and create it's sub menus
+                                    //happyBracketsExamplesFolder.setFolder(root_child);
+                                    happy_brackets_menu.add(happyBracketsExamplesFolder);
+                                }
                             }
                         }
+
                     }
 
                 }
 
+            } else { // we have already created our menu. See if it is supposed to be displayed based on project
+                //happyBracketsExamplesFolder.setPopup(current_project == examplesProject);
+
+
             }
-
-        } else { // we have already created our menu. See if it is supposed to be displayed based on project
-            //happyBracketsExamplesFolder.setPopup(current_project == examplesProject);
-
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
     }

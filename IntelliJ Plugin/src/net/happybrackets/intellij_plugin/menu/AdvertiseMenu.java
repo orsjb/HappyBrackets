@@ -9,28 +9,39 @@ public class AdvertiseMenu extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
-        boolean disabled = connection.getDisabledAdvertise();
-        connection.setDisableAdvertise(!disabled);
+        try {
+            DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+
+            boolean disabled = connection.getDisabledAdvertise();
+            connection.setDisableAdvertise(!disabled);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     @Override
     public void update(AnActionEvent event) {
-        int advertise_port = ControllerEngine.getInstance().getBroadcastManager().getPort();
+        try {
 
-        DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
-        boolean disabled = connection.getDisabledAdvertise();
+            int advertise_port = ControllerEngine.getInstance().getBroadcastManager().getPort();
 
-        String menu_text = "Disable Advertise: Port " + advertise_port;
-        String menu_descript = "Stops Communication between Intellij and HB device";
+            DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+            boolean disabled = connection.getDisabledAdvertise();
 
-        if (disabled)
-        {
-            menu_text = "Enable Advertise: Port " + advertise_port;
-            menu_descript = "Resumes communcation between Intellij and HB device";
+            String menu_text = "Disable Advertise: Port " + advertise_port;
+            String menu_descript = "Stops Communication between Intellij and HB device";
 
+            if (disabled) {
+                menu_text = "Enable Advertise: Port " + advertise_port;
+                menu_descript = "Resumes communcation between Intellij and HB device";
+
+            }
+            event.getPresentation().setText(menu_text);
+            event.getPresentation().setDescription(menu_descript);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        event.getPresentation().setText(menu_text);
-        event.getPresentation().setDescription(menu_descript);
+
     }
 }

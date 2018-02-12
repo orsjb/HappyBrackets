@@ -26,13 +26,17 @@ public class HappyBracketsExamplesFolder extends DefaultActionGroup {
 
     @Override
     public void update(AnActionEvent e) {
-        e.getPresentation().setText(virtualFolder.getName());
-        e.getPresentation().setDescription("HappyBrackets example compositions");
+        try {
+            e.getPresentation().setText(virtualFolder.getName());
+            e.getPresentation().setDescription("HappyBrackets example compositions");
 
-        if (!menuLoaded)
-        {
-            menuLoaded = loadFolder();
+            if (!menuLoaded) {
+                menuLoaded = loadFolder();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
     }
 
     /**
