@@ -61,7 +61,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
             }
             else { // we have already created our menu. See if it is supposed to be displayed based on project
                 ret = true;
-                if (current_project == examplesProject) {
+                /*if (current_project == examplesProject) {
                     if (!displayingPlugin) {
                         happy_brackets_menu.add(happyBracketsExamplesFolder);
                         displayingPlugin = true;
@@ -71,7 +71,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                         happy_brackets_menu.remove(happyBracketsExamplesFolder);
                         displayingPlugin = false;
                     }
-                }
+                }*/
             }
 
             } catch (Exception ex) {
@@ -117,6 +117,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                 }
 
             } else { // we have already created our menu. See if it is supposed to be displayed based on project
+                /*
                 if(current_project == examplesProject){
                     if (!displayingPlugin)
                     {
@@ -133,7 +134,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                     }
                 }
 
-
+              */
             }
         } catch (Exception ex) {
             ex.printStackTrace();

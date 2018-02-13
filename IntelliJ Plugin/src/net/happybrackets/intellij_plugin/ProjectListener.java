@@ -14,6 +14,7 @@ import java.awt.event.WindowFocusListener;
 public class ProjectListener implements ProjectManagerListener {
     public void projectOpened(final Project project) {
         try {
+            /*
             // populate menu the first time
             HappyBracketsDebugMenu.loadExamplesMenu(project);
 
@@ -31,6 +32,7 @@ public class ProjectListener implements ProjectManagerListener {
                     // do nothing
                 }
             });
+            */
         }catch (Exception ex)
         {
             ex.printStackTrace();
