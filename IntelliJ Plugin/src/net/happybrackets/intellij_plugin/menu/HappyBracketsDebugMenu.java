@@ -17,6 +17,8 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
     static HappyBracketsExamplesFolder happyBracketsExamplesFolder = null;
     static Project examplesProject = null;
 
+    static boolean displayingPlugin = false;
+
     public static boolean loadExamplesMenu(Project current_project){
 
         boolean ret = false;
@@ -45,6 +47,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                                     // we need to set its folder so it can iterate and create it's sub menus
                                     //happyBracketsExamplesFolder.setFolder(root_child);
                                     happy_brackets_menu.add(happyBracketsExamplesFolder);
+                                    displayingPlugin = true;
                                     ret = true;
                                 }
                             }
@@ -54,8 +57,24 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
 
                 }
 
+
             }
-        } catch (Exception ex) {
+            else { // we have already created our menu. See if it is supposed to be displayed based on project
+                ret = true;
+                if (current_project == examplesProject) {
+                    if (!displayingPlugin) {
+                        happy_brackets_menu.add(happyBracketsExamplesFolder);
+                        displayingPlugin = true;
+                    }
+                } else {
+                    if (displayingPlugin) {
+                        happy_brackets_menu.remove(happyBracketsExamplesFolder);
+                        displayingPlugin = false;
+                    }
+                }
+            }
+
+            } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -98,7 +117,21 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                 }
 
             } else { // we have already created our menu. See if it is supposed to be displayed based on project
-                //happyBracketsExamplesFolder.setPopup(current_project == examplesProject);
+                if(current_project == examplesProject){
+                    if (!displayingPlugin)
+                    {
+                        happy_brackets_menu.add(happyBracketsExamplesFolder);
+                        displayingPlugin = true;
+                    }
+                }
+                else
+                {
+                    if (displayingPlugin)
+                    {
+                        happy_brackets_menu.remove(happyBracketsExamplesFolder);
+                        displayingPlugin = false;
+                    }
+                }
 
 
             }
