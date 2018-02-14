@@ -62,8 +62,8 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                 }
                 else {
                     //We need to create a new menu
-                    String projectName = activating_project.getName();
-                    StringBuilder sourceRootsList = new StringBuilder();
+
+                    // scan the project root to see if we have an examples folder
                     VirtualFile[] vFiles = ProjectRootManager.getInstance(activating_project).getContentSourceRoots();
 
                     for (VirtualFile file : vFiles) {
