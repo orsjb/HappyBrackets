@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 
 import java.util.ArrayList;
 
-public class HappyBracketsExamplesFolder extends DefaultActionGroup {
+public class HappyBracketsExamplesFolderMenu extends DefaultActionGroup {
 
     // The folder we are representing in our examples
     VirtualFile virtualFolder = null;
@@ -18,7 +18,7 @@ public class HappyBracketsExamplesFolder extends DefaultActionGroup {
      * Creates and Menu Group and populates it with files and subfolders below it
      * @param folder the Virtual folder to load
      */
-    public  HappyBracketsExamplesFolder(VirtualFile folder){
+    public HappyBracketsExamplesFolderMenu(VirtualFile folder){
         virtualFolder = folder;
 
     }
@@ -68,7 +68,7 @@ public class HappyBracketsExamplesFolder extends DefaultActionGroup {
 
         for (VirtualFile folder : folders)
         {
-            HappyBracketsExamplesFolder folder_group = new HappyBracketsExamplesFolder(folder);
+            HappyBracketsExamplesFolderMenu folder_group = new HappyBracketsExamplesFolderMenu(folder);
             folder_group.setPopup(true);
             // we need to set its folder so it can iterate and create it's sub menus
             //folder_group.setFolder(folder);
