@@ -7,6 +7,9 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
+/**
+ * THis class is a menu item for opening the example item in the editor
+ */
 public class ExampleAction extends AnAction {
 
     VirtualFile virtualFile;

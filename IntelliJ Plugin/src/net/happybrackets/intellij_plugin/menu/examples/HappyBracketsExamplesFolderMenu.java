@@ -6,6 +6,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a folder or subfolder in the examples.
+ * It will contain other sub-folders, or menus that load the example in the editor
+ */
 public class HappyBracketsExamplesFolderMenu extends DefaultActionGroup {
 
     // The folder we are representing in our examples
