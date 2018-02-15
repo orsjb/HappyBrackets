@@ -1,6 +1,8 @@
 package net.happybrackets.Nime2018Examples;
 
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
 import java.io.BufferedReader;
@@ -9,6 +11,8 @@ import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 
 public class TestPython implements HBAction {
+    Process shellProcess = null;
+
     @Override
     public void action(HB hb) {
 
@@ -18,7 +22,7 @@ public class TestPython implements HBAction {
 
         String output = "Start";
         try {
-            output = execCmd(("python /home/pi/hello.py"));
+            output = execCmd(("python /Users/angelo/hello.py"));
             hb.setStatus(output);
 
             hb.setStatus("Complete");
@@ -28,40 +32,51 @@ public class TestPython implements HBAction {
         }
 
 
+        /*************************************************************
+         * Create a Trigger type Dynamic Control that displays as a button
+         *
+         * Simply type triggerControl to generate this code
+         *************************************************************/
+        DynamicControl triggerControl = hb.createDynamicControl(this, ControlType.TRIGGER, "killprocess")
+                .addControlListener(control -> {
+
+                    /*** Write your DynamicControl code below this line ***/
+
+                    if (shellProcess != null)
+                    {
+                        shellProcess.destroy();
+                        shellProcess = null;
+                    }
+                    /*** Write your DynamicControl code above this line ***/
+                });
+        /*** End DynamicControl code ***/
 
     }
 
-    public static String execCmd(String cmd) throws java.io.IOException {
-        Process proc = Runtime.getRuntime().exec(cmd);
+    String execCmd(String cmd) throws java.io.IOException {
+        shellProcess = Runtime.getRuntime().exec(cmd);
 
         /***********************************************************
          * Create a runnable thread object
          * simply type threadFunction to generate this code
          ***********************************************************/
         Thread thread = new Thread(() -> {
-            int SLEEP_TIME = 10000;
-            try {
-                Thread.sleep(SLEEP_TIME);
-            } catch (InterruptedException e) {
+
+            java.io.InputStream is = shellProcess.getInputStream();
+            java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+
+            String val = "";
+            if (s.hasNext()) {
+                val = s.next();
+                System.out.println(val);
 
             }
-
-            while (true) {
-                /*** write your code below this line ***/
-
-
-                proc.destroy();
-                /*** write your code above this line ***/
-
-                try {
-                    Thread.sleep(SLEEP_TIME);
-                } catch (InterruptedException e) {
-                    /*** remove the break below to just resume thread or add your own action***/
-                    break;
-                    /*** remove the break above to just resume thread or add your own action ***/
-
-                }
+            else {
+                val = "";
+                System.out.println();
             }
+
+            System.out.println("End Read");
         });
 
         /*** write your code you want to execute before you start the thread below this line ***/
@@ -70,19 +85,8 @@ public class TestPython implements HBAction {
 
         thread.start();
         /****************** End threadFunction **************************/
-        java.io.InputStream is = proc.getInputStream();
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
 
-        String val = "";
-        if (s.hasNext()) {
-            val = s.next();
-            System.out.println(val);
-
-        }
-        else {
-            val = "";
-        }
-        return val;
+        return "";
     }
 
     /**
