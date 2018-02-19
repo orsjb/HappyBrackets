@@ -73,6 +73,28 @@
             text="Disable Advertise" description="Stops Communication between devices and controller">
       <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
     </action>
+
+
+    <action id="SendCompositionToSelectedDevice" class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToSelectedDevice"
+            text="Send to Selected Device"
+            description="Send this composition to slected device">
+      <add-to-group group-id="EditorPopupMenu.Run" anchor="first"/>
+    </action>
+    <action id="SendCompositionToAllDevices"
+            class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToAllDevicesAction"
+            text="Send composition to all devices" description="Sends the selected composition to all devices">
+      <add-to-group group-id="EditorPopupMenu.Run" anchor="first"/>
+    </action>
+    <action id="SendCompositionToSelectedDeviceRunContext"
+            class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToSelectedDevice"
+            text="Send Composition To Selected Device">
+      <add-to-group group-id="RunContextGroupInner" anchor="last"/>
+    </action>
+    <action id="SendCompositionToAllDevicesRunContext"
+            class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToAllDevicesAction"
+            text="Send composition to all devices" description="Sends the selected composition to all devices">
+      <add-to-group group-id="RunContextGroupInner" anchor="last"/>
+    </action>
   </actions>
 
 </idea-plugin>
