@@ -20,7 +20,7 @@ public class DebugApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        System.out.println("THis is DebugApplication");
+        System.out.println("This is DebugApplication");
 
         DynamicControlScreen debugControlsScreen = new DynamicControlScreen("Debug");
 

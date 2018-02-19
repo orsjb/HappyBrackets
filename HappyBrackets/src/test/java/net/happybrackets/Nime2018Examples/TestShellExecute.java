@@ -13,18 +13,43 @@ import java.util.ArrayList;
 public class TestShellExecute implements HBAction {
     @Override
     public void action(HB hb) {
+        final String PROGRAM_NAME = "python";
+        final String SCRIPT_NAME = "data/hello.py";
 
-        ShellExecute executer = new ShellExecute();
-        executer.addProcessCompleteListener((shellExecute, exit_value) -> {
+
+        /**************************************************
+         * Create an executor that uses commandline
+         **************************************************/
+        ShellExecute executor = new ShellExecute().addProcessCompleteListener((shellExecute, exit_value) -> {
+            System.out.println("****************************************");
+            System.out.println("Commandline");
+            System.out.println("****************************************");
             System.out.println("Text: " +  shellExecute.getProcessText());
             System.out.println("Error: " +  shellExecute.getErrorText());
             System.out.println("Exit status: " + exit_value);
+            System.out.println("****************************************");
 
         });
 
+        try {
+            executor.executeCommand(PROGRAM_NAME +" " + SCRIPT_NAME);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ShellExecute process = new ShellExecute().addProcessCompleteListener((shellExecute, exit_value) -> {
+
+            System.out.println("****************************************");
+            System.out.println("Process arguments");
+            System.out.println("****************************************");
+            System.out.println("Process Text: " +  shellExecute.getProcessText());
+            System.out.println("Error: " +  shellExecute.getErrorText());
+            System.out.println("Exit status: " + exit_value);
+            System.out.println("****************************************");
+        });
 
         try {
-            executer.executeCommand("python /Users/angelo/hello.py");
+            process.runProcess(PROGRAM_NAME, SCRIPT_NAME);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,12 +59,12 @@ public class TestShellExecute implements HBAction {
          *
          * Simply type triggerControl to generate this code
          *************************************************************/
-        DynamicControl killTrigger = hb.createDynamicControl(this, ControlType.TRIGGER, "KillProcess")
+        DynamicControl killTrigger = hb.createDynamicControl(this, ControlType.TRIGGER, "Kill Commandline Process")
                 .addControlListener(control -> {
 
                     /*** Write your DynamicControl code below this line ***/
 
-                    executer.killProcess();
+                    executor.killProcess();
                     /*** Write your DynamicControl code above this line ***/
                 });
         /*** End DynamicControl code ***/
