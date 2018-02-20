@@ -41,6 +41,15 @@ public abstract class SendCompositionAction extends AnAction {
     }
 
     /**
+     * Get the selected device
+     * @param project the project
+     * @return the selected device for that project. Can be null
+     */
+    protected LocalDeviceRepresentation getSelectedDevice(Project project){
+        initConnection();
+        return  deviceConnection.getSelectedDevice(project);
+    }
+    /**
      * Get the selected file from this action
      * @param e the action from action event
      * @return Virtual File if it exists

@@ -2,6 +2,7 @@ package net.happybrackets.intellij_plugin.menu.context;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.vfs.VirtualFile;
+import net.happybrackets.controller.network.LocalDeviceRepresentation;
 
 import java.io.File;
 
@@ -38,6 +39,7 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
             System.out.println(full_class_name);
         }
     }
+
 
 
 }
