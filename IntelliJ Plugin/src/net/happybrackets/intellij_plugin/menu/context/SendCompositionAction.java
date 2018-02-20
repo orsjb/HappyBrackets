@@ -59,6 +59,11 @@ public abstract class SendCompositionAction extends AnAction {
         return full_class_path.substring(0, full_class_path.length() - (CLASS_EXTENSION.length() + 1));
     }
 
+    /**
+     * Get the class file associated with this action
+     * @param e ActionEvent from menu
+     * @return the Full Virtual path if it exists
+     */
     VirtualFile getClassFile(AnActionEvent e)
     {
         VirtualFile ret = null;
