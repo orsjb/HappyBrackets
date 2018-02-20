@@ -20,9 +20,9 @@ public class DebugApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        System.out.println("This is DebugApplication");
+        System.out.println("Program in Simulation mode");
 
-        DynamicControlScreen debugControlsScreen = new DynamicControlScreen("Debug");
+        DynamicControlScreen debugControlsScreen = new DynamicControlScreen("Simulation");
 
 
         debugControlsScreen.addDynamicControlScreenLoadedListener(new DynamicControlScreen.DynamicControlScreenLoaded() {
