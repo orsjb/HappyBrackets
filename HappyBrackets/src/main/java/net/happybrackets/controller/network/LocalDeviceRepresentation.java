@@ -47,7 +47,7 @@ public class LocalDeviceRepresentation {
 	public final String deviceName;
 	public final String hostName;
 
-	private String friendlyName = null;
+	private String friendlyName = "";
 
 	private String address;
 	public List<String> preferredAddressStrings;    //This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
