@@ -47,7 +47,7 @@ public abstract class SendCompositionAction extends AnAction {
      */
     protected LocalDeviceRepresentation getSelectedDevice(Project project){
         initConnection();
-        return  deviceConnection.getSelectedDevice(project);
+        return  deviceConnection.getSelectedDevice(project.getLocationHash());
     }
     /**
      * Get the selected file from this action

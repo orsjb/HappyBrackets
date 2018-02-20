@@ -24,7 +24,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
-import com.intellij.openapi.project.Project;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -64,12 +63,11 @@ public class DeviceConnection {
 
 	/**
 	 * Get the LocalDevice  that is selected in this project
-	 * @param project the project
+	 * @param project_hash the project
 	 * @return the selected device if there. otherwise null
 	 */
-	public LocalDeviceRepresentation getSelectedDevice(Project project){
+	public LocalDeviceRepresentation getSelectedDevice(String project_hash){
 		LocalDeviceRepresentation ret = null;
-		String project_hash = project.getLocationHash();
 		ret = selectedDevices.get(project_hash);
 
 		return ret;
@@ -77,11 +75,10 @@ public class DeviceConnection {
 
 	/**
 	 * Insert the new selected device for the project
-	 * @param project the project we are in
+	 * @param project_hash the project we are in
 	 * @param selected_device the new device. This can be null
 	 */
-	public void setDeviceSelected (Project project, LocalDeviceRepresentation selected_device){
-		String project_hash = project.getLocationHash();
+	public void setDeviceSelected (String project_hash, LocalDeviceRepresentation selected_device){
 		if (selectedDevices.containsKey(project_hash)) {
 			selectedDevices.remove(project_hash);
 		}

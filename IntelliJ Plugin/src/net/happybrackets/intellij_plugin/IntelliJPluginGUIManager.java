@@ -704,7 +704,7 @@ public class IntelliJPluginGUIManager {
 			@Override
 			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation old_value, LocalDeviceRepresentation new_value) {
 				disableControl(composition_send_selected_button, new_value == null);
-				deviceConnection.setDeviceSelected(project, new_value);
+				deviceConnection.setDeviceSelected(project.getLocationHash(), new_value);
 			}
 		});
 
