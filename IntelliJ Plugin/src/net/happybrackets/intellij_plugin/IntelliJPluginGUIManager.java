@@ -114,7 +114,7 @@ public class IntelliJPluginGUIManager {
 		//initial compositions path
 		//assume that this path is a path to a root classes folder, relative to the project
 		//e.g., build/classes/tutorial or build/classes/compositions
-		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath();
+		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath() + "/" + project.getName();
 
 		deviceErrorListeners = new HashMap<>();
 		// Add ErrorListener's to the devices so we can report to the user when an error occurs communicating
