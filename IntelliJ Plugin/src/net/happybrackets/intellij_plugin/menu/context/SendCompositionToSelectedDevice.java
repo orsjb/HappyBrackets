@@ -14,11 +14,11 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
 
         if (vfile != null) {
 
-            if (vfile.getExtension().equalsIgnoreCase("java"))
+            if (vfile.getExtension().equalsIgnoreCase(JAVA_EXTENSION))
             {
                 String fileName = vfile.getNameWithoutExtension();
                 e.getPresentation().setText("Send " + fileName + " to selected device");
-                enable = true;
+                enable = getClassFile(e) != null && getDevices().size() > 0;
             }
 
         }
@@ -30,11 +30,12 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
     @Override
         public void actionPerformed(AnActionEvent e) {
 
-        VirtualFile vfile = selectedFile(e);
+        VirtualFile vfile = getClassFile(e);
 
         if (vfile != null) {
-            String fileName = vfile.getName();
-            System.out.println(fileName);
+            String full_class_name = getFullClassName(vfile.getCanonicalPath());
+
+            System.out.println(full_class_name);
         }
     }
 
