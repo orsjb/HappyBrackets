@@ -4,8 +4,8 @@
 ### The device is added as a parameter to the script
 
 ### move to the correct dir for running this script 
-DIR=`dirname $0`
-cd ${DIR}/device
+cd device
+
 
 if [ $# -gt 0 ]; then
     DEVICE_NAME=$1
@@ -49,13 +49,15 @@ if [ "$DEVICE_NAME" != "" ]; then
 
 	# now remove the file we created so it does not remain on the disk
 	rm interfaces
-        # now we need to SSH into device so we can do a restart of PI
-        echo "We need to reboot our device"
 
-        echo "sudo shutdown -r now"
 
-        ssh $HOST_ADDRESS "sudo shutdown -r now"
+	echo "We need to flush files to your device to prevent disk becoming corrupt. The following line will be sent when you enter you password"
 
+	echo "sync"
+
+	ssh $HOST_ADDRESS "sync"
+
+	#see if we want to set another device	
         while true
         do
 	    #see if we need to send to more devices
