@@ -23,7 +23,7 @@ if [ "$DEVICE_NAME" != "" ]; then
     echo "Enter wireless network name"
     read SID
     echo "Enter wireless network password"   
-    read PWD
+    read -s PWD
 
 	
     while true
@@ -38,7 +38,6 @@ if [ "$DEVICE_NAME" != "" ]; then
 	ssid="wpa-ssid $chr$SID$chr$nl"
 	psk="wpa-psk $chr$PWD$chr$nl"
 	#echo "$ssid"
-	#echo "$psk"`
 	interfacefile=$interfaces$nl$ssid$psk
 
 	#write new file to disk for sending
