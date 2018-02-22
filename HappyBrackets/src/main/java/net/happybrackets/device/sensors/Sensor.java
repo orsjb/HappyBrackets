@@ -93,6 +93,9 @@ public abstract class Sensor {
      */
     public void addListener(SensorUpdateListener listener) {
         listeners.add(listener);
+        if (isSimulatedOnly()){
+            listener.sensorUpdated();
+        }
     }
 
     /**
@@ -104,6 +107,9 @@ public abstract class Sensor {
      */
     public void addNonResettableListener(SensorUpdateListener listener) {
         nonResetableListeners.add(listener);
+        if (isSimulatedOnly()){
+            listener.sensorUpdated();
+        }
     }
 
 
@@ -130,8 +136,10 @@ public abstract class Sensor {
      */
     public void addValueChangedListener(SensorValueChangedListener listener) {
         valueChangedListeners.add(listener);
+        if (isSimulatedOnly()) {
+            listener.sensorUpdated(this);
+        }
     }
-
     /**
      * Add a @{@link SensorValueChangedListener} that will listen to this @{@link Sensor}.
      * These listeners are NOT removed when device is reset
@@ -139,6 +147,9 @@ public abstract class Sensor {
      */
     public void addNonResettableValueChangedListener(SensorValueChangedListener listener) {
         nonResetablevValueChangedListeners.add(listener);
+        if (isSimulatedOnly()) {
+            listener.sensorUpdated(this);
+        }
     }
 
 
