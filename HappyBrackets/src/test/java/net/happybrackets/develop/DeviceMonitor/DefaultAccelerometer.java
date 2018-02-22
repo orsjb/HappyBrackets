@@ -6,6 +6,7 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.Accelerometer;
+import net.happybrackets.device.sensors.Sensor;
 import net.happybrackets.device.sensors.SensorNotFoundException;
 
 import java.lang.invoke.MethodHandles;
@@ -39,7 +40,7 @@ public class DefaultAccelerometer implements HBAction{
 
 
 
-        hb.setEnableSimulators(false);
+        //hb.setEnableSimulators(false);
         try {
             hb.findSensor(Accelerometer.class).addValueChangedListener(sensor -> {
                 Accelerometer accelerometer = (Accelerometer) sensor;
@@ -52,6 +53,9 @@ public class DefaultAccelerometer implements HBAction{
                 control_x.setValue((float) xAxis);
                 control_y.setValue((float) yAxis);
                 control_z.setValue((float) zAxis);
+
+                float scaled_x = Sensor.scaleValue(-1, 1, 200, 1000, xAxis);
+                System.out.println("" + scaled_x);
 
             });
         } catch (SensorNotFoundException e) {

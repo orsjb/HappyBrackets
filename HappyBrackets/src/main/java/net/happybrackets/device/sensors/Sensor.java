@@ -56,6 +56,23 @@ public abstract class Sensor {
     }
 
     /**
+     * Return a scaled value for a sensor based on known maximum and minimum values
+     * A continuous function that satisfies this the following
+     * sensor_value(sensor_min) = scaled_min
+     * sensor_value(sensor_max) = scaled_max
+     * @param sensor_min the minimum value sensor would normally return
+     * @param sensor_max the maximum value our sensor would normally return
+     * @param scaled_min the value we want returned as our minimum for sensor minimum value
+     * @param scaled_max the value we want returned as our maximum for our sensor maximum value
+     * @param sensor_value the actual value of the sensor
+     * @return our scaled value
+     */
+    public static float scaleValue (double sensor_min, double sensor_max, double scaled_min, double scaled_max, double sensor_value){
+        double ret = ((scaled_max - scaled_min) * (sensor_value - sensor_min)) / (sensor_max - sensor_min) + scaled_min;
+
+        return  (float)ret;
+    }
+    /**
      * Set from inside IDE to indicate we are just simulating a sensor
      * @param simulated set to true if we are simulating
      */
