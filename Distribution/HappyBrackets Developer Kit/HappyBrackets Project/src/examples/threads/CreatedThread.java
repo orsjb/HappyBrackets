@@ -154,6 +154,7 @@ public class CreatedThread implements HBAction {
         /***** Type your HBAction code below this line ******/
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
     /**
      * This function is used when running sketch in IntelliJ IDE for debugging or testing
      *
@@ -167,4 +168,5 @@ public class CreatedThread implements HBAction {
             e.printStackTrace();
         }
     }
+    //</editor-fold>
 }

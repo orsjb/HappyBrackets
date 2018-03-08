@@ -5,9 +5,7 @@ import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.Accelerometer;
-import net.happybrackets.device.sensors.Sensor;
-import net.happybrackets.device.sensors.SensorNotFoundException;
+import net.happybrackets.device.sensors.*;
 
 import java.lang.invoke.MethodHandles;
 
@@ -39,28 +37,24 @@ public class DefaultAccelerometer implements HBAction{
         hb.createDynamicControl(this, ControlType.FLOAT, ACCEL_PREFIX + "z", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
 
 
-
-        //hb.setEnableSimulators(false);
-        try {
-            hb.findSensor(Accelerometer.class).addValueChangedListener(sensor -> {
-                Accelerometer accelerometer = (Accelerometer) sensor;
-                // Get the data from Z.
-                double zAxis = accelerometer.getAccelerometerZ();
-                double yAxis = accelerometer.getAccelerometerY();
-                double xAxis = accelerometer.getAccelerometerX();
-
-
-                control_x.setValue((float) xAxis);
-                control_y.setValue((float) yAxis);
-                control_z.setValue((float) zAxis);
-
-                float scaled_x = Sensor.scaleValue(-1, 1, 200, 1000, xAxis);
+        /*****************************************************
+         * Find an accelerometer sensor. If no sensor is found
+         * you will receive a status message
+         * accelerometer values typically range from -1 to + 1
+         * to create this code, simply type accelerometerSensor
+         *****************************************************/
+        new AccelerometerListener(hb) {
+            @Override
+            public void sensorUpdate(float x_val, float y_val, float z_val) {
+                /******** Write your code below this line ********/
+                float scaled_x = Sensor.scaleValue(-1, 1, 200, 1000, x_val);
                 System.out.println("" + scaled_x);
+                /******** Write your code above this line ********/
 
-            });
-        } catch (SensorNotFoundException e) {
-            hb.setStatus(e.getMessage());
-        }
+            }
+        };
+        /*** End accelerometerSensor code ***/
+
 
 
     }

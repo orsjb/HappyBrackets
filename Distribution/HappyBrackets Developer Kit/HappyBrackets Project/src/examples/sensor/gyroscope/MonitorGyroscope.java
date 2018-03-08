@@ -4,8 +4,8 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.Gyroscope;
-import net.happybrackets.device.sensors.SensorNotFoundException;
+import net.happybrackets.device.sensors.GyroscopeListener;
+
 
 import java.lang.invoke.MethodHandles;
 
@@ -45,35 +45,26 @@ public class MonitorGyroscope implements HBAction {
 
 
         /*****************************************************
-         * Find an gyroscope sensor. If no sensor is found
-         * you will receive a status message
-         *
+         * Add a gyroscope sensor listener. *
          * to create this code, simply type gyroscopeSensor
          *****************************************************/
-        try {
-            hb.findSensor(Gyroscope.class).addValueChangedListener(sensor -> {
-                Gyroscope gyroscope = (Gyroscope) sensor;
-                float pitch = gyroscope.getPitch();
-                float roll = gyroscope.getRoll();
-                float yaw = gyroscope.getYaw();
-
+        new GyroscopeListener(hb) {
+            @Override
+            public void sensorUpdated(float pitch, float roll, float yaw) {
                 /******** Write your code below this line ********/
                 displayPitch.setValue(pitch);
 
                 displayRoll.setValue(roll);
                 displayYaw.setValue(yaw);
-
                 /******** Write your code above this line ********/
-
-            });
-
-        } catch (SensorNotFoundException e) {
-            hb.setStatus("Unable to find gyroscope");
-        }
+            }
+        };
         /*** End gyroscopeSensor code ***/
+
         /***** Type your HBAction code above this line ******/
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
     /**
      * This function is used when running sketch in IntelliJ IDE for debugging or testing
      *
@@ -87,4 +78,5 @@ public class MonitorGyroscope implements HBAction {
             e.printStackTrace();
         }
     }
+    //</editor-fold>
 }

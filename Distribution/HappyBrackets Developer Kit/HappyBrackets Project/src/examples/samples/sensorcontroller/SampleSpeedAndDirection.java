@@ -5,9 +5,7 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.Accelerometer;
-import net.happybrackets.device.sensors.Gyroscope;
-import net.happybrackets.device.sensors.SensorNotFoundException;
+import net.happybrackets.device.sensors.*;
 
 import java.lang.invoke.MethodHandles;
 
@@ -94,20 +92,13 @@ public class SampleSpeedAndDirection implements HBAction {
 
             // now connect to a gyroscope
             /*****************************************************
-             * Find an gyroscope sensor. If no sensor is found
-             * you will receive a status message
-             *
+             * Add a gyroscope sensor listener. *
              * to create this code, simply type gyroscopeSensor
              *****************************************************/
-            try {
-                hb.findSensor(Gyroscope.class).addValueChangedListener(sensor -> {
-                    Gyroscope gyroscope = (Gyroscope) sensor;
-                    float pitch = gyroscope.getPitch();
-                    float roll = gyroscope.getRoll();
-                    float yaw = gyroscope.getYaw();
-
+            new GyroscopeListener(hb) {
+                @Override
+                public void sensorUpdated(float pitch, float roll, float yaw) {
                     /******** Write your code below this line ********/
-
                     // we will only do a change if our yaw is >= 1 or <= -1
                     if (Math.abs(yaw) >=1){
                         if (yaw < 0) {
@@ -119,14 +110,9 @@ public class SampleSpeedAndDirection implements HBAction {
                             sampleDirection.setValue(FORWARDS);
                         }
                     }
-
                     /******** Write your code above this line ********/
-
-                });
-
-            } catch (SensorNotFoundException e) {
-                hb.setStatus("Unable to find gyroscope");
-            }
+                }
+            };
             /*** End gyroscopeSensor code ***/
 
 
@@ -137,26 +123,18 @@ public class SampleSpeedAndDirection implements HBAction {
              * accelerometer values typically range from -1 to + 1
              * to create this code, simply type accelerometerSensor
              *****************************************************/
-            try {
-                hb.findSensor(Accelerometer.class).addValueChangedListener(sensor -> {
-                    Accelerometer accelerometer = (Accelerometer) sensor;
-                    float x_val = accelerometer.getAccelerometerX();
-                    float y_val = accelerometer.getAccelerometerY();
-                    float z_val = accelerometer.getAccelerometerZ();
-
+            new AccelerometerListener(hb) {
+                @Override
+                public void sensorUpdate(float x_val, float y_val, float z_val) {
                     /******** Write your code below this line ********/
-
                     // we will make range go from stopped to double
                     sampleSpeed.setValue(x_val + 1);
-
                     /******** Write your code above this line ********/
 
-                });
-
-            } catch (SensorNotFoundException e) {
-                hb.setStatus("Unable to create Accelerometer");
-            }
+                }
+            };
             /*** End accelerometerSensor code ***/
+
 
             /******** Write your code above this line ********/
         } else {
@@ -165,6 +143,7 @@ public class SampleSpeedAndDirection implements HBAction {
         /*** End samplePlayer code ***/
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
     /**
      * This function is used when running sketch in IntelliJ IDE for debugging or testing
      *
@@ -178,4 +157,5 @@ public class SampleSpeedAndDirection implements HBAction {
             e.printStackTrace();
         }
     }
+    //</editor-fold>
 }

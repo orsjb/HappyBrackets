@@ -13,35 +13,37 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
 
     @Override
     public void update(AnActionEvent e) {
-        VirtualFile vfile = selectedFile(e);
-        LocalDeviceRepresentation selected_device = getSelectedDevice(e.getProject());
+        try {
+            if (e != null) {
+                VirtualFile vfile = selectedFile(e);
+                LocalDeviceRepresentation selected_device = getSelectedDevice(e.getProject());
 
-        boolean enable = false;
+                boolean enable = false;
 
-        if (vfile != null) {
+                if (vfile != null) {
 
-            if (vfile.getExtension().equalsIgnoreCase(JAVA_EXTENSION))
-            {
+                    if (vfile.getExtension().equalsIgnoreCase(JAVA_EXTENSION)) {
 
-                String fileName = vfile.getNameWithoutExtension();
-                String text = "Send " + fileName + " to ";
+                        String fileName = vfile.getNameWithoutExtension();
+                        String text = "Send " + fileName + " to ";
 
-                if (selected_device != null) {
-                    String device_name =  selected_device.friendlyName();
-                    enable = true;
-                    text += device_name;
+                        if (selected_device != null) {
+                            String device_name = selected_device.friendlyName();
+                            enable = true;
+                            text += device_name;
+                        } else {
+                            text += "selected device";
+                        }
+                        e.getPresentation().setText(text);
+
+                    }
+
                 }
-                else{
-                    text += "selected device";
-                }
-                e.getPresentation().setText(text);
 
-
+                e.getPresentation().setEnabled(enable);
             }
-
         }
-
-        e.getPresentation().setEnabled(enable);
+        catch (Exception ex){}
 
     }
 

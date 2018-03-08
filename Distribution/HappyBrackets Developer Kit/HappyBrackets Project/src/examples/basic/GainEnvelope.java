@@ -65,6 +65,7 @@ public class GainEnvelope implements HBAction {
         gainEnvelope.addSegment(MIN_VOLUME, FADEOUT_TIME);
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
     /**
      * This function is used when running sketch in IntelliJ IDE for debugging or testing
      *
@@ -78,4 +79,5 @@ public class GainEnvelope implements HBAction {
             e.printStackTrace();
         }
     }
+    //</editor-fold>
 }

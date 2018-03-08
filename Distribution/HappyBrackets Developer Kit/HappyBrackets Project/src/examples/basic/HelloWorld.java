@@ -41,6 +41,7 @@ public class HelloWorld implements HBAction {
         hb.ac.out.addInput(gainAmplifier);
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
     /**
      * This function is used when running sketch in IntelliJ IDE for debugging or testing
      *
@@ -54,4 +55,5 @@ public class HelloWorld implements HBAction {
             e.printStackTrace();
         }
     }
+    //</editor-fold>
 }

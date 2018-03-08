@@ -7,6 +7,7 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.Gyroscope;
+import net.happybrackets.device.sensors.GyroscopeListener;
 import net.happybrackets.device.sensors.SensorNotFoundException;
 
 import java.lang.invoke.MethodHandles;
@@ -52,39 +53,25 @@ public class SimpleGyroscope implements HBAction{
         hb.ac.out.addInput(gainAmplifier);
 
         // create our accelerometer and connect
-
         /*****************************************************
-         * Find an gyroscope sensor. If no sensor is found
-         * you will receive a status message
-         *
+         * Add a gyroscope sensor listener. *
          * to create this code, simply type gyroscopeSensor
          *****************************************************/
-        try {
-            hb.findSensor(Gyroscope.class).addValueChangedListener(sensor -> {
-                Gyroscope gyroscope = (Gyroscope) sensor;
-                float pitch = gyroscope.getPitch();
-                float roll = gyroscope.getRoll();
-                float yaw = gyroscope.getYaw();
-
+        new GyroscopeListener(hb) {
+            @Override
+            public void sensorUpdated(float pitch, float roll, float yaw) {
                 /******** Write your code below this line ********/
                 float frequency_deviation = yaw * MULTIPLIER_FREQUENCY;
                 waveformFrequency.setValue(CENTRE_FREQUENCY + frequency_deviation);
-
                 /******** Write your code above this line ********/
-
-            });
-
-        } catch (SensorNotFoundException e) {
-            hb.setStatus("Unable to find gyroscope");
-        }
+            }
+        };
         /*** End gyroscopeSensor code ***/
-
-
-
 
     }
 
 
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
     /**
      * This function is used when running sketch in IntelliJ IDE for debugging or testing
      *
@@ -98,4 +85,5 @@ public class SimpleGyroscope implements HBAction{
             e.printStackTrace();
         }
     }
+    //</editor-fold>
 }

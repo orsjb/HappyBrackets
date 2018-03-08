@@ -6,8 +6,8 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.sensors.Accelerometer;
-import net.happybrackets.device.sensors.SensorNotFoundException;
+import net.happybrackets.device.sensors.AccelerometerListener;
+
 
 import java.lang.invoke.MethodHandles;
 
@@ -49,21 +49,15 @@ public class SimpleAccelerometer implements HBAction{
         hb.ac.out.addInput(gainAmplifier);
 
         // create our accelerometer and connect
-
         /*****************************************************
          * Find an accelerometer sensor. If no sensor is found
          * you will receive a status message
          * accelerometer values typically range from -1 to + 1
-         *
          * to create this code, simply type accelerometerSensor
          *****************************************************/
-        try {
-            hb.findSensor(Accelerometer.class).addValueChangedListener(sensor -> {
-                Accelerometer accelerometer = (Accelerometer) sensor;
-                float x_val = accelerometer.getAccelerometerX();
-                float y_val = accelerometer.getAccelerometerY();
-                float z_val = accelerometer.getAccelerometerZ();
-
+        new AccelerometerListener(hb) {
+            @Override
+            public void sensorUpdate(float x_val, float y_val, float z_val) {
                 /******** Write your code below this line ********/
                 // convert our x_value so it is between 0 and 2
                 float converted_x = x_val + 1;
@@ -74,22 +68,16 @@ public class SimpleAccelerometer implements HBAction{
 
                 // set new value to waveformFrequency
                 waveformFrequency.setValue(new_frequency);
-
                 /******** Write your code above this line ********/
 
-            });
-
-        } catch (SensorNotFoundException e) {
-            hb.setStatus("Unable to create accelerometer");
-        }
+            }
+        };
         /*** End accelerometerSensor code ***/
-
-
-
 
     }
 
 
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
     /**
      * This function is used when running sketch in IntelliJ IDE for debugging or testing
      *
@@ -103,4 +91,5 @@ public class SimpleAccelerometer implements HBAction{
             e.printStackTrace();
         }
     }
+    //</editor-fold>
 }

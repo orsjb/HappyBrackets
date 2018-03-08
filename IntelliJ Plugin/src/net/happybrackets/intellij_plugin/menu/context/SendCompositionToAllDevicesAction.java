@@ -10,21 +10,25 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
 
     @Override
     public void update(AnActionEvent e) {
-        VirtualFile vfile = selectedFile(e);
-        boolean enable = false;
+        try {
+            if (e != null) {
+                VirtualFile vfile = selectedFile(e);
+                boolean enable = false;
 
-        if (vfile != null) {
+                if (vfile != null) {
 
-            if (vfile.getExtension().equalsIgnoreCase(JAVA_EXTENSION))
-            {
-                String fileName = vfile.getNameWithoutExtension();
-                e.getPresentation().setText("Send " + fileName + " to all devices");
-                enable = getClassFile(e) != null && getDevices().size() > 0;
+                    if (vfile.getExtension().equalsIgnoreCase(JAVA_EXTENSION)) {
+                        String fileName = vfile.getNameWithoutExtension();
+                        e.getPresentation().setText("Send " + fileName + " to all devices");
+                        enable = getClassFile(e) != null && getDevices().size() > 0;
+                    }
+
+                }
+
+                e.getPresentation().setEnabled(enable);
             }
-
         }
-
-        e.getPresentation().setEnabled(enable);
+        catch (Exception ex){}
 
     }
 

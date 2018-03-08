@@ -44,6 +44,7 @@ public class SimpleMIDI implements HBAction {
 
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
     /**
      * This function is used when running sketch in IntelliJ IDE for debugging or testing
      *
@@ -57,4 +58,5 @@ public class SimpleMIDI implements HBAction {
             e.printStackTrace();
         }
     }
+    //</editor-fold>
 }
