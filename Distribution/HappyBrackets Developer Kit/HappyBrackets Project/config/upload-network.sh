@@ -19,13 +19,29 @@ fi
 
 
 if [ "$DEVICE_NAME" != "" ]; then
-# run scp 
-    echo "Enter wireless network name"
-    read SID
-    echo "Enter wireless network password"   
-    read -s PWD
+# run scp
 
-	
+    while true
+    do
+        echo "Enter wireless network name"
+        read SID
+        echo "Enter wireless network password"
+        read -s PWD
+
+        echo "Confirm the new password..."
+
+        read -s NEW_PWD2
+
+        if [ $PWD == $NEW_PWD2 ]; then
+
+            break
+        fi
+
+        echo "Error: passwords do not match. Try again!"
+
+
+    done
+
     while true
     do
 
