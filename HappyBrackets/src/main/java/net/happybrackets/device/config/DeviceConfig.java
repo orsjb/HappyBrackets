@@ -23,6 +23,7 @@ import net.happybrackets.device.network.UDPCachedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -48,11 +49,18 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	 */
 	DeviceController lastController = new DeviceController("", "", 0, 0);
 
+	// This is where we will place our logs. This way we can put in a ram fs
+	private final String LOG_FOLDER =  "ramfs/";
+
 	private int polyLimit = 4;
+
 	private String logFilePath = "stdout";
 
 
 	public DeviceConfig(){
+
+		new File(LOG_FOLDER).mkdirs();
+
 		try {
 			broadcastSocket = new DatagramSocket();
 			broadcastSocket.setBroadcast(true);
@@ -86,7 +94,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 		return polyLimit;
 	}
 
-	public String getLogFilePath() {return logFilePath; };
+	public String getLogFilePath() {return LOG_FOLDER + logFilePath; };
 
 	public static DeviceConfig getInstance() {
 		return (DeviceConfig)(LoadableConfig.getInstance());
