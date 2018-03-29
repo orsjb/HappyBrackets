@@ -17,11 +17,15 @@
 package net.happybrackets.device;
 
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
+import net.happybrackets.core.BuildVersion;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.AudioSetup;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.*;
 
 /**
  * Entry point for PI code.
@@ -31,7 +35,34 @@ import org.slf4j.LoggerFactory;
 public class DeviceMain {
     final static Logger logger = LoggerFactory.getLogger(DeviceMain.class);
 
+
+
+	static HB HBInstance;
+
+	/**
+	 * Return the global Intstance of HB
+	 * @return Static HB
+	 */
+	public static final HB getHB()
+	{
+		return HBInstance;
+	}
+
+	static String repeatText(String s, int count)
+	{
+		String ret = "";
+		for (int i = 0; i < count; i++)
+		{
+			ret += s;
+		}
+
+		return ret;
+	}
+
+
 	public static void main(String[] args) throws Exception {
+
+		TextOutput.printBanner();
 		// Determine access mode.
 		HB.AccessMode mode = HB.AccessMode.OPEN;
 		for (String s : args) {
@@ -53,6 +84,7 @@ public class DeviceMain {
         logger.debug("Loading config file: {}", configFile);
 		DeviceConfig config = DeviceConfig.load(configFile);
 		HB hb = new HB(AudioSetup.getAudioContext(args), mode);
+		HBInstance = hb;
 		//deal with autostart and parse arguments
 		boolean autostart = true;
 		for(String s : args) {

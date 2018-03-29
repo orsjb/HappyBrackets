@@ -135,6 +135,8 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
         //super(endpoint, processor, device);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         start();
+        storeSensor(this);
+        setValidLoad (true);
     }
 
     public void doStart() throws Exception {
@@ -380,9 +382,8 @@ public final class HTS221 extends Sensor implements HumiditySensor, TemperatureS
                     humidityData = getHumidityData();
                     //pass data on to listeners
 
-                    for(SensorUpdateListener listener : listeners) {
-                        listener.sensorUpdated();
-                    }
+                    notifyListeners();
+
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.
                     } catch (InterruptedException e) {

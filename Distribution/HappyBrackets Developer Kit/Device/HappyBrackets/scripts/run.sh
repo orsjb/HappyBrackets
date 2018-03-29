@@ -23,7 +23,7 @@ ACTION=
 
 echo “Running HappyBrackets”
 
-(/usr/bin/sudo /usr/bin/java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION > stdout &) &
+(/usr/bin/sudo /usr/bin/java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION > stdout 2>&1) &
 
 ### Finally, run the network-monitor.sh script to keep WiFi connection alive
-(scripts/network-monitor.sh > netstatus &) &
+# Ignore this for stretch (scripts/network-monitor.sh > netstatus &) &

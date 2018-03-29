@@ -35,6 +35,11 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 	final static Logger logger = LoggerFactory.getLogger(MiniMU.class);
 
+	// This appears to be the value that gives us +/-1 accelerometer values for standard gravity
+	final int ACCELEROMETER_MULTIPLIER = 0x8000 / 2;
+
+	final int GYROSCOPE_MULTIPLIER = 0x8000 / 2;
+
 	@Override
 	public String getSensorName() {
 		return "MiniMU";
@@ -58,6 +63,21 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 	double[] gyroData = new double[3];
 	double[] accelData = new double[3];
 	double[] magData = new double[3];
+
+	private boolean validLoad = true;
+
+	public static MiniMU getLoadedInstance() {
+		return loadedInstance;
+	}
+
+	static private MiniMU loadedInstance = null;
+	/**
+	 * See if we have a valid load
+	 * @return true if loaded correctly
+	 */
+	public boolean isValidLoad(){
+		return validLoad;
+	}
 
 	public MiniMU () {
 		db2.put("Name","MiniMU-9");
@@ -151,10 +171,19 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 		} catch(IOException e) {
 			logger.error("Unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(", e);
+			validLoad = false;
 		}
-		if (bus != null & acceldevice != null) {
+
+		if (validLoad && bus != null & acceldevice != null) {
+            System.out.println("MiniMu valid Load");
 			start();
+			storeSensor(this);
+			loadedInstance = this;
+			setValidLoad (true);
 		}
+
+        System.out.println("MiniMu end Load");
+
 	}
 
 //	public void update() throws IOException {
@@ -183,9 +212,9 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 						accelData = readSensorsAccel();
 						magData = readSensorsMag();
 						//pass data on to listeners
-						for(SensorUpdateListener listener : listeners) {
-							listener.sensorUpdated();
-						}
+
+						notifyListeners();
+
 					} catch (IOException e) {
 							// System.out.println("MiniMU not receiving data.");
 							// Assuming we might like this in dev?
@@ -327,16 +356,80 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 
 	@Override
 	public double[] getGyroscopeData() {
-		return accelData;
+		return gyroData;
+	}
+
+	@Override
+	public float getGyroscopeX() {
+		return (float)gyroData[0] / GYROSCOPE_MULTIPLIER;
+	}
+
+	@Override
+	public float getGyroscopeY() {
+		return (float)gyroData[1] / GYROSCOPE_MULTIPLIER;
+	}
+
+	@Override
+	public float getGyroscopeZ() {
+		return (float)gyroData[2]/ GYROSCOPE_MULTIPLIER;
 	}
 
 	@Override
 	public double[] getAccelerometerData() {
-		return gyroData;
+		return accelData;
+	}
+
+	@Override
+	public float getAccelerometerX() {
+		// we need to convert down to half value of 16 bits (we are using signed 16 bits
+		return (float)(accelData [0] / ACCELEROMETER_MULTIPLIER);
+	}
+
+	@Override
+	public float getAccelerometerY() {
+		// we need to convert down to half value of 16 bits (we are using signed 16 bits
+		return (float)(accelData [1] / ACCELEROMETER_MULTIPLIER);
+	}
+
+	@Override
+	public float getAccelerometerZ() {
+		// we need to convert down to half value of 16 bits (we are using signed 16 bits
+		return (float)(accelData [2] / ACCELEROMETER_MULTIPLIER);
 	}
 
 	@Override
 	public double[] getMagnetometerData() {
 		return magData;
 	}
+
+	@Override
+	public float getMagnetometerX() {
+		return (float) magData[0];
+	}
+
+	@Override
+	public float getMagnetometerY() {
+		return (float) magData[1];
+	}
+
+	@Override
+	public float getMagnetometerZ() {
+		return (float) magData[2];
+	}
+
+	@Override
+	public float getPitch() {
+		return getGyroscopeY();
+	}
+
+	@Override
+	public float getRoll() {
+		return getGyroscopeX();
+	}
+
+	@Override
+	public float getYaw() {
+		return getGyroscopeZ();
+	}
+
 }

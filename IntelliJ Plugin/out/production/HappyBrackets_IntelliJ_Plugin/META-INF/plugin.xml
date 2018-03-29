@@ -1,7 +1,7 @@
-<idea-plugin version="2">
+<idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>1.0</version>
+  <version>2.1.0</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -23,13 +23,68 @@
   <depends>com.intellij.modules.lang</depends>
   -->
 
+  <application-components>
+    <component>
+      <!-- Component's interface class -->
+      <interface-class>net.happybrackets.intellij_plugin.ApplicationMonitor</interface-class>
+
+      <!-- Component's implementation class -->
+      <implementation-class>net.happybrackets.intellij_plugin.ApplicationMonitor</implementation-class>
+    </component>
+  </application-components>
+
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/hb.png"/>
+    <defaultLiveTemplatesProvider implementation="net.happybrackets.intellij_plugin.templates.HappyBracketsTemplateProvider"/>
 
   </extensions>
 
   <project-components>
 
   </project-components>
+  <actions>
+    <group id="HappyBracketsIntellijPlugin.MainMenu"  text="HappyBrackets" description="HappyBrackets Settings">
+      <add-to-group group-id="MainMenu" anchor="after" relative-to-action="WindowMenu"/>
+
+      <action id="HappyBrackets.settings" class="net.happybrackets.intellij_plugin.menu.SettingsMenu" text="Settings"
+              description="HappyBrackets Plugin Settings">
+
+      </action>
+
+      <action id="HappyBrackets.Refresh" class="net.happybrackets.intellij_plugin.menu.RefreshDevicesMenu"
+              text="Refresh Devices"
+              description="Refreshes the devices list by displaying only devices that are connected">
+      </action>
+
+    </group>
+
+    <group id="HappyBracketsDebugGroup" class="net.happybrackets.intellij_plugin.menu.HappyBracketsDebugMenu" popup="true"
+           text="Debug" description="Happy Brackets Debug Options">
+      <add-to-group group-id="HappyBracketsIntellijPlugin.MainMenu" anchor="last"/>
+    </group>
+
+
+    <action id="HappyBracketsFavouriteMenu" class="net.happybrackets.intellij_plugin.menu.FavouritesMenu"
+            text="Favourites" description="Displays only devices that are marked as favourites">
+      <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
+    </action>
+    <action id="HappyBracketsAdvertise" class="net.happybrackets.intellij_plugin.menu.AdvertiseMenu"
+            text="Disable Advertise" description="Stops Communication between devices and controller">
+      <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
+    </action>
+
+
+    <action id="SendCompositionToSelectedDeviceRunContext"
+            class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToSelectedDevice"
+            text="Send Composition To Selected Device">
+      <add-to-group group-id="RunContextGroupInner" anchor="last"/>
+    </action>
+    <action id="SendCompositionToAllDevicesRunContext"
+            class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToAllDevicesAction"
+            text="Send composition to all devices" description="Sends the selected composition to all devices">
+      <add-to-group group-id="RunContextGroupInner" anchor="last"/>
+    </action>
+  </actions>
+
 </idea-plugin>

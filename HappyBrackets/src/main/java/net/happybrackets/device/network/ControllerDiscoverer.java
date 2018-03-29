@@ -17,27 +17,48 @@
 package net.happybrackets.device.network;
 
 import net.happybrackets.core.BroadcastManager;
-import net.happybrackets.device.config.DeviceController;
+import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.device.DeviceMain;
+import net.happybrackets.device.HB;
+import net.happybrackets.device.config.DeviceConfig;
 
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import org.slf4j.Logger;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 public interface ControllerDiscoverer {
 
-	default void listenForController(DeviceController controller, BroadcastManager broadcastManager, Logger logger) {
-		broadcastManager.addBroadcastListener(new OSCListener(){
+	default void listenForController(DeviceConfig device_config, BroadcastManager broadcast_manager, Logger logger) {
+
+		broadcast_manager.addPersistentBroadcastListener(new OSCListener(){
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-				if (msg.getName().equals("/hb/controller") && msg.getArgCount() > 0) {
-                    String advertisedAddress = (String) msg.getArg(1);
-                    String advertisedHostname = (String) msg.getArg(0);
-                    if (!( controller.getAddress().equals(advertisedAddress) && controller.getHostname().equals(advertisedHostname) )) {
-                        controller.setAddress(advertisedAddress);
-                        controller.setHostname(advertisedHostname);
-                        logger.debug("Updated controller to {} at {}", controller.getHostname(), controller.getAddress());
-                    }
+				final int CONTROLLER_HOSTNAME = 0;
+				final int CONTROLLER_PORT = 1;
+
+				if (OSCVocabulary.match(msg, OSCVocabulary.CONTROLLER.CONTROLLER) && msg.getArgCount() >= CONTROLLER_PORT) {
+
+					InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
+
+                    String advertised_hostname = (String) msg.getArg(CONTROLLER_HOSTNAME);
+					String address =  sending_address.getHostAddress();//  (String) msg.getArg(1);
+					int port = (int) msg.getArg(CONTROLLER_PORT);
+
+					int device_id = 0;
+
+
+					HB device_instance = DeviceMain.getHB();
+
+					if (device_instance != null)
+					{
+						device_id = device_instance.myIndex();
+					}
+
+					device_config.deviceControllerFound(advertised_hostname, address, port, device_id);
+
 				}
 			}
 		});

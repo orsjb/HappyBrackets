@@ -200,7 +200,7 @@ public abstract class Device {
 
     /**
      * Decide if a network interface is useful for HappyBrackets
-     * @param ni
+     * @param ni networkInterface
      * @return boolean
      */
 	public static boolean isViableNetworkInterface(NetworkInterface ni) {
@@ -221,6 +221,7 @@ public abstract class Device {
 
     /**
      * Obtain a list of NetworkInterface objects which are of interest to HappyBrackets.
+     * @return a List of Viable network Interfaces
      */
 	public static ArrayList<NetworkInterface> viableInterfaces() {
         ArrayList<NetworkInterface> viableInterfaces = new ArrayList<>();
@@ -252,7 +253,7 @@ public abstract class Device {
 
     /**
      * Decide on what my hostname should be.
-     * @param ni
+     * @param ni network Interface
      * @return host name as String
      */
     public static String selectHostname(NetworkInterface ni) {
@@ -261,7 +262,7 @@ public abstract class Device {
 
     /**
      * Decide what my IP address should be.
-     * @param ni
+     * @param ni network interface
      * @return IP address as String
      */
     public static String selectIP(NetworkInterface ni) {
@@ -269,7 +270,9 @@ public abstract class Device {
     }
 
     /**
-     * Remove the trailing link local from IPv6 address and allow IPv4 to pass through.
+     * * Remove the trailing link local from IPv6 address and allow IPv4 to pass through.
+     * @param address The input address
+     * @return the IPv4 address
      */
     public static String removeLinkLocalSuffix(String address) {
         return address.split("%")[0];
@@ -277,7 +280,7 @@ public abstract class Device {
 
     /**
      * Decide what my MAC address should be
-     * @param ni
+     * @param ni Network Interface
      * @return MAC address as String
      */
     public static String selectMAC(NetworkInterface ni) {

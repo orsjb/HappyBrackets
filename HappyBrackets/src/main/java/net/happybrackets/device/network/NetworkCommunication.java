@@ -16,26 +16,20 @@
 
 package net.happybrackets.device.network;
 
-import de.sciss.net.OSCTransmitter;
-import net.happybrackets.core.BroadcastManager;
-import net.happybrackets.core.Device;
+//import com.intellij.ide.ui.EditorOptionsTopHitProvider;
+import de.sciss.net.*;
+import net.happybrackets.core.*;
+import net.happybrackets.core.config.DefaultConfig;
+import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.core.Synchronizer;
-import de.sciss.net.OSCListener;
-import de.sciss.net.OSCMessage;
-import de.sciss.net.OSCServer;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.config.LocalConfigManagement;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.SocketAddress;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.net.*;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,16 +39,18 @@ import org.slf4j.LoggerFactory;
  */
 public class NetworkCommunication {
 
+
+
 	final static Logger logger = LoggerFactory.getLogger(NetworkCommunication.class);
 
-	private int myID;							//ID assigned by the controller
 	private OSCServer oscServer;				//The OSC server
-	private InetSocketAddress controller, broadcastAddress;		//The network details of the controller
+	private InetAddress broadcastAddress;		//Global Broadcast address
 	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
 																//Listeners to incoming OSC messages
 	final private HB hb;
 
 	private final LogSender logSender;
+	DatagramSocket advertiseTxSocket = null;
 
 
 	/**
@@ -64,19 +60,94 @@ public class NetworkCommunication {
      */
 	public NetworkCommunication(HB _hb) throws IOException {
 		this.hb = _hb;
+
+		hb.setUseEncryption(DeviceStatus.getInstance().isClassEncryption());
+
+		broadcastAddress = BroadcastManager.getBroadcast(null);
+
+		try {
+			advertiseTxSocket = new DatagramSocket();
+			advertiseTxSocket.setBroadcast(true);
+		}
+		catch (Exception ex){}
+
+		ControlMap.getInstance().addDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
+			@Override
+			public void dynamicControlEvent(OSCMessage msg) {
+				// Send all Dynamic Control Messages to the respective controllers
+				try {
+					if (DeviceConfig.getInstance() != null) {
+						UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+						DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+
+		ControlMap.getInstance().addGlobalDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
+			@Override
+			public void dynamicControlEvent(OSCMessage msg) {
+				// Send all Dynamic Control Messages to the Broadcast Address so all will receive them
+				try {
+					if (DeviceConfig.getInstance() != null) {
+						UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+						// We need to send message On broadcast channel on the standard listening port. We are sending to device, not controller
+						// this is why we are using control to device port
+						if (advertiseTxSocket != null) {
+							int device_port = DeviceConfig.getInstance().getControlToDevicePort();
+							DatagramPacket packet = cached_message.getCachedPacket();
+							packet.setAddress(broadcastAddress);
+							packet.setPort(device_port);
+							advertiseTxSocket.send(packet);
+						}
+
+						// Now send the message to all controllers
+						DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+
+		_hb.addStatusChangedListener(new HB.StatusChangedListener() {
+			@Override
+			public void statusChanged(String new_status) {
+				DeviceStatus.getInstance().setStatusText(new_status);
+				if (DeviceConfig.getInstance() != null) {
+					DeviceConfig.getInstance().sendMessageToAllControllers(DeviceStatus.getInstance().getCachedStatusMessage().cachedPacket);
+				}
+			}
+		});
+
+
 		//init the OSCServer
 		logger.info("Setting up OSC server");
 		try {
-			oscServer = OSCServer.newUsing(OSCServer.UDP, DeviceConfig.getInstance().getControlToDevicePort());
+			if (DeviceConfig.getInstance() == null) {
+				oscServer = OSCServer.newUsing(OSCServer.UDP, DefaultConfig.CONTROL_TO_DEVICE_PORT);
+			}
+			else {
+				oscServer = OSCServer.newUsing(OSCServer.UDP, DeviceConfig.getInstance().getControlToDevicePort());
+			}
 			oscServer.start();
 		} catch (IOException e) {
 			logger.error("Error creating OSC server!", e);
 		}
 		logger.info("Started OSC server");
 
-		// Create log sender.
-		logSender = new LogSender(this,  DeviceConfig.getInstance().getLogFilePath());
-
+		if (DeviceConfig.getInstance() != null) {
+			// Create log sender.
+			logSender = new LogSender(this, DeviceConfig.getInstance().getLogFilePath());
+		}
+		else {
+			logSender = null;
+		}
 		//add a single master listener that forwards listening to delegates
 		oscServer.addOSCListener(new OSCListener() {
 			@Override
@@ -89,69 +160,151 @@ public class NetworkCommunication {
 //					return;
 //				}
 //				System.out.println("Mesage received: " + msg.getName());
-                logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
 
-				if(msg.getName().equals("/device/set_id")) {
-					myID = (Integer)msg.getArg(0);
-					logger.info("I have been given an ID by the controller: {}", myID);
-					hb.setStatus("ID " + myID);
-				} else if(msg.getName().equals("/device/get_logs")) {
-					boolean sendLogs = ((Integer) msg.getArg(0)) == 1;
-					logger.info("I have been requested to " + (sendLogs ? "start" : "stop") + " sending logs to the controller.");
-					sendLogs(sendLogs);
-				} else {
-					//master commands...
-					if(msg.getName().equals("/device/sync")) {
-						long timeToAct = 1000;
-						if(msg.getArgCount() > 0) {
-							timeToAct = (Integer)msg.getArg(0);
-						}
-						hb.syncAudioStart(timeToAct);
-					} else if(msg.getName().equals("/device/reboot")) {
-						HB.rebootDevice();
-					} else if(msg.getName().equals("/device/shutdown")) {
-						HB.shutdownDevice();
-					} else if(msg.getName().equals("/device/gain")) {
-						hb.masterGainEnv.addSegment((Float)msg.getArg(0), (Float)msg.getArg(1));
-					} else if(msg.getName().equals("/device/reset")) {
-						hb.reset();
-					} else if(msg.getName().equals("/device/reset_sounding")) {
-						hb.resetLeaveSounding();
-					} else if(msg.getName().equals("/device/clearsound")) {
-						hb.clearSound();
-					} else if(msg.getName().equals("/device/fadeout_reset")) {
-						hb.fadeOutReset((Float)msg.getArg(0));
-					} else if(msg.getName().equals("/device/fadeout_clearsound")) {
-						hb.fadeOutClearSound((Float)msg.getArg(0));
-					} else if(msg.getName().equals("/device/bleep")) {
-						hb.testBleep();
-					} else if ( msg.getName().equals("/device/config/wifi") && msg.getArgCount() == 2) {
-                        //TODO: add interfaces path to device config
-                        boolean status = LocalConfigManagement.updateInterfaces(
-                                "/etc/network/interfaces",
-                                (String) msg.getArg(0),
-                                (String) msg.getArg(1)
-                        );
-                        if (status) logger.info("Updated interfaces file");
-                        else logger.error("Unable to update interfaces file");
-					} else if (msg.getName().equals("/device/alive")) {
-						//ignore
+				// this is our default target ports
+				int target_port = DefaultConfig.STATUS_FROM_DEVICE_PORT;
+
+				if (DeviceConfig.getInstance() != null)
+				{
+					DeviceConfig.getInstance().getStatusFromDevicePort();
+				}
+				try {
+					InetAddress sending_address = ((InetSocketAddress) src).getAddress();
+
+					logger.debug("Recieved message to: {} from {}", msg.getName(), src.toString());
+
+					if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ID)) {
+						int new_id = (Integer) msg.getArg(0);
+						hb.setMyIndex(new_id);
+						logger.info("I have been given an ID by the controller: {}", new_id);
+						hb.setStatus("ID " + new_id);
+
+					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
+						boolean enabled = ((Integer) msg.getArg(0)) == 1;
+						logger.info("I have been requested to " + (enabled ? "start" : "stop") + " sending logs to the controller.");
+						sendLogs(enabled);
+					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ENCRYPTION)) {
+						boolean enabled = ((Integer) msg.getArg(0)) == 1;
+						DeviceStatus.getInstance().setClassEncryption(enabled);
+						hb.setUseEncryption(enabled);
+
 					} else {
-						//all other messages getInstance forwarded to delegate listeners
-						synchronized (listeners) {
-							Iterator<OSCListener> i = listeners.iterator();
-							while (i.hasNext()) {
-								try {
-									i.next().messageReceived(msg, src, time);
-								} catch (Exception e) {
-									logger.error("Error delegating OSC message!", e);
+						//master commands...
+						if (OSCVocabulary.match(msg, OSCVocabulary.Device.SYNC)) {
+							int intervalForSynchAction = 1000;
+							if (msg.getArgCount() > 0) {
+								intervalForSynchAction = (Integer) msg.getArg(0);
+							}
+							hb.syncAudioStart(intervalForSynchAction);
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.REBOOT)) {
+							HB.rebootDevice();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SHUTDOWN)) {
+							HB.shutdownDevice();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
+							hb.masterGainEnv.addSegment((Float) msg.getArg(0), (Float) msg.getArg(1));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
+							hb.reset();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET_SOUNDING)) {
+							hb.resetLeaveSounding();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CLEAR_SOUND)) {
+							hb.clearSound();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_RESET)) {
+							hb.fadeOutReset((Float) msg.getArg(0));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
+							hb.fadeOutClearSound((Float) msg.getArg(0));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.BLEEP)) {
+							hb.testBleep();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
+							if (msg.getArgCount() > 0) {
+								target_port = (Integer) msg.getArg(0);
+							}
+
+							InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
+							send(DeviceStatus.getInstance().getOSCMessage(),
+									target_address);
+
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
+							if (msg.getArgCount() > 0) {
+								target_port = (Integer) msg.getArg(0);
+							}
+							InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
+							send(OSCVocabulary.Device.VERSION,
+									new Object[]{
+											Device.getDeviceName(),
+											BuildVersion.getMajor(),
+											BuildVersion.getMinor(),
+											BuildVersion.getBuild(),
+											BuildVersion.getDate()
+									},
+									target_address);
+
+							System.out.println("Version sent " + BuildVersion.getVersionText() + " to port " + target_port) ;
+
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GET)) {
+							if (msg.getArgCount() > 0) {
+								target_port = (Integer) msg.getArg(0);
+							}
+
+							InetSocketAddress target_address = new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
+
+							ControlMap control_map = ControlMap.getInstance();
+
+							List<DynamicControl> controls = control_map.GetSortedControls();
+
+							for (DynamicControl control : controls) {
+								if (control != null) {
+									OSCMessage send_msg = control.buildCreateMessage();
+									send(send_msg, target_address);
+								}
+							}
+
+
+
+
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)){
+							DynamicControl.processUpdateMessage(msg);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GLOBAL)){
+							DynamicControl.processGlobalMessage(msg);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
+							//TODO: add interfaces path to device config
+							boolean status = LocalConfigManagement.updateInterfaces(
+									"/etc/network/interfaces",
+									(String) msg.getArg(0),
+									(String) msg.getArg(1)
+							);
+							if (status) logger.info("Updated interfaces file");
+							else logger.error("Unable to update interfaces file");
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
+							//ignore
+						} else {
+							//all other messages getInstance forwarded to delegate listeners
+							synchronized (listeners) {
+								Iterator<OSCListener> i = listeners.iterator();
+								while (i.hasNext()) {
+									try {
+										i.next().messageReceived(msg, src, time);
+									} catch (Exception e) {
+										logger.error("Error delegating OSC message!", e);
+									}
 								}
 							}
 						}
 					}
+				} catch (Exception ex)
+				{
+					logger.error("Error processing OSC message!", ex);
 				}
+
 			}
 		});
+		/*
 		//set up the controller address
 		String hostname = DeviceConfig.getInstance().getControllerHostname();
 		logger.info( "Setting up controller: {}", hostname );
@@ -160,57 +313,157 @@ public class NetworkCommunication {
 				DeviceConfig.getInstance().getStatusFromDevicePort()
 		);
 		logger.debug( "Controller resolved to address: {}", controller );
+		*/
+
 		//set up an indefinite thread to ping the controller
         new Thread() {
             public void run() {
             BroadcastManager.OnTransmitter keepAlive = new BroadcastManager.OnTransmitter() {
                 @Override
                 public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
-                    transmitter.send(
-                        new OSCMessage(
-                            "/device/alive",
-                            new Object[] {
-									Device.getDeviceName(),
-                                    Device.selectHostname(ni),
-                                    Device.selectIP(ni),
-                                    Synchronizer.time(),
-                                    hb.getStatus()
-                            }
-                        )
-                    );
-                }
+                	/*
+					int ni_hash = ni.hashCode();
+					CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
+
+					if (ni.isUp()) {
+						// Now we are going to broadcast on network interface specific
+						InetAddress broadcast = getBroadcast(ni);
+
+						try {
+
+							if (cached_message != null) {
+								if (hb.myIndex() != cached_message.getDeviceId() || !broadcast.equals(cached_message.broadcastAddress)) {
+									cachedNetworkMessage.remove(ni_hash);
+									cached_message = null;
+								}
+							}
+						}catch(Exception ex){}
+						if (cached_message == null) {
+
+							OSCMessage msg = new OSCMessage(
+									OSCVocabulary.Device.ALIVE,
+									new Object[]{
+											Device.getDeviceName(),
+											Device.selectHostname(ni),
+											Device.selectIP(ni),
+											hb.myIndex()
+									}
+							);
+
+							OSCPacketCodec codec = transmitter.getCodec();
+
+							byteBuf.clear();
+							codec.encode(msg, byteBuf);
+							byteBuf.flip();
+							byte[] buff = new byte[byteBuf.limit()];
+							byteBuf.get(buff);
+
+
+							if (broadcast != null) {
+								try {
+									DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, _hb.broadcast.getPort());
+									cached_message = new CachedMessage(msg, packet, hb.myIndex(), broadcast);
+									cachedNetworkMessage.put(ni_hash, cached_message);
+
+								} catch (Exception ex) {
+								}
+							}
+
+
+						}
+
+						transmitter.send(
+								cached_message.getCachedMessage()
+						);
+
+						DatagramPacket packet = cached_message.getCachedPacket();
+
+						// Now send a broadcast
+						try {
+							broadcastSocket.send(packet);
+						} catch (Exception ex) {
+							System.out.println(ex.getMessage());
+						}
+					} // ni.isUp()
+					else if (cached_message != null) {
+						// ni is not up remove ni as broadcast address may change
+						cachedNetworkMessage.remove(ni_hash);
+					}
+*/
+				}
             };
+
             while(true) {
-                hb.broadcast.forAllTransmitters(keepAlive);
+
+            	int default_alive_time = DefaultConfig.ALIVE_INTERVAL;
+
+            	if (DeviceConfig.getInstance() != null) {
+					//hb.broadcast.forAllTransmitters(keepAlive);
+					// we should send to all registered controllers
+					DeviceConfig.getInstance().notifyAllControllers();
+					default_alive_time = DeviceConfig.getInstance().getAliveInterval();
+				}
                 try {
-                    Thread.sleep(DeviceConfig.getInstance().getAliveInterval());
+                    Thread.sleep(default_alive_time);
                 } catch (InterruptedException e) {
-                    logger.error("/device/alive message send interval interupted!", e);
+                    logger.error(OSCVocabulary.Device.ALIVE + " message send interval interupted!", e);
                 }
             }
 			}
 		}.start();
 	}
 
+
 	/**
 	 * Send an OSC message to the controller. This assumes that you have implemented code on the controller side to respond to this message.
-	 * @param msg the message name.
+	 * @param msg_name the message name.
 	 * @param args the message arguments.
      */
-	public void send(String msg, Object[] args) {
+	public void send(String msg_name, Object[] args) {
 		try {
-			oscServer.send(
-			new OSCMessage(msg, args),
-			new InetSocketAddress(
-						DeviceConfig.getInstance().getControllerAddress(),
-						DeviceConfig.getInstance().getStatusFromDevicePort()
-				)
+			DeviceConfig config = DeviceConfig.getInstance();
+			if (config != null) {
+				OSCMessage msg = new OSCMessage(msg_name, args);
+
+				UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+				DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+			}
+		} catch (Exception ex) {
+			logger.error("Error sending OSC message to Server!", ex);
+		}
+
+	}
+
+	/**
+	 * Send an OSC message to an Address other than the one we have configured as our controller
+	 * @param msg the message name
+	 * @param args the message arguments
+	 * @param requester the Address of the device making request
+	 */
+	public void send (String msg, Object[] args, InetSocketAddress requester)
+	{
+		send(
+				new OSCMessage(msg, args),
+				requester
+		);
+	}
+
+	/**
+	 * Send a Built OSC Message to server
+	 * @param msg OSC Message
+	 * @param target, where we need to send message
+	 */
+	public void send (OSCMessage msg, InetSocketAddress target)
+	{
+		try {
+			oscServer.send(msg,
+					target
 			);
 		} catch (IOException e) {
 			logger.error("Error sending OSC message to Server!", e);
 		}
-	}
 
+	}
 	/**
 	 * Add a @{@link OSCListener} that will respond to incoming OSC messages from the controller. Note that this will not listen to broadcast messages from other devices, for which you should use TODO!.
 	 * @param l the listener.
@@ -239,7 +492,7 @@ public class NetworkCommunication {
 	 * @return the ID of this device.
      */
 	public int getID() {
-		return myID;
+		return hb.myIndex();
 	}
 
 
@@ -249,9 +502,12 @@ public class NetworkCommunication {
 	 * Upon subsequent starts any new log messages will be sent that were created since the last stop.
 	 * Until the process is stopped, as new log messages appear they will be sent to the controller.
 	 *
-	 * @param sendLogs true to start, false to stop.
+	 * @param send_logs true to start, false to stop.
 	 */
-	public void sendLogs(boolean sendLogs) {
-		logSender.setSend(sendLogs);
+	public void sendLogs(boolean send_logs) {
+		if (logSender != null) {
+			logSender.setSend(send_logs);
+			DeviceStatus.getInstance().setLoggingEnabled(send_logs);
+		}
 	}
 }

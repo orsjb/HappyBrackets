@@ -25,11 +25,14 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
+import javafx.application.Application;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
@@ -40,7 +43,12 @@ import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
+import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.*;
+import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.ControlScope;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
@@ -57,9 +65,59 @@ import org.slf4j.LoggerFactory;
  */
 public class HB {
 
+	private static boolean enableSimulators = false;
+
+	/**
+	 * Return whether we will displaysimulator sensors if no hardware sensor is found
+	 * @return true if we will display
+	 */
+	public static boolean isEnableSimulators() {
+		return enableSimulators;
+	}
+
+	/**
+	 * Set  whether we will displaysimulator sensors if no hardware sensor is found
+	 * @param enableSimulators true if we want to display simulator controls
+	 */
+	public void setEnableSimulators(boolean enableSimulators) {
+		HB.enableSimulators = enableSimulators;
+	}
+
+		public interface StatusChangedListener{
+		void statusChanged(String new_status);
+	}
+
+	private List<StatusChangedListener> statusChangedListenerList  = new ArrayList<>();
+
+	// We will create a static one to know whether we are in Debug or run
+	// If we are in a PI, this ill already be set when we try to debug
+	static HB HBInstance = null;
+	/**
+	 * Whether we will use encryption in transferring class data
+	 * @param enable true if we want to use encryption
+	 */
+	public void setUseEncryption(boolean enable) {
+		useEncryption = enable;
+	}
+
+	private boolean useEncryption = false;
+
+	/**
+	 * Add Listeners for status change event
+	 * @param listener The listener to add
+	 */
+	public void addStatusChangedListener (StatusChangedListener listener)
+	{
+		synchronized (statusChangedListenerList)
+		{
+			statusChangedListenerList.add(listener);
+		}
+	}
+
 	final static Logger logger = LoggerFactory.getLogger(HB.class);
 
-	// audio stuff
+
+
 
 	/**
 	 * The {@link AudioContext} used by HappyBrackets. This is autorun by default from the start script, but that can be controlled by a commandline flag.
@@ -96,7 +154,7 @@ public class HB {
 	/**
 	 * Status string used to send to the controller periodically.
 	 */
-	String status = "No ID set";
+	private String status = "No ID set";
 
 	// sensor stuffs
 	/**
@@ -126,7 +184,7 @@ public class HB {
 	/**
 	 * The {@link BroadcastManager}object used to communicate with other devices using 1-many broadcasts. The important methods are provided directly from {@link HB}, e.g., {@link HB#broadcast(String, Object...)} and {@link HB#addBroadcastListener(OSCListener)}.
 	 */
-	public static BroadcastManager broadcast = new BroadcastManager(DeviceConfig.getInstance().getMulticastAddr(), DeviceConfig.getInstance().getBroadcastPort());
+	public static BroadcastManager broadcast;
 
 	/**
 	 * The {@link Synchronizer} object used to manage time synch between devices. The important methods are provided directly from {@link HB}, e.g., {@link HB#doAtTime(Runnable, long)} and {@link HB#getSynchTime()}.
@@ -134,6 +192,7 @@ public class HB {
 	public final Synchronizer synch;
 
 	private AccessMode accessMode;
+	private int myId = 0;
 
 	/**
 	 * Creates the HB.
@@ -142,7 +201,125 @@ public class HB {
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
 	 */
 	public HB(AudioContext _ac) throws IOException {
-		this(_ac, AccessMode.OPEN);
+		this(_ac, AccessMode.OPEN, false);
+	}
+
+	/**
+  	 * Run HB in a debug mode so we can debug sample code in INtelliJ
+	 * run the command like this: HB.runDebug(MethodHandles.lookup().lookupClass());
+	 * @param action_class The class that we are debugging. use MethodHandles.lookup().lookupClass()
+	 * @return true if we are debugging
+	 * @throws IOException if there is a problem with the debug
+	 */
+	public static boolean runDebug(Class<?> action_class) throws Exception {
+
+		// Disable Our non simulated sensors to prevent extra System Messages
+		Sensor.setSimulatedOnly(true);
+
+		boolean ret = false;
+		String current = System.getProperty("user.dir");
+		System.out.println(current);
+		// we will enable simulators of Sensors
+		enableSimulators = true;
+		if (HBInstance == null) {
+
+			HB.AccessMode mode = HB.AccessMode.LOCAL;
+			String[] start_args = new String[]{
+					"buf=1024",
+					"sr=44100",
+					"bits=16",
+					"ins=0",
+					"outs=1",
+					"start=true",
+					"access=local"
+			};
+
+			HB hb = new HB(AudioSetup.getAudioContext(start_args), mode, false);
+			hb.startAudio();
+
+			if (action_class != null) {
+
+				Class<? extends HBAction> incomingClass = null;
+				DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+
+				Class<?>[] interfaces = action_class.getInterfaces();
+				boolean isHBActionClass = false;
+				for (Class<?> cc : interfaces) {
+					if (cc.equals(HBAction.class)) {
+						isHBActionClass = true;
+						break;
+					}
+				}
+				if (isHBActionClass) {
+					incomingClass = (Class<? extends HBAction>) action_class;
+
+				} else {
+					throw new Exception("Class does not have HBAction");
+				}
+
+				if (incomingClass != null) {
+					HBAction action = null;
+					try {
+						action = incomingClass.newInstance();
+						action.action(hb);
+						ret = true;
+
+						try
+						{
+							if (incomingClass.isAssignableFrom(Application.class)) {
+								// now we try and JavaFX calls
+								DynamicControlScreen debugControlsScreen = new DynamicControlScreen("Debug");
+
+
+								debugControlsScreen.addDynamicControlScreenLoadedListener(new DynamicControlScreen.DynamicControlScreenLoaded() {
+									@Override
+									public void loadComplete(DynamicControlScreen screen, boolean loaded) {
+										// screen load is complete.
+										//Now Add all controls
+										ControlMap control_map = ControlMap.getInstance();
+
+										List<DynamicControl> controls = control_map.GetSortedControls();
+
+										for (DynamicControl control : controls) {
+											if (control != null) {
+												debugControlsScreen.addDynamicControl(control);
+												debugControlsScreen.show();
+											}
+										}
+
+										// Now make a listener for Dynamic Controls that are made during the HB Action event
+										control_map.addDynamicControlCreatedListener(new ControlMap.dynamicControlCreatedListener() {
+											@Override
+											public void controlCreated(DynamicControl control) {
+												debugControlsScreen.addDynamicControl(control);
+												debugControlsScreen.show();
+											}
+										});
+
+									}
+								});
+
+								// now we have a listener to see when stage is made, let us load the stage
+								debugControlsScreen.createDynamicControlStage();
+							}
+							else
+							{
+								Application.launch(DebugApplication.class);
+							}
+						}catch (Exception ex)
+						{
+							System.out.println("Unable to display Dynamic Control Screen in NON JavaFX Application");
+						}
+
+
+					} catch (Exception e) {
+						throw new Exception("Error instantiating received HBAction!", e);
+					}
+				}
+
+			}
+		}
+		return ret;
 	}
 
 	/**
@@ -151,8 +328,20 @@ public class HB {
 	 * @param _ac the {@link AudioContext} for audio.
 	 * @param _am The access mode.
 	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
+	 */
+	public HB(AudioContext _ac, AccessMode _am)  throws IOException {
+		this(_ac, _am, true);
+	}
+
+	/**
+	 * Creates the HB.
+	 *
+	 * @param _ac the {@link AudioContext} for audio.
+	 * @param _am The access mode.
+	 * @param start_network true if we are to start networking
+	 * @throws IOException if any of the core network set up fails. Could happen if port is already in use, or if setting up multicast fails.
      */
-	public HB(AudioContext _ac, AccessMode _am) throws IOException {
+	public HB(AudioContext _ac, AccessMode _am, boolean start_network) throws IOException {
 		ac = _ac;
 		// default audio setup (note we don't start the audio context yet)
 		masterGainEnv = new Envelope(ac, 0);
@@ -160,7 +349,20 @@ public class HB {
 		ac.out.setGain(masterGainEnv);
 		clockInterval = new Envelope(ac, 500);
 		clock = new Clock(ac, clockInterval);
-		pl = new PolyLimit(ac, ac.out.getOuts(), DeviceConfig.getInstance().getPolyLimit());
+
+		int poly_limit = 0;
+		String multi_cast_address = "::FFFF:225.2.2.5";
+		int broadcast_port = 2222;
+		int status_port = 2223;
+
+		if (DeviceConfig.getInstance() != null)
+		{
+			poly_limit = DeviceConfig.getInstance().getPolyLimit();
+			multi_cast_address = DeviceConfig.getInstance().getMulticastAddr();
+			broadcast_port = DeviceConfig.getInstance().getBroadcastPort();
+		}
+
+		pl = new PolyLimit(ac, ac.out.getOuts(), poly_limit);
 		pl.setSteal(true);
 		ac.out.addInput(pl);
 		ac.out.addDependent(clock);
@@ -168,26 +370,42 @@ public class HB {
 		// sensor setup
 		sensors = new Hashtable<>();
 		System.out.print(".");
-		// start network connection
+
 		controller = new NetworkCommunication(this);
-		System.out.print(".");
-		synch = Synchronizer.getInstance();
-		System.out.print(".");
-		DeviceConfig.getInstance().listenForController(broadcast);
-		System.out.print(".");
 
-		this.accessMode = _am;
-		if (accessMode != AccessMode.CLOSED) {
-			// start listening for code
-			startListeningForCode();
+		if (start_network) {
+			// start network connection
+			broadcast = new BroadcastManager(multi_cast_address, broadcast_port);
+
+
+			System.out.print(".");
+			synch = Synchronizer.getInstance();
+			System.out.print(".");
+			DeviceConfig.getInstance().listenForController(broadcast);
+			System.out.print(".");
+
+			this.accessMode = _am;
+			if (accessMode != AccessMode.CLOSED) {
+				// start listening for code
+				startListeningForCode();
+			}
+			System.out.print(".");
+
+
+			broadcast.startRefreshThread();
+			testBleep3();
 		}
-		System.out.print(".");
-
+		else
+		{
+			synch = null;
+		}
 		//notify started (happens immeidately or when audio starts)
-		testBleep3();
-        broadcast.startRefreshThread();
+
 		logger.info("HB initialised");
+
+		HBInstance = this;
 	}
+
 
 	/**
 	 * Broadcast an {@link OSCMessage} msg over the multicast group.
@@ -228,15 +446,16 @@ public class HB {
 	/**
 	 * Causes the audio to start at a given synchronised time on all devices.
 	 *
-	 * @param time time at which to sync, according to the agreed clock time
+	 * @param intervalForSyncAction time at which to sync, according to the agreed clock time
      */
-	public void syncAudioStart(long time) {
+	public void syncAudioStart(int intervalForSyncAction) {
+		long timeToAct = (synch.correctedTimeNow() / intervalForSyncAction + 1)  * intervalForSyncAction;
 		doAtTime(new Runnable() {
 			public void run() {
 				startAudio();
 				clock.reset();		//if audio is already running, we just reset the clock
 			}
-		}, time);
+		}, timeToAct);
 	}
 
 	/**
@@ -362,6 +581,7 @@ public class HB {
 					ServerSocket server = new ServerSocket(DeviceConfig.getInstance().getCodeToDevicePort());
 					//dynamically loads a class from byte[] data. TODO error if we receive two of the same NON-HBAction classes.
 					DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+					int display_count = 0;
 					// start socket server listening loop
 					while (true) {
 						// must reopen socket each time
@@ -377,6 +597,7 @@ public class HB {
 						}
 						logger.debug("Code from host IP " + incomingIP + " ALLOWED.");
 
+						setStatus("Received class load request");
 						Class<? extends HBAction> incomingClass = null;
 						try {
 							InputStream input = s.getInputStream();
@@ -390,44 +611,65 @@ public class HB {
 							byte[] dataRaw = buffer.toByteArray();
 							byte[] classData;
 
+							display_count ++;
+
+							if (useEncryption) {
+								setStatus("Decrypting " + TextOutput.getProgressChar(display_count));
+								try {
+									classData = Encryption.decrypt(DeviceConfig.getInstance().getEncryptionKey(), dataRaw, 32, dataRaw.length - 32 - Encryption.getIVLength());
+								} catch (Exception e) {
+									setStatus("Error decrypt class");
+									logger.error("Error decrypting received class. Check that the encryptionKey in this device's configuration and the controller's configuration match.");
+									throw e;
+								}
+
+								// Check given hash matches hash of (decrypted) data.
+								MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+								byte[] hash = sha256.digest(classData);
+								for (int i = 0; i < hash.length; i++) {
+									if (hash[i] != dataRaw[i]) {
+										setStatus("Error hash mismatch");
+										throw new Exception("Hash mismatch for received class data.");
+									}
+								}
+								logger.debug("Received class data hash matches given hash.");
+
+							}
+							else
+							{
+								setStatus("Loading " + TextOutput.getProgressChar(display_count));
+								classData = dataRaw;
+							}
+
+
 							try {
-								classData = Encryption.decrypt(DeviceConfig.getInstance().getEncryptionKey(), dataRaw, 32, dataRaw.length - 32 - Encryption.getIVLength());
-							}
-							catch (Exception e) {
-								logger.error("Error decrypting received class. Check that the encryptionKey in this device's configuration and the controller's configuration match.");
-								throw e;
-							}
-
-							// Check given hash matches hash of (decrypted) data.
-							MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-							byte[] hash = sha256.digest(classData);
-							for (int i = 0; i < hash.length; i++) {
-								if (hash[i] != dataRaw[i]) {
-									throw new Exception("Hash mismatch for received class data.");
+								//at this stage we have the class data in a byte array
+								Class<?> c = loader.createNewClass(classData);
+								Class<?>[] interfaces = c.getInterfaces();
+								boolean isHBActionClass = false;
+								for (Class<?> cc : interfaces) {
+									if (cc.equals(HBAction.class)) {
+										isHBActionClass = true;
+										break;
+									}
+								}
+								if (isHBActionClass) {
+									incomingClass = (Class<? extends HBAction>) c;
+									String class_name = incomingClass.getSimpleName();
+									logger.debug("new HBAction >> " + class_name);
+									setStatus("Loading " + class_name);
+									// this means we're done with the sequence, time to recreate
+									// the classloader to avoid duplicate errors
+									loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+									setStatus("Successful Load  " + class_name);
+								} else {
+									logger.debug("new object (not HBAction) >> " + c.getName());
 								}
 							}
-
-							logger.debug("Received class data hash matches given hash.");
-
-							//at this stage we have the class data in a byte array
-							Class<?> c = loader.createNewClass(classData);
-							Class<?>[] interfaces = c.getInterfaces();
-							boolean isHBActionClass = false;
-							for (Class<?> cc : interfaces) {
-								if (cc.equals(HBAction.class)) {
-									isHBActionClass = true;
-									break;
-								}
-							}
-							if (isHBActionClass) {
-								incomingClass = (Class<? extends HBAction>) c;
-								logger.debug("new HBAction >> " + incomingClass.getName());
-								// this means we're done with the sequence, time to recreate
-								// the classloader to avoid duplicate errors
-								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-								status = "Last HBAction: " + incomingClass.getCanonicalName();
-							} else {
-								logger.debug("new object (not HBAction) >> " + c.getName());
+							catch (ClassFormatError e)
+							{
+								logger.debug("Class Load error >> " + e.getMessage());
+								setStatus("Error Loading Class");
 							}
 						} catch (Exception e) {
 							logger.error("An error occurred while trying to read object from socket.", e);
@@ -456,11 +698,11 @@ public class HB {
 
 	/**
 	 * Attempts to load the given class as an {@link HBAction}. If an {@link HBAction} can be found matching the fully qualified Java classname then this is loaded and its {@link HBAction#action(HB)} method is run.
-	 * @param s
+	 * @param class_name The class name
 	 */
-	public void attemptHBActionFromClassName(String s) {
+	public void attemptHBActionFromClassName(String class_name) {
 		try {
-			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(s);
+			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(class_name);
 			HBAction action = hbActionClass.newInstance();
 			action.action(this);
 		} catch (Exception e) {
@@ -470,16 +712,43 @@ public class HB {
 
 	/**
 	 * Gets the sensor with the given sensor ID. This will attempt to make a connection with the given sensor.
-	 *
+	 * Note that this function will be deprecated in 3.0
+	 * deprecated use {@link #findSensor} instead.
 	 * @param sensorClass the class of the {@link Sensor} you want returned
 	 * @return the returned {@link Sensor}, if one can be found
      */
 	public Sensor getSensor(Class sensorClass) {
+		// see if we have a sensor stored in our list
 		Sensor result = sensors.get(sensorClass);
+
+		// check the versions we have store here
 		if(!sensors.containsKey(sensorClass)) {
+			// we do not have a copy here. See if one was called by a generic caller
 			try {
-				result = (Sensor) sensorClass.getConstructor().newInstance();
-				if(result != null) sensors.put(sensorClass, result);
+				// check the ones we have stored inside sensor class
+				result = Sensor.getSensor(sensorClass);
+				if (result == null) {
+					try {
+						sensorClass.getConstructor().newInstance();
+					}
+					catch (Exception ex){}
+				}
+
+				// we will load from getSensor
+				result = Sensor.getSensor(sensorClass);
+
+				if(result != null) {
+					// let is see if it did a valid load
+					if (result.isValidLoadedSesnor()){
+						sensors.put(sensorClass, result);
+					}
+					else
+					{
+						// it was not loaded correctly. Set our result to null
+						result = null;
+					}
+
+				}
 			} catch (Exception e) {
 				logger.info("Cannot create sensor: {}", sensorClass);
 				setStatus("No sensor " + sensorClass + " available.");
@@ -487,6 +756,21 @@ public class HB {
 		}
 		return result;
 	}
+
+    /**
+     *
+     * @param sensorClass the class of the {@link Sensor} you want returned
+     * @return the returned {@link Sensor}
+     * @throws SensorNotFoundException if sensor type not found
+     */
+    @SuppressWarnings("deprecation")
+	public Sensor findSensor(Class sensorClass) throws SensorNotFoundException{
+	    Sensor sensor = getSensor(sensorClass);
+	    if (sensor == null){
+	        throw new SensorNotFoundException("Unable to find " + sensorClass.getSimpleName());
+        }
+        return sensor;
+    }
 
 	/**
 	 * Puts an {@link Object} into the global memory store with a given name. This overwrites any object that was previously stored with the given name.
@@ -615,29 +899,43 @@ public class HB {
 	public void reset() {
 		resetLeaveSounding();
 		clearSound();
+		setStatus("Reset");
+
 	}
 
 	/**
 	 * Like {@link #reset()} except that any sounds currently playing are kept. This includes everything that is in the global memory store, all patterns, all dependents, all sensor behaviours and all controller listener behaviours.
  	 */
 	public void resetLeaveSounding() {
-		//clear dependencies and inputs
-		ac.out.clearDependents();
-		ac.out.addDependent(clock);
-		clock.clearMessageListeners();
-		clock.clearInputConnections();
-		clock.clearDependents();
-		pl.clearDependents();
-		//clear data store
-		share.clear();
-		//clear mu listeners
-		for(Sensor sensor : sensors.values()) {
-			sensor.clearListeners();
+		try {
+			//clear dependencies and inputs
+			ac.out.clearDependents();
+			ac.out.addDependent(clock);
+			clock.clearMessageListeners();
+			clock.clearInputConnections();
+			clock.clearDependents();
+			pl.clearDependents();
+			//clear data store
+			share.clear();
+			//clear mu listeners
+			for (Sensor sensor : sensors.values()) {
+				sensor.clearListeners();
+				sensor.resetToDefault();
+			}
+			if (controller != null) {
+				//clear osc listeners
+				controller.clearListeners();
+			}
+
+			if (broadcast != null) {
+				//clear broadcast listeners
+				broadcast.clearBroadcastListeners();
+			}
+
+			// clear dynamic control listeners
+			ControlMap.getInstance().clearAllListeners();
 		}
-		//clear osc listeners
-		controller.clearListeners();
-		//clear broadcast listeners
-		broadcast.clearBroadcastListeners();
+		catch (Exception ex){}
 	}
 
 	/**
@@ -675,9 +973,16 @@ public class HB {
 	 * @return the ID of this device, as assigned by the current controller.
      */
 	public int myIndex() {
-		return controller.getID();
+		return myId;
 	}
 
+	/**
+	 * We will set the index of the device here. It may be set by a controller
+	 * @param val new value
+	 */
+	public void setMyIndex(int val){
+		myId = val;
+	}
 	/**
 	 * Reboots the device immediately.
 	 */
@@ -706,6 +1011,12 @@ public class HB {
      */
 	public void setStatus(String s) {
 		status = s;
+		synchronized (statusChangedListenerList)
+		{
+			for (StatusChangedListener listener : statusChangedListenerList) {
+				listener.statusChanged(s);
+			}
+		}
 	}
 
 	/**
@@ -730,5 +1041,121 @@ public class HB {
 		 * Disallow receiving code.
 		 */
 		CLOSED
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param parent_sketch the object calling - typically this
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value)
+	{
+		return new DynamicControl(parent_sketch, control_type, name, initial_value);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param parent_sketch the object calling - typically this
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name)
+	{
+		return new DynamicControl(parent_sketch, control_type, name);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param parent_sketch the object calling - typically this
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @param min_value     The minimum value of the control
+	 * @param max_value     The maximum value of the control
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
+		return new DynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @param min_value     The minimum value of the control
+	 * @param max_value     The maximum value of the control
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
+		return new DynamicControl(control_type, name, initial_value, min_value, max_value);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(ControlType control_type, String name, Object initial_value) {
+		return new DynamicControl(control_type, name, initial_value);
+	}
+
+	/**
+	 * A dynamic control that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 *
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @return Creates a DynamicControl for sending values to other sketches
+	 */
+	public DynamicControl createDynamicControl(ControlType control_type, String name) {
+		return new DynamicControl(control_type, name);
+	}
+
+	/**
+	 * A dynamic control pair that can be accessed from outside
+	 * it is created with the sketch object that contains it along with the type
+	 * only a single dynamic control is returned becasue the buddy is a mirror
+	 *
+	 * @param parent_sketch the object calling - typically this
+	 * @param control_type  The type of control you want to create
+	 * @param name          The name we will give to differentiate between different controls in this class
+	 * @param initial_value The initial value of the control
+	 * @param min_value     The minimum value of the control
+	 * @param max_value     The maximum value of the control
+	 * @return Returns the text control object, so max and min are hidden.
+	 */
+	public DynamicControl createControlBuddyPair(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value)
+	{
+		DynamicControl text_control = this.createDynamicControl(parent_sketch, control_type, name, initial_value).setControlScope(ControlScope.SKETCH);
+
+		DynamicControl slider_control = this.createDynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value).setControlScope(ControlScope.SKETCH);
+
+		text_control.addControlScopeListener(new_scope -> {
+			slider_control.setControlScope(new_scope);
+		});
+
+		/*************************************************************
+		 * We return the text control because returning the slider
+		 * sometimes displays wrong value in GUI when using a pair
+		 * Text control gives best behaviour when setting via setValue
+		 ************************************************************/
+		 return text_control;
 	}
 }

@@ -1,8 +1,6 @@
 # all compiled classes
 *.class
 
-# all instances of HB.jar
-HB.jar
 
 # all .DS_Store files
 .DS_Store
@@ -15,19 +13,16 @@ HappyBrackets/.gradle/
 HappyBrackets/build/
 HappyBrackets/.idea/
 HappyBrackets/logs/
-HappyBrackets/HappyBrackets.iml
 HappyBrackets/HappyBrackets.ipr
 
 # IntelliJ Plugin Project
 IntelliJ\ Plugin/.idea/
 IntelliJ\ Plugin/out/
 IntelliJ\ Plugin/HappyBrackets_IntelliJ_Plugin.zip
-IntelliJ\ Plugin/HappyBrackets_IntelliJ_Plugin.iml
 
 # Distribution > HappyBrackets Project 
 Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/build/
 Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/logs/
-Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/libs/docs/
 Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets\ Project/.idea/
-Distribution/HappyBrackets\ Developer\ Kit/HappyBrackets_IntelliJ_Plugin.zip
+
 

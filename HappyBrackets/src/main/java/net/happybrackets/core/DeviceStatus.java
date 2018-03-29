@@ -17,19 +17,171 @@
 package net.happybrackets.core;
 
 import de.sciss.net.OSCMessage;
+import net.happybrackets.core.logging.Logging;
+import net.happybrackets.device.DeviceMain;
+import net.happybrackets.device.LogSender;
+import net.happybrackets.device.network.UDPCachedMessage;
+
+import java.io.IOException;
 
 public class DeviceStatus {
 
-	String name;	
-	
-	public OSCMessage toOSCMessage() {
-		OSCMessage result = new OSCMessage("/pi_status");
-		//TODO
-		return result;
+	private enum MESSAGE_PARAMETERS{
+		DEVICE_NAME,
+		STATUS_TEXT,
+		LOG_ENABLED,
+		DEBUG_LEVEL,
+		ENCYPTION_ENABLED
 	}
-	
-	public void fromOSCMessage(OSCMessage msg) {
-		//TODO
+
+	String statusText = "";
+	boolean loggingEnabled = false;
+	int debugLevel = 0;
+	String deviceName = "";
+	boolean classEncryption = false;
+
+
+	private static DeviceStatus gDeviceStatus = null;
+
+	/**
+	 * We use a private constructor with no parameters so we can generate on device
+	 */
+	private DeviceStatus(){
+		deviceName = Device.getDeviceName();
+	}
+
+
+	private UDPCachedMessage cachedStatusMessage = null;
+
+
+	/**
+	 * Create a status Message
+	 * @return the Cached Message Created
+	 */
+	public UDPCachedMessage getCachedStatusMessage()
+	{
+		try {
+			if (cachedStatusMessage == null) {
+
+				cachedStatusMessage = new UDPCachedMessage(getOSCMessage());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return  cachedStatusMessage;
+	}
+
+	public String getStatusText() {
+		return statusText;
+	}
+
+	public void setStatusText(String status_text) {
+
+		// If the message will be changed at all, we will invalidate it and force it to be rebuilt next time
+		if (!status_text.equals(statusText))
+		{
+			cachedStatusMessage = null;
+		}
+		statusText = status_text;
+	}
+
+	public boolean isLoggingEnabled() {
+		return loggingEnabled;
+	}
+
+	public void setLoggingEnabled(boolean logging_enabled) {
+		if (loggingEnabled != logging_enabled)
+		{
+			cachedStatusMessage = null;
+		}
+
+		loggingEnabled = logging_enabled;
+	}
+	public boolean isClassEncryption() {
+		return classEncryption;
+	}
+
+	public void setClassEncryption(boolean enabled) {
+		if (classEncryption != enabled)
+		{
+			cachedStatusMessage = null;
+		}
+
+		classEncryption = enabled;
+	}
+
+	public int getDebugLevel() {
+		return debugLevel;
+	}
+
+	public void setDebugLevel(int debug_level) {
+		if (debugLevel != debug_level)
+		{
+			cachedStatusMessage = null;
+		}
+		debugLevel = debug_level;
+	}
+
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String device_name)
+	{
+
+		// If the message will be changed at all, we will invalidate it and force it to be rebuilt next time
+		if (!device_name.equals(deviceName))
+		{
+			cachedStatusMessage = null;
+		}
+		deviceName = device_name;
+	}
+
+
+	/**
+	 * Return the static DeviceStatus for device
+	 * @return The Device status text
+	 */
+	static synchronized public DeviceStatus getInstance(){
+		if (gDeviceStatus == null)
+		{
+			gDeviceStatus = new DeviceStatus();
+		}
+		return gDeviceStatus;
+	}
+
+	public OSCMessage getOSCMessage() {
+
+		OSCMessage msg = new OSCMessage(OSCVocabulary.Device.STATUS,
+				new Object[]{
+						deviceName,
+						statusText,
+						loggingEnabled? 1:0,
+						debugLevel,
+						classEncryption? 1:0
+				});
+
+
+		return msg;
+	}
+
+	/**
+	 * Contructor based on OSC Message. Enabled encoding and decoding of Message within Same module
+	 * @param msg OSC Message with parameters in arguments
+	 */
+	public  DeviceStatus(OSCMessage msg) {
+		try {
+			deviceName = (String) msg.getArg(MESSAGE_PARAMETERS.DEVICE_NAME.ordinal());
+			statusText = (String) msg.getArg(MESSAGE_PARAMETERS.STATUS_TEXT.ordinal());
+			loggingEnabled = ((int)msg.getArg(MESSAGE_PARAMETERS.LOG_ENABLED.ordinal())) == 0 ? false: true;
+			debugLevel = (int)msg.getArg(MESSAGE_PARAMETERS.DEBUG_LEVEL.ordinal());
+			classEncryption = ((int)msg.getArg(MESSAGE_PARAMETERS.ENCYPTION_ENABLED.ordinal())) == 0 ? false: true;
+
+		}
+		catch (Exception ex){}
+
 	}
 	
 }

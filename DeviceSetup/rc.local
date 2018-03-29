@@ -11,11 +11,8 @@
 #
 # By default this script does nothing.
 
-# Print the IP address
-_IP=$(hostname -I) || true
-if [ "$_IP" ]; then
-  printf "My IP address is %s\n" "$_IP"
-fi
+# Print the Network Status
+ip a
 
 # Autorun HappyBrackets
 /usr/bin/sudo /home/pi/HappyBrackets/scripts/run.sh

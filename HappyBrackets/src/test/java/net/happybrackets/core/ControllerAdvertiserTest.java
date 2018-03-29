@@ -24,22 +24,30 @@ import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.config.ControllerConfig;
 
+import java.net.DatagramSocket;
+
 public class ControllerAdvertiserTest {
 	protected ControllerConfig 			env;
 	protected ControllerAdvertiser 	advertiser;
-	protected BroadcastManager			broadcastManager;
+
+	DatagramSocket aliveSocket;
 
 	@Before
 	public void setUp() throws Exception {
+		aliveSocket = new DatagramSocket();
+		aliveSocket.setReuseAddress(false);
+		int reply_port = aliveSocket.getLocalPort();
+
 		env 				= new ControllerConfig();
 		env 				= env.load("src/test/config/test-controller-config.json", env);
-		advertiser 			= new ControllerAdvertiser(broadcastManager);
+		advertiser 			= new ControllerAdvertiser(env.getMulticastAddr(), env.getBroadcastPort(), reply_port);
 		advertiser.start();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		advertiser.interrupt();
+		aliveSocket.close();
 	}
 
 	@Test

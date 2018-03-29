@@ -26,7 +26,7 @@ public class DynamicClassLoader extends ClassLoader {
 		this.parent = parent;
 	}
 
-	public Class<?> createNewClass(byte[] classData) {
+	public Class<?> createNewClass(byte[] classData) throws ClassFormatError {
 //	        System.out.println("Size of class data received = " + classData.length + "(" + classData[0] + "," + classData[1] + "," + classData[2] + ")");
 	        return defineClass(null, classData, 0, classData.length);
 	}

@@ -142,6 +142,8 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
         buffer = ByteBuffer.allocate(4);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         start();
+        storeSensor(this);
+        setValidLoad (true);
     }
 
     public String getSensorName(){
@@ -149,9 +151,10 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
     }
 
     public void update() throws IOException {
-        for (SensorUpdateListener sListener: listeners){
-            SensorUpdateListener sl = (SensorUpdateListener) sListener;
-        }
+        // this seems to do nothing
+        //for (SensorUpdateListener sListener: listeners){
+        //    SensorUpdateListener sl = (SensorUpdateListener) sListener;
+        //}
     }
 
     protected void doStart() throws Exception {
@@ -216,9 +219,8 @@ public class LPS25H  extends Sensor implements BarometricPressureSensor{
                         logger.error("Unable to read temperature!", e);
                     }
                     //pass data on to listeners
-                    for(SensorUpdateListener listener : listeners) {
-                        listener.sensorUpdated();
-                    }
+                    notifyListeners();
+
                     // sleep for 10ms
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.

@@ -24,7 +24,9 @@ import net.beadsproject.beads.data.DataBead;
  * Created by ollie on 1/06/2016.
  */
 public interface SensorUpdateListener {
-
+    /* @deprecated This field is replaced by
+     * MAX_NUM field
+     */
     void sensorUpdated();
 
 }

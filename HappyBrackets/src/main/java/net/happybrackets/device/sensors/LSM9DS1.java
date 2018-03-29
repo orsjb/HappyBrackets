@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 
 //import com.company.sensehat.sensors.KuraException;
@@ -210,6 +211,23 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	private double[] CompassAverage = {0.0, 0.0, 0.0};
 
+	private boolean validLoad = false;
+
+	public static LSM9DS1 getLoadedInstance() {
+		return loadedInstance;
+	}
+
+	private static LSM9DS1 loadedInstance = null;
+	/**
+	 * Test if the Class Loaded setting Accelerometer, Gyroscope and Magnetometer
+	 * @return TRue if loaded correctly
+	 */
+	public boolean isValidLoad() {
+		return validLoad;
+	}
+
+
+
 	public static void main(String[] args) throws Exception {
 
 		// this address found from
@@ -236,14 +254,26 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 
 	public LSM9DS1() throws IOException {
 
+		boolean success;
         bus = I2CFactory.getInstance(I2CBus.BUS_1);
 		accI2CDevice = bus.getDevice(LSM9DS1_ACCADDRESS);
 		magI2CDevice = bus.getDevice(LSM9DS1_MAGADDRESS);
-		enableAccelerometer();
-		enableGyroscope();
-		enableMagnetometer();
-		setCalibrationData();
-        start();
+		success = enableAccelerometer();
+		if (success) {
+            success = enableGyroscope();
+            if (success) {
+                success = enableMagnetometer();
+            }
+        }
+		if (success) {
+			setCalibrationData();
+			start();
+			validLoad = true;
+		}
+
+		storeSensor(this);
+		loadedInstance = this;
+		setValidLoad (true);
 	}
 
 
@@ -296,7 +326,9 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 		return result;
 	}
 
-	public static void write(int device, int register, byte value)  {
+	public static boolean write(int device, int register, byte value)  {
+		boolean ret = true;
+
 		try {
 			if (device == ACC_DEVICE) {
               if(debugS){  System.out.println("ACCTest " + device + " " + ACC_DEVICE + " reg " + register + " value " + value);}
@@ -304,17 +336,21 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 			} else if (device == MAG_DEVICE) {
                 if(debugS){System.out.println("MagTest " + device + " " + MAG_DEVICE + " reg " + register + " value " + value);}
                 magI2CDevice.write(register,  value);
-
                // System.out.println("Cant get here");
 			} else {
 				logger.error("Device not supported.");
+				ret = false;
 			}
 		} catch (IOException e) {
 			logger.error("Unable to write to I2C device", e);
+			ret = false;
 		}
+
+		return ret;
 	}
 
-    public static void write(int device, int register, byte[] buffer, int offset, int size)  {
+    public static boolean write(int device, int register, byte[] buffer, int offset, int size)  {
+		boolean ret = true;
         try {
             if (device == ACC_DEVICE) {
                 //  System.out.println("ACCTest " + device + " " + ACC_DEVICE + " reg " + register + " value " + value);
@@ -323,14 +359,17 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
             } else if (device == MAG_DEVICE) {
                 //System.out.println("MagTest " + device + " " + MAG_DEVICE + " reg " + register + " value " + value);
                 magI2CDevice.write(register,  buffer, offset, size);
-
                 // System.out.println("Cant get here");
             } else {
                 logger.error("Device not supported.");
+				ret = false;
             }
         } catch (IOException e) {
             logger.error("Unable to write to I2C device", e);
+			ret = false;
         }
+
+        return ret;
     }
 
 
@@ -512,93 +551,108 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
         return b.toString();
     }
 
-	public static void enableAccelerometer() {
+	public static boolean enableAccelerometer() {
 
+		boolean ret = false;
 		// Enable accelerometer with default settings (ODR=119Hz, BW=50Hz, FS=+/-8g)
 		try {
-			disableAccelerometer();
-			Thread.sleep(100);
-			byte value = 0x7B;
-			write(ACC_DEVICE, CTRL_REG6_XL, value);
+			if(disableAccelerometer()) {
+				Thread.sleep(100);
+				byte value = 0x7B;
+				ret = write(ACC_DEVICE, CTRL_REG6_XL, value);
+			}
 		//} catch (KuraException e) {
 		//	System.out.println("Unable to write to I2C device.");
 		} catch (InterruptedException e) {
+			ret = false;
 			logger.error("InterruptedException encountered while trying to disable Accelerometer!", e);
 		}
+		return ret;
 	}
 //
-	public static void disableAccelerometer() {
+	public static boolean disableAccelerometer() {
 
 		int ctrl_reg = 0x00000000;
 			ctrl_reg = read(ACC_DEVICE, CTRL_REG6_XL) & 0x000000FF;
 			int value = ctrl_reg & 0x0000001F;
 			byte[] valueBytes = ByteBuffer.allocate(4).putInt(value).array();
-			write(ACC_DEVICE, CTRL_REG6_XL, valueBytes, 0, 4);
+
+			return write(ACC_DEVICE, CTRL_REG6_XL, valueBytes, 0, 4);
 			////s_logger.error.error("Unable to write to I2C device.", e);
 
 	}
 
-	public static void enableGyroscope() {
+	public static boolean enableGyroscope() {
 
+		boolean ret = false;
 		// Enable gyroscope with default settings (ODR=119Hz, BW=31Hz, FSR=500, HPF=0.5Hz)
 		try {
-			disableGyroscope();
-			Thread.sleep(1000);
-			byte value = 0x69;
-			write(ACC_DEVICE, CTRL_REG1_G, value);
-			value = 0x44;
-			write(ACC_DEVICE, CTRL_REG3_G, value);
-			gyroSampleRate = 119;
+			if (disableGyroscope()) {
+				Thread.sleep(1000);
+				byte value = 0x69;
+				ret = write(ACC_DEVICE, CTRL_REG1_G, value);
+				value = 0x44;
+				ret &= write(ACC_DEVICE, CTRL_REG3_G, value);
+				gyroSampleRate = 119;
+			}
 //		} catch (KuraException e){
 //			////s_logger.error.error("Unable to write to I2C device.", e);
 		} catch (InterruptedException e) {
 			////s_logger.error.error(e.toString());
+			ret = false;
 		}
 
+		return ret;
 	}
 
-	public static void disableGyroscope() {
+	public static boolean disableGyroscope() {
+		boolean ret = true;
 
 		int ctrl_reg = 0x00000000;
 		try {
 			ctrl_reg = read(ACC_DEVICE, CTRL_REG1_G) & 0x000000FF;
 			int value = ctrl_reg & 0x0000001F;
 			byte[] buffer = ByteBuffer.allocate(4).putInt(value).array();
-			write(ACC_DEVICE, CTRL_REG1_G, buffer, 0, 4);
+			ret &= write(ACC_DEVICE, CTRL_REG1_G, buffer, 0, 4);
 		} catch (Exception e) {
 			////s_logger.error.error("Can't write to the device.", e);
+			ret = false;
 		}
-
+		return ret;
 	}
 
-	public static void enableMagnetometer() {
-
+	public static boolean enableMagnetometer() {
+		boolean ret = false;
 		// Enable magnetometer with default settings (TEMP_COMP=0, DO=20Hz, FS=+/-400uT)
 		try {
-			disableMagnetometer();
-			Thread.sleep(1000);
-			byte value = 0x14;
-			write(MAG_DEVICE, CTRL_REG1_M, value);
-			value = 0x00;
-			write(MAG_DEVICE, CTRL_REG2_M, value);
-			write(MAG_DEVICE, CTRL_REG3_M, value);
+			if(disableMagnetometer()) {
+				Thread.sleep(1000);
+				byte value = 0x14;
+				ret = write(MAG_DEVICE, CTRL_REG1_M, value);
+				value = 0x00;
+				ret &= write(MAG_DEVICE, CTRL_REG2_M, value);
+				ret &= write(MAG_DEVICE, CTRL_REG3_M, value);
+			}
 //		} catch (KuraException e) {
 			////s_logger.error.error("Unable to write to I2C device.", e);
 		} catch (InterruptedException e) {
 			////s_logger.error.error(e.toString());
+			ret = false;
 		}
-
+		return ret;
 	}
 
-	public static void disableMagnetometer() {
+	public static boolean disableMagnetometer() {
+		boolean ret = true;
 
 		try {
 			byte value = 0x03;
-			write(MAG_DEVICE, CTRL_REG3_M, value);
+			ret = write(MAG_DEVICE, CTRL_REG3_M, value);
 		} catch (Exception e) {
 			////s_logger.error.error("Unable to write to I2C device.", e);
+			ret = false;
 		}
-
+		return ret;
 	}
 
 
@@ -722,9 +776,8 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
                     accelData = getAccelerometerRaw();
                     magData = getCompassRaw();
                     //pass data on to listeners
-                    for(SensorUpdateListener listener : listeners) {
-                        listener.sensorUpdated();
-                    }
+
+					notifyListeners();
 
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.
@@ -742,14 +795,74 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
         return gyroData;
     }
 
-    @Override
+	@Override
+	public float getGyroscopeX() {
+		return (float) gyroData[0];
+	}
+
+	@Override
+	public float getGyroscopeY() {
+		return (float) gyroData[1];
+	}
+
+	@Override
+	public float getGyroscopeZ() {
+		return (float) gyroData[2];
+	}
+
+	@Override
     public double[] getAccelerometerData() {
         return accelData;
     }
 
-    @Override
+	@Override
+	public float getAccelerometerX() {
+		return (float)accelData[1];
+	}
+
+	@Override
+	public float getAccelerometerY() {
+		return (float) accelData[0];
+	}
+
+	@Override
+	public float getAccelerometerZ() {
+		return (float) accelData[2];
+	}
+
+	@Override
     public double[] getMagnetometerData() {
         return magData;
     }
+
+	@Override
+	public float getMagnetometerX() {
+		return (float)magData[1];
+	}
+
+	@Override
+	public float getMagnetometerY() {
+		return (float)magData[0];
+	}
+
+	@Override
+	public float getMagnetometerZ() {
+		return (float)magData[2];
+	}
+
+	@Override
+	public float getPitch() {
+		return getGyroscopeY();
+	}
+
+	@Override
+	public float getRoll() {
+		return getGyroscopeX();
+	}
+
+	@Override
+	public float getYaw() {
+		return getGyroscopeZ();
+	}
 
 }

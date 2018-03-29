@@ -16,48 +16,238 @@
 
 package net.happybrackets.controller.network;
 
-import de.sciss.net.OSCMessage;
-import de.sciss.net.OSCTransmitter;
+import de.sciss.net.*;
 import net.happybrackets.core.BroadcastManager;
 
 import net.happybrackets.core.Device;
+import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.device.config.DeviceConfig;
+import net.happybrackets.device.network.UDPCachedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.NetworkInterface;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class ControllerAdvertiser {
+
+	/**
+	 * Class that contains a cached message to send to UDP to reduce garbage
+	 */
+	private class CachedMessage{
+		DatagramPacket cachedPacket;
+		OSCMessage cachedMessage;
+		InetAddress broadcastAddress;
+		byte [] msgBuff; // Just the data inside the packet
+
+		/**
+		 * Crate a chached message to send
+		 * @param msg The OSC Message
+		 * @param msg_buff The Bytes inside OSC Message
+		 * @param packet The Message as a datagram packet
+		 * @param broadcast_address The address were packet is going
+		 */
+		public CachedMessage (OSCMessage msg, byte[] msg_buff, DatagramPacket packet, InetAddress broadcast_address)
+		{
+			cachedPacket = packet;
+			cachedMessage = msg;
+			msgBuff = msg_buff;
+			broadcastAddress = broadcast_address;
+		}
+
+		/**
+		 * Get the cached packet
+		 * @return
+		 */
+		public DatagramPacket getCachedPacket() {
+			return cachedPacket;
+		}
+
+		public byte[] getMsgBuff() {
+			return msgBuff;
+		}
+
+		/**
+		 * The cached OSC Message
+		 * @return the msg
+		 */
+		public OSCMessage getCachedMessage() {
+			return cachedMessage;
+		}
+	}
 
 	final static Logger logger = LoggerFactory.getLogger(ControllerAdvertiser.class);
 
 	private Thread advertisementService;
-	private boolean keepAlive = true;
 
-	public ControllerAdvertiser(BroadcastManager broadcastManager) {
+	private boolean keepAlive = true;
+	int replyPort; // leave it undefined so we can see a warning if it does not get assigned
+	int broadcastPort;
+
+	private Map <Integer, CachedMessage> cachedNetworkMessage;
+
+
+	CachedMessage cachedBroadcastMessage = null;
+	CachedMessage cachedMulticastMessage = null;
+
+	DatagramSocket advertiseTxSocket = null;
+	ByteBuffer byteBuf;
+
+
+	/**
+	 * Load a set of Broadcast messages in the standard broadcast message fails
+	 */
+	void loadNetworkBroadcastAdverticements() {
+		cachedNetworkMessage.clear();
+		OSCMessage msg = new OSCMessage(
+				OSCVocabulary.CONTROLLER.CONTROLLER,
+				new Object[]{
+						Device.getDeviceName(),
+						replyPort
+				}
+		);
+		OSCPacketCodec codec = new OSCPacketCodec();
+
+		try {
+			byteBuf.clear();
+			codec.encode(msg, byteBuf);
+			byteBuf.flip();
+			byte[] buff = new byte[byteBuf.limit()];
+			byteBuf.get(buff);
+
+
+			List<NetworkInterface> interfaces = Device.viableInterfaces();
+
+			interfaces.forEach(ni -> {
+
+				InetAddress broadcast = BroadcastManager.getBroadcast(ni);
+
+
+				if (broadcast != null) {
+                    try {
+                        // Now we are going to broadcast on network interface specific
+                        DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
+                        CachedMessage message = new CachedMessage(msg, buff, packet, broadcast);
+                        cachedNetworkMessage.put(ni.hashCode(), message);
+                    } catch (Exception ex) {
+                        logger.error("Unable to create cached message", ex);
+                    }
+
+                }
+
+			});
+
+		} catch (Exception ex) {
+			logger.error("Unable to create cached message", ex);
+		}
+
+	}
+
+
+	/**
+	 * Create a controller advertiser that also tells the device what port to send reply to
+	 * @param multicast_address the multicast address we will use
+	 * @param broadcast_port The port we will send to
+	 * @param reply_port  The port we want the device to respond to
+	 */
+	public ControllerAdvertiser(String multicast_address, int broadcast_port, int reply_port) {
+
+		replyPort = reply_port;
+		broadcastPort = broadcast_port;
+
+		cachedNetworkMessage = new Hashtable<Integer, CachedMessage>();
+
+		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
+
+		try {
+			advertiseTxSocket = new DatagramSocket();
+			advertiseTxSocket.setBroadcast(true);
+			advertiseTxSocket.setReuseAddress(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		OSCMessage msg = new OSCMessage(
+				OSCVocabulary.CONTROLLER.CONTROLLER,
+				new Object[]{
+						Device.getDeviceName(),
+						replyPort
+				}
+		);
+		OSCPacketCodec codec = new OSCPacketCodec();
+
+		try {
+			byteBuf.clear();
+			codec.encode(msg, byteBuf);
+			byteBuf.flip();
+			byte[] buff = new byte[byteBuf.limit()];
+			byteBuf.get(buff);
+			InetAddress broadcast = InetAddress.getByName("255.255.255.255");
+			InetAddress multicast = InetAddress.getByName(multicast_address);
+
+			// Now we are going to broadcast on network interface specific
+			DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
+			cachedBroadcastMessage = new CachedMessage(msg, buff, packet, broadcast);
+
+			DatagramPacket multicast_packet = new DatagramPacket(buff, buff.length, multicast, broadcastPort);
+			cachedMulticastMessage = new CachedMessage(msg, buff, multicast_packet, multicast);
+
+			loadNetworkBroadcastAdverticements();
+		}
+		catch (Exception ex){
+			logger.error("Unable to create cached message", ex);
+		}
+
 		//set up an indefinite thread to advertise the controller
 		advertisementService = new Thread() {
 			public void run() {
-            BroadcastManager.OnTransmitter advertisement = new BroadcastManager.OnTransmitter() {
-                @Override
-                public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
-                    transmitter.send(
-                            new OSCMessage(
-                                    "/hb/controller",
-                                    new Object[] {
-                                            Device.selectHostname(ni),
-                                            Device.selectIP(ni)
-                                    }
-                            )
-                    );
-                }
-            };
 
             while (keepAlive) {
-                broadcastManager.forAllTransmitters(advertisement);
 
+            	if (!DeviceConnection.getDisabledAdvertise()) {
+					// first send to our multicast
+					try {
+						advertiseTxSocket.send(cachedMulticastMessage.cachedPacket);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
+
+					// Now send a broadcast
+					try {
+						advertiseTxSocket.send(packet);
+					} catch (Exception ex) {
+						System.out.println(ex.getMessage());
+
+						try {
+							cachedNetworkMessage.forEach(new BiConsumer<Integer, CachedMessage>() {
+								@Override
+								public void accept(Integer integer, CachedMessage cachedMessage) {
+									DatagramPacket packet = cachedMessage.cachedPacket;
+									try {
+										advertiseTxSocket.send(packet);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							});
+						} catch (Exception ex_all) {
+
+						}
+
+						// Now send a message to each device we have
+					}
+				}
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 }
                 catch (InterruptedException e) {
                     logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
@@ -83,4 +273,5 @@ public class ControllerAdvertiser {
 	public boolean isAlive() {
 		return advertisementService.isAlive();
 	}
+
 }

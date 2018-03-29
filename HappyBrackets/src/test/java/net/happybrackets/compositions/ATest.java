@@ -22,6 +22,7 @@ import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.network.NetworkCommunication;
 
@@ -41,7 +42,7 @@ public class ATest implements HBAction {
         d.controller.addListener(new OSCListener() {
             @Override
             public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-                if (msg.getName().equals("on")) {
+                if (OSCVocabulary.match(msg, "on")) {
                     Envelope e = new Envelope(d.ac, 100);
                     d.sound(new WavePlayer(d.ac, e, Buffer.SINE));
                     e.addSegment(500, 10000);

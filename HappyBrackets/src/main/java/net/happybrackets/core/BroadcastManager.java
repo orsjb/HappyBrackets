@@ -42,13 +42,30 @@ public class BroadcastManager {
     List<NetworkInterfacePair<OSCTransmitter>>    transmitters;
     List<NetworkInterfacePair<OSCReceiver>>       receivers;
     List<OSCListener>                             listeners;
+    List<OSCListener>                             peristentListeners = new ArrayList<>();
     List<OnListener>                              interfaceListeners; //listeners who care what interface the message arrived at.
     List<NetworkInterface>                        netInterfaces;
+
+
+    boolean disableSend = false;
+
+    // we will set this flag if we are running from plugin
+    boolean waitForStart = false;
+
+    /**
+     * Set to disable sending messages from this broadcaster
+     * @param disable disable sending
+     */
+    public void setDisableSend(boolean disable)
+    {
+        disableSend = disable;
+    }
 
     /**
      * Create a new BroadcastManager.
      *
      * @param address should be a multicast address.
+     * @param port The port we are sending on
      */
     public BroadcastManager(String address, int port) {
         this.address = address;
@@ -57,13 +74,49 @@ public class BroadcastManager {
         //automatically refresh the broadcaster every second
     }
 
+    /**
+     * Cause the BroadcastManager to wait before testing the network ports
+     * We need to set this here so we can do it from pluging, otherwise, tests will faile
+     * @param wait set to true if we will wait 5 seconds for a start
+     */
+    public void setWaitForStart(boolean wait) {
+        this.waitForStart = wait;
+    }
+
+
+    /**
+     * Returns the port we are configured for
+     * @return the port configured
+     */
+    public int getPort() {
+        return port;}
+
     public Thread startRefreshThread() {
         logger.debug("creating broadcast refresh thread...");
         Thread t = new Thread() {
             public void run() {
+
+                if (waitForStart)
+                {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        logger.error("Broadcast manager poll interval interrupted!", e);
+                    }
+                }
+
                 while(true) {
-                    logger.debug("refresh loop...");
-                    refreshBroadcaster();
+
+
+                    if (!disableSend) {
+                        logger.debug("refresh loop...");
+                        refreshBroadcaster();
+                    }
+                    else
+                    {
+                        logger.debug("disableSend");
+                    }
+
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
@@ -224,6 +277,7 @@ public class BroadcastManager {
                                 .setOption(StandardSocketOptions.SO_REUSEADDR, true)
                                 .bind(new InetSocketAddress(port))
                                 .setOption(StandardSocketOptions.IP_MULTICAST_IF, newInterface);
+
                         if(dc != null) {
                             dc.join(group, newInterface);
                         }
@@ -259,40 +313,81 @@ public class BroadcastManager {
      * @param args the args to the message.
      */
     public void broadcast(String name, Object... args) {
-        OSCMessage msg = new OSCMessage(name, args);
-        transmitters.stream().map(pair -> pair.value).forEach( transmitter -> {
-          try {
-              transmitter.send(msg);
-          } catch (IOException e) {
-              logger.warn("Removing broadcaster interface due to error:", e);
-              transmitters.stream().filter(t -> transmitter.equals((OSCTransmitter) t.value)).forEach(match -> {
-                  netInterfaces.remove(match.networkInterface);
-                  transmitters.remove(match);
-                  match.value.dispose();
-              });
-//              transmitters.remove(transmitter);
-//              netInterfaces.remove(transmitter)
-//              transmitter.dispose();
-          }
-        });
+
+        try {
+            if (!disableSend) {
+                OSCMessage msg = new OSCMessage(name, args);
+                ArrayList<NetworkInterfacePair<OSCTransmitter>> removal_list = new ArrayList<>(); // do not intantiate unless we actually need one
+
+                transmitters.stream().map(pair -> pair.value).forEach(transmitter -> {
+                    try {
+                        transmitter.send(msg);
+                    } catch (IOException e) {
+                        logger.warn("Removing broadcaster interface due to error:", e);
+
+                        transmitters.stream().filter(t -> transmitter.equals((OSCTransmitter) t.value)).forEach(match -> {
+                            removal_list.add(match);
+                        });
+
+                    }
+                });
+
+                removal_list.forEach(pair -> {
+                    netInterfaces.remove(pair.networkInterface);
+                    transmitters.remove(pair);
+                    pair.value.dispose();
+                });
+
+                removal_list.clear();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.warn("Removing broadcaster interface due to error:", ex );
+        }
     }
 
     /**
      * Execute onTransmitter.cb(NetworkInterface, OSCTransmitter) for all transmitters.
-     * @param onTransmitter
+     * @param onTransmitter Interface message
      */
     public void forAllTransmitters(OnTransmitter onTransmitter) {
-        transmitters.forEach(pair -> {
+        if (!disableSend) {
             try {
-                onTransmitter.cb(pair.networkInterface, pair.value);
-            } catch (Exception e) {
-                logger.error("Error executing call back on transmitter for interface {}, removing interface", pair.networkInterface.getDisplayName(), e);
+                ArrayList<NetworkInterfacePair<OSCTransmitter>> removal_list = new ArrayList<>();
 
-                netInterfaces.remove(pair.networkInterface);
-                transmitters.remove(pair);
-                pair.value.dispose();
+
+                transmitters.forEach(pair -> {
+                    try {
+                        onTransmitter.cb(pair.networkInterface, pair.value);
+                    } catch (Exception e) {
+                        logger.error("Error executing call back on transmitter for interface {}, removing interface", pair.networkInterface.getDisplayName(), e);
+
+                        removal_list.add(pair);
+
+                    }
+                });
+                removal_list.forEach(pair -> {
+                    netInterfaces.remove(pair.networkInterface);
+                    transmitters.remove(pair);
+                    pair.value.dispose();
+                });
+
+                removal_list.clear();
+            } catch (Exception ex) {
+                logger.error("Error executing forAllTransmitters " + ex.getMessage());
             }
-        });
+        }
+    }
+
+    /**
+     * Add Listeners that do not get cleared when HB is reset
+     * @param bl The broadcast listener
+     */
+    public void addPersistentBroadcastListener(OSCListener bl){
+
+        peristentListeners.add(bl);
+        listeners.add(bl);
     }
 
     /**
@@ -306,7 +401,41 @@ public class BroadcastManager {
     }
 
     /**
+     * Get the broadcast address for a particular network interface
+     * @param ni Network Intervace. If we set as NULL, we will use 255.255.255.255
+     * @return brodcast address if it exists
+     */
+    public static InetAddress getBroadcast(NetworkInterface ni)
+    {
+        InetAddress broadcast = null;
+
+        try {
+            if (ni == null)
+            {
+                broadcast = InetAddress.getByName("255.255.255.255");
+            }
+            else {
+                if (ni.isLoopback()) {
+                    broadcast = InetAddress.getByName("localhost");
+                } else {
+                    for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
+                        broadcast = interface_address.getBroadcast();
+                        if (broadcast != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }catch (Exception ex)
+        {
+
+        }
+        return broadcast;
+    }
+
+    /**
      * Add a new interface aware listener
+     * @param onListener the listener
      */
     public void addOnMessage(OnListener onListener) {
         interfaceListeners.add(onListener);
@@ -330,6 +459,10 @@ public class BroadcastManager {
         //     receiver.removeOSCListener(listener);
         // }
         listeners.clear();
+        for (OSCListener listener : peristentListeners) {
+            listeners.add(listener);
+
+        }
     }
 
     private class NetworkInterfacePair<T> {

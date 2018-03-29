@@ -16,36 +16,158 @@
 
 package net.happybrackets.device.config;
 
+import de.sciss.net.OSCChannel;
+import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCPacketCodec;
+import net.happybrackets.core.Device;
+import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.device.network.UDPCachedMessage;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+
 /**
- * A small class to keep our host controller's hostname and address together
+ * A small class to keep our host controller's hostname, address and port together
+ * We also use it to cache the OSC Akive Message we are sending back
  */
 public class DeviceController {
+
+
     private String hostname;
-    private String address;
-    private int    deviceId;
 
-    public int getDeviceId() {
-        return deviceId;
+    private InetSocketAddress socketAddress;
+
+    int hash; // Unique hash
+
+    static int deviceId; // the device ID we were when we were made
+
+
+    static private UDPCachedMessage cachedMessage = null;
+
+    private long lastTimeSeen;
+
+    ByteBuffer byteBuf; // Buffer we will need to make our cached message
+
+    /**
+     * Set the last time controller seen as now
+     */
+    public void controllerSeen(){
+        lastTimeSeen = System.currentTimeMillis();
     }
 
-    public void setDeviceId(int deviceId) {
-        this.deviceId = deviceId;
+
+    /**
+     * Get the cached message we are going to send
+     * @return the Cached message
+     */
+    static public UDPCachedMessage getCachedMessage(){
+        if (cachedMessage == null)
+        {
+            rebuildCachedMessage();
+        }
+
+        return cachedMessage;
     }
 
-    public DeviceController(String hostname, String address, int deviceId) {
+    /**
+     * Rebuild the cached message that we use to send messages to controller
+     * @return the new cachedMessage
+     */
+    static UDPCachedMessage rebuildCachedMessage() {
+        try {
+
+            OSCMessage msg = new OSCMessage(
+                    OSCVocabulary.Device.ALIVE,
+                    new Object[]{
+                            Device.getDeviceName(),
+                            Device.getDeviceName(), //Device.selectHostname(ni),
+                            "", //Device.selectIP(ni),
+                            deviceId
+                    }
+            );
+
+            if (cachedMessage == null) {
+                cachedMessage = new UDPCachedMessage(msg);
+            }
+            else
+            {
+                cachedMessage.setMessage(msg);
+            }
+
+        } catch (Exception ex) {
+        }
+
+
+        return cachedMessage;
+    }
+
+
+    /**
+     * Create a hash code we can use to compare that we are equal
+     * @param address ip address
+     * @param port  port
+     * @return a hash code that combines these factors
+     */
+    public static int buildHashCode(String address, int port)
+    {
+        String hash_build = address + port;
+        return hash_build.hashCode();
+    }
+    /**
+     * Create a controller based on ip address and port it wants to receive messages on
+     * @param hostname hostname provided by controller
+     * @param address ip address that we send messages to this controller
+     * @param port the port we send messages on
+     * @param device_id the device id we were when were made
+     */
+    public DeviceController(String hostname, String address, int port, int device_id) {
+        byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
+
         this.hostname = hostname;
-        this.address = address;
-        this.deviceId = deviceId;
+
+        socketAddress = new InetSocketAddress(address, port);
+        hash = buildHashCode(address, port);
+        lastTimeSeen = System.currentTimeMillis();
+
+        deviceId = device_id;
+        cachedMessage = rebuildCachedMessage();
     }
 
-    public String getAddress() {
-        return address;
+
+    /**
+     * Sets the new device ID and rebuilds cached message for it if required
+     * @param new_id the new ID
+     */
+    public static synchronized void setDeviceId (int new_id){
+        if (new_id != deviceId)
+        {
+            deviceId = new_id;
+            cachedMessage = rebuildCachedMessage();
+        }
+    }
+    /**
+     * Has code based on i[ address and port
+     * @return the hashCode
+     */
+    public int hashCode() {
+        return hash;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    /**
+     * The socket address we use to send messages t this controller
+     * @return the socketAddress
+     */
+    public InetSocketAddress getAddress() {
+        return socketAddress;
     }
 
+
+    /**
+     * The hostname of the controller
+     * @return hostname
+     */
     public String getHostname() {
         return hostname;
     }

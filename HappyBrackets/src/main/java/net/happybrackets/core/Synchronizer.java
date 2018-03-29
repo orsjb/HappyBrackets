@@ -121,7 +121,7 @@ public class Synchronizer {
 						//display
 						Date d = new Date(timeNow);
 						// This looks like it shouldn't be logged?
-						System.out.println("The time is: " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + " (short correction = " + timeCorrection + "ms, long correction = " + stableTimeCorrection + "ms)");
+						System.out.println("The time is: " + d.toString() + " (short correction = " + timeCorrection + "ms, long correction = " + stableTimeCorrection + "ms)");
 						lastTick = tick;
 					}
 					try {
@@ -139,7 +139,7 @@ public class Synchronizer {
         broadcast.addOnMessage(new BroadcastManager.OnListener(){
             @Override
             public void cb(NetworkInterface ni, OSCMessage msg, SocketAddress sender, long time) {
-				if (!msg.getName().equals(oscPath)) {
+				if (!OSCVocabulary.match(msg, oscPath)) {
                     return;
                 }
                 else if(msg.getArgCount() != 5) {
