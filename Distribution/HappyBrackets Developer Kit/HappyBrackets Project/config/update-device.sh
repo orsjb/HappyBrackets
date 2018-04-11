@@ -27,14 +27,14 @@ if [ "$DEVICE_NAME" != "" ]; then
 
         HOST_ADDRESS="pi@${DEVICE_NAME}"
         echo “Running Upload to ${HOST_ADDRESS}”
-        scp HB.jar $HOST_ADDRESS:~/HappyBrackets
+        scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no HB.jar $HOST_ADDRESS:~/HappyBrackets
 
         # now we need to SSH into device so we can do a restart of PI
         echo "We need to reboot our device"
 
         echo "sudo shutdown -r now"
 
-        ssh $HOST_ADDRESS "sudo shutdown -r now"
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $HOST_ADDRESS "sudo shutdown -r now"
 
 	#see if we want to update another device
         while true

@@ -53,7 +53,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	}
 	String buildSSHCommand(String device_name)
     {
-        return "ssh " + username + "@" + device_name;
+        return "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no " + username + "@" + device_name;
     }
 
     Text invalidTextWarning = null;
