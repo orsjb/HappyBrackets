@@ -36,6 +36,7 @@ chmod -R a-w ../../HappyBrackets\ Project/src/examples
 cp HappyBrackets_IntelliJ_Plugin.zip ../../HappyBrackets_IntelliJ_Plugin.zip
 
 #now get out and delete our temp dir
+chmod -R a+w HappyBrackets\ Project/src/examples
 cd ../..
 rm -r -f temp
 
