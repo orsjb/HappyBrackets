@@ -1,3 +1,4 @@
+#!/bin/sh
 #this script will read the zip file from latest version and write them into Distribution Kit
 
 #make a temp dir to download files
