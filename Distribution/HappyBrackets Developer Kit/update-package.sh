@@ -1,11 +1,19 @@
-#this script will read the files from Github and write them into Distribution Kit
+#this script will read the zip file from latest version and write them into Distribution Kit
 
 #make a temp dir to download files
 mkdir temp
 cd temp
 
-# get files from Github
-svn checkout https://github.com/orsjb/HappyBrackets/trunk/Distribution/HappyBrackets%20Developer%20Kit
+# get latest filename
+FILENAME=$(curl http://www.happybrackets.net/downloads/happy-brackets-sdk.php?version)
+
+echo $FILENAME
+
+curl -O http://www.happybrackets.net/downloads/$FILENAME
+
+unzip $FILENAME
+
+
 
 #move into the downloaded repository
 cd "HappyBrackets Developer Kit"
