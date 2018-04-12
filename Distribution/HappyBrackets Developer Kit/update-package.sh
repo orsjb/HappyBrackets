@@ -13,16 +13,16 @@ cd "HappyBrackets Developer Kit"
 ls
 
 #copy device files
-cp -R Device/ ../../Device/
+cp -R Device ../../
 
 #make our examples read/write so we can overwrite them
-chmod -R a+w "../../HappyBrackets Project/src/examples"
+chmod -R a+w ../../HappyBrackets\ Project/src/examples
 
 #copy Developer Kit
-cp -R "HappyBrackets Project/" "../../HappyBrackets Project/"
+cp -R HappyBrackets\ Project ../../
 
 #make our examples read only again
-chmod -R a-w "../../HappyBrackets Project/src/examples"
+chmod -R a-w ../../HappyBrackets\ Project/src/examples
 
 #copy our Plugin
 cp HappyBrackets_IntelliJ_Plugin.zip ../../HappyBrackets_IntelliJ_Plugin.zip
