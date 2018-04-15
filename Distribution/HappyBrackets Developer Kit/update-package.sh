@@ -43,3 +43,5 @@ chmod -R a+w HappyBrackets\ Project/src/examples
 cd ../..
 rm -r -f temp
 
+NOTICE="You need to update your HappyBrackets_IntelliJ_Plugin.zip to the one in "
+echo $NOTICE $(pwd)
