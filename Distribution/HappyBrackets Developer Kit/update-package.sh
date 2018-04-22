@@ -1,6 +1,8 @@
 #!/bin/sh
 #this script will read the zip file from latest version and write them into Distribution Kit
 
+cd "$(dirname "$0")"
+
 #make a temp dir to download files
 mkdir temp
 cd temp
