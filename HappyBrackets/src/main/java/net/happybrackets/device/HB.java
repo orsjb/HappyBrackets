@@ -343,6 +343,7 @@ public class HB {
      */
 	public HB(AudioContext _ac, AccessMode _am, boolean start_network) throws IOException {
 		ac = _ac;
+		UGen.setDefaultContext(_ac);
 		// default audio setup (note we don't start the audio context yet)
 		masterGainEnv = new Envelope(ac, 0);
 		masterGainEnv.addSegment(1, 5000);

@@ -4,7 +4,7 @@
 ### The device is added as a parameter to the script
 
 ### move to the correct dir for running this script 
-cd ../libs
+cd ../../Device
 
 
 if [ $# -gt 0 ]; then
@@ -27,7 +27,7 @@ if [ "$DEVICE_NAME" != "" ]; then
 
         HOST_ADDRESS="pi@${DEVICE_NAME}"
         echo “Running Upload to ${HOST_ADDRESS}”
-        scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no HB.jar $HOST_ADDRESS:~/HappyBrackets
+        scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r HappyBrackets/* $HOST_ADDRESS:~/HappyBrackets
 
         # now we need to SSH into device so we can do a restart of PI
         echo "We need to reboot our device"

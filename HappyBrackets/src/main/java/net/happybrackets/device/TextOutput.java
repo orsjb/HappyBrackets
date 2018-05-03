@@ -48,6 +48,10 @@ public class TextOutput {
                 + BuildVersion.getBuild() + "." + BuildVersion.getDate();
         System.out.println(getBannerLine(version_text, BLANK_CHAR));
 
+        String beads_version =  "Beads Version " +  net.beadsproject.beads.core.BuildVersion.getVersionText();
+        System.out.println(getBannerLine(beads_version, BLANK_CHAR));
+
+
 
         for (int i = 0; i < TOP_BORDER; i++)
         {
