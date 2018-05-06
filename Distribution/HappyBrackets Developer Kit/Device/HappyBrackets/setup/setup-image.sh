@@ -22,9 +22,13 @@ sudo apt-get -y --force-yes install oracle-java8-jdk
 sudo raspi-config nonint do_i2c 0
 
 # get the happybrackets zipped project folder
-wget --no-check-certificate -N http://www.happybrackets.net/downloads/HappyBracketsDeviceRuntime.zip
-unzip HappyBracketsDeviceRuntime.zip
-rm HappyBracketsDeviceRuntime.zip
+# get latest filename
+FILENAME=$(curl http://www.happybrackets.net/downloads/happy-brackets-runtime.php?version)
+
+echo $FILENAME
+curl -O http://www.happybrackets.net/downloads/$FILENAME
+unzip $FILENAME
+rm $FILENAME
 
 # TODO setup audio if necessary.
 # set audio output to max volume, well not quite max but close
