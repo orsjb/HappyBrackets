@@ -1,7 +1,7 @@
 <?php
 require_once('hb-sdk-version.php');
 
-$version = getHBImageilename();
+$version = getHBSDKFilename();
 
 
 
