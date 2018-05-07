@@ -165,23 +165,39 @@ public class LogSender {
         }
 
         private void sendLatest() {
-            try {
-                StringBuilder sb = new StringBuilder();
-                // Send the new lines in the log file.
-                String line;
-                while ((line = fileReader.readLine()) != null) {
-                    sb.append(line).append("\n");
-                }
+            // We need to limit the number of lines because too large
+            // a log will cause an exception with OSC
+            final int MAX_LINES_PER_MESSAGE = 100;
 
-                networkCommunication.send(OSCVocabulary.Device.LOG,
-                        new Object[] {
-                                Device.getDeviceName(),
-                                sb.toString()
-                        });
-            }
-            catch (Exception ex) {
-                logger.error("Error sending new log message.", ex);
-            }
+            boolean complete = false;
+            do {
+                try {
+
+                    int num_lines = 0;
+
+                    StringBuilder sb = new StringBuilder();
+                    // Send the new lines in the log file.
+                    String line;
+                    while ((line = fileReader.readLine()) != null) {
+                        sb.append(line).append("\n");
+                        num_lines++;
+                        // if we have reached our lines then we will send whatr we have so far
+                        if (num_lines > MAX_LINES_PER_MESSAGE){
+                            break;
+                        }
+                    }
+
+                    complete = line == null;
+
+                    networkCommunication.send(OSCVocabulary.Device.LOG,
+                            new Object[]{
+                                    Device.getDeviceName(),
+                                    sb.toString()
+                            });
+                } catch (Exception ex) {
+                    logger.error("Error sending new log message.", ex);
+                }
+            } while (!complete);
         }
     }
 }
