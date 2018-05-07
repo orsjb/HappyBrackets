@@ -2,6 +2,10 @@
 
 ### Script to autorun HappyBrackets on device
 
+mkdir -p /home/pi/HappyBrackets/ramfs;
+sudo mount -t ramfs -o size=512 ramfs /home/pi/HappyBrackets/ramfs
+
+
 ### move to the correct dir for running this script (one level above where this script is)
 DIR=`dirname $0`
 cd ${DIR}/..
