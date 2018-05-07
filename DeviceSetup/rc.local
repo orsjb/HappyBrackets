@@ -14,9 +14,6 @@
 # Print the Network Status
 ip a
 
-#create a ramdisk
-mkdir -p /home/pi/HappyBrackets/ramfs;
-sudo mount -t ramfs -o size=512 ramfs /home/pi/HappyBrackets/ramfs
 
 # Autorun HappyBrackets
 /usr/bin/sudo /home/pi/HappyBrackets/scripts/run.sh
