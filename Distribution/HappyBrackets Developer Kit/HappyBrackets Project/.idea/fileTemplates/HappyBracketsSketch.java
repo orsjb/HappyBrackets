@@ -6,7 +6,10 @@ import net.happybrackets.device.HB;
 import java.lang.invoke.MethodHandles;
 
 public class ${NAME} implements HBAction {
-    @Override
+// Change to the number of audio Channels on your device
+final int NUMBER_AUDIO_CHANNELS = 1;
+
+@Override
     public void action(HB hb) {
         /***** Type your HBAction code below this line ******/
         // remove this code if you do not want other compositions to run at the same time as this one

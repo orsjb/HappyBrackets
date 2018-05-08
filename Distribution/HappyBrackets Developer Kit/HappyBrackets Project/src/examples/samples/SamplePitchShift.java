@@ -26,7 +26,8 @@ import java.lang.invoke.MethodHandles;
  * When our last note reaches 3 octaves, we start again at base note
  */
 public class SamplePitchShift implements HBAction {
-
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     // we need to define class variables so we can access them inside the clock
 
     // we will increment this number to get to next note is scale
@@ -64,11 +65,11 @@ public class SamplePitchShift implements HBAction {
          *
          * simply type basicSamplePLayer to generate this code and press <ENTER> for each parameter
          **************************************************************/
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 0; // define how loud we want the sound
-        Envelope audioVolume = new Envelope(hb.ac, INITIAL_VOLUME);
+        Envelope audioVolume = new Envelope(INITIAL_VOLUME);
 
-        Glide sampleSpeed = new Glide(hb.ac, 1);
+        Glide sampleSpeed = new Glide(1);
 
 
         // Define our sample name
@@ -80,12 +81,12 @@ public class SamplePitchShift implements HBAction {
         // test if we opened the sample successfully
         if (sample != null) {
             // Create our sample player
-            SamplePlayer samplePlayer = new SamplePlayer(hb.ac, sample);
+            SamplePlayer samplePlayer = new SamplePlayer(sample);
             // Samples are killed by default at end. We will stop this default actions so our sample will stay alive
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
             hb.ac.out.addInput(gainAmplifier);
 
@@ -103,9 +104,7 @@ public class SamplePitchShift implements HBAction {
             final float CLOCK_INTERVAL = 300;
 
             // Create a clock with beat interval of CLOCK_INTERVAL ms
-            Clock clock = new Clock(hb.ac, CLOCK_INTERVAL);
-            // connect the clock to HB
-            hb.ac.out.addDependent(clock);
+            Clock clock = new Clock(CLOCK_INTERVAL);
 
             // let us handle triggers
             clock.addMessageListener(new Bead() {

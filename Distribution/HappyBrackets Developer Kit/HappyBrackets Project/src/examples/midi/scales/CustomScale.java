@@ -23,6 +23,8 @@ import java.lang.invoke.MethodHandles;
  */
 public class CustomScale implements HBAction {
 
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     // we need to define class variables so we can access them inside the clock
 
     // we will increment this number to get to next note is scale
@@ -44,17 +46,17 @@ public class CustomScale implements HBAction {
 
 
         // define where we will store our calulated notes. THese will modify the wavePlayer
-        Glide waveformFrequency = new Glide(hb.ac, Pitch.mtof(BASE_TONIC));
+        Glide waveformFrequency = new Glide(Pitch.mtof(BASE_TONIC));
 
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, waveformFrequency, Buffer.SQUARE);
+        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SQUARE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);
@@ -72,9 +74,8 @@ public class CustomScale implements HBAction {
         final float CLOCK_INTERVAL = 300;
 
         // Create a clock with beat interval of CLOCK_INTERVAL ms
-        Clock clock = new Clock(hb.ac, CLOCK_INTERVAL);
-        // connect the clock to HB
-        hb.ac.out.addDependent(clock);
+        Clock clock = new Clock(CLOCK_INTERVAL);
+
 
         // let us handle triggers
         clock.addMessageListener(new Bead() {

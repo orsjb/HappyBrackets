@@ -54,9 +54,8 @@ public class MonitorBoolean implements HBAction {
         final float CLOCK_INTERVAL = 50;
 
         // Create a clock with beat interval of CLOCK_INTERVAL ms
-        Clock clock = new Clock(hb.ac, CLOCK_INTERVAL);
-        // connect the clock to HB
-        hb.ac.out.addDependent(clock);
+        Clock clock = new Clock(CLOCK_INTERVAL);
+
 
         // let us handle triggers
         clock.addMessageListener(new Bead() {

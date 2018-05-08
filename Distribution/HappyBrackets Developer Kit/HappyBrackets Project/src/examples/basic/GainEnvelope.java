@@ -17,14 +17,14 @@ import java.lang.invoke.MethodHandles;
  * The volume will hold steady for 3 seconds and then fade out over 10 seconds
  */
 public class GainEnvelope implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+
     @Override
     public void action(HB hb) {
 
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
 
-
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
 
         // define the different levels we will be using in our envelope
@@ -36,16 +36,16 @@ public class GainEnvelope implements HBAction {
         final float HOLD_VOLUME_TIME = 3000; // 3 seconds
         final float FADEOUT_TIME = 5000; // 10 seconds
 
-        Glide audioFrequency = new Glide(hb.ac, INITIAL_FREQUENCY);
+        Glide audioFrequency = new Glide(INITIAL_FREQUENCY);
 
         // Create our envelope using MIN_VOLUME as the starting value
-        Envelope gainEnvelope = new Envelope(hb.ac, MIN_VOLUME);
+        Envelope gainEnvelope = new Envelope(MIN_VOLUME);
 
         // create a wave player to generate a waveform using the FREQUENCY and a Square wave
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, audioFrequency, Buffer.SQUARE);
+        WavePlayer waveformGenerator = new WavePlayer(audioFrequency, Buffer.SQUARE);
 
         // set up a gain amplifier to control the volume. We will use the gainEnvelope object to change volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, gainEnvelope);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, gainEnvelope);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);

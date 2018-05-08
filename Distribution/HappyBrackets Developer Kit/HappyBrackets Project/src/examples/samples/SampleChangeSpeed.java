@@ -22,6 +22,8 @@ import java.lang.invoke.MethodHandles;
  * after hold segment is complete, we move to reverse and then hold. We kill the gain at the end of the segment
  */
 public class SampleChangeSpeed implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     @Override
     public void action(HB hb) {
 
@@ -33,9 +35,9 @@ public class SampleChangeSpeed implements HBAction {
          *
          * simply type samplePLayer-basic to generate this code and press <ENTER> for each parameter
          **************************************************************/
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // Define our sample name
         final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
@@ -46,13 +48,13 @@ public class SampleChangeSpeed implements HBAction {
         // test if we opened the sample successfully
         if (sample != null) {
             // Create our sample player
-            SamplePlayer samplePlayer = new SamplePlayer(hb.ac, sample);
+            SamplePlayer samplePlayer = new SamplePlayer(sample);
 
             // Samples are killed by default at end. We will stop this default actions so our sample will stay alive
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
             hb.ac.out.addInput(gainAmplifier);
 
@@ -68,7 +70,7 @@ public class SampleChangeSpeed implements HBAction {
             final int SEGMENT_DURATION = 5000; // five seconds
 
             // Create an envelope to change speed
-            Envelope speedEnvelope = new Envelope(hb.ac, NORMAL_SPEED);
+            Envelope speedEnvelope = new Envelope(NORMAL_SPEED);
 
             // set our sample player to use this envelope as its playback speed
             samplePlayer.setRate(speedEnvelope);

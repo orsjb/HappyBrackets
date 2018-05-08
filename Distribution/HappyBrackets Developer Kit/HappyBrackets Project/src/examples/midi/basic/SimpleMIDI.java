@@ -15,6 +15,8 @@ import java.lang.invoke.MethodHandles;
  * It uses function Pitch.mtof, which converts a Midi note number to a frequency
  */
 public class SimpleMIDI implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     @Override
     public void action(HB hb) {
 
@@ -25,16 +27,15 @@ public class SimpleMIDI implements HBAction {
 
         // convert our MIDI note to a frequency with Midi to frequency function: mtof
         float frequency = Pitch.mtof(MIDI_NOTE);
-
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, frequency, Buffer.SQUARE);
+        WavePlayer waveformGenerator = new WavePlayer(frequency, Buffer.SQUARE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);

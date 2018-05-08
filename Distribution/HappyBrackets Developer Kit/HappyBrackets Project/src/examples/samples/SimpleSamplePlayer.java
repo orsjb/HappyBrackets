@@ -15,6 +15,7 @@ import java.lang.invoke.MethodHandles;
  */
 public class SimpleSamplePlayer implements HBAction
 {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
     @Override
     public void action(HB hb) {
 
@@ -26,9 +27,9 @@ public class SimpleSamplePlayer implements HBAction
          *
          * simpley type samplePLayer to generate this code
          **************************************************************/
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // Define our sample name
         final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
@@ -39,13 +40,13 @@ public class SimpleSamplePlayer implements HBAction
         // test if we opened the sample successfully
         if (sample != null) {
             // Create our sample player
-            SamplePlayer samplePlayer = new SamplePlayer(hb.ac, sample);
+            SamplePlayer samplePlayer = new SamplePlayer(sample);
 
             // Samples are killed by default at end. We will stop this default actions so our sample will stay alive
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
             hb.ac.out.addInput(gainAmplifier);
 

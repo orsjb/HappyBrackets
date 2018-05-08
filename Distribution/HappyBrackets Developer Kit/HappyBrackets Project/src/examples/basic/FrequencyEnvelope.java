@@ -19,14 +19,14 @@ import java.lang.invoke.MethodHandles;
  * After holding again for 3 seconds, we will kill the gain control to stop sound
  */
 public class FrequencyEnvelope implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+
     @Override
     public void action(HB hb) {
 
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
 
-
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
         final float INITIAL_VOLUME = 0.1f; // Define how loud we want our sound
 
         // define the different frequencies we will be using in our envelope
@@ -38,16 +38,16 @@ public class FrequencyEnvelope implements HBAction {
         final float HOLD_FREQUENCY_TIME = 3000; // 3 seconds
         final float RAMP_DOWN_FREQUENCY_TIME = 5000; // 5 seconds
 
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // Create our envelope using LOW_FREQUENCY as the starting value
-        Envelope frequencyEnvelope = new Envelope(hb.ac, LOW_FREQUENCY);
+        Envelope frequencyEnvelope = new Envelope(LOW_FREQUENCY);
 
         // create a wave player to generate a waveform using the frequencyEnvelope and a sinewave
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, frequencyEnvelope, Buffer.SINE);
+        WavePlayer waveformGenerator = new WavePlayer(frequencyEnvelope, Buffer.SINE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);

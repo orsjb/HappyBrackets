@@ -18,15 +18,16 @@ import java.lang.invoke.MethodHandles;
  * We use a Glide object as the frequency value input to a WavePlayer object
  */
 public class SimpleAccelerometer implements HBAction{
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     @Override
     public void action(HB hb) {
 
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
-
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
 
         // define the  frequency we will multiply our accelerometer value with
@@ -34,13 +35,13 @@ public class SimpleAccelerometer implements HBAction{
 
         // Create a Glide object so we can set the frequency of wavePlayer.
         // The initial value is our MULTIPLIER_FREQUENCY
-        Glide waveformFrequency = new Glide(hb.ac, MULTIPLIER_FREQUENCY);
+        Glide waveformFrequency = new Glide(MULTIPLIER_FREQUENCY);
 
         // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, waveformFrequency, Buffer.SINE);
+        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SINE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);

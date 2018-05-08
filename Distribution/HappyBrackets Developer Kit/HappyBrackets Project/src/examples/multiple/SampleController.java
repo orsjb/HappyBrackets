@@ -41,6 +41,8 @@ import java.lang.invoke.MethodHandles;
  * 7 - A boolean DynamicControl to start and stop playback with a checkbox
  */
 public class SampleController implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
 
     // we will make two class member control references so we can set them in a class function
     DynamicControl audioSliderPosition = null;
@@ -69,9 +71,9 @@ public class SampleController implements HBAction {
          *
          * simply type samplePLayer-basic to generate this code and press <ENTER> for each parameter
          **************************************************************/
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 1; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // Define our sample name
         final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
@@ -82,12 +84,12 @@ public class SampleController implements HBAction {
         // test if we opened the sample successfully
         if (sample != null) {
             // Create our sample player
-            SamplePlayer samplePlayer = new SamplePlayer(hb.ac, sample);
+            SamplePlayer samplePlayer = new SamplePlayer(sample);
             // Samples are killed by default at end. We will stop this default actions so our sample will stay alive
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
             hb.ac.out.addInput(gainAmplifier);
 
@@ -143,9 +145,9 @@ public class SampleController implements HBAction {
             final int PLAY_REVERSE = -1;
 
             // define our playbackRate control
-            Glide playbackRate = new Glide(hb.ac, START_PLAY_RATE);
+            Glide playbackRate = new Glide(START_PLAY_RATE);
             // define our sample rate
-            Glide playbackDirection = new Glide(hb.ac, PLAY_FORWARD);  // We will control this with yaw
+            Glide playbackDirection = new Glide(PLAY_FORWARD);  // We will control this with yaw
 
             // This function will be used to set the playback rate of the samplePlayer
             // The playbackDirection will have a value of -1 when it is in reverse, and 1 in forward
@@ -260,8 +262,8 @@ public class SampleController implements HBAction {
 
             // We will set sample Start and End points
             // define our start and end points
-            Glide  loop_start = new Glide(hb.ac, 0);
-            Glide loop_end = new Glide(hb.ac, sampleDuration);
+            Glide  loop_start = new Glide(0);
+            Glide loop_end = new Glide(sampleDuration);
 
             samplePlayer.setLoopStart(loop_start);
             samplePlayer.setLoopEnd(loop_end);

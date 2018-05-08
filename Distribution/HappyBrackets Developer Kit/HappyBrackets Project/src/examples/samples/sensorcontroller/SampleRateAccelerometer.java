@@ -17,6 +17,8 @@ import java.lang.invoke.MethodHandles;
  * When the accelerometer x value is 1, the speed is double. When it is -1, the speed is double in reverse
  */
 public class SampleRateAccelerometer implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     @Override
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
@@ -27,9 +29,9 @@ public class SampleRateAccelerometer implements HBAction {
          *
          * simply type samplePLayer-basic to generate this code and press <ENTER> for each parameter
          **************************************************************/
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // Define our sample name
         final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
@@ -40,19 +42,19 @@ public class SampleRateAccelerometer implements HBAction {
         // test if we opened the sample successfully
         if (sample != null) {
             // Create our sample player
-            SamplePlayer samplePlayer = new SamplePlayer(hb.ac, sample);
+            SamplePlayer samplePlayer = new SamplePlayer(sample);
 
             // Samples are killed by default at end. We will stop this default actions so our sample will stay alive
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
             hb.ac.out.addInput(gainAmplifier);
 
             /******** Write your code below this line ********/
             final int NORMAL_SPEED = 1;
-            Glide sampleSpeed = new Glide(hb.ac, NORMAL_SPEED);
+            Glide sampleSpeed = new Glide(NORMAL_SPEED);
 
             // now connect the sample playback rate to the samplePlayer
             samplePlayer.setRate(sampleSpeed);
@@ -65,8 +67,8 @@ public class SampleRateAccelerometer implements HBAction {
             final float LOOP_END = (float)sample.getLength();
 
             // create our looping objects
-            Glide loopStart = new Glide(hb.ac, LOOP_START);
-            Glide loopEnd = new Glide(hb.ac, LOOP_END);
+            Glide loopStart = new Glide(LOOP_START);
+            Glide loopEnd = new Glide(LOOP_END);
 
             samplePlayer.setLoopStart(loopStart);
             samplePlayer.setLoopEnd(loopEnd);

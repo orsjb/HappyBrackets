@@ -19,15 +19,16 @@ import java.lang.invoke.MethodHandles;
  * The carrier will move to high frequency after the hold based on carrierFrequency envelope segment
  */
 public class RatioDepthFM implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+
     @Override
     public void action(HB hb) {
 
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
 
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         final float LOW_CARRIER_FREQUENCY = 1000;  // This is the Lower frequency
         final float HIGH_CARRIER_FREQUENCY = 7000; // This is the higher frequency after envelope
@@ -38,13 +39,13 @@ public class RatioDepthFM implements HBAction {
 
         // We need to create UGen objects so we can use them inside a function
         //these are the parameters that will be used to calculate the frequency at any point in time
-        Glide modulatorFrequency = new Glide(hb.ac, MODULATOR_RATE_FREQUENCY);
-        Glide modulatorDepthRatio = new Glide(hb.ac, MODULATOR_DEPTH_RATIO);
-        Envelope carrierFrequency = new Envelope(hb.ac, LOW_CARRIER_FREQUENCY);
+        Glide modulatorFrequency = new Glide(MODULATOR_RATE_FREQUENCY);
+        Glide modulatorDepthRatio = new Glide(MODULATOR_DEPTH_RATIO);
+        Envelope carrierFrequency = new Envelope(LOW_CARRIER_FREQUENCY);
 
 
         // We need to create a sine wave that will change the modulatorDepth
-        WavePlayer FM_modulator = new WavePlayer(hb.ac, modulatorFrequency, Buffer.SQUARE);
+        WavePlayer FM_modulator = new WavePlayer(modulatorFrequency, Buffer.SQUARE);
 
         // We need to create a function to define what the frequency of the carrier wavePlayer will be
         // As the value of the FM_modulator changes from -1, through 0, and then to 1 and then back
@@ -62,10 +63,10 @@ public class RatioDepthFM implements HBAction {
         };
 
         // This is our actual wavePlayer for making sound. The frequency is the current value of modFunction
-        WavePlayer generatedFMWaveform = new WavePlayer(hb.ac, modFunction, Buffer.SINE);
+        WavePlayer generatedFMWaveform = new WavePlayer(modFunction, Buffer.SINE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(generatedFMWaveform);

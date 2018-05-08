@@ -16,6 +16,8 @@ import java.lang.invoke.MethodHandles;
  * All three wavePlayers are connected to the input of the Gain object
  */
 public class MajorChord implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     @Override
     public void action(HB hb) {
 
@@ -27,27 +29,27 @@ public class MajorChord implements HBAction {
         // convert our MIDI note to a frequency with Midi to frequency function: mtof
         float tonicFrequency = Pitch.mtof(MIDI_NOTE);
 
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer tonicWaveform = new WavePlayer(hb.ac, tonicFrequency, Buffer.SQUARE);
+        WavePlayer tonicWaveform = new WavePlayer(tonicFrequency, Buffer.SQUARE);
 
         // create a second wavePlayer for third
         final int MAJOR_THIRD = Pitch.major[2]; // Indexes are zero based, so a third is index 2
         float thirdFrequency =  Pitch.mtof(MIDI_NOTE + MAJOR_THIRD);
-        WavePlayer thirdWaveform = new WavePlayer(hb.ac, thirdFrequency, Buffer.SQUARE);
+        WavePlayer thirdWaveform = new WavePlayer(thirdFrequency, Buffer.SQUARE);
 
         // create a third wavePlayer for perfect fifth
         final int PERFECT_FIFTH = Pitch.major[4]; // Indexes are zero based, so a fifth is index 4
         float fifthFrequency =  Pitch.mtof(MIDI_NOTE + PERFECT_FIFTH);
-        WavePlayer fifthWaveform = new WavePlayer(hb.ac, fifthFrequency, Buffer.SQUARE);
+        WavePlayer fifthWaveform = new WavePlayer(fifthFrequency, Buffer.SQUARE);
 
 
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(tonicWaveform);

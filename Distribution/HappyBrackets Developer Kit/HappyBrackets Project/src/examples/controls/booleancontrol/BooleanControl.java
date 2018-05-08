@@ -15,6 +15,8 @@ import java.lang.invoke.MethodHandles;
  * by a dynamicControl that will display as a check box
  */
 public class BooleanControl implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     @Override
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
@@ -23,16 +25,16 @@ public class BooleanControl implements HBAction {
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
 
-        Glide waveformFrequency = new Glide(hb.ac, INITIAL_FREQUENCY);
-        Glide gainVolume = new Glide(hb.ac, MAX_VOLUME);
+        Glide waveformFrequency = new Glide(INITIAL_FREQUENCY);
+        Glide gainVolume = new Glide(MAX_VOLUME);
 
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
 
         // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, waveformFrequency, Buffer.SINE);
+        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SINE);
 
         // set up a gain amplifier to control the volume. We are using the glide object to control this value
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, gainVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, gainVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);

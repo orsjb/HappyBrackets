@@ -16,6 +16,8 @@ import java.lang.invoke.MethodHandles;
  * Moving yaw >=1 will cause sample to play forward. Moving yaw <= -1 will make sample play backwards
  */
 public class SampleSpeedAndDirection implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     @Override
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
@@ -26,9 +28,9 @@ public class SampleSpeedAndDirection implements HBAction {
          *
          * simply type samplePLayer-basic to generate this code and press <ENTER> for each parameter
          **************************************************************/
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // Define our sample name
         final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
@@ -39,12 +41,12 @@ public class SampleSpeedAndDirection implements HBAction {
         // test if we opened the sample successfully
         if (sample != null) {
             // Create our sample player
-            SamplePlayer samplePlayer = new SamplePlayer(hb.ac, sample);
+            SamplePlayer samplePlayer = new SamplePlayer(sample);
             // Samples are killed by default at end. We will stop this default actions so our sample will stay alive
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
             hb.ac.out.addInput(gainAmplifier);
 
@@ -58,8 +60,8 @@ public class SampleSpeedAndDirection implements HBAction {
             final float LOOP_END = (float)sample.getLength();
 
             // create our looping objects
-            Glide loopStart = new Glide(hb.ac, LOOP_START);
-            Glide loopEnd = new Glide(hb.ac, LOOP_END);
+            Glide loopStart = new Glide(LOOP_START);
+            Glide loopEnd = new Glide(LOOP_END);
 
             samplePlayer.setLoopStart(loopStart);
             samplePlayer.setLoopEnd(loopEnd);
@@ -71,10 +73,10 @@ public class SampleSpeedAndDirection implements HBAction {
             final float NORMAL_SPEED = 1;
 
             // define an object to change the speed
-            Glide sampleSpeed = new Glide(hb.ac, NORMAL_SPEED);
+            Glide sampleSpeed = new Glide(NORMAL_SPEED);
 
             // define the object for the direction
-            Glide sampleDirection = new Glide(hb.ac, FORWARDS);
+            Glide sampleDirection = new Glide(FORWARDS);
 
             // we need to define a function that will set the playback rate based on speed and direction
             Function playbackRate = new Function( sampleSpeed, sampleDirection) {

@@ -15,6 +15,8 @@ import java.lang.invoke.MethodHandles;
  * A single envelope is used, however, we add segments to the envelope. When the first segment is completed, the next segment starts
  */
 public class EnvelopeTrigger implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     @Override
     public void action(HB hb) {
 
@@ -23,17 +25,17 @@ public class EnvelopeTrigger implements HBAction {
 
         final float FREQUENCY = 1000; // this is the fundamental frequency of the  waveform we will make
 
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float VOLUME = 0.1f; // define how loud we want the sound
 
         // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, FREQUENCY, Buffer.SINE);
+        WavePlayer waveformGenerator = new WavePlayer(FREQUENCY, Buffer.SINE);
 
         // The Envelope will function as both the volume and the event trigger
-        Envelope eventTrigger = new Envelope(hb.ac, VOLUME);
+        Envelope eventTrigger = new Envelope(VOLUME);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, eventTrigger);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, eventTrigger);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);
@@ -53,7 +55,7 @@ public class EnvelopeTrigger implements HBAction {
             protected void messageReceived(Bead bead) {
                 /*** Write your code below this line ***/
                 // Create a WavePlayer that generates a waveform 2 times the frequency
-                WavePlayer wp = new WavePlayer(hb.ac, FREQUENCY * 2, Buffer.SINE);
+                WavePlayer wp = new WavePlayer(FREQUENCY * 2, Buffer.SINE);
                 gainAmplifier.addInput(wp);
                 /*** Write your code above this line ***/
 
@@ -68,7 +70,7 @@ public class EnvelopeTrigger implements HBAction {
             protected void messageReceived(Bead bead) {
                 /*** Write your code below this line ***/
                 // Create a WavePlayer that generates a waveform 4 times the frequency
-                WavePlayer wp = new WavePlayer(hb.ac, FREQUENCY * 4, Buffer.SINE);
+                WavePlayer wp = new WavePlayer(FREQUENCY * 4, Buffer.SINE);
                 gainAmplifier.addInput(wp);
 
                 /*** Write your code above this line ***/

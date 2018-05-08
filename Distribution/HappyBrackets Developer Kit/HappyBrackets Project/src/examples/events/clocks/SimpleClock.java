@@ -19,7 +19,8 @@ import java.lang.invoke.MethodHandles;
  * When the note number has reached our defined END_NOTE, the gain amplifier is killed and playback stops
  */
 public class SimpleClock implements HBAction {
-
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    
     // These parameters need to be class variables so they can be accessed within the clock
     final int START_NOTE = 40; // this is the MIDI number of first note
     final int END_NOTE = 110;  // this is the last note we will play
@@ -31,22 +32,22 @@ public class SimpleClock implements HBAction {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
 
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+        
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
 
         // We will convert our NOte number to a frequency
         float next_frequency = Pitch.mtof(currentNote);
         //create an object we can use to modify frequency of WavePlayer.
-        Glide waveformFrequency = new Glide(hb.ac, next_frequency);
+        Glide waveformFrequency = new Glide(next_frequency);
 
 
         // create a wave player to generate a waveform based on waveformFrequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, waveformFrequency, Buffer.SQUARE);
+        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SQUARE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);
@@ -64,9 +65,8 @@ public class SimpleClock implements HBAction {
         final float CLOCK_DURATION = 300;
 
         // Create a clock with beat interval of CLOCK_INTERVAL ms
-        Clock clock = new Clock(hb.ac, CLOCK_DURATION);
-        // connect the clock to HB
-        hb.ac.out.addDependent(clock);
+        Clock clock = new Clock(CLOCK_DURATION);
+
 
         // let us handle triggers
         clock.addMessageListener(new Bead() {

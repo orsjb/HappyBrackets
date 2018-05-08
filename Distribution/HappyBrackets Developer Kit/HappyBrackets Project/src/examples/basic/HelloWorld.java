@@ -13,6 +13,8 @@ import java.lang.invoke.MethodHandles;
  * This sketch generates a 1KHz sine wave and plays it through a gain object and output to the device
  */
 public class HelloWorld implements HBAction {
+    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+
     @Override
     public void action(HB hb) {
 
@@ -20,19 +22,18 @@ public class HelloWorld implements HBAction {
         hb.reset();
 
 
-        final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
 
-        Glide audioFrequency = new Glide(hb.ac, INITIAL_FREQUENCY);
-        Glide audioVolume = new Glide(hb.ac, INITIAL_VOLUME);
+        Glide audioFrequency = new Glide(INITIAL_FREQUENCY);
+        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
 
         // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(hb.ac, audioFrequency, Buffer.SINE);
+        WavePlayer waveformGenerator = new WavePlayer(audioFrequency, Buffer.SINE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(hb.ac, NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);
