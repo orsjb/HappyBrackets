@@ -865,6 +865,8 @@ public class LocalDeviceRepresentation {
 			}
 			setStatus(isConnected? "Connected" : "Disconnected");
 		}
+		/*
+		We will not do this unless we perform a setting
 		if (connected)
 		{
 			sendInitialControlRequest();
@@ -873,6 +875,7 @@ public class LocalDeviceRepresentation {
 		{
 			controlRequestSent = false; // we will force to reload
 		}
+		*/
     }
 
 	private void sendError(String description, Exception ex) {
