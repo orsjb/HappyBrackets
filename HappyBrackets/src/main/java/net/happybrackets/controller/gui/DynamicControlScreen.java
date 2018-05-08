@@ -48,9 +48,12 @@ public class DynamicControlScreen {
     static final int DEFAULT_SCREEN_WIDTH = 500;
     static final int DEFAULT_SCREEN_HEIGHT = 500;
 
+    static final int MAX_LOG_DISPLAY_CHARS = 5000;
+
     private static final int MIN_TEXT_AREA_HEIGHT = 200;
     private final int DEFAULT_ELEMENT_SPACING = 10;
 
+    private boolean logFull = false;
 
     ColumnConstraints column1 = new ColumnConstraints(100,100, Double.MAX_VALUE);
     ColumnConstraints column2 = new ColumnConstraints(200,300,Double.MAX_VALUE);
@@ -736,13 +739,35 @@ public class DynamicControlScreen {
             }
         });
 
+        Button clear_button = new Button("Clear Log");
+        clear_button.setTooltip(new Tooltip("Erases the log on this screen"));
+        clear_button.setOnMouseClicked(event -> log_output_text_area.clear());
+
         log_output_text_area.setMinHeight(MIN_TEXT_AREA_HEIGHT);
 
         localDevice.addLogListener(deviceLogListener = new LocalDeviceRepresentation.LogListener() {
             @Override
             public void newLogMessage(String message) {
-                log_output_text_area.appendText(message);
+                try {
+                    // let us see if the text is too big for us
 
+                    // how big will our new log be
+                    int new_total_length = message.length() + log_output_text_area.getLength();
+
+                    if (new_total_length > MAX_LOG_DISPLAY_CHARS) {
+                        if (!logFull) {
+                            log_output_text_area.appendText("Log Full - Delete some of the text to get more");
+                            logFull = true;
+                        }
+                    }
+                    else {
+                        log_output_text_area.appendText(message);
+                        logFull = false;
+                    }
+                } catch (Exception ex) {
+                    String error_message = ex.getMessage();
+                    System.out.println(error_message);
+                }
             }
         });
 

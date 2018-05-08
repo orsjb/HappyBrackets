@@ -309,6 +309,7 @@ public class LocalDeviceRepresentation {
 
 	public void showControlScreen()
 	{
+		sendInitialControlRequest();
 		dynamicControlScreen.show();
 	}
 
@@ -477,7 +478,7 @@ public class LocalDeviceRepresentation {
 	}
 
 
-	private void processLogMessage(OSCMessage msg, SocketAddress sender) {
+	private synchronized void processLogMessage(OSCMessage msg, SocketAddress sender) {
 		String new_log_output = (String) msg.getArg(1);
 		log = log + "\n" + new_log_output;
 		//logger.debug("Received new log output from device {} ({}): {}", deviceName, socketAddress, new_log_output);
@@ -865,17 +866,13 @@ public class LocalDeviceRepresentation {
 			}
 			setStatus(isConnected? "Connected" : "Disconnected");
 		}
-		/*
-		We will not do this unless we perform a setting
-		if (connected)
+
+
+		if (!connected)
 		{
-			sendInitialControlRequest();
+			controlRequestSent = false;
 		}
-		else
-		{
-			controlRequestSent = false; // we will force to reload
-		}
-		*/
+
     }
 
 	private void sendError(String description, Exception ex) {
