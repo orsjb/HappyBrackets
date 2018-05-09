@@ -105,7 +105,7 @@ public class LocalDeviceRepresentation {
 	 * get The friendly name we want to display this device as
 	 * @return the friendly name. If not set, will return device name
 	 */
-	public String friendlyName() {
+	public String getFriendlyName() {
 		String ret = friendlyName;
 		if (friendlyName.isEmpty())
 		{
@@ -119,7 +119,18 @@ public class LocalDeviceRepresentation {
 	 * @param friendlyName THe name we want to have this device displayed as
 	 */
 	public void setFriendlyName(String friendlyName) {
-		this.friendlyName = friendlyName;
+		boolean changed = !friendlyName.equals(this.friendlyName);
+
+		if (changed) {
+			this.friendlyName = friendlyName;
+			synchronized (friendlyNameListenerList) {
+				for (StatusUpdateListener listener : friendlyNameListenerList) {
+					listener.update(getFriendlyName());
+				}
+			}
+
+
+		}
 	}
 
 
@@ -246,6 +257,8 @@ public class LocalDeviceRepresentation {
 	}
 
 	private List<StatusUpdateListener> statusUpdateListenerList = new ArrayList<>();
+	private List<StatusUpdateListener> friendlyNameListenerList = new ArrayList<>();
+
 	private List<ConnectedUpdateListener> connectedUpdateListenerList = new ArrayList<>();
 	private List<ConnectedUpdateListener> loggingStateListener = new ArrayList<>();
 	private List<SocketAddressChangedListener> socketAddressChangedListenerList = new ArrayList<>();
@@ -469,6 +482,10 @@ public class LocalDeviceRepresentation {
 			processStatusMessage(msg, sender);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
 			processVersionMessage(msg, sender);
+
+		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
+			processFriendlyNameMessage(msg, sender);
+
 		} else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DynamicControlMessage.CONTROL)) {
 			processDynamicControlMessage(msg, sender);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.LOG)) {
@@ -531,6 +548,22 @@ public class LocalDeviceRepresentation {
 
 		setVersion(major, minor, build, date);
 	}
+
+	/**
+	 * Process the Build Version message of this device
+	 * @param msg OSC Message
+	 * @param sender Socket address of sender
+	 */
+	private void processFriendlyNameMessage(OSCMessage msg, SocketAddress sender) {
+		final int DEVICE_NAME = 0;
+		final int NAME = 1;
+
+
+		String name = (String)msg.getArg(NAME);
+
+		setFriendlyName(name);
+	}
+
 
 
 	/**
@@ -648,6 +681,7 @@ public class LocalDeviceRepresentation {
 	 */
 	public void sendVersionRequest(){
 		send(OSCVocabulary.Device.VERSION, replyPortObject);
+		send(OSCVocabulary.Device.FRIENDLY_NAME, replyPortObject);
 	}
 
 	/**
@@ -774,6 +808,22 @@ public class LocalDeviceRepresentation {
 			statusUpdateListenerList.remove(listener);
 		}
 	}
+
+	public void addFriendlyNameUpdateListener(StatusUpdateListener listener) {
+		synchronized (friendlyNameListenerList) {
+			friendlyNameListenerList.add(listener);
+		}
+	}
+
+	public void removeFriendlyNameUpdateListener(StatusUpdateListener listener) {
+		StatusUpdateListener removal_object = null;
+
+		synchronized (friendlyNameListenerList) {
+			friendlyNameListenerList.remove(listener);
+		}
+	}
+
+
 
 	public void addConnectedUpdateListener(ConnectedUpdateListener listener) {
 		synchronized (connectedUpdateListenerList) {

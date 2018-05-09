@@ -45,6 +45,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	private LocalDeviceRepresentation.StatusUpdateListener updateListener = null;
 	private LocalDeviceRepresentation.DeviceIdUpdateListener deviceIdUpdateListener = null;
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
+	private LocalDeviceRepresentation.StatusUpdateListener friendlyNameListener = null;
+
 
 	//in case the user is not using pi as the default username for ssh
 	public void setUsername(String val)
@@ -68,6 +70,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		deviceIdUpdateListener = null;
 		connectedUpdateListener = null;
 		invalidTextWarning = null;
+		friendlyNameListener = null;
 	}
 
 	@Override
@@ -80,6 +83,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			localDevice.removeStatusUpdateListener(updateListener);
 			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
+			localDevice.removeFriendlyNameUpdateListener(friendlyNameListener);
 			localDevice.resetDeviceHasDisplayed();
 
 
@@ -110,7 +114,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		HBox txthbox = new HBox();
 		txthbox.setAlignment(Pos.CENTER_LEFT);
 		main.add(txthbox, 0, 0);
-		Text name = new Text(item.deviceName);
+		Text name = new Text(item.getFriendlyName());
 
 		name.setUnderline(true);
 
@@ -118,18 +122,21 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		//if item not currently active, make that obvious by putting strikethrough through disconnected device
 		name.setStrikethrough(!item.getIsConnected());
 
-		item.addConnectedUpdateListener(connectedUpdateListener = new LocalDeviceRepresentation.ConnectedUpdateListener() {
-			@Override
-			public void update(boolean connected) {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						name.setStrikethrough(!connected);
-					}
-				});
-			}
-		});
+		item.addConnectedUpdateListener(connectedUpdateListener = connected -> Platform.runLater(new Runnable() {
+            public void run() {
+                name.setStrikethrough(!connected);
+            }
+        }));
+
 		txthbox.getChildren().add(name);
 		txthbox.setMinWidth(100);
+		item.addFriendlyNameUpdateListener(friendlyNameListener = new_name -> Platform.runLater(new Runnable() {
+            public void run() {
+
+                name.setText(new_name);
+
+            }
+        }));
 
 		HBox controls = new HBox(5);
 		controls.setAlignment(Pos.CENTER_LEFT);
@@ -202,29 +209,19 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		Slider s = new Slider(0, 2, 1);
 		s.setOrientation(Orientation.HORIZONTAL);
 		s.setMaxWidth(100);
-		s.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-				item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f);
-			}
-		});
+		s.valueProperty().addListener((obs, oldval, newval) -> item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f));
 		controls.getChildren().add(s);
 
 		// add ID Text
 		Text id_text = new Text("ID " + item.getID());
 		main.add(id_text, 2, 0);
 		main.setHalignment(id_text, HPos.CENTER);
-		item.addDeviceIdUpdateListener(deviceIdUpdateListener = new LocalDeviceRepresentation.DeviceIdUpdateListener() {
-			@Override
-			public void update(int new_id) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						id_text.setText("ID " + new_id);
-					}
-				});
-			}
-		});
+		item.addDeviceIdUpdateListener(deviceIdUpdateListener = new_id -> Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                id_text.setText("ID " + new_id);
+            }
+        }));
 
 
 		//a status string
@@ -242,26 +239,22 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			}
 		}
 
-		item.addStatusUpdateListener(updateListener = new LocalDeviceRepresentation.StatusUpdateListener() {
-			@Override
-			public void update(String state) {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						statusText.setText(state);
 
-						if (localDevice.isInvalidVersion())
-						{
-							if (invalidTextWarning == null)
-							{
-								invalidTextWarning = new Text(localDevice.getInvalidVersionWarning());
-								main.add(invalidTextWarning, 0, 2);
-							}
-						}
-					}
-				});
-			}
-		});
 
+		item.addStatusUpdateListener(updateListener = state -> Platform.runLater(new Runnable() {
+            public void run() {
+                statusText.setText(state);
+
+                if (localDevice.isInvalidVersion())
+                {
+                    if (invalidTextWarning == null)
+                    {
+                        invalidTextWarning = new Text(localDevice.getInvalidVersionWarning());
+                        main.add(invalidTextWarning, 0, 2);
+                    }
+                }
+            }
+        }));
 
 
 		controls.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
@@ -282,7 +275,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					}
 				});
 
-				MenuItem copy_ssh_command_menu = new MenuItem("Copy SSH " + item.deviceName + " to clipboard");
+				MenuItem copy_ssh_command_menu = new MenuItem("Copy SSH " + item.getAddress() + " to clipboard");
 				copy_ssh_command_menu.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -293,6 +286,17 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					}
 				});
 
+
+				MenuItem copy_host_command_menu = new MenuItem("Copy " + item.deviceName + " to clipboard");
+				copy_host_command_menu.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						final Clipboard clipboard = Clipboard.getSystemClipboard();
+						final ClipboardContent content = new ClipboardContent();
+						content.putString(item.deviceName);
+						clipboard.setContent(content);
+					}
+				});
 
 				MenuItem request_status_menu = new MenuItem("Request status");
 				request_status_menu.setDisable(localDevice.isIgnoringDevice());
@@ -369,7 +373,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				});
 
 
-				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, request_status_menu, request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, encrypt_item_menu, remove_item_menu);
+				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, copy_host_command_menu, request_status_menu, request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, encrypt_item_menu, remove_item_menu);
 				contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 			}
 

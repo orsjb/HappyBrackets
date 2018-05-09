@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
                         String text = "Send " + fileName + " to ";
 
                         if (selected_device != null) {
-                            String device_name = selected_device.friendlyName();
+                            String device_name = selected_device.getFriendlyName();
                             enable = true;
                             text += device_name;
                         } else {

@@ -45,6 +45,7 @@ import net.beadsproject.beads.ugens.PolyLimit;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.*;
+import net.happybrackets.core.config.KnownDeviceID;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
@@ -192,7 +193,7 @@ public class HB {
 	public final Synchronizer synch;
 
 	private AccessMode accessMode;
-	private int myId = 0;
+	private KnownDeviceID myDeviceId = new KnownDeviceID();
 
 	/**
 	 * Creates the HB.
@@ -974,7 +975,7 @@ public class HB {
 	 * @return the ID of this device, as assigned by the current controller.
      */
 	public int myIndex() {
-		return myId;
+		return myDeviceId.getDeviceId();
 	}
 
 	/**
@@ -982,8 +983,27 @@ public class HB {
 	 * @param val new value
 	 */
 	public void setMyIndex(int val){
-		myId = val;
+		myDeviceId.setDeviceId(val);
 	}
+
+	/**
+	 * Returns a freindly name for the device. This is assigned by controller if it is in the known config
+	 * It makes it easier to determine which device we want than the hostname - eg Dancer1 is easier to read than hb-001d43201188
+	 * @return the friendly name if assigned.
+	 */
+	public String friendlyName(){
+		return  myDeviceId.getFriendlyName();
+	}
+
+	/**
+	 * We will set the friendly of the device here. It may be set by a controller
+	 * @param name the friendly name
+	 */
+	public void setFreindlyName(String name){
+		myDeviceId.setFriendlyName(name);
+	}
+
+
 	/**
 	 * Reboots the device immediately.
 	 */

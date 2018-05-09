@@ -179,7 +179,13 @@ public class NetworkCommunication {
 						logger.info("I have been given an ID by the controller: {}", new_id);
 						hb.setStatus("ID " + new_id);
 
-					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
+
+					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_NAME)) {
+						String name = (String) msg.getArg(0);
+						hb.setFreindlyName(name);
+						logger.info("I have been given a friendly name by the controller: {}", name);
+					}
+					else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
 						boolean enabled = ((Integer) msg.getArg(0)) == 1;
 						logger.info("I have been requested to " + (enabled ? "start" : "stop") + " sending logs to the controller.");
 						sendLogs(enabled);
@@ -242,7 +248,24 @@ public class NetworkCommunication {
 
 							System.out.println("Version sent " + BuildVersion.getVersionText() + " to port " + target_port) ;
 
+						}else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
+							if (msg.getArgCount() > 0) {
+								target_port = (Integer) msg.getArg(0);
+							}
+							InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
+							send(OSCVocabulary.Device.FRIENDLY_NAME,
+									new Object[]{
+											Device.getDeviceName(),
+											hb.friendlyName()
+									},
+									target_address);
+
+							System.out.println("Name sent " + BuildVersion.getVersionText() + " to port " + target_port) ;
+
 						}
+
+
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GET)) {
 							if (msg.getArgCount() > 0) {
 								target_port = (Integer) msg.getArg(0);

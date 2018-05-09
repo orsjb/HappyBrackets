@@ -15,6 +15,7 @@ public final class OSCVocabulary {
     {
         public static final String LOG = "/device/log";
         public static final String SET_ID = "/device/set_id";
+        public static final String SET_NAME = "/device/set_name";
         public static final String GET_LOGS = "/device/get_logs";
         public static final String SYNC = "/device/sync";
         public static final String REBOOT = "/device/reboot";
@@ -30,6 +31,7 @@ public final class OSCVocabulary {
         public static final String ALIVE = "/device/alive";
         public static final String STATUS = "/device/status";
         public static final String VERSION = "/device/version";
+        public static final String FRIENDLY_NAME = "/device/friendly";
         public static final String SET_ENCRYPTION = "/device/encrypt";
     }
 
