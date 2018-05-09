@@ -95,7 +95,8 @@ public class ConfigurationScreen {
         }
         else {
             StringBuilder map = new StringBuilder();
-            control_engine.getDeviceConnection().getKnownDevices().forEach((hostname, id) -> map.append(hostname + " " + id + "\n"));
+            control_engine.getDeviceConnection().getKnownDevices().forEach((hostname, id) -> map.append(id.getSaveLine() + "\n"));
+
             config_field.setText(map.toString());
         }
         config_field.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -141,29 +142,31 @@ public class ConfigurationScreen {
         Button save_button = new Button("Save");
         save_button.setTooltip(new Tooltip("Save these " + label.toLowerCase() + " settings to a file."));
         save_button.setOnMouseClicked(event -> {
-            //select a file
-            FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
-            fsd.withShowHiddenFiles(true);
-            final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, currentProject);
-
-            String current_file_path = control_engine.getSettings().getString(setting);
-            File currentFile = current_file_path != null ? new File(control_engine.getSettings().getString(setting)) : null;
-            VirtualFile base_dir = null;
-            String current_name = null;
-            if (currentFile != null && currentFile.exists()) {
-                base_dir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
-                current_name = currentFile.getName();
-            }
-            else {
-                base_dir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
-                current_name = file_type == 0 ? "controller-config.json" : "known_devices";
-            }
-            final VirtualFile base_dir_final = base_dir;
-            final String current_name_final = current_name;
 
             displayStage.hide();
             //needs to run in Swing event dispatch thread, and then back again to JFX thread!!
             SwingUtilities.invokeLater(() -> {
+
+                //select a file
+                FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
+                fsd.withShowHiddenFiles(true);
+                final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, currentProject);
+
+                String current_file_path = control_engine.getSettings().getString(setting);
+                File currentFile = current_file_path != null ? new File(control_engine.getSettings().getString(setting)) : null;
+                VirtualFile base_dir = null;
+                String current_name = null;
+                if (currentFile != null && currentFile.exists()) {
+                    base_dir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
+                    current_name = currentFile.getName();
+                }
+                else {
+                    base_dir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
+                    current_name = file_type == 0 ? "controller-config.json" : "known_devices";
+                }
+                final VirtualFile base_dir_final = base_dir;
+                final String current_name_final = current_name;
+
                 final VirtualFileWrapper wrapper = dialog.save(base_dir_final, current_name_final);
 
                 if (wrapper != null) {
@@ -195,6 +198,8 @@ public class ConfigurationScreen {
             });
         });
 
+        /*
+        //remove this as it does not work
         Button reset_button = new Button("Reset");
         reset_button.setTooltip(new Tooltip("Reset these " + label.toLowerCase() + " settings to their defaults."));
         reset_button.setOnMouseClicked(event -> {
@@ -210,6 +215,7 @@ public class ConfigurationScreen {
                 applyKnownDevices(config_field.getText());
             }
         });
+*/
 
         configApplyButton[file_type] = new Button("Apply");
         configApplyButton[file_type].setTooltip(new Tooltip("Apply these " + label.toLowerCase() + " settings."));
@@ -226,7 +232,7 @@ public class ConfigurationScreen {
 
         FlowPane buttons = new FlowPane(DEFAULT_ELEMENT_SPACING, DEFAULT_ELEMENT_SPACING);
         buttons.setAlignment(Pos.TOP_LEFT);
-        buttons.getChildren().addAll(load_button, save_button, reset_button, configApplyButton[file_type]);
+        buttons.getChildren().addAll(load_button, save_button, configApplyButton[file_type]);
 
 
         VBox config_pane = new VBox(DEFAULT_ELEMENT_SPACING);
