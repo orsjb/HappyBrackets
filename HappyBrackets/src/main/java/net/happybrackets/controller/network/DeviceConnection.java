@@ -34,6 +34,7 @@ import de.sciss.net.OSCServer;
 
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.config.KnownDeviceID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class DeviceConnection {
 	private OSCServer oscServer;
 	private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
 	private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
-	private Map<String, Integer> knownDevices = new Hashtable<String, Integer>();
+	private Map<String, KnownDeviceID> knownDevices = new Hashtable<String, KnownDeviceID>();
 	// We will have a selected device based on project
 	private Map<String, LocalDeviceRepresentation> selectedDevices = new Hashtable<String, LocalDeviceRepresentation>();
 
@@ -59,6 +60,7 @@ public class DeviceConnection {
 	public boolean isShowOnlyFavourites() {
 		return showOnlyFavourites;
 	}
+
 
 
 	/**
@@ -259,9 +261,14 @@ public class DeviceConnection {
 		for (String line : lines) {
 			String[] line_split = line.trim().split("[ ]+");
 			// Ignore blank or otherwise incorrectly formatted lines.
-			if (line_split.length == 2) {
-				logger.info("Adding known device mapping " + line_split[0] + " " + Integer.parseInt(line_split[1]));
-				knownDevices.put(line_split[0], Integer.parseInt(line_split[1]));
+			if (line_split.length >= 2) {
+
+				KnownDeviceID device = KnownDeviceID.restore(line);
+
+				if (device != null) {
+					logger.info("Adding known device mapping " + device.getHostName() + " " + device.getDeviceId() + " " + device.getFriendlyName());
+					knownDevices.put(device.getHostName(), device);
+				}
 			}
 		}
 
@@ -269,18 +276,24 @@ public class DeviceConnection {
 			int id = 0;
 
 			if (knownDevices.containsKey(device.hostName)) {
-				device.setID(knownDevices.get(device.hostName));
+				device.setID(knownDevices.get(device.hostName).getDeviceId());
+				device.setFriendlyName(knownDevices.get(device.hostName).getFriendlyName());
 			}
 			else if (knownDevices.containsKey(device.deviceName)) {
-				device.setID(knownDevices.get(device.deviceName));
+				device.setID(knownDevices.get(device.deviceName).getDeviceId());
+				device.setFriendlyName(knownDevices.get(device.deviceName).getFriendlyName());
 			}
 			else {
 				device.setID(newID--);
+				device.setFriendlyName("");
 			}
 
 			new Thread() {
 				public void run() {
 					sendToDevice(device, OSCVocabulary.Device.SET_ID, device.getID());
+					sendToDevice(device, OSCVocabulary.Device.SET_NAME, device.getFriendlyName());
+
+
 					logger.info("Assigning id {} to {}", device.getID(), device.hostName);
 				}
 			}.start();
@@ -291,7 +304,7 @@ public class DeviceConnection {
 	 * Get the mapping of known device host names to device IDs. The returned map is not modifiable.
 	 * @return Map of Known devices
 	 */
-	public Map<String, Integer> getKnownDevices() {
+	public Map<String, KnownDeviceID> getKnownDevices() {
 		return Collections.unmodifiableMap(knownDevices);
 	}
 
@@ -327,6 +340,7 @@ public class DeviceConnection {
 		final int DEVICE_HOSTNAME = 1;
 		final int DEVICE_ADDRESS = 2;
 		final int DEVICE_ID = 3;
+
 		try {
 			boolean invalid_pi = false;
 
@@ -355,6 +369,7 @@ public class DeviceConnection {
 					invalid_pi = true;
 				}
 
+
 				logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
 
 				if (this_device == null) { //if not add it
@@ -366,13 +381,15 @@ public class DeviceConnection {
 
 					if (device_id == 0) {
 						if (knownDevices.containsKey(device_name)) {
-							device_id = knownDevices.get(device_name);
+							KnownDeviceID device = knownDevices.get(device_name);
+							device_id = device.getDeviceId();
 						} else {
 							device_id = newID--;
 						}
 					}
 
 					this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config, replyPort);
+
 
 					if (favouriteDevices.contains(device_name)) {
 						this_device.setFavouriteDevice(true);
