@@ -82,7 +82,7 @@ public class CassetteTapeMachine implements HBAction {
             }
         }
         //set up sensor
-//        AccelerometerSensor sensor = (MiniMU)hb.getSensor(MiniMU.class);
+//        AccelerometerListener sensor = (MiniMU)hb.getSensor(MiniMU.class);
         Accelerometer accel_sensor = (Accelerometer)hb.getSensor(Accelerometer.class);
         if (accel_sensor != null) {
             accel_sensor.addListener(new SensorUpdateListener() {

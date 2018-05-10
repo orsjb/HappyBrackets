@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>1.19.7</version>
+  <version>2.1.0</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -23,6 +23,16 @@
   <depends>com.intellij.modules.lang</depends>
   -->
 
+  <application-components>
+    <component>
+      <!-- Component's interface class -->
+      <interface-class>net.happybrackets.intellij_plugin.ApplicationMonitor</interface-class>
+
+      <!-- Component's implementation class -->
+      <implementation-class>net.happybrackets.intellij_plugin.ApplicationMonitor</implementation-class>
+    </component>
+  </application-components>
+
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/hb.png"/>
@@ -34,7 +44,7 @@
 
   </project-components>
   <actions>
-    <group id="HappyBracketsIntellijPlugin.MainMenu" text="HappyBrackets" description="HappyBrackets Settings">
+    <group id="HappyBracketsIntellijPlugin.MainMenu"  text="HappyBrackets" description="HappyBrackets Settings">
       <add-to-group group-id="MainMenu" anchor="after" relative-to-action="WindowMenu"/>
 
       <action id="HappyBrackets.settings" class="net.happybrackets.intellij_plugin.menu.SettingsMenu" text="Settings"
@@ -62,6 +72,18 @@
     <action id="HappyBracketsAdvertise" class="net.happybrackets.intellij_plugin.menu.AdvertiseMenu"
             text="Disable Advertise" description="Stops Communication between devices and controller">
       <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
+    </action>
+
+
+    <action id="SendCompositionToSelectedDeviceRunContext"
+            class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToSelectedDevice"
+            text="Send Composition To Selected Device">
+      <add-to-group group-id="RunContextGroupInner" anchor="last"/>
+    </action>
+    <action id="SendCompositionToAllDevicesRunContext"
+            class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToAllDevicesAction"
+            text="Send composition to all devices" description="Sends the selected composition to all devices">
+      <add-to-group group-id="RunContextGroupInner" anchor="last"/>
     </action>
   </actions>
 

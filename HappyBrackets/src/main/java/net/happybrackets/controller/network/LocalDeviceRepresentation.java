@@ -47,6 +47,8 @@ public class LocalDeviceRepresentation {
 	public final String deviceName;
 	public final String hostName;
 
+	private String friendlyName = "";
+
 	private String address;
 	public List<String> preferredAddressStrings;    //This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
 	private int deviceId; //
@@ -96,6 +98,28 @@ public class LocalDeviceRepresentation {
 	 */
 	public String getAddress() {
 		return address;
+	}
+
+
+	/**
+	 * get The friendly name we want to display this device as
+	 * @return the friendly name. If not set, will return device name
+	 */
+	public String friendlyName() {
+		String ret = friendlyName;
+		if (friendlyName.isEmpty())
+		{
+			ret = deviceName;
+		}
+		return ret;
+	}
+
+	/**
+	 * Set the friendly name for this device
+	 * @param friendlyName THe name we want to have this device displayed as
+	 */
+	public void setFriendlyName(String friendlyName) {
+		this.friendlyName = friendlyName;
 	}
 
 

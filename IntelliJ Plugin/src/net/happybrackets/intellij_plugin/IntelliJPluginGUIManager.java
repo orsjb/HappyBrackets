@@ -114,7 +114,7 @@ public class IntelliJPluginGUIManager {
 		//initial compositions path
 		//assume that this path is a path to a root classes folder, relative to the project
 		//e.g., build/classes/tutorial or build/classes/compositions
-		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath();
+		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath() + "/" + project.getName();
 
 		deviceErrorListeners = new HashMap<>();
 		// Add ErrorListener's to the devices so we can report to the user when an error occurs communicating
@@ -215,6 +215,7 @@ public class IntelliJPluginGUIManager {
 			b.setOnMouseClicked(event -> deviceConnection.deviceReboot());
 			b.setTooltip(new Tooltip("Reboot all devices."));
 			globalcommands.getChildren().add(b);
+
 			// Disable the Button if there are no devices
 			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
 				@Override
@@ -698,10 +699,12 @@ public class IntelliJPluginGUIManager {
 		});
 
 		// If we have none selected, we need to have selected Buttons Disabled
+		// we also need to set our selected device in the project
 		deviceListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<LocalDeviceRepresentation>() {
 			@Override
 			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation old_value, LocalDeviceRepresentation new_value) {
 				disableControl(composition_send_selected_button, new_value == null);
+				deviceConnection.setDeviceSelected(project.getLocationHash(), new_value);
 			}
 		});
 

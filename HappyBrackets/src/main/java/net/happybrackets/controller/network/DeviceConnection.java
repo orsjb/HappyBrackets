@@ -44,8 +44,11 @@ public class DeviceConnection {
 
 	private OSCServer oscServer;
 	private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
-	private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();;
+	private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
 	private Map<String, Integer> knownDevices = new Hashtable<String, Integer>();
+	// We will have a selected device based on project
+	private Map<String, LocalDeviceRepresentation> selectedDevices = new Hashtable<String, LocalDeviceRepresentation>();
+
 	private int newID = -1;
 	private ControllerConfig config;
 	private boolean loggingEnabled;
@@ -58,7 +61,30 @@ public class DeviceConnection {
 	}
 
 
+	/**
+	 * Get the LocalDevice  that is selected in this project
+	 * @param project_hash the project
+	 * @return the selected device if there. otherwise null
+	 */
+	public LocalDeviceRepresentation getSelectedDevice(String project_hash){
+		LocalDeviceRepresentation ret = null;
+		ret = selectedDevices.get(project_hash);
 
+		return ret;
+	}
+
+	/**
+	 * Insert the new selected device for the project
+	 * @param project_hash the project we are in
+	 * @param selected_device the new device. This can be null
+	 */
+	public void setDeviceSelected (String project_hash, LocalDeviceRepresentation selected_device){
+		if (selectedDevices.containsKey(project_hash)) {
+			selectedDevices.remove(project_hash);
+		}
+
+		selectedDevices.put(project_hash, selected_device);
+	}
 
 	// If we only want to show favourites, we will also want to remove them from our list
 	public void setShowOnlyFavourites(boolean enable) {

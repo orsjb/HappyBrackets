@@ -12,6 +12,6 @@
   "encryptionKey":            "CHANGE ME!",
 
   "useHostname":              true,
-  "compositionsPath":         "build",
+  "compositionsPath":         "build/production",
   "workingDir":               "."
 }

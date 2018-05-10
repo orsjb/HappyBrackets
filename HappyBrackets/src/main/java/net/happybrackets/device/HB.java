@@ -213,6 +213,9 @@ public class HB {
 	 */
 	public static boolean runDebug(Class<?> action_class) throws Exception {
 
+		// Disable Our non simulated sensors to prevent extra System Messages
+		Sensor.setSimulatedOnly(true);
+
 		boolean ret = false;
 		String current = System.getProperty("user.dir");
 		System.out.println(current);

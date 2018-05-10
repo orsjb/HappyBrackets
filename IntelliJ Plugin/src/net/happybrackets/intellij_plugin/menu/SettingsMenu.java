@@ -13,16 +13,21 @@ public class SettingsMenu extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        DataContext dataContext = e.getDataContext();
-        Project project = DataKeys.PROJECT.getData(dataContext);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                ConfigurationScreen settings = new  ConfigurationScreen(project);
-                settings.show();
+        try {
+            DataContext dataContext = e.getDataContext();
+            Project project = DataKeys.PROJECT.getData(dataContext);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    ConfigurationScreen settings = new ConfigurationScreen(project);
+                    settings.show();
 
-            }
-        });
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
 

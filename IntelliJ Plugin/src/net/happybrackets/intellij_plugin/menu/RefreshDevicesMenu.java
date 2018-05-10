@@ -10,14 +10,24 @@ public class RefreshDevicesMenu extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
-        connection.rescanDevices();
-        connection.setDisableAdvertise(false);
+        try {
+            DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+            connection.rescanDevices();
+            connection.setDisableAdvertise(false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     @Override
     public void update(AnActionEvent event) {
-        event.getPresentation().setEnabledAndVisible(true);
+        try {
+            event.getPresentation().setEnabledAndVisible(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
 }

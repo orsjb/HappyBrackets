@@ -37,50 +37,19 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
 
         if (defaultSensor == null)
         {
-            System.out.println("Try Load LSM95DS1");
-            try {
-                LSM9DS1 sensor = (LSM9DS1) getSensor(LSM9DS1.class);
-
-                if (sensor == null) {
-                    sensor = LSM9DS1.class.getConstructor().newInstance();
-                }
-
-                if (sensor != null){
-                    if (sensor.isValidLoad()) {
-                        defaultSensor = sensor;
-                        LSM9DS1 finalSensor = sensor;
-                        sensor.addNonResettableListener(new SensorUpdateListener() {
-                            @Override
-                            public void sensorUpdated() {
-                                boolean send_notify = setX(finalSensor.getGyroscopeX());
-                                send_notify |= setY(finalSensor.getGyroscopeY());
-                                send_notify |= setZ(finalSensor.getGyroscopeZ());
-
-                                if (send_notify) {
-                                    notifyListeners();
-                                }
-                            }
-                        });
-                    }
-                }
-
-            } catch (Exception e) {
-                System.out.println("LSM9DS1 not found");
-            }
-
-            if (defaultSensor == null) {
-                System.out.println("Try Load MiniMU");
-
+            if (!isSimulatedOnly()) {
+                System.out.println("Try Load LSM95DS1");
                 try {
-                    MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
+                    LSM9DS1 sensor = (LSM9DS1) getSensor(LSM9DS1.class);
+
                     if (sensor == null) {
-                        sensor = MiniMU.class.getConstructor().newInstance();
+                        sensor = LSM9DS1.class.getConstructor().newInstance();
                     }
 
-                    if (sensor != null){
+                    if (sensor != null) {
                         if (sensor.isValidLoad()) {
                             defaultSensor = sensor;
-                            MiniMU finalSensor = sensor;
+                            LSM9DS1 finalSensor = sensor;
                             sensor.addNonResettableListener(new SensorUpdateListener() {
                                 @Override
                                 public void sensorUpdated() {
@@ -97,7 +66,40 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                     }
 
                 } catch (Exception e) {
-                    System.out.println("MiniMU not found");
+                    System.out.println("LSM9DS1 not found");
+                }
+
+                if (defaultSensor == null) {
+                    System.out.println("Try Load MiniMU");
+
+                    try {
+                        MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
+                        if (sensor == null) {
+                            sensor = MiniMU.class.getConstructor().newInstance();
+                        }
+
+                        if (sensor != null) {
+                            if (sensor.isValidLoad()) {
+                                defaultSensor = sensor;
+                                MiniMU finalSensor = sensor;
+                                sensor.addNonResettableListener(new SensorUpdateListener() {
+                                    @Override
+                                    public void sensorUpdated() {
+                                        boolean send_notify = setX(finalSensor.getGyroscopeX());
+                                        send_notify |= setY(finalSensor.getGyroscopeY());
+                                        send_notify |= setZ(finalSensor.getGyroscopeZ());
+
+                                        if (send_notify) {
+                                            notifyListeners();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("MiniMU not found");
+                    }
                 }
             }
 

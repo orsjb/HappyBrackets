@@ -33,6 +33,8 @@ public abstract class Sensor {
      */
     protected boolean validLoad = false;
 
+    protected static boolean simulatedOnly = false;
+
 
     /**
      * A {@link Hashtable} to store sensors.
@@ -45,7 +47,38 @@ public abstract class Sensor {
     private final Set<SensorUpdateListener> nonResetableListeners = new HashSet<>();
     private final Set<SensorValueChangedListener> nonResetablevValueChangedListeners = new HashSet<>();
 
+    /**
+     * Flag to indicate this is just a simulator
+     * @return true if only a simulator
+     */
+    public static boolean isSimulatedOnly() {
+        return simulatedOnly;
+    }
 
+    /**
+     * Return a scaled value for a sensor based on known maximum and minimum values
+     * A continuous function that satisfies this the following
+     * sensor_value(sensor_min) = scaled_min
+     * sensor_value(sensor_max) = scaled_max
+     * @param sensor_min the minimum value sensor would normally return
+     * @param sensor_max the maximum value our sensor would normally return
+     * @param scaled_min the value we want returned as our minimum for sensor minimum value
+     * @param scaled_max the value we want returned as our maximum for our sensor maximum value
+     * @param sensor_value the actual value of the sensor
+     * @return our scaled value
+     */
+    public static float scaleValue (double sensor_min, double sensor_max, double scaled_min, double scaled_max, double sensor_value){
+        double ret = ((scaled_max - scaled_min) * (sensor_value - sensor_min)) / (sensor_max - sensor_min) + scaled_min;
+
+        return  (float)ret;
+    }
+    /**
+     * Set from inside IDE to indicate we are just simulating a sensor
+     * @param simulated set to true if we are simulating
+     */
+    public static void setSimulatedOnly(boolean simulated) {
+        simulatedOnly = simulated;
+    }
     /**
      * Returns the sensor name, typically the make/model of the hardware sensor that this class refers to.
      * @return a {@link String} representing the sensor's name.
@@ -60,6 +93,9 @@ public abstract class Sensor {
      */
     public void addListener(SensorUpdateListener listener) {
         listeners.add(listener);
+        if (isSimulatedOnly()){
+            listener.sensorUpdated();
+        }
     }
 
     /**
@@ -71,6 +107,9 @@ public abstract class Sensor {
      */
     public void addNonResettableListener(SensorUpdateListener listener) {
         nonResetableListeners.add(listener);
+        if (isSimulatedOnly()){
+            listener.sensorUpdated();
+        }
     }
 
 
@@ -97,8 +136,10 @@ public abstract class Sensor {
      */
     public void addValueChangedListener(SensorValueChangedListener listener) {
         valueChangedListeners.add(listener);
+        if (isSimulatedOnly()) {
+            listener.sensorUpdated(this);
+        }
     }
-
     /**
      * Add a @{@link SensorValueChangedListener} that will listen to this @{@link Sensor}.
      * These listeners are NOT removed when device is reset
@@ -106,6 +147,9 @@ public abstract class Sensor {
      */
     public void addNonResettableValueChangedListener(SensorValueChangedListener listener) {
         nonResetablevValueChangedListeners.add(listener);
+        if (isSimulatedOnly()) {
+            listener.sensorUpdated(this);
+        }
     }
 
 
