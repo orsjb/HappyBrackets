@@ -231,6 +231,7 @@ public class HB {
 					"bits=16",
 					"ins=0",
 					"outs=1",
+                    "device=0",
 					"start=true",
 					"access=local"
 			};
