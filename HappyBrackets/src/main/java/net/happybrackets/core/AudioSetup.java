@@ -51,7 +51,7 @@ public abstract class AudioSetup {
 		} catch(Exception e) {
 			logger.warn("Correct args have not been supplied to AudioSetup.getAudioContext()");
 		}
-		logger.info("Creating AudioContext with args: bufSize=" + bufSize + ", sampleRate=" + sampleRate + ", bits=" + bits + ", ins=" + inchans + ", outs=" + outchans);
+		logger.info("Creating AudioContext with args: bufSize=" + bufSize + ", sampleRate=" + sampleRate + ", bits=" + bits + ", ins=" + inchans + ", outs=" + outchans + ", mixer=" + mixer);
 		JavaSoundAudioIO jsaio = new JavaSoundAudioIO(bufSize);
 		if(mixer != -1) {
 			jsaio.selectMixer(mixer);
