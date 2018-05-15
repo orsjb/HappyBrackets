@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>2.3.1</version>
+  <version>2.3.2</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -64,7 +64,6 @@
       <add-to-group group-id="HappyBracketsIntellijPlugin.MainMenu" anchor="last"/>
     </group>
 
-
     <action id="HappyBracketsFavouriteMenu" class="net.happybrackets.intellij_plugin.menu.FavouritesMenu"
             text="Favourites" description="Displays only devices that are marked as favourites">
       <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
@@ -74,6 +73,30 @@
       <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
     </action>
 
+    <group id="HappyBracketsGlobalGroup" popup="true"
+           text="Global" description="Happy Brackets Global Device Controls">
+      <add-to-group group-id="HappyBracketsIntellijPlugin.MainMenu" anchor="last"/>
+    </group>
+
+    <action id="HappyBracketsRebootMenu" class="net.happybrackets.intellij_plugin.menu.global.RebootAction"
+            text="Reboot All Devices" description="Reboot all devices">
+      <add-to-group group-id="HappyBracketsGlobalGroup"/>
+    </action>
+
+    <action id="HappyBracketsShutdownMenu" class="net.happybrackets.intellij_plugin.menu.global.ShutdownAction"
+            text="Shutdown All Devices" description="Shutdown all devices">
+      <add-to-group group-id="HappyBracketsGlobalGroup"/>
+    </action>
+
+    <action id="HappyBracketsResetMenu" class="net.happybrackets.intellij_plugin.menu.global.ResetAction"
+            text="Reset All Devices" description="Reset all devices to their initial state (same as Reset Sounding + Clear Sound)">
+      <add-to-group group-id="HappyBracketsGlobalGroup"/>
+    </action>
+
+    <action id="HappyBracketsResetSoundingMenu" class="net.happybrackets.intellij_plugin.menu.global.ResetSoundingAction"
+            text="Reset Sounding All Devices" description="Reset all devices to their initial state except for audio that is currently playing">
+      <add-to-group group-id="HappyBracketsGlobalGroup" />
+    </action>
 
     <action id="SendCompositionToSelectedDeviceRunContext"
             class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToSelectedDevice"
