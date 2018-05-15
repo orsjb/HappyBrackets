@@ -32,6 +32,8 @@ import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
 import net.happybrackets.core.OSCVocabulary;
 
+import javax.swing.*;
+
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
 
@@ -190,6 +192,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			}
 		});
 		controls.getChildren().add(bleepButton);
+
+		/*
 		//group allocations
 		HBox groupsHbox = new HBox();
 		groupsHbox.setAlignment(Pos.CENTER);
@@ -205,6 +209,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			});
 			groupsHbox.getChildren().add(c);
 		}
+		*/
 
 		Slider s = new Slider(0, 2, 1);
 		s.setOrientation(Orientation.HORIZONTAL);
@@ -372,8 +377,56 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 					}
 				});
 
+				MenuItem reboot_menu = new MenuItem("Reboot Device");
+				reboot_menu.setDisable(localDevice.isIgnoringDevice());
+				reboot_menu.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
 
-				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, copy_host_command_menu, request_status_menu, request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, encrypt_item_menu, remove_item_menu);
+						new Thread(() -> {
+							try {
+
+								int dialog_button = JOptionPane.YES_NO_OPTION;
+								int dialog_result = JOptionPane.showConfirmDialog(null,
+										"Are you sure you want to reboot " + localDevice.getFriendlyName() + "?", "Rebooting " + localDevice.getFriendlyName(), dialog_button);
+
+								if (dialog_result == JOptionPane.YES_OPTION) {
+									localDevice.rebootDevice();
+								}
+							} catch (Exception ex) {
+							}
+						}).start();
+
+
+					}
+				});
+
+				MenuItem shutdown_menu = new MenuItem("Shutdown Device");
+				shutdown_menu.setDisable(localDevice.isIgnoringDevice());
+				shutdown_menu.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+
+						new Thread(() -> {
+							try {
+
+								int dialog_button = JOptionPane.YES_NO_OPTION;
+								int dialog_result = JOptionPane.showConfirmDialog(null,
+										"Are you sure you want to shutdown " + localDevice.getFriendlyName() + "?", "Shutting Down " + localDevice.getFriendlyName(), dialog_button);
+
+								if (dialog_result == JOptionPane.YES_OPTION) {
+									localDevice.shutdownDevice();
+								}
+							} catch (Exception ex) {
+							}
+						}).start();
+
+					}
+				});
+
+				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, copy_host_command_menu, request_status_menu,
+						request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, encrypt_item_menu,
+						remove_item_menu, reboot_menu, shutdown_menu);
 				contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 			}
 
