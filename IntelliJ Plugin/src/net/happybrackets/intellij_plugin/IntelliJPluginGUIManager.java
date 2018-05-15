@@ -163,20 +163,20 @@ public class IntelliJPluginGUIManager {
 		TitledPane device_pane = new TitledPane("Devices", makeDevicePane());
 		//TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
 		//TitledPane known_devices_pane = new TitledPane("Known Devices", makeConfigurationPane(1));
-		TitledPane global_pane = new TitledPane("Global Management", makeGlobalPane());
+		//TitledPane global_pane = new TitledPane("Global Management", makeGlobalPane());
 		TitledPane composition_pane = new TitledPane("Compositions", makeCompositionPane());
 		TitledPane commands_pane = new TitledPane("Commands", makeCustomCommandsPane());
 
-		TitledPane debug_pane = new TitledPane("Debug", makeDebugPane());
+		//TitledPane debug_pane = new TitledPane("Debug", makeDebugPane());
 
 		//config_pane.setExpanded(false);
 		//known_devices_pane.setExpanded(false);
-		debug_pane.setExpanded(false);
+		//debug_pane.setExpanded(false);
 
 		VBox main_container = new VBox(5);
 		main_container.setFillWidth(true);
 		//main_container.getChildren().addAll(config_pane, known_devices_pane, global_pane, composition_pane,  device_pane);
-		main_container.getChildren().addAll(global_pane, commands_pane, composition_pane,   device_pane);
+		main_container.getChildren().addAll(commands_pane,   device_pane);
 
 		ScrollPane main_scroll = new ScrollPane();
 		main_scroll.setFitToWidth(true);
