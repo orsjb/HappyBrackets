@@ -75,6 +75,8 @@ public class LocalDeviceRepresentation {
 	private boolean encryptionEnabled = false;
 
 
+	final Object dynamicControlLock = new Object();
+
 	public boolean isEncryptionEnabled() {
 		return encryptionEnabled;
 	}
@@ -340,7 +342,7 @@ public class LocalDeviceRepresentation {
 	 * @param control The DynamicControl we are making
 	 */
 	public void addDynamicControl(DynamicControl control) {
-		synchronized (dynamicControls) {
+		synchronized (dynamicControlLock) {
 			dynamicControls.put(control.getControlMapKey(), control);
 			dynamicControlScreen.addDynamicControl(control);
 
@@ -382,9 +384,9 @@ public class LocalDeviceRepresentation {
 		// we need to get the collection synchronised with map
 		// or we will get an access vioaltion
 
-		dynamicControlScreen.removeDynamicControlScene();
+		dynamicControlScreen.eraseDynamicControls();
 		Collection<DynamicControl> removal_list;
-		synchronized (dynamicControls) {
+		synchronized (dynamicControlLock) {
 			removal_list = dynamicControls.values();
 		}
 
@@ -399,7 +401,7 @@ public class LocalDeviceRepresentation {
 	 * @param control The DynamicControl we are removing
 	 */
 	public void removeDynamicControl(DynamicControl control) {
-		synchronized (dynamicControls) {
+		synchronized (dynamicControlLock) {
 			dynamicControls.remove(control.getControlMapKey());
 
 			dynamicControlScreen.removeDynamicControl(control);
@@ -969,5 +971,21 @@ public class LocalDeviceRepresentation {
 
 		send(OSCVocabulary.Device.GET_LOGS, new Object[]{enable ? 1 : 0});
 
+	}
+
+	/**
+	 * Send a reboot message to the device
+	 */
+	public void rebootDevice()
+	{
+		send(OSCVocabulary.Device.REBOOT);
+	}
+
+	/**
+	 * Send a shutdown message to the device
+	 */
+	public void shutdownDevice()
+	{
+		send((OSCVocabulary.Device.SHUTDOWN));
 	}
 }

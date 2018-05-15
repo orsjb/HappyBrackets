@@ -10,9 +10,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
@@ -20,6 +18,7 @@ import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 
+import javax.swing.*;
 import java.util.*;
 
 
@@ -142,6 +141,163 @@ public class DynamicControlScreen {
         setGridColumnAttributes();
     }
 
+    public void createContextMenus(ContextMenu contextMenu) {
+        MenuItem copy_name_command_menu = new MenuItem("Copy " + localDevice.getAddress() + " to clipboard");
+        copy_name_command_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                final Clipboard clipboard = Clipboard.getSystemClipboard();
+                final ClipboardContent content = new ClipboardContent();
+                content.putString(localDevice.getAddress());
+                clipboard.setContent(content);
+            }
+        });
+
+        MenuItem copy_ssh_command_menu = new MenuItem("Copy SSH " + localDevice.getAddress() + " to clipboard");
+        copy_ssh_command_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                final Clipboard clipboard = Clipboard.getSystemClipboard();
+                final ClipboardContent content = new ClipboardContent();
+                //content.putString(buildSSHCommand(localDevice.getAddress()));
+                clipboard.setContent(content);
+            }
+        });
+
+
+        MenuItem copy_host_command_menu = new MenuItem("Copy " + localDevice.deviceName + " to clipboard");
+        copy_host_command_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                final Clipboard clipboard = Clipboard.getSystemClipboard();
+                final ClipboardContent content = new ClipboardContent();
+                content.putString(localDevice.deviceName);
+                clipboard.setContent(content);
+            }
+        });
+
+        MenuItem request_status_menu = new MenuItem("Request status");
+        request_status_menu.setDisable(localDevice.isIgnoringDevice());
+        request_status_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                localDevice.sendStatusRequest();
+            }
+        });
+
+
+        MenuItem request_version_menu = new MenuItem("Request Version");
+        request_version_menu.setDisable(localDevice.isIgnoringDevice());
+        request_version_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                localDevice.sendVersionRequest();
+            }
+        });
+
+
+        CheckMenuItem favourite_item_menu = new CheckMenuItem("Favourite");
+        favourite_item_menu.setSelected(localDevice.isFavouriteDevice());
+        favourite_item_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                localDevice.setFavouriteDevice(!localDevice.isFavouriteDevice());
+                Platform.runLater(() -> {
+                    favourite_item_menu.setSelected(localDevice.isFavouriteDevice());
+                });
+            }
+        });
+
+        CheckMenuItem encrypt_item_menu = new CheckMenuItem("Encrypt Classes");
+        encrypt_item_menu.setSelected(localDevice.isEncryptionEnabled());
+        encrypt_item_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                localDevice.setEncryptionEnabled(!localDevice.isEncryptionEnabled());
+                Platform.runLater(() -> {
+                    encrypt_item_menu.setSelected(localDevice.isFavouriteDevice());
+                });
+            }
+        });
+
+        MenuItem reboot_menu = new MenuItem("Reboot Device");
+        reboot_menu.setDisable(localDevice.isIgnoringDevice());
+        reboot_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                new Thread(() -> {
+                    try {
+
+                        int dialog_button = JOptionPane.YES_NO_OPTION;
+                        int dialog_result = JOptionPane.showConfirmDialog(null,
+                                "Are you sure you want to reboot " + localDevice.getFriendlyName() + "?", "Rebooting " + localDevice.getFriendlyName(), dialog_button);
+
+                        if (dialog_result == JOptionPane.YES_OPTION) {
+                            localDevice.rebootDevice();
+                        }
+                    } catch (Exception ex) {
+                    }
+                }).start();
+
+
+            }
+        });
+
+        MenuItem shutdown_menu = new MenuItem("Shutdown Device");
+        shutdown_menu.setDisable(localDevice.isIgnoringDevice());
+        shutdown_menu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                new Thread(() -> {
+                    try {
+
+                        int dialog_button = JOptionPane.YES_NO_OPTION;
+                        int dialog_result = JOptionPane.showConfirmDialog(null,
+                                "Are you sure you want to shutdown " + localDevice.getFriendlyName() + "?", "Shutting Down " + localDevice.getFriendlyName(), dialog_button);
+
+                        if (dialog_result == JOptionPane.YES_OPTION) {
+                            localDevice.shutdownDevice();
+                        }
+                    } catch (Exception ex) {
+                    }
+                }).start();
+
+            }
+        });
+
+        contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, copy_host_command_menu, request_status_menu,
+                request_version_menu, favourite_item_menu, encrypt_item_menu,
+                 reboot_menu, shutdown_menu);
+    }
+
+    /**
+     * Erase the dynamic controls on this screen
+     */
+    public void eraseDynamicControls()
+    {
+        DynamicControlScreen this_screen = this;
+
+        Platform.runLater(new Runnable() {
+            public void run() {
+                synchronized (controlCreateLock) {
+                    if (dynamicControlStage != null) {
+                        dynamicControlGridPane.getChildren().clear();
+                        dynamicControlsList.clear();
+                    }
+                    nextControlRow = 0;
+                    for (DynamicControlScreenLoaded dynamicControlScreenLoaded : dynamicControlScreenLoadedList) {
+                        dynamicControlScreenLoaded.loadComplete (this_screen, false);
+                    }
+
+                }
+            }
+        });
+    }
+
     public void removeDynamicControlScene()
     {
         DynamicControlScreen this_screen = this;
@@ -250,10 +406,15 @@ public class DynamicControlScreen {
                         });
 
 
-                        final ContextMenu contextMenu = new ContextMenu();
+                        ContextMenu contextMenu = new ContextMenu();
                         CheckMenuItem always_on_top = new CheckMenuItem("Always on top");
                         always_on_top.setSelected(alwaysOnTop);
                         contextMenu.getItems().addAll(always_on_top);
+
+                        if (localDevice != null)
+                        {
+                            createContextMenus(contextMenu);
+                        }
 
                         scrollPane.setContextMenu(contextMenu);
                         if (debugPane != null) {
