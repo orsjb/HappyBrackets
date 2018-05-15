@@ -72,30 +72,30 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                 if (defaultSensor == null) {
                     System.out.println("Try Load MiniMU");
 
-                    try {
-                        MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
-                        if (sensor == null) {
-                            sensor = MiniMU.class.getConstructor().newInstance();
-                        }
-
-                        if (sensor != null) {
-                            if (sensor.isValidLoad()) {
-                                defaultSensor = sensor;
-                                MiniMU finalSensor = sensor;
-                                sensor.addNonResettableListener(new SensorUpdateListener() {
-                                    @Override
-                                    public void sensorUpdated() {
-                                        boolean send_notify = setX(finalSensor.getGyroscopeX());
-                                        send_notify |= setY(finalSensor.getGyroscopeY());
-                                        send_notify |= setZ(finalSensor.getGyroscopeZ());
-
-                                        if (send_notify) {
-                                            notifyListeners();
-                                        }
-                                    }
-                                });
+                        try {
+                            MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
+                            if (sensor == null) {
+                                sensor = MiniMU.class.getConstructor().newInstance();
                             }
-                        }
+
+                            if (sensor != null) {
+                                if (sensor.isValidLoad()) {
+                                    defaultSensor = sensor;
+                                    MiniMU finalSensor = sensor;
+                                    sensor.addNonResettableListener(new SensorUpdateListener() {
+                                        @Override
+                                        public void sensorUpdated() {
+                                            boolean send_notify = setX(finalSensor.getGyroscopeX());
+                                            send_notify |= setY(finalSensor.getGyroscopeY());
+                                            send_notify |= setZ(finalSensor.getGyroscopeZ());
+
+                                            if (send_notify) {
+                                                notifyListeners();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
 
                     } catch (Exception e) {
                         System.out.println("MiniMU not found");

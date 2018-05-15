@@ -114,8 +114,8 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 			}
 			try {
 				//  v3 info
-				MAG_ADDRESS = 0x1d;
-				ACC_ADDRESS = 0x1d;
+				MAG_ADDRESS = 0x1e;
+				ACC_ADDRESS = 0x1e;
 				GYR_ADDRESS = 0x6b;
 				gyrodevice = bus.getDevice(GYR_ADDRESS);
 				acceldevice = bus.getDevice(ACC_ADDRESS);
@@ -124,8 +124,22 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 				logger.info("OK - v3 set up.");
 
 			} catch (Exception e2) {
-				logger.error("OK - v3 IOException as well. Not sure we have a Minimu v2 or v3 attached.");
+				logger.error("OK - not a v3, so I'll try to set up a v5.");
 			}
+            try {
+                //  v5 info
+                MAG_ADDRESS = 0x6b;
+                ACC_ADDRESS = 0x6b;
+                GYR_ADDRESS = 0x1e;
+                gyrodevice = bus.getDevice(GYR_ADDRESS);
+                acceldevice = bus.getDevice(ACC_ADDRESS);
+                magdevice = bus.getDevice(MAG_ADDRESS);
+
+				System.out.println("OK - v5 set up.");
+
+            } catch (Exception e2) {
+                logger.error("OK - v5 IOException as well. Not sure we have a Minimu v2,v3 or v5 attached.");
+            }
 		}
 		try {
 
@@ -170,11 +184,11 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 //    			#define LSM303_MR_REG_M  0x02 // LSM303DLH, LSM303DLM, LSM303DLHC
 
 		} catch(IOException e) {
-			logger.error("Unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(", e);
+			System.out.println("Unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(" + e);
 			validLoad = false;
 		}
 
-		if (validLoad && bus != null & acceldevice != null) {
+		if (validLoad && bus != null && acceldevice != null) {
             System.out.println("MiniMu valid Load");
 			start();
 			storeSensor(this);
@@ -239,6 +253,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 		byte[] bytes = new byte[numBytes]; //
 		DataInputStream accelIn;
 		gyrodevice.read(0xa8, bytes, 0, bytes.length);
+//		System.out.println(bytes[0]);
 		accelIn = new DataInputStream(new ByteArrayInputStream(bytes));
 		for (int i = 0; i < numElements; i++) {
 			byte a = accelIn.readByte(); //least sig
