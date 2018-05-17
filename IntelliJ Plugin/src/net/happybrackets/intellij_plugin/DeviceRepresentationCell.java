@@ -21,6 +21,8 @@ import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
@@ -36,6 +38,9 @@ import javax.swing.*;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
+
+
+	private ImageView imageView = new ImageView();
 
     // define the username to use for SSH Command
     final String DEF_USERNAME = "pi";
@@ -77,6 +82,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 	@Override
 	public void updateItem(final LocalDeviceRepresentation item, boolean empty) {
+
 		super.updateItem(item, empty);
 
 		if (localDevice != null && empty)
@@ -146,6 +152,19 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		//reset button
 		Button resetButton = new Button("R");
+
+		try {
+
+
+			ImageIcon IMAGE_RUBY = new ImageIcon(Button.class.getResource("/resources/icons/Ruby_logo_64x64.png"));
+			imageView.setImage(Image.impl_fromPlatformImage(IMAGE_RUBY.getImage()));
+			resetButton.setGraphic(imageView);
+		}catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+		}
+
+
 		resetButton.setTooltip(new Tooltip("Reset device to its initial state."));
 		resetButton.setMaxHeight(5);
 		resetButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -183,6 +202,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		//bleep button
 		Button bleepButton = new Button("B");
+
 		bleepButton.setTooltip(new Tooltip("Tell device to emit a bleep sound."));
 		bleepButton.setMaxHeight(5);
 		bleepButton.setOnAction(new EventHandler<ActionEvent>() {

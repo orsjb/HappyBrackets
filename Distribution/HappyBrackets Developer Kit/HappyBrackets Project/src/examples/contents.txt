@@ -107,3 +107,7 @@ This file wil give a short description of the examples
 [multiple]
 SampleController        Complex sketch that creates a sample playback with threads for updating
                         And DynamicControls for monitoring and changing playback
+*******************************************************************
+[pythonscript]  - Displays running other processes from Happy Brackets
+RunCommandline          Displays starting a process with a single commandline
+RunProcessAndArguments  Displays starting a process with a process name and arguments
