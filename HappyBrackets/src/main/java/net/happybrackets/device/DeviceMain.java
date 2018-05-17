@@ -21,6 +21,7 @@ import net.happybrackets.core.BuildVersion;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.AudioSetup;
 
+import net.happybrackets.device.sensors.Sensor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,13 @@ public class DeviceMain {
 				catch (Exception e) {
 					logger.error("Error setting access mode from command line, check spelling. Defaulting to OPEN.");
 				}
-				break;
+				//break;
+			}
+			else if (s.startsWith("simulate=")){
+				String simulate_value = s.split("[=]")[1];
+				if(simulate_value.equalsIgnoreCase("true")){
+					Sensor.setSimulatedOnly(true);
+				}
 			}
 		}
 
