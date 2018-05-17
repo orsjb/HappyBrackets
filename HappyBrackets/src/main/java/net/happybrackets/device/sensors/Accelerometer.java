@@ -34,8 +34,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
     @SuppressWarnings("deprecation")
     private Sensor loadSensor(){
 
-        if (defaultSensor == null)
-        {
+        if (defaultSensor == null) {
             System.out.println("Try Load LSM95DS1");
 
             if (!isSimulatedOnly()) {
@@ -73,6 +72,40 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
 
                 if (defaultSensor == null) {
 
+                    System.out.println("Try Load LSM6DS33 (MiniMU v5) ");
+                    try {
+                        LSM6DS33 sensor = (LSM6DS33) getSensor(MiniMU.class);
+                        if (sensor == null) {
+                            sensor = LSM6DS33.class.getConstructor().newInstance();
+                        }
+
+                        if (sensor != null) {
+                            if (sensor.isValidLoad()) {
+                                defaultSensor = sensor;
+                                LSM6DS33 finalSensor = sensor;
+                                sensor.addNonResettableListener(new SensorUpdateListener() {
+                                    @Override
+                                    public void sensorUpdated() {
+                                        boolean send_notify = setX(finalSensor.getAccelerometerX());
+                                        send_notify |= setY(finalSensor.getAccelerometerY());
+                                        send_notify |= setZ(finalSensor.getAccelerometerZ());
+
+                                        if (send_notify) {
+                                            notifyListeners();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("loading LSM6DS33 not found");
+                    }
+                }
+
+
+                if (defaultSensor == null) {
+
                     System.out.println("Try Load MiniMU");
                     try {
                         MiniMU sensor = (MiniMU) getSensor(MiniMU.class);
@@ -104,6 +137,8 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                     }
                 }
             }
+
+
 
             if (defaultSensor == null && HB.isEnableSimulators()) {
                 AccelerometerSimulator sensor = new AccelerometerSimulator();

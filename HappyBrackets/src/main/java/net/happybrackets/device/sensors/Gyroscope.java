@@ -70,6 +70,40 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
                 }
 
                 if (defaultSensor == null) {
+                    System.out.println("Try Load LSM6DS33 (MiniMU v5) ");
+
+                    try {
+                        LSM6DS33 sensor = (LSM6DS33) getSensor(MiniMU.class);
+                        if (sensor == null) {
+                            sensor = LSM6DS33.class.getConstructor().newInstance();
+                        }
+
+                        if (sensor != null) {
+                            if (sensor.isValidLoad()) {
+                                defaultSensor = sensor;
+                                LSM6DS33 finalSensor = sensor;
+                                sensor.addNonResettableListener(new SensorUpdateListener() {
+                                    @Override
+                                    public void sensorUpdated() {
+                                        boolean send_notify = setX(finalSensor.getGyroscopeX());
+                                        send_notify |= setY(finalSensor.getGyroscopeY());
+                                        send_notify |= setZ(finalSensor.getGyroscopeZ());
+
+                                        if (send_notify) {
+                                            notifyListeners();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("LSM6DS33 not found");
+                    }
+                }
+
+
+                if (defaultSensor == null) {
                     System.out.println("Try Load MiniMU");
 
                     try {
