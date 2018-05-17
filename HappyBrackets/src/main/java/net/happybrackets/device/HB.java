@@ -80,7 +80,7 @@ public class HB {
 	 * Set  whether we will displaysimulator sensors if no hardware sensor is found
 	 * @param enableSimulators true if we want to display simulator controls
 	 */
-	public void setEnableSimulators(boolean enableSimulators) {
+	public static void setEnableSimulators(boolean enableSimulators) {
 		HB.enableSimulators = enableSimulators;
 	}
 

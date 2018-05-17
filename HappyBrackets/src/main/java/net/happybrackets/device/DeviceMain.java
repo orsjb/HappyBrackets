@@ -79,7 +79,7 @@ public class DeviceMain {
 			else if (s.startsWith("simulate=")){
 				String simulate_value = s.split("[=]")[1];
 				if(simulate_value.equalsIgnoreCase("true")){
-					Sensor.setSimulatedOnly(true);
+					HB.setEnableSimulators(true);
 				}
 			}
 		}
