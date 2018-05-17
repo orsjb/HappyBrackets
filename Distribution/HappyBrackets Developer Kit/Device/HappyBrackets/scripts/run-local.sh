@@ -18,7 +18,8 @@ OUTS=1
 AUTOSTART=true 
 ACCESSMODE=local
 ACTION=
+SIMULATE=true
 
 echo “Running HappyBrackets”
 
-java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION  
+java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE

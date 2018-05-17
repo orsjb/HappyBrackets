@@ -18,7 +18,8 @@ OUTS=1
 AUTOSTART=true 
 ACCESSMODE=local
 ACTION=
+SIMULATE=true
 
 echo “Running HappyBrackets and logging to stdout”
 
-java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION  > ramfs/stdout 2>&1
+java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE > ramfs/stdout 2>&1
