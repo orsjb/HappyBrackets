@@ -21,11 +21,11 @@ import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -35,6 +35,12 @@ import net.happybrackets.core.OSCVocabulary;
 import javax.swing.*;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
+
+	final String red_image_name = "/icons/red.png";
+	final String green_image_name = "/icons/green.png";
+
+	Image disconnectedImage = new Image(getClass().getResourceAsStream(red_image_name));
+	Image connectedImage = new Image(getClass().getResourceAsStream(green_image_name));
 
 
     // define the username to use for SSH Command
@@ -116,17 +122,25 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		HBox txthbox = new HBox();
 		txthbox.setAlignment(Pos.CENTER_LEFT);
 		main.add(txthbox, 0, 0);
+
+		Button connected_icon = new Button("");
+		connected_icon.setMaxSize(4,4);
+		connected_icon.setStyle("-fx-background-color: transparent;");
+
+		connected_icon.setGraphic(item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage));
 		Text name = new Text(item.getFriendlyName());
+		txthbox.getChildren().add(connected_icon);
 
 		name.setUnderline(true);
 
 
 		//if item not currently active, make that obvious by putting strikethrough through disconnected device
-		name.setStrikethrough(!item.getIsConnected());
+		//name.setStrikethrough(!item.getIsConnected());
 
 		item.addConnectedUpdateListener(connectedUpdateListener = connected -> Platform.runLater(new Runnable() {
             public void run() {
-                name.setStrikethrough(!connected);
+				connected_icon.setGraphic(item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage));
+            	//name.setStrikethrough(!connected);
             }
         }));
 
