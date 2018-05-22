@@ -5,16 +5,15 @@
 mkdir -p /home/pi/HappyBrackets/ramfs;
 sudo mount -t ramfs -o size=512 ramfs /home/pi/HappyBrackets/ramfs
 
+#if we want to set sepcific parameters for a device, place them in device.config
+CONFIG_FILE=device.config
 
-### move to the correct dir for running this script (one level above where this script is)
-DIR=`dirname $0`
-cd ${DIR}/..
 
-### run the auto-rename script
-scripts/auto-rename.sh
 
 ### run HappyBrackets
 ### args to HB.jar are: buf (buffer size, default=1024), sr (sample rate, default=44100), bits (sample bit size, default=16), ins (input channels, default=0), outs (output channels, default=1), start (autostart audio, default=true), access (live code access mode, either ‘open’, ‘local’ or ‘closed’, default=open), followed by the full class path to any HBAction you wish to auto run. All args except the last one can be entered in any order.
+
+#define default values
 
 BUF=1024
 SR=44100
@@ -25,6 +24,35 @@ DEVICE=0
 AUTOSTART=true 
 ACCESSMODE=open
 ACTION=
+
+#let us see if we have any specific values we want to use
+while IFS="=" read line val
+do
+    if [ "$line" = "OUTS"   ]
+    then
+        OUTS=$val
+        echo "Set OUTS to "$OUTS
+    fi
+
+    if [ "$line" = "SR"   ]
+    then
+        SR=$val
+        echo "Set SR to "$SR
+    fi
+
+    if [ "$line" = "BUF"   ]
+    then
+        BUF=$val
+        echo "Set SR to "$BUF
+    fi
+done <$CONFIG_FILE
+
+### move to the correct dir for running this script (one level above where this script is)
+DIR=`dirname $0`
+cd ${DIR}/..
+
+### run the auto-rename script
+scripts/auto-rename.sh
 
 echo “Running HappyBrackets”
 

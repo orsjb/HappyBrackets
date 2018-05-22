@@ -31,16 +31,22 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.intellij_plugin.menu.device.PingMenu;
+import net.happybrackets.intellij_plugin.menu.device.SoundMenu;
 
 import javax.swing.*;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
-	final String red_image_name = "/icons/red.png";
-	final String green_image_name = "/icons/green.png";
 
-	Image disconnectedImage = new Image(getClass().getResourceAsStream(red_image_name));
-	Image connectedImage = new Image(getClass().getResourceAsStream(green_image_name));
+	final String TRANSPARENT_STYLE = "-fx-background-color: transparent;";
+	final String MAIN_FONT_STYLE = "-fx-font-family: sample; -fx-font-size: 10;";
+
+	final String RED_IMAGE_NAME = "/icons/red.png";
+	final String GREEN_IMAGE_NAME = "/icons/green.png";
+
+	Image disconnectedImage = new Image(getClass().getResourceAsStream(RED_IMAGE_NAME));
+	Image connectedImage = new Image(getClass().getResourceAsStream(GREEN_IMAGE_NAME));
 
 
     // define the username to use for SSH Command
@@ -115,7 +121,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	synchronized void  addCellRow(LocalDeviceRepresentation item) {
 		//set up main panel
 		GridPane main = new GridPane();
-		main.setStyle("-fx-font-family: sample; -fx-font-size: 10;");
+		main.setStyle(MAIN_FONT_STYLE);
 		main.setVgap(5);
 
 		//name of the device
@@ -125,22 +131,24 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		Button connected_icon = new Button("");
 		connected_icon.setMaxSize(4,4);
-		connected_icon.setStyle("-fx-background-color: transparent;");
+		connected_icon.setStyle(TRANSPARENT_STYLE);
 
 		connected_icon.setGraphic(item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage));
 		Text name = new Text(item.getFriendlyName());
 		txthbox.getChildren().add(connected_icon);
 
-		name.setUnderline(true);
+		//name.setUnderline(true);
 
+		name.setOnMouseClicked(event -> {
+			localDevice.showControlScreen();
+		});
 
-		//if item not currently active, make that obvious by putting strikethrough through disconnected device
-		//name.setStrikethrough(!item.getIsConnected());
+		connected_icon.setOnAction(event -> {localDevice.showControlScreen();});
 
+		//if item not currently active, change icon to green
 		item.addConnectedUpdateListener(connectedUpdateListener = connected -> Platform.runLater(new Runnable() {
             public void run() {
 				connected_icon.setGraphic(item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage));
-            	//name.setStrikethrough(!connected);
             }
         }));
 
@@ -154,6 +162,9 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
             }
         }));
 
+
+
+
 		HBox controls = new HBox(5);
 		controls.setAlignment(Pos.CENTER_LEFT);
 		main.add(controls, 0, 1, 2, 1);
@@ -162,50 +173,30 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		Button resetButton = new Button("R");
 		resetButton.setTooltip(new Tooltip("Reset device to its initial state."));
 		resetButton.setMaxHeight(5);
-		resetButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-
-				item.resetDevice();
-			}
-		});
+		resetButton.setOnAction(e -> item.resetDevice());
 		controls.getChildren().add(resetButton);
-
-		//reset sounding button
-		Button resetSoundingButton = new Button("RS");
-		resetSoundingButton.setTooltip(new Tooltip("Reset Sounding. Resets device to its initial state except for audio that is currently playing."));
-		resetSoundingButton.setMaxHeight(5);
-		resetSoundingButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				item.send(OSCVocabulary.Device.RESET_SOUNDING);
-			}
+		resetButton.setOnContextMenuRequested(event -> {
+			ContextMenu contextMenu = new ContextMenu();
+			SoundMenu menus = new SoundMenu(item);
+			contextMenu.getItems().addAll(menus.getMenuItems());
+			contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 		});
-		controls.getChildren().add(resetSoundingButton);
 
-		//reset sounding button
-		Button clearSoundButton = new Button("CS");
-		clearSoundButton.setTooltip(new Tooltip("Clear Sound. Stop audio that is currently playing on this device."));
-		clearSoundButton.setMaxHeight(5);
-		clearSoundButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				item.send(OSCVocabulary.Device.CLEAR_SOUND);
-			}
-		});
-		controls.getChildren().add(clearSoundButton);
+
 
 		//bleep button
 		Button bleepButton = new Button("B");
 		bleepButton.setTooltip(new Tooltip("Tell device to emit a bleep sound."));
 		bleepButton.setMaxHeight(5);
-		bleepButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				item.send(OSCVocabulary.Device.BLEEP);
-			}
-		});
+		bleepButton.setOnAction(e -> item.send(OSCVocabulary.Device.BLEEP));
 		controls.getChildren().add(bleepButton);
+
+		bleepButton.setOnContextMenuRequested(event -> {
+			ContextMenu contextMenu = new ContextMenu();
+			PingMenu menus = new PingMenu(item);
+			contextMenu.getItems().addAll(menus.getMenuItems());
+			contextMenu.show(controls, event.getScreenX(), event.getScreenY());
+        });
 
 		/*
 		//group allocations
@@ -441,7 +432,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, copy_host_command_menu, request_status_menu,
 						request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, encrypt_item_menu,
 						remove_item_menu, reboot_menu, shutdown_menu);
-				contextMenu.show(controls, event.getScreenX(), event.getScreenY());
+				//contextMenu.show(controls, event.getScreenX(), event.getScreenY());
 			}
 
 		});

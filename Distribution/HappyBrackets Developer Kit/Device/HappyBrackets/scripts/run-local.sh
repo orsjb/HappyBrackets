@@ -3,12 +3,11 @@
 ### Script to autorun HappyBrackets on a local computer (i.e., typically your mac or PC where you are running IntelliJ rather than your remote device such as a Raspberry Pi).
 ### This script is similar to run.sh but does run the auto-rename nor the network monitor, and defaults to running HappyBrackets in 'local' access mode.
 
-### move to the correct dir for running this script (one level above where this script is)
-DIR=`dirname $0`
-cd ${DIR}/..
-
 ### run HappyBrackets
 ### args to HB.jar are: buf (buffer size, default=1024), sr (sample rate, default=44100), bits (sample bit size, default=16), ins (input channels, default=0), outs (output channels, default=1), start (autostart audio, default=true), access (live code access mode, either ‘open’, ‘local’ or ‘closed’, default=open), followed by the full class path to any HBAction you wish to auto run. All args except the last one can be entered in any order.
+
+#define the file that has cusome settings
+CONFIG_FILE=local.config
 
 BUF=1024
 SR=44100
@@ -19,6 +18,33 @@ AUTOSTART=true
 ACCESSMODE=local
 ACTION=
 SIMULATE=true
+
+#let us see if we have any specific values we want to use
+while IFS="=" read line val
+do
+    if [ "$line" = "OUTS"   ]
+    then
+        OUTS=$val
+        echo "Set OUTS to "$OUTS
+    fi
+
+    if [ "$line" = "SR"   ]
+    then
+        SR=$val
+        echo "Set SR to "$SR
+    fi
+
+    if [ "$line" = "BUF"   ]
+    then
+        BUF=$val
+        echo "Set SR to "$BUF
+    fi
+done <$CONFIG_FILE
+
+### move to the correct dir for running this script (one level above where this script is)
+DIR=`dirname $0`
+cd ${DIR}/..
+
 
 echo “Running HappyBrackets”
 
