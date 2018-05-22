@@ -18,6 +18,7 @@ package net.happybrackets.intellij_plugin;
 
 //import com.sun.org.apache.bcel.internal.generic.NEW;
 import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -123,27 +124,25 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		GridPane main = new GridPane();
 		main.setStyle(MAIN_FONT_STYLE);
 		main.setVgap(5);
+		main.setHgap(5);
+		int next_column = 0;
+		int current_row = 0;
 
-		//name of the device
-		HBox txthbox = new HBox();
-		txthbox.setAlignment(Pos.CENTER_LEFT);
-		main.add(txthbox, 0, 0);
 
 		Button connected_icon = new Button("");
-		connected_icon.setMaxSize(4,4);
+		connected_icon.setMaxSize(2,2);
 		connected_icon.setStyle(TRANSPARENT_STYLE);
 
 		connected_icon.setGraphic(item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage));
-		Text name = new Text(item.getFriendlyName());
-		txthbox.getChildren().add(connected_icon);
-
-		//name.setUnderline(true);
-
-		name.setOnMouseClicked(event -> {
-			localDevice.showControlScreen();
-		});
-
+		main.add(connected_icon, next_column, current_row);
+		next_column++;
 		connected_icon.setOnAction(event -> {localDevice.showControlScreen();});
+		connected_icon.setAlignment(Pos.CENTER_LEFT);
+
+		//name of the device
+		//HBox txthbox = new HBox();
+		//txthbox.setAlignment(Pos.CENTER_LEFT);
+		//main.add(txthbox, next_column, current_row);
 
 		//if item not currently active, change icon to green
 		item.addConnectedUpdateListener(connectedUpdateListener = connected -> Platform.runLater(new Runnable() {
@@ -152,8 +151,15 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
             }
         }));
 
-		txthbox.getChildren().add(name);
-		txthbox.setMinWidth(100);
+		Text name = new Text(item.getFriendlyName());
+		name.setOnMouseClicked(event -> {
+			localDevice.showControlScreen();
+		});
+
+		main.add(name, next_column, current_row);
+
+		next_column++;
+
 		item.addFriendlyNameUpdateListener(friendlyNameListener = new_name -> Platform.runLater(new Runnable() {
             public void run() {
 
@@ -163,40 +169,97 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         }));
 
 
+		// Now let us display ID
+		// add ID Text
+		Text id_text = new Text("ID " + item.getID());
+		main.add(id_text, next_column, current_row);
+		next_column++;
+		main.setHalignment(id_text, HPos.CENTER);
+		item.addDeviceIdUpdateListener(deviceIdUpdateListener = new_id -> Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				id_text.setText("ID " + new_id);
+			}
+		}));
+
+
+		// Display a reset Text
+		Text reset_text = new Text("Reset");
+		main.add(reset_text, next_column, current_row);
+		next_column++;
+		main.setHalignment(reset_text, HPos.CENTER);
+		reset_text.setUnderline(true);
+		reset_text.setOnMouseClicked(event->{
+			item.resetDevice();
+		});
+		reset_text.setOnContextMenuRequested(event -> {
+			ContextMenu contextMenu = new ContextMenu();
+			SoundMenu menus = new SoundMenu(item);
+			contextMenu.getItems().addAll(menus.getMenuItems());
+			contextMenu.show(main, event.getScreenX(), event.getScreenY());
+		});
+
+
+		// Add our beep
+		Text ping_text = new Text("Ping");
+		main.add(ping_text, next_column, current_row);
+		next_column++;
+		main.setHalignment(ping_text, HPos.CENTER);
+		ping_text.setUnderline(true);
+		ping_text.setOnMouseClicked(event->{
+			item.send(OSCVocabulary.Device.BLEEP);
+		});
+
+		ping_text.setOnContextMenuRequested(event -> {
+			ContextMenu contextMenu = new ContextMenu();
+			PingMenu menus = new PingMenu(item);
+			contextMenu.getItems().addAll(menus.getMenuItems());
+			contextMenu.show(main, event.getScreenX(), event.getScreenY());
+		});
+
+		Text send_text = new Text("Send");
+		main.add(send_text, next_column, current_row);
+		next_column++;
+
+		main.setHalignment(send_text, HPos.CENTER);
+		send_text.setUnderline(true);
+		send_text.setOnMouseClicked(event->{
+			// we will send current composition to device
+		});
+
+		// Now add slider
+
+		Slider s = new Slider(0, 2, 1);
+		s.setOrientation(Orientation.HORIZONTAL);
+		s.setMaxWidth(100);
+		s.valueProperty().addListener((obs, oldval, newval) -> item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f));
+		main.add(s, next_column, current_row);
+		next_column++;
+
+
+		// add a button to display menu items
+		Button menu_button = new Button("...");
+
+		menu_button.setOnAction(event -> {
+			Bounds local_bounds = menu_button.getBoundsInLocal();
+			Bounds screen_bounds = menu_button.localToScreen(local_bounds);
+
+			ContextMenu contextMenu = new ContextMenu();
+
+			PingMenu menus = new PingMenu(item);
+			contextMenu.getItems().addAll(menus.getMenuItems());
+			contextMenu.show(main, screen_bounds.getMinX(), screen_bounds.getMinY() );
+		});
+
+		main.add(menu_button, next_column, current_row);
+		next_column++;
 
 
 		HBox controls = new HBox(5);
 		controls.setAlignment(Pos.CENTER_LEFT);
 		main.add(controls, 0, 1, 2, 1);
 
-		//reset button
-		Button resetButton = new Button("R");
-		resetButton.setTooltip(new Tooltip("Reset device to its initial state."));
-		resetButton.setMaxHeight(5);
-		resetButton.setOnAction(e -> item.resetDevice());
-		controls.getChildren().add(resetButton);
-		resetButton.setOnContextMenuRequested(event -> {
-			ContextMenu contextMenu = new ContextMenu();
-			SoundMenu menus = new SoundMenu(item);
-			contextMenu.getItems().addAll(menus.getMenuItems());
-			contextMenu.show(controls, event.getScreenX(), event.getScreenY());
-		});
 
-
-
-		//bleep button
-		Button bleepButton = new Button("B");
-		bleepButton.setTooltip(new Tooltip("Tell device to emit a bleep sound."));
-		bleepButton.setMaxHeight(5);
-		bleepButton.setOnAction(e -> item.send(OSCVocabulary.Device.BLEEP));
-		controls.getChildren().add(bleepButton);
-
-		bleepButton.setOnContextMenuRequested(event -> {
-			ContextMenu contextMenu = new ContextMenu();
-			PingMenu menus = new PingMenu(item);
-			contextMenu.getItems().addAll(menus.getMenuItems());
-			contextMenu.show(controls, event.getScreenX(), event.getScreenY());
-        });
 
 		/*
 		//group allocations
@@ -216,28 +279,18 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		}
 		*/
 
-		Slider s = new Slider(0, 2, 1);
-		s.setOrientation(Orientation.HORIZONTAL);
-		s.setMaxWidth(100);
-		s.valueProperty().addListener((obs, oldval, newval) -> item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f));
-		controls.getChildren().add(s);
 
-		// add ID Text
-		Text id_text = new Text("ID " + item.getID());
-		main.add(id_text, 2, 0);
-		main.setHalignment(id_text, HPos.CENTER);
-		item.addDeviceIdUpdateListener(deviceIdUpdateListener = new_id -> Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                id_text.setText("ID " + new_id);
-            }
-        }));
+		// now start on third line if required
 
+		final int num_columns = next_column;
 
+		current_row++;
+		next_column = 0;
 		//a status string
-		Text statusText = new Text(localDevice.getStatus());
-		main.add(statusText, 1, 0);
-		main.setHalignment(statusText, HPos.CENTER);
+		final String STATUS_PREFIX = "Status :";
+		Text statusText = new Text(STATUS_PREFIX + localDevice.getStatus());
+		main.add(statusText, next_column, current_row, num_columns, 1);
+		main.setHalignment(statusText, HPos.LEFT);
 
 		if (localDevice.isInvalidVersion())
 		{
@@ -245,22 +298,21 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			{
 				invalidTextWarning = new Text(localDevice.getInvalidVersionWarning());
 
-				main.add(invalidTextWarning, 0, 2);
+				main.add(invalidTextWarning, 0, 2, num_columns, 1);
 			}
 		}
 
 
-
 		item.addStatusUpdateListener(updateListener = state -> Platform.runLater(new Runnable() {
             public void run() {
-                statusText.setText(state);
+                statusText.setText(STATUS_PREFIX + state);
 
                 if (localDevice.isInvalidVersion())
                 {
                     if (invalidTextWarning == null)
                     {
                         invalidTextWarning = new Text(localDevice.getInvalidVersionWarning());
-                        main.add(invalidTextWarning, 0, 2);
+                        main.add(invalidTextWarning, 0, 2, num_columns, 1);
                     }
                 }
             }
