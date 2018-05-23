@@ -69,6 +69,62 @@ public abstract class SendCompositionAction extends AnAction {
     }
 
     /**
+     * Get the class File for the defined Java Virtual file
+     * @param current_project the project we are in
+     * @param java_file the java file
+     * @return the virtual file that represents the class file
+     */
+    public static VirtualFile getClassFileFromJava(Project current_project, VirtualFile java_file){
+        VirtualFile ret = null;
+
+        String project_name = current_project.getName();
+
+        ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
+
+        if (java_file != null) {
+            // make sure it is a java file first
+            if (java_file.getExtension().equalsIgnoreCase(JAVA_EXTENSION)) {
+
+                String filename = java_file.getCanonicalPath();
+
+                // check our content roots to find root
+                VirtualFile[] contentSourceRoots = rootManager.getContentSourceRoots();
+
+                String source_folder = null;
+                String file_path_name = null; // this is name minus leading path
+
+                for (VirtualFile folder : contentSourceRoots) {
+                    String folder_name = folder.getCanonicalPath();
+                    if (filename.startsWith(folder_name)) {
+                        String relative_path = filename.replace(folder_name, "");
+                        //System.out.println(relative_path);
+                        // get name minus extension
+                        file_path_name = relative_path.substring(0, relative_path.length() - JAVA_EXTENSION.length());
+                        source_folder = folder_name;
+                        break;
+                    }
+                }
+
+                VirtualFile[] project_roots = rootManager.getContentRoots();
+                for (VirtualFile folder : project_roots) {
+                    String folder_name = folder.getCanonicalPath();
+                    if (source_folder.startsWith(folder_name)) {
+                        String class_filename = folder_name + OUTPUT_PATH + project_name + file_path_name + CLASS_EXTENSION;
+                        System.out.println(class_filename);
+                        ret = LocalFileSystem.getInstance().findFileByPath(class_filename);
+                        break;
+                    }
+                }
+
+
+            }
+        }
+
+
+        return ret;
+    }
+
+    /**
      * Get the class file associated with this action
      * @param e ActionEvent from menu
      * @return the Full Virtual path if it exists
@@ -78,10 +134,14 @@ public abstract class SendCompositionAction extends AnAction {
         VirtualFile ret = null;
         Project current_project = e.getProject();
 
+        VirtualFile current_file = selectedFile(e);
+
+        return getClassFileFromJava(current_project, current_file);
+        /*
         String project_name = current_project.getName();
 
         ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
-        VirtualFile current_file = selectedFile(e);
+
 
         if (current_file != null) {
             // make sure it is a java file first
@@ -121,6 +181,6 @@ public abstract class SendCompositionAction extends AnAction {
 
             }
         }
-        return ret;
+        return ret;*/
     }
 }
