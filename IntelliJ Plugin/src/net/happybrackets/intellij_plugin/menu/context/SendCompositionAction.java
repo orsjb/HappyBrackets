@@ -64,7 +64,7 @@ public abstract class SendCompositionAction extends AnAction {
      * @param full_class_path fill path of class on disk
      * @return the full path minus extension
      */
-    public String getFullClassName(@NotNull String full_class_path){
+    public static String getFullClassName(@NotNull String full_class_path){
         return full_class_path.substring(0, full_class_path.length() - (CLASS_EXTENSION.length() + 1));
     }
 
