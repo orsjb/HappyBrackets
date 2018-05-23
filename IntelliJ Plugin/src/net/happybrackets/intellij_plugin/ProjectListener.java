@@ -27,6 +27,7 @@ public class ProjectListener implements VetoableProjectManagerListener {
                 @Override
                 public void windowGainedFocus(WindowEvent e) {
                     HappyBracketsDebugMenu.loadExamplesMenu(project);
+
                 }
 
                 @Override

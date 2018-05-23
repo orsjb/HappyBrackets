@@ -17,6 +17,18 @@
 package net.happybrackets.intellij_plugin;
 
 //import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.WindowManager;
+import com.intellij.psi.PsiManager;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
@@ -31,11 +43,17 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
+import net.happybrackets.controller.network.SendToDevice;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
+import net.happybrackets.intellij_plugin.menu.device.DeviceNameMenu;
 import net.happybrackets.intellij_plugin.menu.device.PingMenu;
 import net.happybrackets.intellij_plugin.menu.device.SoundMenu;
 
 import javax.swing.*;
+import javax.xml.datatype.DatatypeConstants;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
@@ -62,6 +80,24 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
 	private LocalDeviceRepresentation.StatusUpdateListener friendlyNameListener = null;
 
+
+	/**
+	 * Display a message dialog
+	 * @param text thext to display
+	 */
+	void displayDialog(String text)
+	{
+		new Thread(() -> {
+			try {
+
+				JOptionPane.showMessageDialog(null,
+						text);
+
+
+			} catch (Exception ex) {
+			}
+		}).start();
+	}
 
 	//in case the user is not using pi as the default username for ssh
 	public void setUsername(String val)
@@ -128,16 +164,21 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		int next_column = 0;
 		int current_row = 0;
 
+		ImageView image  = item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage);
 
 		Button connected_icon = new Button("");
-		connected_icon.setMaxSize(2,2);
+		connected_icon.setPrefSize(connectedImage.getWidth(), connectedImage.getHeight());
+		connected_icon.setMaxSize(connectedImage.getWidth(), connectedImage.getHeight());
 		connected_icon.setStyle(TRANSPARENT_STYLE);
 
-		connected_icon.setGraphic(item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage));
+		connected_icon.setGraphic(image);
 		main.add(connected_icon, next_column, current_row);
 		next_column++;
 		connected_icon.setOnAction(event -> {localDevice.showControlScreen();});
 		connected_icon.setAlignment(Pos.CENTER_LEFT);
+
+		main.getColumnConstraints().add(new ColumnConstraints(connectedImage.getWidth() * 2));
+		main.getColumnConstraints().add(new ColumnConstraints(100));
 
 		//name of the device
 		//HBox txthbox = new HBox();
@@ -155,6 +196,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		name.setOnMouseClicked(event -> {
 			localDevice.showControlScreen();
 		});
+
+		name.setOnContextMenuRequested(event -> {
+			ContextMenu contextMenu = new ContextMenu();
+			DeviceNameMenu menus = new DeviceNameMenu(item);
+			contextMenu.getItems().addAll(menus.getMenuItems());
+			contextMenu.show(main, event.getScreenX(), event.getScreenY());
+		});
+
 
 		main.add(name, next_column, current_row);
 
@@ -224,6 +273,50 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		main.setHalignment(send_text, HPos.CENTER);
 		send_text.setUnderline(true);
 		send_text.setOnMouseClicked(event->{
+
+			try {
+				try {
+					//Project project = projects[i];
+
+					ApplicationManager.getApplication().invokeLater(() -> {
+						try {
+
+							DataContext dataContext = DataManager.getInstance().getDataContext();
+
+							Project project = DataKeys.PROJECT.getData(dataContext);
+							Document current_doc = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument();
+							VirtualFile current_java_file = FileDocumentManager.getInstance().getFile(current_doc);
+
+							VirtualFile class_file = SendCompositionAction.getClassFileFromJava(project, current_java_file);
+
+							if (class_file != null) {
+								String full_class_name = SendCompositionAction.getFullClassName(class_file.getCanonicalPath());
+								List<LocalDeviceRepresentation> selected = new ArrayList<>();
+								selected.add(item);
+								try {
+									SendToDevice.send(full_class_name, selected);
+								} catch (Exception e) {
+									displayDialog(e.getMessage());
+								}
+							}
+							else
+							{
+								displayDialog("Unable to find class");
+							}
+						} catch (Exception ex2) {
+
+						}
+					});
+				} catch (Exception ex) {
+					displayDialog(ex.getMessage());
+
+				}
+
+			}catch (Exception ex){
+				System.out.println(ex.getMessage());
+				displayDialog(ex.getMessage());
+			}
+
 			// we will send current composition to device
 		});
 
@@ -318,176 +411,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
             }
         }));
 
-
-		controls.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
-			@Override
-			public void handle(ContextMenuEvent event) {
-				// create a popup menu to allow accessing parameters
-				ContextMenu contextMenu = new ContextMenu();
-
-
-				MenuItem copy_name_command_menu = new MenuItem("Copy " + item.getAddress() + " to clipboard");
-				copy_name_command_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						final Clipboard clipboard = Clipboard.getSystemClipboard();
-						final ClipboardContent content = new ClipboardContent();
-						content.putString(item.getAddress());
-						clipboard.setContent(content);
-					}
-				});
-
-				MenuItem copy_ssh_command_menu = new MenuItem("Copy SSH " + item.getAddress() + " to clipboard");
-				copy_ssh_command_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						final Clipboard clipboard = Clipboard.getSystemClipboard();
-						final ClipboardContent content = new ClipboardContent();
-						content.putString(buildSSHCommand(item.getAddress()));
-						clipboard.setContent(content);
-					}
-				});
-
-
-				MenuItem copy_host_command_menu = new MenuItem("Copy " + item.deviceName + " to clipboard");
-				copy_host_command_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						final Clipboard clipboard = Clipboard.getSystemClipboard();
-						final ClipboardContent content = new ClipboardContent();
-						content.putString(item.deviceName);
-						clipboard.setContent(content);
-					}
-				});
-
-				MenuItem request_status_menu = new MenuItem("Request status");
-				request_status_menu.setDisable(localDevice.isIgnoringDevice());
-				request_status_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						item.sendStatusRequest();
-					}
-				});
-
-
-				MenuItem request_version_menu = new MenuItem("Request Version");
-				request_version_menu.setDisable(localDevice.isIgnoringDevice());
-				request_version_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						item.sendVersionRequest();
-					}
-				});
-
-
-				MenuItem remove_item_menu = new MenuItem("Remove " + item.deviceName);
-				remove_item_menu.setOnAction(event1 -> item.removeDevice());
-
-
-				MenuItem show_controls_item_menu = new MenuItem("Show Controls");
-				show_controls_item_menu.setDisable(localDevice.isIgnoringDevice());
-				show_controls_item_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						localDevice.showControlScreen();
-					}
-				});
-
-
-				CheckMenuItem ignore_controls_item_menu = new CheckMenuItem("Ignore this Device");
-				ignore_controls_item_menu.setSelected(localDevice.isIgnoringDevice());
-				ignore_controls_item_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						localDevice.setIgnoreDevice(!localDevice.isIgnoringDevice());
-						Platform.runLater(() -> {
-
-							ignore_controls_item_menu.setSelected(localDevice.isIgnoringDevice());
-						});
-
-					}
-				});
-
-				CheckMenuItem favourite_item_menu = new CheckMenuItem("Favourite");
-				favourite_item_menu.setSelected(localDevice.isFavouriteDevice());
-				favourite_item_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-						localDevice.setFavouriteDevice(!localDevice.isFavouriteDevice());
-						Platform.runLater(() -> {
-							favourite_item_menu.setSelected(localDevice.isFavouriteDevice());
-						});
-					}
-				});
-
-				CheckMenuItem encrypt_item_menu = new CheckMenuItem("Encrypt Classes");
-				encrypt_item_menu.setSelected(localDevice.isEncryptionEnabled());
-				encrypt_item_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-						localDevice.setEncryptionEnabled(!localDevice.isEncryptionEnabled());
-						Platform.runLater(() -> {
-							encrypt_item_menu.setSelected(localDevice.isFavouriteDevice());
-						});
-					}
-				});
-
-				MenuItem reboot_menu = new MenuItem("Reboot Device");
-				reboot_menu.setDisable(localDevice.isIgnoringDevice());
-				reboot_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-						new Thread(() -> {
-							try {
-
-								int dialog_button = JOptionPane.YES_NO_OPTION;
-								int dialog_result = JOptionPane.showConfirmDialog(null,
-										"Are you sure you want to reboot " + localDevice.getFriendlyName() + "?", "Rebooting " + localDevice.getFriendlyName(), dialog_button);
-
-								if (dialog_result == JOptionPane.YES_OPTION) {
-									localDevice.rebootDevice();
-								}
-							} catch (Exception ex) {
-							}
-						}).start();
-
-
-					}
-				});
-
-				MenuItem shutdown_menu = new MenuItem("Shutdown Device");
-				shutdown_menu.setDisable(localDevice.isIgnoringDevice());
-				shutdown_menu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-						new Thread(() -> {
-							try {
-
-								int dialog_button = JOptionPane.YES_NO_OPTION;
-								int dialog_result = JOptionPane.showConfirmDialog(null,
-										"Are you sure you want to shutdown " + localDevice.getFriendlyName() + "?", "Shutting Down " + localDevice.getFriendlyName(), dialog_button);
-
-								if (dialog_result == JOptionPane.YES_OPTION) {
-									localDevice.shutdownDevice();
-								}
-							} catch (Exception ex) {
-							}
-						}).start();
-
-					}
-				});
-
-				contextMenu.getItems().addAll(copy_name_command_menu, copy_ssh_command_menu, copy_host_command_menu, request_status_menu,
-						request_version_menu, show_controls_item_menu, ignore_controls_item_menu, favourite_item_menu, encrypt_item_menu,
-						remove_item_menu, reboot_menu, shutdown_menu);
-				//contextMenu.show(controls, event.getScreenX(), event.getScreenY());
-			}
-
-		});
 
 		setGraphic(main);
 
