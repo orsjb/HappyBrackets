@@ -113,6 +113,17 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 
 	/**
+	 * Check that none of the modifiers are down so we can prevent mouse
+	 * action. This enables us to do a context menu and not this one
+	 * @param event the mouse event
+	 * @return true if there are no modifiers
+	 */
+	boolean mouseModifiersClear(MouseEvent event){
+		return !(event.isControlDown() || event.isAltDown()
+				|| event.isMetaDown()  || event.isShiftDown());
+	}
+
+	/**
 	 * The cell parameters need to be reset every time a device is updated because they are bound to the olde LocalDevicerepresentation
 	 */
 	private void resetCellParameters(){
@@ -177,6 +188,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		connected_icon.setOnAction(event -> {localDevice.showControlScreen();});
 		connected_icon.setAlignment(Pos.CENTER_LEFT);
 
+		connected_icon.setTooltip(new Tooltip("Click to display Controls"));
 		main.getColumnConstraints().add(new ColumnConstraints(connectedImage.getWidth() * 2));
 		main.getColumnConstraints().add(new ColumnConstraints(100));
 
@@ -194,8 +206,12 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		Text name = new Text(item.getFriendlyName());
 		name.setOnMouseClicked(event -> {
-			localDevice.showControlScreen();
+			// we do not want to show controls if it is a context menu
+			if (mouseModifiersClear(event)) {
+				localDevice.showControlScreen();
+			}
 		});
+
 
 		name.setOnContextMenuRequested(event -> {
 			ContextMenu contextMenu = new ContextMenu();
@@ -232,6 +248,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		}));
 
 
+
 		// Display a reset Text
 		Text reset_text = new Text("Reset");
 		main.add(reset_text, next_column, current_row);
@@ -239,7 +256,9 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		main.setHalignment(reset_text, HPos.CENTER);
 		reset_text.setUnderline(true);
 		reset_text.setOnMouseClicked(event->{
-			item.resetDevice();
+			if (mouseModifiersClear(event)) {
+				item.resetDevice();
+			}
 		});
 		reset_text.setOnContextMenuRequested(event -> {
 			ContextMenu contextMenu = new ContextMenu();
@@ -255,8 +274,11 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		next_column++;
 		main.setHalignment(ping_text, HPos.CENTER);
 		ping_text.setUnderline(true);
+		
 		ping_text.setOnMouseClicked(event->{
-			item.send(OSCVocabulary.Device.BLEEP);
+			if (mouseModifiersClear(event)) {
+				item.send(OSCVocabulary.Device.BLEEP);
+			}
 		});
 
 		ping_text.setOnContextMenuRequested(event -> {
