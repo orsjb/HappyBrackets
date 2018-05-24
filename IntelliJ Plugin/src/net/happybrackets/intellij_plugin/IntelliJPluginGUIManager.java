@@ -91,7 +91,6 @@ public class IntelliJPluginGUIManager {
 	final static Logger logger = LoggerFactory.getLogger(IntelliJPluginGUIManager.class);
 	private LocalDeviceRepresentation logDevice; // The device we're currently monitoring for log events, if any.
 	private LocalDeviceRepresentation.LogListener logListener; // The listener for new log events, so we can remove when necessary.
-	private TextArea logOutputTextArea;
 
 	private Map<LocalDeviceRepresentation, DeviceErrorListener> deviceErrorListeners;
 
@@ -712,35 +711,6 @@ public class IntelliJPluginGUIManager {
 		composition_send_pane.add(composition_send_selected_button, button_column, 1);
 		button_column++;
 
-		for (int i = 0; i < 4; i++) {
-			final int group = i;
-			Button composition_send_group_button = new Button("" + (i + 1));
-			composition_send_group_button.setTooltip(new Tooltip("Send the selected composition to device group " + (i + 1) + "."));
-			composition_send_group_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent e) {
-					List<LocalDeviceRepresentation> devices = new ArrayList<>();
-					for(LocalDeviceRepresentation device : deviceListView.getItems()) {
-						if (device.groups[group]) {
-							devices.add(device);
-						}
-					}
-					sendSelectedComposition(devices);
-				}
-			});
-
-			composition_send_group_button.setDisable(true);
-			// Disable the Button if there are no devices
-			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
-				@Override
-				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
-					disableControl(composition_send_group_button, deviceListView.getItems().size() < 1);
-				}
-			});
-
-			composition_send_pane.add(composition_send_group_button, button_column, 1);
-			button_column++;
-		}
 
 		return composition_send_pane;
 	}
@@ -834,28 +804,7 @@ public class IntelliJPluginGUIManager {
 		});
 
 		messagepaths.getChildren().add(send_selected_OSC_button);
-
-		for(int i = 0; i < 4; i++) {
-			Button b = new Button();
-			final int index = i;
-			b.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent e) {
-					sendCustomCommand(code_field.getText(), index);
-				}
-			});
-			b.setText("" + (i + 1));
-			messagepaths.getChildren().add(b);
-			b.setDisable(true);
-			// Disable the Button if there are no devices
-			deviceListView.getItems().addListener(new ListChangeListener<LocalDeviceRepresentation>() {
-				@Override
-				public void onChanged(Change<? extends LocalDeviceRepresentation> c) {
-					disableControl(b, deviceListView.getItems().size() < 1);
-				}
-			});
-		}
-
+		
 		VBox custom_command_pane = new VBox(defaultElementSpacing);
 		custom_command_pane.getChildren().addAll(code_field, messagepaths);
 		return custom_command_pane;
@@ -1003,79 +952,7 @@ public class IntelliJPluginGUIManager {
 	}
 
 
-	private Node makeDebugPane() {
-		String start_text = "Start device logging";
-		Tooltip start_tooltip = new Tooltip("Tell all devices to start sending their log files.");
-		String stop_text = "Stop device logging";
 
-		Tooltip stop_tooltip = new Tooltip("Tell all devices to stop sending their log files.");
-		Button enable_button = new Button(deviceConnection.isDeviceLoggingEnabled() ? stop_text : start_text);
-		enable_button.setTooltip(deviceConnection.isDeviceLoggingEnabled() ? stop_tooltip : start_tooltip);
-		enable_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				boolean enable = !deviceConnection.isDeviceLoggingEnabled();
-				if (enable) {
-					enable_button.setText(stop_text);
-					enable_button.setTooltip(stop_tooltip);
-					configureLogMonitoring(deviceListView.getSelectionModel().getSelectedItem());
-				}
-				else {
-					enable_button.setText(start_text);
-					enable_button.setTooltip(start_tooltip);
-					configureLogMonitoring(null);
-				}
-				deviceConnection.deviceEnableLogging(enable);
-			}
-		});
-
-
-
-		logOutputTextArea = new TextArea();
-
-		logOutputTextArea.setMinHeight(minTextAreaHeight);
-
-		deviceListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<LocalDeviceRepresentation>() {
-			@Override
-			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation old_value, LocalDeviceRepresentation new_value) {
-				if (deviceConnection.isDeviceLoggingEnabled()) {
-					configureLogMonitoring(new_value);
-				}
-			}
-		});
-
-		VBox pane = new VBox(defaultElementSpacing);
-		pane.getChildren().addAll(enable_button, logOutputTextArea);
-		return pane;
-	}
-
-	private void configureLogMonitoring(LocalDeviceRepresentation device) {
-		// If device to log is not different, nothing to do.
-		if (device == logDevice) return;
-
-		logOutputTextArea.setText("");
-
-		// First remove previous log monitor, if any.
-		if (logDevice != null) {
-			logDevice.removeLogListener(logListener);
-			logDevice = null;
-			logListener = null;
-		}
-
-		// Set-up log monitor for new device if specified.
-		if (device != null) {
-			logOutputTextArea.setText(device.getDeviceLog());
-
-			// Make it scroll to bottom. Have to wait a tick for the UI thread to actually update the text.
-			// (note: adding a listener for text change event and scrolling there doesn't work either).
-			(new Timer()).schedule(new TimerTask() {
-				public void run() { logOutputTextArea.setScrollTop(Double.MAX_VALUE); }
-			}, 100);
-
-			logListener = (newLogOutput) -> logOutputTextArea.appendText(newLogOutput);
-			device.addLogListener(logListener);
-		}
-	}
 
 	private void showPopup(String message, Node element, int timeout, MouseEvent event) {
 		showPopup(message, element, timeout, event.getScreenX(), event.getScreenY());

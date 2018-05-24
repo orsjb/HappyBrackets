@@ -39,6 +39,7 @@ public class LocalDeviceRepresentation {
 
 	final int MILLISECONDS_TO_REQUEST_CONTROLS = 2000;
 
+	public static final int MAX_LOG_DISPLAY_CHARS = 5000;
 
 	final static Logger logger = LoggerFactory.getLogger(LocalDeviceRepresentation.class);
 
@@ -273,10 +274,11 @@ public class LocalDeviceRepresentation {
 
 	private List<ErrorListener> errorListenerList = new ArrayList<>();
 
-	private String log;
+	private String currentLogPage = "";
+	private ArrayList<String> completeLog = new ArrayList<String>();
 
 	public interface LogListener {
-		void newLogMessage(String message);
+		void newLogMessage(String message, int page);
 	}
 
 	private List<LogListener> logListenerList = new ArrayList<>();
@@ -445,7 +447,7 @@ public class LocalDeviceRepresentation {
 		dynamicControlScreen.createDynamicControlStage();
 
 		// Set-up log monitor.
-		log = "";
+		currentLogPage = "";
 		/*
 		server.addOSCListener(new OSCListener() {
 			@Override
@@ -499,10 +501,20 @@ public class LocalDeviceRepresentation {
 
 	private synchronized void processLogMessage(OSCMessage msg, SocketAddress sender) {
 		String new_log_output = (String) msg.getArg(1);
-		log = log + "\n" + new_log_output;
+
+		// see if our new logpage will exceed our max log page size
+		if (currentLogPage.length() + new_log_output.length() > MAX_LOG_DISPLAY_CHARS && currentLogPage.length() != 0) {
+			completeLog.add(currentLogPage);
+			currentLogPage = new String(new_log_output);
+		}
+		else {
+			currentLogPage = currentLogPage + "\n" + new_log_output;
+		}
+
+
 		//logger.debug("Received new log output from device {} ({}): {}", deviceName, socketAddress, new_log_output);
 		for (LogListener listener : logListenerList) {
-			listener.newLogMessage(new_log_output);
+			listener.newLogMessage(new_log_output, numberLogPages() - 1);
 		}
 	}
 
@@ -947,8 +959,25 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
-	public String getDeviceLog() {
-		return log;
+	/**
+	 * Get the log by page
+	 * @param page the page number
+	 * @return the log for that page
+	 */
+	public String getDeviceLog(int page) {
+		String ret = currentLogPage;
+		if (page < completeLog.size()) {
+			ret = completeLog.get(page);
+		}
+		return ret;
+	}
+
+	/**
+	 * Gets the number of pages in our log + our current last page
+	 * @return number of pages
+	 */
+	public int numberLogPages(){
+		return completeLog.size() + 1;
 	}
 
 	/**

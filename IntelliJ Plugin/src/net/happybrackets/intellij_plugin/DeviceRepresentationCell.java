@@ -274,7 +274,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		next_column++;
 		main.setHalignment(ping_text, HPos.CENTER);
 		ping_text.setUnderline(true);
-		
+
 		ping_text.setOnMouseClicked(event->{
 			if (mouseModifiersClear(event)) {
 				item.send(OSCVocabulary.Device.BLEEP);

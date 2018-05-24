@@ -47,12 +47,14 @@ public class DynamicControlScreen {
     static final int DEFAULT_SCREEN_WIDTH = 500;
     static final int DEFAULT_SCREEN_HEIGHT = 500;
 
-    static final int MAX_LOG_DISPLAY_CHARS = 5000;
-
     private static final int MIN_TEXT_AREA_HEIGHT = 200;
     private final int DEFAULT_ELEMENT_SPACING = 10;
 
-    private boolean logFull = false;
+    private int currentLogPage = 0;
+
+    Button previousLogPageButton = new Button("<");
+    Button nextLogPageButton = new Button(">");
+    TextField logPageNumber = new TextField("1");
 
     ColumnConstraints column1 = new ColumnConstraints(100,100, Double.MAX_VALUE);
     ColumnConstraints column2 = new ColumnConstraints(200,300,Double.MAX_VALUE);
@@ -866,6 +868,15 @@ public class DynamicControlScreen {
     }
 
     /**
+     * Set the next and previous log page button states
+     */
+    private void setLogPageButtons(){
+        previousLogPageButton.setDisable(currentLogPage < 1 || localDevice.numberLogPages() < 2);
+        nextLogPageButton.setDisable(currentLogPage >= localDevice.numberLogPages() -1 || localDevice.numberLogPages() < 2);
+        int page_display_num = currentLogPage + 1;
+        logPageNumber.setText("Page " + page_display_num + " of " + localDevice.numberLogPages());
+    }
+    /**
      * Add a debug pane
      * @return
      */
@@ -880,6 +891,7 @@ public class DynamicControlScreen {
 
         Button enable_button = new Button(logging_enabled ? stop_text : start_text);
         enable_button.setTooltip(logging_enabled ? stop_tooltip : start_tooltip);
+
         enable_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -891,6 +903,7 @@ public class DynamicControlScreen {
             }
         });
 
+        /*
         localDevice.addLoggingStateListener(new LocalDeviceRepresentation.ConnectedUpdateListener() {
             @Override
             public void update(boolean logging_enabled) {
@@ -900,41 +913,65 @@ public class DynamicControlScreen {
             }
         });
 
-        Button clear_button = new Button("Clear Log");
-        clear_button.setTooltip(new Tooltip("Erases the log on this screen"));
-        clear_button.setOnMouseClicked(event -> log_output_text_area.clear());
+*/
+        previousLogPageButton.setTooltip(new Tooltip("Displays the previous page of the log"));
+        previousLogPageButton.setOnMouseClicked(event ->
+                {
+                    int previous_page_num = currentLogPage - 1;
+                    if (previous_page_num >= 0) {
+                        String log = localDevice.getDeviceLog(previous_page_num);
+                        currentLogPage = previous_page_num;
+                        log_output_text_area.setText(log);
+                    }
+                    setLogPageButtons();
+                }
+
+        );
+
+
+        nextLogPageButton.setTooltip(new Tooltip("Displays the next page of the log"));
+        nextLogPageButton.setOnMouseClicked(event ->
+                {
+                    int next_page_num = currentLogPage + 1;
+                    if (next_page_num < localDevice.numberLogPages()) {
+                        String log = localDevice.getDeviceLog(next_page_num);
+                        currentLogPage = next_page_num;
+                        log_output_text_area.setText(log);
+                    }
+                    setLogPageButtons();
+                }
+
+        );
 
         log_output_text_area.setMinHeight(MIN_TEXT_AREA_HEIGHT);
 
-        localDevice.addLogListener(deviceLogListener = new LocalDeviceRepresentation.LogListener() {
-            @Override
-            public void newLogMessage(String message) {
-                try {
-                    // let us see if the text is too big for us
-
-                    // how big will our new log be
-                    int new_total_length = message.length() + log_output_text_area.getLength();
-
-                    if (new_total_length > MAX_LOG_DISPLAY_CHARS) {
-                        if (!logFull) {
-                            log_output_text_area.appendText("Log Full - Delete some of the text to get more");
-                            logFull = true;
-                        }
-                    }
-                    else {
-                        log_output_text_area.appendText(message);
-                        logFull = false;
-                    }
-                } catch (Exception ex) {
-                    String error_message = ex.getMessage();
-                    System.out.println(error_message);
+        localDevice.addLogListener(deviceLogListener = (message, page) -> {
+            try {
+                // let us see if the text is too big for us
+                if (currentLogPage == page){
+                    log_output_text_area.appendText(message);
+                }else{
+                    // we have moved pages
+                    String log = localDevice.getDeviceLog(page);
+                    currentLogPage = page;
+                    log_output_text_area.setText(log);
                 }
+                setLogPageButtons();
+
+
+            } catch (Exception ex) {
+                String error_message = ex.getMessage();
+                System.out.println(error_message);
             }
+
         });
 
 
+        logPageNumber.setDisable(true);
+        HBox hBox  = new HBox(DEFAULT_ELEMENT_SPACING);
+        hBox.getChildren().addAll(enable_button, previousLogPageButton, logPageNumber, nextLogPageButton);
         VBox pane = new VBox(DEFAULT_ELEMENT_SPACING);
-        pane.getChildren().addAll(enable_button, log_output_text_area);
+        pane.getChildren().addAll(hBox, log_output_text_area);
         return pane;
     }
 
