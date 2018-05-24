@@ -80,18 +80,24 @@ public class Synchronizer {
 	private Synchronizer() {
 		//basics
 		log = new Hashtable<Long, Map<String, long[]>>();
-        broadcast = new BroadcastManager(LoadableConfig.getInstance().getMulticastAddr(), LoadableConfig.getInstance().getClockSynchPort());
-		try {
-			//start listening
-			setupListener();
-            logger.info("Synchronizer is listening.");
-            //start sending
-            startSending();
-            logger.info("Synchronizer is sending synch pulses.");
-            //display clock (optional)
-            //displayClock();
-		} catch(Exception e) {
-			logger.error("Unable to setup Synchronizer!", e);
+
+		int sync_port = LoadableConfig.getInstance().getClockSynchPort();
+
+		// if our Sync is zero then we will skip it
+		if (sync_port > 0) {
+			broadcast = new BroadcastManager(LoadableConfig.getInstance().getMulticastAddr(), sync_port);
+			try {
+				//start listening
+				setupListener();
+				logger.info("Synchronizer is listening.");
+				//start sending
+				startSending();
+				logger.info("Synchronizer is sending synch pulses.");
+				//display clock (optional)
+				//displayClock();
+			} catch (Exception e) {
+				logger.error("Unable to setup Synchronizer!", e);
+			}
 		}
 	}
 

@@ -2,7 +2,7 @@
   "multicastAddr":            "225.2.2.5",
   "broadcastPort":            2222,
   "statusFromDevicePort":     2223,
-  "clockSynchPort":           2224,
+  "clockSynchPort":           0, // zero will turn it off
   "codeToDevicePort":         2225,
   "controlToDevicePort":      2226,
   "controllerDiscoveryPort":  2227,
