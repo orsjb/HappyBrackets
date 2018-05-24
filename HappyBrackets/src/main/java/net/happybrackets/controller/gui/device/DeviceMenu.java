@@ -1,4 +1,4 @@
-package net.happybrackets.intellij_plugin.menu.device;
+package net.happybrackets.controller.gui.device;
 
 import javafx.scene.control.MenuItem;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
@@ -17,7 +17,7 @@ public abstract class DeviceMenu {
 
     /**
      * Get all the MenuItems we want displayed for this Item contex
-     * @return
+     * @return Array of menu Items
      */
     public abstract MenuItem[] getMenuItems();
 }

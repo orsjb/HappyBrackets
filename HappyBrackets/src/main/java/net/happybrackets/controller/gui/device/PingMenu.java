@@ -1,15 +1,12 @@
-package net.happybrackets.intellij_plugin.menu.device;
+package net.happybrackets.controller.gui.device;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
-import net.happybrackets.core.OSCVocabulary;
 
 import javax.swing.*;
 

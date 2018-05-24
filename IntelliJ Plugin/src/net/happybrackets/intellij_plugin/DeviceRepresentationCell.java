@@ -25,10 +25,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.psi.PsiManager;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
@@ -39,19 +36,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
 import net.happybrackets.controller.network.SendToDevice;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
-import net.happybrackets.intellij_plugin.menu.device.DeviceNameMenu;
-import net.happybrackets.intellij_plugin.menu.device.PingMenu;
-import net.happybrackets.intellij_plugin.menu.device.SoundMenu;
+import net.happybrackets.controller.gui.device.DeviceNameMenu;
+import net.happybrackets.controller.gui.device.PingMenu;
+import net.happybrackets.controller.gui.device.SoundMenu;
 
 import javax.swing.*;
-import javax.xml.datatype.DatatypeConstants;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -360,6 +354,10 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			Bounds screen_bounds = menu_button.localToScreen(local_bounds);
 
 			ContextMenu contextMenu = new ContextMenu();
+			MenuItem show_controls_menu = new MenuItem("Show Controls");
+			show_controls_menu.setOnAction(event2 -> item.showControlScreen());
+			contextMenu.getItems().add(show_controls_menu);
+			contextMenu.getItems().add(new SeparatorMenuItem());
 
 			PingMenu menus = new PingMenu(item);
 			contextMenu.getItems().addAll(menus.getMenuItems());
