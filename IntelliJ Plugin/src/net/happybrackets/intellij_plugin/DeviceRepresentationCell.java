@@ -52,6 +52,9 @@ import java.util.List;
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
 
+
+	final int ICON_FIT_SIZE = 12;
+
 	final String TRANSPARENT_STYLE = "-fx-background-color: transparent;";
 	final String MAIN_FONT_STYLE = "-fx-font-family: sample; -fx-font-size: 10;";
 
@@ -171,10 +174,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		ImageView image  = item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage);
 
+		image.setFitHeight(ICON_FIT_SIZE);
+		image.setFitWidth(ICON_FIT_SIZE);
+
 		Button connected_icon = new Button("");
-		connected_icon.setPrefSize(connectedImage.getWidth(), connectedImage.getHeight());
-		connected_icon.setMaxSize(connectedImage.getWidth(), connectedImage.getHeight());
+		connected_icon.setPrefSize(ICON_FIT_SIZE, ICON_FIT_SIZE);
+		connected_icon.setMaxSize(ICON_FIT_SIZE, ICON_FIT_SIZE);
 		connected_icon.setStyle(TRANSPARENT_STYLE);
+
 
 		connected_icon.setGraphic(image);
 		main.add(connected_icon, next_column, current_row);
@@ -183,7 +190,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		connected_icon.setAlignment(Pos.CENTER_LEFT);
 
 		connected_icon.setTooltip(new Tooltip("Click to display Controls"));
-		main.getColumnConstraints().add(new ColumnConstraints(connectedImage.getWidth() * 2));
+		main.getColumnConstraints().add(new ColumnConstraints(ICON_FIT_SIZE * 2));
 		main.getColumnConstraints().add(new ColumnConstraints(100));
 
 		//name of the device
@@ -194,7 +201,12 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		//if item not currently active, change icon to green
 		item.addConnectedUpdateListener(connectedUpdateListener = connected -> Platform.runLater(new Runnable() {
             public void run() {
-				connected_icon.setGraphic(item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage));
+				ImageView image  = item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage);
+
+				image.setFitHeight(ICON_FIT_SIZE);
+				image.setFitWidth(ICON_FIT_SIZE);
+
+				connected_icon.setGraphic(image);
             }
         }));
 
