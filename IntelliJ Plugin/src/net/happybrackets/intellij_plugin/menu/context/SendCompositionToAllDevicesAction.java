@@ -43,9 +43,13 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
                 String full_class_name = getFullClassName(vfile.getCanonicalPath());
                 SendToDevice.send(full_class_name, getDevices());
             } catch (Exception e1) {
-                e1.printStackTrace();
+                displayDialog(e1.getMessage());
             }
         }
+        else{
+            displayDialog("Unable to find class");
+        }
+
     }
 
 

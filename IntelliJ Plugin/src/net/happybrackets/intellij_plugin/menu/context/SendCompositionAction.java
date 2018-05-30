@@ -14,6 +14,7 @@ import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Set;
 
@@ -182,5 +183,23 @@ public abstract class SendCompositionAction extends AnAction {
             }
         }
         return ret;*/
+    }
+
+    /**
+     * Display a message dialog
+     * @param text thext to display
+     */
+    void displayDialog(String text)
+    {
+        new Thread(() -> {
+            try {
+
+                JOptionPane.showMessageDialog(null,
+                        text);
+
+
+            } catch (Exception ex) {
+            }
+        }).start();
     }
 }

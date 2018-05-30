@@ -14,6 +14,7 @@ final int NUMBER_AUDIO_CHANNELS = 1;
         /***** Type your HBAction code below this line ******/
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
 
         /***** Type your HBAction code above this line ******/

@@ -28,7 +28,7 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
 
                         if (selected_device != null) {
                             String device_name = selected_device.getFriendlyName();
-                            enable = true;
+                            enable = getClassFile(e) != null;
                             text += device_name;
                         } else {
                             text += "selected device";
@@ -61,8 +61,10 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
             try {
                 SendToDevice.send(full_class_name, selected);
             } catch (Exception e1) {
-                e1.printStackTrace();
+                displayDialog(e1.getMessage());
             }
+        } else{
+            displayDialog("Unable to find class");
         }
     }
 
