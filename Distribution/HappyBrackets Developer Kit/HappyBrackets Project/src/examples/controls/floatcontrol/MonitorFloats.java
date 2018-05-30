@@ -19,6 +19,7 @@ public class MonitorFloats implements HBAction {
 
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
 
         /*************************************************************

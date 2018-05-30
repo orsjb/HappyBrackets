@@ -23,6 +23,7 @@ public class SampleRateAccelerometer implements HBAction {
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         /**************************************************************
          * Load a sample and play it

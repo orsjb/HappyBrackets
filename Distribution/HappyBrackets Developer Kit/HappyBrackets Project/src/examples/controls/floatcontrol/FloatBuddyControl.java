@@ -21,6 +21,7 @@ public class FloatBuddyControl implements HBAction {
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         final float CENTRE_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float FREQUENCY_VARIATION = 500; // This is how much we will vary frequency around centre frequency

@@ -27,7 +27,7 @@ public class SimpleThread implements HBAction {
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
-
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         Glide waveformFrequency = new Glide(START_FREQUENCY);
 

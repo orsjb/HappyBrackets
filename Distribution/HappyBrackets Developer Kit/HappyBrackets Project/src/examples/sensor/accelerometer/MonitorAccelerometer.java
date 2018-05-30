@@ -18,6 +18,7 @@ public class MonitorAccelerometer implements HBAction {
 
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         /*************************************************************
          * Create a Float type Dynamic Control pair that displays as a slider and text box

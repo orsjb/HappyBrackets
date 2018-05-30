@@ -21,6 +21,7 @@ public class IntegerTextControl implements HBAction {
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
 
         final int INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make

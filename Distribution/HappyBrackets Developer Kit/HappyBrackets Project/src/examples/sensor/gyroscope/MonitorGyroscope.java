@@ -15,6 +15,11 @@ import java.lang.invoke.MethodHandles;
 public class MonitorGyroscope implements HBAction {
     @Override
     public void action(HB hb) {
+
+        // remove this code if you do not want other compositions to run at the same time as this one
+        hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
+
         /***** Type your HBAction code below this line ******/
         /*************************************************************
          * Create a Float type Dynamic Control pair that displays as a slider and text box

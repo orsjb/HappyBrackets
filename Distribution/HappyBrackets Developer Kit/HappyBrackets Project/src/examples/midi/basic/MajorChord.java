@@ -23,6 +23,7 @@ public class MajorChord implements HBAction {
 
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         final int MIDI_NOTE =  60; // This is MIDI C3
 

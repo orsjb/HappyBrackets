@@ -59,6 +59,7 @@ public class SampleController implements HBAction {
 
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         final float MAX_PLAYBACK_RATE = 2;
         final float START_PLAY_RATE = 1;

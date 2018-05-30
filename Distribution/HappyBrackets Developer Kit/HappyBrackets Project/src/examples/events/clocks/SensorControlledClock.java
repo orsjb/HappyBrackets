@@ -32,7 +32,7 @@ public class SensorControlledClock implements HBAction {
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
-
+        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
         
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
         Glide audioVolume = new Glide(INITIAL_VOLUME);
