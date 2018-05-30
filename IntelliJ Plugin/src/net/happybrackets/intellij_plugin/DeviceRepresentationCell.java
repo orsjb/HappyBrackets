@@ -163,6 +163,34 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		this.prefWidthProperty().bind(this.getListView().widthProperty().subtract(4));
 	}
 
+	/**
+	 * Set the undelineing and text style of our clickable text
+	 * @param text_field the text filed we are setting
+	 */
+	void setClickTextStyle(Text text_field){
+		text_field.setUnderline(true);
+	}
+
+	/**
+	 * Provide visual feedback that a text line has been clicked
+	 *
+	 * @param text_field the text filed we clicked
+	 */
+	void displayTextLineClick(Text text_field){
+		text_field.setUnderline(false);
+		new Thread(() -> {
+			try {
+				Thread.sleep(500);
+
+			} catch (Exception ex) {
+			}
+			Platform.runLater(()->
+			{
+				text_field.setUnderline(true);
+			});
+		}).start();
+	}
+
 	synchronized void  addCellRow(LocalDeviceRepresentation item) {
 		//set up main panel
 		GridPane main = new GridPane();
@@ -215,6 +243,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			// we do not want to show controls if it is a context menu
 			if (mouseModifiersClear(event)) {
 				localDevice.showControlScreen();
+
 			}
 		});
 
@@ -260,9 +289,12 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		main.add(reset_text, next_column, current_row);
 		next_column++;
 		main.setHalignment(reset_text, HPos.CENTER);
-		reset_text.setUnderline(true);
+
+		setClickTextStyle(reset_text);
+
 		reset_text.setOnMouseClicked(event->{
 			if (mouseModifiersClear(event)) {
+				displayTextLineClick(reset_text);
 				item.resetDevice();
 			}
 		});
@@ -279,10 +311,11 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		main.add(ping_text, next_column, current_row);
 		next_column++;
 		main.setHalignment(ping_text, HPos.CENTER);
-		ping_text.setUnderline(true);
+		setClickTextStyle(ping_text);
 
 		ping_text.setOnMouseClicked(event->{
 			if (mouseModifiersClear(event)) {
+				displayTextLineClick(ping_text);
 				item.send(OSCVocabulary.Device.BLEEP);
 			}
 		});
@@ -299,13 +332,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		next_column++;
 
 		main.setHalignment(send_text, HPos.CENTER);
-		send_text.setUnderline(true);
+
+		setClickTextStyle(send_text);
 		send_text.setOnMouseClicked(event->{
 
 			try {
 				try {
 					//Project project = projects[i];
-
+					displayTextLineClick(send_text);
 					ApplicationManager.getApplication().invokeLater(() -> {
 						try {
 
