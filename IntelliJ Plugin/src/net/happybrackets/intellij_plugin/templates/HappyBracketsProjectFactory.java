@@ -2,10 +2,10 @@ package net.happybrackets.intellij_plugin.templates;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.platform.ProjectTemplate;
-import com.intellij.platform.ProjectTemplatesFactory;
+
 import com.intellij.platform.templates.ArchivedTemplatesFactory;
 import com.intellij.platform.templates.LocalArchivedTemplate;
-import net.happybrackets.intellij_plugin.project.HappyBracketsProject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.icons.AllIcons;
@@ -70,10 +70,13 @@ public class HappyBracketsProjectFactory extends ArchivedTemplatesFactory {
             //}
             URL configURL = getCustomTemplatesURL();
             if (configURL != null) {
-                //displayDialog(" getCustomTemplatesURL" + configURL);
+                displayDialog(" getCustomTemplatesURL" + configURL);
                 urls.put(configURL, ClassLoader.getSystemClassLoader());
             }
-            
+            else
+            {
+                displayDialog(" getCustomTemplatesURL - null");
+            }
             for (Map.Entry<URL, ClassLoader> url : urls.entrySet()) {
                 try {
                     List<String> children = UrlUtil.getChildrenRelativePaths(url.getKey());
