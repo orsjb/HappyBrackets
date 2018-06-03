@@ -36,7 +36,9 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/hb.png"/>
+
     <defaultLiveTemplatesProvider implementation="net.happybrackets.intellij_plugin.templates.HappyBracketsTemplateProvider"/>
+    <projectTemplatesFactory implementation="net.happybrackets.intellij_plugin.templates.HappyBracketsProjectFactory"/>
 
   </extensions>
 
