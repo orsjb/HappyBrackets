@@ -62,6 +62,8 @@ This file wil give a short description of the examples
     CustomScale         A custom scale based on Midi note numbers is defined and mapped. A clock increments a counter.
                         The index is converted to appropriate Midi note number defined in the custom scale mapping.
                         The Midi note number is converted to a frequency and played
+    MajorScaleModulo    Uses a clock to increment a counter. The index is converted to the Midi note number using modulo math
+                        based on the scale degree of the major scale using Pitch class, converted to a frequency and played
 
 *******************************************************************
 [controls] - demonstrates DynamicControls and GUI manipulation

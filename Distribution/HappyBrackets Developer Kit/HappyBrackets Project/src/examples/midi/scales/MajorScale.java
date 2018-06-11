@@ -17,11 +17,7 @@ import java.lang.invoke.MethodHandles;
  * We increment an index from zero, and each time the number incremented
  * it plays next note in the scale
  *
- * The scale degree and register uses modulo and division.
- * For example, Consider we are starting at MIDI note number 48 (C2) and we want to play the
- * note 9 scale degrees above. This would mean we would need to play the note
- * which is a E in the next register. E is the third note in the C Major scale (index 2)
- *
+ * Uses function Pitch.getRelativeMidiNote to obtain the MIDI note
  * When our last note reaches 3 octaves, we start again at base note
  */
 public class MajorScale implements HBAction {
@@ -88,26 +84,10 @@ public class MajorScale implements HBAction {
                     // we are going to next note in scale
                     nextScaleIndex++;
 
-                    // get the scale degree from the scale
-                    // eg, if nextScaleIndex is 9, scale_degree = 9 % 7 = 2
-                    int scale_degree = nextScaleIndex % Pitch.major.length;
+                    // Get the Midi note number based on Scale
+                    int key_note = Pitch.getRelativeMidiNote(BASE_TONIC, Pitch.major, nextScaleIndex);
 
-                    // If our scale pitch is 2,Pitch.major[2] = 4 (major third)
-                    int scale_pitch = Pitch.major[scale_degree];
-
-                    // Now get the register of our note
-                    // eg, if nextScaleIndex is 9, scale_degree = 9 / 7 = 1
-                    int note_register = nextScaleIndex / Pitch.major.length;
-
-                    // we multiply our register x 12 because that is an octave in MIDI
-                    // if nextScaleIndex is 9 then 1 x 12 + 4 = 16
-                    int note_pitch = note_register * 12 + scale_pitch;
-
-                    // add the number to our base tonic to get the note based on key
-                    // if nextScaleIndex is 9 then 48 + 16 = 64. This is E3 in MIDI
-                    int key_note = BASE_TONIC + note_pitch;
-
-                    // if it exceeds our maximum, then start again
+                    // if it exceeds our maximum, then start again and use our start
                     if (key_note > MAXIMUM_PITCH)
                     {
                         key_note = BASE_TONIC;

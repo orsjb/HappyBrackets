@@ -17,7 +17,7 @@ import java.lang.invoke.MethodHandles;
  * We increment an index from zero, and each time the number incremented
  * it plays next note in the scale
  * Diminshed scale is TSTSTSTS (tone, semitone, tone, semitone, etc ...)
- * The scale degree and register uses modulo and division.
+ * Uses function Pitch.getRelativeMidiNote
  *
  * When our last note reaches 3 octaves, we start again at base note
  */
@@ -89,24 +89,9 @@ public class CustomScale implements HBAction {
                     // we are going to next note in scale
                     nextScaleIndex++;
 
-                    // get the scale degree from the scale
-                    // eg, if nextScaleIndex is 9, scale_degree = 9 % 8 = 1
-                    int scale_degree = nextScaleIndex % DIMINISHED_SCALE.length;
+                    // Get the Midi note number based on Scale
+                    int key_note = Pitch.getRelativeMidiNote(BASE_TONIC, DIMINISHED_SCALE, nextScaleIndex);
 
-                    // If our scale pitch is 1, DIMINISHED_SCALE[1] = 2 (major second third)
-                    int scale_pitch = DIMINISHED_SCALE[scale_degree];
-
-                    // Now get the register of our note
-                    // eg, if nextScaleIndex is 9, scale_degree = 9 / 8 = 1
-                    int note_register = nextScaleIndex / DIMINISHED_SCALE.length;
-
-                    // we multiply our register x 12 because that is an octave in MIDI
-                    // if nextScaleIndex is 9 then 1 x 12 + 2 = 14
-                    int note_pitch = note_register * 12 + scale_pitch;
-
-                    // add the number to our base tonic to get the note based on key
-                    // if nextScaleIndex is 9 then 48 + 14 = 62. This is D3 in MIDI
-                    int key_note = BASE_TONIC + note_pitch;
 
                     // if it exceeds our maximum, then start again
                     if (key_note > MAXIMUM_PITCH)
