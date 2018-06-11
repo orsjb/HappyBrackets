@@ -18,10 +18,7 @@ import java.lang.invoke.MethodHandles;
  * This will perform a pitch shift on the sample so it will play the next frequency
  *
  *
- * The scale degree and register uses modulo and division.
- * For example, Consider we want to play the note 9 scale degrees above.
- * This would mean we would need to play the note which is a major third in the next octave
- * which is a 2 in the next register. 
+ * Calls the function getRelativeMidiNote to get the number of semitones based on scale to shift
  *
  * When our last note reaches 3 octaves, we start again at base note
  */
@@ -36,23 +33,6 @@ public class SamplePitchShift implements HBAction {
 
     final int ENVELOPE_EDGES = 20; // the edges of the audio volume envelope
     final int MAXIMUM_PITCH = 12 * NUMBER_OCTAVES; // This is the highest note we will play
-
-
-    /**
-     * Create a table of sample rate multipliers, one for each semitone
-     * @return a table of 12 frequency multipliers, one for each semitone degree
-     */
-    static double [] createRateMultipliers(){
-        final double SEMITONE_CONSTANT =  Math.pow(2 , 1f/12f);
-        double [] ret = new double[12];
-
-        for (int i = 0; i < ret.length; i++){
-            ret [i] = Math.pow(SEMITONE_CONSTANT, i);
-        }
-        return ret;
-    }
-
-    final double [] MULTIPLIER_TABLE = createRateMultipliers();
 
     @Override
     public void action(HB hb) {
@@ -126,36 +106,8 @@ public class SamplePitchShift implements HBAction {
                     // we are going to next note in scale
                     nextScaleIndex++;
 
-                    // get the scale degree from the scale
-                    // eg, if nextScaleIndex is 9, scale_degree = 9 % 7 = 2
-                    int scale_degree = nextScaleIndex % Pitch.major.length;
-
-                    // If our scale pitch is 2,Pitch.major[2] = 4 (major third)
-                    int scale_pitch = Pitch.major[scale_degree];
-
-                    // Get the multiplier of scale based on semitones
-                    double pitch_multiplier = MULTIPLIER_TABLE[scale_pitch];
-
-                    // Now get the register of our note
-                    // eg, if nextScaleIndex is 9, scale_degree = 9 / 7 = 1
-                    int note_register = nextScaleIndex / Pitch.major.length;
-
-                    // get our multiplier of octaves on register
-                    double register_multiplier = Math.pow(2, note_register);
-
-                    // calculate how much we will multipley sample playback rate
-                    double sample_multiplier = pitch_multiplier * register_multiplier;
-
-                    sampleSpeed.setValue((float)sample_multiplier);
-                    samplePlayer.setPosition(0);
-
-                    // we multiply our register x 12 because that is an octave in MIDI
-                    // if nextScaleIndex is 9 then 1 x 12 + 4 = 16
-                    int note_pitch = note_register * 12 + scale_pitch;
-
-                    // add the number to our base tonic to get the note based on key
-                    // if nextScaleIndex is 9 then 48 + 16 = 64. This is E3 in MIDI
-                    int key_note = note_pitch;
+                    // Get the MIDI Amount to shift the note based on Major scale
+                    int key_note = Pitch.getRelativeMidiNote(0, Pitch.major, nextScaleIndex);
 
                     // if it exceeds our maximum, then start again
                     if (key_note > MAXIMUM_PITCH)
@@ -163,6 +115,10 @@ public class SamplePitchShift implements HBAction {
                         nextScaleIndex = 0;
                     }
 
+                    double sample_multiplier = Pitch.shiftPitch(1, nextScaleIndex);
+
+                    sampleSpeed.setValue((float)sample_multiplier);
+                    samplePlayer.setPosition(0);
 
                     /*** Write your code to perform functions on the beat above this line ****/
                 } else {
