@@ -74,12 +74,19 @@ public class DynamicControl {
 
 
 
-    private List<DynamicControlListener> controlListenerList = new ArrayList();
-    private List<DynamicControlListener> globalControlListenerList = new ArrayList();
-    private List<ControlScopeChangedListener> controlScopeChangedList = new ArrayList();
+    private List<DynamicControlListener> controlListenerList = new ArrayList<>();
+    private List<DynamicControlListener> globalControlListenerList = new ArrayList<>();
+    private List<ControlScopeChangedListener> controlScopeChangedList = new ArrayList<>();
 
     // This listener is only called when value on control set
-    private List<DynamicControlListener> valueSetListenerList = new ArrayList();
+    private List<DynamicControlListener> valueSetListenerList = new ArrayList<>();
+
+    // Create Object to lock shared resources
+    private final Object controlScopeChangedLock = new Object();
+    private final Object controlListenerLock = new Object();
+    private final Object globalListenerLock = new Object();
+    private final Object valueSetListenerLock = new Object();
+
 
     /**
      * Create the text we will display at the beginning of tooltip
@@ -671,7 +678,7 @@ public class DynamicControl {
     public DynamicControl addControlListener(DynamicControlListener listener)
     {
         if (listener != null) {
-            synchronized (controlListenerList) {
+            synchronized (controlListenerLock) {
                 controlListenerList.add(listener);
             }
         }
@@ -688,7 +695,7 @@ public class DynamicControl {
     public DynamicControl addGlobalControlListener(DynamicControlListener listener)
     {
         if (listener != null) {
-            synchronized (globalControlListenerList) {
+            synchronized (globalListenerLock) {
                 globalControlListenerList.add(listener);
             }
         }
@@ -705,7 +712,7 @@ public class DynamicControl {
     public DynamicControl addValueSetListener(DynamicControlListener listener)
     {
         if (listener != null) {
-            synchronized (valueSetListenerList) {
+            synchronized (valueSetListenerLock) {
                 valueSetListenerList.add(listener);
             }
         }
@@ -723,7 +730,7 @@ public class DynamicControl {
      */
     public DynamicControl removeControlListener(DynamicControlListener listener) {
         if (listener != null) {
-            synchronized (controlListenerList) {
+            synchronized (controlListenerLock) {
                 controlListenerList.remove(listener);
             }
         }
@@ -738,7 +745,7 @@ public class DynamicControl {
      */
     public DynamicControl removeGlobalControlListener(DynamicControlListener listener) {
         if (listener != null) {
-            synchronized (globalControlListenerList) {
+            synchronized (globalListenerLock) {
                 globalControlListenerList.remove(listener);
             }
         }
@@ -751,7 +758,7 @@ public class DynamicControl {
      */
     public  DynamicControl addControlScopeListener(ControlScopeChangedListener listener){
         if (listener != null) {
-            synchronized (controlScopeChangedList) {
+            synchronized (controlScopeChangedLock) {
                 controlScopeChangedList.add(listener);
             }
         }
@@ -767,7 +774,7 @@ public class DynamicControl {
      */
     public DynamicControl removeControlScopeChangedListener(ControlScopeChangedListener listener) {
         if (listener != null) {
-            synchronized (controlScopeChangedList) {
+            synchronized (controlScopeChangedLock) {
                 controlScopeChangedList.remove(listener);
             }
         }
@@ -780,8 +787,8 @@ public class DynamicControl {
      */
     public DynamicControl eraseListeners()
     {
-        synchronized (controlListenerList) {controlListenerList.clear();}
-        synchronized (controlScopeChangedList) {controlScopeChangedList.clear();}
+        synchronized (controlListenerLock) {controlListenerList.clear();}
+        synchronized (controlScopeChangedLock) {controlScopeChangedList.clear();}
         return this;
     }
 
@@ -791,7 +798,7 @@ public class DynamicControl {
      */
     public DynamicControl notifyLocalListeners()
     {
-        synchronized (controlListenerList)
+        synchronized (controlListenerLock)
         {
             controlListenerList.forEach(listener ->
             {
@@ -814,7 +821,7 @@ public class DynamicControl {
      * Send Update Message when value set
      */
     public void notifyValueSetListeners(){
-        synchronized (valueSetListenerList)
+        synchronized (valueSetListenerLock)
         {
             valueSetListenerList.forEach(listener ->
             {
@@ -834,7 +841,7 @@ public class DynamicControl {
      * Send Global Update Message
      */
     public void notifyGlobalListeners(){
-        synchronized (globalControlListenerList)
+        synchronized (globalListenerLock)
         {
             globalControlListenerList.forEach(listener ->
             {
@@ -855,7 +862,7 @@ public class DynamicControl {
      */
     public DynamicControl notifyControlChangeListeners()
     {
-        synchronized (controlScopeChangedList)
+        synchronized (controlScopeChangedLock)
         {
             controlScopeChangedList.forEach(listener ->
             {

@@ -25,11 +25,11 @@ public class ControlMap {
 
     private List<dynamicControlCreatedListener> controlCreatedListenerList = new ArrayList<>();
 
-    private List<dynamicControlAdvertiseListener> controlListenerList = new ArrayList();
+    private List<dynamicControlAdvertiseListener> controlListenerList = new ArrayList<>();
 
 
     // create a group of listeners for global controls over network
-    private List<dynamicControlAdvertiseListener> globalControlListenerList = new ArrayList();
+    private List<dynamicControlAdvertiseListener> globalControlListenerList = new ArrayList<>();
 
     // We will enforce singleton by instatiating it once
     private static ControlMap singletonInstance = null;

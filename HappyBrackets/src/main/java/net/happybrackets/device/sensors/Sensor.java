@@ -263,6 +263,7 @@ public abstract class Sensor {
      * @param sensorClass the class we are looking for
      * @return The class if it has been stored, otherwise null
      */
+    @SuppressWarnings("rawtypes")
     public static Sensor getSensor(Class sensorClass) {
         return loadedSensors.get(sensorClass);
     }

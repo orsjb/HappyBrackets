@@ -191,6 +191,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		}).start();
 	}
 
+	@SuppressWarnings("deprecation")
 	synchronized void  addCellRow(LocalDeviceRepresentation item) {
 		//set up main panel
 		GridPane main = new GridPane();

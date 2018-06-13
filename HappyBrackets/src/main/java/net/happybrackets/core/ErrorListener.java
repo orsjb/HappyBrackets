@@ -26,5 +26,6 @@ public interface ErrorListener {
      * @param description The description of the error. May be null.
      * @param ex The exception that was thrown if applicable, otherwise null.
      */
+    @SuppressWarnings("rawtypes")
     public void errorOccurred(Class clazz, String description, Exception ex);
 }

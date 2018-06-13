@@ -720,6 +720,7 @@ public class HB {
 	 * @param sensorClass the class of the {@link Sensor} you want returned
 	 * @return the returned {@link Sensor}, if one can be found
      */
+	@SuppressWarnings("rawtypes")
 	public Sensor getSensor(Class sensorClass) {
 		// see if we have a sensor stored in our list
 		Sensor result = sensors.get(sensorClass);

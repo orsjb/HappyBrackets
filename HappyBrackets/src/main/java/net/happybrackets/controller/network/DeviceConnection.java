@@ -109,7 +109,7 @@ public class DeviceConnection {
 
 
 
-	List<DisableAdvertiseChangedListener> disabledAdvertiseListener = new ArrayList();
+	List<DisableAdvertiseChangedListener> disabledAdvertiseListener = new ArrayList<>();
 	List<FavouritesChangedListener> favouritesChangedListeners = new ArrayList<>();
 
 	Set<String> favouriteDevices = new HashSet<>();

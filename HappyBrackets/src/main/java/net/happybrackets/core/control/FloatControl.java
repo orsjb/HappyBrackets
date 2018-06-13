@@ -1,0 +1,41 @@
+package net.happybrackets.core.control;
+
+public abstract class FloatControl extends DynamicControlParent {
+
+    /**
+     * Constructor for abstract FloatControl. Slider, Text and Buddy Control will
+     * derive from this class
+     * @param parent_sketch The parent object for control
+     * @param name The name to Display
+     * @param initial_value Initial value of the object
+     * @param min_val Minimum value to display on Slider
+     * @param max_val Maximum value to display on Slider
+     */
+    protected FloatControl(Object parent_sketch, String name, double initial_value, double min_val, double max_val) {
+        super(new DynamicControl(parent_sketch, ControlType.FLOAT, name, initial_value, min_val, max_val));
+    }
+
+
+    @Override
+    void notifyListener(Object val) {
+        valueChanged((float)val);
+    }
+
+    /**
+     * Get the value for the control
+     * @return the control value
+     */
+    public double getValue(){
+        return (float) getDynamicControl().getValue();
+    }
+
+    public abstract void valueChanged(double new_value);
+
+    /**
+     * set the value for the control. This will notify all the listeners
+     * @param val teh value to set to
+     */
+    public void setValue(double val){
+        getDynamicControl().setValue(val);
+    }
+}
