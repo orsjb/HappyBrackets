@@ -1,0 +1,18 @@
+12:19:57,817 |-INFO in ch.qos.logback.classic.gaffer.ConfigurationDelegate@158d2680 - Added status listener of type [ch.qos.logback.core.status.OnConsoleStatusListener]
+12:19:57,898 |-INFO in ch.qos.logback.classic.gaffer.ConfigurationDelegate@158d2680 - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+12:19:57,899 |-INFO in ch.qos.logback.classic.gaffer.ConfigurationDelegate@158d2680 - Naming appender as [STDOUT]
+12:19:58,040 |-INFO in ch.qos.logback.classic.gaffer.ConfigurationDelegate@158d2680 - Setting level of logger [ROOT] to ERROR
+12:19:58,049 |-INFO in ch.qos.logback.classic.gaffer.ConfigurationDelegate@158d2680 - Attaching appender named [STDOUT] to Logger[ROOT]
+************************************************************
+************************************************************
+************************************************************
+***            HappyBrackets Version 2.4.4.0             ***
+***                Beads Version 1.0.5.0                 ***
+************************************************************
+************************************************************
+************************************************************
+.....JavaSoundAudioIO: Chosen mixer is Default Audio Device.
+Version sent 2.4.4.0 to port 62768
+Name sent 2.4.4.0 to port 62768
+Version sent 2.4.4.0 to port 62768
+Name sent 2.4.4.0 to port 62768

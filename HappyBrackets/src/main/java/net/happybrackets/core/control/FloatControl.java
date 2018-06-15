@@ -33,7 +33,7 @@ public abstract class FloatControl extends DynamicControlParent {
 
     /**
      * set the value for the control. This will notify all the listeners
-     * @param val teh value to set to
+     * @param val the value to set to
      */
     public void setValue(double val){
         getDynamicControl().setValue(val);

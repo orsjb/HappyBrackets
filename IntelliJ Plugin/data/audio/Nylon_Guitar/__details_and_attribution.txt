@@ -1,0 +1,90 @@
+
+=================== FREESOUND ATTRIBUTION FORM =======================
+
+This form below lists all the samples in this pack with their descriptions and tags.
+You can use this form to attribute samples to users when you use them.
+
+=========================== CUT HERE =================================
+
+File:
+	Name: "Clean_A_harm.wav"
+	Url: http://www.freesound.org/samplesViewSingle.php?id=8381
+	Date of upload: 2005-10-16 22:42:17
+	
+Designer / Creator / Uploader:
+	Name: "SpeedY"
+	Url: http://www.freesound.org/usersViewSingle.php?id=6479
+	
+Description:
+	By "SpeedY" : Single note 12th fret A (5th) string natural harmonic. If there are any errors or faults that you can find, please tell me so I can fix it.
+
+Tags:
+	acoustic guitar nylon-guitar single-notes 
+======================================================================
+
+
+File:
+	Name: "Clean_B_harm.wav"
+	Url: http://www.freesound.org/samplesViewSingle.php?id=8384
+	Date of upload: 2005-10-16 22:42:32
+	
+Designer / Creator / Uploader:
+	Name: "SpeedY"
+	Url: http://www.freesound.org/usersViewSingle.php?id=6479
+	
+Description:
+	By "SpeedY" : Single note 12th fret B (2nd) string natural harmonic. If there are any errors or faults that you can find, please tell me so I can fix it.
+
+Tags:
+	acoustic guitar nylon-guitar single-notes 
+======================================================================
+
+File:
+	Name: "Clean_D_harm.wav"
+	Url: http://www.freesound.org/samplesViewSingle.php?id=8387
+	Date of upload: 2005-10-16 22:42:38
+	
+Designer / Creator / Uploader:
+	Name: "SpeedY"
+	Url: http://www.freesound.org/usersViewSingle.php?id=6479
+	
+Description:
+	By "SpeedY" : Single note 12th fret D (4th) string natural harmonic. If there are any errors or faults that you can find, please tell me so I can fix it.
+
+Tags:
+	acoustic guitar nylon-guitar single-notes 
+======================================================================
+
+File:
+	Name: "Clean_E_harm.wav"
+	Url: http://www.freesound.org/samplesViewSingle.php?id=8395
+	Date of upload: 2005-10-16 22:43:03
+	
+Designer / Creator / Uploader:
+	Name: "SpeedY"
+	Url: http://www.freesound.org/usersViewSingle.php?id=6479
+	
+Description:
+	By "SpeedY" : Single note 12th fret E (6th) string natural harmonic. If there are any errors or faults that you can find, please tell me so I can fix it.
+
+Tags:
+	acoustic guitar nylon-guitar single-notes 
+======================================================================
+
+File:
+	Name: "Clean_G_harm.wav"
+	Url: http://www.freesound.org/samplesViewSingle.php?id=8400
+	Date of upload: 2005-10-16 22:43:18
+	
+Designer / Creator / Uploader:
+	Name: "SpeedY"
+	Url: http://www.freesound.org/usersViewSingle.php?id=6479
+	
+Description:
+	By "SpeedY" : Single note 12th fret E (1st) string natural harmonic. If there are any errors or faults that you can find, please tell me so I can fix it.
+
+Tags:
+	acoustic guitar nylon-guitar single-notes 
+======================================================================
+
+

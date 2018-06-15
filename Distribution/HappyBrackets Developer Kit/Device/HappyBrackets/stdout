@@ -1,0 +1,23 @@
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/Applications/IntelliJ%20IDEA%20CE.app/Contents/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/Users/angelo/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.1.7/9865cf6994f9ff13fce0bf93f2054ef6c65bb462/logback-classic-1.1.7.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+************************************************************
+************************************************************
+************************************************************
+***            HappyBrackets Version 2.2.1.0             ***
+***                Beads Version 1.0.4.0                 ***
+************************************************************
+************************************************************
+************************************************************
+log4j:WARN No appenders could be found for logger (net.happybrackets.device.DeviceMain).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+.....JavaSoundAudioIO: Chosen mixer is Default Audio Device.
+Version sent 2.2.1.0 to port 56127
+Version sent 2.2.1.0 to port 56127
+Version sent 2.2.1.0 to port 56127
+Version sent 2.2.1.0 to port 56127
+Version sent 2.2.1.0 to port 56127
+Version sent 2.2.1.0 to port 56127
