@@ -5,6 +5,8 @@ import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.FloatBuddyControl;
+import net.happybrackets.core.control.FloatTextControl;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -24,22 +26,31 @@ public class MonitorFloats implements HBAction {
 
         /*************************************************************
          * Create a Float type Dynamic Control that displays as a text box
-         *
          * Simply type floatTextControl to generate this code
          *************************************************************/
-        DynamicControl clock_beats = hb.createDynamicControl(this, ControlType.FLOAT, "Beat Count", 0);
-        // we have removed the listener because it was unnecessary
-        /*** End DynamicControl code ***/
+        FloatTextControl clock_beats = new FloatTextControl(this, "Beat Count", 0) {
+            @Override
+            public void valueChanged(double control_val) {
+                /*** Write your DynamicControl code below this line ***/
+
+                /*** Write your DynamicControl code above this line ***/
+            }
+        };/*** End DynamicControl code clock_beats ***/
 
 
         /*************************************************************
          * Create a Float type Dynamic Control pair that displays as a slider and text box
-         *
          * Simply type floatBuddyControl to generate this code
          *************************************************************/
-        DynamicControl clock_value = hb.createControlBuddyPair(this, ControlType.FLOAT, "Clock Count", 0, -1, 2000);
-        // we have removed the listener because it was unnecessary
-        /*** End DynamicControl code ***/
+        FloatBuddyControl clock_value = new FloatBuddyControl(this, "Clock Count", 0, -1, 2000) {
+            @Override
+            public void valueChanged(double control_val) {
+                /*** Write your DynamicControl code below this line ***/
+
+                /*** Write your DynamicControl code above this line ***/
+            }
+        };/*** End DynamicControl clock_value code ***/
+
 
 
         /************************************************************

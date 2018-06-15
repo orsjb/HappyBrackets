@@ -5,6 +5,8 @@ import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.IntegerBuddyControl;
+import net.happybrackets.core.control.IntegerTextControl;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -23,21 +25,31 @@ public class MonitorIntegers implements HBAction {
 
         /*************************************************************
          * Create an integer type Dynamic Control that displays as a text box
-         *
          * Simply type intTextControl to generate this code
          *************************************************************/
-        DynamicControl clock_beats = hb.createDynamicControl(this, ControlType.INT, "Beat Count");
-        // we have removed the listener because it was unnecessary
-        /*** End DynamicControl code ***/
+        IntegerTextControl clock_beats = new IntegerTextControl(this, "Beat Count", 0) {
+            @Override
+            public void valueChanged(int control_val) {
+                /*** Write your DynamicControl code below this line ***/
+
+                /*** Write your DynamicControl code above this line ***/
+            }
+        };/*** End DynamicControl clock_beats code ***/
+
 
         /*************************************************************
          * Create an integer type Dynamic Control pair that displays as a slider and text box
-         *
          * Simply type intBuddyControl to generate this code
          *************************************************************/
-        DynamicControl clock_value = hb.createControlBuddyPair(this, ControlType.INT, "Clock Value", 0, 0, 2000);
-        // we have removed the listener because it was unnecessary
-        /*** End DynamicControl code ***/
+        IntegerBuddyControl clock_value = new IntegerBuddyControl(this, "Clock Value", 0, 0, 2000) {
+
+            @Override
+            public void valueChanged(int control_val) {
+                /*** Write your DynamicControl code below this line ***/
+
+                /*** Write your DynamicControl code above this line ***/
+            }
+        };/*** End DynamicControl clock_count code ***/
 
 
         /************************************************************
@@ -62,13 +74,13 @@ public class MonitorIntegers implements HBAction {
                 if (start_of_beat) {
                     /*** Write your code to perform functions on the beat below this line ****/
 
-                    clock_value.setValue(clock.getCount());
+                    clock_value.setValue((int)clock.getCount());
                     clock_beats.setValue(clock.getBeatCount());
 
                     /*** Write your code to perform functions on the beat above this line ****/
                 } else {
                     /*** Write your code to perform functions off the beat below this line ****/
-                    clock_value.setValue(clock.getCount());
+                    clock_value.setValue((int)clock.getCount());
 
                     /*** Write your code to perform functions off the beat above this line ****/
                 }

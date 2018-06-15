@@ -8,6 +8,7 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.TextControl;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -82,44 +83,48 @@ public class SampleTextControl implements HBAction {
             // let us create a text control to receive commands
             /*************************************************************
              * Create a string type Dynamic Control that displays as a text box
-             *
              * Simply type textControl to generate this code
              *************************************************************/
-            DynamicControl commandControl = hb.createDynamicControl(this, ControlType.TEXT, "Player Commands", "")
-                    .addControlListener(control -> {
-                        String control_val = (String) control.getValue();
+            TextControl commandControl = new TextControl(this, "Player Commands", "") {
+                @Override
+                public void valueChanged(String control_val) {
+                    /*** Write your DynamicControl code below this line ***/
+                    if (control_val.equalsIgnoreCase(COMMAND_PLAY)){
+                        samplePlayer.pause(false);
+                    }
+                    else if (control_val.equalsIgnoreCase(COMMAND_STOP)){
+                        samplePlayer.pause(true);
+                    }
+                    else if (control_val.equalsIgnoreCase(COMMAND_FORWARD)){
+                        samplePlayer.pause(false);
+                        playbackDirection.setValue(FORWARDS_RATE);
+                    }
+                    else if (control_val.equalsIgnoreCase(COMMAND_REVERSE)){
+                        samplePlayer.pause(false);
+                        playbackDirection.setValue(REVERSE_RATE);
+                    }
 
-                        /*** Write your DynamicControl code below this line ***/
+                    /*** Write your DynamicControl code above this line ***/
+                }
+            };/*** End DynamicControl commandControl code ***/
 
-                        if (control_val.equalsIgnoreCase(COMMAND_PLAY)){
-                            samplePlayer.pause(false);
-                        }
-                        else if (control_val.equalsIgnoreCase(COMMAND_STOP)){
-                            samplePlayer.pause(true);
-                        }
-                        else if (control_val.equalsIgnoreCase(COMMAND_FORWARD)){
-                            samplePlayer.pause(false);
-                            playbackDirection.setValue(FORWARDS_RATE);
-                        }
-                        else if (control_val.equalsIgnoreCase(COMMAND_REVERSE)){
-                            samplePlayer.pause(false);
-                            playbackDirection.setValue(REVERSE_RATE);
-                        }
-
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
 
 
             // now make our instructions display in a text box
             /*************************************************************
              * Create a string type Dynamic Control that displays as a text box
-             *
              * Simply type textControl to generate this code
              *************************************************************/
-            DynamicControl instructionDisplay = hb.createDynamicControl(this, ControlType.TEXT, "Command List", "");
-            // Listener removed as it was not neccessary
-            /*** End DynamicControl code ***/
+            TextControl instructionDisplay = new TextControl(this, "Command List", "") {
+                @Override
+                public void valueChanged(String control_val) {
+                    /*** Write your DynamicControl code below this line ***/
+
+                    /*** Write your DynamicControl code above this line ***/
+                }
+            };/*** End DynamicControl instructionsDisplay code ***/
+
+
 
             /***********************************************************
              * Create a runnable thread object

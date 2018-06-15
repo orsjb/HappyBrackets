@@ -69,13 +69,13 @@ This file wil give a short description of the examples
 [controls] - demonstrates DynamicControls and GUI manipulation
 
   [booleancontrol] - true or false controls. Display or set with a checkbox
-    BooleanControl          Starts and stops a sine wave with a checkbox
+    BooleanControlSample    Starts and stops a sine wave with a checkbox
     MonitorBoolean          Monitor the value of a Clock being on the beat on GUI with a checkbox
 
   [floatcontrol] - Floating point values displayed or set as slider, textbox or both
-    FloatSliderControl      Control the gain and frequency of a waveplayer with floating point slider controls
-    FloatTextControl        Control the gain and frequency of a waveplayer with floating point textbox controls
-    FloatBuddyControl       Control the gain and frequency of a waveplayer with floating point slider and textbox buddy controls
+    FloatSliderControlSample      Control the gain and frequency of a waveplayer with floating point slider controls
+    FloatTextControlSample        Control the gain and frequency of a waveplayer with floating point textbox controls
+    FloatBuddyControlSample       Control the gain and frequency of a waveplayer with floating point slider and textbox buddy controls
     MonitorFloats           Monitor the values of clock count and beats and display in buddy controls in GUI
 
   [globalcontrol] - Sending and receiving values across the network
@@ -83,13 +83,13 @@ This file wil give a short description of the examples
                             and global boolean values to turn sound on and off
 
   [integercontrol] - Integer values displayed or set as slider, textbox or both
-    IntegerSliderControl    Control the gain and frequency of a waveplayer with Integer slider controls
-    IntegerTextControl      Control the gain and frequency of a waveplayer with Integer textbox controls
-    IntegerBuddyControl     Control the gain and frequency of a waveplayer with Integer slider and textbox buddy controls
-    MonitorIntegers         Monitor the values of clock count and beats and display in buddy controls in GUI
+    IntegerSliderControlSample    Control the gain and frequency of a waveplayer with Integer slider controls
+    IntegerTextControlSample      Control the gain and frequency of a waveplayer with Integer textbox controls
+    IntegerBuddyControlSample     Control the gain and frequency of a waveplayer with Integer slider and textbox buddy controls
+    MonitorIntegers               Monitor the values of clock count and beats and display in buddy controls in GUI
 
   [triggercontrol] - Trigger controls displayed as buttons
-    triggerControl          Sends a trigger to make a wave player switch frequencies
+    triggerControlSample          Sends a trigger to make a wave player switch frequencies
 
   [textcontrol] -  Text values displayed or set with a text box
     StringMonitor           Runs a clock and displays the value in a text box

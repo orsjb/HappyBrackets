@@ -3,6 +3,7 @@ package examples.controls.booleancontrol;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.BooleanControl;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
@@ -35,14 +36,17 @@ public class MonitorBoolean implements HBAction {
 
 
         /*************************************************************
-         * Create a Boolean type Dynamic Control pair that displays as a check box
-         *
+         * Create a Boolean type Dynamic Control that displays as a check box
          * Simply type booleanControl to generate this code
          *************************************************************/
-        DynamicControl booleanControl = hb.createDynamicControl(this, ControlType.BOOLEAN, "Beat Toggle", false);
-        // we have removed the listener because it was unnecessary
-        /*** End DynamicControl code ***/
+        BooleanControl booleanControl = new BooleanControl(this, "Beat Toggle", false) {
+            @Override
+            public void valueChanged(Boolean control_val) {
+                /*** Write your DynamicControl code below this line ***/
 
+                /*** Write your DynamicControl code above this line ***/
+            }
+        };/*** End DynamicControl booleanControl code ***/
 
 
         /************************************************************
@@ -71,7 +75,7 @@ public class MonitorBoolean implements HBAction {
 
                     clock_beats.setValue(num_beats);
                     if (num_beats % TOGGLE_VALUE == 0){
-                        boolean current_state = (boolean)booleanControl.getValue();
+                        boolean current_state = booleanControl.getValue();
 
                         booleanControl.setValue(!current_state);
                     }

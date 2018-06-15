@@ -5,6 +5,7 @@ import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.TextControl;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -24,12 +25,18 @@ public class StringMonitor implements HBAction {
 
         /*************************************************************
          * Create a string type Dynamic Control that displays as a text box
-         *
          * Simply type textControl to generate this code
          *************************************************************/
-        DynamicControl clockMonitor = hb.createDynamicControl(this, ControlType.TEXT, "Clock Count", "");
-        // we have removed the listener because it was unnecessary
-        /*** End DynamicControl code ***/
+        TextControl clockMonitor = new TextControl(this, "Clock Count", "") {
+            @Override
+            public void valueChanged(String control_val) {
+                /*** Write your DynamicControl code below this line ***/
+
+                /*** Write your DynamicControl code above this line ***/
+            }
+        };/*** End DynamicControl clockMonitor code ***/
+
+
 
         /************************************************************
          * start clockTimer
