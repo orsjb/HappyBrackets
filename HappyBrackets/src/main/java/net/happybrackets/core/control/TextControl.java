@@ -27,7 +27,7 @@ public abstract class TextControl extends DynamicControlParent {
         return (String) getDynamicControl().getValue();
     }
 
-    public abstract void valueChanged(String new_value);
+    public abstract void valueChanged(String control_val);
 
     /**
      * set the value for the control. This will notify all the listeners

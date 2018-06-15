@@ -6,7 +6,7 @@ mkdir -p /home/pi/HappyBrackets/ramfs;
 sudo mount -t ramfs -o size=512 ramfs /home/pi/HappyBrackets/ramfs
 
 #if we want to set sepcific parameters for a device, place them in device.config
-CONFIG_FILE=device.config
+CONFIG_FILE=$HOSTNAME.config
 
 
 
@@ -28,10 +28,10 @@ ACTION=
 #let us see if we have any specific values we want to use
 while IFS="=" read line val
 do
-    if [ "$line" = "OUTS"   ]
+    if [ "$line" = "BUF"   ]
     then
-        OUTS=$val
-        echo "Set OUTS to "$OUTS
+        BUF=$val
+        echo "Set SR to "$BUF
     fi
 
     if [ "$line" = "SR"   ]
@@ -40,10 +40,41 @@ do
         echo "Set SR to "$SR
     fi
 
-    if [ "$line" = "BUF"   ]
+    if [ "$line" = "BITS"   ]
     then
-        BUF=$val
-        echo "Set SR to "$BUF
+        BITS =$val
+        echo "Set Bits to "$BITS
+    fi
+
+    if [ "$line" = "INS"   ]
+    then
+        INS=$val
+        echo "Set INS to "$INS
+    fi
+
+
+    if [ "$line" = "OUTS"   ]
+    then
+        OUTS=$val
+        echo "Set OUTS to "$OUTS
+    fi
+
+    if [ "$line" = "DEVICE"   ]
+    then
+        DEVICE=$val
+        echo "Set DEVICE to "$DEVICE
+    fi
+
+    if [ "$line" = "AUTOSTART"   ]
+    then
+        AUTOSTART=$val
+        echo "Set AUTOSTART to "$AUTOSTART
+    fi
+
+    if [ "$line" = "ACCESSMODE"   ]
+    then
+        ACCESSMODE=$val
+        echo "Set ACCESSMODE to "$ACCESSMODE
     fi
 done <$CONFIG_FILE
 

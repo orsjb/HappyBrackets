@@ -27,7 +27,7 @@ public abstract class BooleanControl extends DynamicControlParent {
         return (Boolean) getDynamicControl().getValue();
     }
 
-    public abstract void valueChanged(Boolean new_value);
+    public abstract void valueChanged(Boolean control_val);
 
     /**
      * set the value for the control. This will notify all the listeners

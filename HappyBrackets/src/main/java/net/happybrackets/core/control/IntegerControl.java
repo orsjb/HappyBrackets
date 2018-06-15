@@ -29,7 +29,7 @@ public abstract class IntegerControl extends DynamicControlParent {
         return (int) getDynamicControl().getValue();
     }
 
-    public abstract void valueChanged(int new_value);
+    public abstract void valueChanged(int control_val);
 
     /**
      * set the value for the control. This will notify all the listeners

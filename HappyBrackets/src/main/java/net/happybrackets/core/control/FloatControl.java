@@ -29,7 +29,7 @@ public abstract class FloatControl extends DynamicControlParent {
         return (float) getDynamicControl().getValue();
     }
 
-    public abstract void valueChanged(double new_value);
+    public abstract void valueChanged(double control_val);
 
     /**
      * set the value for the control. This will notify all the listeners
