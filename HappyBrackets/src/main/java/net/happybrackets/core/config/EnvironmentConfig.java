@@ -42,8 +42,8 @@ public interface EnvironmentConfig {
 	default public int getAliveInterval() 					{ return DefaultConfig.ALIVE_INTERVAL; }
 	//places
 	default public String getWorkingDir()					{ return DefaultConfig.WORKING_DIRECTORY; }
-	default public String getAudioDir()						{ return getWorkingDir() + DefaultConfig.WORKING_DIRECTORY; }
+	default public String getAudioDir()						{ return getWorkingDir() + DefaultConfig.AUDIO_DIRECTORY; }
 	default public String getConfigDir() 			    	{ return getWorkingDir() + DefaultConfig.CONFIG_DIRECTORY; }
-	default public String getKnownDevicesFile()				{ return getConfigDir() + DefaultConfig.CONFIG_DIRECTORY; }
+	default public String getKnownDevicesFile()				{ return getConfigDir() + DefaultConfig.KNOWN_DEVICES_FILE; }
 	default public String getEncryptionKey()				{ return DefaultConfig.ENCRYPTION_KEY; }
 }
