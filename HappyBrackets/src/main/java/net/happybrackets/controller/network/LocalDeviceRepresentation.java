@@ -488,7 +488,7 @@ public class LocalDeviceRepresentation {
 			processVersionMessage(msg, sender);
 
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
-			processFriendlyNameMessage(msg, sender);
+			//processFriendlyNameMessage(msg, sender);
 
 		} else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DynamicControlMessage.CONTROL)) {
 			processDynamicControlMessage(msg, sender);

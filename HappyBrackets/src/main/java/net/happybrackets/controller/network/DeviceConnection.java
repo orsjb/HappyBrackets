@@ -379,17 +379,25 @@ public class DeviceConnection {
 						device_address = device_name;
 					}
 
+					String friendly_name = "";
+					KnownDeviceID knownDeviceID = null;
+					if (knownDevices.containsKey(device_name)) {
+						knownDeviceID = knownDevices.get(device_name);
+						device_id = knownDeviceID.getDeviceId();
+						friendly_name = knownDeviceID.getFriendlyName();
+					}
+
 					if (device_id == 0) {
-						if (knownDevices.containsKey(device_name)) {
-							KnownDeviceID device = knownDevices.get(device_name);
-							device_id = device.getDeviceId();
+						if (knownDeviceID != null) {
+							device_id = knownDeviceID.getDeviceId();
+
 						} else {
 							device_id = newID--;
 						}
 					}
 
 					this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config, replyPort);
-
+					this_device.setFriendlyName(friendly_name);
 
 					if (favouriteDevices.contains(device_name)) {
 						this_device.setFavouriteDevice(true);

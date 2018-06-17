@@ -35,11 +35,14 @@ import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.BuildVersion;
 import net.happybrackets.core.Synchronizer;
+import net.happybrackets.core.config.DefaultConfig;
 import net.happybrackets.core.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -120,6 +123,9 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
         // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them
         ControllerEngine.getInstance().startDeviceCommunication();
+
+        // Load our known devces based on project
+        loadProjectKnownDevices(project_dir);
 
         synchronized (advertiseStopLock) {
             // Increment our count
@@ -274,6 +280,30 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     }
 
+
+    /**
+     * Loads the config file in the project config path
+     * @param project_dir Thew project Directory
+     * @return true if sa known config file was found
+     */
+    boolean loadProjectKnownDevices(String project_dir){
+        boolean ret = false;
+
+        String full_file_path =  project_dir + DefaultConfig.CONFIG_DIRECTORY + DefaultConfig.KNOWN_DEVICES_FILE;
+
+        try {
+            Scanner s = new Scanner(new File(full_file_path));
+            List<String> lines = new ArrayList<>();
+            while (s.hasNext()) {
+                lines.add(s.nextLine());
+            }
+            s.close();
+            ControllerEngine.getInstance().getDeviceConnection().setKnownDevices(lines.toArray(new String[0]));
+            ret = true;
+        }
+        catch (Exception ex){}
+        return ret;
+    }
 /*
     public static ControllerSettings getSettings() {
         return settings;
