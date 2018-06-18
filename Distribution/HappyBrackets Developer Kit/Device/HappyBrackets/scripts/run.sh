@@ -5,10 +5,13 @@
 mkdir -p /home/pi/HappyBrackets/ramfs;
 sudo mount -t ramfs -o size=512 ramfs /home/pi/HappyBrackets/ramfs
 
-#if we want to set sepcific parameters for a device, place them in device.config
-CONFIG_FILE=$HOSTNAME.config
+### move to the correct dir for running this script (one level above where this script is)
+DIR=`dirname $0`
+cd ${DIR}/..
 
 
+#if we want to set specific parameters for a device, place them in device.config
+CONFIG_FILE=scripts/$HOSTNAME.config
 
 ### run HappyBrackets
 ### args to HB.jar are: buf (buffer size, default=1024), sr (sample rate, default=44100), bits (sample bit size, default=16), ins (input channels, default=0), outs (output channels, default=1), start (autostart audio, default=true), access (live code access mode, either ‘open’, ‘local’ or ‘closed’, default=open), followed by the full class path to any HBAction you wish to auto run. All args except the last one can be entered in any order.
@@ -78,9 +81,6 @@ do
     fi
 done <$CONFIG_FILE
 
-### move to the correct dir for running this script (one level above where this script is)
-DIR=`dirname $0`
-cd ${DIR}/..
 
 ### run the auto-rename script
 scripts/auto-rename.sh
