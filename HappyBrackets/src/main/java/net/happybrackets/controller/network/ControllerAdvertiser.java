@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,7 @@ public class ControllerAdvertiser {
 	int replyPort; // leave it undefined so we can see a warning if it does not get assigned
 	int broadcastPort;
 
-	private Map <Integer, CachedMessage> cachedNetworkMessage;
+	private List <CachedMessage> cachedNetworkMessage = new ArrayList<>();
 
 
 	CachedMessage cachedBroadcastMessage = null;
@@ -100,6 +101,27 @@ public class ControllerAdvertiser {
 	ByteBuffer byteBuf;
 
 
+	/**
+	 * check if the number of network devices has changed from what we have as
+	 * our cached messages
+	 * @return true if the number of networks with broadcast is not equql tro what we have cached
+	 */
+	boolean networkChanged(){
+		List<NetworkInterface> interfaces = Device.viableInterfaces();
+
+		int num_interfaces = 0;
+		for (NetworkInterface ni : interfaces)
+		 {
+			InetAddress broadcast = BroadcastManager.getBroadcast(ni);
+
+
+			if (broadcast != null) {
+				num_interfaces++;
+			}
+		};
+
+		return num_interfaces != cachedNetworkMessage.size();
+	}
 	/**
 	 * Load a set of Broadcast messages in the standard broadcast message fails
 	 */
@@ -134,7 +156,7 @@ public class ControllerAdvertiser {
                         // Now we are going to broadcast on network interface specific
                         DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
                         CachedMessage message = new CachedMessage(msg, buff, packet, broadcast);
-                        cachedNetworkMessage.put(ni.hashCode(), message);
+                        cachedNetworkMessage.add(message);
                     } catch (Exception ex) {
                         logger.error("Unable to create cached message", ex);
                     }
@@ -161,9 +183,7 @@ public class ControllerAdvertiser {
 		replyPort = reply_port;
 		broadcastPort = broadcast_port;
 
-		cachedNetworkMessage = new Hashtable<Integer, CachedMessage>();
-
-		byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
+		byteBuf = ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
 
 		try {
 			advertiseTxSocket = new DatagramSocket();
@@ -200,8 +220,7 @@ public class ControllerAdvertiser {
 			cachedMulticastMessage = new CachedMessage(msg, buff, multicast_packet, multicast);
 
 			loadNetworkBroadcastAdverticements();
-		}
-		catch (Exception ex){
+		} catch (Exception ex) {
 			logger.error("Unable to create cached message", ex);
 		}
 
@@ -209,50 +228,59 @@ public class ControllerAdvertiser {
 		advertisementService = new Thread() {
 			public void run() {
 
-            while (keepAlive) {
+				while (keepAlive) {
 
-            	if (!DeviceConnection.getDisabledAdvertise()) {
-					// first send to our multicast
-					try {
-						advertiseTxSocket.send(cachedMulticastMessage.cachedPacket);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					boolean reload_cached_messages = false;
+					if (!DeviceConnection.getDisabledAdvertise()) {
+						// first send to our multicast
+						try {
+							advertiseTxSocket.send(cachedMulticastMessage.cachedPacket);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 
-					DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
+						DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
 
-					// Now send a broadcast
-					try {
-						advertiseTxSocket.send(packet);
-					} catch (Exception ex) {
-						System.out.println(ex.getMessage());
+						// Now send a broadcast
+						try {
+							advertiseTxSocket.send(packet);
+						} catch (Exception ex) {
+							System.out.println(ex.getMessage());
+						}
 
 						try {
-							cachedNetworkMessage.forEach(new BiConsumer<Integer, CachedMessage>() {
-								@Override
-								public void accept(Integer integer, CachedMessage cachedMessage) {
-									DatagramPacket packet = cachedMessage.cachedPacket;
-									try {
-										advertiseTxSocket.send(packet);
-									} catch (IOException e) {
-										e.printStackTrace();
-									}
+							for (CachedMessage cachedMessage : cachedNetworkMessage) {
+								DatagramPacket cached_packet = cachedMessage.cachedPacket;
+								try {
+									advertiseTxSocket.send(cached_packet);
+								} catch (IOException e) {
+									e.printStackTrace();
+									reload_cached_messages = true;
 								}
-							});
+							}
+
 						} catch (Exception ex_all) {
 
 						}
 
-						// Now send a message to each device we have
+						List<NetworkInterface> interfaces = Device.viableInterfaces();
+
+						// if our network has changed, do a reload of our cached messages
+						if (networkChanged()) {
+							reload_cached_messages = true;
+						}
+
+						if (reload_cached_messages) {
+							loadNetworkBroadcastAdverticements();
+						}
+					}
+
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
 					}
 				}
-                try {
-                    Thread.sleep(1000);
-                }
-                catch (InterruptedException e) {
-                    logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
-                }
-            }
 			}
 		};
 	}
