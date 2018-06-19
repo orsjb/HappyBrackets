@@ -22,21 +22,23 @@ public class ProjectListener implements VetoableProjectManagerListener {
 
             // change the menu to contain the opened project's menu items on focus gain
             IdeFrame project_frame = WindowManagerEx.getInstanceEx().findFrameFor(project);
-            Component frame_component = project_frame.getComponent();
-            SwingUtilities.windowForComponent(frame_component).addWindowFocusListener(new WindowFocusListener() {
-                @Override
-                public void windowGainedFocus(WindowEvent e) {
-                    HappyBracketsDebugMenu.loadExamplesMenu(project);
+            if (project_frame != null) {
+                Component frame_component = project_frame.getComponent();
+                SwingUtilities.windowForComponent(frame_component).addWindowFocusListener(new WindowFocusListener() {
+                    @Override
+                    public void windowGainedFocus(WindowEvent e) {
+                        HappyBracketsDebugMenu.loadExamplesMenu(project);
 
-                }
+                    }
 
-                @Override
-                public void windowLostFocus(WindowEvent e) {
-                    // do nothing
-                }
+                    @Override
+                    public void windowLostFocus(WindowEvent e) {
+                        // do nothing
+                    }
 
-                
-            });
+
+                });
+            }
 
         }catch (Exception ex)
         {
