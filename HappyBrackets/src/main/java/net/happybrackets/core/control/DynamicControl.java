@@ -441,6 +441,14 @@ public class DynamicControl {
                 if (named_control.controlScope == ControlScope.GLOBAL && control_type.equals(named_control.controlType)) {
                     // we must NOT call setVal as this will generate a global series again.
                     // Just notifyListeners specific to this control but not globally
+
+                    // we need to see if this is a boolean Object as OSC does not support that
+                    if (control_type == ControlType.BOOLEAN){
+                        int osc_val = (int) obj_val;
+                        Boolean bool_val = osc_val != 0;
+                        obj_val = bool_val;
+                    }
+
                     named_control.objVal = obj_val;
                     named_control.notifyLocalListeners();
                 }
@@ -808,7 +816,7 @@ public class DynamicControl {
                 }
                 catch (Exception ex)
                 {
-                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
                 }
             });
         }
@@ -831,7 +839,7 @@ public class DynamicControl {
                 }
                 catch (Exception ex)
                 {
-                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
                 }
             });
         }
@@ -851,7 +859,7 @@ public class DynamicControl {
                 }
                 catch (Exception ex)
                 {
-                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
                 }
             });
         }
@@ -872,7 +880,7 @@ public class DynamicControl {
                 }
                 catch (Exception ex)
                 {
-                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
                 }
             });
         }
