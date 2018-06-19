@@ -232,16 +232,17 @@ public abstract class Device {
                 // Windows by default has a lot of sub interfaces, so we need to filter these out
                 if (isViableNetworkInterface(netInt)) {
                     viableInterfaces.add(netInt);
+                    /*
                     logger.debug("    {} ({}, MAC: {}, host name: {}, IP: {}) : VALID", new Object[]{
                             netInt.getName(),
                             netInt.getDisplayName(),
                             selectMAC(netInt),
                             selectHostname(netInt),
                             selectIP(netInt)
-                    });
+                    });*/
                 }
                 else {
-                    logger.debug("    {} ({}) : IGNORED", netInt.getName(), netInt.getDisplayName());
+                    //logger.debug("    {} ({}) : IGNORED", netInt.getName(), netInt.getDisplayName());
                 }
             }
         } catch (SocketException e) {
