@@ -353,7 +353,7 @@ public class DeviceConnection {
 			if (!showOnlyFavourites || favouriteDevices.contains(device_name)) {
 				String device_hostname = (String) msg.getArg(DEVICE_HOSTNAME);
 				String device_address = (String) msg.getArg(DEVICE_ADDRESS);
-				logger.debug("Received message from device: " + device_name);
+				//logger.debug("Received message from device: " + device_name);
 				//			System.out.println("Device Alive Message: " + deviceName);
 				//see if we have this device yet
 				LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
@@ -370,7 +370,7 @@ public class DeviceConnection {
 				}
 
 
-				logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
+				//logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
 
 				if (this_device == null) { //if not add it
 
