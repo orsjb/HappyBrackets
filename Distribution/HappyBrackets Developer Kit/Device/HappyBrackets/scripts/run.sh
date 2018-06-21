@@ -27,6 +27,7 @@ DEVICE=0
 AUTOSTART=true 
 ACCESSMODE=open
 ACTION=
+CONFIG=device-config.json
 
 #let us see if we have any specific values we want to use
 while IFS="=" read line val
@@ -45,7 +46,7 @@ do
 
     if [ "$line" = "BITS"   ]
     then
-        BITS =$val
+        BITS=$val
         echo "Set Bits to "$BITS
     fi
 
@@ -79,6 +80,13 @@ do
         ACCESSMODE=$val
         echo "Set ACCESSMODE to "$ACCESSMODE
     fi
+
+    if [ "$line" = "CONFIG"   ]
+    then
+        CONFIG=$val
+        echo "Set CONFIG to "$CONFIG
+    fi
+
 done <$CONFIG_FILE
 
 
@@ -87,7 +95,7 @@ scripts/auto-rename.sh
 
 echo “Running HappyBrackets”
 
-(/usr/bin/sudo /usr/bin/java -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS device=$DEVICE start=$AUTOSTART access=$ACCESSMODE $ACTION > ramfs/stdout 2>&1) &
+(/usr/bin/sudo /usr/bin/java -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS device=$DEVICE start=$AUTOSTART access=$ACCESSMODE $ACTION config=$CONFIG > ramfs/stdout 2>&1) &
 
 ### Finally, run the network-monitor.sh script to keep WiFi connection alive
 # Ignore this for stretch (scripts/network-monitor.sh > netstatus &) &

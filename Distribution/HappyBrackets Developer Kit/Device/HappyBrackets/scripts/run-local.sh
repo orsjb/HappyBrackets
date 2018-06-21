@@ -18,6 +18,7 @@ AUTOSTART=true
 ACCESSMODE=local
 ACTION=
 SIMULATE=true
+CONFIG=device-config.json
 
 #let us see if we have any specific values we want to use
 while IFS="=" read line val
@@ -36,7 +37,7 @@ do
 
     if [ "$line" = "BITS"   ]
     then
-        BITS =$val
+        BITS=$val
         echo "Set Bits to "$BITS
     fi
 
@@ -71,6 +72,12 @@ do
         echo "Set ACCESSMODE to "$ACCESSMODE
     fi
 
+    if [ "$line" = "CONFIG"   ]
+    then
+        CONFIG=$val
+        echo "Set CONFIG to "$CONFIG
+    fi
+
 done <$CONFIG_FILE
 
 ### move to the correct dir for running this script (one level above where this script is)
@@ -80,4 +87,4 @@ cd ${DIR}/..
 
 echo “Running HappyBrackets”
 
-java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE
+java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG

@@ -425,6 +425,12 @@ public class NetworkCommunication {
 					// we should send to all registered controllers
 					DeviceConfig.getInstance().notifyAllControllers();
 					default_alive_time = DeviceConfig.getInstance().getAliveInterval();
+
+					// if we set our alive time to zero, we will not send alive messages back but will act dumb
+					if (default_alive_time == 0){
+						System.out.println("Disable Keep Alive poll back to controller");
+						break;
+					}
 				}
                 try {
                     Thread.sleep(default_alive_time);

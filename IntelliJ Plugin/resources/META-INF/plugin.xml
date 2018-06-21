@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>2.5.2</version>
+  <version>2.5.7</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -38,7 +38,7 @@
     <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/hb.png"/>
 
     <defaultLiveTemplatesProvider implementation="net.happybrackets.intellij_plugin.templates.HappyBracketsTemplateProvider"/>
-    <projectTemplatesFactory implementation="net.happybrackets.intellij_plugin.templates.HappyBracketsProjectFactory"/>
+    <!--<projectTemplatesFactory implementation="net.happybrackets.intellij_plugin.templates.HappyBracketsProjectFactory"/> -->
 
   </extensions>
 

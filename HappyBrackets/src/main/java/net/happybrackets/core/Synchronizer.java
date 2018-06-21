@@ -81,22 +81,26 @@ public class Synchronizer {
 		//basics
 		log = new Hashtable<Long, Map<String, long[]>>();
 
-		int sync_port = LoadableConfig.getInstance().getClockSynchPort();
+		LoadableConfig config = LoadableConfig.getInstance();
 
-		// if our Sync is zero then we will skip it
-		if (sync_port > 0) {
-			broadcast = new BroadcastManager(LoadableConfig.getInstance().getMulticastAddr(), sync_port);
-			try {
-				//start listening
-				setupListener();
-				logger.info("Synchronizer is listening.");
-				//start sending
-				startSending();
-				logger.info("Synchronizer is sending synch pulses.");
-				//display clock (optional)
-				//displayClock();
-			} catch (Exception e) {
-				logger.error("Unable to setup Synchronizer!", e);
+		if (config != null) {
+			int sync_port = config.getClockSynchPort();
+
+			// if our Sync is zero then we will skip it
+			if (sync_port > 0) {
+				broadcast = new BroadcastManager(config.getMulticastAddr(), sync_port);
+				try {
+					//start listening
+					setupListener();
+					logger.info("Synchronizer is listening.");
+					//start sending
+					startSending();
+					logger.info("Synchronizer is sending synch pulses.");
+					//display clock (optional)
+					//displayClock();
+				} catch (Exception e) {
+					logger.error("Unable to setup Synchronizer!", e);
+				}
 			}
 		}
 	}

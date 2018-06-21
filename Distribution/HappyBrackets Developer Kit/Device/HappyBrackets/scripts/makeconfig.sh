@@ -18,4 +18,5 @@ OUTS=1
 DEVICE=0
 AUTOSTART=true 
 ACCESSMODE=open
+CONFIG=device-config.json
 EOL

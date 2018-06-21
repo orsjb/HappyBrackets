@@ -122,7 +122,7 @@ public class DynamicControlScreen {
      */
     public DynamicControlScreen(LocalDeviceRepresentation local_device){
         localDevice = local_device;
-        screenTitle = localDevice.deviceName;
+        screenTitle = localDevice.getFriendlyName();
         setGridColumnAttributes();
     }
 
@@ -144,6 +144,20 @@ public class DynamicControlScreen {
         setGridColumnAttributes();
     }
 
+    /**
+     * Set the title of Our Display Screen
+     * @param title the title to display on the screen
+     */
+    public void setTitle(String title) {
+        Platform.runLater(() -> {
+            try {
+                screenTitle = title;
+                dynamicControlStage.setTitle(screenTitle);
+            } catch (Exception ex) {
+            }
+                }
+        );
+    }
     /**
      * Erase the dynamic controls on this screen
      */
@@ -208,25 +222,23 @@ public class DynamicControlScreen {
      */
     public void  removeDynamicControl(DynamicControl control)
     {
-        Platform.runLater(new Runnable() {
-            public void run() {
-                // find the control based on its hash from control table
-                ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
+        Platform.runLater(() -> {
+            // find the control based on its hash from control table
+            ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
 
-                if (control_group != null) {
-                    dynamicControlGridPane.getChildren().remove(control_group.controlNode);
-                    dynamicControlGridPane.getChildren().remove(control_group.labelNode);
-                    dynamicControlsList.remove(control.getControlMapKey());
+            if (control_group != null) {
+                dynamicControlGridPane.getChildren().remove(control_group.controlNode);
+                dynamicControlGridPane.getChildren().remove(control_group.labelNode);
+                dynamicControlsList.remove(control.getControlMapKey());
 
-                    if (control_group.listener != null) {
-                        control.removeControlListener(control_group.listener);
-                    }
-
-                    if (control_group.scopeChangedListener != null){
-                        control.removeControlScopeChangedListener(control_group.scopeChangedListener);
-                    }
-                    rebuildGridList();
+                if (control_group.listener != null) {
+                    control.removeControlListener(control_group.listener);
                 }
+
+                if (control_group.scopeChangedListener != null){
+                    control.removeControlScopeChangedListener(control_group.scopeChangedListener);
+                }
+                rebuildGridList();
             }
         });
     }
@@ -235,81 +247,79 @@ public class DynamicControlScreen {
 
         DynamicControlScreen this_screen = this;
 
-        Platform.runLater(new Runnable() {
-            public void run() {
-                synchronized (controlCreateLock) {
-                    if (dynamicControlStage == null) {
+        Platform.runLater(() -> {
+            synchronized (controlCreateLock) {
+                if (dynamicControlStage == null) {
 
 
-                        if (localDevice != null) {
-                            debugPane = new TitledPane("Debug", makeDebugPane());
+                    if (localDevice != null) {
+                        debugPane = new TitledPane("Debug", makeDebugPane());
 
-                            debugPane.setExpanded(false);
-                        }
-
-                        dynamicControlStage = new Stage();
-                        dynamicControlStage.setTitle(screenTitle);
-                        ;
-                        dynamicControlGridPane.setHgap(DEFAULT_ELEMENT_SPACING);
-                        dynamicControlGridPane.setVgap(DEFAULT_ELEMENT_SPACING);
-                        dynamicControlGridPane.setPadding(new Insets(DEFAULT_ELEMENT_SPACING * 2, DEFAULT_ELEMENT_SPACING * 2, 0, DEFAULT_ELEMENT_SPACING * 2));
-
-                        dynamicControlScene = new Scene(main_container, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
-
-                        dynamicControlStage.setScene(dynamicControlScene);
-
-                        scrollPane = new ScrollPane(dynamicControlGridPane);
-                        scrollPane.setFitToHeight(true);
-                        scrollPane.setFitToWidth(true);
-
-                        if (debugPane != null) {
-                            main_container.setBottom(debugPane);
-                        }
-
-                        main_container.setCenter(scrollPane);
-
-                        scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
-                            public void changed(ObservableValue<? extends Number> ov,
-                                                Number old_val, Number new_val) {
-                                dynamicControlGridPane.setLayoutY(-new_val.doubleValue());
-                            }
-                        });
-
-
-                        ContextMenu contextMenu = new ContextMenu();
-                        CheckMenuItem always_on_top = new CheckMenuItem("Always on top");
-                        always_on_top.setSelected(alwaysOnTop);
-                        contextMenu.getItems().addAll(always_on_top);
-
-                        if (localDevice != null)
-                        {
-                            contextMenu.getItems().add(new SeparatorMenuItem());
-                            PingMenu menus = new PingMenu(localDevice);
-                            contextMenu.getItems().addAll(menus.getMenuItems());
-
-                        }
-
-                        scrollPane.setContextMenu(contextMenu);
-                        if (debugPane != null) {
-                            debugPane.setContextMenu(contextMenu);
-                        }
-
-                        always_on_top.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-                                        setAlwaysOnTop(!alwaysOnTop);
-                                        always_on_top.setSelected(alwaysOnTop);
-                                    }
-                                });
-                            }
-                        });
+                        debugPane.setExpanded(false);
                     }
 
-                    for (DynamicControlScreenLoaded dynamicControlScreenLoaded : dynamicControlScreenLoadedList) {
-                        dynamicControlScreenLoaded.loadComplete (this_screen, true);
+                    dynamicControlStage = new Stage();
+                    dynamicControlStage.setTitle(screenTitle);
+
+                    dynamicControlGridPane.setHgap(DEFAULT_ELEMENT_SPACING);
+                    dynamicControlGridPane.setVgap(DEFAULT_ELEMENT_SPACING);
+                    dynamicControlGridPane.setPadding(new Insets(DEFAULT_ELEMENT_SPACING * 2, DEFAULT_ELEMENT_SPACING * 2, 0, DEFAULT_ELEMENT_SPACING * 2));
+
+                    dynamicControlScene = new Scene(main_container, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
+
+                    dynamicControlStage.setScene(dynamicControlScene);
+
+                    scrollPane = new ScrollPane(dynamicControlGridPane);
+                    scrollPane.setFitToHeight(true);
+                    scrollPane.setFitToWidth(true);
+
+                    if (debugPane != null) {
+                        main_container.setBottom(debugPane);
                     }
+
+                    main_container.setCenter(scrollPane);
+
+                    scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
+                        public void changed(ObservableValue<? extends Number> ov,
+                                            Number old_val, Number new_val) {
+                            dynamicControlGridPane.setLayoutY(-new_val.doubleValue());
+                        }
+                    });
+
+
+                    ContextMenu contextMenu = new ContextMenu();
+                    CheckMenuItem always_on_top = new CheckMenuItem("Always on top");
+                    always_on_top.setSelected(alwaysOnTop);
+                    contextMenu.getItems().addAll(always_on_top);
+
+                    if (localDevice != null)
+                    {
+                        contextMenu.getItems().add(new SeparatorMenuItem());
+                        PingMenu menus = new PingMenu(localDevice);
+                        contextMenu.getItems().addAll(menus.getMenuItems());
+
+                    }
+
+                    scrollPane.setContextMenu(contextMenu);
+                    if (debugPane != null) {
+                        debugPane.setContextMenu(contextMenu);
+                    }
+
+                    always_on_top.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    setAlwaysOnTop(!alwaysOnTop);
+                                    always_on_top.setSelected(alwaysOnTop);
+                                }
+                            });
+                        }
+                    });
+                }
+
+                for (DynamicControlScreenLoaded dynamicControlScreenLoaded : dynamicControlScreenLoadedList) {
+                    dynamicControlScreenLoaded.loadComplete (this_screen, true);
                 }
             }
         });
@@ -817,24 +827,25 @@ public class DynamicControlScreen {
         log_output_text_area.setMinHeight(MIN_TEXT_AREA_HEIGHT);
 
         localDevice.addLogListener(deviceLogListener = (message, page) -> {
-            try {
-                // let us see if the text is too big for us
-                if (currentLogPage == page){
-                    log_output_text_area.appendText(message);
-                }else{
-                    // we have moved pages
-                    String log = localDevice.getDeviceLog(page);
-                    currentLogPage = page;
-                    log_output_text_area.setText(log);
+            Platform.runLater(()-> {
+                try {
+                    // let us see if the text is too big for us
+                    if (currentLogPage == page) {
+                        log_output_text_area.appendText(message);
+                    } else {
+                        // we have moved pages
+                        String log = localDevice.getDeviceLog(page);
+                        currentLogPage = page;
+                        log_output_text_area.setText(log);
+                    }
+                    setLogPageButtons();
+
+
+                } catch (Exception ex) {
+                    String error_message = ex.getMessage();
+                    System.out.println(error_message);
                 }
-                setLogPageButtons();
-
-
-            } catch (Exception ex) {
-                String error_message = ex.getMessage();
-                System.out.println(error_message);
-            }
-
+            });
         });
 
 

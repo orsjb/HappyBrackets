@@ -132,6 +132,9 @@ public class LocalDeviceRepresentation {
 				}
 			}
 
+			if (dynamicControlScreen != null){
+				dynamicControlScreen.setTitle(getFriendlyName());
+			}
 
 		}
 	}
@@ -327,6 +330,7 @@ public class LocalDeviceRepresentation {
 	public void showControlScreen()
 	{
 		sendInitialControlRequest();
+		dynamicControlScreen.setTitle(getFriendlyName());
 		dynamicControlScreen.show();
 	}
 
@@ -503,7 +507,9 @@ public class LocalDeviceRepresentation {
 		String new_log_output = (String) msg.getArg(1);
 
 		// see if our new logpage will exceed our max log page size
-		if (currentLogPage.length() + new_log_output.length() > MAX_LOG_DISPLAY_CHARS && currentLogPage.length() != 0) {
+		int current_log_length = currentLogPage.length();
+
+		if (current_log_length + new_log_output.length() > MAX_LOG_DISPLAY_CHARS && currentLogPage.length() != 0) {
 			completeLog.add(currentLogPage);
 			currentLogPage = new String(new_log_output);
 		}

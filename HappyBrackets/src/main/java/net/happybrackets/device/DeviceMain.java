@@ -18,6 +18,7 @@ package net.happybrackets.device;
 
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import net.happybrackets.core.BuildVersion;
+import net.happybrackets.core.config.DefaultConfig;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.AudioSetup;
 
@@ -63,6 +64,11 @@ public class DeviceMain {
 
 	public static void main(String[] args) throws Exception {
 
+		final String CONFIG_PATH = "config/";
+		final String DEFAULT_CONFIG_FILE = "device-config.json";
+
+		String configFile = CONFIG_PATH  + DEFAULT_CONFIG_FILE;
+
 		TextOutput.printBanner();
 		// Determine access mode.
 		HB.AccessMode mode = HB.AccessMode.OPEN;
@@ -82,12 +88,17 @@ public class DeviceMain {
 					HB.setEnableSimulators(true);
 				}
 			}
+			else if (s.startsWith("config=")) {
+				String config_value = s.split("[=]")[1];
+				configFile = CONFIG_PATH  + config_value;
+			}
+
 		}
 
 		logger.debug("Access mode is " + mode);
 
 		//manage configuration files;
-		String configFile = "config/device-config.json";
+		System.out.println("Setting config file to " +  configFile);
         logger.debug("Loading config file: {}", configFile);
 		DeviceConfig config = DeviceConfig.load(configFile);
 		HB hb = new HB(AudioSetup.getAudioContext(args), mode);

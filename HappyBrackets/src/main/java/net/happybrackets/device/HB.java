@@ -384,19 +384,29 @@ public class HB {
 			System.out.print(".");
 			synch = Synchronizer.getInstance();
 			System.out.print(".");
-			DeviceConfig.getInstance().listenForController(broadcast);
-			System.out.print(".");
 
-			this.accessMode = _am;
-			if (accessMode != AccessMode.CLOSED) {
-				// start listening for code
-				startListeningForCode();
+			DeviceConfig config = DeviceConfig.getInstance();
+
+			if (config != null) {
+				DeviceConfig.getInstance().listenForController(broadcast);
+				System.out.print(".");
+
+				this.accessMode = _am;
+				if (accessMode != AccessMode.CLOSED) {
+					// start listening for code
+					startListeningForCode();
+				}
+				System.out.print(".");
+
+
+				broadcast.startRefreshThread();
+				testBleep3();
 			}
-			System.out.print(".");
-
-
-			broadcast.startRefreshThread();
-			testBleep3();
+			else
+			{
+				System.out.println("No Config file detected");
+				testBleep6();
+			}
 		}
 		else
 		{
@@ -566,6 +576,45 @@ public class HB {
 		e.addSegment(0f, 400);
 		e.addSegment(0.4f, 0);
 		e.addSegment(0.4f, 300);
+		e.addSegment(0f, 10);
+		e.addSegment(0f, 400);
+		e.addSegment(0.4f, 0);
+		e.addSegment(0.4f, 600);
+		e.addSegment(0, 10, new KillTrigger(g));
+	}
+
+	/**
+	 * Produces a short series of 6 bleeps on the device to indicate an error. Assumes audio is running.
+	 */
+	public void testBleep6() {
+		Envelope e = new Envelope(ac, 0);
+		Gain g = new Gain(ac, 1, e);
+		WavePlayer wp = new WavePlayer(ac, 500, Buffer.SINE);
+		g.addInput(wp);
+		pl.addInput(g);
+		e.addSegment(0, 1000);
+		e.addSegment(0.4f, 0);
+		e.addSegment(0.4f, 300);
+		e.addSegment(0f, 10);
+		e.addSegment(0f, 400);
+		e.addSegment(0.4f, 0);
+		e.addSegment(0.4f, 300);
+
+		e.addSegment(0f, 10);
+		e.addSegment(0f, 400);
+		e.addSegment(0.4f, 0);
+		e.addSegment(0.4f, 300);
+
+		e.addSegment(0f, 10);
+		e.addSegment(0f, 400);
+		e.addSegment(0.4f, 0);
+		e.addSegment(0.4f, 300);
+
+		e.addSegment(0f, 10);
+		e.addSegment(0f, 400);
+		e.addSegment(0.4f, 0);
+		e.addSegment(0.4f, 300);
+
 		e.addSegment(0f, 10);
 		e.addSegment(0f, 400);
 		e.addSegment(0.4f, 0);
