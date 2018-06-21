@@ -87,4 +87,4 @@ cd ${DIR}/..
 
 echo “Running HappyBrackets”
 
-java -cp data/classes:HB.jar -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG
+java -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG

@@ -16,18 +16,12 @@
 
 package net.happybrackets.device;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
-import net.happybrackets.core.BuildVersion;
-import net.happybrackets.core.config.DefaultConfig;
+
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.AudioSetup;
-
-import net.happybrackets.device.sensors.Sensor;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.*;
+import java.util.List;
 
 /**
  * Entry point for PI code.
@@ -112,6 +106,12 @@ public class DeviceMain {
 				hb.attemptHBActionFromClassName(s);
 			}
 		}
+
+		List<String> auto_classes =  StartupClasses.getStartupClassnames(StartupClasses.DEFAULT_STARTUP_FILE);
+		for (String classname: auto_classes) {
+			hb.attemptHBActionFromClassName(classname);
+		}
+
 		if(autostart) {
 			logger.debug("Detected autostart. Starting audio right away.");
 			hb.startAudio();
