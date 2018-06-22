@@ -29,7 +29,9 @@ public class StartupClasses {
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 String line;
                 while((line = bufferedReader.readLine()) != null){
-                    class_name_list.add(line);
+                    if (!line.startsWith("#")) {
+                        class_name_list.add(line);
+                    }
                 }
                 fileReader.close();
             }
