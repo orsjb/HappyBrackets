@@ -126,6 +126,35 @@ public abstract class SendCompositionAction extends AnAction {
     }
 
     /**
+     * Find the output path where our classes are written to by compiler
+     * @param current_project the project
+     * @return path where classes are written. Returns null if unable to find
+     */
+    public static String getOutputPath(Project current_project) {
+
+        String ret = null;
+        String project_name = current_project.getName();
+
+        ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
+
+        // check our content roots to find root
+        VirtualFile[] contentSourceRoots = rootManager.getContentSourceRoots();
+
+        String source_folder = null;
+        String file_path_name = null; // this is name minus leading path
+
+
+        VirtualFile[] project_roots = rootManager.getContentRoots();
+        for (VirtualFile folder : project_roots) {
+            String folder_name = folder.getCanonicalPath();
+                String output_path = folder_name + OUTPUT_PATH + project_name;
+                ret = output_path;
+                break;
+
+        }
+        return ret;
+    }
+    /**
      * Get the class file associated with this action
      * @param e ActionEvent from menu
      * @return the Full Virtual path if it exists

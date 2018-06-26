@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>2.6.0</version>
+  <version>2.6.1</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -110,6 +110,13 @@
             text="Send composition to all devices" description="Sends the selected composition to all devices">
       <add-to-group group-id="RunContextGroupInner" anchor="last"/>
     </action>
+
+    <action id="CopyCompositionToStartupRunContext"
+            class="net.happybrackets.intellij_plugin.menu.context.CopyCompositionToStartupAction"
+            text="Copy class to startup" description="Copie the selected composition class to startup">
+      <add-to-group group-id="RunContextGroupInner" anchor="last"/>
+    </action>
+
   </actions>
 
 </idea-plugin>

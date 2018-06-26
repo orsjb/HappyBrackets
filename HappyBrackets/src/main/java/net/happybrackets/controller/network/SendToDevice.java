@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 
 public abstract class SendToDevice {
 
+	public static final String CLASS_EXT = ".class";
+
 	final static Logger logger = LoggerFactory.getLogger(SendToDevice.class);
 
 	public static void send(String full_class_name, List<LocalDeviceRepresentation> devices) throws Exception {
@@ -42,7 +44,40 @@ public abstract class SendToDevice {
 	}
 
 
-	private static ArrayList<byte[][]> AllFilesAsBytes (String package_path, String class_name, boolean encrypted)throws Exception	{
+	/**
+	 * Return al the files required to send this file and dependencies
+	 * @param package_path The package path
+	 * @param class_name The name of the class we want to get
+	 * @return and array list of all the files required for this class
+	 */
+	public static ArrayList<String> allFilenames(String package_path, String class_name){
+		ArrayList<String> ret = new ArrayList<String>();
+		File package_dir = new File(package_path);
+		File[] contents = package_dir.listFiles(); //This used to have a hard codded bin/ prepended to it but this is incompatible with the composition path being configurable now
+
+		for(File f : contents) {
+			String fname = f.getName();
+			if (fname.endsWith(CLASS_EXT)) {
+				boolean add_name = false;
+				if (fname.startsWith(class_name + "$")) {
+					add_name = true;
+				} else if (fname.toLowerCase().contains("hbperm")) {
+					add_name = true;
+				} else if (fname.equals(class_name + CLASS_EXT)) {
+					add_name = true;
+				}
+				//Using hbperm is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the device along with any HBAction classes when something else from that package gets sent.
+				if (add_name) {
+					ret.add(fname);
+				}
+			}
+		}
+
+		return ret;
+	}
+
+
+	private static ArrayList<byte[][]> allFilesAsBytes(String package_path, String class_name, boolean encrypted)throws Exception	{
 		File package_dir = new File(package_path);
 		File[] contents = package_dir.listFiles(); //This used to have a hard codded bin/ prepended to it but this is incompatible with the composition path being configurable now
 
@@ -54,13 +89,13 @@ public abstract class SendToDevice {
 			if((
 					fname.startsWith(class_name + "$") ||
 							fname.toLowerCase().contains("hbperm")	//this is a trick to solve dependencies issues. If you name a class with HBPerm in it then it will always get sent to the device along with any HBAction classes when something else from that package gets sent.
-			) && fname.endsWith(".class"))
+			) && fname.endsWith(CLASS_EXT))
 			{
 				all_files_as_bytes.add(encrypted? getClassFileAsEncryptedByteArray(package_path + "/" + fname): getClassFileAsUnencryptedByteArray(package_path + "/" + fname));
 			}
 		}
 
-		all_files_as_bytes.add(encrypted? getClassFileAsEncryptedByteArray(package_path + "/" + class_name + ".class"): getClassFileAsUnencryptedByteArray(package_path + "/" + class_name + ".class"));
+		all_files_as_bytes.add(encrypted? getClassFileAsEncryptedByteArray(package_path + "/" + class_name + CLASS_EXT): getClassFileAsUnencryptedByteArray(package_path + "/" + class_name + CLASS_EXT));
 
 		return  all_files_as_bytes;
 	}
@@ -82,7 +117,7 @@ public abstract class SendToDevice {
 					// see if we have already packed encrypted
 					if (encrypted_all_files_as_bytes == null)
 					{
-						encrypted_all_files_as_bytes = AllFilesAsBytes(package_path, class_name, true);
+						encrypted_all_files_as_bytes = allFilesAsBytes(package_path, class_name, true);
 					}
 					all_files_as_bytes = encrypted_all_files_as_bytes;
 				}
@@ -91,7 +126,7 @@ public abstract class SendToDevice {
 					// see if we have already packed unencrypted
 					if (unencrypted_all_files_as_bytes == null)
 					{
-						unencrypted_all_files_as_bytes = AllFilesAsBytes(package_path, class_name, false);
+						unencrypted_all_files_as_bytes = allFilesAsBytes(package_path, class_name, false);
 					}
 					all_files_as_bytes = unencrypted_all_files_as_bytes;
 
