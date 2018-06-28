@@ -352,8 +352,8 @@ public class DynamicControl {
         ControlScope old_scope = controlScope;
         if (old_scope != new_scope) {
             controlScope = new_scope;
-            notifyValueSetListeners();
-            notifyLocalListeners();
+            //notifyValueSetListeners();
+            //notifyLocalListeners();
             notifyControlChangeListeners();
 
         }
@@ -467,11 +467,6 @@ public class DynamicControl {
 
         String map_key = (String) msg.getArg(UPDATE_MESSAGE_ARGS.MAP_KEY.ordinal());
         String control_name = (String) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_NAME.ordinal());
-
-
-
-
-
         Object obj_val = msg.getArg(UPDATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
         ControlScope control_scope = ControlScope.values ()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
 
