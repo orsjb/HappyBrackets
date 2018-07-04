@@ -49,17 +49,7 @@ abstract class DynamicControlParent {
         return  this;
     }
 
-    /**
-     * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
-     * We must do this in subclass
-     * @param new_scope The new Control Scope
-     * @return this object
-     */
-    public DynamicControlParent setControlScope(ControlScope new_scope){
-        control.setControlScope(new_scope);
-        return this;
 
-    }
 
     /**
      * Register Listener to receive changed values in the control scope

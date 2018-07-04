@@ -36,4 +36,16 @@ public abstract class BooleanControl extends DynamicControlParent {
     public void setValue(Boolean val){
         getDynamicControl().setValue(val);
     }
+
+    /**
+     * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
+     * We must do this in subclass
+     * @param new_scope The new Control Scope
+     * @return this object
+     */
+    public BooleanControl setControlScope(ControlScope new_scope){
+        getDynamicControl().setControlScope(new_scope);
+        return this;
+
+    }
 }

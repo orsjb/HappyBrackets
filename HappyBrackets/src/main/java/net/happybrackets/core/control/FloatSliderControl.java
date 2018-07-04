@@ -14,5 +14,15 @@ public abstract class FloatSliderControl extends FloatControl {
         super(parent_sketch, name, initial_value, min_val, max_val);
     }
 
+    /**
+     * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
+     * We must do this in subclass
+     * @param new_scope The new Control Scope
+     * @return this object
+     */
+    public FloatSliderControl setControlScope(ControlScope new_scope){
+        getDynamicControl().setControlScope(new_scope);
+        return this;
 
+    }
 }

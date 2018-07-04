@@ -1089,6 +1089,10 @@ public class HB {
 				listener.statusChanged(s);
 			}
 		}
+
+		if (isEnableSimulators()){
+			System.out.println("HB Status: " + s);
+		}
 	}
 
 	/**

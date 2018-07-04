@@ -352,8 +352,8 @@ public class DynamicControl {
         ControlScope old_scope = controlScope;
         if (old_scope != new_scope) {
             controlScope = new_scope;
-            //notifyValueSetListeners();
-            //notifyLocalListeners();
+            notifyValueSetListeners();
+            notifyLocalListeners();
             notifyControlChangeListeners();
 
         }
