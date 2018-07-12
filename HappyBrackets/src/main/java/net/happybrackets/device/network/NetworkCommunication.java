@@ -49,6 +49,7 @@ public class NetworkCommunication {
 																//Listeners to incoming OSC messages
 	final private HB hb;
 
+	private OSCServer controllerOscServer;
 	private final LogSender logSender;
 	DatagramSocket advertiseTxSocket = null;
 
@@ -141,6 +142,13 @@ public class NetworkCommunication {
 		}
 		logger.info("Started OSC server");
 
+		controllerOscServer =  OSCServer.newUsing(OSCServer.TCP, 0);
+
+		int oscPort =  controllerOscServer.getLocalAddress().getPort();
+
+		hb.setControllerPort(oscPort);
+		System.out.println("Local controllerOscServer Port " + oscPort);
+
 		if (DeviceConfig.getInstance() != null) {
 			// Create log sender.
 			logSender = new LogSender(this, DeviceConfig.getInstance().getLogFilePath());
@@ -159,7 +167,7 @@ public class NetworkCommunication {
 //						((InetSocketAddress)src).getHostName().contains(DeviceConfig.getInstance().getMyHostName().split("[.]")[0])) {
 //					return;
 //				}
-//				System.out.println("Mesage received: " + msg.getName());
+//				System.out.println("Message received: " + msg.getName());
 
 				// this is our default target ports
 				int target_port = DefaultConfig.STATUS_FROM_DEVICE_PORT;
@@ -327,6 +335,152 @@ public class NetworkCommunication {
 
 			}
 		});
+
+		controllerOscServer.start();
+
+
+
+		//add a single master listener that forwards listening to delegates
+		controllerOscServer.addOSCListener(new OSCListener() {
+			@Override
+			public void messageReceived(OSCMessage msg, SocketAddress src, long time) {
+				//include default listener behaviour that listens for the ID assigned to this device
+
+				try {
+
+					if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ID)) {
+						int new_id = (Integer) msg.getArg(0);
+						hb.setMyIndex(new_id);
+						logger.info("I have been given an ID by the controller: {}", new_id);
+						hb.setStatus("ID " + new_id);
+
+
+					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_NAME)) {
+						String name = (String) msg.getArg(0);
+						hb.setFreindlyName(name);
+						logger.info("I have been given a friendly name by the controller: {}", name);
+					}
+					else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
+						boolean enabled = ((Integer) msg.getArg(0)) == 1;
+						logger.info("I have been requested to " + (enabled ? "start" : "stop") + " sending logs to the controller.");
+						sendLogs(enabled);
+					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_ENCRYPTION)) {
+						boolean enabled = ((Integer) msg.getArg(0)) == 1;
+						DeviceStatus.getInstance().setClassEncryption(enabled);
+						hb.setUseEncryption(enabled);
+
+					} else {
+						//master commands...
+						if (OSCVocabulary.match(msg, OSCVocabulary.Device.SYNC)) {
+							int intervalForSynchAction = 1000;
+							if (msg.getArgCount() > 0) {
+								intervalForSynchAction = (Integer) msg.getArg(0);
+							}
+							hb.syncAudioStart(intervalForSynchAction);
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.REBOOT)) {
+							HB.rebootDevice();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SHUTDOWN)) {
+							HB.shutdownDevice();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
+							hb.masterGainEnv.addSegment((Float) msg.getArg(0), (Float) msg.getArg(1));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
+							hb.reset();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET_SOUNDING)) {
+							hb.resetLeaveSounding();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CLEAR_SOUND)) {
+							hb.clearSound();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_RESET)) {
+							hb.fadeOutReset((Float) msg.getArg(0));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
+							hb.fadeOutClearSound((Float) msg.getArg(0));
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.BLEEP)) {
+							hb.testBleep();
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
+
+							send(DeviceStatus.getInstance().getOSCMessage(),
+									src);
+
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
+
+							send(OSCVocabulary.Device.VERSION,
+									new Object[]{
+											Device.getDeviceName(),
+											BuildVersion.getMajor(),
+											BuildVersion.getMinor(),
+											BuildVersion.getBuild(),
+											BuildVersion.getDate()
+									},
+									src);
+
+							System.out.println("Version sent " + BuildVersion.getVersionText() + " to tcp " ) ;
+
+						}else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
+
+							send(OSCVocabulary.Device.FRIENDLY_NAME,
+									new Object[]{
+											Device.getDeviceName(),
+											hb.friendlyName()
+									},
+									src);
+
+							System.out.println("Name sent " + BuildVersion.getVersionText() + " to tcp ") ;
+
+						}
+
+
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GET)) {
+
+							ControlMap control_map = ControlMap.getInstance();
+
+							List<DynamicControl> controls = control_map.GetSortedControls();
+
+							for (DynamicControl control : controls) {
+								if (control != null) {
+									OSCMessage send_msg = control.buildCreateMessage();
+									send(send_msg, src);
+								}
+							}
+
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)){
+							DynamicControl.processUpdateMessage(msg);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GLOBAL)){
+							DynamicControl.processGlobalMessage(msg);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
+							//TODO: add interfaces path to device config
+							boolean status = LocalConfigManagement.updateInterfaces(
+									"/etc/network/interfaces",
+									(String) msg.getArg(0),
+									(String) msg.getArg(1)
+							);
+							if (status) logger.info("Updated interfaces file");
+							else logger.error("Unable to update interfaces file");
+						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
+							//ignore
+						} else {
+							//all other messages getInstance forwarded to delegate listeners
+							synchronized (listeners) {
+								Iterator<OSCListener> i = listeners.iterator();
+								while (i.hasNext()) {
+									try {
+										i.next().messageReceived(msg, src, time);
+									} catch (Exception e) {
+										logger.error("Error delegating OSC message!", e);
+									}
+								}
+							}
+						}
+					}
+				} catch (Exception ex)
+				{
+					logger.error("Error processing OSC message!", ex);
+				}
+
+			}
+		});
+
 		/*
 		//set up the controller address
 		String hostname = DeviceConfig.getInstance().getControllerHostname();
@@ -463,6 +617,7 @@ public class NetworkCommunication {
 
 	}
 
+
 	/**
 	 * Send an OSC message to an Address other than the one we have configured as our controller
 	 * @param msg the message name
@@ -470,6 +625,19 @@ public class NetworkCommunication {
 	 * @param requester the Address of the device making request
 	 */
 	public void send (String msg, Object[] args, InetSocketAddress requester)
+	{
+		send(
+				new OSCMessage(msg, args),
+				requester
+		);
+	}
+	/**
+	 * Send an OSC message to an Address other than the one we have configured as our controller
+	 * @param msg the message name
+	 * @param args the message arguments
+	 * @param requester the Address of the device making request
+	 */
+	public void send (String msg, Object[] args, SocketAddress requester)
 	{
 		send(
 				new OSCMessage(msg, args),
@@ -486,6 +654,23 @@ public class NetworkCommunication {
 	{
 		try {
 			oscServer.send(msg,
+					target
+			);
+		} catch (IOException e) {
+			logger.error("Error sending OSC message to Server!", e);
+		}
+
+	}
+
+	/**
+	 * Send a Built OSC Message to server
+	 * @param msg OSC Message
+	 * @param target, where we need to send message
+	 */
+	public void send (OSCMessage msg, SocketAddress target)
+	{
+		try {
+			controllerOscServer.send(msg,
 					target
 			);
 		} catch (IOException e) {

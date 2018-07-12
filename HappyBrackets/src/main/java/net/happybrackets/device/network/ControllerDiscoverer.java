@@ -49,15 +49,17 @@ public interface ControllerDiscoverer {
 
 					int device_id = 0;
 
+					int connectPort = 0; // we need to tell controller how to connect with us
 
 					HB device_instance = DeviceMain.getHB();
 
 					if (device_instance != null)
 					{
 						device_id = device_instance.myIndex();
+						connectPort = device_instance.myConnectPort();
 					}
 
-					device_config.deviceControllerFound(advertised_hostname, address, port, device_id);
+					device_config.deviceControllerFound(advertised_hostname, address, port, device_id, connectPort);
 
 				}
 			}

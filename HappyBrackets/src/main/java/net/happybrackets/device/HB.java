@@ -84,7 +84,16 @@ public class HB {
 		HB.enableSimulators = enableSimulators;
 	}
 
-		public interface StatusChangedListener{
+	/**
+	 * Set the TCP Osc Port given to us by operating system
+	 * We will pass it to the controller so it knows how to connect to us
+	 * @param oscPort
+	 */
+    public void setControllerPort(int oscPort) {
+		myDeviceId.setConnectToServerPort(oscPort);
+    }
+
+    public interface StatusChangedListener{
 		void statusChanged(String new_status);
 	}
 
@@ -1029,6 +1038,9 @@ public class HB {
 		return myDeviceId.getDeviceId();
 	}
 
+	public int myConnectPort(){
+		return myDeviceId.getConnectToServerPort();
+	}
 	/**
 	 * We will set the index of the device here. It may be set by a controller
 	 * @param val new value

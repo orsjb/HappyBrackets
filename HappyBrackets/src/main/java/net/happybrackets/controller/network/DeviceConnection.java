@@ -340,12 +340,14 @@ public class DeviceConnection {
 		final int DEVICE_HOSTNAME = 1;
 		final int DEVICE_ADDRESS = 2;
 		final int DEVICE_ID = 3;
+		final int DEVICE_SERVER_PORT = 4;
 
 		try {
 			boolean invalid_pi = false;
 
 			InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
 			int device_id = 0;
+			int device_server_port =  0;
 
 			String device_name = (String) msg.getArg(DEVICE_NAME);
 
@@ -369,6 +371,13 @@ public class DeviceConnection {
 					invalid_pi = true;
 				}
 
+				if (msg.getArgCount() > DEVICE_SERVER_PORT){
+					try
+					{
+						device_server_port = (int) msg.getArg(DEVICE_SERVER_PORT);
+					}
+					catch (Exception ex){}
+				}
 
 				//logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
 
@@ -454,6 +463,8 @@ public class DeviceConnection {
 					// we will check that the InetAddress that we have stored is the same - IP address may have changed
 
 					if (!this_device.isIgnoringDevice()) {
+						this_device.setServerPort(device_server_port);
+
 						this_device.setSocketAddress(sending_address);
 
 						// Make sure we don't have a zero device_id from device

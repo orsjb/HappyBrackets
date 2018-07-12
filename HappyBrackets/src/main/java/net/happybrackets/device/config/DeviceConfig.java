@@ -47,7 +47,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	/**
 	 * We need to create a default controller to pass tests
 	 */
-	DeviceController lastController = new DeviceController("", "", 0, 0);
+	DeviceController lastController = new DeviceController("", "", 0, 0, 0);
 
 	// This is where we will place our logs. This way we can put in a ram fs
 	private final String LOG_FOLDER =  "ramfs/";
@@ -142,16 +142,17 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	 * @param address IP address
 	 * @param port Port that it wants message transmitted to
 	 * @param device_id our device ID
+	 * @param connectPort the server port that controllers will connect to us through
 	 */
-	public void deviceControllerFound (String hostname, String address, int port, int device_id)
+	public void deviceControllerFound(String hostname, String address, int port, int device_id, int connectPort)
 	{
 
-		int hash = DeviceController.buildHashCode(address, port);
+		int hash = DeviceController.buildHashCode(address, port, connectPort);
 
 		synchronized (deviceControllers) {
 			DeviceController controller = deviceControllers.get(hash);
 			if (controller == null) {
-				controller = new DeviceController(hostname, address, port, device_id);
+				controller = new DeviceController(hostname, address, port, device_id, connectPort);
 				deviceControllers.put(controller.hashCode(), controller);
 			}
 			else

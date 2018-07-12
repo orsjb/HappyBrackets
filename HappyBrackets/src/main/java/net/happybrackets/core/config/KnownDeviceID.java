@@ -8,6 +8,11 @@ public class KnownDeviceID {
     // The ID number to display
     int deviceId = 0;
 
+
+
+    // The port given to us by operating system
+    int connectToServerPort =  0;
+
     // the friendly name we want to display item
     String friendlyName = "";
 
@@ -18,6 +23,21 @@ public class KnownDeviceID {
 
     String hostName = "";
 
+    /**
+     * Return the TCP port we are on and others need to connect to
+     * @return
+     */
+    public int getConnectToServerPort() {
+        return connectToServerPort;
+    }
+
+    /**
+     * Set the value after operating system has given us the port
+     * @param connectToServerPort
+     */
+    public void setConnectToServerPort(int connectToServerPort) {
+        this.connectToServerPort = connectToServerPort;
+    }
 
     public int getDeviceId() {
         return deviceId;

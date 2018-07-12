@@ -239,6 +239,7 @@ public class ControllerAdvertiser {
 							e.printStackTrace();
 						}
 
+
 						DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
 
 						// Now send a broadcast

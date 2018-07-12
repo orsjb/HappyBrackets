@@ -43,6 +43,7 @@ public class DeviceController {
 
     static int deviceId; // the device ID we were when we were made
 
+    static int connectPort; // The TCP port that clients need to connect to
 
     static private UDPCachedMessage cachedMessage = null;
 
@@ -84,7 +85,8 @@ public class DeviceController {
                             Device.getDeviceName(),
                             Device.getDeviceName(), //Device.selectHostname(ni),
                             "", //Device.selectIP(ni),
-                            deviceId
+                            deviceId,
+                            connectPort
                     }
             );
 
@@ -110,9 +112,9 @@ public class DeviceController {
      * @param port  port
      * @return a hash code that combines these factors
      */
-    public static int buildHashCode(String address, int port)
+    public static int buildHashCode(String address, int port, int connectPort)
     {
-        String hash_build = address + port;
+        String hash_build = address + port + connectPort;
         return hash_build.hashCode();
     }
     /**
@@ -122,13 +124,14 @@ public class DeviceController {
      * @param port the port we send messages on
      * @param device_id the device id we were when were made
      */
-    public DeviceController(String hostname, String address, int port, int device_id) {
+    public DeviceController(String hostname, String address, int port, int device_id, int connectPort) {
         byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
 
         this.hostname = hostname;
+        this.connectPort = connectPort;
 
         socketAddress = new InetSocketAddress(address, port);
-        hash = buildHashCode(address, port);
+        hash = buildHashCode(address, port, connectPort);
         lastTimeSeen = System.currentTimeMillis();
 
         deviceId = device_id;

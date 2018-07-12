@@ -21,9 +21,8 @@ import java.net.*;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.*;
 
+import de.sciss.net.*;
 import net.happybrackets.controller.config.ControllerConfig;
-import de.sciss.net.OSCMessage;
-import de.sciss.net.OSCServer;
 
 import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.BuildVersion;
@@ -36,6 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LocalDeviceRepresentation {
+
+	final Object clientLock = new Object(); // define a lock for tcpClient
 
 	final int MILLISECONDS_TO_REQUEST_CONTROLS = 2000;
 
@@ -53,6 +54,8 @@ public class LocalDeviceRepresentation {
 	private String address;
 	public List<String> preferredAddressStrings;    //This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
 	private int deviceId; //
+
+	int serverPort =  0; // This is TCP Server Port. We need to create a client to conec to this
 	private String status = "Status unknown"; // This is the displayed ID
 
 	private DynamicControlScreen dynamicControlScreen = null;
@@ -62,6 +65,9 @@ public class LocalDeviceRepresentation {
 	private InetSocketAddress socketAddress;
 
 	private final OSCServer server;
+
+	private OSCClient client = null;
+
 	public final boolean[] groups;
 	private ControllerConfig controllerConfig;
 	private final int replyPort; // this is the port where we will tell devices to send our messages
@@ -104,6 +110,92 @@ public class LocalDeviceRepresentation {
 	}
 
 
+	/**
+	 * Close the Client TCP Port
+	 */
+	void closeClientPort() {
+		synchronized (clientLock) {
+			if (client != null) {
+				client.dispose();
+
+				client = null;
+			}
+		}
+	}
+
+	/**
+	 * Open TCP Client and assign listeners
+	 * @param port  Port to connect to
+	 * @return  true on success
+	 */
+	boolean openClientPort(int port){
+		boolean ret = false;
+		synchronized (clientLock) {
+			if (client == null) {
+
+				try {
+					client = OSCClient.newUsing(OSCChannel.TCP);
+					client.setTarget(new InetSocketAddress(getAddress(), port));
+					client.start();
+
+					ret = true;
+
+					client.addOSCListener(new OSCListener() {
+						public void messageReceived(OSCMessage m, SocketAddress addr, long time) {
+							incomingMessage(m, addr);
+						}
+					});
+				} catch (IOException e) {
+					e.printStackTrace();
+					client.dispose();
+					client = null;
+				}
+
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Check if our TCP client is assigned and connected
+	 * @return true if connected
+	 */
+	boolean testClientOpen() {
+		boolean ret = false;
+		synchronized (clientLock) {
+			if (client != null)
+			{
+				ret = client.isConnected();
+			}
+
+		}
+		return ret;
+
+	}
+
+	/**
+	 * Set the port we need to connect our client to to communicate via TCP
+	 * @param port remote port number
+	 */
+	public synchronized void setServerPort(int port){
+
+		if (serverPort != port){
+			closeClientPort();
+			if (openClientPort(port)) {
+				serverPort = port;
+			}
+		}
+
+	}
+
+	/**
+	 * Get the remote server port that we need to cnnect to to create a TCP connection with this device
+	 * @return
+	 */
+	public int getServerPort(){
+		return serverPort;
+	}
 	/**
 	 * get The friendly name we want to display this device as
 	 * @return the friendly name. If not set, will return device name
@@ -329,9 +421,14 @@ public class LocalDeviceRepresentation {
 
 	public void showControlScreen()
 	{
-		sendInitialControlRequest();
-		dynamicControlScreen.setTitle(getFriendlyName());
-		dynamicControlScreen.show();
+		if (controlRequestSent) {
+			dynamicControlScreen.setTitle(getFriendlyName());
+			dynamicControlScreen.show();
+		}
+		else
+		{
+			sendInitialControlRequest();
+		}
 	}
 
 	/**
@@ -425,6 +522,7 @@ public class LocalDeviceRepresentation {
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress, int reply_port) {
 		this(deviceName, hostname, addr, id, server, config, reply_port);
 		this.socketAddress = socketAddress;
+
 	}
 
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, int reply_port) {
@@ -660,12 +758,16 @@ public class LocalDeviceRepresentation {
 	/**
 	 * Lets device that know about this to remove their listeners
 	 * It then removes all listeners from list
+	 * Also closes the TCP Port
 	 */
 	public void removeDevice() {
 		synchronized (deviceRemovedListenerList) {
 			for (DeviceRemovedListener listener : deviceRemovedListenerList) {
 				listener.deviceRemoved(this);
 			}
+			// close our TCP Port
+
+			closeClientPort();
 			// Just because a device is removed does not mean it is no longer a favourite
 			favouriteChangedListeners.clear();
 			deviceRemovedListenerList.clear();
@@ -735,6 +837,18 @@ public class LocalDeviceRepresentation {
 		lazySetupAddressStrings();
 		boolean success = false;
 		int count = 0;
+		if (testClientOpen()) { // if we can send TCP = then lets do it that way
+			synchronized (clientLock){
+				try {
+					client.send(msg);
+					success = true;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		// If we were not able to send TCP
 		while(!success) {
 			try {
 				if (this.socketAddress == null) {
