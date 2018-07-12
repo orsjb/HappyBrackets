@@ -146,7 +146,7 @@ public class NetworkCommunication {
 
 		int oscPort =  controllerOscServer.getLocalAddress().getPort();
 
-		hb.setControllerPort(oscPort);
+		hb.setTCPServerPort(oscPort);
 		System.out.println("Local controllerOscServer Port " + oscPort);
 
 		if (DeviceConfig.getInstance() != null) {

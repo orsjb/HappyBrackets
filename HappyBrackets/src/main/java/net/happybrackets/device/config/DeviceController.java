@@ -108,8 +108,9 @@ public class DeviceController {
 
     /**
      * Create a hash code we can use to compare that we are equal
-     * @param address ip address
-     * @param port  port
+     * @param address ip address of controller
+     * @param port  port the controller UDP port
+     * @param connectPort the Port we need to connect to TCP server
      * @return a hash code that combines these factors
      */
     public static int buildHashCode(String address, int port, int connectPort)
@@ -123,6 +124,7 @@ public class DeviceController {
      * @param address ip address that we send messages to this controller
      * @param port the port we send messages on
      * @param device_id the device id we were when were made
+     * @param connectPort the Port we need to connect to TCP server
      */
     public DeviceController(String hostname, String address, int port, int device_id, int connectPort) {
         byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);

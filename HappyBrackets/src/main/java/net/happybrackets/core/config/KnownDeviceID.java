@@ -25,7 +25,7 @@ public class KnownDeviceID {
 
     /**
      * Return the TCP port we are on and others need to connect to
-     * @return
+     * @return the Port we need to connect to TCP server
      */
     public int getConnectToServerPort() {
         return connectToServerPort;
@@ -33,7 +33,7 @@ public class KnownDeviceID {
 
     /**
      * Set the value after operating system has given us the port
-     * @param connectToServerPort
+     * @param connectToServerPort the Port we need to connect to TCP server
      */
     public void setConnectToServerPort(int connectToServerPort) {
         this.connectToServerPort = connectToServerPort;

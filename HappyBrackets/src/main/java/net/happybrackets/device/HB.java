@@ -87,10 +87,10 @@ public class HB {
 	/**
 	 * Set the TCP Osc Port given to us by operating system
 	 * We will pass it to the controller so it knows how to connect to us
-	 * @param oscPort
+	 * @param tcpServerPort the Port we need to connect to TCP server
 	 */
-    public void setControllerPort(int oscPort) {
-		myDeviceId.setConnectToServerPort(oscPort);
+    public void setTCPServerPort(int tcpServerPort) {
+		myDeviceId.setConnectToServerPort(tcpServerPort);
     }
 
     public interface StatusChangedListener{

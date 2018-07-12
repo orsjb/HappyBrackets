@@ -191,7 +191,7 @@ public class LocalDeviceRepresentation {
 
 	/**
 	 * Get the remote server port that we need to cnnect to to create a TCP connection with this device
-	 * @return
+	 * @return the Port we need to connect to TCP server
 	 */
 	public int getServerPort(){
 		return serverPort;
