@@ -411,7 +411,7 @@ public class LocalDeviceRepresentation {
 	}
 
 	void sendInitialControlRequest(){
-		if (!controlRequestSent && timeActive() > MILLISECONDS_TO_REQUEST_CONTROLS)
+		if (!controlRequestSent)
 		{
 			controlRequestSent = true;
 			sendControlsRequest();
@@ -419,16 +419,14 @@ public class LocalDeviceRepresentation {
 	}
 
 
-	public void showControlScreen()
-	{
-		if (controlRequestSent) {
-			dynamicControlScreen.setTitle(getFriendlyName());
-			dynamicControlScreen.show();
-		}
-		else
-		{
+	public void showControlScreen() {
+		if (!controlRequestSent) {
 			sendInitialControlRequest();
 		}
+
+		dynamicControlScreen.setTitle(getFriendlyName());
+		dynamicControlScreen.show();
+
 	}
 
 	/**
