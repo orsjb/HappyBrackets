@@ -1,7 +1,10 @@
 package net.happybrackets.device;
 
 import net.happybrackets.core.BuildVersion;
+import net.happybrackets.core.ShellExecute;
 import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
 
 public class TextOutput {
     final static int BANNER_WIDTH = 60;
@@ -35,6 +38,8 @@ public class TextOutput {
         return ret;
     }
 
+
+
     public static void printBanner()
     {
         final int TOP_BORDER = 3;
@@ -52,11 +57,25 @@ public class TextOutput {
         System.out.println(getBannerLine(beads_version, BLANK_CHAR));
 
 
-
         for (int i = 0; i < TOP_BORDER; i++)
         {
             System.out.println(getBannerLine(BORDER_CHAR, BORDER_CHAR));
         }
+
+        // Display our JVM Info
+        ShellExecute executer = new ShellExecute().addProcessCompleteListener(((shellExecute, exit_value) -> {
+            System.out.println(getBannerLine(BORDER_CHAR, BORDER_CHAR));
+            System.out.println(shellExecute.getProcessText());
+            System.out.println(shellExecute.getErrorText());
+            System.out.println(getBannerLine(BORDER_CHAR, BORDER_CHAR));
+        }));
+
+        try {
+            executer.executeCommand("java -version");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

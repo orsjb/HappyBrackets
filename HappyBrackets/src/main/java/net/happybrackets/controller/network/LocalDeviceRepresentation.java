@@ -116,7 +116,12 @@ public class LocalDeviceRepresentation {
 	void closeClientPort() {
 		synchronized (clientLock) {
 			if (client != null) {
-				client.dispose();
+				try {
+					client.stop();
+					client.dispose();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
 				client = null;
 			}
