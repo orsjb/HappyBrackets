@@ -62,7 +62,6 @@ echo "sudo mv wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf"
 echo ""
 echo "If you make this change, the SSID this PI will search for will be 'PINet'"
 echo "Password is 'happybrackets'"
-echo "You can (and should) change these details by making changes to the interfaces file:"
-echo "sudo nano /etc/network/interfaces"
+
 
 
