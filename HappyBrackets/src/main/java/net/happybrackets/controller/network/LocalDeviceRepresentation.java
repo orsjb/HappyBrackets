@@ -24,6 +24,7 @@ import java.util.*;
 import de.sciss.net.*;
 import net.happybrackets.controller.config.ControllerConfig;
 
+import net.happybrackets.controller.gui.DialogDisplay;
 import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.BuildVersion;
 import net.happybrackets.core.DeviceStatus;
@@ -38,7 +39,6 @@ public class LocalDeviceRepresentation {
 
 	final Object clientLock = new Object(); // define a lock for tcpClient
 
-	final int MILLISECONDS_TO_REQUEST_CONTROLS = 2000;
 
 	public static final int MAX_LOG_DISPLAY_CHARS = 5000;
 
@@ -187,9 +187,8 @@ public class LocalDeviceRepresentation {
 
 		if (serverPort != port){
 			closeClientPort();
-			if (openClientPort(port)) {
-				serverPort = port;
-			}
+			serverPort = port;
+
 		}
 
 	}
@@ -416,6 +415,7 @@ public class LocalDeviceRepresentation {
 	}
 
 	void sendInitialControlRequest(){
+
 		if (!controlRequestSent)
 		{
 			controlRequestSent = true;
@@ -424,14 +424,29 @@ public class LocalDeviceRepresentation {
 	}
 
 
-	public void showControlScreen() {
-		if (!controlRequestSent) {
-			sendInitialControlRequest();
+	/**
+	 * Open TCP Port and show the control screen
+	 @return TRue if a TCP connection was made and controls could be shown
+	 */
+	public boolean showControlScreen() {
+		boolean ret = false;
+
+		if (!testClientOpen()) {
+			openClientPort(serverPort);
 		}
 
-		dynamicControlScreen.setTitle(getFriendlyName());
-		dynamicControlScreen.show();
+		// we will only show control screen if we have a valid TCP port
+		if (testClientOpen()) {
+			if (!controlRequestSent) {
+				sendInitialControlRequest();
+			}
 
+			dynamicControlScreen.setTitle(getFriendlyName());
+			dynamicControlScreen.show();
+			ret = true;
+		}
+
+		return ret;
 	}
 
 	/**

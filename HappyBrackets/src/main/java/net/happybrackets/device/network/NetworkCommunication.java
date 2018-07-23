@@ -47,12 +47,45 @@ public class NetworkCommunication {
 	private InetAddress broadcastAddress;		//Global Broadcast address
 	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
 																//Listeners to incoming OSC messages
+
+	// Define a set of Sockets that will receive dynamic Control events. These will only be controllers who have done a get request
+	private Set<SocketAddress> dynamicControlControllerListeners =  Collections.synchronizedSet(new HashSet<SocketAddress>());
+
 	final private HB hb;
 
 	private OSCServer controllerOscServer;
 	private final LogSender logSender;
 	DatagramSocket advertiseTxSocket = null;
 
+
+	/**
+	 * send SC Message to each controller that has registered
+	 * @param msg the Message to send to the controller
+	 */
+	private void sendDynamicControlEventToControllers(OSCMessage msg){
+		try
+		{
+			synchronized (dynamicControlControllerListeners) {
+				ArrayList<SocketAddress> failed_addresses = new ArrayList<SocketAddress>();
+				Iterator<SocketAddress> i = dynamicControlControllerListeners.iterator();
+				while (i.hasNext()) {
+					SocketAddress socket =  i.next();
+					if (!send(msg, socket)){
+						// this was a fail. Lets remove the socket
+						failed_addresses.add(socket);
+					}
+
+				}
+
+				// we are out of our iterator. Now remove our failed sockets
+				for (SocketAddress socket: failed_addresses) {
+					dynamicControlControllerListeners.remove(socket);
+
+				}
+			}
+		}
+		catch(Exception ex){}
+	}
 
 	/**
 	 * Instantiate a new {@link NetworkCommunication} object.
@@ -76,14 +109,7 @@ public class NetworkCommunication {
 			@Override
 			public void dynamicControlEvent(OSCMessage msg) {
 				// Send all Dynamic Control Messages to the respective controllers
-				try {
-					if (DeviceConfig.getInstance() != null) {
-						UDPCachedMessage cached_message = new UDPCachedMessage(msg);
-						DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				sendDynamicControlEventToControllers(msg);
 			}
 		});
 
@@ -106,7 +132,8 @@ public class NetworkCommunication {
 						}
 
 						// Now send the message to all controllers
-						DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+						sendDynamicControlEventToControllers(msg);
+						//DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
 					}
 
 				} catch (IOException e) {
@@ -440,6 +467,9 @@ public class NetworkCommunication {
 									send(send_msg, src);
 								}
 							}
+							synchronized (dynamicControlControllerListeners) {
+								dynamicControlControllerListeners.add(src);
+							}
 
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)){
@@ -666,17 +696,21 @@ public class NetworkCommunication {
 	 * Send a Built OSC Message to server
 	 * @param msg OSC Message
 	 * @param target, where we need to send message
+	 * @return true if able to send and no exception thrown
 	 */
-	public void send (OSCMessage msg, SocketAddress target)
+	public boolean send (OSCMessage msg, SocketAddress target)
 	{
+		boolean ret = true;
 		try {
 			controllerOscServer.send(msg,
 					target
 			);
 		} catch (IOException e) {
+			ret = false;
 			logger.error("Error sending OSC message to Server!", e);
 		}
 
+		return ret;
 	}
 	/**
 	 * Add a @{@link OSCListener} that will respond to incoming OSC messages from the controller. Note that this will not listen to broadcast messages from other devices, for which you should use TODO!.

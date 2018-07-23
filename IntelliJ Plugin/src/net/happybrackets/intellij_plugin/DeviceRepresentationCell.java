@@ -35,6 +35,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import net.happybrackets.controller.gui.DialogDisplay;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
@@ -80,7 +81,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 	/**
 	 * Display a message dialog
-	 * @param text thext to display
+	 * @param text the text to display
 	 */
 	void displayDialog(String text)
 	{
@@ -402,7 +403,11 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 			ContextMenu contextMenu = new ContextMenu();
 			MenuItem show_controls_menu = new MenuItem("Show Controls");
-			show_controls_menu.setOnAction(event2 -> item.showControlScreen());
+			show_controls_menu.setOnAction(event2 -> {
+				if (!item.showControlScreen()) {
+					DialogDisplay.displayDialog("Unable to create connection with device");
+				}
+			});
 			contextMenu.getItems().add(show_controls_menu);
 			contextMenu.getItems().add(new SeparatorMenuItem());
 
