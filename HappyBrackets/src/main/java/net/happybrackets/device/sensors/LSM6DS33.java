@@ -134,7 +134,7 @@ public class LSM6DS33 extends Sensor implements AccelerometerSensor, GyroscopeSe
 	double[] gyroData = new double[3];
 	double[] accelData = new double[3];
 
-	private boolean validLoad = true;
+	private boolean validLoad = false;
 
 	public static LSM6DS33 getLoadedInstance() {
 		return loadedInstance;
@@ -172,15 +172,30 @@ public class LSM6DS33 extends Sensor implements AccelerometerSensor, GyroscopeSe
 		if (bus != null) {
 			// let us do an auto detect
 			try {
+				System.out.println("Try LSM6DS33 at high address");
 				gyrodevice = bus.getDevice(DS33_SA0_HIGH_ADDRESS);
 				acceldevice = bus.getDevice(DS33_SA0_HIGH_ADDRESS);
+				acceldevice.write(CTRL1_XL, (byte) 0x80);
+
+				gyrodevice.write(CTRL2_G, (byte) 0x80);
+
+				acceldevice.write(CTRL2_G, (byte) 0x80);
+
 				validLoad = true;
 				System.out.println("Found LSM6DS33 at high address");
 			} catch (Exception ex) {
 				System.out.println("Did not find LSM6DS33 at High address. Try Low");
 				try {
+					System.out.println("Try LSM6DS33 at low address");
 					gyrodevice = bus.getDevice(DS33_SA0_LOW_ADDRESS);
 					acceldevice = bus.getDevice(DS33_SA0_LOW_ADDRESS);
+
+					acceldevice.write(CTRL1_XL, (byte) 0x80);
+
+					gyrodevice.write(CTRL2_G, (byte) 0x80);
+
+					acceldevice.write(CTRL2_G, (byte) 0x80);
+
 					System.out.println("Found LSM6DS33 at low address");
 					validLoad = true;
 				} catch (Exception ex2) {
@@ -190,18 +205,6 @@ public class LSM6DS33 extends Sensor implements AccelerometerSensor, GyroscopeSe
 
 		}
 
-        if (acceldevice != null && gyrodevice != null) {
-            try {
-                acceldevice.write(CTRL1_XL, (byte) 0x80);
-
-                gyrodevice.write(CTRL2_G, (byte) 0x80);
-
-                acceldevice.write(CTRL2_G, (byte) 0x80);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
 		if (validLoad && bus != null & acceldevice != null) {
             System.out.println("LSM6DS33 valid Load");

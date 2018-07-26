@@ -14,6 +14,20 @@ fi
  
 NEWHOST=hb-${NEWHOST}
 
+LOCAL_MACHINE="127.0.1.1"
+MACHINE_TEXT="$LOCAL_MACHINE"$'\t'"$NEWHOST"
+
+#we need to add this hostname to hosts file
+if grep -Fxq "$MACHINE_TEXT" /etc/hosts
+then
+    echo "Hostname already in hosts file";
+    # code if found
+else
+    # code if not found
+    echo "Append hostname to hosts file"
+    echo -n "$MACHINE_TEXT" >> /etc/hosts
+fi
+
 # reboot with correct hostname if required
 
 if [ "$NEWHOST" != "$OLDHOST" ] 
@@ -23,3 +37,6 @@ then
 	sudo mv hostname /etc/
 	sudo reboot 
 fi
+
+
+
