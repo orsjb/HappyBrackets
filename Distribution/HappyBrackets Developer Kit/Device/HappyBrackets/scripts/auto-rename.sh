@@ -20,8 +20,8 @@ MACHINE_TEXT="$LOCAL_MACHINE"$'\t'"$NEWHOST"
 #we need to add this hostname to hosts file
 if grep -Fxq "$MACHINE_TEXT" /etc/hosts
 then
-    echo "Hostname already in hosts file";
     # code if found
+    echo "Hostname already in hosts file";
 else
     # code if not found
     echo "Append hostname to hosts file"

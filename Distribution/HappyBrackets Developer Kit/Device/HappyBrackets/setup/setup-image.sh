@@ -36,14 +36,54 @@ amixer cset numid=1 0
 # save audio settings
 sudo alsactl store
 
-# set up autorun
-wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/rc.local
-sudo mv rc.local /etc/
-chmod +x /etc/rc.local
 
 # set up ssh login
 sudo update-rc.d ssh enable
 sudo invoke-rc.d ssh start
+
+
+# now we need to see if we are going to start HappyBrackets from rc.local or from GUI Startup
+#we should be back to PI user
+
+GUI_FILE=~/.config/lxsession/LXDE-pi/autostart
+
+if [ -f "$GUI_FILE" ]; then
+    echo "This PI is a GUI Program. We need to append our startup script to it"
+    START_TEXT="@/usr/bin/sudo /home/pi/HappyBrackets/scripts/run.sh"
+
+    #we need to add this startup text to GUI init file
+    #first see if it exists
+    if grep -Fxq "$START_TEXT" "$GUI_FILE"
+        then
+        # code if found
+        echo "Startup text already in GUI file";
+    else
+        # code if not found
+        echo "Append startup text to file"
+        echo $START_TEXT >>$GUI_FILE
+    fi
+
+else # this is a standard non-gui PI
+    echo "This is a non gui PI. Add line to /etc/rc.local"
+    START_TEXT="/usr/bin/sudo /home/pi/HappyBrackets/scripts/run.sh"
+    RC_FILE=/etc/rc.local
+
+    #we need to add this startup text to GUI init file
+    #first see if it exists
+    if grep -Fxq "$START_TEXT" $RC_FILE
+        then
+        # code if found
+        echo "Startup text already in RC file";
+    else
+        # code if not found
+        # set up autorun
+        sudo wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/rc.local
+        sudo mv rc.local /etc/
+        sudo chmod +x /etc/rc.local
+
+    fi
+fi
+
 
 # Network Settings
 echo "***********************************"
