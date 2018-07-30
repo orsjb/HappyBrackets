@@ -1,11 +1,12 @@
 package ${PACKAGE_NAME};
 
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.HBReset;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
 
-public class ${NAME} implements HBAction {
+public class ${NAME} implements HBAction, HBReset {
 // Change to the number of audio Channels on your device
 final int NUMBER_AUDIO_CHANNELS = 1;
 
@@ -18,6 +19,17 @@ final int NUMBER_AUDIO_CHANNELS = 1;
 
 
         /***** Type your HBAction code above this line ******/
+    }
+
+
+    /**
+    * Add any code you need to have occur when a reset occurs
+    */
+@Override
+    public void doResset(){
+        /***** Type your HBReset code below this line ******/
+
+        /***** Type your HBReset code above this line ******/
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

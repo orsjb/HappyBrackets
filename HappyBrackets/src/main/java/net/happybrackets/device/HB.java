@@ -25,10 +25,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
@@ -97,10 +94,15 @@ public class HB {
 		void statusChanged(String new_status);
 	}
 
+	/**
+	 * We will store all our loaded classes so we can see if they need to be reset
+	 */
+	private static List <Object> loadedHBClasses = Collections.synchronizedList(new ArrayList<Object>());
+
 	private List<StatusChangedListener> statusChangedListenerList  = new ArrayList<>();
 
 	// We will create a static one to know whether we are in Debug or run
-	// If we are in a PI, this ill already be set when we try to debug
+	// If we are in a PI, this will already be set when we try to debug
 	static HB HBInstance = null;
 	/**
 	 * Whether we will use encryption in transferring class data
@@ -273,6 +275,13 @@ public class HB {
 					try {
 						action = incomingClass.newInstance();
 						action.action(hb);
+
+						// we will add to our list here.
+						// It is important we do this after the action in case this is the class that called reset
+						synchronized (loadedHBClasses) {
+							loadedHBClasses.add(action);
+						}
+
 						ret = true;
 
 						try
@@ -740,6 +749,13 @@ public class HB {
 							try {
 								action = incomingClass.newInstance();
 								action.action(HB.this);
+
+								// we will add to our list here.
+								// It is important we do this after the action in case this is the class that called reset
+								synchronized (loadedHBClasses) {
+									loadedHBClasses.add(action);
+								}
+
 							} catch (Exception e) {
 								logger.error("Error instantiating received HBAction!", e);
 													 // means that we avert an exception
@@ -766,6 +782,12 @@ public class HB {
 			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(class_name);
 			HBAction action = hbActionClass.newInstance();
 			action.action(this);
+			// we will add to our list here.
+			// It is important we do this after the action in case this is the class that called reset
+			synchronized (loadedHBClasses) {
+				loadedHBClasses.add(action);
+			}
+
 		} catch (Exception e) {
 			logger.error("Unable to cast Object into HBAction!", e);
 		}
@@ -961,6 +983,27 @@ public class HB {
 	public void reset() {
 		resetLeaveSounding();
 		clearSound();
+
+		synchronized (loadedHBClasses) {
+			for (Object loaded_class : loadedHBClasses) {
+
+				try {
+					Class<?>[] interfaces = loaded_class.getClass().getInterfaces();
+
+					for (Class<?> cc : interfaces) {
+						if (cc.equals(HBReset.class)) {
+
+							((HBReset)loaded_class).doResset();
+							break;
+						}
+					}
+
+				} catch (Exception ex){}
+			}
+
+			loadedHBClasses.clear();
+
+		}
 		setStatus("Reset");
 
 	}
