@@ -116,14 +116,28 @@ task deployJarAndJavaDoc << {
         from 'build/libs/HB.jar'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets'
     }
+
     println "copied jars"
 }
+
 
 task deployPlugin << {
     copy {
         from '../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip'
         into '../Distribution/HappyBrackets Developer Kit'
     }
+}
+
+task packJar (type:Zip) {
+    destinationDir buildDir //set our output directory
+    archiveName 'HB.zip'  //set the name of our archive
+
+    //config
+    from("build/libs/HB.jar") {
+        include '*/**'
+    }
+
+    println "Creating device package: $buildDir/$archiveName"
 }
 
 task packDeviceRuntime (type:Zip) {
@@ -141,6 +155,7 @@ task packDeviceRuntime (type:Zip) {
 task packProject (type:Zip) {
     destinationDir buildDir //set our output directory
     archiveName 'HappyBracketsProject.zip'  //set the name of our archive
+    excludes = ['**/*.class', '**/HB.jar']
 
     //config
     from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/") {
@@ -153,7 +168,14 @@ task packProject (type:Zip) {
 task copyProject << {
     copy {
         from '../HappyBrackets/build/HappyBracketsProject.zip'
-        into '../IntelliJ Plugin/resources'
+        into '../IntelliJ Plugin/resources/projectTemplates'
+    }
+}
+
+task copyHBZip << {
+    copy {
+        from '../HappyBrackets/build/HB.zip'
+        into '../IntelliJ Plugin/resources/projectTemplates'
     }
 }
 
@@ -170,7 +192,9 @@ task packDevKit (type:Zip) {
 }
 
 shadowJar.dependsOn config
+copyHBZip.dependsOn packJar
 copyProject.dependsOn packProject
+copyProject.dependsOn copyHBZip
 
 deployJarAndJavaDoc.dependsOn shadowJar
 

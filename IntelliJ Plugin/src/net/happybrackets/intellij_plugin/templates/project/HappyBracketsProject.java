@@ -16,9 +16,6 @@
 
 package net.happybrackets.intellij_plugin.templates.project;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.WebProjectTemplate;
 import com.intellij.openapi.application.ApplicationManager;
@@ -44,7 +41,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * @version "$Id$"
@@ -55,6 +51,14 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
     public static final String HAPPY_BRACKETS_PROJECT_NAME =  "HappyBrackets Project";
     public static final String HAPPY_BRACKETS_PROJECT_IML = HAPPY_BRACKETS_PROJECT_NAME + ".iml";
+
+    public static final String HAPPY_BRACKETS_PROJECT_ZIP = "/projectTemplates/HappyBracketsProject.zip";
+    public static final String HAPPY_BRACKETS_JAR_ZIP = "/projectTemplates/HB.zip";
+
+    public static final String [] HB_JAR_LOCATION = new String[]{
+            File.separatorChar + "Device" + File.separatorChar + "HappyBrackets",
+            File.separatorChar + "libs"
+    };
 
     static final  String WORKSPACE_FILE = ".idea/workspace.xml";
     static final  String MODULES_FILE = ".idea/modules.xml";
@@ -111,9 +115,20 @@ public class HappyBracketsProject extends WebProjectTemplate {
         unzip.addSkipFile(MODULES_FILE);
         unzip.addSkipFile(WORKSPACE_FILE);
 
+        String base_path = baseDirectory.getCanonicalPath();
 
         try {
-            unzip.unzipReseourceProject( "/projectTemplates/HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
+            unzip.unzipReseourceProject( HAPPY_BRACKETS_PROJECT_ZIP, base_path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Now unzip HB.jar into Device and Project
+        try {
+            for (int i = 0; i < HB_JAR_LOCATION.length; i++) {
+                unzip.unzipReseourceProject(HAPPY_BRACKETS_JAR_ZIP, base_path + HB_JAR_LOCATION[i]);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
