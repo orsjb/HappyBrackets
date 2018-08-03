@@ -178,47 +178,52 @@ public class HappyBracketsProject extends WebProjectTemplate {
                     @Override
                     public void run() {
 
-                        final String rootPath = baseDirectory.getCanonicalPath();
-                        final PsiDirectory rootDirectory = PsiManager.getInstance(project).findDirectory(getVirtualFile(rootPath));
-
-                        String project_name = project.getName();
-                        if (rootDirectory == null) {
-                            return;
-                        }
-
-                        // we need to do unzip again because project has been reloaded
                         try {
-                            unzip.unzipReseourceProject( "/projectTemplates/HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            final String rootPath = baseDirectory.getCanonicalPath();
+                            final PsiDirectory rootDirectory = PsiManager.getInstance(project).findDirectory(getVirtualFile(rootPath));
+
+                            String project_name = project.getName();
+                            if (rootDirectory == null) {
+                                return;
+                            }
+
+                            // we need to do unzip again because project has been reloaded
+                            try {
+                                unzip.unzipReseourceProject("/projectTemplates/HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            // we need to write these files again becasue projec create would ave overwritten them
+                            Path file = Paths.get(project_filename);
+                            try {
+                                Files.write(file, Collections.singleton(project_text), Charset.forName("UTF-8"));
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            file = Paths.get(workspace_filename);
+                            try {
+                                Files.write(file, Collections.singleton(workspace_text), Charset.forName("UTF-8"));
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            file = Paths.get(modules_filename);
+                            try {
+                                Files.write(file, Collections.singleton(modules_text), Charset.forName("UTF-8"));
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            LocalFileSystem.getInstance().refresh(true);
                         }
-
-
-                        // we need to write these files again becasue projec create would ave overwritten them
-                        Path file = Paths.get(project_filename );
-                        try {
-                            Files.write(file, Collections.singleton(project_text), Charset.forName("UTF-8"));
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        catch (Exception ex){
+                            ex.printStackTrace();
                         }
-                        file = Paths.get(workspace_filename);
-                        try {
-                            Files.write(file, Collections.singleton(workspace_text), Charset.forName("UTF-8"));
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        file = Paths.get(modules_filename);
-                        try {
-                            Files.write(file, Collections.singleton(modules_text), Charset.forName("UTF-8"));
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        LocalFileSystem.getInstance().refresh(true);
                     }
 
                 });
