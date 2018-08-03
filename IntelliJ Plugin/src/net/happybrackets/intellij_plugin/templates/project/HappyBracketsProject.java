@@ -56,8 +56,8 @@ public class HappyBracketsProject extends WebProjectTemplate {
     public static final String HAPPY_BRACKETS_PROJECT_NAME =  "HappyBrackets Project";
     public static final String HAPPY_BRACKETS_PROJECT_IML = HAPPY_BRACKETS_PROJECT_NAME + ".iml";
 
-    static final  String WORKSPACE_FILE = ".idea" + File.separatorChar + "workspace.xml";
-    static final  String MODULES_FILE = ".idea" + File.separatorChar + "modules.xml";
+    static final  String WORKSPACE_FILE = ".idea/workspace.xml";
+    static final  String MODULES_FILE = ".idea/modules.xml";
 
     @Override
     public Icon getIcon() {
@@ -113,7 +113,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
 
         try {
-            unzip.unzipReseourceProject(File.separatorChar + "projectTemplates" + File.separatorChar + "HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
+            unzip.unzipReseourceProject( "/projectTemplates/HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -173,7 +173,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
                         // we need to do unzip again because project has been reloaded
                         try {
-                            unzip.unzipReseourceProject(File.separatorChar + "projectTemplates" + File.separatorChar + "HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
+                            unzip.unzipReseourceProject( "/projectTemplates/HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
