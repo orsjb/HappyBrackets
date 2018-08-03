@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>2.8.1</version>
+  <version>2.8.2</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -40,13 +40,6 @@
     <defaultLiveTemplatesProvider implementation="net.happybrackets.intellij_plugin.templates.HappyBracketsTemplateProvider"/>
     <projectTemplatesFactory implementation="net.happybrackets.intellij_plugin.templates.factory.HappyBracketsProjectFactory"/>
 
-
-    <!--<internalFileTemplate name="essentials_rest_class"/>
-
-    <projectTemplatesFactory implementation="org.onehippo.ide.intellij.factory.HippoProjectFactory"/>
-
-    <directoryProjectGenerator implementation="org.onehippo.ide.intellij.project.HippoEssentialsProject"/>
--->
   </extensions>
 
   <project-components>

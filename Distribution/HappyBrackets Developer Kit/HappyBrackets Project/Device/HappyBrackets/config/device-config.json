@@ -1,0 +1,16 @@
+{
+  "multicastAddr":            "225.2.2.5",
+  "broadcastPort":            2222,
+  "statusFromDevicePort":     2223,
+  "clockSynchPort":           0, // zero will turn it off
+  "codeToDevicePort":         2225,
+  "controlToDevicePort":      2226,
+  "controllerDiscoveryPort":  2227,
+  "controllerHTTPPort":       2228,
+  "aliveInterval":            0, // zero will turn off - default was 1000,
+  "useHostname":              true,
+  
+  "encryptionKey":            "CHANGE ME!",
+
+  "polyLimit":                4
+}

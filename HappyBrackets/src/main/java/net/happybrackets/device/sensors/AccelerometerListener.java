@@ -8,6 +8,8 @@ import net.happybrackets.device.HB;
  */
 public abstract class AccelerometerListener {
 
+    private Accelerometer accelerometer = null;
+
     public AccelerometerListener(HB hb)
     {
         /*****************************************************
@@ -17,7 +19,9 @@ public abstract class AccelerometerListener {
          * to create this code, simply type accelerometerSensor
          *****************************************************/
         try {
-            hb.findSensor(Accelerometer.class).addValueChangedListener(sensor -> {
+            accelerometer = (Accelerometer) hb.findSensor(Accelerometer.class);
+
+            accelerometer.addValueChangedListener(sensor -> {
                 Accelerometer accelerometer = (Accelerometer) sensor;
                 float x_val = accelerometer.getAccelerometerX();
                 float y_val = accelerometer.getAccelerometerY();
@@ -37,6 +41,16 @@ public abstract class AccelerometerListener {
         /*** End accelerometerSensor code ***/
     }
 
+    /**
+     * Set the resolution for all three axis to the number of decimal places
+     * set by resolution. A value of -1 will remove rounding
+     * @param resolution the number of decimal places to round to. -1 will be no rounding
+     */
+    public void setRounding(int resolution) {
+        if (accelerometer != null) {
+            accelerometer.setRounding(resolution);
+        }
+    }
     /**
      * Sensor has been updated
      * @param x_val x value of accelerometer

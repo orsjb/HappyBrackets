@@ -114,7 +114,7 @@ task deployJarAndJavaDoc << {
     }
     copy {
         from 'build/libs/HB.jar'
-        into '../Distribution/HappyBrackets Developer Kit/Device/HappyBrackets'
+        into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets'
     }
     println "copied jars"
 }
@@ -131,11 +131,30 @@ task packDeviceRuntime (type:Zip) {
     archiveName 'HappyBracketsDeviceRuntime.zip'  //set the name of our archive
 
     //config
-    from("../Distribution/HappyBrackets Developer Kit/Device") {
+    from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device") {
         include 'HappyBrackets/*/**'
     }
 
     println "Creating device package: $buildDir/$archiveName"
+}
+
+task packProject (type:Zip) {
+    destinationDir buildDir //set our output directory
+    archiveName 'HappyBracketsProject.zip'  //set the name of our archive
+
+    //config
+    from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/") {
+        include '*/**'
+    }
+
+    println "Creating project package: $buildDir/$archiveName"
+}
+
+task copyProject << {
+    copy {
+        from '../HappyBrackets/build/HappyBracketsProject.zip'
+        into '../IntelliJ Plugin/resources'
+    }
 }
 
 task packDevKit (type:Zip) {
@@ -151,6 +170,7 @@ task packDevKit (type:Zip) {
 }
 
 shadowJar.dependsOn config
+copyProject.dependsOn packProject
 
 deployJarAndJavaDoc.dependsOn shadowJar
 
@@ -164,6 +184,8 @@ deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
 deploy.dependsOn deployPlugin
 deploy.dependsOn packDeviceRuntime
+deploy.dependsOn packProject
+deploy.dependsOn copyProject
 
 // Faster build without tests
 fastbuild.dependsOn build

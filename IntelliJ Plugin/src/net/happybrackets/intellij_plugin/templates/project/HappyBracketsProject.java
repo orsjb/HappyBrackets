@@ -25,29 +25,19 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.util.IconLoader;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.*;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
-import com.intellij.util.IncorrectOperationException;
-import com.sun.jna.platform.win32.WinBase;
 import net.happybrackets.intellij_plugin.templates.factory.HappyBracketsTemplatesFactory;
-import net.happybrackets.intellij_plugin.templates.factory.ProjectUnzip;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.onehippo.ide.intellij.factory.HippoTemplatesFactory;
-import org.onehippo.ide.intellij.project.HippoEssentialsGeneratorPeer;
-import org.onehippo.ide.intellij.project.SettingsData;
+
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -63,8 +53,11 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
     private static final Logger log = Logger.getInstance(HappyBracketsProject.class);
 
-    public static final String HAPPY_BRACKETS_PROJECT_IML = "HappyBracketsProject.iml";
-    public static final String WEB_FRAGMENT_XML = "web-fragment.xml";
+    public static final String HAPPY_BRACKETS_PROJECT_NAME =  "HappyBrackets Project";
+    public static final String HAPPY_BRACKETS_PROJECT_IML = HAPPY_BRACKETS_PROJECT_NAME + ".iml";
+
+    static final  String WORKSPACE_FILE = ".idea" + File.separatorChar + "workspace.xml";
+    static final  String MODULES_FILE = ".idea" + File.separatorChar + "modules.xml";
 
     @Override
     public Icon getIcon() {
@@ -74,7 +67,9 @@ public class HappyBracketsProject extends WebProjectTemplate {
     @NotNull
     @Override
     public ModuleBuilder createModuleBuilder() {
-        return super.createModuleBuilder();
+        //ModuleBuilder ret = new JavaModuleType().createModuleBuilder();
+        ModuleBuilder ret = super.createModuleBuilder(); //ModuleBuilder. JavaModuleType;
+        return ret;
     }
 
 
@@ -109,6 +104,58 @@ public class HappyBracketsProject extends WebProjectTemplate {
             return;
         }
 
+        // unzip our archived project
+        ProjectUnzip unzip = new ProjectUnzip();
+
+        unzip.addSkipFile(HAPPY_BRACKETS_PROJECT_IML);
+        unzip.addSkipFile(MODULES_FILE);
+        unzip.addSkipFile(WORKSPACE_FILE);
+
+
+        try {
+            unzip.unzipReseourceProject(File.separatorChar + "projectTemplates" + File.separatorChar + "HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String project_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_TEMPLATE).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());;
+
+        String workspace_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_WORKSPACE).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());;
+
+        String modules_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_MODULES).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());
+
+        String project_filename = baseDirectory.getCanonicalPath() + File.separatorChar + module.getName() + ".iml";
+        String workspace_filename = baseDirectory.getCanonicalPath() + File.separatorChar + WORKSPACE_FILE;
+        String modules_filename = baseDirectory.getCanonicalPath() + File.separatorChar + MODULES_FILE;
+
+
+        Path file = Paths.get(project_filename );
+        try {
+            Files.write(file, Collections.singleton(project_text), Charset.forName("UTF-8"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file = Paths.get(workspace_filename);
+        try {
+            Files.write(file, Collections.singleton(workspace_text), Charset.forName("UTF-8"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file = Paths.get(modules_filename);
+        try {
+            Files.write(file, Collections.singleton(modules_text), Charset.forName("UTF-8"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        LocalFileSystem.getInstance().refresh(true);
+
+
         StartupManager.getInstance(project).runWhenProjectIsInitialized(new Runnable() {
             @Override
             public void run() {
@@ -124,24 +171,15 @@ public class HappyBracketsProject extends WebProjectTemplate {
                             return;
                         }
 
-                        final SettingsData mySettings = (SettingsData) settings;
-                        // create project:
-                        //createFile(rootDirectory, (SettingsData)settings, module.getName() + ".iml", HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_TEMPLATE);
-
-                        String project_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_TEMPLATE);
-                        VirtualFile virtualFile =   rootDirectory.getVirtualFile().findFileByRelativePath(module.getName());
-
-                        String project_filename = baseDirectory.getCanonicalPath() + "/" + module.getName() + ".iml";
-
-                        // unzip our archived project
-                        ProjectUnzip unzip = new ProjectUnzip();
-
+                        // we need to do unzip again because project has been reloaded
                         try {
                             unzip.unzipReseourceProject(File.separatorChar + "projectTemplates" + File.separatorChar + "HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
 
+
+                        // we need to write these files again becasue projec create would ave overwritten them
                         Path file = Paths.get(project_filename );
                         try {
                             Files.write(file, Collections.singleton(project_text), Charset.forName("UTF-8"));
@@ -149,53 +187,23 @@ public class HappyBracketsProject extends WebProjectTemplate {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
+                        file = Paths.get(workspace_filename);
                         try {
-                            // rest resource
-                            final String pluginName = mySettings.getProjectName();
-                            if (mySettings.isCreateRestSkeleton()) {
-                                final String javaRoot = rootPath + "/.idea/fileTemplates";
-                                VfsUtil.createDirectories(javaRoot);
-                                final String projectPackage = mySettings.getProjectPackage();
-                                final Iterator<String> packageNames = Splitter.on('.').split(projectPackage).iterator();
-                                final String packageDir = javaRoot + '/' + Joiner.on('/').join(packageNames);
-                                final PsiDirectory restDir = DirectoryUtil.mkdirs(rootDirectory.getManager(), packageDir);
-                                createFile(restDir, mySettings, pluginName +"Resource.java", HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_SKETCH);
-                            }
-                            /*
-                            // create web-fragment:
-                            final String metaInfRoot = rootPath + "/src/main/resources/META-INF/";
-                            final PsiDirectory metaDir = DirectoryUtil.mkdirs(rootDirectory.getManager(), metaInfRoot);
-                            createFile(metaDir, mySettings, WEB_FRAGMENT_XML, HippoTemplatesFactory.HippoTemplate.ESSENTIALS_WEB_FRAGMENT_TEMPLATE);
-                            // create resources dir & html/js files:
-                            final String pluginRoot = metaInfRoot + "/resources/" + mySettings.getPluginGroup() + '/' + pluginName;
-                            final PsiDirectory pluginDir = DirectoryUtil.mkdirs(rootDirectory.getManager(), pluginRoot);
-                            createFile(pluginDir, mySettings, pluginName+".js", HippoTemplatesFactory.HippoTemplate.ESSENTIALS_PLUGIN_JS_TEMPLATE);
-                            createFile(pluginDir, mySettings, pluginName+".html", HippoTemplatesFactory.HippoTemplate.ESSENTIALS_PLUGIN_HTML_TEMPLATE);
-*/
+                            Files.write(file, Collections.singleton(workspace_text), Charset.forName("UTF-8"));
 
-                        } catch (IOException e) {
-                            log.error("Error creating directories", e);
-                        }
-                        VirtualFileManager.getInstance().syncRefresh();
-
-                        ProjectManagerEx projectManager = ProjectManagerEx.getInstanceEx();
-
-                        try {
-                            projectManager.loadProject(project.getProjectFilePath());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
 
-                    private void createFile(final PsiDirectory directory, final SettingsData mySettings, final String fileName, final HappyBracketsTemplatesFactory.HappyBracketsTemplate template) {
+                        file = Paths.get(modules_filename);
                         try {
-                            //directory.createFile(fileName);
-                            HappyBracketsTemplatesFactory.createFileFromTemplate(directory, mySettings, fileName, template);
-                        } catch (IncorrectOperationException ignored) {
-                        } catch (Exception e) {
-                            log.error(e.getMessage());
+                            Files.write(file, Collections.singleton(modules_text), Charset.forName("UTF-8"));
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
+
+                        LocalFileSystem.getInstance().refresh(true);
                     }
 
                 });
@@ -209,7 +217,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
     @NotNull
     @Override
     public GeneratorPeer createPeer() {
-        return new HippoEssentialsGeneratorPeer();
+        return new HappyBracketsGeneratorPeer();
     }
 
     private VirtualFile getVirtualFile(String path) {

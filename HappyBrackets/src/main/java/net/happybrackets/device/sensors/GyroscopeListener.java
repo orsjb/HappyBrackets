@@ -8,6 +8,8 @@ import net.happybrackets.device.HB;
  */
 public abstract class GyroscopeListener {
 
+    private Gyroscope gyroscope = null;
+
     public GyroscopeListener (HB hb){
         /*****************************************************
          * Find an gyroscope sensor. If no sensor is found
@@ -16,7 +18,9 @@ public abstract class GyroscopeListener {
          * to create this code, simply type gyroscopeSensor
          *****************************************************/
         try {
-            hb.findSensor(Gyroscope.class).addValueChangedListener(sensor -> {
+            gyroscope = (Gyroscope) hb.findSensor(Gyroscope.class);
+
+            gyroscope.addValueChangedListener(sensor -> {
                 Gyroscope gyroscope = (Gyroscope) sensor;
                 float pitch = gyroscope.getPitch();
                 float roll = gyroscope.getRoll();
@@ -37,6 +41,16 @@ public abstract class GyroscopeListener {
         /*** End gyroscopeSensor code ***/
     }
 
+    /**
+     * Set the resolution for all three axis to the number of decimal places
+     * set by resolution. A value of -1 will remove rounding
+     * @param resolution the number of decimal places to round to. -1 will be no rounding
+     */
+    public void setRounding(int resolution){
+        if (gyroscope != null){
+            gyroscope.setRounding(resolution);
+        }
+    }
     /**
      * Sensor has been updated with these values
      * @param pitch pitch of gyroscope

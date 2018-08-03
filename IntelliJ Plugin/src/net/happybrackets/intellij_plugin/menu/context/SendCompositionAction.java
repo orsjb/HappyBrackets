@@ -106,13 +106,15 @@ public abstract class SendCompositionAction extends AnAction {
                     }
                 }
 
+                //VirtualFile moduleContentRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(contentEntryPath.replace('\\', '/'));
+
                 VirtualFile[] project_roots = rootManager.getContentRoots();
                 for (VirtualFile folder : project_roots) {
                     String folder_name = folder.getCanonicalPath();
                     if (source_folder.startsWith(folder_name)) {
                         String class_filename = folder_name + OUTPUT_PATH + project_name + file_path_name + CLASS_EXTENSION;
                         System.out.println(class_filename);
-                        ret = LocalFileSystem.getInstance().findFileByPath(class_filename);
+                        ret = LocalFileSystem.getInstance().refreshAndFindFileByPath(class_filename);
                         break;
                     }
                 }

@@ -6,7 +6,7 @@
 ### The device is added as a parameter to the script
 
 ### move to the correct dir for running this script
-cd ../../Device
+cd ../Device
 
 
 #we need a copy of this becasue we will need it in the spawn
