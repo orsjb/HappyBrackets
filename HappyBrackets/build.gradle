@@ -155,7 +155,7 @@ task packDeviceRuntime (type:Zip) {
 task packProject (type:Zip) {
     destinationDir buildDir //set our output directory
     archiveName 'HappyBracketsProject.zip'  //set the name of our archive
-    excludes = ['**/*.class', '**/HB.jar']
+    excludes = ['**/*.class', '**/HB.jar', '**/ollie.xml']
 
     //config
     from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/") {
