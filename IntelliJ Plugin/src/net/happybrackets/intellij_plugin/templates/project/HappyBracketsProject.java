@@ -50,18 +50,36 @@ public class HappyBracketsProject extends WebProjectTemplate {
     private static final Logger log = Logger.getInstance(HappyBracketsProject.class);
 
     public static final String HAPPY_BRACKETS_PROJECT_NAME =  "HappyBrackets Project";
+
+
+    static final  String WORKSPACE_FILE = ".idea/workspace.xml";
+    static final  String MODULES_FILE = ".idea/modules.xml";
+    static final  String DESCRIPTION_FILE = ".idea/description.html";
+
+    /**
+     * Add The files from the project archive we want to skip
+     */
+    public static final String [] ARCHIVE_SKIP_FILES = new String[]{
+            HAPPY_BRACKETS_PROJECT_NAME + ".iml",
+            WORKSPACE_FILE,
+            WORKSPACE_FILE,
+            ".idea/gradle.xml",
+            DESCRIPTION_FILE,
+            ".idea/dictionaries/ollie.xml",
+
+    };
+
     public static final String HAPPY_BRACKETS_PROJECT_IML = HAPPY_BRACKETS_PROJECT_NAME + ".iml";
 
     public static final String HAPPY_BRACKETS_PROJECT_ZIP = "/projectTemplates/HappyBracketsProject.zip";
     public static final String HAPPY_BRACKETS_JAR_ZIP = "/projectTemplates/HB.zip";
 
+    // THis is where we need to extract the HB.jar files to in a new project
     public static final String [] HB_JAR_LOCATION = new String[]{
             File.separatorChar + "Device" + File.separatorChar + "HappyBrackets",
             File.separatorChar + "libs"
     };
 
-    static final  String WORKSPACE_FILE = ".idea/workspace.xml";
-    static final  String MODULES_FILE = ".idea/modules.xml";
 
     @Override
     public Icon getIcon() {
@@ -111,9 +129,10 @@ public class HappyBracketsProject extends WebProjectTemplate {
         // unzip our archived project
         ProjectUnzip unzip = new ProjectUnzip();
 
-        unzip.addSkipFile(HAPPY_BRACKETS_PROJECT_IML);
-        unzip.addSkipFile(MODULES_FILE);
-        unzip.addSkipFile(WORKSPACE_FILE);
+        // do not add the files we are going to overwrite
+        for (int i= 0; i < ARCHIVE_SKIP_FILES.length; i++) {
+            unzip.addSkipFile(ARCHIVE_SKIP_FILES[i]);
+        }
 
         String base_path = baseDirectory.getCanonicalPath();
 
