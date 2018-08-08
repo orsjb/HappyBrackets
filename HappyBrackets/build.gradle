@@ -33,7 +33,7 @@ dependencies {
     // osc
     compile     group: 'de.sciss',              name: 'netutil',            version: '1.0.0'
     // pi stuff
-    compile     group: 'com.pi4j',              name: 'pi4j-core',          version: '1.0'
+    //compile     group: 'com.pi4j',              name: 'pi4j-core',          version: '1.1'
     // logging
     compile     group: 'ch.qos.logback',        name: 'logback-core',       version: '1.1.7'
     compile     group: 'ch.qos.logback',        name: 'logback-classic',    version: '1.1.7'
@@ -109,14 +109,21 @@ task deployJarAndJavaDoc << {
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs'
     }
     copy {
+        from 'build/libs/HBVersion.txt'
+        into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs'
+    }
+    copy {
         from 'build/docs/javadoc'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc'
+    }
+    copy {
+        from 'build/libs/HBVersion.txt'
+        into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets'
     }
     copy {
         from 'build/libs/HB.jar'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets'
     }
-
     println "copied jars"
 }
 
@@ -134,6 +141,11 @@ task packJar (type:Zip) {
 
     //config
     from("build/libs/HB.jar") {
+        include '*/**'
+    }
+
+    //config
+    from("build/libs/HBVersion.txt") {
         include '*/**'
     }
 

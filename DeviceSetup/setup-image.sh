@@ -17,6 +17,9 @@ sudo apt-get -y --force-yes install i2c-tools
 # install java 8
 sudo apt-get -y --force-yes install oracle-java8-jdk 
 
+#we need to installk wiringPI becasue it is not in STretch Lite - Needed for GPIO access
+sudo apt-get -y --force-yes install wiringpi
+
 # Enable I2C on raspi, to connect to sensors. 
 # Counter-intuitively 'do_i2c 0' means 'enable'. 
 sudo raspi-config nonint do_i2c 0

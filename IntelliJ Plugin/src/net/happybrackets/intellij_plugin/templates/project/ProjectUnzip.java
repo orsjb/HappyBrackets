@@ -25,7 +25,7 @@ public class ProjectUnzip {
      * Add Files that we do not want to extract from the archive
      * @param filename filename to ignore
      */
-    void addSkipFile(String filename){
+    public void addSkipFile(String filename){
         skipFileListe.add(filename);
     }
 

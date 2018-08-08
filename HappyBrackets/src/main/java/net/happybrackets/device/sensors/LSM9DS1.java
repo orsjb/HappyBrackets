@@ -252,7 +252,7 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 	}
 
 
-	public LSM9DS1() throws IOException {
+	public LSM9DS1() throws IOException, I2CFactory.UnsupportedBusNumberException {
 
 		boolean success;
         bus = I2CFactory.getInstance(I2CBus.BUS_1);

@@ -43,7 +43,7 @@ public class PI4JTest {
 	final OSCServer serv = OSCServer.newUsing(OSCServer.UDP, 4432);
 
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, I2CFactory.UnsupportedBusNumberException {
 
 //		System.out.println(String.format("%02X", 0x80 | 0x28));
 
@@ -52,7 +52,7 @@ public class PI4JTest {
 		pit.startReading();
 	}
 
-	public PI4JTest() throws IOException {
+	public PI4JTest() throws IOException, I2CFactory.UnsupportedBusNumberException {
 
 		serv.start();
 

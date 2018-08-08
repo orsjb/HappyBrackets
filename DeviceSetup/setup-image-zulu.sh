@@ -32,6 +32,9 @@ apt-get -y --force-yes install netatalk
 # install i2c tools
 apt-get -y --force-yes install i2c-tools
 
+#we need to installk wiringPI becasue it is not in STretch Lite
+sudo apt-get -y --force-yes install wiringpi
+
 # install ZULU java 8
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9
 echo 'deb http://repos.azulsystems.com/debian stable main' > /etc/apt/sources.list.d/zulu.list

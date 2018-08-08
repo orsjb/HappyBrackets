@@ -61,11 +61,15 @@ public class HappyBracketsProject extends WebProjectTemplate {
      */
     public static final String [] ARCHIVE_SKIP_FILES = new String[]{
             HAPPY_BRACKETS_PROJECT_NAME + ".iml",
-            WORKSPACE_FILE,
+            MODULES_FILE,
             WORKSPACE_FILE,
             ".idea/gradle.xml",
             DESCRIPTION_FILE,
             ".idea/dictionaries/ollie.xml",
+            "config/controller-config.json",
+            "config/update-developer-kit.command",
+            "config/update-developer-kit.sh"
+
 
     };
 
