@@ -35,7 +35,7 @@ do
     if [ "$line" = "BUF"   ]
     then
         BUF=$val
-        echo "Set SR to "$BUF
+        echo "Set BUF to "$BUF
     fi
 
     if [ "$line" = "SR"   ]

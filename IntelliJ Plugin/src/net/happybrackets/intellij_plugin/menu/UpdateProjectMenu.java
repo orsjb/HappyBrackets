@@ -13,6 +13,7 @@ import net.happybrackets.intellij_plugin.templates.project.ProjectUnzip;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.HAPPY_BRACKETS_PROJECT_ZIP;
@@ -20,6 +21,8 @@ import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsP
 public class UpdateProjectMenu extends AnAction {
 
     private static final String VERSION_FILE = "HBVersion.txt";
+    private static final String HB_JAR = "HB.jar";
+
     @Override
     public void actionPerformed(AnActionEvent e) {
         try {
@@ -65,33 +68,38 @@ public class UpdateProjectMenu extends AnAction {
     @Override
     public void update(AnActionEvent e) {
         try {
-
             Project current_project = e.getProject();
 
             // Read the Version Number of Version Text file
-            String source_file = current_project.getBaseDir().getCanonicalPath() + File.separatorChar + "libs" + File.separatorChar + VERSION_FILE;
+            String source_folder = current_project.getBaseDir().getCanonicalPath() + File.separatorChar + "libs" + File.separatorChar;
+            String version_file = source_folder + VERSION_FILE;
 
+            String hb_path = source_folder + HB_JAR;
             String version = new String("");
             try
             {
-                version = new String(Files.readAllBytes(Paths.get(source_file)));
+                version = new String(Files.readAllBytes(Paths.get(version_file)));
             } catch (Exception ex) {
                 // there is no file - that is OK
             }
 
-            String current_version = BuildVersion.getVersionText();
+            // See if we have a HB jar file
+            if (Files.size(Paths.get(hb_path)) > 0) {
 
-            if (current_version.equalsIgnoreCase(version)) {
+                String current_version = BuildVersion.getVersionText();
+
+                if (current_version.equalsIgnoreCase(version)) {
+                    e.getPresentation().setEnabled(false);
+                } else {
+                    e.getPresentation().setEnabled(true);
+                }
+            }else {
                 e.getPresentation().setEnabled(false);
             }
-            else
-            {
-                e.getPresentation().setEnabled(true);
-            }
 
-            //e.getPresentation().setText(menu_text);
-            //e.getPresentation().setDescription(menu_descript);
+
         } catch (Exception ex) {
+            e.getPresentation().setEnabled(false);
             ex.printStackTrace();
         }
 

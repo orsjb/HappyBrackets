@@ -56,7 +56,6 @@ sourceSets {
 
 task development
 
-task fastbuild
 
 task config {
     //select the appropriate resources includes
@@ -167,7 +166,7 @@ task packDeviceRuntime (type:Zip) {
 task packProject (type:Zip) {
     destinationDir buildDir //set our output directory
     archiveName 'HappyBracketsProject.zip'  //set the name of our archive
-    excludes = ['**/*.class', '**/HB.jar', '**/ollie.xml']
+    excludes = ['**/*.class', '**/HB.jar', '**/ollie.xml', '**/HBVersion.txt']
 
     //config
     from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/") {
@@ -204,9 +203,14 @@ task packDevKit (type:Zip) {
 }
 
 shadowJar.dependsOn config
+
+packJar.dependsOn shadowJar
+
 copyHBZip.dependsOn packJar
+
 copyProject.dependsOn packProject
 copyProject.dependsOn copyHBZip
+
 
 deployJarAndJavaDoc.dependsOn shadowJar
 
@@ -219,15 +223,10 @@ deploy.dependsOn test
 deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
 deploy.dependsOn deployPlugin
-deploy.dependsOn packDeviceRuntime
 deploy.dependsOn packProject
 deploy.dependsOn copyProject
+deploy.dependsOn packDeviceRuntime
 
-// Faster build without tests
-fastbuild.dependsOn build
-fastbuild.dependsOn shadowJar
-fastbuild.dependsOn deployPlugin
-fastbuild.dependsOn packDeviceRuntime
 
 
 packDevKit.dependsOn packDeviceRuntime
