@@ -53,7 +53,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
 
     static final  String WORKSPACE_FILE = ".idea/workspace.xml";
-    static final  String MODULES_FILE = ".idea/modules.xml";
+    public static final  String MODULES_FILE = ".idea/modules.xml";
     static final  String DESCRIPTION_FILE = ".idea/description.html";
 
     /**
@@ -61,7 +61,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
      */
     public static final String [] ARCHIVE_SKIP_FILES = new String[]{
             HAPPY_BRACKETS_PROJECT_NAME + ".iml",
-            MODULES_FILE,
+            //MODULES_FILE,
             WORKSPACE_FILE,
             ".idea/gradle.xml",
             DESCRIPTION_FILE,

@@ -36,6 +36,8 @@ public class UpdateProjectMenu extends AnAction {
                 unzip.addSkipFile(ARCHIVE_SKIP_FILES[i]);
             }
 
+            unzip.addSkipFile(HappyBracketsProject.MODULES_FILE);
+
             try {
                 unzip.unzipReseourceProject( HAPPY_BRACKETS_PROJECT_ZIP, base_path);
             } catch (IOException ex) {
