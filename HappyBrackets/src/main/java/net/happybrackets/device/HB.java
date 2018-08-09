@@ -993,8 +993,7 @@ public class HB {
 					for (Class<?> cc : interfaces) {
 						if (cc.equals(HBReset.class)) {
 
-							((HBReset)loaded_class).doResset();
-							break;
+							((HBReset)loaded_class).doReset();
 						}
 					}
 

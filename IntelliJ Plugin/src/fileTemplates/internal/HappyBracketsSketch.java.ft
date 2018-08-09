@@ -26,7 +26,7 @@ final int NUMBER_AUDIO_CHANNELS = 1;
     * Add any code you need to have occur when a reset occurs
     */
 @Override
-    public void doResset(){
+    public void doReset(){
         /***** Type your HBReset code below this line ******/
 
         /***** Type your HBReset code above this line ******/

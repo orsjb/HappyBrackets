@@ -7,5 +7,5 @@ import java.io.Serializable;
  * or resources it has allocated
  */
 public interface HBReset extends Serializable {
-    void doResset();
+    void doReset();
 }
