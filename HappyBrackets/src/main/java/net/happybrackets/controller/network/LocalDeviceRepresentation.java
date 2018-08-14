@@ -74,8 +74,10 @@ public class LocalDeviceRepresentation {
 	private final Object[] replyPortObject; //we will use this as a cached Object to send in OSC Message
 	private boolean loggingEnabled = false;
 
-	private Map<String, DynamicControl> dynamicControls = new Hashtable<String, DynamicControl>();
+	private Map<String, DynamicControl> dynamicControls = Collections.synchronizedMap( new Hashtable<String, DynamicControl>());
+	private Queue <DynamicControl> pendingControls =  new LinkedList<DynamicControl>();
 
+	private Object pendingControlsLock = new Object();
 	private boolean isConnected = true;
 	private boolean ignoreDevice = false;
 	private boolean isFavouriteDevice = false;
@@ -464,8 +466,16 @@ public class LocalDeviceRepresentation {
 	 */
 	public void addDynamicControl(DynamicControl control) {
 		synchronized (dynamicControlLock) {
-			dynamicControls.put(control.getControlMapKey(), control);
-			dynamicControlScreen.addDynamicControl(control);
+
+			synchronized (dynamicControls) {
+				dynamicControls.put(control.getControlMapKey(), control);
+			}
+
+			synchronized (pendingControlsLock){
+				pendingControls.add(control);
+			}
+
+			dynamicControlScreen.loadDynamicControls(this);
 
 			synchronized (addDynamicControlListenerList) {
 				for (DynamicControl.DynamicControlListener listener : addDynamicControlListenerList) {
@@ -491,6 +501,18 @@ public class LocalDeviceRepresentation {
 	}
 
 	/**
+	 * Get next control in pending list. Will automatically remove from queue
+	 * @return next item in queue. If queue is empty will return null
+	 */
+	public DynamicControl popNextPendingControl(){
+		DynamicControl ret = null;
+
+		synchronized (pendingControlsLock){
+			ret = pendingControls.poll();
+		}
+		return ret;
+	}
+	/**
 	 * Reset the device and clear dynamic controls
 	 */
 	public void resetDevice() {
@@ -505,9 +527,13 @@ public class LocalDeviceRepresentation {
 		// we need to get the collection synchronised with map
 		// or we will get an access vioaltion
 
+		synchronized (pendingControlsLock){
+			pendingControls.clear();
+		}
+
 		dynamicControlScreen.eraseDynamicControls();
 		Collection<DynamicControl> removal_list;
-		synchronized (dynamicControlLock) {
+		synchronized (dynamicControls) {
 			removal_list = dynamicControls.values();
 		}
 
@@ -523,7 +549,9 @@ public class LocalDeviceRepresentation {
 	 */
 	public void removeDynamicControl(DynamicControl control) {
 		synchronized (dynamicControlLock) {
-			dynamicControls.remove(control.getControlMapKey());
+			synchronized (dynamicControls) {
+				dynamicControls.remove(control.getControlMapKey());
+			}
 
 			dynamicControlScreen.removeDynamicControl(control);
 

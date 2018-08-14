@@ -326,7 +326,437 @@ public class DynamicControlScreen {
     }
 
     /**
-     * Add A dynamic Control to window. Will execute in main thread
+     * Read the devices from Local device and load them in order
+     * @param localDevice the device to read them from
+     */
+    public void loadDynamicControls (LocalDeviceRepresentation localDevice){
+
+
+        Platform.runLater(new Runnable() {
+            public void run() {
+
+                DynamicControl control = localDevice.popNextPendingControl();
+                while (control != null) {
+
+                    addDynamicControl(control, nextControlRow);
+                    nextControlRow++;
+
+                    control = localDevice.popNextPendingControl();
+                }
+            }
+        });
+    }
+
+    /**
+     * Adds a control to the display window. Must be called in context of main thread
+     * @param control the control to add
+     * @param control_row the row to display it on
+     */
+    private void addDynamicControl (DynamicControl control, int control_row){
+        ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
+
+        if (control_group == null) {
+
+            Label control_label = new Label(control.getControlName());
+
+            dynamicControlGridPane.add(control_label, 0, control_row);
+
+
+            ControlType control_type = control.getControlType();
+            switch (control_type) {
+                case TRIGGER:
+                    Button b = new Button();
+
+                    control.setTooltipPrefix("Press button to generate a trigger event for this control");
+                    b.setTooltip(new Tooltip(control.getTooltipText()));
+                    b.setText("Send");
+                    dynamicControlGridPane.add(b, 1, control_row);
+                    control_group = new ControlCellGroup(control_label, b);
+                    dynamicControlsList.put(control.getControlMapKey(), control_group);
+                    b.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent e) {
+                            // This is a number so we have a stop condition
+                            control.setValue(System.currentTimeMillis());
+                        }
+                    });
+
+
+                    control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                        @Override
+                        public void controlScopeChanged(ControlScope new_scope) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    b.setTooltip(new Tooltip(control.getTooltipText()));
+                                }
+                            });
+
+                        }
+                    };
+
+                    break;
+
+                case INT:
+                    int control_value = (int) control.getValue();
+                    // If we have no difference between Maximum and Minimum, we will make a textboox
+                    if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
+                        TextField t = new TextField();
+                        control.setTooltipPrefix("Type in an integer value and press enter to generate an event for this control");
+                        t.setTooltip(new Tooltip(control.getTooltipText()));
+                        //t.setMaxWidth(100);
+                        t.setText(Integer.toString(control_value));
+                        dynamicControlGridPane.add(t, 1, control_row);
+                        control_group = new ControlCellGroup(control_label, t);
+                        dynamicControlsList.put(control.getControlMapKey(), control_group);
+                        t.setOnKeyTyped(new EventHandler<KeyEvent>() {
+                            @Override
+                            public void handle(KeyEvent event) {
+                                if (event.getCode().equals(KeyCode.ENTER)) {
+                                    String text_val = t.getText();
+                                    try {
+                                        int control_value = Integer.valueOf(text_val);
+
+                                        control.setValue(control_value);
+                                    }
+                                    catch (Exception ex){
+                                        // we might want to put an exception here
+                                    }
+                                }
+                            }
+                        });
+
+                        // set handlers
+                        t.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent actionEvent) {
+                                String text_val = t.getText();
+                                try {
+                                    int control_value = Integer.valueOf(text_val);
+
+                                    control.setValue(control_value);
+                                }
+                                catch (Exception ex){
+                                    // we might want to put an exception here
+                                }
+                            }
+                        });
+
+                        control_group.listener = new DynamicControl.DynamicControlListener() {
+                            @Override
+                            public void update(DynamicControl control) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        t.setText(Integer.toString((int) control.getValue()));
+
+                                    }
+                                });
+                            }
+                        };
+
+                        control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                            @Override
+                            public void controlScopeChanged(ControlScope new_scope) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        t.setTooltip(new Tooltip(control.getTooltipText()));
+                                    }
+                                });
+
+                            }
+                        };
+
+                    }
+                    else {
+                        Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
+                        control.setTooltipPrefix("Change the slider value to generate an event for this control");
+                        s.setTooltip(new Tooltip(control.getTooltipText()));
+                        //s.setMaxWidth(100);
+                        s.setOrientation(Orientation.HORIZONTAL);
+                        dynamicControlGridPane.add(s, 1, control_row);
+                        control_group = new ControlCellGroup(control_label, s);
+                        dynamicControlsList.put(control.getControlMapKey(), control_group);
+
+                        s.valueProperty().addListener(new ChangeListener<Number>() {
+                            @Override
+                            public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
+                                if (s.isFocused()) {
+                                    if (oldval != newval) {
+                                        control.setValue(newval.intValue());
+                                        //localDevice.sendDynamicControl(control);
+                                    }
+                                }
+                            }
+                        });
+
+                        control_group.listener = new DynamicControl.DynamicControlListener() {
+                            @Override
+                            public void update(DynamicControl control) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        if (!s.isFocused()) {
+                                            s.setValue((int) control.getValue());
+                                        }
+                                    }
+                                });
+                            }
+                        };
+
+                        control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                            @Override
+                            public void controlScopeChanged(ControlScope new_scope) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        s.setTooltip(new Tooltip(control.getTooltipText()));
+                                    }
+                                });
+
+                            }
+                        };
+                    }
+                    break;
+
+                case BOOLEAN:
+                    CheckBox c = new CheckBox();
+                    control.setTooltipPrefix("Change the check state to generate an event for this control");
+                    c.setTooltip(new Tooltip(control.getTooltipText()));
+                    boolean b_val = (boolean) control.getValue();
+                    c.setSelected(b_val);
+                    dynamicControlGridPane.add(c, 1, control_row);
+
+                    control_group = new ControlCellGroup(control_label, c);
+                    dynamicControlsList.put(control.getControlMapKey(), control_group);
+
+                    c.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                        public void changed(ObservableValue<? extends Boolean> ov,
+                                            Boolean oldval, Boolean newval) {
+                            if (oldval != newval) {
+                                control.setValue(newval);
+                                //localDevice.sendDynamicControl(control);
+                            }
+                        }
+                    });
+
+                    control_group.listener = new DynamicControl.DynamicControlListener() {
+                        @Override
+                        public void update(DynamicControl control) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    if (!c.isFocused()) {
+                                        boolean b_val = (boolean) control.getValue();
+                                        c.setSelected(b_val);
+                                    }
+                                }
+                            });
+                        }
+                    };
+
+                    control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                        @Override
+                        public void controlScopeChanged(ControlScope new_scope) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    c.setTooltip(new Tooltip(control.getTooltipText()));
+                                }
+                            });
+
+                        }
+                    };
+                    break;
+
+                case FLOAT:
+                    float f_control_value = (float) control.getValue();
+                    // If we have no difference between Maximum and Minimum, we will make a textboox
+                    if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
+                        TextField t = new TextField();
+                        control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
+                        t.setTooltip(new Tooltip(control.getTooltipText()));
+                        //t.setMaxWidth(100);
+                        t.setText(Float.toString(f_control_value));
+                        dynamicControlGridPane.add(t, 1, control_row);
+                        control_group = new ControlCellGroup(control_label, t);
+                        dynamicControlsList.put(control.getControlMapKey(), control_group);
+                        t.setOnKeyTyped(new EventHandler<KeyEvent>() {
+                            @Override
+                            public void handle(KeyEvent event) {
+                                if (event.getCode().equals(KeyCode.ENTER)) {
+                                    String text_val = t.getText();
+                                    try {
+                                        float control_value = Float.valueOf(text_val);
+
+                                        control.setValue(control_value);
+                                        //localDevice.sendDynamicControl(control);
+                                    }
+                                    catch (Exception ex){
+                                        // we might want to put an exception here
+                                    }
+                                }
+                            }
+                        });
+
+                        // set handlers
+                        t.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent actionEvent) {
+                                String text_val = t.getText();
+                                try {
+                                    float control_value = Float.valueOf(text_val);
+
+                                    control.setValue(control_value);
+                                    //localDevice.sendDynamicControl(control);
+                                }
+                                catch (Exception ex){
+                                    // we might want to put an exception here
+                                }
+                            }
+                        });
+
+                        control_group.listener = new DynamicControl.DynamicControlListener() {
+                            @Override
+                            public void update(DynamicControl control) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        t.setText(Float.toString((float) control.getValue()));
+                                    }
+                                });
+                            }
+                        };
+
+
+                        control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                            @Override
+                            public void controlScopeChanged(ControlScope new_scope) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        t.setTooltip(new Tooltip(control.getTooltipText()));
+
+                                    }
+                                });
+
+                            }
+                        };
+                    }
+                    else {
+                        Slider f = new Slider((float) control.getMinimumDisplayValue(), (float) control.getMaximumDisplayValue(), (float) control.getValue());
+                        //f.setMaxWidth(100);
+                        control.setTooltipPrefix("Change the slider value to generate an event for this control");
+                        f.setTooltip(new Tooltip(control.getTooltipText()));
+                        f.setOrientation(Orientation.HORIZONTAL);
+                        dynamicControlGridPane.add(f, 1, control_row);
+                        control_group = new ControlCellGroup(control_label, f);
+                        dynamicControlsList.put(control.getControlMapKey(), control_group);
+
+                        f.valueProperty().addListener(new ChangeListener<Number>() {
+                            @Override
+                            public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
+                                if (f.isFocused()) {
+                                    if (oldval != newval) {
+                                        control.setValue(newval.floatValue());
+                                        //localDevice.sendDynamicControl(control);
+                                    }
+                                }
+                            }
+                        });
+
+                        control_group.listener = new DynamicControl.DynamicControlListener() {
+                            @Override
+                            public void update(DynamicControl control) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        if (!f.isFocused()) {
+
+                                            f.setValue((float) control.getValue());
+                                        }
+                                    }
+                                });
+                            }
+                        };
+
+                        control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                            @Override
+                            public void controlScopeChanged(ControlScope new_scope) {
+                                Platform.runLater(new Runnable() {
+                                    public void run() {
+                                        f.setTooltip(new Tooltip(control.getTooltipText()));
+                                    }
+                                });
+
+                            }
+                        };
+                    }
+                    break;
+
+                case TEXT:
+                    TextField t = new TextField();
+                    control.setTooltipPrefix("Type in text and press enter to generate an event for this control");
+                    t.setTooltip(new Tooltip(control.getTooltipText()));
+                    //t.setMaxWidth(100);
+                    t.setText((String) control.getValue());
+                    dynamicControlGridPane.add(t, 1, control_row);
+                    control_group = new ControlCellGroup(control_label, t);
+                    dynamicControlsList.put(control.getControlMapKey(), control_group);
+                    t.setOnKeyTyped(new EventHandler<KeyEvent>() {
+                        @Override
+                        public void handle(KeyEvent event) {
+                            if (event.getCode().equals(KeyCode.ENTER)) {
+                                String text_val = t.getText();
+                                control.setValue(text_val);
+                                ///localDevice.sendDynamicControl(control);
+                            }
+                        }
+                    });
+
+                    // set handlers
+                    t.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent actionEvent) {
+                            String text_val = t.getText();
+                            control.setValue(text_val);
+                            //localDevice.sendDynamicControl(control);
+                        }
+                    });
+
+                    control_group.listener = new DynamicControl.DynamicControlListener() {
+                        @Override
+                        public void update(DynamicControl control) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    t.setText((String) control.getValue());
+                                }
+                            });
+                        }
+                    };
+
+                    control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                        @Override
+                        public void controlScopeChanged(ControlScope new_scope) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    t.setTooltip(new Tooltip(control.getTooltipText()));
+                                }
+                            });
+
+                        }
+                    };
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (control_group.listener != null) {
+                control.addControlListener(control_group.listener);
+            }
+            if (control_group.scopeChangedListener != null){
+                control.addControlScopeListener(control_group.scopeChangedListener);
+            }
+
+
+            show();
+        }
+
+    }
+    /**
+     * Add A dynamic Control to window. Will run later in main thread
      * @param control The DynamicControl to add
      */
     public void addDynamicControl(DynamicControl control)
@@ -337,408 +767,7 @@ public class DynamicControlScreen {
 
         Platform.runLater(new Runnable() {
             public void run() {
-
-                ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
-
-                if (control_group == null) {
-
-                    Label control_label = new Label(control.getControlName());
-
-                    dynamicControlGridPane.add(control_label, 0, control_row);
-
-
-                    ControlType control_type = control.getControlType();
-                    switch (control_type) {
-                        case TRIGGER:
-                            Button b = new Button();
-
-                            control.setTooltipPrefix("Press button to generate a trigger event for this control");
-                            b.setTooltip(new Tooltip(control.getTooltipText()));
-                            b.setText("Send");
-                            dynamicControlGridPane.add(b, 1, control_row);
-                            control_group = new ControlCellGroup(control_label, b);
-                            dynamicControlsList.put(control.getControlMapKey(), control_group);
-                            b.setOnAction(new EventHandler<ActionEvent>() {
-                                @Override
-                                public void handle(ActionEvent e) {
-                                    // This is a number so we have a stop condition
-                                    control.setValue(System.currentTimeMillis());
-                                }
-                            });
-
-
-                            control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                                @Override
-                                public void controlScopeChanged(ControlScope new_scope) {
-                                    Platform.runLater(new Runnable() {
-                                        public void run() {
-                                            b.setTooltip(new Tooltip(control.getTooltipText()));
-                                        }
-                                    });
-
-                                }
-                            };
-
-                            break;
-
-                        case INT:
-                            int control_value = (int) control.getValue();
-                            // If we have no difference between Maximum and Minimum, we will make a textboox
-                            if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
-                                TextField t = new TextField();
-                                control.setTooltipPrefix("Type in an integer value and press enter to generate an event for this control");
-                                t.setTooltip(new Tooltip(control.getTooltipText()));
-                                //t.setMaxWidth(100);
-                                t.setText(Integer.toString(control_value));
-                                dynamicControlGridPane.add(t, 1, control_row);
-                                control_group = new ControlCellGroup(control_label, t);
-                                dynamicControlsList.put(control.getControlMapKey(), control_group);
-                                t.setOnKeyTyped(new EventHandler<KeyEvent>() {
-                                    @Override
-                                    public void handle(KeyEvent event) {
-                                        if (event.getCode().equals(KeyCode.ENTER)) {
-                                            String text_val = t.getText();
-                                            try {
-                                                int control_value = Integer.valueOf(text_val);
-
-                                                control.setValue(control_value);
-                                            }
-                                            catch (Exception ex){
-                                                // we might want to put an exception here
-                                            }
-                                        }
-                                    }
-                                });
-
-                                // set handlers
-                                t.setOnAction(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent actionEvent) {
-                                        String text_val = t.getText();
-                                        try {
-                                            int control_value = Integer.valueOf(text_val);
-
-                                            control.setValue(control_value);
-                                        }
-                                        catch (Exception ex){
-                                            // we might want to put an exception here
-                                        }
-                                    }
-                                });
-
-                                control_group.listener = new DynamicControl.DynamicControlListener() {
-                                    @Override
-                                    public void update(DynamicControl control) {
-                                        Platform.runLater(new Runnable() {
-                                            public void run() {
-                                                t.setText(Integer.toString((int) control.getValue()));
-
-                                            }
-                                        });
-                                    }
-                                };
-
-                                control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                                    @Override
-                                    public void controlScopeChanged(ControlScope new_scope) {
-                                        Platform.runLater(new Runnable() {
-                                            public void run() {
-                                                t.setTooltip(new Tooltip(control.getTooltipText()));
-                                            }
-                                        });
-
-                                    }
-                                };
-
-                            }
-                            else {
-                                Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
-                                control.setTooltipPrefix("Change the slider value to generate an event for this control");
-                                s.setTooltip(new Tooltip(control.getTooltipText()));
-                                //s.setMaxWidth(100);
-                                s.setOrientation(Orientation.HORIZONTAL);
-                                dynamicControlGridPane.add(s, 1, control_row);
-                                control_group = new ControlCellGroup(control_label, s);
-                                dynamicControlsList.put(control.getControlMapKey(), control_group);
-
-                                s.valueProperty().addListener(new ChangeListener<Number>() {
-                                    @Override
-                                    public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                        if (s.isFocused()) {
-                                            if (oldval != newval) {
-                                                control.setValue(newval.intValue());
-                                                //localDevice.sendDynamicControl(control);
-                                            }
-                                        }
-                                    }
-                                });
-
-                                control_group.listener = new DynamicControl.DynamicControlListener() {
-                                    @Override
-                                    public void update(DynamicControl control) {
-                                        Platform.runLater(new Runnable() {
-                                            public void run() {
-                                                if (!s.isFocused()) {
-                                                    s.setValue((int) control.getValue());
-                                                }
-                                            }
-                                        });
-                                    }
-                                };
-
-                                control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                                    @Override
-                                    public void controlScopeChanged(ControlScope new_scope) {
-                                        Platform.runLater(new Runnable() {
-                                            public void run() {
-                                                s.setTooltip(new Tooltip(control.getTooltipText()));
-                                            }
-                                        });
-
-                                    }
-                                };
-                            }
-                            break;
-
-                        case BOOLEAN:
-                            CheckBox c = new CheckBox();
-                            control.setTooltipPrefix("Change the check state to generate an event for this control");
-                            c.setTooltip(new Tooltip(control.getTooltipText()));
-                            boolean b_val = (boolean) control.getValue();
-                            c.setSelected(b_val);
-                            dynamicControlGridPane.add(c, 1, control_row);
-
-                            control_group = new ControlCellGroup(control_label, c);
-                            dynamicControlsList.put(control.getControlMapKey(), control_group);
-
-                            c.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                                public void changed(ObservableValue<? extends Boolean> ov,
-                                                    Boolean oldval, Boolean newval) {
-                                    if (oldval != newval) {
-                                        control.setValue(newval);
-                                        //localDevice.sendDynamicControl(control);
-                                    }
-                                }
-                            });
-
-                            control_group.listener = new DynamicControl.DynamicControlListener() {
-                                @Override
-                                public void update(DynamicControl control) {
-                                    Platform.runLater(new Runnable() {
-                                        public void run() {
-                                            if (!c.isFocused()) {
-                                                boolean b_val = (boolean) control.getValue();
-                                                c.setSelected(b_val);
-                                            }
-                                        }
-                                    });
-                                }
-                            };
-
-                            control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                                @Override
-                                public void controlScopeChanged(ControlScope new_scope) {
-                                    Platform.runLater(new Runnable() {
-                                        public void run() {
-                                            c.setTooltip(new Tooltip(control.getTooltipText()));
-                                        }
-                                    });
-
-                                }
-                            };
-                            break;
-
-                        case FLOAT:
-                            float f_control_value = (float) control.getValue();
-                            // If we have no difference between Maximum and Minimum, we will make a textboox
-                            if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
-                                TextField t = new TextField();
-                                control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
-                                t.setTooltip(new Tooltip(control.getTooltipText()));
-                                //t.setMaxWidth(100);
-                                t.setText(Float.toString(f_control_value));
-                                dynamicControlGridPane.add(t, 1, control_row);
-                                control_group = new ControlCellGroup(control_label, t);
-                                dynamicControlsList.put(control.getControlMapKey(), control_group);
-                                t.setOnKeyTyped(new EventHandler<KeyEvent>() {
-                                    @Override
-                                    public void handle(KeyEvent event) {
-                                        if (event.getCode().equals(KeyCode.ENTER)) {
-                                            String text_val = t.getText();
-                                            try {
-                                                float control_value = Float.valueOf(text_val);
-
-                                                control.setValue(control_value);
-                                                //localDevice.sendDynamicControl(control);
-                                            }
-                                            catch (Exception ex){
-                                                // we might want to put an exception here
-                                            }
-                                        }
-                                    }
-                                });
-
-                                // set handlers
-                                t.setOnAction(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent actionEvent) {
-                                        String text_val = t.getText();
-                                        try {
-                                            float control_value = Float.valueOf(text_val);
-
-                                            control.setValue(control_value);
-                                            //localDevice.sendDynamicControl(control);
-                                        }
-                                        catch (Exception ex){
-                                            // we might want to put an exception here
-                                        }
-                                    }
-                                });
-
-                                control_group.listener = new DynamicControl.DynamicControlListener() {
-                                    @Override
-                                    public void update(DynamicControl control) {
-                                        Platform.runLater(new Runnable() {
-                                            public void run() {
-                                                t.setText(Float.toString((float) control.getValue()));
-                                            }
-                                        });
-                                    }
-                                };
-
-
-                                control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                                    @Override
-                                    public void controlScopeChanged(ControlScope new_scope) {
-                                        Platform.runLater(new Runnable() {
-                                            public void run() {
-                                                t.setTooltip(new Tooltip(control.getTooltipText()));
-
-                                            }
-                                        });
-
-                                    }
-                                };
-                            }
-                            else {
-                                Slider f = new Slider((float) control.getMinimumDisplayValue(), (float) control.getMaximumDisplayValue(), (float) control.getValue());
-                                //f.setMaxWidth(100);
-                                control.setTooltipPrefix("Change the slider value to generate an event for this control");
-                                f.setTooltip(new Tooltip(control.getTooltipText()));
-                                f.setOrientation(Orientation.HORIZONTAL);
-                                dynamicControlGridPane.add(f, 1, control_row);
-                                control_group = new ControlCellGroup(control_label, f);
-                                dynamicControlsList.put(control.getControlMapKey(), control_group);
-
-                                f.valueProperty().addListener(new ChangeListener<Number>() {
-                                    @Override
-                                    public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                        if (f.isFocused()) {
-                                            if (oldval != newval) {
-                                                control.setValue(newval.floatValue());
-                                                //localDevice.sendDynamicControl(control);
-                                            }
-                                        }
-                                    }
-                                });
-
-                                control_group.listener = new DynamicControl.DynamicControlListener() {
-                                    @Override
-                                    public void update(DynamicControl control) {
-                                        Platform.runLater(new Runnable() {
-                                            public void run() {
-                                                if (!f.isFocused()) {
-
-                                                    f.setValue((float) control.getValue());
-                                                }
-                                            }
-                                        });
-                                    }
-                                };
-
-                                control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                                    @Override
-                                    public void controlScopeChanged(ControlScope new_scope) {
-                                        Platform.runLater(new Runnable() {
-                                            public void run() {
-                                                f.setTooltip(new Tooltip(control.getTooltipText()));
-                                            }
-                                        });
-
-                                    }
-                                };
-                            }
-                            break;
-
-                        case TEXT:
-                            TextField t = new TextField();
-                            control.setTooltipPrefix("Type in text and press enter to generate an event for this control");
-                            t.setTooltip(new Tooltip(control.getTooltipText()));
-                            //t.setMaxWidth(100);
-                            t.setText((String) control.getValue());
-                            dynamicControlGridPane.add(t, 1, control_row);
-                            control_group = new ControlCellGroup(control_label, t);
-                            dynamicControlsList.put(control.getControlMapKey(), control_group);
-                            t.setOnKeyTyped(new EventHandler<KeyEvent>() {
-                                @Override
-                                public void handle(KeyEvent event) {
-                                    if (event.getCode().equals(KeyCode.ENTER)) {
-                                        String text_val = t.getText();
-                                        control.setValue(text_val);
-                                        ///localDevice.sendDynamicControl(control);
-                                    }
-                                }
-                            });
-
-                            // set handlers
-                            t.setOnAction(new EventHandler<ActionEvent>() {
-                                @Override
-                                public void handle(ActionEvent actionEvent) {
-                                    String text_val = t.getText();
-                                    control.setValue(text_val);
-                                    //localDevice.sendDynamicControl(control);
-                                }
-                            });
-
-                            control_group.listener = new DynamicControl.DynamicControlListener() {
-                                @Override
-                                public void update(DynamicControl control) {
-                                    Platform.runLater(new Runnable() {
-                                        public void run() {
-                                            t.setText((String) control.getValue());
-                                        }
-                                    });
-                                }
-                            };
-
-                            control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                                @Override
-                                public void controlScopeChanged(ControlScope new_scope) {
-                                    Platform.runLater(new Runnable() {
-                                        public void run() {
-                                            t.setTooltip(new Tooltip(control.getTooltipText()));
-                                        }
-                                    });
-
-                                }
-                            };
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    if (control_group.listener != null) {
-                        control.addControlListener(control_group.listener);
-                    }
-                    if (control_group.scopeChangedListener != null){
-                        control.addControlScopeListener(control_group.scopeChangedListener);
-                    }
-
-
-                    show();
-                }
-            }
+                addDynamicControl(control, control_row); }
         });
     }
 
