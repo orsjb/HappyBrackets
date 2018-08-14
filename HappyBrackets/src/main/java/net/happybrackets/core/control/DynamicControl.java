@@ -53,7 +53,8 @@ public class DynamicControl {
         CONTROL_TYPE,
         MAP_KEY,
         OBJ_VAL,
-        CONTROL_SCOPE
+        CONTROL_SCOPE,
+        EXECUTE_TIME
     }
 
 
@@ -62,7 +63,8 @@ public class DynamicControl {
         DEVICE_NAME,
         CONTROL_NAME,
         CONTROL_TYPE,
-        OBJ_VAL
+        OBJ_VAL,
+        EXECUTE_TIME
     }
 
     static ControlMap controlMap = ControlMap.getInstance();
@@ -116,6 +118,16 @@ public class DynamicControl {
     private Object maximumDisplayValue = 0;
     private Object minimumDisplayValue = 0;
 
+    // This is the time we want to execute the control value
+    private long executionTime =  0;
+
+    /**
+     * Returns the JVM execution time we last used when we set the value
+     * @return lastExecution time set
+     */
+    public long getExecutionTime(){
+        return executionTime;
+    }
 
     /**
      * Convert a float or int into required number type based on control. If not a FLOAT or INT, will just return value
@@ -434,6 +446,13 @@ public class DynamicControl {
         ControlType control_type = ControlType.values()[(int) msg.getArg(GLOBAL_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
         Object obj_val = msg.getArg(GLOBAL_MESSAGE_ARGS.OBJ_VAL.ordinal());
 
+        long execution_time = 0;
+
+        if (msg.getArgCount() > GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
+        {
+            execution_time = (int) msg.getArg(GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
+        }
+
         // Make sure we ignore messages from this device
         if (!device_name.equals(Device.getDeviceName())) {
             List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
@@ -449,6 +468,7 @@ public class DynamicControl {
                         obj_val = bool_val;
                     }
 
+                    named_control.executionTime = execution_time;
                     named_control.objVal = obj_val;
                     named_control.notifyLocalListeners();
                 }
@@ -470,6 +490,13 @@ public class DynamicControl {
         Object obj_val = msg.getArg(UPDATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
         ControlScope control_scope = ControlScope.values ()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
 
+        long execution_time = 0;
+
+        if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
+        {
+            execution_time = (int) msg.getArg(UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
+        }
+
         DynamicControl control = getControl(map_key);
         if (control != null)
         {
@@ -479,11 +506,13 @@ public class DynamicControl {
 
             if (!obj_val.equals(control.objVal)) {
                 control.objVal = convertValue(control.controlType, obj_val);
+                control.executionTime = execution_time;
                 changed = true;
             }
 
             if (!control_scope.equals(control.controlScope)) {
                 control.controlScope = control_scope;
+                control.executionTime = execution_time;
                 changed = true;
                 control_scope_changed = true;
             }
@@ -544,7 +573,8 @@ public class DynamicControl {
                         controlType.ordinal(),
                         controlMapKey,
                         OSCArgumentObject(objVal),
-                        controlScope.ordinal()
+                        controlScope.ordinal(),
+                        (int)executionTime
                 });
 
     }
@@ -560,6 +590,7 @@ public class DynamicControl {
                         controlName,
                         controlType.ordinal(),
                         OSCArgumentObject(objVal),
+                        (int)executionTime
                 });
 
     }
@@ -623,6 +654,20 @@ public class DynamicControl {
      */
     public DynamicControl setValue(Object val)
     {
+       return setValue(val, 0);
+    }
+
+    /**
+     * Set the value of the object and notify any listeners
+     * Additionally, the value will propagate to any controls that match the control scope
+     * If we are using a trigger, send a random number or a unique value
+     * @param val the value to set
+     * @param execution_time the JVM time we want this to occur
+     * @return this object
+     */
+    public DynamicControl setValue(Object val, long execution_time)
+    {
+        executionTime = execution_time;
         val = convertValue (controlType, val);
 
         if (!objVal.equals(val)) {
@@ -639,7 +684,6 @@ public class DynamicControl {
         }
         return this;
     }
-
 
     /**
      * Gets the value of the control. The type needs to be cast to the required type in the listener
