@@ -69,7 +69,7 @@ public abstract class GPIOInput extends GPIO implements GPIOInputListener {
     /**
      * Get a GPIO input pin. There will be no Pullup resistance defined
      * @param gpio_number the GPIO number
-     * @return
+     * @return the GPIO Pin if it is available, otherwise null
      */
     public synchronized static GPIOInput getInputPin(int gpio_number){
         return getInputPin(gpio_number, PinPullResistance.OFF);

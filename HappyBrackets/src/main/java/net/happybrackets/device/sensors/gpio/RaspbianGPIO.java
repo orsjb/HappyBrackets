@@ -64,13 +64,15 @@ public class RaspbianGPIO {
             provisionedPins.clear();
         }
     }
+
     /**
      * Enables provisioning of GPIO pin numbers using Broadcom numbering scheme
      * Note that actual physical pin numbers can change over board revisions when using Broadcom scheme so it is not recommended
-     * @see <a href="http://pi4j.com/pin-numbering-scheme.html">http://pi4j.com/pin-numbering-scheme.html</a> and
-     * @see <a href="http://wiringpi.com/pins/">http://wiringpi.com/pins/</a> for further explanation
-     *
+     * The following URLs give more detail
+     * <a href="http://pi4j.com/pin-numbering-scheme.html">http://pi4j.com/pin-numbering-scheme.html</a> and
+     * <a href="http://wiringpi.com/pins/">http://wiringpi.com/pins/</a> for further explanation
      * @param use_broadcom set to true if you want to change to broadcom numbering scheme
+     *
      */
     synchronized public void setBroadcomPinNumbering (boolean use_broadcom){
         if (use_broadcom)
