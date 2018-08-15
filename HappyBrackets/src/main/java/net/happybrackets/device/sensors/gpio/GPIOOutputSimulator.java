@@ -1,6 +1,7 @@
 package net.happybrackets.device.sensors.gpio;
 
 import net.happybrackets.core.control.BooleanControl;
+import net.happybrackets.core.control.ControlMap;
 
 public class GPIOOutputSimulator extends GPIODigitalOutput {
 
@@ -26,6 +27,12 @@ public class GPIOOutputSimulator extends GPIODigitalOutput {
 
     @Override
     void reset() {
+
+    }
+
+    @Override
+    void unnasign() {
+        ControlMap.getInstance().removeControl(booleanControl.getDynamicControl());
 
     }
 }

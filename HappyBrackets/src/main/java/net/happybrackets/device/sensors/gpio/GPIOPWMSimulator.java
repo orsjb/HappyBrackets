@@ -1,6 +1,7 @@
 package net.happybrackets.device.sensors.gpio;
 
 import net.happybrackets.core.control.BooleanControl;
+import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.IntegerSliderControl;
 
 public class GPIOPWMSimulator extends GPIOPWMOutput {
@@ -38,5 +39,10 @@ public class GPIOPWMSimulator extends GPIOPWMOutput {
     @Override
     void reset() {
 
+    }
+
+    @Override
+    void unnasign() {
+        ControlMap.getInstance().removeControl(integerSliderControl.getDynamicControl());
     }
 }

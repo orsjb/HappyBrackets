@@ -15,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import net.happybrackets.controller.gui.device.PingMenu;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
@@ -356,6 +357,14 @@ public class DynamicControlScreen {
         ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
 
         if (control_group == null) {
+
+            // fist add a listeners to notify us of when this control gets removed
+            ControlMap.getInstance().addDynamicControlRemovedListener(new ControlMap.dynamicControlRemovedListener() {
+                @Override
+                public void controlRemoved(DynamicControl control) {
+                    removeDynamicControl(control);
+                }
+            });
 
             Label control_label = new Label(control.getControlName());
 

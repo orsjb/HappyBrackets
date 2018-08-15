@@ -79,11 +79,37 @@ abstract public class GPIO {
      * Clears provisioning of all GPIO
      */
     static public void resetAllGPIO(){
-        resetGpioListeners();
-        RaspbianGPIO.unprovisionAllPins();
+        synchronized (assignedPins) {
+            resetGpioListeners();
+            RaspbianGPIO.unprovisionAllPins();
+            assignedPins.clear();
+        }
+    }
+
+    /**
+     * Clears the pin assignment of a pin so it cn be assigned to another function
+     * @param gpio_number the GPIO number we want to unassigned
+     */
+    static public void clearPinAssignment(int gpio_number){
+        synchronized (assignedPins) {
+            if (assignedPins.containsKey(gpio_number)) {
+                // we have found it.
+                GPIO gpio = assignedPins.get(gpio_number);
+                // first reset the object
+                gpio.reset();
+
+                // now unnasign
+                gpio.unnasign();
+            }
+        }
     }
     /**
      * Occurs when we want to do a reset
      */
     abstract void reset();
+
+    /**
+     * Remove the assignment of the pin
+     */
+    abstract void unnasign();
 }

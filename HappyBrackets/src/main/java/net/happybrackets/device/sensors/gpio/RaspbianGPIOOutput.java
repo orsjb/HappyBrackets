@@ -54,4 +54,10 @@ public class RaspbianGPIOOutput extends GPIODigitalOutput{
     void reset() {
 
     }
+
+    @Override
+    void unnasign() {
+        GpioController controller = RaspbianGPIO.getGpioController();
+        controller.unprovisionPin(outputPin);
+    }
 }

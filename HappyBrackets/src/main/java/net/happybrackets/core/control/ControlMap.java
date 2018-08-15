@@ -23,19 +23,28 @@ public class ControlMap {
         void controlCreated(DynamicControl control);
     }
 
-    private List<dynamicControlCreatedListener> controlCreatedListenerList = new ArrayList<>();
+    /**
+     * Create an Interface where we can look for created Dynamic Controls
+     */
+    public interface dynamicControlRemovedListener{
+        void controlRemoved(DynamicControl control);
+    }
 
-    private List<dynamicControlAdvertiseListener> controlListenerList = new ArrayList<>();
+    private List<dynamicControlCreatedListener> controlCreatedListenerList = Collections.synchronizedList( new ArrayList<>());
+
+    private List<dynamicControlAdvertiseListener> controlListenerList = Collections.synchronizedList(new ArrayList<>());
+
+    private List<dynamicControlRemovedListener> controlRemovedListenerList = Collections.synchronizedList(new ArrayList<>());
 
 
     // create a group of listeners for global controls over network
-    private List<dynamicControlAdvertiseListener> globalControlListenerList = new ArrayList<>();
+    private List<dynamicControlAdvertiseListener> globalControlListenerList = Collections.synchronizedList(new ArrayList<>());
 
     // We will enforce singleton by instatiating it once
     private static ControlMap singletonInstance = null;
 
     // create a map based on Device name and instance number
-    private LinkedHashMap<String, DynamicControl> dynamicControls = new LinkedHashMap<>();
+    private LinkedHashMap<String, DynamicControl> dynamicControls = new  LinkedHashMap<>();
 
     // Devices are mapped based on name
     private LinkedHashMap<String, List<DynamicControl>> controlScopedDevices = new LinkedHashMap<>();
@@ -49,6 +58,18 @@ public class ControlMap {
         synchronized (controlListenerList)
         {
             controlListenerList.add(listener);
+        }
+    }
+
+    public void addDynamicControlRemovedListener(dynamicControlRemovedListener listener){
+        synchronized (controlRemovedListenerList){
+            controlRemovedListenerList.add(listener);
+        }
+    }
+
+    public void removeDynamicControlRemovedListener(dynamicControlRemovedListener listener){
+        synchronized (controlRemovedListenerList){
+            controlRemovedListenerList.remove(listener);
         }
     }
 
@@ -211,6 +232,9 @@ public class ControlMap {
             control.eraseListeners();
             OSCMessage msg = control.buildRemoveMessage();
             sendDynamicControlMessage(msg);
+
+            notifyRemovedListeners(control);
+
             dynamicControls.remove(control.getControlMapKey());
 
             // now remove from named Objects
@@ -218,6 +242,20 @@ public class ControlMap {
 
             List<DynamicControl> name_list = getControlsByName(name);
             name_list.remove(control);
+        }
+    }
+
+    /**
+     * Notify all listners that control has been removed and then clear list
+     * @param control control bein g removed
+     */
+    private void notifyRemovedListeners(DynamicControl control) {
+        synchronized (controlRemovedListenerList)
+        {
+            for (dynamicControlRemovedListener listener: controlRemovedListenerList){
+                listener.controlRemoved(control);
+            }
+            controlRemovedListenerList.clear();
         }
     }
 

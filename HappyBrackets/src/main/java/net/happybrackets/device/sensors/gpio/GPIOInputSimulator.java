@@ -2,6 +2,7 @@ package net.happybrackets.device.sensors.gpio;
 
 import com.pi4j.io.gpio.PinPullResistance;
 import net.happybrackets.core.control.BooleanControl;
+import net.happybrackets.core.control.ControlMap;
 
 /**
  * Simulates GPIO input and output so we can run
@@ -21,7 +22,7 @@ public class GPIOInputSimulator extends GPIOInput  {
     GPIOInputSimulator(int gpio_number, PinPullResistance pinPullResistance) {
         super(gpio_number);
         System.out.println("Created GPIOInputSimulator");
-        booleanControl = new BooleanControl(this, "GPIO In " + gpio_number, false) {
+        booleanControl = new BooleanControl(this, "GPIO In " + gpio_number, pinPullResistance == PinPullResistance.PULL_UP) {
             @Override
             public void valueChanged(Boolean control_val) {
                 GPIOInput input = (GPIOInput)this.getDynamicControl().getParentSketch();
@@ -38,5 +39,10 @@ public class GPIOInputSimulator extends GPIOInput  {
     @Override
     void reset() {
         clearAllStateListeners();
+    }
+
+    @Override
+    void unnasign() {
+        ControlMap.getInstance().removeControl(booleanControl.getDynamicControl());
     }
 }

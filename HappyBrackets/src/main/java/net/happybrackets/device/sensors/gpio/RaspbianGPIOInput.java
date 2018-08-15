@@ -74,4 +74,10 @@ public class RaspbianGPIOInput extends GPIOInput
     void reset() {
         clearAllStateListeners();
     }
+
+    @Override
+    void unnasign() {
+        GpioController controller = RaspbianGPIO.getGpioController();
+        controller.unprovisionPin(inputPin);
+    }
 }
