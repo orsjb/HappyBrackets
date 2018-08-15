@@ -54,6 +54,9 @@ public class TestGPIOInput implements HBAction, HBReset {
             public void triggerEvent() {
                 /*** Write your DynamicControl code below this line ***/
                 GPIO.clearPinAssignment(GPIO_OUTPUT);
+
+                // not create an input but use that output pin instead
+                GPIOInput input = GPIOInput.getInputPin(GPIO_OUTPUT, PinPullResistance.PULL_UP);
                 /*** Write your DynamicControl code above this line ***/
             }
         };/*** End DynamicControl triggerControl code ***/

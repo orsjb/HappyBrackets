@@ -100,6 +100,7 @@ abstract public class GPIO {
 
                 // now unnasign
                 gpio.unnasign();
+                assignedPins.remove(gpio_number);
             }
         }
     }
