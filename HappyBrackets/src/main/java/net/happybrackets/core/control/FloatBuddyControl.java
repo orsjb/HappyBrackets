@@ -38,7 +38,17 @@ public abstract class FloatBuddyControl extends FloatControl {
     public FloatBuddyControl setControlScope(ControlScope new_scope){
         getDynamicControl().setControlScope(new_scope);
         return this;
+    }
 
+    /**
+     * Change whether to disable control in display
+     * We must do this in subclass
+     * @param disabled The new Control Scope
+     * @return this object
+     */
+    public FloatBuddyControl setDisabled(boolean disabled){
+        getDynamicControl().setDisabled(disabled);
+        return this;
     }
 
 }

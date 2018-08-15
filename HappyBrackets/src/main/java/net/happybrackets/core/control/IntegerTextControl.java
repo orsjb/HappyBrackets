@@ -21,6 +21,16 @@ public abstract class IntegerTextControl extends IntegerControl {
     public IntegerTextControl setControlScope(ControlScope new_scope){
         getDynamicControl().setControlScope(new_scope);
         return this;
+    }
 
+    /**
+     * Change whether to disable control in display
+     * We must do this in subclass
+     * @param disabled The new Control Scope
+     * @return this object
+     */
+    public IntegerTextControl setDisabled(boolean disabled){
+        getDynamicControl().setDisabled(disabled);
+        return this;
     }
 }

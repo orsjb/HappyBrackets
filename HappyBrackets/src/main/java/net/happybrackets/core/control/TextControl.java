@@ -46,6 +46,16 @@ public abstract class TextControl extends DynamicControlParent {
     public TextControl setControlScope(ControlScope new_scope){
         getDynamicControl().setControlScope(new_scope);
         return this;
+    }
 
+    /**
+     * Change whether to disable control in display
+     * We must do this in subclass
+     * @param disabled The new Control Scope
+     * @return this object
+     */
+    public TextControl setDisabled(boolean disabled){
+        getDynamicControl().setDisabled(disabled);
+        return this;
     }
 }

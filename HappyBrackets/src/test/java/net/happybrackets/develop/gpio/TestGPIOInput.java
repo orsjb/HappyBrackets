@@ -4,6 +4,7 @@ import com.pi4j.io.gpio.PinPullResistance;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.gpio.GPIODigitalOutput;
 import net.happybrackets.device.sensors.gpio.GPIOInput;
 
 import java.lang.invoke.MethodHandles;
@@ -20,6 +21,8 @@ public class TestGPIOInput implements HBAction, HBReset {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
         GPIOInput input = GPIOInput.getInputPin(1, PinPullResistance.PULL_DOWN);
 
+        GPIODigitalOutput output = GPIODigitalOutput.getOutputPin(2);
+
         if (input != null){
             System.out.println("Successful create 1");
         }
@@ -29,6 +32,10 @@ public class TestGPIOInput implements HBAction, HBReset {
             System.out.println("Successful create input_mirror");
             input_mirror.addStateListener((sensor, new_state) -> {
                 System.out.println("New state " + new_state);
+
+                if (output != null){
+                    output.setState(new_state);
+                }
             });
         }
         /***** Type your HBAction code above this line ******/
