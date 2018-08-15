@@ -370,6 +370,7 @@ public class DynamicControlScreen {
                     control.setTooltipPrefix("Press button to generate a trigger event for this control");
                     b.setTooltip(new Tooltip(control.getTooltipText()));
                     b.setText("Send");
+                    b.setDisable(control.getDisabled());
                     dynamicControlGridPane.add(b, 1, control_row);
                     control_group = new ControlCellGroup(control_label, b);
                     dynamicControlsList.put(control.getControlMapKey(), control_group);
@@ -394,6 +395,18 @@ public class DynamicControlScreen {
                         }
                     };
 
+                    control_group.listener = new DynamicControl.DynamicControlListener() {
+                        @Override
+                        public void update(DynamicControl control) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    b.setDisable(control.getDisabled());
+
+                                }
+                            });
+                        }
+                    };
+
                     break;
 
                 case INT:
@@ -405,6 +418,7 @@ public class DynamicControlScreen {
                         t.setTooltip(new Tooltip(control.getTooltipText()));
                         //t.setMaxWidth(100);
                         t.setText(Integer.toString(control_value));
+                        t.setDisable(control.getDisabled());
                         dynamicControlGridPane.add(t, 1, control_row);
                         control_group = new ControlCellGroup(control_label, t);
                         dynamicControlsList.put(control.getControlMapKey(), control_group);
@@ -447,6 +461,7 @@ public class DynamicControlScreen {
                                 Platform.runLater(new Runnable() {
                                     public void run() {
                                         t.setText(Integer.toString((int) control.getValue()));
+                                        t.setDisable(control.getDisabled());
 
                                     }
                                 });
@@ -470,7 +485,7 @@ public class DynamicControlScreen {
                         Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
                         control.setTooltipPrefix("Change the slider value to generate an event for this control");
                         s.setTooltip(new Tooltip(control.getTooltipText()));
-                        //s.setMaxWidth(100);
+                        s.setDisable(control.getDisabled());
                         s.setOrientation(Orientation.HORIZONTAL);
                         dynamicControlGridPane.add(s, 1, control_row);
                         control_group = new ControlCellGroup(control_label, s);
@@ -496,6 +511,7 @@ public class DynamicControlScreen {
                                         if (!s.isFocused()) {
                                             s.setValue((int) control.getValue());
                                         }
+                                        s.setDisable(control.getDisabled());
                                     }
                                 });
                             }
@@ -521,6 +537,7 @@ public class DynamicControlScreen {
                     c.setTooltip(new Tooltip(control.getTooltipText()));
                     boolean b_val = (boolean) control.getValue();
                     c.setSelected(b_val);
+                    c.setDisable(control.getDisabled());
                     dynamicControlGridPane.add(c, 1, control_row);
 
                     control_group = new ControlCellGroup(control_label, c);
@@ -545,6 +562,7 @@ public class DynamicControlScreen {
                                         boolean b_val = (boolean) control.getValue();
                                         c.setSelected(b_val);
                                     }
+                                    c.setDisable(control.getDisabled());
                                 }
                             });
                         }
@@ -570,7 +588,7 @@ public class DynamicControlScreen {
                         TextField t = new TextField();
                         control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
                         t.setTooltip(new Tooltip(control.getTooltipText()));
-                        //t.setMaxWidth(100);
+                        t.setDisable(control.getDisabled());
                         t.setText(Float.toString(f_control_value));
                         dynamicControlGridPane.add(t, 1, control_row);
                         control_group = new ControlCellGroup(control_label, t);
@@ -616,6 +634,7 @@ public class DynamicControlScreen {
                                 Platform.runLater(new Runnable() {
                                     public void run() {
                                         t.setText(Float.toString((float) control.getValue()));
+                                        t.setDisable(control.getDisabled());
                                     }
                                 });
                             }
@@ -641,6 +660,7 @@ public class DynamicControlScreen {
                         control.setTooltipPrefix("Change the slider value to generate an event for this control");
                         f.setTooltip(new Tooltip(control.getTooltipText()));
                         f.setOrientation(Orientation.HORIZONTAL);
+                        f.setDisable(control.getDisabled());
                         dynamicControlGridPane.add(f, 1, control_row);
                         control_group = new ControlCellGroup(control_label, f);
                         dynamicControlsList.put(control.getControlMapKey(), control_group);
@@ -654,6 +674,7 @@ public class DynamicControlScreen {
                                         //localDevice.sendDynamicControl(control);
                                     }
                                 }
+                                f.setDisable(control.getDisabled());
                             }
                         });
 
@@ -689,7 +710,7 @@ public class DynamicControlScreen {
                     TextField t = new TextField();
                     control.setTooltipPrefix("Type in text and press enter to generate an event for this control");
                     t.setTooltip(new Tooltip(control.getTooltipText()));
-                    //t.setMaxWidth(100);
+                    t.setDisable(control.getDisabled());
                     t.setText((String) control.getValue());
                     dynamicControlGridPane.add(t, 1, control_row);
                     control_group = new ControlCellGroup(control_label, t);
@@ -721,6 +742,7 @@ public class DynamicControlScreen {
                             Platform.runLater(new Runnable() {
                                 public void run() {
                                     t.setText((String) control.getValue());
+                                    t.setDisable(control.getDisabled());
                                 }
                             });
                         }

@@ -21,15 +21,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/pi4j-gpio-extension.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/beads.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -40,6 +31,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/pi4j-device-sources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/pi4j-gpio-extension.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

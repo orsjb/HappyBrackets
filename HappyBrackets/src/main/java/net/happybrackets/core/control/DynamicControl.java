@@ -43,7 +43,8 @@ public class DynamicControl {
         OBJ_VAL,
         MIN_VAL,
         MAX_VAL,
-        CONTROL_SCOPE
+        CONTROL_SCOPE,
+        DISABLED
     }
 
     // Define the Arguments used in an Update message
@@ -54,7 +55,8 @@ public class DynamicControl {
         MAP_KEY,
         OBJ_VAL,
         CONTROL_SCOPE,
-        EXECUTE_TIME
+        EXECUTE_TIME,
+        DISABLED
     }
 
 
@@ -120,6 +122,29 @@ public class DynamicControl {
 
     // This is the time we want to execute the control value
     private long executionTime =  0;
+
+    boolean disabled = false; // Whether the control is disabled on control Screen
+
+
+    /**
+     * Whether we disable the control on the screen
+     * @return true if we disable control on screen
+     */
+    public boolean getDisabled(){
+        return disabled;
+    }
+
+    /**
+     * Set whether we will disable control of object on the screen
+     * @param disable_control whether we want to disable control
+     * @return this
+     */
+    public DynamicControl setDisabled(boolean disable_control){
+        disabled = disable_control;
+        notifyValueSetListeners();
+        notifyLocalListeners();
+        return  this;
+    }
 
     /**
      * Returns the JVM execution time we last used when we set the value
@@ -491,19 +516,29 @@ public class DynamicControl {
         ControlScope control_scope = ControlScope.values ()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
 
         long execution_time = 0;
+        boolean disable = false;
 
         if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
         {
             execution_time = (int) msg.getArg(UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
         }
 
+        if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.DISABLED.ordinal())
+        {
+            int osc_val = (int) msg.getArg(UPDATE_MESSAGE_ARGS.DISABLED.ordinal());
+            disable = osc_val != 0;
+        }
+
+
         DynamicControl control = getControl(map_key);
         if (control != null)
         {
             // do not use setters as we only want to generate one notifyLocalListeners
-            boolean changed = false;
+            boolean changed = control.disabled != disable;
+
             boolean control_scope_changed = false;
 
+            control.disabled = disable;
             if (!obj_val.equals(control.objVal)) {
                 control.objVal = convertValue(control.controlType, obj_val);
                 control.executionTime = execution_time;
@@ -574,7 +609,8 @@ public class DynamicControl {
                         controlMapKey,
                         OSCArgumentObject(objVal),
                         controlScope.ordinal(),
-                        (int)executionTime
+                        (int)executionTime,
+                        disabled? 1:0
                 });
 
     }
@@ -610,7 +646,8 @@ public class DynamicControl {
                         OSCArgumentObject(objVal),
                         OSCArgumentObject(minimumDisplayValue),
                         OSCArgumentObject(maximumDisplayValue),
-                        controlScope.ordinal()
+                        controlScope.ordinal(),
+                        disabled?1:0
                 });
 
     }
@@ -633,6 +670,14 @@ public class DynamicControl {
         minimumDisplayValue = convertValue  (controlType, msg.getArg(CREATE_MESSAGE_ARGS.MIN_VAL.ordinal()));
         maximumDisplayValue = convertValue  (controlType, msg.getArg(CREATE_MESSAGE_ARGS.MAX_VAL.ordinal()));
         controlScope = ControlScope.values ()[(int) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
+
+        if (msg.getArgCount() > CREATE_MESSAGE_ARGS.DISABLED.ordinal())
+        {
+            int osc_val = (int) msg.getArg(CREATE_MESSAGE_ARGS.DISABLED.ordinal());
+            disabled = osc_val != 0;
+        }
+
+
         controlMap.addControl(this);
     }
 

@@ -47,6 +47,8 @@ public class TestDynamicControl_1 implements HBAction {
             float_control.setControlScope(ControlScope.DEVICE);
             checkbox_control.setControlScope(ControlScope.GLOBAL);
 
+            text_mirror.setDisabled(true);
+            slider_control.setDisabled(true);
             //hb.setPresetValue("Name", 1);
             //hb.setPresetValue("Name", 1);
 
