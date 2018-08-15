@@ -14,6 +14,9 @@ public abstract class GPIOInput extends GPIO implements GPIOInputListener {
 
     List<GPIOInputListener> inputListeners = Collections.synchronizedList(new ArrayList<>());
 
+    static List<GPIOInputListener> globalInputListeners = Collections.synchronizedList(new ArrayList<>());
+
+
     /**
      * Constructor
      *
@@ -60,7 +63,7 @@ public abstract class GPIOInput extends GPIO implements GPIOInputListener {
     /**
      * Remove all listeners
      */
-    public void clearAllStateListeners(){
+    void clearAllStateListeners(){
         synchronized (inputListeners){
             inputListeners.clear();
         }

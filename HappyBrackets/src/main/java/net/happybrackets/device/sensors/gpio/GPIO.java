@@ -1,5 +1,6 @@
 package net.happybrackets.device.sensors.gpio;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ abstract public class GPIO {
     }
 
     // Map of created GPIO
-    static private Map <Integer, GPIO> assignedPins = new Hashtable<Integer, GPIO>();
+    static private Map <Integer, GPIO> assignedPins = Collections.synchronizedMap(new Hashtable<Integer, GPIO>());
 
     protected final int pinNumber;
     protected final PIN_TYPE  pinType;
@@ -42,8 +43,11 @@ abstract public class GPIO {
      */
     synchronized static GPIO getGPIO(int gpio_number){
         GPIO ret = null;
-        if (assignedPins.containsKey(gpio_number)){
-            ret = assignedPins.get(gpio_number);
+
+        synchronized (assignedPins) {
+            if (assignedPins.containsKey(gpio_number)) {
+                ret = assignedPins.get(gpio_number);
+            }
         }
         return ret;
     }
@@ -54,6 +58,32 @@ abstract public class GPIO {
      */
     synchronized static void addGpio(GPIO gpio){
         int gpio_number = gpio.pinNumber;
-        assignedPins.put(gpio_number, gpio);
+        synchronized (assignedPins) {
+            assignedPins.put(gpio_number, gpio);
+        }
     }
+
+    /**
+     * Clear any Listeners of perform any function thats required when a reset occurs
+     */
+    static public void resetGpioListeners()
+    {
+        synchronized (assignedPins){
+            for (GPIO gpio : assignedPins.values()){
+                gpio.reset();
+            }
+        }
+    }
+
+    /**
+     * Clears provisioning of all GPIO
+     */
+    static public void resetAllGPIO(){
+        resetGpioListeners();
+        RaspbianGPIO.unprovisionAllPins();
+    }
+    /**
+     * Occurs when we want to do a reset
+     */
+    abstract void reset();
 }

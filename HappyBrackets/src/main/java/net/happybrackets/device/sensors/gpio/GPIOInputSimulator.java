@@ -35,4 +35,8 @@ public class GPIOInputSimulator extends GPIOInput  {
         return booleanControl.getValue();
     }
 
+    @Override
+    void reset() {
+        clearAllStateListeners();
+    }
 }

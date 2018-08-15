@@ -23,4 +23,9 @@ public class GPIOOutputSimulator extends GPIODigitalOutput {
     public void setState(boolean state) {
         booleanControl.setValue(state);
     }
+
+    @Override
+    void reset() {
+
+    }
 }

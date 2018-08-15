@@ -4,6 +4,7 @@ import com.pi4j.io.gpio.PinPullResistance;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.sensors.gpio.GPIO;
 import net.happybrackets.device.sensors.gpio.GPIODigitalOutput;
 import net.happybrackets.device.sensors.gpio.GPIOInput;
 
@@ -19,6 +20,7 @@ public class TestGPIOInput implements HBAction, HBReset {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
+        GPIO.resetAllGPIO();
         GPIOInput input = GPIOInput.getInputPin(1, PinPullResistance.PULL_DOWN);
 
         GPIODigitalOutput output = GPIODigitalOutput.getOutputPin(2);

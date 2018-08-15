@@ -70,4 +70,8 @@ public class RaspbianGPIOInput extends GPIOInput
         return inputPin.isHigh();
     }
 
+    @Override
+    void reset() {
+        clearAllStateListeners();
+    }
 }

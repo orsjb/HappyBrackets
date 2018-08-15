@@ -56,7 +56,7 @@ public class RaspbianGPIO {
     /**
      * Unprovision all pins and clear the list of provisioned pins
      */
-    void unprovisionAllPins(){
+    static void unprovisionAllPins(){
         synchronized (provisionedPins){
             for (GpioPin pin :provisionedPins){
                 gpioController.unprovisionPin(pin);

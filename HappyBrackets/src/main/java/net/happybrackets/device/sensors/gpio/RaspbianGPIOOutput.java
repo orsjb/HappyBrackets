@@ -49,4 +49,9 @@ public class RaspbianGPIOOutput extends GPIODigitalOutput{
 
         return ret;
     }
+
+    @Override
+    void reset() {
+
+    }
 }

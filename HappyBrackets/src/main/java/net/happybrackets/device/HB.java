@@ -51,6 +51,7 @@ import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.config.DeviceConfig;
+import net.happybrackets.device.sensors.gpio.GPIO;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -983,6 +984,7 @@ public class HB {
 	public void reset() {
 		resetLeaveSounding();
 		clearSound();
+		GPIO.resetGpioListeners();
 
 		synchronized (loadedHBClasses) {
 			for (Object loaded_class : loadedHBClasses) {
