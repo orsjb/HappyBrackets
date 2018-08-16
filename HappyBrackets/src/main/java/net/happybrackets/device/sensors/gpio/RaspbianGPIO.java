@@ -37,7 +37,7 @@ public class RaspbianGPIO {
      * Store provisioned pin in our list
      * @param pin the Pin to store
      */
-    void addProvisionedPin(GpioPin pin){
+    static  void  addProvisionedPin(GpioPin pin){
         synchronized (provisionedPins){
             provisionedPins.add(pin);
         }
@@ -59,6 +59,7 @@ public class RaspbianGPIO {
     static void unprovisionAllPins(){
         synchronized (provisionedPins){
             for (GpioPin pin :provisionedPins){
+                System.out.println("Unprovision " + pin.getName());
                 gpioController.unprovisionPin(pin);
             }
             provisionedPins.clear();

@@ -20,11 +20,17 @@ public class RaspbianGPIOOutput extends GPIODigitalOutput{
         // Get the actual Pin
         Pin pin  = RaspiPin.getPinByName(RaspbianGPIO.getRaspPinName(gpio_number));
         outputPin =  RaspbianGPIO.getGpioController().provisionDigitalOutputPin(pin);
+        RaspbianGPIO.addProvisionedPin(outputPin);
     }
 
     @Override
     public void setState(boolean state) {
         outputPin.setState(state);
+    }
+
+    @Override
+    public boolean getState() {
+        return outputPin.isHigh();
     }
 
     /**

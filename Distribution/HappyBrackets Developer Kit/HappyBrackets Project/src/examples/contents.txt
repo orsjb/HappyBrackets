@@ -82,6 +82,9 @@ This file wil give a short description of the examples
     GlobalControl           Send global floating point values to change frequency across network
                             and global boolean values to turn sound on and off
 
+  [gpio]           - Accessing GPIO pins on the device
+    DigitalInGPIO  - Accessing GPIO Digital input
+
   [integercontrol] - Integer values displayed or set as slider, textbox or both
     IntegerSliderControlSample    Control the gain and frequency of a waveplayer with Integer slider controls
     IntegerTextControlSample      Control the gain and frequency of a waveplayer with Integer textbox controls

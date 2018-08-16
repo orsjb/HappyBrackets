@@ -26,6 +26,11 @@ public class GPIOOutputSimulator extends GPIODigitalOutput {
     }
 
     @Override
+    public boolean getState() {
+        return booleanControl.getValue();
+    }
+
+    @Override
     void reset() {
 
     }

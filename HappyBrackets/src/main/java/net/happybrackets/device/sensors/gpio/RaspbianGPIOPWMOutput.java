@@ -20,6 +20,7 @@ public class RaspbianGPIOPWMOutput extends GPIOPWMOutput{
         // Get the actual Pin
         Pin pin  = RaspiPin.getPinByName(RaspbianGPIO.getRaspPinName(gpio_number));
         outputPin =  RaspbianGPIO.getGpioController().provisionPwmOutputPin(pin);
+        RaspbianGPIO.addProvisionedPin(outputPin);
     }
 
     /**
@@ -36,6 +37,11 @@ public class RaspbianGPIOPWMOutput extends GPIOPWMOutput{
     @Override
     public void setValue(int value) {
         outputPin.setPwm(value);
+    }
+
+    @Override
+    public int getValue() {
+        return outputPin.getPwm();
     }
 
     /**

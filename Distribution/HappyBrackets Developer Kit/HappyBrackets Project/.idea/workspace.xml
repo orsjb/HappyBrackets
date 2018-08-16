@@ -17,7 +17,44 @@
     </SUITE>
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="DigitalInGPIO.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalInGPIO.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="12" column="55" selection-start-line="12" selection-start-column="55" selection-end-line="12" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DigitalOutGPIO.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="16" column="46" selection-start-line="16" selection-start-column="46" selection-end-line="16" selection-end-column="46" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PWMOutGPIO.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="281">
+              <caret line="70" column="42" selection-start-line="70" selection-start-column="42" selection-end-line="70" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="contents.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1290">
+              <caret line="86" selection-start-line="86" selection-end-line="86" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -61,9 +98,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java" />
-        <option value="$PROJECT_DIR$/src/examples/events/envelope/EnvelopeTrigger.java" />
-        <option value="$PROJECT_DIR$/src/examples/fmsynthesis/BasicFM.java" />
         <option value="$PROJECT_DIR$/src/examples/fmsynthesis/RatioDepthFM.java" />
         <option value="$PROJECT_DIR$/src/examples/midi/basic/MajorChord.java" />
         <option value="$PROJECT_DIR$/src/examples/midi/basic/MinorChord.java" />
@@ -110,8 +144,11 @@
         <option value="$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/contents.txt" />
         <option value="$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java" />
+        <option value="$PROJECT_DIR$/src/examples/contents.txt" />
+        <option value="$PROJECT_DIR$/src/examples/gpio/DigitalInGPIO.java" />
+        <option value="$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java" />
+        <option value="$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java" />
       </list>
     </option>
   </component>
@@ -122,8 +159,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1819" />
-    <option name="y" value="32" />
+    <option name="x" value="33" />
+    <option name="y" value="160" />
     <option name="width" value="1440" />
     <option name="height" value="747" />
   </component>
@@ -132,7 +169,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -150,10 +186,24 @@
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="gpio" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="AndroidView" />
     </panes>
@@ -174,11 +224,11 @@
       <recent name="$PROJECT_DIR$/src/net/happybrackets/v2examples" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="examples.gpio" />
       <recent name="examples.midi.scales" />
       <recent name="examples.pythonscript" />
       <recent name="net.happybrackets.v2examples.threads" />
       <recent name="net.happybrackets.v2examples.controls.booleancontrol" />
-      <recent name="net.happybrackets.v2examples.controls.floatcontrol" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/examples" />
@@ -196,28 +246,28 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.SimpleAccelerometer">
+  <component name="RunManager" selected="Application.PWMOutGPIO">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
     </configuration>
-    <configuration name="MonitorIntegers" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="examples.controls.integerControl.MonitorIntegers" />
+    <configuration name="DigitalInGPIO" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="examples.gpio.DigitalInGPIO" />
       <module name="HappyBrackets Project" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="examples.controls.integerControl.*" />
+          <option name="PATTERN" value="examples.gpio.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
     </configuration>
-    <configuration name="SampleTextControl" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="examples.controls.textcontrol.SampleTextControl" />
+    <configuration name="PWMOutGPIO" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="examples.gpio.PWMOutGPIO" />
       <module name="HappyBrackets Project" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="examples.controls.textcontrol.*" />
+          <option name="PATTERN" value="examples.gpio.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -297,19 +347,19 @@
       <listeners />
     </configuration>
     <list>
-      <item itemvalue="Application.MonitorIntegers" />
-      <item itemvalue="Application.SampleTextControl" />
       <item itemvalue="Application.StringMonitor" />
       <item itemvalue="Application.TriggerControlSample" />
       <item itemvalue="Application.SimpleAccelerometer" />
+      <item itemvalue="Application.DigitalInGPIO" />
+      <item itemvalue="Application.PWMOutGPIO" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.PWMOutGPIO" />
+        <item itemvalue="Application.DigitalInGPIO" />
         <item itemvalue="Application.SimpleAccelerometer" />
         <item itemvalue="Application.TriggerControlSample" />
         <item itemvalue="Application.StringMonitor" />
-        <item itemvalue="Application.SampleTextControl" />
-        <item itemvalue="Application.MonitorIntegers" />
       </list>
     </recent_temporary>
   </component>
@@ -327,23 +377,25 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1819" y="32" width="1440" height="747" extended-state="0" />
+    <frame x="33" y="160" width="1440" height="747" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.4921875" weight="0.32838038" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.60555553" side_tool="true" visible="true" weight="0.3430769" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.6080114" side_tool="true" visible="true" weight="0.3430769" />
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.24878837" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39444444" weight="0.34323922" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.39198855" visible="true" weight="0.3430769" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49676898" weight="0.32840723" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49427754" weight="0.3276923" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27896994" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.29041487" />
       <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.27825466" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46616542" weight="0.39823008" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" sideWeight="0.496063" weight="0.1648" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
@@ -351,7 +403,6 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.4921875" weight="0.32838038" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" x="105" y="191" width="1080" height="530" id="Documentation" order="4" type="FLOATING" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -380,39 +431,23 @@
           <properties />
           <option name="timeStamp" value="13" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java</url>
+          <line>74</line>
+          <properties />
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java</url>
+          <line>75</line>
+          <properties />
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="28" />
+      <option name="time" value="30" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="34" column="66" selection-start-line="34" selection-start-column="66" selection-end-line="34" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="33" column="66" selection-start-line="33" selection-start-column="66" selection-end-line="33" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="35" column="66" selection-start-line="35" selection-start-column="66" selection-end-line="35" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/envelope/EnvelopeTrigger.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="24" column="66" selection-start-line="24" selection-start-column="66" selection-end-line="24" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/RatioDepthFM.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="263">
@@ -686,13 +721,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="91" column="24" selection-start-line="91" selection-start-column="24" selection-end-line="91" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="828">
@@ -727,6 +755,35 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
           <caret line="18" column="3" selection-start-line="18" selection-start-column="3" selection-end-line="18" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/GPIOIn.java" />
+    <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1290">
+          <caret line="86" selection-start-line="86" selection-end-line="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalInGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="12" column="55" selection-start-line="12" selection-start-column="55" selection-end-line="12" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="16" column="46" selection-start-line="16" selection-start-column="46" selection-end-line="16" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="70" column="42" selection-start-line="70" selection-start-column="42" selection-end-line="70" selection-end-column="42" />
         </state>
       </provider>
     </entry>

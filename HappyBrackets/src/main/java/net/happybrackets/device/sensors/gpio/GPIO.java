@@ -20,8 +20,16 @@ abstract public class GPIO {
     // Map of created GPIO
     static private Map <Integer, GPIO> assignedPins = Collections.synchronizedMap(new Hashtable<Integer, GPIO>());
 
-    protected final int pinNumber;
+    protected final int gpioNumber;
     protected final PIN_TYPE  pinType;
+
+    /**
+     * Get the Pin number of this GPIO
+     * @return The GPIO number
+     */
+    public int getGpioNumber() {
+        return gpioNumber;
+    }
 
     /**
      * Constructor
@@ -29,7 +37,7 @@ abstract public class GPIO {
      * @param pin_type the type of pin
      */
     protected GPIO (int gpio_number, PIN_TYPE pin_type){
-        pinNumber = gpio_number;
+        gpioNumber = gpio_number;
         pinType = pin_type;
     }
 
@@ -57,7 +65,7 @@ abstract public class GPIO {
      * @param gpio the GPIO object we are adding
      */
     synchronized static void addGpio(GPIO gpio){
-        int gpio_number = gpio.pinNumber;
+        int gpio_number = gpio.gpioNumber;
         synchronized (assignedPins) {
             assignedPins.put(gpio_number, gpio);
         }
@@ -79,8 +87,9 @@ abstract public class GPIO {
      * Clears provisioning of all GPIO
      */
     static public void resetAllGPIO(){
+        resetGpioListeners();
+
         synchronized (assignedPins) {
-            resetGpioListeners();
             RaspbianGPIO.unprovisionAllPins();
             assignedPins.clear();
         }

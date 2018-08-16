@@ -35,6 +35,11 @@ public class GPIOPWMSimulator extends GPIOPWMOutput {
         integerSliderControl.setValue(value);
     }
 
+    @Override
+    public int getValue() {
+        return integerSliderControl.getValue();
+    }
+
 
     @Override
     void reset() {

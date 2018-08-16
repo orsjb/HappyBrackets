@@ -34,6 +34,11 @@ public abstract class GPIOPWMOutput extends GPIO {
     abstract public void setValue(int value);
 
     /**
+     * Returns the last value we set this to
+     * @return returns the PWM value
+     */
+    abstract public int getValue();
+    /**
      * Get a GPIO input pin.
      * @param gpio_number the Pin Number
      * @return If an input pin already exists for that pin number or we were able to create it, will return the GPIOInput. If not, will return null

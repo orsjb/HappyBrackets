@@ -22,6 +22,8 @@ public class RaspbianGPIOInput extends GPIOInput
         // Get the actual Pin
         Pin pin  = RaspiPin.getPinByName(RaspbianGPIO.getRaspPinName(gpio_number));
         inputPin =  RaspbianGPIO.getGpioController().provisionDigitalInputPin(pin, pinPullResistance);
+        RaspbianGPIO.addProvisionedPin(inputPin);
+
         inputPin.addTrigger(new GpioCallbackTrigger(new Callable<Void>() {
             public Void call() throws Exception {
 

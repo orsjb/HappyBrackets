@@ -19,6 +19,11 @@ public abstract class GPIODigitalOutput extends GPIO {
     abstract public void setState(boolean state);
 
     /**
+     * Gets the last state set
+     * @return the last state set
+     */
+    abstract public boolean getState();
+    /**
      * Get a GPIO input pin.
      * @param gpio_number the Pin Number
      * @return If an input pin already exists for that pin number or we were able to create it, will return the GPIOInput. If not, will retrun null
