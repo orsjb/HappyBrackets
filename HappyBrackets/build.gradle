@@ -153,6 +153,16 @@ task deployJarAndJavaDoc << {
 }
 
 
+
+task versionPlugin(type:Exec, dependsOn: 'readHBVersion'){
+    commandLine '../IntelliJ Plugin/versionPlugin', "$version"
+    standardOutput = new ByteArrayOutputStream()
+    doLast {
+        String output = standardOutput.toString()
+        println output
+    }
+}
+
 // Copies Plugin into Distribution
 task deployPlugin << {
     copy {
