@@ -30,7 +30,7 @@
       <file leaf-file-name="DigitalOutGPIO.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
+            <state relative-caret-position="120">
               <caret line="16" column="46" selection-start-line="16" selection-start-column="46" selection-end-line="16" selection-end-column="46" />
             </state>
           </provider>
@@ -159,8 +159,7 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="33" />
-    <option name="y" value="160" />
+    <option name="y" value="131" />
     <option name="width" value="1440" />
     <option name="height" value="747" />
   </component>
@@ -169,6 +168,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -204,7 +204,6 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -377,26 +376,24 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="33" y="160" width="1440" height="747" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="131" width="1440" height="747" extended-state="0" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.4921875" weight="0.32838038" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.6080114" side_tool="true" visible="true" weight="0.3430769" />
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.24878837" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.39198855" visible="true" weight="0.3430769" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39198855" weight="0.3430769" />
       <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49427754" weight="0.3276923" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.29041487" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.29470673" />
       <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.27825466" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" sideWeight="0.496063" weight="0.1648" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="right" id="Coverage" order="5" sideWeight="0.503937" side_tool="true" weight="0.20553781" />
@@ -409,6 +406,7 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info id="Capture Tool" order="2" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49353796" weight="0.32840723" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.4921875" weight="0.32838038" />
     </layout>
   </component>
   <component name="UnknownFeatures">
@@ -775,7 +773,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
+        <state relative-caret-position="120">
           <caret line="16" column="46" selection-start-line="16" selection-start-column="46" selection-end-line="16" selection-end-column="46" />
         </state>
       </provider>

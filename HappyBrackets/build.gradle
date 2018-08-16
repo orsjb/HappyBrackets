@@ -81,11 +81,34 @@ task listJars << {
     configurations.compile.each { File file -> println file.name }
 }
 
-task smile << {
-        println ':)'
-        println docsDir
+
+
+
+task displayVersion{
+    doLast{
+        println "We build the zip with version=$version"
+        def text="This version is " + "$version";
+        println text
+    }
+}
+// get the version written in HBVersionText file
+task readHBVersion {
+        File file = file('build/libs/HBVersion.txt')
+        println file.text
+        version = file.text
 }
 
+// Get the version text that is inside the HBVersion.txt file
+gradle.taskGraph.whenReady {taskGraph ->
+    File file = file('build/libs/HBVersion.txt')
+    version = file.text
+}
+
+task smile << {
+    println ':)'
+    println docsDir
+    println "HB Version=$version"
+}
 
 jar {
     manifest {
@@ -99,6 +122,8 @@ shadowJar {
     manifest {
         attributes 'Main-Class': 'net.happybrackets.device.DeviceMain'
     }
+
+
 }
 
 task deploy
@@ -128,10 +153,22 @@ task deployJarAndJavaDoc << {
 }
 
 
+// Copies Plugin into Distribution
 task deployPlugin << {
     copy {
         from '../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip'
         into '../Distribution/HappyBrackets Developer Kit'
+    }
+}
+
+// Copies the Plugin and renames it - We wont do this for now
+task copyPlugin (dependsOn: 'readHBVersion') {
+    def plugin_filename ="HappyBrackets_IntelliJ_Plugin." + "$version" + ".zip";
+
+    copy {
+        from '../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip'
+        into '../Distribution/HappyBrackets Developer Kit/'
+        //rename { fileName -> "$plugin_filename"}
     }
 }
 
@@ -168,9 +205,11 @@ task packJavadocs (type:Zip) {
 
 
 // Packs the device runtime into a zip file
-task packDeviceRuntime (type:Zip) {
+task packDeviceRuntime (type:Zip, dependsOn: 'readHBVersion') {
+
+    def filename ="HappyBracketsDeviceRuntime." + "$version" + ".zip";
     destinationDir buildDir //set our output directory
-    archiveName 'HappyBracketsDeviceRuntime.zip'  //set the name of our archive
+    archiveName filename // "HappyBracketsDeviceRuntime.zip"  //set the name of our archive
 
     //config
     from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device") {
@@ -217,14 +256,17 @@ task copyHBZip << {
 
 
 // Packs the contents of distribution into a zip file
-task packDevKit (type:Zip) {
+task packDevKit (type:Zip, dependsOn: 'readHBVersion') {
+
+    def filename ="HappyBracketsDeveloperKit." + "$version" + ".zip";
     destinationDir buildDir //set our output directory
-    archiveName 'HappyBracketsDeveloperKit.zip'  //set the name of our archive
+    archiveName filename //'HappyBracketsDeveloperKit.zip'  //set the name of our archive
 
     //config
     from("../Distribution") {
         include 'HappyBrackets Developer Kit/*/**'
     }
+    excludes = ['**/*.sh', '**/HappyBrackets Project/**']
 
     println "Creating device package: $buildDir/$archiveName"
 }
@@ -245,6 +287,7 @@ deployJarAndJavaDoc.dependsOn shadowJar
 
 packDeviceRuntime.dependsOn shadowJar
 packDeviceRuntime.dependsOn deployJarAndJavaDoc
+packDeviceRuntime.dependsOn displayVersion
 
 //setup deploy dependencies
 deploy.dependsOn build
@@ -253,10 +296,11 @@ deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
 deploy.dependsOn packProjectTemplate
 deploy.dependsOn copyProject
-deploy.dependsOn packDeviceRuntime
-deploy.dependsOn deployPlugin
+
+
 
 packDevKit.dependsOn packDeviceRuntime
+packDevKit.dependsOn deployPlugin
 
 //development build routine
 development.dependsOn deploy
