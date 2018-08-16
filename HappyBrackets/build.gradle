@@ -306,6 +306,7 @@ deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
 deploy.dependsOn packProjectTemplate
 deploy.dependsOn copyProject
+deploy.dependsOn versionPlugin
 
 
 

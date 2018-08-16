@@ -36,11 +36,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PWMOutGPIO.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PWMOutGPIO.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="281">
               <caret line="70" column="42" selection-start-line="70" selection-start-column="42" selection-end-line="70" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="send-jars.sh" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/data/send-jars.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="313">
+              <caret line="23" column="14" selection-start-line="23" selection-start-column="14" selection-end-line="23" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -159,7 +168,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="131" />
+    <option name="x" value="39" />
+    <option name="y" value="114" />
     <option name="width" value="1440" />
     <option name="height" value="747" />
   </component>
@@ -376,7 +386,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="131" width="1440" height="747" extended-state="0" />
+    <frame x="39" y="114" width="1440" height="747" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -387,7 +398,7 @@
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39198855" weight="0.3430769" />
       <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49427754" weight="0.3276923" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.29470673" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29470673" />
       <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.27825466" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -446,20 +457,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/RatioDepthFM.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="29" column="8" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/BasicFM.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="26" column="8" selection-start-line="26" selection-start-column="8" selection-end-line="26" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/MajorChord.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -778,10 +775,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-audio.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-17">
+          <caret selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="281">
           <caret line="70" column="42" selection-start-line="70" selection-start-column="42" selection-end-line="70" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-jars.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="23" column="14" selection-start-line="23" selection-start-column="14" selection-end-line="23" selection-end-column="14" />
         </state>
       </provider>
     </entry>
