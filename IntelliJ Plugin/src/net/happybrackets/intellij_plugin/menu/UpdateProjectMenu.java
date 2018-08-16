@@ -16,7 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.HAPPY_BRACKETS_JAVDOCS_ZIP;
 import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.HAPPY_BRACKETS_PROJECT_ZIP;
+import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.HB_JAVADOCS_FOLDER;
 
 public class UpdateProjectMenu extends AnAction {
 
@@ -34,6 +36,7 @@ public class UpdateProjectMenu extends AnAction {
             // unzip our archived project
             ProjectUnzip unzip = new ProjectUnzip();
 
+
             // do not add the files we are going to overwrite
             for (int i= 0; i < ARCHIVE_SKIP_FILES.length; i++) {
                 unzip.addSkipFile(ARCHIVE_SKIP_FILES[i]);
@@ -43,6 +46,12 @@ public class UpdateProjectMenu extends AnAction {
 
             try {
                 unzip.unzipReseourceProject( HAPPY_BRACKETS_PROJECT_ZIP, base_path);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            try {
+                unzip.unzipReseourceProject( HAPPY_BRACKETS_JAVDOCS_ZIP, base_path + HB_JAVADOCS_FOLDER);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
