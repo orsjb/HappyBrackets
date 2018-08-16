@@ -77,6 +77,9 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
     public static final String HAPPY_BRACKETS_PROJECT_ZIP = "/projectTemplates/HappyBracketsProject.zip";
     public static final String HAPPY_BRACKETS_JAR_ZIP = "/projectTemplates/HB.zip";
+    public static final String HAPPY_BRACKETS_JAVDOCS_ZIP = "/projectTemplates/JavaDocs.zip";
+
+    public static final String HB_JAVADOCS_FOLDER = File.separatorChar + "libs" + File.separatorChar +  "docs" + File.separatorChar + "hb" ;
 
     // THis is where we need to extract the HB.jar files to in a new project
     public static final String [] HB_JAR_LOCATION = new String[]{
@@ -156,6 +159,13 @@ public class HappyBracketsProject extends WebProjectTemplate {
             e.printStackTrace();
         }
 
+        // now unzip javadocs
+        try {
+            unzip.unzipReseourceProject(HAPPY_BRACKETS_JAVDOCS_ZIP, base_path + HB_JAVADOCS_FOLDER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String project_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_TEMPLATE).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());;
 
         String workspace_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_WORKSPACE).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());;
@@ -212,7 +222,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
                             // we need to do unzip again because project has been reloaded
                             try {
-                                unzip.unzipReseourceProject("/projectTemplates/HappyBracketsProject.zip", baseDirectory.getCanonicalPath());
+                                unzip.unzipReseourceProject(HAPPY_BRACKETS_PROJECT_ZIP, baseDirectory.getCanonicalPath());
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
