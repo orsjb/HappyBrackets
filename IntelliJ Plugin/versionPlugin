@@ -16,7 +16,7 @@ do
     if [[ $line == *\<version\>*\<\/version\>* ]] ;
     then
         # write our modified version
-        printf "  <version>$VERSION</version>" >> "$TEMP_FILE"
+        printf "  <version>$VERSION</version>\n" >> "$TEMP_FILE"
     else
         # write our original line to temp
 	    printf '%s\n' "$line" >> "$TEMP_FILE"
