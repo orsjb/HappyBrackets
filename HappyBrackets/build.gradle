@@ -86,6 +86,7 @@ task smile << {
         println docsDir
 }
 
+
 jar {
     manifest {
         attributes 'Main-Class': 'net.happybrackets.device.DeviceMain'
@@ -134,6 +135,7 @@ task deployPlugin << {
     }
 }
 
+// Pack our Build Jar file and the version text into a zip file so we can add it to plugin resources
 task packJar (type:Zip) {
     destinationDir buildDir //set our output directory
     archiveName 'HB.zip'  //set the name of our archive
@@ -151,6 +153,21 @@ task packJar (type:Zip) {
     println "Creating device package: $buildDir/$archiveName"
 }
 
+// Packs our Javadocs
+task packJavadocs (type:Zip) {
+    destinationDir buildDir //set our output directory
+    archiveName 'JavaDocs.zip'  //set the name of our archive
+
+    //config
+    from("build/docs") {
+        include '*/**'
+    }
+
+    println "Creating device package: $buildDir/$archiveName"
+}
+
+
+// Packs the device runtime into a zip file
 task packDeviceRuntime (type:Zip) {
     destinationDir buildDir //set our output directory
     archiveName 'HappyBracketsDeviceRuntime.zip'  //set the name of our archive
@@ -163,10 +180,11 @@ task packDeviceRuntime (type:Zip) {
     println "Creating device package: $buildDir/$archiveName"
 }
 
-task packProject (type:Zip) {
+// Packs the HB Project minus files we do not want in our project template
+task packProjectTemplate (type:Zip) {
     destinationDir buildDir //set our output directory
     archiveName 'HappyBracketsProject.zip'  //set the name of our archive
-    excludes = ['**/*.class', '**/HB.jar', '**/ollie.xml', '**/HBVersion.txt']
+    excludes = ['**/*.class', '**/HB.jar', '**/ollie.xml', '**/HBVersion.txt', "**/libs/docs/hb/javadoc/**"]
 
     //config
     from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/") {
@@ -176,6 +194,7 @@ task packProject (type:Zip) {
     println "Creating project package: $buildDir/$archiveName"
 }
 
+// copy the zipped project (minus HB.jar) into plugin resources
 task copyProject << {
     copy {
         from '../HappyBrackets/build/HappyBracketsProject.zip'
@@ -183,13 +202,21 @@ task copyProject << {
     }
 }
 
+// Copy HB jar, version and docs into plugin resources
 task copyHBZip << {
     copy {
         from '../HappyBrackets/build/HB.zip'
         into '../IntelliJ Plugin/resources/projectTemplates'
     }
+
+    copy {
+        from '../HappyBrackets/build/JavaDocs.zip'
+        into '../IntelliJ Plugin/resources/projectTemplates'
+    }
 }
 
+
+// Packs the contents of distribution into a zip file
 task packDevKit (type:Zip) {
     destinationDir buildDir //set our output directory
     archiveName 'HappyBracketsDeveloperKit.zip'  //set the name of our archive
@@ -202,13 +229,15 @@ task packDevKit (type:Zip) {
     println "Creating device package: $buildDir/$archiveName"
 }
 
+
 shadowJar.dependsOn config
 
 packJar.dependsOn shadowJar
 
 copyHBZip.dependsOn packJar
+copyHBZip.dependsOn packJavadocs
 
-copyProject.dependsOn packProject
+copyProject.dependsOn packProjectTemplate
 copyProject.dependsOn copyHBZip
 
 
@@ -222,12 +251,10 @@ deploy.dependsOn build
 deploy.dependsOn test
 deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
-deploy.dependsOn deployPlugin
-deploy.dependsOn packProject
+deploy.dependsOn packProjectTemplate
 deploy.dependsOn copyProject
 deploy.dependsOn packDeviceRuntime
-
-
+deploy.dependsOn deployPlugin
 
 packDevKit.dependsOn packDeviceRuntime
 
