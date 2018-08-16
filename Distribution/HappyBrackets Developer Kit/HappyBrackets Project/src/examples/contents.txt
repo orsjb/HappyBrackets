@@ -83,7 +83,9 @@ This file wil give a short description of the examples
                             and global boolean values to turn sound on and off
 
   [gpio]           - Accessing GPIO pins on the device
-    DigitalInGPIO  - Accessing GPIO Digital input
+    DigitalInGPIO  - Read digital values from GPIO Digital input
+    DigitalOutGPIO - Write digital values to GPIO Digital output
+    PWMOutGPIO     - Write PWM values to GPIO PWM Output
 
   [integercontrol] - Integer values displayed or set as slider, textbox or both
     IntegerSliderControlSample    Control the gain and frequency of a waveplayer with Integer slider controls

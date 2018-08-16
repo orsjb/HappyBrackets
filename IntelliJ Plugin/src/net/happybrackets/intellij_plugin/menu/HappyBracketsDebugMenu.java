@@ -19,9 +19,17 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
     // The project that is currently active
     static String activeProjectHash = "";
 
+    static volatile boolean forceReload = true;
 
     // create a Map of Example folder menu items so we can display the appropriate one based on project
     static private Map<String, HappyBracketsExamplesFolderMenu> examplesFolderMenuHashtable = new Hashtable<String, HappyBracketsExamplesFolderMenu>();;
+
+    /**
+     * Clear the stored hash to force a reload of menus
+     */
+    static public void forceRelaodMenus(){
+        forceReload = true;
+    }
 
     /**
      * Load the examples menu if a folder called Examples is in the source
@@ -36,7 +44,8 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
         try {
             String new_project_hash = activating_project.getLocationHash();
 
-            if (!new_project_hash.equals(activeProjectHash)) {
+            if (forceReload || !new_project_hash.equals(activeProjectHash)) {
+
 
                 ActionManager am = ActionManager.getInstance();
                 DefaultActionGroup happy_brackets_menu = (DefaultActionGroup) am.getAction("HappyBracketsIntellijPlugin.MainMenu");
@@ -87,6 +96,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                 }
                 // Let us set the example project to this one
                 activeProjectHash = new_project_hash;
+                forceReload = false;
 
             }
             } catch (Exception ex) {

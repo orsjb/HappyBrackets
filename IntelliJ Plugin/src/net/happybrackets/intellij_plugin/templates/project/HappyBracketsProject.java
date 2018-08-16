@@ -27,6 +27,7 @@ import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
+import net.happybrackets.intellij_plugin.menu.HappyBracketsDebugMenu;
 import net.happybrackets.intellij_plugin.templates.factory.HappyBracketsTemplatesFactory;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -253,7 +254,12 @@ public class HappyBracketsProject extends WebProjectTemplate {
                             }
 
                             LocalFileSystem.getInstance().refresh(true);
+
+                            HappyBracketsDebugMenu.forceRelaodMenus();
+                            HappyBracketsDebugMenu.loadExamplesMenu(project);
+
                         }
+
                         catch (Exception ex){
                             ex.printStackTrace();
                         }

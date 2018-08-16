@@ -16,7 +16,7 @@ import java.lang.invoke.MethodHandles;
  * The LED will grow brighter and then softer
  * connect cathode of LED through a resistance to earth and then connect anode to GPIO 1 output
  *
- * The state will be displayed in HB Status
+ *
  *
  *                                 ↗ ↗
  *
@@ -72,20 +72,22 @@ public class PWMOutGPIO implements HBAction, HBReset {
                 while (!exitThread) {
                     /*** write your code below this line ***/
 
-                    // set the output to
+                    // set the output to pwm value
                     outputPin.setValue(pwm_val);
 
+                    // see which direction we are going
                     if (count_down){
-
-                        if (pwm_val == 0){
+                        // we are getting less bright
+                        if (pwm_val == 0){ // we are at bottom - start going up
                             count_down = false;
                         }else{
                             pwm_val--;
                         }
                     }
                     else {
+                        // we are getting brighter
 
-                        if (pwm_val == GPIOPWMOutput.getPwmRange()) {
+                        if (pwm_val == GPIOPWMOutput.getPwmRange()) { // we are at top
                             count_down = true;
                         }else{
                             pwm_val++;

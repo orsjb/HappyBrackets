@@ -171,14 +171,14 @@ task deployPlugin << {
     }
 }
 
-// Copies the Plugin and renames it - We wont do this for now
+// Copies the Plugin and rename it
 task copyPlugin (dependsOn: 'readHBVersion') {
     def plugin_filename ="HappyBrackets_IntelliJ_Plugin." + "$version" + ".zip";
 
     copy {
         from '../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip'
-        into '../Distribution/HappyBrackets Developer Kit/'
-        //rename { fileName -> "$plugin_filename"}
+        into buildDir
+        rename { fileName -> "$plugin_filename"}
     }
 }
 

@@ -18,8 +18,9 @@ import java.lang.invoke.MethodHandles;
  *
  * The state will be displayed in HB Status
  *
- *                      /
- *    _________________/   _______________ GPIO_2 (pin 13)
+ *                       ╱
+ *                      ╱
+ *    _________________╱      _______________ GPIO_2 (pin 13)
  * __|__
  *  ___
  *   _
