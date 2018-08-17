@@ -9,14 +9,15 @@ import java.io.File;
  * When Releasing a version, the values in this class need to be changed
  */
 public final class BuildVersion {
-    static final int MAJOR = 2;
-    static final int MINOR = 10;
-    static final int BUILD = 6;
+    static final int MAJOR = 3;
+    static final int MINOR = 0;
+    static final int BUILD = 0;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}
     public static int getBuild(){return BUILD;}
 
+    public static String VERSION_FILE = "/version.txt";
 
     /**
      * Gets the text to display minimum compatibility between device and plugin
@@ -44,7 +45,18 @@ public final class BuildVersion {
      */
     public static int getDate()
     {
-        int ret = 0;
+        int ret =  0;
+        java.io.InputStream inputStream = new BuildVersion().getClass().getClassLoader().getResourceAsStream(VERSION_FILE);
+
+        if (inputStream != null)
+        {
+            try {
+                java.util.Scanner s = new java.util.Scanner(inputStream).useDelimiter("\\A");
+                String val = s.hasNext() ? s.next() : "";
+                ret = Integer.parseInt(val);
+            }
+            catch (Exception ex){}
+        }
 
         return ret;
     }
