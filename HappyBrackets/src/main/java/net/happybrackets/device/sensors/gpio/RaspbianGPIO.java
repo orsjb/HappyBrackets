@@ -47,7 +47,7 @@ public class RaspbianGPIO {
      * Remove provisioned pin from our list. Is NOT unprovisioned in GPIO. Calling class needs to do that
      * @param pin pin to removed
      */
-    void removeProvisionedPin(GpioPin pin){
+    static void removeProvisionedPin(GpioPin pin){
         synchronized (provisionedPins){
             provisionedPins.remove(pin);
         }
@@ -60,7 +60,11 @@ public class RaspbianGPIO {
         synchronized (provisionedPins){
             for (GpioPin pin :provisionedPins){
                 System.out.println("Unprovision " + pin.getName());
-                gpioController.unprovisionPin(pin);
+                try {
+                    gpioController.unprovisionPin(pin);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
             }
             provisionedPins.clear();
         }

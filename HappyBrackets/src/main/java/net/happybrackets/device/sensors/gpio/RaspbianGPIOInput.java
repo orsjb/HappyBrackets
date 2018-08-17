@@ -81,5 +81,6 @@ public class RaspbianGPIOInput extends GPIOInput
     void unnasign() {
         GpioController controller = RaspbianGPIO.getGpioController();
         controller.unprovisionPin(inputPin);
+        RaspbianGPIO.removeProvisionedPin(inputPin);
     }
 }

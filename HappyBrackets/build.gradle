@@ -175,10 +175,10 @@ task packDeviceRuntime (type:Zip) {
     def version_text = ""
     if (file( 'build/libs/HBVersion.txt' ).exists()) {
         File file = file('build/libs/HBVersion.txt')
-        version_text = file.text + "."
+        version_text =  "-" + file.text
     }
 
-    def filename ="HappyBracketsDeviceRuntime." + version_text + "zip";
+    def filename ="HappyBracketsDeviceRuntime" + version_text + ".zip";
 
     destinationDir buildDir //set our output directory
     archiveName filename //'HappyBracketsDeviceRuntime.zip'  //set the name of our archive
@@ -249,10 +249,10 @@ task packDevKit (type:Zip) {
     def version_text = ""
     if (file( 'build/libs/HBVersion.txt' ).exists()) {
         File file = file('build/libs/HBVersion.txt')
-        version_text = file.text + "."
+        version_text = "-" + file.text
     }
 
-    def filename ="HappyBracketsDeveloperKit." + version_text + "zip";
+    def filename ="HappyBracketsDeveloperKit" + version_text + ".zip";
 
     destinationDir buildDir //set our output directory
     archiveName filename //'HappyBracketsDeveloperKit.zip'  //set the name of our archive

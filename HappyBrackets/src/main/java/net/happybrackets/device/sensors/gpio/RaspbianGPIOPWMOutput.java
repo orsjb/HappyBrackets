@@ -82,5 +82,6 @@ public class RaspbianGPIOPWMOutput extends GPIOPWMOutput{
     void unnasign() {
         GpioController controller = RaspbianGPIO.getGpioController();
         controller.unprovisionPin(outputPin);
+        RaspbianGPIO.removeProvisionedPin(outputPin);
     }
 }
