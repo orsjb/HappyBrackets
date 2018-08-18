@@ -534,11 +534,12 @@ public class DynamicControl {
         if (control != null)
         {
             // do not use setters as we only want to generate one notifyLocalListeners
-            boolean changed = control.disabled != disable;
+            boolean changed = false;
 
             boolean control_scope_changed = false;
 
             control.disabled = disable;
+
             if (!obj_val.equals(control.objVal)) {
                 control.objVal = convertValue(control.controlType, obj_val);
                 control.executionTime = execution_time;

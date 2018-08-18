@@ -277,7 +277,7 @@ public class NetworkCommunication {
 											BuildVersion.getMajor(),
 											BuildVersion.getMinor(),
 											BuildVersion.getBuild(),
-											BuildVersion.getDate()
+											BuildVersion.getCompile()
 									},
 									target_address);
 
@@ -435,7 +435,7 @@ public class NetworkCommunication {
 											BuildVersion.getMajor(),
 											BuildVersion.getMinor(),
 											BuildVersion.getBuild(),
-											BuildVersion.getDate()
+											BuildVersion.getCompile()
 									},
 									src);
 

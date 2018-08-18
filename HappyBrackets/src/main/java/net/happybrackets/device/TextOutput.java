@@ -50,7 +50,7 @@ public class TextOutput {
         }
 
         String version_text = "HappyBrackets Version " + BuildVersion.getMajor()+ "." + BuildVersion.getMinor() + "."
-                + BuildVersion.getBuild() + "." + BuildVersion.getDate();
+                + BuildVersion.getBuild() + "." + BuildVersion.getCompile();
         System.out.println(getBannerLine(version_text, BLANK_CHAR));
 
         String beads_version =  "Beads Version " +  net.beadsproject.beads.core.BuildVersion.getVersionText();

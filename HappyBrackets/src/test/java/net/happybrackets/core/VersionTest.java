@@ -16,32 +16,56 @@
 
 package net.happybrackets.core;
 
-import de.sciss.net.OSCListener;
-import de.sciss.net.OSCMessage;
-import net.happybrackets.controller.config.ControllerConfig;
-import org.junit.After;
-import org.junit.Before;
+
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.SocketAddress;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 import static org.junit.Assert.assertTrue;
 
 public class VersionTest {
 	String VERSION_FILENAME = "build/libs/HBVersion.txt";
-	
+	String DATE_FILE_TEXT = "build/libs" + BuildVersion.BUILD_COMPILE_NUM_FILE;
 	@Test
     public void writeVersion() {
 
+		int build_number = 0;
+
+		String existing_version_text =  "";
+		try {
+			Scanner in = new Scanner(new FileReader(VERSION_FILENAME));
+			StringBuilder sb = new StringBuilder();
+			while(in.hasNext()) {
+				sb.append(in.next());
+			}
+			in.close();
+			existing_version_text = sb.toString();
+		}catch (Exception ex) {
+
+		}
+
 		// Get the version details
 		String version_text = BuildVersion.getVersionText();
-		
+
+		if (version_text.equalsIgnoreCase(existing_version_text)){
+			// we will increment the build number
+
+			try {
+				Scanner in = new Scanner(new FileReader(DATE_FILE_TEXT));
+				StringBuilder sb = new StringBuilder();
+				while(in.hasNext()) {
+					sb.append(in.next());
+				}
+				in.close();
+				build_number = Integer.parseInt(sb.toString()) + 1;
+			}catch (Exception ex) {
+
+			}
+		}
 		try {
 			PrintWriter version_file = new PrintWriter(VERSION_FILENAME);
 			version_file.print(version_text);
@@ -53,7 +77,19 @@ public class VersionTest {
 			assertTrue(false);
 		}
 
-		System.out.println(version_text);
+
+		try {
+			PrintWriter version_file = new PrintWriter(DATE_FILE_TEXT);
+			version_file.print("" + build_number);
+			version_file.close();
+
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		System.out.println(version_text + "." + build_number);
 
 
     }

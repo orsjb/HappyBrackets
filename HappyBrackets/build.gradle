@@ -62,11 +62,18 @@ task config {
     gradle.taskGraph.whenReady { graph ->
         if (graph.hasTask(development)) {
             //Ensure we include a production version of logback.groovy config in our classpath
-            sourceSets.main.resources.srcDirs = ["config/dev"]
+            sourceSets.main.resources.srcDirs = ["config/dev", "src/main/resources"]
         } else {
             //Ensure we include a production version of logback.groovy config in our classpath
-            sourceSets.main.resources.srcDirs = ["config/prod"]
+            sourceSets.main.resources.srcDirs = ["config/prod", "src/main/resources"]
         }
+    }
+}
+
+task copyBuildText {
+    copy {
+        from 'build/libs/builddate.txt'
+        into 'src/main/resources'
     }
 }
 
@@ -124,6 +131,9 @@ task deployJarAndJavaDoc << {
         from 'build/libs/HB.jar'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets'
     }
+
+
+
     println "copied jars"
 }
 
