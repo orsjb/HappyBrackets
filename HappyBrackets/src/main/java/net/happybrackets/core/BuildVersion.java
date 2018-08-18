@@ -38,8 +38,16 @@ public final class BuildVersion {
 
 
     /**
-     * Get The full version info as a string
-     * @return version details as a string
+     * Gets the complete version and compile version text
+     * @return version and build number. eg, 3.0.0.0
+     */
+    public static String getVersionBUildText(){
+        return getVersionText() + "." + getCompile();
+    }
+
+    /**
+     * Get The version info as a string
+     * @return version details as a string eg. 3.0.0
      */
     public static String getVersionText()
     {
