@@ -70,12 +70,6 @@ task config {
     }
 }
 
-task copyBuildText {
-    copy {
-        from 'build/libs/builddate.txt'
-        into 'src/main/resources'
-    }
-}
 
 //create a jar of javadocs
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -131,8 +125,6 @@ task deployJarAndJavaDoc << {
         from 'build/libs/HB.jar'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets'
     }
-
-
 
     println "copied jars"
 }
@@ -201,11 +193,18 @@ task packDeviceRuntime (type:Zip) {
     println "Creating device package: $buildDir/$archiveName"
 }
 
+// this task will write the plugin.text complete version created in the tests into plugin resource
 task versionPlugin(type:Exec){
     // write the version details into the plugin.xml  file
-    if (file( 'build/libs/HBVersion.txt' ).exists()) {
-        File file = file('build/libs/HBVersion.txt')
-        commandLine '../IntelliJ Plugin/versionPlugin', file.text
+    def VERSION_FILENAME = 'build/libs/plugin.txt'
+    def VERSION_RENAME_PROGRAM = '../IntelliJ Plugin/versionPlugin'
+
+
+    if (file(VERSION_FILENAME).exists()) {
+        File file = file(VERSION_FILENAME)
+        def version_text = file.text
+
+        commandLine VERSION_RENAME_PROGRAM, version_text
         standardOutput = new ByteArrayOutputStream()
         doLast {
             String output = standardOutput.toString()
@@ -214,6 +213,13 @@ task versionPlugin(type:Exec){
 
     }
 
+}
+
+task copyCompileVersionToPlugin {
+    copy{
+        from 'src/main/resources/builddate.txt'
+        into '../IntelliJ Plugin/resources'
+    }
 }
 
 // Packs the HB Project minus files we do not want in our project template
@@ -249,6 +255,7 @@ task copyHBZip << {
         from '../HappyBrackets/build/JavaDocs.zip'
         into '../IntelliJ Plugin/resources/projectTemplates'
     }
+
 }
 
 
@@ -298,6 +305,7 @@ deploy.dependsOn shadowJar
 deploy.dependsOn javadoc
 deploy.dependsOn packProjectTemplate
 deploy.dependsOn copyProject
+deploy.dependsOn deployJarAndJavaDoc
 
 
 packDeviceRuntime.dependsOn shadowJar
@@ -305,6 +313,7 @@ packDeviceRuntime.dependsOn deployJarAndJavaDoc
 
 // we need to put this depending on versionPlugin to ensure that version plugin copies to intellij plugin
 packDeviceRuntime.dependsOn versionPlugin
+packDeviceRuntime.dependsOn copyCompileVersionToPlugin
 
 
 packDevKit.dependsOn packDeviceRuntime

@@ -22,20 +22,40 @@ import org.junit.Test;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This module will generate the version information
+ * The version file will contain major, minor and build
+ * the DATE_FILE_TEXT is stored in the HB.jar resource.
+ * It is incremented each time the module runs, except where the version has changed
+ * in which case it will be set to zero
+ *
+ * So our version 3.0.0.1 has the first three numbers from VERSION_FILENAME,
+ * the last digit is from DATE_FILE_TEXT
+ *
+ * we will also write the complete version and compile number so we can store it
+ * into the plugin in gradle
+ */
 public class VersionTest {
-	String VERSION_FILENAME = "build/libs/HBVersion.txt";
-	String DATE_FILE_TEXT = "build/libs" + BuildVersion.BUILD_COMPILE_NUM_FILE;
+	final String BUILD_PATH = "build/libs/";
+
+	final String VERSION_FILENAME = BUILD_PATH + BuildVersion.VERSION_FILE;
+
+	// note that we are going to write the compile number straight to resource file due to gradle task ordering
+	final String DATE_FILE_TEXT = "src/main/resources/" + BuildVersion.BUILD_COMPILE_NUM_FILE;
+	final String PLUGIN_VERSION_TEXT =  BUILD_PATH + BuildVersion.PLIUGIN_VERSION_FILE;
+
 	@Test
     public void writeVersion() {
 
-		int build_number = 0;
+		int compile_number = 0;
 
-		String existing_version_text =  "";
+		// First read our existing recorded version
+		String version_text =  "";
+
 		try {
 			Scanner in = new Scanner(new FileReader(VERSION_FILENAME));
 			StringBuilder sb = new StringBuilder();
@@ -43,17 +63,16 @@ public class VersionTest {
 				sb.append(in.next());
 			}
 			in.close();
-			existing_version_text = sb.toString();
+			version_text = sb.toString();
 		}catch (Exception ex) {
 
 		}
 
-		// Get the version details
-		String version_text = BuildVersion.getVersionText();
+		// See if our recorded version is equal to current version
+		if (version_text.equalsIgnoreCase(BuildVersion.getVersionText())){
+			// They are the same so we will increment the compile_number
 
-		if (version_text.equalsIgnoreCase(existing_version_text)){
-			// we will increment the build number
-
+			// see if we have recorded a compile_number. If not, we will leave as zero
 			try {
 				Scanner in = new Scanner(new FileReader(DATE_FILE_TEXT));
 				StringBuilder sb = new StringBuilder();
@@ -61,26 +80,33 @@ public class VersionTest {
 					sb.append(in.next());
 				}
 				in.close();
-				build_number = Integer.parseInt(sb.toString()) + 1;
+				compile_number = Integer.parseInt(sb.toString()) + 1;
 			}catch (Exception ex) {
 
 			}
 		}
+		else
+		{
+			// Existsing is not equal to recorded. Maxe it our current\version
+			// note our compile_number will be zero
+			version_text = BuildVersion.getVersionText();
+		}
+
+		// Write our version to file
 		try {
 			PrintWriter version_file = new PrintWriter(VERSION_FILENAME);
 			version_file.print(version_text);
 			version_file.close();
-
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			assertTrue(false);
 		}
 
 
+		// write our compile number which will be stored as a resource
 		try {
 			PrintWriter version_file = new PrintWriter(DATE_FILE_TEXT);
-			version_file.print("" + build_number);
+			version_file.print("" + compile_number);
 			version_file.close();
 
 
@@ -89,7 +115,21 @@ public class VersionTest {
 			assertTrue(false);
 		}
 
-		System.out.println(version_text + "." + build_number);
+
+		// now write thh combination of version and compile to file
+		try {
+			PrintWriter version_file = new PrintWriter(PLUGIN_VERSION_TEXT);
+			version_file.print(version_text + "." + compile_number);
+			version_file.close();
+
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+
+		System.out.println(version_text + "." + compile_number);
 
 
     }
