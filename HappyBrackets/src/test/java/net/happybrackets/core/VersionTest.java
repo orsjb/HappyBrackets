@@ -116,7 +116,7 @@ public class VersionTest {
 		}
 
 
-		// now write thh combination of version and compile to file
+		// now write the combination of version and compile to file
 		try {
 			PrintWriter version_file = new PrintWriter(PLUGIN_VERSION_TEXT);
 			version_file.print(version_text + "." + compile_number);
