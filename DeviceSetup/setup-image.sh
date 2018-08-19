@@ -2,6 +2,7 @@
 
 # run from pi, with an internet connection
 
+echo "Perform setup from git repository"
 cd
 
 # keep apt-get up to date with mirrors
