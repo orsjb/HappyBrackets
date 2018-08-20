@@ -1,7 +1,7 @@
 # Script to setup new pi disc image with HappyBrackets and appropriate details
 
 # run from pi, with an internet connection
-
+ 
 cd
 
 while true
