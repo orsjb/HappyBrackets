@@ -4,42 +4,6 @@
 
 cd
 
-while true
-do
-    #Let user decide which JVMs to install
-    echo "Select which JVM to install.";
-    echo "Select 'O' for Oracle or 'Z' for Zulu or type 'both' to install both."
-    echo "Zulu will be selected fopr you if you do not make a selection within 10 seconds"
-    RESPONSE="z" # we are going to make Zulu our default if they do not select in time
-
-    read -t 10 -p "'O', 'Z' or 'both' >" RESPONSE
-
-    case $RESPONSE in
-
-        [oO]|[0] )
-            echo "Set Oracle"
-            INSTALL_ORACLE=true
-            break
-            ;;
-
-        [zZ] )
-            echo "Set Zulu";
-            INSTALL_ZULU=true
-            break
-            ;;
-
-        [bB] | [bB][oO][tT][hH] )
-            echo "Set Both JVM";
-            INSTALL_ZULU=true
-            INSTALL_ORACLE=true
-            break
-            ;;
-        *) echo "Invalid input"
-            # we will set back to our default
-            echo "$RESPONSE is not a valid response"
-            ;;
-    esac
-done
 
 # keep apt-get up to date with mirrors
 sudo apt-get -y update
@@ -52,22 +16,16 @@ sudo apt-get -y --force-yes install netatalk
 sudo apt-get -y --force-yes install i2c-tools
 
 
-# install java 8
-if [ $INSTALL_ORACLE ]; then
-    echo "Install Oracle"
-    sudo apt-get -y --force-yes install oracle-java8-jdk
-fi
 
-if [ $INSTALL_ZULU ]; then
-    echo "Install Zulu"
+echo "Install Zulu"
 
-    # install ZULU java 8
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9
-    echo 'deb http://repos.azulsystems.com/debian stable main' > /etc/apt/sources.list.d/zulu.list
+# install ZULU java 8
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9
+echo 'deb http://repos.azulsystems.com/debian stable main' > /etc/apt/sources.list.d/zulu.list
 
-    apt-get update -qq
-    apt-get install zulu-embedded-8
-fi
+apt-get update -qq
+apt-get install zulu-embedded-8
+
 
 
 

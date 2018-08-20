@@ -11,8 +11,12 @@ wpa_supplicant.conf
 ____________________
 This will set up the WIFI configuration on your device. Change the settings to match your WIFI network
 
-setup-device.sh
+setup-image.sh
 ______________
-Run this script to install HappyBrackets and dependencies. EG
+Run this script to install HappyBrackets and dependencies using Zulu Java Virtual Machine (recommended). EG
 cd /boot; ./setup-image.sh
 
+Setup-image-oracle.sh
+______________
+Run this script to install HappyBrackets and dependencies using Oracle Java Virtual Machine. EG
+cd /boot; ./setup-image-oracle.sh
