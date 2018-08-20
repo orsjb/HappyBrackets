@@ -278,7 +278,7 @@ task packDevKit (type:Zip) {
     from("../Distribution") {
         include 'HappyBrackets Developer Kit/*/**'
     }
-    excludes = ['**/*.sh', '**/HappyBrackets Project/**']
+    excludes = ['**/clean.sh', '**/HappyBrackets Project/**']
 
     println "Creating device package: $buildDir/$archiveName"
 }

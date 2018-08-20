@@ -17,17 +17,7 @@
     </SUITE>
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="setup-image.sh" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/setup/setup-image.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
-              <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -56,8 +46,11 @@
       <find>ensorNotFoundException</find>
       <find>SensorNotFoundException</find>
       <find>(hb.ac,</find>
-      <find>(hb.ac,</find>
       <find>addDe</find>
+      <find>nameaddress</find>
+      <find>name</find>
+      <find>Nam</find>
+      <find>Name</find>
     </findStrings>
     <replaceStrings>
       <replace>Create a Trigger type Dynamic Control</replace>
@@ -71,11 +64,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/midi/basic/MajorChord.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/basic/MinorChord.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/basic/SimpleMIDI.java" />
-        <option value="$PROJECT_DIR$/src/examples/multiple/SampleController.java" />
-        <option value="$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java" />
         <option value="$PROJECT_DIR$/src/examples/pythonscript/RunProcessAndArguments.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleDirectionGyroscope.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java" />
@@ -122,6 +110,11 @@
         <option value="$PROJECT_DIR$/src/examples/gpio/DigitalInGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java" />
         <option value="$PROJECT_DIR$/Device/HappyBrackets/setup/setup-image.sh" />
+        <option value="$PROJECT_DIR$/data/send-jars.sh" />
+        <option value="$PROJECT_DIR$/data/send-audio.sh" />
+        <option value="$PROJECT_DIR$/data/send-scripts.sh" />
+        <option value="$PROJECT_DIR$/data/send-startupclasses.sh" />
+        <option value="$PROJECT_DIR$/config/update-device.sh" />
       </list>
     </option>
   </component>
@@ -132,7 +125,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="68" />
+    <option name="x" value="1758" />
+    <option name="y" value="160" />
     <option name="width" value="1440" />
     <option name="height" value="747" />
   </component>
@@ -147,6 +141,11 @@
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
@@ -360,8 +359,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="68" width="1440" height="747" extended-state="0" />
-    <editor active="true" />
+    <frame x="1758" y="160" width="1440" height="747" extended-state="0" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -431,27 +429,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/MinorChord.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="26" column="8" selection-start-line="26" selection-start-column="8" selection-end-line="26" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/multiple/SampleController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="28" column="8" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunProcessAndArguments.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
@@ -714,20 +691,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/gpio/GPIOIn.java" />
-    <entry file="file://$PROJECT_DIR$/data/send-audio.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-17">
-          <caret selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-jars.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="23" column="14" selection-start-line="23" selection-start-column="14" selection-end-line="23" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="369">
@@ -767,6 +730,41 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="355">
           <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-jars.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="118" column="59" selection-start-line="118" selection-start-column="59" selection-end-line="118" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/update-device.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="143" column="87" selection-start-line="143" selection-start-column="87" selection-end-line="143" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-startupclasses.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="140" column="109" selection-start-line="140" selection-start-column="109" selection-end-line="140" selection-end-column="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-scripts.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="128" column="29" selection-start-line="128" selection-start-column="29" selection-end-line="128" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-audio.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="10" column="50" selection-start-line="10" selection-start-column="50" selection-end-line="10" selection-end-column="50" />
         </state>
       </provider>
     </entry>

@@ -17,7 +17,7 @@ echo "Current dir" $CURRENT_DIR
 if [ $# -gt 0 ]; then
     DEVICE_NAME=$1
 else
-   echo "Enter the device Name"
+   echo "Enter the device address - eg 192.168.0.3"
    read DEVICE
    DEVICE_NAME=$DEVICE
    echo "${DEVICE_NAME}"
@@ -123,7 +123,7 @@ if [ "$DEVICE_NAME" != "" ]; then
 
                 [yY] | [yY][Ee][Ss] )
                     echo "Repeat"
-		    echo "Enter the device Name"
+		    echo "Enter the device address - eg 192.168.0.3"
 		    read DEVICE
 		    DEVICE_NAME=$DEVICE
 		    echo "${DEVICE_NAME}"
@@ -131,7 +131,7 @@ if [ "$DEVICE_NAME" != "" ]; then
                     break
                     ;;
 
-                [nN] | [n|N][O|o] )
+                [nN] | [nN][Oo] )
                     echo "Quitting";
                     exit 0
                     ;;
@@ -141,7 +141,7 @@ if [ "$DEVICE_NAME" != "" ]; then
         done
     done
 else
-    echo "You need to enter the device name as argument to call. eg ${0} hb-001d43801b7a.local"
+    echo "You need to enter the device address as argument to call. eg ${0} 192.168.0.5"
 fi
 
 
