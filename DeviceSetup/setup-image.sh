@@ -4,6 +4,17 @@
 
 cd
 
+
+# keep apt-get up to date with mirrors
+sudo apt-get -y update
+
+# install zeroconf
+sudo apt-get -y --force-yes install libnss-mdns
+sudo apt-get -y --force-yes install netatalk
+
+# install i2c tools
+sudo apt-get -y --force-yes install i2c-tools
+
 while true
 do
     #Let user decide which JVMs to install
@@ -40,17 +51,6 @@ do
             ;;
     esac
 done
-
-# keep apt-get up to date with mirrors
-sudo apt-get -y update
-
-# install zeroconf
-sudo apt-get -y --force-yes install libnss-mdns
-sudo apt-get -y --force-yes install netatalk
-
-# install i2c tools
-sudo apt-get -y --force-yes install i2c-tools
-
 
 # install java 8
 if [ $INSTALL_ORACLE ]; then
