@@ -4,21 +4,12 @@
 
 cd
 
-
-# keep apt-get up to date with mirrors
-sudo apt-get -y update
-
-# install zeroconf
-sudo apt-get -y --force-yes install libnss-mdns
-sudo apt-get -y --force-yes install netatalk
-
-# install i2c tools
-sudo apt-get -y --force-yes install i2c-tools
+#Let user decide which JVMs to install
+echo "You need to select which JVM to install.";
 
 while true
 do
     #Let user decide which JVMs to install
-    echo "Select which JVM to install.";
     echo "Select 'O' for Oracle or 'Z' for Zulu or type 'both' to install both."
     echo "Zulu will be selected fopr you if you do not make a selection within 10 seconds"
     RESPONSE="z" # we are going to make Zulu our default if they do not select in time
@@ -51,6 +42,17 @@ do
             ;;
     esac
 done
+
+# keep apt-get up to date with mirrors
+sudo apt-get -y update
+
+# install zeroconf
+sudo apt-get -y --force-yes install libnss-mdns
+sudo apt-get -y --force-yes install netatalk
+
+# install i2c tools
+sudo apt-get -y --force-yes install i2c-tools
+
 
 # install java 8
 if [ $INSTALL_ORACLE ]; then
