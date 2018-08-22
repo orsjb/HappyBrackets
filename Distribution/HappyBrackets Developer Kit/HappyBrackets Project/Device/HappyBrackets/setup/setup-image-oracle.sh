@@ -22,6 +22,8 @@ sudo apt-get -y --force-yes install i2c-tools
 echo "Install Oracle"
 sudo apt-get -y --force-yes install oracle-java8-jdk
 
+#install Soft MIDI
+sudo apt-get -y --force-yes install amsynth
 
 
 

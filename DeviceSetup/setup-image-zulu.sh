@@ -42,6 +42,10 @@ echo 'deb http://repos.azulsystems.com/debian stable main' > /etc/apt/sources.li
 apt-get update -qq
 apt-get install zulu-embedded-8
 
+#install Soft MIDI
+apt-get -y --force-yes install amsynth
+
+
 # Enable I2C on raspi, to connect to sensors. 
 # Counter-intuitively 'do_i2c 0' means 'enable'. 
 raspi-config nonint do_i2c 0
