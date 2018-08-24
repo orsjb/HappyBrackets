@@ -1,6 +1,5 @@
 package net.happybrackets.core.scheduling;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Comparator
@@ -9,6 +8,25 @@ public class ScheduledObject implements Comparable{
     private double scheduledTime;
     private Object scheduledObject;
     private ScheduledEventListener scheduledEventListener;
+
+    /**
+     * if we have cancelled this event and it should be ignored
+     * @return whether we have cancelled set
+     */
+    public synchronized boolean isCancelled() {
+        return cancelled;
+    }
+
+    /**
+     * Whether we want to set cancellation of this object.
+     * @param cancelled whther we are cancelling this scheduled event
+     */
+    public synchronized void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    boolean cancelled = false;
+
 
     /**
      * The scheduled time for this object
@@ -28,8 +46,8 @@ public class ScheduledObject implements Comparable{
 
 
     /**
-     * A listener that cn be called from this scheduled object
-     * @return
+     * A listener that can be called from this scheduled object
+     * @return the ScheduledObject created. We return this so they can cancel it later
      */
     public ScheduledEventListener getScheduledEventListener() {
         return scheduledEventListener;
@@ -48,9 +66,11 @@ public class ScheduledObject implements Comparable{
     }
 
     @Override
-    public int compareTo(@NotNull Object o) {
+    public int compareTo( Object o) {
+        // we return 1, -1 or zero.
+        // Doing subtraction using a double will give wrong values when we convert to an int
+        // so we will just do less / greater comparison
         double other_time = ((ScheduledObject)o).scheduledTime;
-        double val = scheduledTime - other_time;
 
         if (scheduledTime < other_time){
             return -1;

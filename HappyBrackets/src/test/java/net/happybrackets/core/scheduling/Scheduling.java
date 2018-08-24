@@ -15,14 +15,14 @@ public class Scheduling {
 
         PriorityQueue<ScheduledObject> scheduledObjects = new PriorityQueue<>();
 
-        // add our items to the queue
+        // add our items to the queue in random order
         for (int i = 0; i < NUM_ITEMS; i++)
         {
             double next = Math.random();
-            scheduledObjects.add(new ScheduledObject((long)next , next, null));
+            scheduledObjects.add(new ScheduledObject(next , next, null));
         }
 
-        // now pop them off and make sure they are in order
+        // now pop them off and make sure they are now in order
         double last_key =  0;
 
         while (!scheduledObjects.isEmpty())

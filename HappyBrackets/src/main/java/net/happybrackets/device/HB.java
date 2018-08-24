@@ -47,6 +47,7 @@ import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
@@ -985,7 +986,8 @@ public class HB {
 		resetLeaveSounding();
 		clearSound();
 		GPIO.resetGpioListeners();
-
+		// clear all scheduled events
+		HBScheduler.getGlobalScheduler().reset();
 		synchronized (loadedHBClasses) {
 			for (Object loaded_class : loadedHBClasses) {
 
@@ -1289,5 +1291,14 @@ public class HB {
 		 * Text control gives best behaviour when setting via setValue
 		 ************************************************************/
 		 return text_control;
+	}
+
+	/**
+	 * Create a new Clock using HappyBrackets scheduler
+	 * @param interval int6erval in milliseconds. Can use fractions of a millisecond
+	 * @return Clock object
+	 */
+	public net.happybrackets.core.scheduling.Clock createClock(double interval){
+		return new net.happybrackets.core.scheduling.Clock(interval);
 	}
 }

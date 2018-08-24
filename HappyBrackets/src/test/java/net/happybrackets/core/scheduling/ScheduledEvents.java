@@ -21,7 +21,7 @@ public class ScheduledEvents {
         for (int i = 0; i < NUM_ITEMS; i++)
         {
             double next = Math.random();
-            scheduledObjects.add(new ScheduledObject((float)next, next, new ScheduledEventListener() {
+            scheduledObjects.add(new ScheduledObject(next, next, new ScheduledEventListener() {
                 @Override
                 public void doScheduledEvent(double scheduledTime, Object param) {
 
@@ -53,8 +53,6 @@ public class ScheduledEvents {
             assert next != null;
             ScheduledEventListener listener = next.getScheduledEventListener();
             listener.doScheduledEvent(next.getScheduledTime(), next.getScheduledObject());
-
-
         }
         System.out.println("------------------- ScheduledEventListener testing complete -----------------------");
     }
