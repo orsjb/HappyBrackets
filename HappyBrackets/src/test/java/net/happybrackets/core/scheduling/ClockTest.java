@@ -32,7 +32,7 @@ public class ClockTest {
         int expectedNumTicks = (int) (onDuration / CLOCK_INTERVAL) ;
 
 
-        Clock testclock1 = new Clock(CLOCK_INTERVAL).addClockTickListener((offset, clock1) -> {
+        Clock testclock1 = new Clock(CLOCK_INTERVAL).addClockTickListener((offset, clock) -> {
             double elapsed_time = HBScheduler.getGlobalScheduler().getSchedulerTime();
             if (SHOW_TICK) {
                 System.out.println("Tick " + (long) elapsed_time + " " + offset);
@@ -44,7 +44,7 @@ public class ClockTest {
                 double clock_shift = (elapsed_time - offset) % CLOCK_INTERVAL;
 
                 // Now shift the clock
-                clock1.shiftTime(clock_shift * -1);
+                clock.shiftTime(clock_shift * -1);
                 clockSynchronised = true;
             }
 
@@ -57,8 +57,8 @@ public class ClockTest {
         testclock1.start();
 
         // test if we can stop clock in context of their callback
-        Clock testclock2 = new Clock(CLOCK_INTERVAL).addClockTickListener((offset, clock2) -> {
-            clock2.stop();
+        Clock testclock2 = new Clock(CLOCK_INTERVAL).addClockTickListener((offset, clock) -> {
+            clock.stop();
         });
 
         testclock2.start();
