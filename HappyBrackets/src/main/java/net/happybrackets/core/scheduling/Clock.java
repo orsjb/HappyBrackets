@@ -25,6 +25,9 @@ public class Clock implements ScheduledEventListener {
     // Once we action the shift, we will set it to zero
     private double shiftTime = 0;
 
+    // create a flag to set cancel while we are in  clock test
+    private volatile boolean doCancel = false;
+
     @Override
     public void doScheduledEvent(double scheduledTime, Object param) {
         // we no longer have pending. Clear that first
@@ -36,17 +39,19 @@ public class Clock implements ScheduledEventListener {
                 // let our listeners know
                 synchronized (clockTickListeners) {
                     // calculate how late or early we are
-                    double offset = clockScheduler.getElapsedTime() - (long) scheduledTime;
+                    double offset = clockScheduler.getSchedulerTime() - scheduledTime;
 
                     for (ClockTickListener listener : clockTickListeners) {
                         listener.clockTick(offset, this);
                     }
 
-                    // now lets set our next time
-                    double next_time = scheduledTime + clockInterval + shiftTime;
-                    shiftTime = 0;
-                    pendingSchedule = clockScheduler.addScheduledObject(next_time, this, this);
+                    if (!doCancel) {
+                        // now lets set our next time - the scheduler itself will account for any extra time taken
+                        double next_time = scheduledTime + clockInterval + shiftTime;
+                        shiftTime = 0;
 
+                        pendingSchedule = clockScheduler.addScheduledObject(next_time, this, this);
+                    }
                 }
             }
         }
@@ -99,7 +104,7 @@ public class Clock implements ScheduledEventListener {
 
         clockScheduler = scheduler;
 
-        startTime = clockScheduler.getElapsedTime();
+        startTime = clockScheduler.getSchedulerTime();
 
         if (interval < MIN_INTERVAL){
             clockInterval = MIN_INTERVAL;
@@ -141,6 +146,7 @@ public class Clock implements ScheduledEventListener {
             pendingSchedule.setCancelled(true);
             setPendingSchedule(null);
         }
+        doCancel = true;
     }
     /**
      * Start the clock
@@ -149,9 +155,10 @@ public class Clock implements ScheduledEventListener {
     public synchronized Clock start(){
         if (pendingSchedule == null) {
             numberTicks = 0;
-            startTime = clockScheduler.getElapsedTime();
+            startTime = clockScheduler.getSchedulerTime();
             double next_time =  startTime + clockInterval;
 
+            doCancel = false;
             pendingSchedule = clockScheduler.addScheduledObject(next_time, this, this);
 
         }

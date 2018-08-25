@@ -2,16 +2,15 @@ package net.happybrackets.core.scheduling;
 
 import org.junit.Test;
 
-public class ClockTest {
+public class AdjustSchedulerTest {
 
     final int TEST_TIMEOUT = 1000;
 
-    final double CLOCK_INTERVAL =   Math.random() * 100 + 10;
+    final double CLOCK_INTERVAL = Math.random() * 100 + 10;
 
     final double MAX_ALLOWED_JITTER = 10;
 
-
-    boolean clockSynchronised = false;
+    final double RESHEDULE_AMOUNT = 150;
 
     double maxJitter = 0;
 
@@ -23,55 +22,56 @@ public class ClockTest {
 
 
     @Test
-    public void testClock() {
+    public void adjustScheduler() {
+
+        HBScheduler scheduler = HBScheduler.getGlobalScheduler();
 
         // let us define how many ticks we should expect
 
         double onDuration = TEST_TIMEOUT * 2 / 3;
 
-        int expectedNumTicks = (int) (onDuration / CLOCK_INTERVAL) ;
+         int expectedNumTicks = (int) (onDuration / CLOCK_INTERVAL) ;
 
 
-        Clock testclock1 = new Clock(CLOCK_INTERVAL).addClockTickListener((offset, clock1) -> {
+        Clock clock = new Clock(CLOCK_INTERVAL).addClockTickListener((offset, clock1) -> {
             double elapsed_time = HBScheduler.getGlobalScheduler().getSchedulerTime();
             if (SHOW_TICK) {
                 System.out.println("Tick " + (long) elapsed_time + " " + offset);
             }
 
             numTicks ++;
-            if (!clockSynchronised){
-                // we want out scheduled time to be spot on the 1000 mark
-                double clock_shift = (elapsed_time - offset) % CLOCK_INTERVAL;
-
-                // Now shift the clock
-                clock1.shiftTime(clock_shift * -1);
-                clockSynchronised = true;
-            }
 
             if (maxJitter < Math.abs(offset)){
                 maxJitter = Math.abs(offset);
             }
+
+
             // Let us shift
         });
 
-        testclock1.start();
+        clock.start();
 
-        // test if we can stop clock in context of their callback
-        Clock testclock2 = new Clock(CLOCK_INTERVAL).addClockTickListener((offset, clock2) -> {
-            clock2.stop();
-        });
-
-        testclock2.start();
 
         try {
-            Thread.sleep((long) onDuration);
-            testclock1.stop();
+            Thread.sleep((long)RESHEDULE_AMOUNT);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        long number_ticks = testclock1.getNumberTicks();
+        scheduler.adjustScheduleTime(-CLOCK_INTERVAL, 10);
+
+
+
+
+        try {
+            Thread.sleep((long) onDuration - (long)RESHEDULE_AMOUNT);
+            clock.stop();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         try {
             Thread.sleep(TEST_TIMEOUT - (long)onDuration);
@@ -79,11 +79,10 @@ public class ClockTest {
             e.printStackTrace();
         }
 
+        long number_ticks = clock.getNumberTicks();
 
         // check that our clock actually stopped
-        assert (number_ticks == testclock1.getNumberTicks());
-
-        assert (testclock2.getNumberTicks() == 1);
+        assert (number_ticks == clock.getNumberTicks());
 
         // check our jitter is acceptable
         assert (maxJitter < MAX_ALLOWED_JITTER);
@@ -95,6 +94,6 @@ public class ClockTest {
         assert (Math.abs(expectedNumTicks - numTicks) <= 1);
 
 
-        System.out.println("------------------- Clock testing complete -----------------------");
+        System.out.println("------------------- Schedule Adjust complete -----------------------");
     }
 }

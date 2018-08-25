@@ -52,7 +52,7 @@ public class SchedulerTest {
 
                             previousEventTime = scheduledTime;
 
-                            double jitter = Math.abs(scheduledTime - scheduler.getElapsedTime());
+                            double jitter = Math.abs(scheduledTime - scheduler.getSchedulerTime());
                             if (maxJitter < jitter ){
                                 maxJitter = (long)jitter;
                             }
@@ -63,7 +63,7 @@ public class SchedulerTest {
                                     completeWait.notifyAll();
                                 }
                             }
-                            //System.out.println((long) scheduledTime + " " + scheduler.getElapsedTime());
+                            //System.out.println((long) scheduledTime + " " + scheduler.getSchedulerTime());
                         }
                     });
 
