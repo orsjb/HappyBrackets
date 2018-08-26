@@ -15,7 +15,7 @@ public class SchedulerTest {
 
     int numberRecieved = 0;
 
-    // we will wait on this and notify wen we have completed
+    // we will wait on this and notify when we have completed
     final Object completeWait = new Object();
 
     // record the maximum jitter

@@ -10,6 +10,18 @@ import java.util.List;
 public class Clock implements ScheduledEventListener {
 
     /**
+     * ClockTick interface for receiving clock Tick events
+     */
+    public interface ClockTickListener {
+        /**
+         * Event occurs when clock tick occurs
+         * @param offset the number of milliseconds we are off the tick. Positive number is late, negative is early
+         * @param clock the clock object sending the message
+         */
+        void clockTick(double offset, Clock clock );
+    }
+
+    /**
      * The minimum interval we will allow in milliseconds
      */
     final double MIN_INTERVAL = 2;
@@ -28,46 +40,8 @@ public class Clock implements ScheduledEventListener {
     // create a flag to set cancel while we are in  clock test
     private volatile boolean doCancel = false;
 
-    @Override
-    public void doScheduledEvent(double scheduledTime, Object param) {
-        // we no longer have pending. Clear that first
-        synchronized (this) {
-            // first see if we have been cancelled or not
-            if (isRunning()) {
-                setPendingSchedule(null);
-                numberTicks++;
-                // let our listeners know
-                synchronized (clockTickListeners) {
-                    // calculate how late or early we are
-                    double offset = clockScheduler.getSchedulerTime() - scheduledTime;
 
-                    for (ClockTickListener listener : clockTickListeners) {
-                        listener.clockTick(offset, this);
-                    }
 
-                    if (!doCancel) {
-                        // now lets set our next time - the scheduler itself will account for any extra time taken
-                        double next_time = scheduledTime + clockInterval + shiftTime;
-                        shiftTime = 0;
-
-                        pendingSchedule = clockScheduler.addScheduledObject(next_time, this, this);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * ClockTick interface for receiving clock Tick events
-     */
-    public interface ClockTickListener {
-        /**
-         * Event occurs when clock tick occurs
-         * @param offset the number of milliseconds we are off the tick. Positive number is late, negative is early
-         * @param clock the clock object sending the message
-         */
-        void clockTick(double offset, Clock clock );
-    }
 
     private double clockInterval;
 
@@ -83,7 +57,8 @@ public class Clock implements ScheduledEventListener {
 
     private long numberTicks =  0;
 
-    private List<ClockTickListener> clockTickListeners = Collections.synchronizedList(new ArrayList<>());
+    private final Object clockTickListenersLock = new Object();
+    private List<ClockTickListener> clockTickListeners = new ArrayList<>();
 
     /**
      * Constructor using default Scheduler
@@ -171,7 +146,7 @@ public class Clock implements ScheduledEventListener {
      * @return this
      */
     public Clock addClockTickListener(ClockTickListener listener){
-        synchronized (clockTickListeners){
+        synchronized (clockTickListenersLock){
             clockTickListeners.add(listener);
         }
 
@@ -183,7 +158,7 @@ public class Clock implements ScheduledEventListener {
      * @param listener the listener to remove
      */
     public void removeClockTickListener(ClockTickListener listener){
-        synchronized (clockTickListeners){
+        synchronized (clockTickListenersLock){
             clockTickListeners.remove(listener);
         }
     }
@@ -193,7 +168,7 @@ public class Clock implements ScheduledEventListener {
      * Clears all listeners for this clock
      */
     public void clearClockTickListener(){
-        synchronized (clockTickListeners){
+        synchronized (clockTickListenersLock){
             clockTickListeners.clear();
         }
     }
@@ -265,5 +240,35 @@ public class Clock implements ScheduledEventListener {
 
         return ret;
     }
+
+    @Override
+    public void doScheduledEvent(double scheduledTime, Object param) {
+        // we no longer have pending. Clear that first
+        synchronized (this) {
+            // first see if we have been cancelled or not
+            if (isRunning()) {
+                setPendingSchedule(null);
+                numberTicks++;
+                // let our listeners know
+                synchronized (clockTickListenersLock) {
+                    // calculate how late or early we are
+                    double offset = clockScheduler.getSchedulerTime() - scheduledTime;
+
+                    for (ClockTickListener listener : clockTickListeners) {
+                        listener.clockTick(offset, this);
+                    }
+
+                    if (!doCancel) {
+                        // now lets set our next time - the scheduler itself will account for any extra time taken
+                        double next_time = scheduledTime + clockInterval + shiftTime;
+                        shiftTime = 0;
+
+                        pendingSchedule = clockScheduler.addScheduledObject(next_time, this, this);
+                    }
+                }
+            }
+        }
+    }
+
 }
 

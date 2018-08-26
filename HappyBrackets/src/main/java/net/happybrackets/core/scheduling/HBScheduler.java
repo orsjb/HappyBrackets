@@ -165,7 +165,7 @@ public class HBScheduler {
                                     next_item.getScheduledEventListener().doScheduledEvent(next_item.getScheduledTime(), next_item.getScheduledObject());
                                 }
 
-                            } else { // our next scheduled item is at front of queu
+                            } else { // our next scheduled item is at front of queue
                                 nextScheduledTime = next_item.getScheduledTime();
                             }
                         }
