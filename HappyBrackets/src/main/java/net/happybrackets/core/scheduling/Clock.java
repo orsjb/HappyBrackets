@@ -207,5 +207,63 @@ public class Clock implements ScheduledEventListener {
         shiftTime = shift_time;
     }
 
+    /**
+     * Calculate the interval required to create a clock with a defined beats per minute
+     * Will throw an illegal argument exception if you pass in zero
+     * @param beats_per_minute beats per minute
+     * @return the number of microseconds between beats
+     * @throws IllegalArgumentException if the beats_per minute is zero
+     */
+    public static double BPM2Interval(double beats_per_minute) throws IllegalArgumentException {
+
+        if (beats_per_minute == 0) {
+            throw new IllegalArgumentException("Argument 'beats_per_minute' is 0");
+        }
+
+        return 60 / beats_per_minute * 1000;
+    }
+
+
+    /**
+     * Calculate number of Beats Per Minute given an interval between beats
+     * @param milliseconds the number of milliseconds between beats
+     * @return the calculated beats per minute
+     * @throws IllegalArgumentException if milliseconds is zero
+     */
+    public static double Interval2BPM (double milliseconds) throws IllegalArgumentException{
+        if (milliseconds == 0) {
+            throw new IllegalArgumentException("Argument 'milliseconds' is 0");
+        }
+
+        return 60 / (milliseconds / 1000);
+    }
+
+    /**
+     * Synchronise this clock to another one
+     * @param master the clock we are synchronising with
+     * @return the amount of time we have shifted this clock
+     */
+    public synchronized double synchronizeClock (Clock master){
+        double ret = 0;
+
+        // check our mast clock is running
+        if (master.isRunning()){
+            // get the next schedule time we require
+            double master_schedule_time = master.shiftTime + master.pendingSchedule.getScheduledTime();
+            // if we are running, caculate a difference
+            if (isRunning()){
+                double current_scheduled_time = shiftTime + pendingSchedule.getScheduledTime();
+                ret = master_schedule_time - current_scheduled_time;
+            }
+
+            stop();
+            // now add our schedule
+            doCancel = false;
+            pendingSchedule = clockScheduler.addScheduledObject(master_schedule_time, this, this);
+
+        }
+
+        return ret;
+    }
 }
 

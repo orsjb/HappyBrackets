@@ -25,6 +25,15 @@ public class ClockTest {
     @Test
     public void testClock() {
 
+        // check our static conversion functions
+
+        double interval = Clock.BPM2Interval(120);
+
+        assert (interval == 500);
+
+        double BPM = Clock.Interval2BPM(interval);
+        System.out.println("" + BPM);
+        assert (BPM == 120);
         // let us define how many ticks we should expect
 
         double onDuration = TEST_TIMEOUT * 2 / 3;
