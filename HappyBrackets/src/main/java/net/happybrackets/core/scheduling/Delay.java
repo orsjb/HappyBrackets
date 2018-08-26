@@ -67,6 +67,7 @@ public class Delay implements ScheduledEventListener {
      * Constructor using default Scheduler
      * @param interval the interval in milliseconds Must be greater than 2 milliseconds otherwise could lock up
      * @param param  the parameter we want t pass back when our delay has completed
+     * @param listener the listener to receive the callback when delay has finished
      */
     public Delay(double interval, Object param, DelayListener listener){
 
@@ -77,6 +78,7 @@ public class Delay implements ScheduledEventListener {
      * Constructor
      * @param interval the interval in milliseconds Must be greater than 2 milliseconds otherwise could lock up
      * @param param  the parameter we want t pass back when our delay has completed
+     * @param listener the listener to receive the callback when delay has finished
      * @param scheduler the scheduler to use
      */
     public Delay(double interval, Object param, DelayListener listener, HBScheduler scheduler){
