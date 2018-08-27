@@ -9,6 +9,10 @@ public class ScheduledObject implements Comparable{
     private Object scheduledObject;
     private ScheduledEventListener scheduledEventListener;
 
+    // Add an incrementing instance number so we can compare objects with exact same time
+    static long gInstanceNumber = 0;
+
+    final long instanceNumber;
     /**
      * if we have cancelled this event and it should be ignored
      * @return whether we have cancelled set
@@ -63,22 +67,31 @@ public class ScheduledObject implements Comparable{
         scheduledTime = time;
         scheduledObject = object;
         scheduledEventListener = listener;
+        instanceNumber = gInstanceNumber++;
     }
 
     @Override
     public int compareTo( Object o) {
         // we return 1, -1 or zero.
-        // Doing subtraction using a double will give wrong values when we convert to an int
+        // We compare times. If they are the same, then we compare instance numbers
         // so we will just do less / greater comparison
-        double other_time = ((ScheduledObject)o).scheduledTime;
+        ScheduledObject right = (ScheduledObject)o;
 
-        if (scheduledTime < other_time){
+
+        if (scheduledTime < right.scheduledTime){
             return -1;
         }
-        else if (other_time < scheduledTime)
+        else if (right.scheduledTime < scheduledTime)
         {
             return 1;
         }
+        else if (instanceNumber < right.instanceNumber){
+            return  -1;
+        }
+        else if (right.instanceNumber < instanceNumber){
+            return 1;
+        }
+
 
         return 0;
     }
