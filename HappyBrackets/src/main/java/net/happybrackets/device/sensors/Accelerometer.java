@@ -74,7 +74,7 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
 
                     System.out.println("Try Load LSM6DS33 (MiniMU v5) ");
                     try {
-                        LSM6DS33 sensor = (LSM6DS33) getSensor(MiniMU.class);
+                        LSM6DS33 sensor = (LSM6DS33) getSensor(LSM6DS33.class);
                         if (sensor == null) {
                             sensor = LSM6DS33.class.getConstructor().newInstance();
                         }
