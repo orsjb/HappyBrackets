@@ -123,6 +123,18 @@ public class Clock implements ScheduledEventListener {
         }
         doCancel = true;
     }
+
+    /**
+     * Change the interval of the clock and start from now
+     * @param interval the new clock interval
+     */
+    public synchronized void setInterval(double interval){
+        clockInterval = interval;
+        if (isRunning()){
+            stop();
+            start();
+        }
+    }
     /**
      * Start the clock
      * @return this
