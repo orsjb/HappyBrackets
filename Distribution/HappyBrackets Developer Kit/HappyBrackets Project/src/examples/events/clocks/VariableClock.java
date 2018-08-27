@@ -59,9 +59,9 @@ public class VariableClock implements HBAction {
 
         /************************************************************
          * start clockTimer
-         * Create a clock with a interval based on the clock duration
+         * Create a clock with a interval based on the clock duration isng the Beads Library
          *
-         * To create this, just type clockTimer
+         * To create this, just type beadsClockTimer
          ************************************************************/
         // create a clock and start changing frequency on each beat
         final float CLOCK_INTERVAL = 300;
@@ -101,7 +101,7 @@ public class VariableClock implements HBAction {
                 }
             }
         });
-        /*********************** end clockTimer **********************/
+        /*********************** end beadsClockTimer **********************/
 
         // let us change the speed of the clock with an envelope
 

@@ -1,12 +1,15 @@
 package examples.samples;
 
-import net.beadsproject.beads.core.Bead;
-import net.beadsproject.beads.data.Buffer;
+
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
-import net.beadsproject.beads.ugens.*;
+import net.beadsproject.beads.ugens.Envelope;
+import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Glide;
+import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -75,60 +78,43 @@ public class SamplePitchShift implements HBAction {
             samplePlayer.setRate(sampleSpeed);
 
 
+            // make an interval for 240 beats per minute
+            double CLOCK_INTERVAL = Clock.BPM2Interval(240);
             /************************************************************
-             * start clockTimer
-             * Create a clock with a interval based on the clock duration
-             *
              * To create this, just type clockTimer
              ************************************************************/
-            // create a clock and start changing frequency on each beat
-            final float CLOCK_INTERVAL = 300;
-
-            // Create a clock with beat interval of CLOCK_INTERVAL ms
-            Clock clock = new Clock(CLOCK_INTERVAL);
-
-            // let us handle triggers
-            clock.addMessageListener(new Bead() {
-                @Override
-                protected void messageReceived(Bead bead) {
-                    // see if we are at the start of a beat
-                    boolean start_of_beat = clock.getCount() % clock.getTicksPerBeat() == 0;
-                    if (start_of_beat) {
-                    /*** Write your code to perform functions on the beat below this line ****/
-
-                    // first create our envelope to play sound
-                    audioVolume.addSegment(1, ENVELOPE_EDGES);
-                    audioVolume.addSegment(1, CLOCK_INTERVAL - ENVELOPE_EDGES * 3);
-                    audioVolume.addSegment(0, ENVELOPE_EDGES);
+            Clock hbClock = hb.createClock(CLOCK_INTERVAL).addClockTickListener((offset, this_clock) -> {
+                /*** Write your Clock tick event code below this line ***/
+                // first create our envelope to play sound
+                audioVolume.addSegment(1, ENVELOPE_EDGES);
+                audioVolume.addSegment(1, (float)CLOCK_INTERVAL - ENVELOPE_EDGES * 3);
+                audioVolume.addSegment(0, ENVELOPE_EDGES);
 
 
 
-                    // we are going to next note in scale
-                    nextScaleIndex++;
+                // we are going to next note in scale
+                nextScaleIndex++;
 
-                    // Get the MIDI Amount to shift the note based on Major scale
-                    int key_note = Pitch.getRelativeMidiNote(0, Pitch.major, nextScaleIndex);
+                // Get the MIDI Amount to shift the note based on Major scale
+                int key_note = Pitch.getRelativeMidiNote(0, Pitch.major, nextScaleIndex);
 
-                    // if it exceeds our maximum, then start again
-                    if (key_note > MAXIMUM_PITCH)
-                    {
-                        nextScaleIndex = 0;
-                    }
-
-                    double sample_multiplier = Pitch.shiftPitch(1, nextScaleIndex);
-
-                    sampleSpeed.setValue((float)sample_multiplier);
-                    samplePlayer.setPosition(0);
-
-                    /*** Write your code to perform functions on the beat above this line ****/
-                } else {
-                    /*** Write your code to perform functions off the beat below this line ****/
-
-                    /*** Write your code to perform functions off the beat above this line ****/
+                // if it exceeds our maximum, then start again
+                if (key_note > MAXIMUM_PITCH)
+                {
+                    nextScaleIndex = 0;
                 }
-            }
-        });
-        /*********************** end clockTimer **********************/
+
+                double sample_multiplier = Pitch.shiftPitch(1, nextScaleIndex);
+
+                sampleSpeed.setValue((float)sample_multiplier);
+                samplePlayer.setPosition(0);
+
+                /*** Write your Clock tick event code above this line ***/
+            });
+
+            hbClock.start();
+            /******************* End Clock Timer *************************/
+
             /******** Write your code above this line ********/
         } else {
             hb.setStatus("Failed sample " + SAMPLE_NAME); }

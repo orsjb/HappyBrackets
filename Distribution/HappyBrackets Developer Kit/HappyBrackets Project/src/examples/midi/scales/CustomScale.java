@@ -65,53 +65,32 @@ public class CustomScale implements HBAction {
         hb.ac.out.addInput(gainAmplifier);
 
         /************************************************************
-         * start clockTimer
-         * Create a clock with a interval based on the clock duration
-         *
          * To create this, just type clockTimer
          ************************************************************/
-        // create a clock and start changing frequency on each beat
-        final float CLOCK_INTERVAL = 300;
+        net.happybrackets.core.scheduling.Clock hbClock = hb.createClock(300).addClockTickListener((offset, this_clock) -> {
+            /*** Write your Clock tick event code below this line ***/
+            // we are going to next note in scale
+            nextScaleIndex++;
 
-        // Create a clock with beat interval of CLOCK_INTERVAL ms
-        Clock clock = new Clock(CLOCK_INTERVAL);
-
-
-        // let us handle triggers
-        clock.addMessageListener(new Bead() {
-            @Override
-            protected void messageReceived(Bead bead) {
-                // see if we are at the start of a beat
-                boolean start_of_beat = clock.getCount() % clock.getTicksPerBeat() == 0;
-                if (start_of_beat) {
-                    /*** Write your code to perform functions on the beat below this line ****/
-
-                    // we are going to next note in scale
-                    nextScaleIndex++;
-
-                    // Get the Midi note number based on Scale
-                    int key_note = Pitch.getRelativeMidiNote(BASE_TONIC, DIMINISHED_SCALE, nextScaleIndex);
+            // Get the Midi note number based on Scale
+            int key_note = Pitch.getRelativeMidiNote(BASE_TONIC, DIMINISHED_SCALE, nextScaleIndex);
 
 
-                    // if it exceeds our maximum, then start again
-                    if (key_note > MAXIMUM_PITCH)
-                    {
-                        key_note = BASE_TONIC;
-                        nextScaleIndex = 0;
-                    }
-                    // convert our MIDI pitch to a frequency
-                    waveformFrequency.setValue(Pitch.mtof(key_note));
-
-
-                    /*** Write your code to perform functions on the beat above this line ****/
-                } else {
-                    /*** Write your code to perform functions off the beat below this line ****/
-
-                    /*** Write your code to perform functions off the beat above this line ****/
-                }
+            // if it exceeds our maximum, then start again
+            if (key_note > MAXIMUM_PITCH)
+            {
+                key_note = BASE_TONIC;
+                nextScaleIndex = 0;
             }
+            // convert our MIDI pitch to a frequency
+            waveformFrequency.setValue(Pitch.mtof(key_note));
+
+            /*** Write your Clock tick event code above this line ***/
         });
-        /*********************** end clockTimer **********************/
+
+        hbClock.start();
+        /******************* End Clock Timer *************************/
+
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

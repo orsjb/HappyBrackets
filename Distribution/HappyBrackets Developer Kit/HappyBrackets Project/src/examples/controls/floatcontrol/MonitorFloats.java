@@ -3,8 +3,6 @@ package examples.controls.floatcontrol;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.control.FloatBuddyControl;
 import net.happybrackets.core.control.FloatTextControl;
 import net.happybrackets.device.HB;
@@ -12,7 +10,7 @@ import net.happybrackets.device.HB;
 import java.lang.invoke.MethodHandles;
 
 /**
- * This sketch runs a clock and displays the Beat count n a text control ad the clock count in a slider control
+ * This sketch runs a clock and displays the Beat count in a text control ad the clock count in a slider control using Beads Clock
  * Note - if you have the slider control selected, you will not see the value update on the screen.
  */
 public class MonitorFloats implements HBAction {
@@ -57,7 +55,7 @@ public class MonitorFloats implements HBAction {
          * start clockTimer
          * Create a clock with a interval based on the clock duration
          *
-         * To create this, just type clockTimer
+         * To create this, just type beadsClockTimer
          ************************************************************/
         // create a clock and start changing frequency on each beat
         final float CLOCK_INTERVAL = 500;
@@ -87,7 +85,7 @@ public class MonitorFloats implements HBAction {
                 }
             }
         });
-        /*********************** end clockTimer **********************/
+        /*********************** end beadsClockTimer **********************/
     }
 
 

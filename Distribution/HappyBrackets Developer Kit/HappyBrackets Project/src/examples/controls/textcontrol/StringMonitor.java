@@ -1,10 +1,7 @@
 package examples.controls.textcontrol;
 
-import net.beadsproject.beads.core.Bead;
-import net.beadsproject.beads.ugens.Clock;
+
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.control.TextControl;
 import net.happybrackets.device.HB;
 
@@ -37,42 +34,21 @@ public class StringMonitor implements HBAction {
         };/*** End DynamicControl clockMonitor code ***/
 
 
-
         /************************************************************
-         * start clockTimer
-         * Create a clock with a interval based on the clock duration
-         *
          * To create this, just type clockTimer
          ************************************************************/
-        // create a clock and start changing frequency on each beat
-        final float CLOCK_INTERVAL = 500;
+        net.happybrackets.core.scheduling.Clock hbClock = hb.createClock(500.0).addClockTickListener((offset, this_clock) -> {
+            /*** Write your Clock tick event code below this line ***/
+            long clock_count = this_clock.getNumberTicks();
 
-        // Create a clock with beat interval of CLOCK_INTERVAL ms
-        Clock clock = new Clock(CLOCK_INTERVAL);
-
-
-        // let us handle triggers
-        clock.addMessageListener(new Bead() {
-            @Override
-            protected void messageReceived(Bead bead) {
-                // see if we are at the start of a beat
-                boolean start_of_beat = clock.getCount() % clock.getTicksPerBeat() == 0;
-                if (start_of_beat) {
-                    /*** Write your code to perform functions on the beat below this line ****/
-
-                    double clock_count = clock.getCount();
-
-                    String display_text = new String("clock: " + clock_count);
-                    clockMonitor.setValue(display_text);
-                    /*** Write your code to perform functions on the beat above this line ****/
-                } else {
-                    /*** Write your code to perform functions off the beat below this line ****/
-
-                    /*** Write your code to perform functions off the beat above this line ****/
-                }
-            }
+            String display_text = new String("clock: " + clock_count);
+            clockMonitor.setValue(display_text);
+            /*** Write your Clock tick event code above this line ***/
         });
-        /*********************** end clockTimer **********************/
+
+        hbClock.start();
+        /******************* End Clock Timer *************************/
+
         /***** Type your HBAction code above this line ******/
     }
 

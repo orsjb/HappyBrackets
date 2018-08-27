@@ -1,13 +1,12 @@
 package examples.midi.scales;
 
-import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
-import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -64,68 +63,47 @@ public class MajorScaleModulo implements HBAction {
         hb.ac.out.addInput(gainAmplifier);
 
         /************************************************************
-         * start clockTimer
-         * Create a clock with a interval based on the clock duration
-         *
          * To create this, just type clockTimer
          ************************************************************/
-        // create a clock and start changing frequency on each beat
-        final float CLOCK_INTERVAL = 300;
+        Clock hbClock = hb.createClock(300).addClockTickListener((offset, this_clock) -> {
+            /*** Write your Clock tick event code below this line ***/
+            // we are going to next note in scale
+            nextScaleIndex++;
 
-        // Create a clock with beat interval of CLOCK_INTERVAL ms
-        Clock clock = new Clock(CLOCK_INTERVAL);
+            // get the scale degree from the scale
+            // eg, if nextScaleIndex is 9, scale_degree = 9 % 7 = 2
+            int scale_degree = nextScaleIndex % Pitch.major.length;
 
+            // If our scale pitch is 2,Pitch.major[2] = 4 (major third)
+            int scale_pitch = Pitch.major[scale_degree];
 
-        // let us handle triggers
-        clock.addMessageListener(new Bead() {
-            @Override
-            protected void messageReceived(Bead bead) {
-                // see if we are at the start of a beat
-                boolean start_of_beat = clock.getCount() % clock.getTicksPerBeat() == 0;
-                if (start_of_beat) {
-                    /*** Write your code to perform functions on the beat below this line ****/
+            // Now get the register of our note
+            // eg, if nextScaleIndex is 9, scale_degree = 9 / 7 = 1
+            int note_register = nextScaleIndex / Pitch.major.length;
 
-                    // we are going to next note in scale
-                    nextScaleIndex++;
+            // we multiply our register x 12 because that is an octave in MIDI
+            // if nextScaleIndex is 9 then 1 x 12 + 4 = 16
+            int note_pitch = note_register * 12 + scale_pitch;
 
-                    // get the scale degree from the scale
-                    // eg, if nextScaleIndex is 9, scale_degree = 9 % 7 = 2
-                    int scale_degree = nextScaleIndex % Pitch.major.length;
+            // add the number to our base tonic to get the note based on key
+            // if nextScaleIndex is 9 then 48 + 16 = 64. This is E3 in MIDI
+            int key_note = BASE_TONIC + note_pitch;
 
-                    // If our scale pitch is 2,Pitch.major[2] = 4 (major third)
-                    int scale_pitch = Pitch.major[scale_degree];
-
-                    // Now get the register of our note
-                    // eg, if nextScaleIndex is 9, scale_degree = 9 / 7 = 1
-                    int note_register = nextScaleIndex / Pitch.major.length;
-
-                    // we multiply our register x 12 because that is an octave in MIDI
-                    // if nextScaleIndex is 9 then 1 x 12 + 4 = 16
-                    int note_pitch = note_register * 12 + scale_pitch;
-
-                    // add the number to our base tonic to get the note based on key
-                    // if nextScaleIndex is 9 then 48 + 16 = 64. This is E3 in MIDI
-                    int key_note = BASE_TONIC + note_pitch;
-
-                    // if it exceeds our maximum, then start again
-                    if (key_note > MAXIMUM_PITCH)
-                    {
-                        key_note = BASE_TONIC;
-                        nextScaleIndex = 0;
-                    }
-                    // convert our MIDI pitch to a frequency
-                    waveformFrequency.setValue(Pitch.mtof(key_note));
-
-
-                    /*** Write your code to perform functions on the beat above this line ****/
-                } else {
-                    /*** Write your code to perform functions off the beat below this line ****/
-
-                    /*** Write your code to perform functions off the beat above this line ****/
-                }
+            // if it exceeds our maximum, then start again
+            if (key_note > MAXIMUM_PITCH)
+            {
+                key_note = BASE_TONIC;
+                nextScaleIndex = 0;
             }
+            // convert our MIDI pitch to a frequency
+            waveformFrequency.setValue(Pitch.mtof(key_note));
+
+            /*** Write your Clock tick event code above this line ***/
         });
-        /*********************** end clockTimer **********************/
+
+        hbClock.start();
+        /******************* End Clock Timer *************************/
+
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

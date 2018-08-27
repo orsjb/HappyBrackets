@@ -1,13 +1,13 @@
 package examples.events.clocks;
 
-import net.beadsproject.beads.core.Bead;
+
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
-import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -55,51 +55,33 @@ public class SimpleClock implements HBAction {
         // Now plug the gain object into the audio output
         hb.ac.out.addInput(gainAmplifier);
 
-        /************************************************************
-         * start clockTimer
-         * Create a clock with a interval based on the clock duration
-         *
-         * To create this, just type clockTimer
-         ************************************************************/
         // create a clock and start changing frequency on each beat
         final float CLOCK_DURATION = 300;
+        /************************************************************
+         * To create this, just type clockTimer
+         ************************************************************/
+        Clock hbClock = hb.createClock(CLOCK_DURATION).addClockTickListener((offset, this_clock) -> {
+            /*** Write your Clock tick event code below this line ***/
+            if (currentNote < END_NOTE) {
+                // move to the next chromatic note
+                currentNote++;
+                // convert or not number to a frequency
+                float new_frequency = Pitch.mtof(currentNote);
 
-        // Create a clock with beat interval of CLOCK_INTERVAL ms
-        Clock clock = new Clock(CLOCK_DURATION);
-
-
-        // let us handle triggers
-        clock.addMessageListener(new Bead() {
-            @Override
-            protected void messageReceived(Bead bead) {
-                // see if we are at the start of a beat
-                boolean start_of_beat = clock.getCount() % clock.getTicksPerBeat() == 0;
-                if (start_of_beat) {
-                    /*** Write your code to perform functions on the beat below this line ****/
-
-                    if (currentNote < END_NOTE) {
-                        // move to the next chromatic note
-                        currentNote++;
-                        // convert or not number to a frequency
-                        float next_frequency = Pitch.mtof(currentNote);
-
-                        waveformFrequency.setValue(next_frequency);
-                    }
-                    else
-                    {
-                        // we have reached ou maximum note. Lets kill gain and clock
-                        gainAmplifier.kill();
-                        clock.kill();
-                    }
-                    /*** Write your code to perform functions on the beat above this line ****/
-                } else {
-                    /*** Write your code to perform functions off the beat below this line ****/
-
-                    /*** Write your code to perform functions off the beat above this line ****/
-                }
+                waveformFrequency.setValue(new_frequency);
             }
+            else
+            {
+                // we have reached ou maximum note. Lets kill gain and clock
+                gainAmplifier.kill();
+                this_clock.stop();
+            }
+            /*** Write your Clock tick event code above this line ***/
         });
-        /*********************** end clockTimer **********************/
+
+        hbClock.start();
+        /******************* End Clock Timer *************************/
+
 
 
     }

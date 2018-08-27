@@ -1,10 +1,12 @@
 package examples.events.clocks;
 
-import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
-import net.beadsproject.beads.ugens.*;
+import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Glide;
+import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.AccelerometerListener;
 
@@ -56,56 +58,31 @@ public class SensorControlledClock implements HBAction {
         // Now plug the gain object into the audio output
         hb.ac.out.addInput(gainAmplifier);
 
+        final double CLOCK_INTERVAL = 500;
+
         /************************************************************
-         * start clockTimer
-         * Create a clock with a interval based on the clock duration
-         *
          * To create this, just type clockTimer
          ************************************************************/
-        // create a clock and start changing frequency on each beat
-        final float CLOCK_INTERVAL = 500;
-
-        // Create a clock with beat interval of CLOCK_INTERVAL ms
-        Clock clock = new Clock(CLOCK_INTERVAL);
-
-        // let us handle triggers
-        clock.addMessageListener(new Bead() {
-            @Override
-            protected void messageReceived(Bead bead) {
-                // see if we are at the start of a beat
-                boolean start_of_beat = clock.getCount() % clock.getTicksPerBeat() == 0;
-                if (start_of_beat) {
-                    /*** Write your code to perform functions on the beat below this line ****/
-
-                    if (currentNote < END_NOTE) {
-                        // add 2 to the current note
-                        currentNote += 2;
-                    }
-                    else {
-                        currentNote = START_NOTE;
-                    }
-
-                    // convert or not number to a frequency
-                    float next_frequency = Pitch.mtof(currentNote);
-
-                    waveformFrequency.setValue(next_frequency);
-
-
-                    /*** Write your code to perform functions on the beat above this line ****/
-                } else {
-                    /*** Write your code to perform functions off the beat below this line ****/
-
-                    /*** Write your code to perform functions off the beat above this line ****/
-                }
+        Clock clock = hb.createClock(CLOCK_INTERVAL).addClockTickListener((offset, this_clock) -> {
+            /*** Write your Clock tick event code below this line ***/
+            if (currentNote < END_NOTE) {
+                // add 2 to the current note
+                currentNote += 2;
             }
+            else {
+                currentNote = START_NOTE;
+            }
+
+            // convert or not number to a frequency
+            float new_frequency = Pitch.mtof(currentNote);
+
+            waveformFrequency.setValue(new_frequency);
+
+            /*** Write your Clock tick event code above this line ***/
         });
-        /*********************** end clockTimer **********************/
 
-        // let us change the speed of the clock with an Glide
-
-        // define the object we will use to change clock interval
-        Glide clockInterval = new Glide(CLOCK_INTERVAL);
-        clock.setIntervalEnvelope(clockInterval);
+        clock.start();
+        /******************* End Clock Timer *************************/
 
         // Let us start changing the speed of the clock with an accelerometer
 
@@ -127,7 +104,7 @@ public class SensorControlledClock implements HBAction {
 
                     // now set our interval so clock is faster on higher number
                     // a lower interval means a higher speed
-                    clockInterval.setValue(CLOCK_INTERVAL / converted_x);
+                    clock.setInterval(CLOCK_INTERVAL / converted_x);
                 }
                 /******** Write your code above this line ********/
 
