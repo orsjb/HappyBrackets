@@ -17,7 +17,53 @@
     </SUITE>
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="SensorControlledClock.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="65" column="19" selection-start-line="65" selection-start-column="19" selection-end-line="65" selection-end-column="19" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VariableClock.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="69" column="22" selection-start-line="69" selection-start-column="22" selection-end-line="69" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SamplePitchShift.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="99">
+              <caret line="83" column="51" lean-forward="true" selection-start-line="83" selection-start-column="51" selection-end-line="83" selection-end-column="51" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MonitorFloats.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="176">
+              <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -51,6 +97,8 @@
       <find>name</find>
       <find>Nam</find>
       <find>Name</find>
+      <find>new Clock(CLOCK_INTERVAL)</find>
+      <find>next_frequency</find>
     </findStrings>
     <replaceStrings>
       <replace>Create a Trigger type Dynamic Control</replace>
@@ -64,9 +112,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/pythonscript/RunProcessAndArguments.java" />
-        <option value="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleDirectionGyroscope.java" />
-        <option value="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleSpeedAndDirection.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/AlternatingLoopedSamplePlayer.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/LoopedSamplePlayer.java" />
@@ -79,19 +124,14 @@
         <option value="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" />
         <option value="$PROJECT_DIR$/src/examples/threads/CreatedThread.java" />
         <option value="$PROJECT_DIR$/src/examples/threads/SimpleThread.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java" />
         <option value="$PROJECT_DIR$/src/examples/midi/scales/MajorScale.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java" />
-        <option value="$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java" />
@@ -99,14 +139,11 @@
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" />
         <option value="$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java" />
-        <option value="$PROJECT_DIR$/src/examples/contents.txt" />
         <option value="$PROJECT_DIR$/src/examples/gpio/DigitalInGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java" />
         <option value="$PROJECT_DIR$/Device/HappyBrackets/setup/setup-image.sh" />
@@ -115,6 +152,17 @@
         <option value="$PROJECT_DIR$/data/send-scripts.sh" />
         <option value="$PROJECT_DIR$/data/send-startupclasses.sh" />
         <option value="$PROJECT_DIR$/config/update-device.sh" />
+        <option value="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java" />
+        <option value="$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java" />
+        <option value="$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java" />
+        <option value="$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java" />
+        <option value="$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java" />
+        <option value="$PROJECT_DIR$/src/examples/contents.txt" />
       </list>
     </option>
   </component>
@@ -124,7 +172,7 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="1758" />
     <option name="y" value="160" />
     <option name="width" value="1440" />
@@ -135,6 +183,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -179,14 +229,34 @@
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="examples" type="462c0819:PsiDirectoryNode" />
-              <item name="gpio" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="events" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="events" type="462c0819:PsiDirectoryNode" />
+              <item name="clocks" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="fmsynthesis" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -228,39 +298,39 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.PWMOutGPIO">
+  <component name="RunManager" selected="Application.StringMonitor">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
     </configuration>
-    <configuration name="DigitalInGPIO" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="examples.gpio.DigitalInGPIO" />
+    <configuration name="CustomScale" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="examples.midi.scales.CustomScale" />
       <module name="HappyBrackets Project" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="examples.gpio.*" />
+          <option name="PATTERN" value="examples.midi.scales.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
     </configuration>
-    <configuration name="PWMOutGPIO" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="examples.gpio.PWMOutGPIO" />
+    <configuration name="SamplePitchShift" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="examples.samples.SamplePitchShift" />
       <module name="HappyBrackets Project" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="examples.gpio.*" />
+          <option name="PATTERN" value="examples.samples.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
     </configuration>
-    <configuration name="SimpleAccelerometer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="examples.sensor.accelerometer.SimpleAccelerometer" />
+    <configuration name="SimpleClock" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="examples.events.clocks.SimpleClock" />
       <module name="HappyBrackets Project" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="examples.sensor.accelerometer.*" />
+          <option name="PATTERN" value="examples.events.clocks.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -276,13 +346,13 @@
         </pattern>
       </extension>
     </configuration>
-    <configuration name="TriggerControlSample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="examples.controls.triggercontrol.TriggerControlSample" />
+    <configuration name="VariableClock" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="examples.events.clocks.VariableClock" />
       <module name="HappyBrackets Project" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="examples.controls.triggercontrol.*" />
+          <option name="PATTERN" value="examples.events.clocks.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -329,19 +399,19 @@
       <listeners />
     </configuration>
     <list>
+      <item itemvalue="Application.SimpleClock" />
+      <item itemvalue="Application.VariableClock" />
+      <item itemvalue="Application.CustomScale" />
+      <item itemvalue="Application.SamplePitchShift" />
       <item itemvalue="Application.StringMonitor" />
-      <item itemvalue="Application.TriggerControlSample" />
-      <item itemvalue="Application.SimpleAccelerometer" />
-      <item itemvalue="Application.DigitalInGPIO" />
-      <item itemvalue="Application.PWMOutGPIO" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.PWMOutGPIO" />
-        <item itemvalue="Application.DigitalInGPIO" />
-        <item itemvalue="Application.SimpleAccelerometer" />
-        <item itemvalue="Application.TriggerControlSample" />
         <item itemvalue="Application.StringMonitor" />
+        <item itemvalue="Application.SamplePitchShift" />
+        <item itemvalue="Application.CustomScale" />
+        <item itemvalue="Application.VariableClock" />
+        <item itemvalue="Application.SimpleClock" />
       </list>
     </recent_temporary>
   </component>
@@ -359,37 +429,38 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1758" y="160" width="1440" height="747" extended-state="0" />
+    <frame x="1440" y="23" width="1920" height="1018" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.49041533" weight="0.32790446" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.6080114" side_tool="true" visible="true" weight="0.3430769" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.6091587" side_tool="true" visible="true" weight="0.3572204" />
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.24878837" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39198855" weight="0.3430769" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39084134" weight="0.3572204" />
       <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49427754" weight="0.3276923" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.30329043" />
-      <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.27825466" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22896698" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49353796" weight="0.32840723" />
+      <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.20713525" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" sideWeight="0.496063" weight="0.1648" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="right" id="Coverage" order="5" sideWeight="0.503937" side_tool="true" weight="0.20553781" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.4921875" weight="0.32838038" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" x="105" y="191" width="1080" height="530" id="Documentation" order="4" type="FLOATING" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info id="Capture Tool" order="2" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49353796" weight="0.32840723" />
     </layout>
   </component>
   <component name="UnknownFeatures">
@@ -429,34 +500,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunProcessAndArguments.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="28" column="8" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleDirectionGyroscope.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="26" column="8" selection-start-line="26" selection-start-column="8" selection-end-line="26" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleSpeedAndDirection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/samples/AlternatingLoopedSamplePlayer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -527,20 +570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="17" column="34" lean-forward="true" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="32" column="29" selection-start-line="32" selection-start-column="29" selection-end-line="32" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/basic/HelloWorld.java">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -555,24 +584,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
-          <caret line="109" column="47" selection-start-line="109" selection-start-column="47" selection-end-line="109" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="182">
           <caret line="60" column="13" lean-forward="true" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="77" column="48" selection-start-line="77" selection-start-column="48" selection-end-line="77" selection-end-column="48" />
         </state>
       </provider>
     </entry>
@@ -594,13 +609,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="16" column="35" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="54" lean-forward="true" selection-start-line="54" selection-end-line="54" />
         </state>
       </provider>
     </entry>
@@ -629,20 +637,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
           <caret line="74" column="27" lean-forward="true" selection-start-line="74" selection-start-column="27" selection-end-line="74" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="72" column="59" lean-forward="true" selection-start-line="72" selection-start-column="59" selection-end-line="72" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="43" column="10" lean-forward="true" selection-start-line="43" selection-start-column="10" selection-end-line="43" selection-end-column="10" />
         </state>
       </provider>
     </entry>
@@ -691,13 +685,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/gpio/GPIOIn.java" />
-    <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="88" column="4" selection-start-line="88" selection-start-column="4" selection-end-line="88" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="145">
@@ -719,20 +706,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/setup/setup-image-zulu.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="37" selection-start-line="37" selection-end-line="42" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/setup/setup-image.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/setup/setup-image-zulu.sh" />
+    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/setup/setup-image.sh" />
     <entry file="file://$PROJECT_DIR$/data/send-jars.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="173">
@@ -765,6 +740,108 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
           <caret line="10" column="50" selection-start-line="10" selection-start-column="50" selection-end-line="10" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="62" column="11" selection-start-line="62" selection-start-column="11" selection-end-line="62" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/RatioDepthFM.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="65" column="19" selection-start-line="65" selection-start-column="19" selection-end-line="65" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="67" column="11" selection-start-line="67" selection-start-column="11" selection-end-line="67" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="68" column="47" selection-start-line="68" selection-start-column="47" selection-end-line="68" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="3" lean-forward="true" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="99">
+          <caret line="83" column="51" lean-forward="true" selection-start-line="83" selection-start-column="51" selection-end-line="83" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="69" column="22" selection-start-line="69" selection-start-column="22" selection-end-line="69" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="93" column="62" selection-start-line="93" selection-start-column="62" selection-end-line="93" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="444">
+          <caret line="88" column="52" selection-start-line="88" selection-start-column="52" selection-end-line="88" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="362">
+          <caret line="91" column="52" selection-start-line="91" selection-start-column="52" selection-end-line="91" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
