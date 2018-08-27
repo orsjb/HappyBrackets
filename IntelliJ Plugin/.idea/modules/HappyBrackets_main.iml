@@ -30,15 +30,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/pi4j-device.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/pi4j-device-sources.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -57,6 +48,15 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/pi4j-device.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/pi4j-gpio-extension.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -64,6 +64,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.json:json:20180130" level="project" />
     <orderEntry type="library" name="Gradle: org.nanohttpd:nanohttpd:2.2.0" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:3.2.0" level="project" />
     <orderEntry type="library" name="Gradle: de.sciss:netutil:1.0.0" level="project" />
