@@ -137,10 +137,15 @@ public class Clock implements ScheduledEventListener {
      * @param interval the new clock interval
      */
     public synchronized void setInterval(double interval){
+
         clockInterval = interval;
         if (isRunning()){
-            stop();
-            start();
+            // see if we need to stop
+            double time_remaining = clockScheduler.getSchedulerTime() - pendingSchedule.getScheduledTime();
+            if (time_remaining > interval) {
+                stop();
+                start();
+            }
         }
     }
     /**
