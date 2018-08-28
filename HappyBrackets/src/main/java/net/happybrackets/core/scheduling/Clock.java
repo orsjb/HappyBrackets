@@ -48,6 +48,14 @@ public class Clock implements ScheduledEventListener {
     private double startTime;
 
     /**
+     * The interval of the clock
+     * @return the clock interval
+     */
+    public double getClockInterval() {
+        return clockInterval;
+    }
+
+    /**
      * Return the number of clock ticks
      * @return number of ticks
      */
