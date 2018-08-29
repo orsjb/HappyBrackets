@@ -9,7 +9,7 @@ import java.net.URL;
 public final class BuildVersion {
     static final int MAJOR = 3;
     static final int MINOR = 1;
-    static final int BUILD = 0;
+    static final int BUILD = 1;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}
@@ -18,15 +18,12 @@ public final class BuildVersion {
     // this stores the number of days between our build verison Major.Min.or.Build and this compile
     public static String BUILD_COMPILE_NUM_FILE = "builddate.txt";
 
+    // THis is the date in seconds when the MAJOR.MINOR.BUILD numbers we last updated
     public static String BUILD_VERSION_DATE = "versionddate.txt";
 
 
-    // This file contains MAJOR.MINOR.BUILD, eg 3.0.0
+    // This file contains MAJOR.MINOR.BUILD.DAYS_SINCE_BUILD, eg 3.0.0.21
     public static String VERSION_FILE = "HBVersion.txt";
-
-    // This is the version that is a combination of VERSION_FILE and BUILD_COMPILE_NUM_FILE
-    // So it will be say 3.0.0.21
-    public static String PLIUGIN_VERSION_FILE = "plugin.txt";
 
 
     /**
@@ -44,7 +41,7 @@ public final class BuildVersion {
      * Gets the complete version and compile version text
      * @return version and build number. eg, 3.0.0.0
      */
-    public static String getVersionBUildText(){
+    public static String getVersionBuildText(){
         return getVersionText() + "." + getCompile();
     }
 
