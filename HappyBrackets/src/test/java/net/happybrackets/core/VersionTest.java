@@ -47,6 +47,8 @@ public class VersionTest {
 
 	final String BUILD_PATH = "build/libs/";
 
+	final String MINOR_BUILD_FILE = BUILD_PATH + "minorbuild.txt";
+
 	final String VERSION_FILENAME = BUILD_PATH + BuildVersion.VERSION_FILE;
 
 	// note that we are going to write the compile number straight to resource file due to gradle task ordering
@@ -55,7 +57,6 @@ public class VersionTest {
 	// we will put the date the version is created
 	final String VERSION_DATE_FILE_TEXT = "src/main/resources/" + BuildVersion.BUILD_VERSION_DATE;
 
-	final String PLUGIN_VERSION_TEXT =  BUILD_PATH + BuildVersion.PLIUGIN_VERSION_FILE;
 
 	@Test
     public void writeVersion() {
@@ -71,7 +72,7 @@ public class VersionTest {
 		String version_text =  "";
 
 		try {
-			Scanner in = new Scanner(new FileReader(VERSION_FILENAME));
+			Scanner in = new Scanner(new FileReader(MINOR_BUILD_FILE));
 			StringBuilder sb = new StringBuilder();
 			while(in.hasNext()) {
 				sb.append(in.next());
@@ -120,11 +121,12 @@ public class VersionTest {
 			// Existing is not equal to recorded. Make it our current\version
 			// note our days_since_version will be zero
 			version_text = BuildVersion.getVersionText();
+			version_date_text = "" + daysSinceEpoch;
 		}
 
 		// Write our version to file
 		try {
-			PrintWriter version_file = new PrintWriter(VERSION_FILENAME);
+			PrintWriter version_file = new PrintWriter(MINOR_BUILD_FILE);
 			version_file.print(version_text);
 			version_file.close();
 		} catch (IOException e) {
@@ -156,7 +158,7 @@ public class VersionTest {
 
 		// now write the combination of version and compile to file
 		try {
-			PrintWriter version_file = new PrintWriter(PLUGIN_VERSION_TEXT);
+			PrintWriter version_file = new PrintWriter(VERSION_FILENAME);
 			version_file.print(version_text + "." + days_since_version);
 			version_file.close();
 

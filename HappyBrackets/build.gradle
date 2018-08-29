@@ -194,10 +194,10 @@ task packDeviceRuntime (type:Zip) {
     println "Creating device package: $buildDir/$archiveName"
 }
 
-// this task will write the plugin.text complete version created in the tests into plugin resource
+// this task will write the HBVersion.text complete version created in the tests into plugin resource
 task versionPlugin(type:Exec){
     // write the version details into the plugin.xml  file
-    def VERSION_FILENAME = 'build/libs/plugin.txt'
+    def VERSION_FILENAME = 'build/libs/HBVersion.txt'
     def VERSION_RENAME_PROGRAM = '../IntelliJ Plugin/versionPlugin'
 
 
