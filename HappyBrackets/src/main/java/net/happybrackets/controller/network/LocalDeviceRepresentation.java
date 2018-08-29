@@ -856,7 +856,7 @@ public class LocalDeviceRepresentation {
 	 * Send a request to get the dynamic controls on this device
 	 */
 	public void sendControlsRequest(){
-		clearDynamicControls();
+		// clearDynamicControls();
 		send(OSCVocabulary.DynamicControlMessage.GET, replyPortObject);
 	}
 

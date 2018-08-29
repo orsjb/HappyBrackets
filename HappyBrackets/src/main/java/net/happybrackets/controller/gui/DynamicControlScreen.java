@@ -909,11 +909,24 @@ public class DynamicControlScreen {
         });
 
 
+        // add a button to rebuild controls list
+        Button rebuild_button = new Button("Rebuild Contols");
+        rebuild_button.setTooltip(new Tooltip("Clear the controls displayed and request controls from the device"));
+
+        rebuild_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                eraseDynamicControls();
+                localDevice.sendControlsRequest();
+
+            }
+        });
+
         logPageNumber.setDisable(true);
         HBox hBox  = new HBox(DEFAULT_ELEMENT_SPACING);
         hBox.getChildren().addAll(enable_button, previousLogPageButton, logPageNumber, nextLogPageButton);
         VBox pane = new VBox(DEFAULT_ELEMENT_SPACING);
-        pane.getChildren().addAll(hBox, log_output_text_area);
+        pane.getChildren().addAll(hBox, log_output_text_area, rebuild_button);
         setLogPageButtons();
         return pane;
     }
