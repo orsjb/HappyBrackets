@@ -29,10 +29,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.config.ControllerSettings;
-import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.ControllerAdvertiser;
-import net.happybrackets.controller.network.DeviceConnection;
-import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.BuildVersion;
 import net.happybrackets.core.Synchronizer;
 import net.happybrackets.core.config.DefaultConfig;
@@ -40,7 +37,6 @@ import net.happybrackets.core.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -118,7 +114,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         Content content = content_factory.createContent(jfxp, "", false);
         tool_window.getContentManager().addContent(content);
 
-        String version_text = BuildVersion.getVersionBUildText();
+        String version_text = BuildVersion.getVersionBuildText();
         tool_window.setTitle(" - " + version_text);
 
         // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them

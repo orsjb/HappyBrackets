@@ -66,7 +66,7 @@ public class UpdateProjectMenu extends AnAction {
                 ex.printStackTrace();
             }
 
-            DialogDisplay.displayDialog("Updated project to " + BuildVersion.getVersionText());
+            DialogDisplay.displayDialog("Updated project to " + BuildVersion.getVersionBuildText());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -95,7 +95,7 @@ public class UpdateProjectMenu extends AnAction {
             // See if we have a HB jar file
             if (Files.size(Paths.get(hb_path)) > 0) {
 
-                String current_version = BuildVersion.getVersionText();
+                String current_version = BuildVersion.getVersionBuildText();
 
                 if (current_version.equalsIgnoreCase(version)) {
                     e.getPresentation().setEnabled(false);
