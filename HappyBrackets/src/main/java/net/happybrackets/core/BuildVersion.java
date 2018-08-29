@@ -15,8 +15,11 @@ public final class BuildVersion {
     public static int getMinor() {return MINOR;}
     public static int getBuild(){return BUILD;}
 
-    // this stores our compile number filename  that gets incremented from tess run in gradle
+    // this stores the number of days between our build verison Major.Min.or.Build and this compile
     public static String BUILD_COMPILE_NUM_FILE = "builddate.txt";
+
+    public static String BUILD_VERSION_DATE = "versionddate.txt";
+
 
     // This file contains MAJOR.MINOR.BUILD, eg 3.0.0
     public static String VERSION_FILE = "HBVersion.txt";
