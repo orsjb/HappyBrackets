@@ -30,6 +30,8 @@ public class DefaultConfig {
 	public static final int    CONTROL_TO_DEVICE_PORT = 2226; 			//OSC messages from controller to device
 	public static final int    CONTROLLER_DISCOVERY_PORT = 2227;
 	public static final int    CONTROLLER_HTTP_PORT = 2228; 			//http requests from device to controller
+	public static final int    SECONDARY_BROADCAST_PORT = 2229; 	 //broadcast port (that does not use multicast)
+
 	//how often the PI sends an alive message to the server
 	public static final int    ALIVE_INTERVAL = 1000;
 	//places
