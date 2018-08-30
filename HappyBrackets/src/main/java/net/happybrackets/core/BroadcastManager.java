@@ -53,6 +53,15 @@ public class BroadcastManager {
     boolean waitForStart = false;
 
     /**
+     * Enable setting of sleep time
+     * @param threadSleepTime
+     */
+    public void setThreadSleepTime(int threadSleepTime) {
+        this.threadSleepTime = threadSleepTime;
+    }
+
+    private int threadSleepTime = 5000;
+    /**
      * Set to disable sending messages from this broadcaster
      * @param disable disable sending
      */
@@ -60,6 +69,7 @@ public class BroadcastManager {
     {
         disableSend = disable;
     }
+
 
     /**
      * Create a new BroadcastManager.
@@ -99,15 +109,13 @@ public class BroadcastManager {
                 if (waitForStart)
                 {
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(threadSleepTime);
                     } catch (InterruptedException e) {
                         logger.error("Broadcast manager poll interval interrupted!", e);
                     }
                 }
 
                 while(true) {
-
-
                     if (!disableSend) {
                         logger.debug("refresh loop...");
                         refreshBroadcaster();
@@ -118,7 +126,7 @@ public class BroadcastManager {
                     }
 
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(threadSleepTime);
                     } catch (InterruptedException e) {
                         logger.error("Broadcast manager poll interval interrupted!", e);
                     }
@@ -248,14 +256,22 @@ public class BroadcastManager {
         netInterfaces.removeAll(toRemove);
         //iterate through the viable interfaces to see if new interfaces have become viable.
         List<NetworkInterface> tempInterfaces = Device.viableInterfaces();
-        tempInterfaces.forEach(newInterface -> {
-            boolean[] exists = new boolean[] {false};
-            netInterfaces.forEach(existingInterface -> {
+
+        for (NetworkInterface newInterface : tempInterfaces)
+        {
+            boolean network_already_exists = false;
+
+            // check if this interface is in existing interfaces
+            for(NetworkInterface existingInterface : netInterfaces){
                 if(newInterface.getName().equals(existingInterface.getName())) {
-                    exists[0] = true;
+                    network_already_exists = true;
+                    break;
                 }
-            });
-            if(!exists[0]) {
+            }
+
+            // now if network device is not in there yet, we should add it
+
+            if (!network_already_exists){
                 logger.debug("The network interface " + newInterface + " has become valid! Adding it!");
                 try {
                     InetAddress group = InetAddress.getByName(address);
@@ -303,7 +319,8 @@ public class BroadcastManager {
                     logger.debug("Stacktrace:", e);
                 }
             }
-        });
+        }
+
     }
 
     /**
