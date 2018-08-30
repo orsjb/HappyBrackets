@@ -64,7 +64,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 
 	/**
 	 * Add a listener for discoverer. Used primarily for testing
-	 * @param listener
+	 * @param listener the listener for controller messages
 	 */
 	public synchronized void addDeviceDiscoveredListener(DeviceControllerDiscoveredListener listener){
 		controllerDiscoveredListeners.add(listener);
@@ -86,8 +86,10 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 
 		try {
 			if (secondaryOscServer == null) {
-				secondaryOscServer = OSCServer.newUsing(OSCServer.UDP, DefaultConfig.SECONDARY_BROADCAST_PORT);
+				int secondary_port = DefaultConfig.SECONDARY_BROADCAST_PORT;
+				secondaryOscServer = OSCServer.newUsing(OSCServer.UDP, secondary_port);
 				secondaryOscServer.start();
+				System.out.println("Opened secondary controller discovery port on " + secondary_port);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

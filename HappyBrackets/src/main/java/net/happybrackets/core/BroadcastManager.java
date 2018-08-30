@@ -54,7 +54,7 @@ public class BroadcastManager {
 
     /**
      * Enable setting of sleep time
-     * @param threadSleepTime
+     * @param threadSleepTime the amount of time we want our broadcaster to sleep
      */
     public void setThreadSleepTime(int threadSleepTime) {
         this.threadSleepTime = threadSleepTime;
