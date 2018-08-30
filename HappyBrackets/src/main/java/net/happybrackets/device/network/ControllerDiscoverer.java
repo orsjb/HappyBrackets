@@ -34,7 +34,11 @@ public interface ControllerDiscoverer {
 
 	default void listenForController(DeviceConfig device_config, BroadcastManager broadcast_manager, Logger logger) {
 
-		broadcast_manager.addPersistentBroadcastListener(new OSCListener(){
+		broadcast_manager.addPersistentBroadcastListener(createListener(device_config));
+	}
+
+	default OSCListener createListener (DeviceConfig device_config){
+		return new OSCListener(){
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
 				final int CONTROLLER_HOSTNAME = 0;
 				final int CONTROLLER_PORT = 1;
@@ -43,7 +47,7 @@ public interface ControllerDiscoverer {
 
 					InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
 
-                    String advertised_hostname = (String) msg.getArg(CONTROLLER_HOSTNAME);
+					String advertised_hostname = (String) msg.getArg(CONTROLLER_HOSTNAME);
 					String address =  sending_address.getHostAddress();//  (String) msg.getArg(1);
 					int port = (int) msg.getArg(CONTROLLER_PORT);
 
@@ -63,8 +67,7 @@ public interface ControllerDiscoverer {
 
 				}
 			}
-		});
-
+		};
 	}
 
 }
