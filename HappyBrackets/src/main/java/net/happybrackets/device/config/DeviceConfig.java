@@ -16,6 +16,8 @@
 
 package net.happybrackets.device.config;
 
+import de.sciss.net.OSCServer;
+import net.happybrackets.core.config.DefaultConfig;
 import net.happybrackets.core.config.LoadableConfig;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.device.network.ControllerDiscoverer;
@@ -27,23 +29,46 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer {
 
 
+	/**
+	 * If we use an event we can act immediately instead of polling
+	 */
+	public interface DeviceControllerDiscoveredListener{
+		void controllerDiscovered (DeviceController deviceController);
+	}
+
 	// Define variables we will use for broadcast
 	DatagramSocket broadcastSocket = null;
+
+	static OSCServer secondaryOscServer = null;
 
     final static Logger logger = LoggerFactory.getLogger(DeviceConfig.class);
 
 	/**
 	 * We will store controllers as a map rather than as a single controller
+	 * Used primarily for testing
 	 */
 	private Map<Integer, DeviceController> deviceControllers = new Hashtable<Integer, DeviceController>();
 
 
+
+	// A list of listeners to be notified when a controller is discovered
+	List<DeviceControllerDiscoveredListener> controllerDiscoveredListeners = new ArrayList<>();
+
+	/**
+	 * Add a listener for discoverer. Used primarily for testing
+	 * @param listener
+	 */
+	public synchronized void addDeviceDiscoveredListener(DeviceControllerDiscoveredListener listener){
+		controllerDiscoveredListeners.add(listener);
+	}
 	/**
 	 * We need to create a default controller to pass tests
 	 */
@@ -59,6 +84,14 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 
 	public DeviceConfig(){
 
+		try {
+			if (secondaryOscServer == null) {
+				secondaryOscServer = OSCServer.newUsing(OSCServer.UDP, DefaultConfig.SECONDARY_BROADCAST_PORT);
+				secondaryOscServer.start();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		new File(LOG_FOLDER).mkdirs();
 
 		try {
@@ -88,6 +121,9 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	 */
 	public void listenForController(BroadcastManager broadcastManager) {
 		ControllerDiscoverer.super.listenForController(this, broadcastManager, logger);
+		if (secondaryOscServer != null) {
+			secondaryOscServer.addOSCListener(ControllerDiscoverer.super.createListener(this));
+		}
 	}
 
 	public int getPolyLimit() {
@@ -144,7 +180,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 	 * @param device_id our device ID
 	 * @param connectPort the server port that controllers will connect to us through
 	 */
-	public void deviceControllerFound(String hostname, String address, int port, int device_id, int connectPort)
+	public synchronized void deviceControllerFound(String hostname, String address, int port, int device_id, int connectPort)
 	{
 
 		int hash = DeviceController.buildHashCode(address, port, connectPort);
@@ -161,6 +197,10 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 				controller.controllerSeen();
 			}
 
+			// we want to do this every time
+			for (DeviceControllerDiscoveredListener listener : controllerDiscoveredListeners){
+				listener.controllerDiscovered(controller);
+			}
 
 
 			lastController = controller;
