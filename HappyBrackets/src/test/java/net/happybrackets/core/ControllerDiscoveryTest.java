@@ -21,6 +21,7 @@ import net.happybrackets.controller.config.ControllerConfig;
 import net.happybrackets.core.Device;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.BroadcastManager;
+import net.happybrackets.device.config.DeviceController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,22 +37,32 @@ public class ControllerDiscoveryTest {
 	protected ControllerAdvertiser 	advertiser;
 	protected BroadcastManager			broadcastManager;
 
+	final int MAX_TEST_TIME = 5000;
+	Object testWaitControl = new Object();
+
+	boolean controllerFound = false;
+
 	@Before
 	public void setUp() throws Exception {
 		deviceEnv = new DeviceConfig();
 		deviceEnv = deviceEnv.load("src/test/config/test-device-config.json", deviceEnv);
+
 
 		controllerEnv = new ControllerConfig();
 		controllerEnv = controllerEnv.load("src/test/config/test-controller-config.json", controllerEnv);
 
 		//we need a broadcast manager for testing but we can only run one at a time
 		broadcastManager = new BroadcastManager(controllerEnv.getMulticastAddr(), controllerEnv.getBroadcastPort());
+		broadcastManager.setThreadSleepTime(2000);
+
+		deviceEnv.listenForController(broadcastManager);
+
 		broadcastManager.startRefreshThread();
 
 		advertiser = new ControllerAdvertiser(deviceEnv.getMulticastAddr(), deviceEnv.getBroadcastPort(), deviceEnv.getBroadcastPort());
 		advertiser.start();
 
-		deviceEnv.listenForController(broadcastManager);
+
 	}
 
 	@After
@@ -65,44 +76,34 @@ public class ControllerDiscoveryTest {
 
         String our_hostname = Device.getDeviceName();
 
-        try {
-            Device.viableInterfaces().forEach( ni -> controllerHostName.add(Device.selectHostname(ni)) );
-        } catch (Exception e) {
-            System.err.println("Error retrieving host name!");
-            e.printStackTrace();
-        }
-
-        int max_retries = 5;
-		//give some time to catch the name of the controller
-		try {
-        	for (int i = 0; i < max_retries; i++) {
-				Thread.sleep(500);
-				String controller_hostname = deviceEnv.getControllerHostname();
-				if (!controller_hostname.isEmpty())
-				{
-					break;
+        deviceEnv.addDeviceDiscoveredListener(new DeviceConfig.DeviceControllerDiscoveredListener() {
+			@Override
+			public void controllerDiscovered(DeviceController deviceController) {
+				if (deviceController.getHostname().equalsIgnoreCase(our_hostname)) {
+					System.out.println("Device found");
+					controllerFound = true;
+					synchronized (testWaitControl){
+						testWaitControl.notify();
+					}
 				}
 			}
-		}
-		catch (InterruptedException e) {
-			System.err.println("Sleep was interupted during ControllerDiscoveryTest.");
-			e.printStackTrace();
-		}
+		});
 
 		assertTrue( advertiser.isAlive() );
-		assertNotNull( deviceEnv.getControllerHostname() );
+
+		synchronized (testWaitControl){
+			try {
+				testWaitControl.wait(MAX_TEST_TIME);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// if we received a controller found event, this will be true
+		assertNotNull(controllerFound );
         //stop advertising so we do not change mid test
         advertiser.stop();
-        //check that one of our host names matches
 
-		String controller_hostname = deviceEnv.getControllerHostname();
-
-
-        assertTrue(
-                controllerHostName.stream().anyMatch(name -> controller_hostname.equals(name)) || our_hostname.equals(controller_hostname)
-        );
-
-		System.out.println("Found controller: " + deviceEnv.getControllerHostname());
 
 	}
 
