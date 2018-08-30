@@ -21,6 +21,7 @@ import net.happybrackets.core.BroadcastManager;
 
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.config.DefaultConfig;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.network.UDPCachedMessage;
@@ -143,6 +144,7 @@ public class ControllerAdvertiser {
 			byte[] buff = new byte[byteBuf.limit()];
 			byteBuf.get(buff);
 
+			int secondaryBroadcastPort = DefaultConfig.SECONDARY_BROADCAST_PORT;
 
 			List<NetworkInterface> interfaces = Device.viableInterfaces();
 
@@ -157,6 +159,14 @@ public class ControllerAdvertiser {
                         DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
                         CachedMessage message = new CachedMessage(msg, buff, packet, broadcast);
                         cachedNetworkMessage.add(message);
+
+                        DatagramPacket secondary_packet = new DatagramPacket(buff, buff.length, broadcast, secondaryBroadcastPort);
+                        CachedMessage secondary_message = new CachedMessage(msg, buff, secondary_packet, broadcast);
+                        cachedNetworkMessage.add(secondary_message);
+
+                        // now we need to add another one for non multicast port
+
+
                     } catch (Exception ex) {
                         logger.error("Unable to create cached message", ex);
                     }
@@ -279,7 +289,7 @@ public class ControllerAdvertiser {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						logger.error("Sleep was interupted in ControllerAdvertiser thread", e);
+						logger.error("Sleep was interrupted in ControllerAdvertiser thread", e);
 					}
 				}
 			}
