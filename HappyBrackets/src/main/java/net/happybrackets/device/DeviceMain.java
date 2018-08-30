@@ -17,10 +17,13 @@
 package net.happybrackets.device;
 
 
+import net.happybrackets.core.Device;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.AudioSetup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 import java.util.List;
 
 /**
@@ -107,9 +110,28 @@ public class DeviceMain {
 			}
 		}
 
-		List<String> auto_classes =  StartupClasses.getStartupClassnames(StartupClasses.DEFAULT_STARTUP_FILE);
-		for (String classname: auto_classes) {
-			hb.attemptHBActionFromClassName(classname);
+		String startup_filename = StartupClasses.getStartupFilename(Device.getDeviceName());
+
+		System.out.println("Look for " + startup_filename);
+		// see if we find startup file based on hostname
+		File f = new File(startup_filename);
+		if(!f.exists()) {
+			// try the default name then
+			System.out.println("Device specific startup file not found");
+			startup_filename = StartupClasses.getDefaultStartupFilename();
+			System.out.println("Look for " + startup_filename);
+		}
+
+
+		f = new File(startup_filename);
+		if(f.exists()) {
+			System.out.println("Found " + startup_filename);
+			// Lets try some startup names
+			List<String> auto_classes =  StartupClasses.getStartupClassnames(startup_filename);
+			for (String classname: auto_classes) {
+				hb.attemptHBActionFromClassName(classname);
+			}
+
 		}
 
 		if(autostart) {

@@ -10,9 +10,27 @@ import java.util.List;
  * Read the startup classes file
  */
 public class StartupClasses {
-    static final String DEFAULT_STARTUP_FILE =  "data/classes/startup.txt";
+
+    static final String STARTUP_FOLDER =  "data/classes/";
+    static private final String DEFAULT_STARTUP_FILE =  "startup.txt";
 
 
+    /**
+     * Get the name of the startup file based on hostname
+     * @param hostname hostname
+     * @return the folder and name file
+     */
+    public static String getStartupFilename(String hostname){
+        return STARTUP_FOLDER + hostname + "-" + DEFAULT_STARTUP_FILE;
+    }
+
+    /**
+     * Get the defaule startup filename
+     * @return the default startup filename including folder
+     */
+    public static String getDefaultStartupFilename(){
+        return STARTUP_FOLDER + DEFAULT_STARTUP_FILE;
+    }
 
     /**
      * Get the list of class names that we want to start automatically
