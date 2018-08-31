@@ -1,24 +1,34 @@
 package net.happybrackets.intellij_plugin.menu.context;
 
+import com.intellij.notification.*;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.ArrayListSet;
 import javafx.collections.ObservableList;
 import net.happybrackets.controller.ControllerEngine;
+import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.List;
 import java.util.Set;
 
 public abstract class SendCompositionAction extends AnAction {
+
+    final static Logger logger = LoggerFactory.getLogger(SendCompositionAction.class);
+
+
     static public final String JAVA_EXTENSION = "java";
     static public final String CLASS_EXTENSION = "class";
 
@@ -216,12 +226,14 @@ public abstract class SendCompositionAction extends AnAction {
         return ret;*/
     }
 
+
     /**
      * Display a message dialog
      * @param text thext to display
      */
-    void displayDialog(String text)
+    void legacydisplayDialog(String text)
     {
+
         new Thread(() -> {
             try {
 

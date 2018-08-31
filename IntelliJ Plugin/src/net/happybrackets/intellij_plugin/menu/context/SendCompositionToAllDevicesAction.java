@@ -1,10 +1,13 @@
 package net.happybrackets.intellij_plugin.menu.context;
 
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.controller.network.SendToDevice;
+
+import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
 
 public class SendCompositionToAllDevicesAction extends SendCompositionAction {
 
@@ -43,11 +46,11 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
                 String full_class_name = getFullClassName(vfile.getCanonicalPath());
                 SendToDevice.send(full_class_name, getDevices());
             } catch (Exception e1) {
-                displayDialog(e1.getMessage());
+                displayNotification(e1.getMessage(), NotificationType.ERROR);
             }
         }
         else{
-            displayDialog("Unable to find class");
+            displayNotification("Unable to find class", NotificationType.ERROR);
         }
 
     }

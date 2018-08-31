@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu.context;
 
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -10,6 +11,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
 
 public class CopyCompositionToStartupAction extends SendCompositionAction {
 
@@ -110,19 +113,20 @@ public class CopyCompositionToStartupAction extends SendCompositionAction {
 
                      }
                     if (success){
-                        displayDialog("Copied " + class_name + " to " + DATA_FOLDER + "/" + CLASSES_FOLDER);
+                        displayNotification("Copied " + class_name + " to " + DATA_FOLDER + "/" + CLASSES_FOLDER, NotificationType.INFORMATION);
                     }
                     else{
-                        displayDialog("Unable to copy " + class_name + " to class startuo ");
+                        displayNotification("Unable to copy " + class_name + " to class startuo ", NotificationType.ERROR);
+                        //displayDialog("Unable to copy " + class_name + " to class startuo ");
                     }
                 }
 
             } catch (Exception e1) {
-                displayDialog(e1.getMessage());
+                displayNotification(e1.getMessage(), NotificationType.ERROR);
             }
         }
         else{
-            displayDialog("Unable to find class");
+            displayNotification("Unable to find class", NotificationType.ERROR);
         }
 
     }

@@ -18,9 +18,11 @@ package net.happybrackets.intellij_plugin;
 
 //import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.intellij.ide.DataManager;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -45,14 +47,18 @@ import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
 import net.happybrackets.controller.gui.device.DeviceNameMenu;
 import net.happybrackets.controller.gui.device.PingMenu;
 import net.happybrackets.controller.gui.device.SoundMenu;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
+
+
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
-
+	final static org.slf4j.Logger logger = LoggerFactory.getLogger(DeviceRepresentationCell.class);
 
 	final int ICON_FIT_SIZE = 12;
 
@@ -83,8 +89,11 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	 * Display a message dialog
 	 * @param text the text to display
 	 */
-	void displayDialog(String text)
+	void olddisplayDialog(String text)
 	{
+
+		logger.warn(text);
+		/*
 		new Thread(() -> {
 			try {
 
@@ -95,6 +104,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			} catch (Exception ex) {
 			}
 		}).start();
+		*/
 	}
 
 	//in case the user is not using pi as the default username for ssh
@@ -360,25 +370,25 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 								try {
 									SendToDevice.send(full_class_name, selected);
 								} catch (Exception e) {
-									displayDialog(e.getMessage());
+									displayNotification(e.getMessage(), NotificationType.ERROR);
 								}
 							}
 							else
 							{
-								displayDialog("Unable to find class");
+								displayNotification("Unable to find class", NotificationType.ERROR);
 							}
 						} catch (Exception ex2) {
 
 						}
 					});
 				} catch (Exception ex) {
-					displayDialog(ex.getMessage());
+					displayNotification(ex.getMessage(), NotificationType.ERROR);
 
 				}
 
 			}catch (Exception ex){
 				System.out.println(ex.getMessage());
-				displayDialog(ex.getMessage());
+				displayNotification(ex.getMessage(), NotificationType.ERROR);
 			}
 
 			// we will send current composition to device

@@ -288,7 +288,7 @@ public class BroadcastManager {
 
                     catch (Exception ex) {
                         // If creating IPv6 channel doesn't work try IPv4.
-                        logger.debug("IPv6 failed, falling back to IPv4 for interface {}", newInterface.getName());
+                        //logger.debug("IPv6 failed, falling back to IPv4 for interface {}", newInterface.getName());
                         dc = DatagramChannel.open(StandardProtocolFamily.INET)
                                 .setOption(StandardSocketOptions.SO_REUSEADDR, true)
                                 .bind(new InetSocketAddress(port))
@@ -315,8 +315,8 @@ public class BroadcastManager {
                     }
 
                 } catch (IOException e) {
-                    logger.warn("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! Trying again next refresh.", newInterface.getName());
-                    logger.debug("Stacktrace:", e);
+                    //logger.warn("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! Trying again next refresh.", newInterface.getName());
+                    //logger.debug("Stacktrace:", e);
                 }
             }
         }

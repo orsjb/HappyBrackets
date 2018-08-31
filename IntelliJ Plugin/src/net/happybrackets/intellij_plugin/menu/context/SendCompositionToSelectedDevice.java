@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu.context;
 
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
@@ -7,6 +8,8 @@ import net.happybrackets.controller.network.SendToDevice;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
 
 public class SendCompositionToSelectedDevice extends SendCompositionAction {
 
@@ -61,10 +64,10 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
             try {
                 SendToDevice.send(full_class_name, selected);
             } catch (Exception e1) {
-                displayDialog(e1.getMessage());
+                displayNotification(e1.getMessage(), NotificationType.ERROR);
             }
         } else{
-            displayDialog("Unable to find class");
+            displayNotification("Unable to find class", NotificationType.ERROR);
         }
     }
 
