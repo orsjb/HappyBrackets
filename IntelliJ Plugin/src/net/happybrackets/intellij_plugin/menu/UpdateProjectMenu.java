@@ -16,9 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.HAPPY_BRACKETS_JAVDOCS_ZIP;
-import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.HAPPY_BRACKETS_PROJECT_ZIP;
-import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.HB_JAVADOCS_FOLDER;
+import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.*;
 
 public class UpdateProjectMenu extends AnAction {
 
@@ -66,6 +64,9 @@ public class UpdateProjectMenu extends AnAction {
                 ex.printStackTrace();
             }
 
+            // we now need to change old library details
+
+
             DialogDisplay.displayDialog("Updated project to " + BuildVersion.getVersionBuildText());
 
         } catch (Exception ex) {
@@ -80,7 +81,7 @@ public class UpdateProjectMenu extends AnAction {
             Project current_project = e.getProject();
 
             // Read the Version Number of Version Text file
-            String source_folder = current_project.getBaseDir().getCanonicalPath() + File.separatorChar + "libs" + File.separatorChar;
+            String source_folder = current_project.getBaseDir().getCanonicalPath() + HAPPY_BRACKETS_DEVICE_FOLDER;
             String version_file = source_folder + VERSION_FILE;
 
             String hb_path = source_folder + HB_JAR;

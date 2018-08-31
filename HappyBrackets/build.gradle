@@ -107,14 +107,6 @@ task deploy
 
 task deployJarAndJavaDoc << {
     copy {
-        from 'build/libs/HB.jar'
-        into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs'
-    }
-    copy {
-        from 'build/libs/HBVersion.txt'
-        into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs'
-    }
-    copy {
         from 'build/docs/javadoc'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc'
     }

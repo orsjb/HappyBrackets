@@ -82,11 +82,13 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
     public static final String HB_JAVADOCS_FOLDER = File.separatorChar + "libs" + File.separatorChar +  "docs" + File.separatorChar + "hb" ;
 
-    // THis is where we need to extract the HB.jar files to in a new project
+    public static final String HAPPY_BRACKETS_DEVICE_FOLDER = File.separatorChar + "Device" + File.separatorChar + "HappyBrackets";
+
+    // This is where we need to extract the HB.jar files to in a new project
     public static final String [] HB_JAR_LOCATION = new String[]{
-            File.separatorChar + "Device" + File.separatorChar + "HappyBrackets",
-            File.separatorChar + "libs"
+            HAPPY_BRACKETS_DEVICE_FOLDER
     };
+
 
 
     @Override
