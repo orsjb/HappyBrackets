@@ -16,9 +16,14 @@ fi
 echo "Startup classes will be sent from this folder"
 
 
-FILE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-echo "Current dir" $FILE_PATH
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# move into Device Folder
 
+DEVICE_DATA_PATH="../Device/HappyBrackets"
+cd "$DEVICE_DATA_PATH"
+FILE_PATH="$(pwd)"
+
+echo "Current dir" $FILE_PATH
 
 echo "Send audio FROM ${FILE_PATH} to ${DEVICE_NAME} "
 

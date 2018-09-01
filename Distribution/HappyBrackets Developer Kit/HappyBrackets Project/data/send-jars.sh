@@ -14,9 +14,15 @@ else
 fi
 
 echo "Jar files will be sent from this folder"
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# move into Device Folder
 
-FILE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEVICE_DATA_PATH="../Device/HappyBrackets"
+cd "$DEVICE_DATA_PATH"
+FILE_PATH="$(pwd)"
+
 echo "Current dir" $FILE_PATH
+
 
 echo "Send jars FROM ${FILE_PATH} to ${DEVICE_NAME} "
 
