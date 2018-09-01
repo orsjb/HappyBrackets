@@ -17,7 +17,7 @@ import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotif
 public class CopyCompositionToStartupAction extends SendCompositionAction {
 
     final static String CLASSES_FOLDER = "classes";
-    final static String DATA_FOLDER = "data";
+    final static String DATA_FOLDER = "Device/HappyBrackets/data";
 
     @Override
     public void update(AnActionEvent e) {
