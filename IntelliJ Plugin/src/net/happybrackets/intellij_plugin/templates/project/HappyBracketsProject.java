@@ -53,7 +53,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
     public static final String HAPPY_BRACKETS_PROJECT_NAME =  "HappyBrackets Project";
 
 
-    static final  String WORKSPACE_FILE = ".idea/workspace.xml";
+    public static final  String WORKSPACE_FILE = ".idea/workspace.xml";
     public static final  String MODULES_FILE = ".idea/modules.xml";
     static final  String DESCRIPTION_FILE = ".idea/description.html";
 
@@ -81,8 +81,10 @@ public class HappyBracketsProject extends WebProjectTemplate {
     public static final String HAPPY_BRACKETS_JAVDOCS_ZIP = "/projectTemplates/JavaDocs.zip";
 
     public static final String HB_JAVADOCS_FOLDER = File.separatorChar + "libs" + File.separatorChar +  "docs" + File.separatorChar + "hb" ;
+    public static final String HB_LIBS_FOLDER = File.separatorChar + "libs" + File.separatorChar;
 
-    public static final String HAPPY_BRACKETS_DEVICE_FOLDER = File.separatorChar + "Device" + File.separatorChar + "HappyBrackets";
+    public static final String HAPPY_BRACKETS_DEVICE_FOLDER = File.separatorChar + "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar;
+
 
     // This is where we need to extract the HB.jar files to in a new project
     public static final String [] HB_JAR_LOCATION = new String[]{

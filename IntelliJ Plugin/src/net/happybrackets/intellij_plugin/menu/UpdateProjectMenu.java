@@ -10,11 +10,13 @@ import net.happybrackets.core.BuildVersion;
 import net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject;
 import net.happybrackets.intellij_plugin.templates.project.ProjectUnzip;
 
+import javax.help.TryMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.*;
 
@@ -26,6 +28,8 @@ public class UpdateProjectMenu extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         try {
+            final String AUDIO_FOLDER = File.separatorChar + "data" + File.separatorChar + "audio";
+
             Project current_project = e.getProject();
             String base_path = current_project.getBaseDir().getCanonicalPath();
             String [] ARCHIVE_SKIP_FILES = HappyBracketsProject.ARCHIVE_SKIP_FILES;
@@ -64,9 +68,21 @@ public class UpdateProjectMenu extends AnAction {
                 ex.printStackTrace();
             }
 
-            // we now need to change old library details
+            // we now need to remove old library
+            try
+            {
+                Files.deleteIfExists(Paths.get(base_path + HB_LIBS_FOLDER + HB_JAR));
+                Files.deleteIfExists(Paths.get(base_path + HB_LIBS_FOLDER + VERSION_FILE));
+            }
+            catch (Exception ex){}
 
+            try{
+                if (Files.isDirectory(Paths.get(base_path + AUDIO_FOLDER))){
+                    DialogDisplay.displayDialog("You will need to manually move your audio, scripts, classes and jars files across to " + base_path + HAPPY_BRACKETS_DEVICE_FOLDER);
+                }
+            }catch (Exception ex){}
 
+            // we are not going top remove their old data files
             DialogDisplay.displayDialog("Updated project to " + BuildVersion.getVersionBuildText());
 
         } catch (Exception ex) {
@@ -86,6 +102,8 @@ public class UpdateProjectMenu extends AnAction {
 
             String hb_path = source_folder + HB_JAR;
             String version = new String("");
+
+            //DialogDisplay.displayDialog(" VERSION " + version_file);
             try
             {
                 version = new String(Files.readAllBytes(Paths.get(version_file)));
