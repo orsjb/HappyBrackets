@@ -21,7 +21,20 @@
     </SUITE>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf>
+      <file leaf-file-name="HappyBracketsSketch.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="305">
+              <caret line="32" column="8" lean-forward="true" selection-start-line="32" selection-start-column="8" selection-end-line="32" selection-end-column="32" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -100,7 +113,6 @@
         <option value="$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" />
-        <option value="$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/DigitalInGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java" />
@@ -123,6 +135,7 @@
         <option value="$PROJECT_DIR$/data/send-scripts.sh" />
         <option value="$PROJECT_DIR$/data/send-startupclasses.sh" />
         <option value="$PROJECT_DIR$/data/_README" />
+        <option value="$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java" />
       </list>
     </option>
   </component>
@@ -132,16 +145,19 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="23" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="1728" />
+    <option name="y" value="82" />
     <option name="width" value="1440" />
-    <option name="height" value="838" />
+    <option name="height" value="877" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -153,6 +169,12 @@
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name=".idea" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name=".idea" type="462c0819:PsiDirectoryNode" />
+              <item name="fileTemplates" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
@@ -208,8 +230,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -312,18 +332,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="838" extended-state="6" />
+    <frame x="1728" y="82" width="1440" height="877" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50858366" side_tool="true" visible="true" weight="0.32523617" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5100143" side_tool="true" visible="true" weight="0.32435897" />
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.24878837" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39084134" weight="0.3572204" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.4914163" visible="true" weight="0.32523617" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.4899857" visible="true" weight="0.32435897" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24034335" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24749643" />
       <window_info anchor="bottom" id="Problems" order="8" />
       <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.2067239" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
@@ -516,13 +537,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-159">
-          <caret line="3" column="38" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -581,9 +595,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="62" column="11" selection-start-line="62" selection-start-column="11" selection-end-line="62" selection-end-column="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -700,9 +711,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
           <caret line="65" column="19" selection-start-line="65" selection-start-column="19" selection-end-line="65" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -712,6 +720,16 @@
           <caret line="267" column="30" selection-start-line="267" selection-start-column="30" selection-end-line="267" selection-end-column="30" />
           <folding>
             <element signature="n#component#13;n#project#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="305">
+          <caret line="32" column="8" lean-forward="true" selection-start-line="32" selection-start-column="8" selection-end-line="32" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

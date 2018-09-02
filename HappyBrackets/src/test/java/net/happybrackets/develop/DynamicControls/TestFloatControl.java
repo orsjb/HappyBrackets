@@ -49,7 +49,7 @@ public class TestFloatControl implements HBAction {
         };/*** End DynamicControl floatSliderControl code ***/
 
 
-        FloatTextControl floatTextControl = new FloatTextControl(this, "Text", 0) {
+        FloatTextControl floatTextControl1 = new FloatTextControl(this, "Text", 0) {
             @Override
             public void valueChanged(double control_val) {
                 /*** Write your DynamicControl code below this line ***/
@@ -88,6 +88,14 @@ public class TestFloatControl implements HBAction {
         };
         globalFloat2.setControlScope(ControlScope.GLOBAL);
         /*** End DynamicControl globalFloat2 code ***/
+
+        /*************************************************************
+         * Create a send only Float type Dynamic Control that displays as a text box
+         * Simply type floatControlSender to generate this code
+         *************************************************************/
+        FloatControl floatControl = new FloatControlSender(this, "control name", 0);
+
+
         /************************************************************
          * Create a clock with a interval based on the clock duration
          *
@@ -109,9 +117,9 @@ public class TestFloatControl implements HBAction {
                 if (start_of_beat) {
                     /*** Write your code to perform functions on the beat below this line ****/
 
-                    double current_val =  floatTextControl.getValue();
+                    double current_val =  floatTextControl1.getValue();
 
-                    floatTextControl.setValue(current_val + 1);
+                    floatTextControl1.setValue(current_val + 1);
 
 
                     /*** Write your code to perform functions on the beat above this line ****/
@@ -123,6 +131,8 @@ public class TestFloatControl implements HBAction {
             }
         });
         /*********************** end clockTimer **********************/
+
+
         /***** Type your HBAction code above this line ******/
     }
 

@@ -10,6 +10,9 @@ public class ${NAME} implements HBAction, HBReset {
 // Change to the number of audio Channels on your device
 final int NUMBER_AUDIO_CHANNELS = 1;
 
+// This variable will become true when the composition is reset
+boolean compositionReset = false;
+
 @Override
     public void action(HB hb) {
         /***** Type your HBAction code below this line ******/
@@ -27,6 +30,7 @@ final int NUMBER_AUDIO_CHANNELS = 1;
     */
 @Override
     public void doReset(){
+        compositionReset = true;
         /***** Type your HBReset code below this line ******/
 
         /***** Type your HBReset code above this line ******/
