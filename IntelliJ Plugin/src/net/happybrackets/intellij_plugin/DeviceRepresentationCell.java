@@ -66,10 +66,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	final String MAIN_FONT_STYLE = "-fx-font-family: sample; -fx-font-size: 10;";
 
 	final String RED_IMAGE_NAME = "/icons/red.png";
+	final String RED_STAR_NAME = "/icons/redstar.png";
 	final String GREEN_IMAGE_NAME = "/icons/green.png";
+	final String GREEN_STAR_NAME = "/icons/greenstar.png";
 
 	Image disconnectedImage = new Image(getClass().getResourceAsStream(RED_IMAGE_NAME));
+	Image disconnectedFavouriteImage = new Image(getClass().getResourceAsStream(RED_STAR_NAME));
 	Image connectedImage = new Image(getClass().getResourceAsStream(GREEN_IMAGE_NAME));
+	Image connectedFavouriteImage = new Image(getClass().getResourceAsStream(GREEN_STAR_NAME));
 
 
     // define the username to use for SSH Command
@@ -83,7 +87,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	private LocalDeviceRepresentation.DeviceIdUpdateListener deviceIdUpdateListener = null;
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
 	private LocalDeviceRepresentation.StatusUpdateListener friendlyNameListener = null;
-
+	private LocalDeviceRepresentation.FavouriteChangedListener favouriteChangedListener = null;
 
 	/**
 	 * Display a message dialog
@@ -141,6 +145,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		connectedUpdateListener = null;
 		invalidTextWarning = null;
 		friendlyNameListener = null;
+		favouriteChangedListener = null;
 	}
 
 	@Override
@@ -154,6 +159,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
 			localDevice.removeFriendlyNameUpdateListener(friendlyNameListener);
+			localDevice.removeFavouriteListener(favouriteChangedListener);
 			localDevice.resetDeviceHasDisplayed();
 
 
@@ -202,6 +208,23 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		}).start();
 	}
 
+	/**
+	 * Get the image based on it's state
+	 * @param item the LocalDeviceRepresentation item
+	 * @return the image to display
+	 */
+	private ImageView getIconImage(LocalDeviceRepresentation item){
+		ImageView image;
+		if (item.isFavouriteDevice()){
+			image = item.getIsConnected()? new ImageView(connectedFavouriteImage): new ImageView(disconnectedFavouriteImage);
+		}
+		else{
+			image = item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage);
+		}
+
+		return image;
+	}
+
 	@SuppressWarnings("deprecation")
 	synchronized void  addCellRow(LocalDeviceRepresentation item) {
 		//set up main panel
@@ -212,7 +235,9 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		int next_column = 0;
 		int current_row = 0;
 
-		ImageView image  = item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage);
+		ImageView image  = getIconImage(item);
+
+
 
 		image.setFitHeight(ICON_FIT_SIZE);
 		image.setFitWidth(ICON_FIT_SIZE);
@@ -241,7 +266,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		//if item not currently active, change icon to green
 		item.addConnectedUpdateListener(connectedUpdateListener = connected -> Platform.runLater(new Runnable() {
             public void run() {
-				ImageView image  = item.getIsConnected()? new ImageView(connectedImage): new ImageView(disconnectedImage);
+				ImageView image  = getIconImage(item);
 
 				image.setFitHeight(ICON_FIT_SIZE);
 				image.setFitWidth(ICON_FIT_SIZE);
@@ -280,6 +305,16 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
             }
         }));
 
+		item.addFavouriteListener(favouriteChangedListener = device -> Platform.runLater(new Runnable() {
+			public void run() {
+				ImageView image  = getIconImage(item);
+
+				image.setFitHeight(ICON_FIT_SIZE);
+				image.setFitWidth(ICON_FIT_SIZE);
+
+				connected_icon.setGraphic(image);
+			}
+		}));
 
 		// Now let us display ID
 		// add ID Text

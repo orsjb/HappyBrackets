@@ -409,6 +409,13 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
+	public void removeFavouriteListener(FavouriteChangedListener listener){
+		synchronized (favouriteChangedListeners)
+		{
+			favouriteChangedListeners.remove(listener);
+		}
+	}
+
 
 	public void removeDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener) {
 		synchronized (removeDynamicControlListenerList) {
