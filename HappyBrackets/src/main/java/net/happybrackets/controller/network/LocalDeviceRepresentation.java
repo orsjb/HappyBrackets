@@ -119,8 +119,10 @@ public class LocalDeviceRepresentation {
 		synchronized (clientLock) {
 			if (client != null) {
 				try {
-					client.stop();
-					client.dispose();
+					if(client.isConnected()) {
+						client.stop();
+						client.dispose();
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -224,7 +226,7 @@ public class LocalDeviceRepresentation {
 
 		if (changed) {
 			this.friendlyName = friendlyName;
-			synchronized (friendlyNameListenerList) {
+			synchronized (friendlyNameListenerListLock) {
 				for (StatusUpdateListener listener : friendlyNameListenerList) {
 					listener.update(getFriendlyName());
 				}
@@ -273,7 +275,7 @@ public class LocalDeviceRepresentation {
 	public void setFavouriteDevice(boolean enabled) {
 		if (isFavouriteDevice != enabled) {
 			this.isFavouriteDevice = enabled;
-			synchronized (favouriteChangedListeners) {
+			synchronized (favouriteChangedListenersLock) {
 				for (FavouriteChangedListener deviceModifiedListener : favouriteChangedListeners) {
 					deviceModifiedListener.favouriteChanged(this);
 				}
@@ -378,6 +380,14 @@ public class LocalDeviceRepresentation {
 	private String currentLogPage = "";
 	private ArrayList<String> completeLog = new ArrayList<String>();
 
+	private Object deviceRemovedListenerListLock = new Object();
+	private Object favouriteChangedListenersLock = new Object();
+	private Object deviceIdUpdateListenerListLock = new Object();
+	private Object statusUpdateListenerListLock = new Object();
+	private Object connectedUpdateListenerListLock = new Object();
+	private Object friendlyNameListenerListLock = new Object();
+
+
 	public interface LogListener {
 		void newLogMessage(String message, int page);
 	}
@@ -403,14 +413,14 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void addFavouriteListener(FavouriteChangedListener listener){
-		synchronized (favouriteChangedListeners)
+		synchronized (favouriteChangedListenersLock)
 		{
 			favouriteChangedListeners.add(listener);
 		}
 	}
 
 	public void removeFavouriteListener(FavouriteChangedListener listener){
-		synchronized (favouriteChangedListeners)
+		synchronized (favouriteChangedListenersLock)
 		{
 			favouriteChangedListeners.remove(listener);
 		}
@@ -814,7 +824,7 @@ public class LocalDeviceRepresentation {
 	 * Also closes the TCP Port
 	 */
 	public void removeDevice() {
-		synchronized (deviceRemovedListenerList) {
+		synchronized (deviceRemovedListenerListLock) {
 			for (DeviceRemovedListener listener : deviceRemovedListenerList) {
 				listener.deviceRemoved(this);
 			}
@@ -822,8 +832,20 @@ public class LocalDeviceRepresentation {
 
 			closeClientPort();
 			// Just because a device is removed does not mean it is no longer a favourite
-			favouriteChangedListeners.clear();
+			synchronized (favouriteChangedListenersLock) {
+				favouriteChangedListeners.clear();
+			}
+
+			synchronized (deviceIdUpdateListenerListLock){
+				deviceIdUpdateListenerList.clear();
+			}
+
+			synchronized (statusUpdateListenerListLock){
+				statusUpdateListenerList.clear();
+			}
+
 			deviceRemovedListenerList.clear();
+
 			dynamicControlScreen.removeDynamicControlScene();
 			dynamicControlScreen = null;
 
@@ -839,8 +861,10 @@ public class LocalDeviceRepresentation {
 		this.deviceId = id;
 
 		if (changed) {
-			for (DeviceIdUpdateListener listener: deviceIdUpdateListenerList){
-				listener.update(id);
+			synchronized (deviceIdUpdateListenerListLock) {
+				for (DeviceIdUpdateListener listener : deviceIdUpdateListenerList) {
+					listener.update(id);
+				}
 			}
 		}
 
@@ -983,7 +1007,7 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void addStatusUpdateListener(StatusUpdateListener listener) {
-		synchronized (statusUpdateListenerList) {
+		synchronized (statusUpdateListenerListLock) {
 			statusUpdateListenerList.add(listener);
 		}
 	}
@@ -991,13 +1015,13 @@ public class LocalDeviceRepresentation {
 	public void removeStatusUpdateListener(StatusUpdateListener listener) {
 		StatusUpdateListener removal_object = null;
 
-		synchronized (statusUpdateListenerList) {
+		synchronized (statusUpdateListenerListLock) {
 			statusUpdateListenerList.remove(listener);
 		}
 	}
 
 	public void addFriendlyNameUpdateListener(StatusUpdateListener listener) {
-		synchronized (friendlyNameListenerList) {
+		synchronized (friendlyNameListenerListLock) {
 			friendlyNameListenerList.add(listener);
 		}
 	}
@@ -1005,7 +1029,7 @@ public class LocalDeviceRepresentation {
 	public void removeFriendlyNameUpdateListener(StatusUpdateListener listener) {
 		StatusUpdateListener removal_object = null;
 
-		synchronized (friendlyNameListenerList) {
+		synchronized (friendlyNameListenerListLock) {
 			friendlyNameListenerList.remove(listener);
 		}
 	}
@@ -1013,7 +1037,7 @@ public class LocalDeviceRepresentation {
 
 
 	public void addConnectedUpdateListener(ConnectedUpdateListener listener) {
-		synchronized (connectedUpdateListenerList) {
+		synchronized (connectedUpdateListenerListLock) {
 			connectedUpdateListenerList.add(listener);
 		}
 	}
@@ -1026,7 +1050,7 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void removeConnectedUpdateListener(ConnectedUpdateListener listener) {
-		synchronized (connectedUpdateListenerList) {
+		synchronized (connectedUpdateListenerListLock) {
 			connectedUpdateListenerList.remove(listener);
 		}
 	}
@@ -1044,20 +1068,20 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void addDeviceRemovedListener(DeviceRemovedListener listener) {
-		synchronized (deviceRemovedListenerList) {
+		synchronized (deviceRemovedListenerListLock) {
 			deviceRemovedListenerList.add(listener);
 		}
 	}
 
 
 	public void addDeviceIdUpdateListener(DeviceIdUpdateListener listener) {
-		synchronized (deviceIdUpdateListenerList) {
+		synchronized (deviceIdUpdateListenerListLock) {
 			deviceIdUpdateListenerList.add(listener);
 		}
 	}
 
 	public void removeDeviceIdUpdateListener(DeviceIdUpdateListener listener) {
-		synchronized (deviceIdUpdateListenerList) {
+		synchronized (deviceIdUpdateListenerListLock) {
 			deviceIdUpdateListenerList.remove(listener);
 		}
 	}
@@ -1086,7 +1110,7 @@ public class LocalDeviceRepresentation {
 
 
 		status = new_status;
-		synchronized (statusUpdateListenerList) {
+		synchronized (statusUpdateListenerListLock) {
 			for (StatusUpdateListener statusUpdateListener : statusUpdateListenerList) {
 				statusUpdateListener.update(status);
 			}
@@ -1096,7 +1120,7 @@ public class LocalDeviceRepresentation {
 
 		if (isConnected != connected) {
 			this.isConnected = connected;
-			synchronized (connectedUpdateListenerList) {
+			synchronized (connectedUpdateListenerListLock) {
 				for (ConnectedUpdateListener listener : connectedUpdateListenerList) {
 					listener.update(connected);
 				}
