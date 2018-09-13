@@ -229,7 +229,8 @@ public class ControllerAdvertiser {
 			DatagramPacket multicast_packet = new DatagramPacket(buff, buff.length, multicast, broadcastPort);
 			cachedMulticastMessage = new CachedMessage(msg, buff, multicast_packet, multicast);
 
-			loadNetworkBroadcastAdverticements();
+			//Do not load these at startup - could be locking up
+			//loadNetworkBroadcastAdverticements();
 		} catch (Exception ex) {
 			logger.error("Unable to create cached message", ex);
 		}
@@ -246,7 +247,7 @@ public class ControllerAdvertiser {
 						try {
 							advertiseTxSocket.send(cachedMulticastMessage.cachedPacket);
 						} catch (IOException e) {
-							e.printStackTrace();
+							//e.printStackTrace();
 						}
 
 
@@ -256,7 +257,7 @@ public class ControllerAdvertiser {
 						try {
 							advertiseTxSocket.send(packet);
 						} catch (Exception ex) {
-							System.out.println(ex.getMessage());
+							//System.out.println(ex.getMessage());
 						}
 
 						try {

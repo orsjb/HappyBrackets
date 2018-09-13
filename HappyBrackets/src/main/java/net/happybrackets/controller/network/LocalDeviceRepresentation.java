@@ -380,12 +380,19 @@ public class LocalDeviceRepresentation {
 	private String currentLogPage = "";
 	private ArrayList<String> completeLog = new ArrayList<String>();
 
-	private Object deviceRemovedListenerListLock = new Object();
-	private Object favouriteChangedListenersLock = new Object();
-	private Object deviceIdUpdateListenerListLock = new Object();
-	private Object statusUpdateListenerListLock = new Object();
-	private Object connectedUpdateListenerListLock = new Object();
-	private Object friendlyNameListenerListLock = new Object();
+	// define object to prevent assyncronous list access
+	private final Object deviceRemovedListenerListLock = new Object();
+	private final Object favouriteChangedListenersLock = new Object();
+	private final Object deviceIdUpdateListenerListLock = new Object();
+	private final Object statusUpdateListenerListLock = new Object();
+	private final Object connectedUpdateListenerListLock = new Object();
+	private final Object friendlyNameListenerListLock = new Object();
+	private final Object loggingStateListenerLock = new Object();
+	private final Object socketAddressChangedListenerListLock = new Object();
+	private final Object addDynamicControlListenerListLock = new Object();
+	private final Object removeDynamicControlListenerListLock = new Object();
+	private final Object errorListenerListLock = new Object();
+	private final Object logListenerListLock = new Object();
 
 
 	public interface LogListener {
@@ -395,19 +402,19 @@ public class LocalDeviceRepresentation {
 	private List<LogListener> logListenerList = new ArrayList<>();
 
 	public void addDynamicControlListenerCreatedListener(DynamicControl.DynamicControlListener listener) {
-		synchronized (addDynamicControlListenerList) {
+		synchronized (addDynamicControlListenerListLock) {
 			addDynamicControlListenerList.add(listener);
 		}
 	}
 
 	public void removeDynamicControlListenerCreatedListener(DynamicControl.DynamicControlListener listener) {
-		synchronized (addDynamicControlListenerList) {
+		synchronized (addDynamicControlListenerListLock) {
 			addDynamicControlListenerList.remove(listener);
 		}
 	}
 
 	public void addDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener) {
-		synchronized (removeDynamicControlListenerList) {
+		synchronized (removeDynamicControlListenerListLock) {
 			removeDynamicControlListenerList.add(listener);
 		}
 	}
@@ -428,7 +435,7 @@ public class LocalDeviceRepresentation {
 
 
 	public void removeDynamicControlListenerRemovedListener(DynamicControl.DynamicControlListener listener) {
-		synchronized (removeDynamicControlListenerList) {
+		synchronized (removeDynamicControlListenerListLock) {
 			removeDynamicControlListenerList.add(listener);
 		}
 	}
@@ -494,7 +501,7 @@ public class LocalDeviceRepresentation {
 
 			dynamicControlScreen.loadDynamicControls(this);
 
-			synchronized (addDynamicControlListenerList) {
+			synchronized (addDynamicControlListenerListLock) {
 				for (DynamicControl.DynamicControlListener listener : addDynamicControlListenerList) {
 					listener.update(control);
 				}
@@ -572,7 +579,7 @@ public class LocalDeviceRepresentation {
 
 			dynamicControlScreen.removeDynamicControl(control);
 
-			synchronized (removeDynamicControlListenerList) {
+			synchronized (removeDynamicControlListenerListLock) {
 				for (DynamicControl.DynamicControlListener listener : removeDynamicControlListenerList) {
 					listener.update(control);
 				}
@@ -680,8 +687,10 @@ public class LocalDeviceRepresentation {
 
 
 		//logger.debug("Received new log output from device {} ({}): {}", deviceName, socketAddress, new_log_output);
-		for (LogListener listener : logListenerList) {
-			listener.newLogMessage(new_log_output, numberLogPages() - 1);
+		synchronized (logListenerListLock) {
+			for (LogListener listener : logListenerList) {
+				listener.newLogMessage(new_log_output, numberLogPages() - 1);
+			}
 		}
 	}
 
@@ -699,8 +708,10 @@ public class LocalDeviceRepresentation {
 		if (loggingEnabled != status.isLoggingEnabled()) {
 			loggingEnabled = status.isLoggingEnabled();
 			try {
-				for (ConnectedUpdateListener listener : loggingStateListener) {
-					listener.update(loggingEnabled);
+				synchronized (loggingStateListenerLock) {
+					for (ConnectedUpdateListener listener : loggingStateListener) {
+						listener.update(loggingEnabled);
+					}
 				}
 			}catch (Exception ex){}
 		}
@@ -809,7 +820,8 @@ public class LocalDeviceRepresentation {
 			this.address = new_host_address;
 			this.socketAddress = new InetSocketAddress(new_socket_address, controllerConfig.getControlToDevicePort());
 
-			synchronized (socketAddressChangedListenerList) {
+
+			synchronized (socketAddressChangedListenerListLock) {
 				// now raise event
 				for (SocketAddressChangedListener listener : socketAddressChangedListenerList) {
 					listener.socketChanged(old, new_socket_address);
@@ -1043,7 +1055,7 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void addLoggingStateListener(ConnectedUpdateListener listener){
-		synchronized (loggingStateListener)
+		synchronized (loggingStateListenerLock)
 		{
 			loggingStateListener.add(listener);
 		}
@@ -1056,13 +1068,13 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void removeLoggingStateListener(ConnectedUpdateListener listener){
-		synchronized (loggingStateListener)
+		synchronized (loggingStateListenerLock)
 		{
 			loggingStateListener.remove(listener);
 		}
 	}
     public void addSocketAddressChangedListener(SocketAddressChangedListener listener) {
-		synchronized (socketAddressChangedListenerList) {
+		synchronized (socketAddressChangedListenerListLock) {
 			socketAddressChangedListenerList.add(listener);
 		}
 	}
@@ -1087,13 +1099,13 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void addErrorListener(ErrorListener listener) {
-		synchronized (errorListenerList) {
+		synchronized (errorListenerListLock) {
 			errorListenerList.add(listener);
 		}
 	}
 
 	public void removeErrorListener(ErrorListener listener) {
-		synchronized (errorListenerList) {
+		synchronized (errorListenerListLock) {
 			errorListenerList.remove(listener);
 		}
 	}
@@ -1137,7 +1149,7 @@ public class LocalDeviceRepresentation {
     }
 
 	private void sendError(String description, Exception ex) {
-		synchronized (errorListenerList) {
+		synchronized (errorListenerListLock) {
 			for (ErrorListener l : errorListenerList) {
 				l.errorOccurred(this.getClass(), description, ex);
 			}
@@ -1145,13 +1157,13 @@ public class LocalDeviceRepresentation {
 	}
 
 	public void addLogListener(LogListener listener) {
-		synchronized (logListenerList) {
+		synchronized (logListenerListLock) {
 			logListenerList.add(listener);
 		}
 	}
 
 	public void removeLogListener(LogListener listener) {
-		synchronized (logListenerList) {
+		synchronized (logListenerListLock) {
 			logListenerList.remove(listener);
 		}
 	}

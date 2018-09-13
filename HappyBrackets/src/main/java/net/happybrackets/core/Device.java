@@ -205,7 +205,7 @@ public abstract class Device {
      */
 	public static boolean isViableNetworkInterface(NetworkInterface ni) {
 		try {
-			if ( !ni.supportsMulticast()												) return false;
+			//if ( !ni.supportsMulticast()												) return false;
 			//if ( ni.isLoopback()														) return false;
             if ( !ni.isLoopback() && !isValidMac(selectMAC(ni))                         ) return false;
 			if ( !ni.isUp()										  						) return false;

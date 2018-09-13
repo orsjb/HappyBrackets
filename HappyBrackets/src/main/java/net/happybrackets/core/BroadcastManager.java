@@ -47,6 +47,11 @@ public class BroadcastManager {
     List<NetworkInterface>                        netInterfaces;
 
 
+    // create objects for synchronising addin and removal from lists
+    private final Object receiversLock =  new Object();
+    private final Object transmittersLock =  new Object();
+    private final Object netInterfacesLock =  new Object();
+
     boolean disableSend = false;
 
     // we will set this flag if we are running from plugin
@@ -146,47 +151,7 @@ public class BroadcastManager {
         receivers               = new ArrayList<>();
         transmitters            = new ArrayList<>();
         netInterfaces           = new ArrayList<>();
-        //  Defer the fiding of interfaces to the refresh cycle so that we don't block the thread loading the BroadcastManager
-//        netInterfaces           = Device.viableInterfaces();
-//        netInterfaces.forEach( ni -> {
-//            try {
-//                InetAddress group = InetAddress.getByName(address);
-//                //set up a listener and receiver for our broadcast address on this interface
-//                DatagramChannel dc = null;
-//                // Try creating IPv6 channel first.
-//                try {
-//                    dc = DatagramChannel.open(StandardProtocolFamily.INET6)
-//                            .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-//                            .bind(new InetSocketAddress(port))
-//                            .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
-//                    dc.join(group, ni);
-//                }
-//                catch (Exception ex) {
-//                    // If creating IPv6 channel doesn't work try IPv4.
-//                    dc = DatagramChannel.open(StandardProtocolFamily.INET)
-//                            .setOption(StandardSocketOptions.SO_REUSEADDR, true)
-//                            .bind(new InetSocketAddress(port))
-//                            .setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
-//                    if(dc != null) {
-//                        dc.join(group, ni);
-//                    }
-//                }
-//                if (dc != null) {
-//                    //add receivers
-//                    OSCReceiver receiver = OSCReceiver.newUsing(dc);
-//                    receiver.startListening();
-//                    receiver.addOSCListener(new MessageAggregator(ni));
-//                    receivers.add(new NetworkInterfacePair<OSCReceiver>(ni, receiver));
-//                    // add transmitters
-//                    OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
-//                    transmitter.setTarget(new InetSocketAddress(group.getHostAddress(), port));
-//                    transmitters.add(new NetworkInterfacePair<OSCTransmitter>(ni, transmitter));
-//                    logger.debug("Broadcasting on interface: {}", ni.getName());
-//                }
-//            } catch (IOException e) {
-//                logger.error("BroadcastManager encountered an IO exception when creating a listener socket on interface {}! This interface will not be used.", ni.getName());
-//            }
-//        });
+        //  Defer the finding of interfaces to the refresh cycle so that we don't block the thread loading the BroadcastManager
     }
 
     /**
@@ -194,8 +159,32 @@ public class BroadcastManager {
      */
     public void dispose() {
 //        These calls take an unusually long time and may not be necessary? Hammering the tests.
-        receivers.forEach(r -> r.value.dispose());
-        transmitters.forEach(t -> t.value.dispose());
+        synchronized (receiversLock) {
+
+            // dispose listeners
+            for (NetworkInterfacePair<OSCReceiver> r : receivers) {
+                r.value.dispose();
+            }
+
+            receivers.clear();
+        }
+
+        // now clear all transmitters
+        synchronized (transmittersLock) {
+
+            // dispose listeners
+            for (NetworkInterfacePair<OSCTransmitter> t : transmitters) {
+                t.value.dispose();
+            }
+
+            transmitters.clear();
+
+        }
+
+        // we should clear out our stored net interfaces. When we do refresh they will get loaded back up
+        synchronized (netInterfacesLock){
+            netInterfaces.clear();
+        }
     }
 
     /**
@@ -231,29 +220,70 @@ public class BroadcastManager {
         //Soft refresh - only fix connections that are broken.
         //iterate through existing network interfaces, destroy as required
         List<NetworkInterface> toRemove = new ArrayList<>();
-        netInterfaces.forEach( ni -> {
-            String name = ni.getName();
-            if(!Device.isViableNetworkInterface(ni)) {
-                toRemove.add(ni);
-                logger.debug("The network interface " + ni + " is no longer valid! Removing it!");
-                if(name.equals("en0")) {
-                    wifiIPaddress = null;
+
+        synchronized (netInterfacesLock) {
+            netInterfaces.forEach(ni -> {
+
+                if (!Device.isViableNetworkInterface(ni)) {
+                    toRemove.add(ni);
+                    String name = ni.getName();
+                    logger.debug("The network interface " + ni + " is no longer valid! Removing it!");
+                    if (name.equals("en0")) {
+                        wifiIPaddress = null;
+                    }
                 }
-            }
-        });
+
+            });
+        }
+
         //we now have a to-remove list
         //clean up the removes
-        receivers.forEach(r -> {
-            if(toRemove.contains(r.networkInterface)) {
-                r.value.dispose();
+        synchronized (receiversLock) {
+            // Determine which ones we want to remove
+            List <NetworkInterfacePair<OSCReceiver>>receiverRemovalList = new ArrayList<>();
+
+            for (NetworkInterfacePair<OSCReceiver> r: receivers){
+                if (toRemove.contains(r.networkInterface)) {
+                    receiverRemovalList.add(r);
+                }
             }
-        });
-        transmitters.forEach(t -> {
-            if(toRemove.contains(t.networkInterface)) {
-                t.value.dispose();
+
+            // now remove from our receivers and dispose
+            for (NetworkInterfacePair<OSCReceiver> r: receiverRemovalList){
+                if (toRemove.contains(r.networkInterface)) {
+                    r.value.dispose();
+                    receivers.remove(r);
+                }
             }
-        });
-        netInterfaces.removeAll(toRemove);
+
+        }
+
+        synchronized (transmittersLock) {
+
+            // Determine which ones we want to remove
+            List <NetworkInterfacePair<OSCTransmitter>>transmitterRemovalList = new ArrayList<>();
+
+            for (NetworkInterfacePair<OSCTransmitter> t: transmitters){
+                if (toRemove.contains(t.networkInterface)) {
+                    transmitterRemovalList.add(t);
+                }
+            }
+
+            // now remove from our receivers and dispose
+            for (NetworkInterfacePair<OSCTransmitter> t: transmitterRemovalList){
+                if (toRemove.contains(t.networkInterface)) {
+                    t.value.dispose();
+                    transmitters.remove(t);
+                }
+            }
+
+        }
+
+
+        synchronized (netInterfacesLock) {
+            netInterfaces.removeAll(toRemove);
+        }
+
         //iterate through the viable interfaces to see if new interfaces have become viable.
         List<NetworkInterface> tempInterfaces = Device.viableInterfaces();
 
@@ -261,11 +291,13 @@ public class BroadcastManager {
         {
             boolean network_already_exists = false;
 
-            // check if this interface is in existing interfaces
-            for(NetworkInterface existingInterface : netInterfaces){
-                if(newInterface.getName().equals(existingInterface.getName())) {
-                    network_already_exists = true;
-                    break;
+            synchronized (netInterfacesLock) {
+                // check if this interface is in existing interfaces
+                for (NetworkInterface existingInterface : netInterfaces) {
+                    if (newInterface.getName().equals(existingInterface.getName())) {
+                        network_already_exists = true;
+                        break;
+                    }
                 }
             }
 
@@ -304,14 +336,23 @@ public class BroadcastManager {
                         OSCReceiver receiver = OSCReceiver.newUsing(dc);
                         receiver.startListening();
                         receiver.addOSCListener(new MessageAggregator(newInterface));
-                        receivers.add(new NetworkInterfacePair<OSCReceiver>(newInterface, receiver));
+
+                        synchronized (receiversLock) {
+                            receivers.add(new NetworkInterfacePair<OSCReceiver>(newInterface, receiver));
+                        }
                         // add transmitters
                         OSCTransmitter transmitter = OSCTransmitter.newUsing(dc);
                         transmitter.setTarget(new InetSocketAddress(group.getHostAddress(), port));
-                        transmitters.add(new NetworkInterfacePair<OSCTransmitter>(newInterface, transmitter));
 
-                        netInterfaces.add(newInterface);
-                        logger.debug("Broadcasting on interface: {}", newInterface.getName());
+                        synchronized (transmittersLock) {
+                            transmitters.add(new NetworkInterfacePair<OSCTransmitter>(newInterface, transmitter));
+                        }
+
+                        synchronized (netInterfacesLock) {
+                            netInterfaces.add(newInterface);
+                        }
+
+                        //logger.debug("Broadcasting on interface: {}", newInterface.getName());
                     }
 
                 } catch (IOException e) {
@@ -336,22 +377,30 @@ public class BroadcastManager {
                 OSCMessage msg = new OSCMessage(name, args);
                 ArrayList<NetworkInterfacePair<OSCTransmitter>> removal_list = new ArrayList<>(); // do not intantiate unless we actually need one
 
-                transmitters.stream().map(pair -> pair.value).forEach(transmitter -> {
-                    try {
-                        transmitter.send(msg);
-                    } catch (IOException e) {
-                        logger.warn("Removing broadcaster interface due to error:", e);
+                synchronized (transmittersLock) {
+                    transmitters.stream().map(pair -> pair.value).forEach(transmitter -> {
+                        try {
+                            transmitter.send(msg);
+                        } catch (IOException e) {
+                            logger.warn("Removing broadcaster interface due to error:", e);
 
-                        transmitters.stream().filter(t -> transmitter.equals((OSCTransmitter) t.value)).forEach(match -> {
-                            removal_list.add(match);
-                        });
+                            transmitters.stream().filter(t -> transmitter.equals((OSCTransmitter) t.value)).forEach(match -> {
+                                removal_list.add(match);
+                            });
 
-                    }
-                });
+                        }
+                    });
+                }
 
                 removal_list.forEach(pair -> {
-                    netInterfaces.remove(pair.networkInterface);
-                    transmitters.remove(pair);
+                    synchronized (netInterfacesLock) {
+                        netInterfaces.remove(pair.networkInterface);
+                    }
+
+                    synchronized (transmittersLock) {
+                        transmitters.remove(pair);
+                    }
+
                     pair.value.dispose();
                 });
 
@@ -374,19 +423,28 @@ public class BroadcastManager {
                 ArrayList<NetworkInterfacePair<OSCTransmitter>> removal_list = new ArrayList<>();
 
 
-                transmitters.forEach(pair -> {
-                    try {
-                        onTransmitter.cb(pair.networkInterface, pair.value);
-                    } catch (Exception e) {
-                        logger.error("Error executing call back on transmitter for interface {}, removing interface", pair.networkInterface.getDisplayName(), e);
+                synchronized (transmittersLock) {
+                    transmitters.forEach(pair -> {
+                        try {
+                            onTransmitter.cb(pair.networkInterface, pair.value);
+                        } catch (Exception e) {
+                            logger.error("Error executing call back on transmitter for interface {}, removing interface", pair.networkInterface.getDisplayName(), e);
 
-                        removal_list.add(pair);
+                            removal_list.add(pair);
 
-                    }
-                });
+                        }
+                    });
+                }
+
                 removal_list.forEach(pair -> {
-                    netInterfaces.remove(pair.networkInterface);
-                    transmitters.remove(pair);
+                    synchronized (netInterfacesLock) {
+                        netInterfaces.remove(pair.networkInterface);
+                    }
+
+                    synchronized (transmittersLock) {
+                        transmitters.remove(pair);
+                    }
+
                     pair.value.dispose();
                 });
 

@@ -76,10 +76,12 @@ public class ControllerEngine {
             logger.debug("Stopping ControllerAdvertiser");
             controllerAdvertiser.stop();
         }
+
         if (broadcastManager != null) {
             logger.debug("Disposing of BroadcastManager");
             broadcastManager.dispose();
         }
+
         if (deviceConnection != null) {
             logger.debug("Disposing of DeviceConnection");
             deviceConnection.dispose();
