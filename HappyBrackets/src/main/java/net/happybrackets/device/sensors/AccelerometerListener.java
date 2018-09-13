@@ -12,6 +12,8 @@ public abstract class AccelerometerListener {
 
     public AccelerometerListener(HB hb)
     {
+
+
         /*****************************************************
          * Find an accelerometer sensor. If no sensor is found
          * you will receive a status message
@@ -51,6 +53,20 @@ public abstract class AccelerometerListener {
             accelerometer.setRounding(resolution);
         }
     }
+
+    /**
+     * Scale the values based on a maximum and minimum sensor value of 1 / -1
+     * The value can be greater than scaled_min and scaled_max if sensor_value is greater than abs(1)
+     * ((scaled_max - scaled_min) * (sensor_value - sensor_min)) / (sensor_max - sensor_min) + scaled_min;
+     * @param scaled_min The value we want our standard minimum sensor value to become
+     * @param scaled_max  The value we want our standard maximum sensor value to become
+     * @param sensor_value The actual value of our sensor
+     * @return the value scaled
+     */
+    public float scaleValue(double scaled_min, double scaled_max, double sensor_value){
+        return Sensor.scaleValue(-1, 1, scaled_min, scaled_max, sensor_value);
+    }
+
     /**
      * Sensor has been updated
      * @param x_val x value of accelerometer
