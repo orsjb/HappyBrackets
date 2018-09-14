@@ -3,7 +3,7 @@ package net.happybrackets.develop.instruments;
 import net.beadsproject.beads.data.Buffer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
-import net.happybrackets.core.instruments.BasicWavePlayer;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
@@ -28,7 +28,9 @@ public class MidiNotes implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        BasicWavePlayer player = new BasicWavePlayer().setMidiFequency(MIN_NOTE).setBuffer(Buffer.SQUARE);
+        WaveModule player = new WaveModule().setMidiFequency(MIN_NOTE).setBuffer(Buffer.SQUARE);
+
+        player.connectTo(hb.ac.out);
 
         /*** To create this, just type clockTimer ***/
         Clock clock = hb.createClock(200).addClockTickListener((offset, this_clock) -> {

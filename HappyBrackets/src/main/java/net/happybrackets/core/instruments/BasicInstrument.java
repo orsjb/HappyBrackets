@@ -11,20 +11,18 @@ import net.happybrackets.device.HB;
 abstract class BasicInstrument {
     UGen gainControl;
     Gain gainAmplifier;
-    private AudioContext audioContext;
 
     /**
      * Constructor
      * @param gain_control the object that will control the gain
      */
     BasicInstrument (UGen gain_control){
-        audioContext = HB.HBInstance.ac;
-        int NUMBER_AUDIO_CHANNELS = audioContext.out.getOuts();
+
+        int NUMBER_AUDIO_CHANNELS = HB.HBInstance.ac.out.getOuts();
 
         gainControl = gain_control;
         // set up a gain amplifier to control the volume
         gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, gainControl);
-        gainAmplifier.connectTo(audioContext.out);
     }
 
     /**
@@ -72,5 +70,13 @@ abstract class BasicInstrument {
     public void setGainValue(double new_gain){
         gainControl.setValue((float) new_gain);
 
+    }
+
+    /**
+     * Connect the output of this instrument to the input of another device
+     * @param input_device the device we want to connect it to
+     */
+    protected void connectToDevice(UGen input_device){
+        gainAmplifier.connectTo(input_device);
     }
 }

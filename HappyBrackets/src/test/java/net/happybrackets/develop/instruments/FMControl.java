@@ -6,7 +6,7 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
-import net.happybrackets.core.instruments.BasicWavePlayer;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -53,8 +53,7 @@ public class FMControl implements HBAction, HBReset {
         };
 
 
-        BasicWavePlayer player = new BasicWavePlayer(1000, 0.1, Buffer.SINE);
-        player.setFequency(modFunction);
+        WaveModule player = new WaveModule(modFunction, 0.1, Buffer.SINE).connectTo(hb.ac.out);
 
         /***** Type your HBAction code above this line ******/
     }

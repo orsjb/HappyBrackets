@@ -3,7 +3,7 @@ package net.happybrackets.develop.instruments;
 import net.beadsproject.beads.data.Buffer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
-import net.happybrackets.core.instruments.BasicWavePlayer;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.AccelerometerListener;
 
@@ -23,7 +23,7 @@ public class BasicWaveControl implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        BasicWavePlayer player = new BasicWavePlayer(1000, 0.1, Buffer.SINE);
+        WaveModule player = new WaveModule(1000, 0.1, Buffer.SINE).connectTo(hb.ac.out);
 
         /*****************************************************
          * Find an accelerometer sensor.

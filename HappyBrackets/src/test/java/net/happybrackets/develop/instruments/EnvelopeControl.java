@@ -5,7 +5,7 @@ import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.Envelope;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
-import net.happybrackets.core.instruments.BasicWavePlayer;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -28,7 +28,7 @@ public class EnvelopeControl implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        BasicWavePlayer player = new BasicWavePlayer(1000, 0.1, Buffer.SINE);
+        WaveModule player = new WaveModule(1000, 0.1, Buffer.SINE);
 
         player.setFequency(frequencyEnvelope);
         player.setGain(gainEnvelope);
@@ -39,6 +39,8 @@ public class EnvelopeControl implements HBAction, HBReset {
         gainEnvelope.addSegment(0.1f, 1000);
         gainEnvelope.addSegment(0.1f, 2000);
         gainEnvelope.addSegment(0f, 2000, new KillTrigger(player.getKillTrigger()));
+
+        player.connectTo(hb.ac.out);
 
         /***** Type your HBAction code above this line ******/
     }
