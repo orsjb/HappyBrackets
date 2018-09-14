@@ -105,7 +105,7 @@ public class HB {
 
 	// We will create a static one to know whether we are in Debug or run
 	// If we are in a PI, this will already be set when we try to debug
-	static HB HBInstance = null;
+	public static HB HBInstance = null;
 	/**
 	 * Whether we will use encryption in transferring class data
 	 * @param enable true if we want to use encryption
