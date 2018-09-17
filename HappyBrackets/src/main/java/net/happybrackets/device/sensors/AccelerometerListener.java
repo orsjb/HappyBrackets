@@ -59,11 +59,11 @@ public abstract class AccelerometerListener {
      * The value can be greater than scaled_min and scaled_max if sensor_value is greater than abs(1)
      * ((scaled_max - scaled_min) * (sensor_value - sensor_min)) / (sensor_max - sensor_min) + scaled_min;
      * @param scaled_min The value we want our standard minimum sensor value to become
-     * @param scaled_max  The value we want our standard maximum sensor value to become
      * @param sensor_value The actual value of our sensor
+     * @param scaled_max  The value we want our standard maximum sensor value to become
      * @return the value scaled
      */
-    public float scaleValue(double scaled_min, double scaled_max, double sensor_value){
+    public float scaleValue(double sensor_value, double scaled_min, double scaled_max){
         return Sensor.scaleValue(-1, 1, scaled_min, scaled_max, sensor_value);
     }
 
