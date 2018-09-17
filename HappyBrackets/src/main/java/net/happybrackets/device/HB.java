@@ -394,9 +394,8 @@ public class HB {
 		sensors = new Hashtable<>();
 		System.out.print(".");
 
-		controller = new NetworkCommunication(this);
-
 		if (start_network) {
+			controller = new NetworkCommunication(this);
 			// start network connection
 			broadcast = new BroadcastManager(multi_cast_address, broadcast_port);
 
@@ -430,6 +429,7 @@ public class HB {
 		}
 		else
 		{
+			controller = null;
 			synch = null;
 		}
 		//notify started (happens immeidately or when audio starts)
