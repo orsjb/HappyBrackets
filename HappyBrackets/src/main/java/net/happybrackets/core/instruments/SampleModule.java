@@ -17,6 +17,7 @@ public class SampleModule extends BasicInstrument{
     UGen loopStart = null;
     UGen loopEnd = null;
 
+
     SamplePlayer samplePlayer = null;
 
     boolean restartSample = true;
@@ -132,7 +133,7 @@ public class SampleModule extends BasicInstrument{
     /**
      * Set the startLoop position
      * @param loop_start loopPoint
-     * @return
+     * @return this
      */
     public SampleModule setLoopStart (double loop_start){
         if (loopStart != null){
@@ -163,11 +164,11 @@ public class SampleModule extends BasicInstrument{
     /**
      * Set the End Loop position
      * @param loop_end loopPoint
-     * @return
+     * @return this
      */
     public SampleModule setLoopEnd (double loop_end){
-        if (loopStart != null){
-            loopStart.setValue((float)loop_end);
+        if (loopEnd != null){
+            loopEnd.setValue((float)loop_end);
         }
         else
         {
@@ -183,9 +184,9 @@ public class SampleModule extends BasicInstrument{
      * @return this
      */
     public SampleModule setLoopEnd (UGen loop_end){
-        loopStart = loop_end;
+        loopEnd = loop_end;
         if (samplePlayer != null){
-            samplePlayer.setLoopEnd(loopStart);
+            samplePlayer.setLoopEnd(loopEnd);
         }
 
         return this;
@@ -200,4 +201,29 @@ public class SampleModule extends BasicInstrument{
         connectToDevice(input_device);
         return this;
     }
+
+
+    /**
+     * Sets the Loop Type for this Sampler
+     * @param loop_type the type of loop
+     * @return this
+     */
+    public SampleModule setLoopType(SamplePlayer.LoopType loop_type) {
+        loopType = loop_type;
+
+        if (samplePlayer != null){
+            samplePlayer.setLoopType(loop_type);
+        }
+
+        return this;
+    }
+
+    /**
+     * Get the Beads SamplePlayer Object
+     * @return the SamplePlayer
+     */
+    public SamplePlayer getSamplePlayer() {
+        return samplePlayer;
+    }
+
 }
