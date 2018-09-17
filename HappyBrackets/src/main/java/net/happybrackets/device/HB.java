@@ -67,6 +67,7 @@ public class HB {
 
 	private static boolean enableSimulators = false;
 
+	private static boolean simulatorOnly = false;
 	/**
 	 * Return whether we will displaysimulator sensors if no hardware sensor is found
 	 * @return true if we will display
@@ -235,6 +236,7 @@ public class HB {
 		System.out.println(current);
 		// we will enable simulators of Sensors
 		enableSimulators = true;
+		simulatorOnly = true;
 		if (HBInstance == null) {
 
 			HB.AccessMode mode = HB.AccessMode.LOCAL;
@@ -447,7 +449,11 @@ public class HB {
 	 * @param args the args to the message.
 	 */
 	public void broadcast(String string, Object... args) {
-		broadcast.broadcast(string, args);
+		if(simulatorOnly){
+			System.out.println("You cannot broadcast while using simulator ");
+		}else {
+			broadcast.broadcast(string, args);
+		}
 	}
 
 	/**
@@ -465,7 +471,11 @@ public class HB {
 	 * @param listener the new {@link OSCListener}.
 	 */
 	public void addBroadcastListener(OSCListener listener) {
-		broadcast.addBroadcastListener(listener);
+		if(simulatorOnly){
+			System.out.println("You cannot addBroadcastListener while using simulator ");
+		}else {
+			broadcast.addBroadcastListener(listener);
+		}
 	}
 
 	/**
