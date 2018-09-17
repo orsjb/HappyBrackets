@@ -23,7 +23,9 @@ public class BasicWaveControl implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        WaveModule player = new WaveModule(1000, 0.1, Buffer.SINE).connectTo(hb.ac.out);
+
+        WaveModule player = new WaveModule(1000, 0.1, Buffer.SINE);
+        player.connectTo(hb.ac.out);
 
         /*****************************************************
          * Find an accelerometer sensor.
@@ -35,7 +37,7 @@ public class BasicWaveControl implements HBAction, HBReset {
                 /* accelerometer values typically range from -1 to + 1 */
                 /******** Write your code below this line ********/
 
-                player.setFequency(scaleValue(1000, 2000, x_val) );
+                player.setFequency(scaleValue(x_val, 1000, 2000) );
 
                 /******** Write your code above this line ********/
 
