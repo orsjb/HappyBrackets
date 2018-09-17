@@ -35,11 +35,7 @@ import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.events.KillTrigger;
-import net.beadsproject.beads.ugens.Clock;
-import net.beadsproject.beads.ugens.Envelope;
-import net.beadsproject.beads.ugens.Gain;
-import net.beadsproject.beads.ugens.PolyLimit;
-import net.beadsproject.beads.ugens.WavePlayer;
+import net.beadsproject.beads.ugens.*;
 import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.*;
 import net.happybrackets.core.config.KnownDeviceID;
@@ -66,6 +62,7 @@ import org.slf4j.LoggerFactory;
 public class HB {
 
 	private static boolean enableSimulators = false;
+
 
 	private static boolean simulatorOnly = false;
 	/**
@@ -1310,5 +1307,210 @@ public class HB {
 	 */
 	public net.happybrackets.core.scheduling.Clock createClock(double interval){
 		return new net.happybrackets.core.scheduling.Clock(interval);
+	}
+
+	/*********************************************************************
+	 * Default accelerometer
+	 ********************************************************************/
+	static Accelerometer defaultAccelerometer = null;
+
+	private synchronized Accelerometer getDefaultAccelerometer(){
+		if (defaultAccelerometer == null){
+			defaultAccelerometer = (Accelerometer)getSensor(Accelerometer.class);
+		}
+		return defaultAccelerometer;
+	}
+
+	/*********************************************************************
+	 * Default accelerometer
+	 ********************************************************************/
+	static Gyroscope defaultGyroscope = null;
+
+	private synchronized Gyroscope getDefaultGyroscope(){
+		if (defaultGyroscope == null){
+			defaultGyroscope = (Gyroscope) getSensor(Gyroscope.class);
+		}
+		return defaultGyroscope;
+	}
+
+	/**
+	 * Return a UGen that is mapped to Accelerometer X value
+	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
+	 */
+	public UGen getAccelerometer_X(){
+		return getAccelerometer_X(-1, 1);
+	}
+	/**
+	 * Return a UGen that is mapped to Accelerometer X value
+	 * @param scale_min the value for axis pointing to ground
+	 * @param scale_max the value for axis pointing to sky
+	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
+	 */
+	public UGen getAccelerometer_X(double scale_min, double scale_max){
+		UGen ret;
+		Accelerometer accel = getDefaultAccelerometer();
+		if (accel != null){
+			ret = new Glide(0);
+
+			accel.addValueChangedListener(new SensorValueChangedListener() {
+				@Override
+				public void sensorUpdated(Sensor sensor) {
+					float val = accel.getAccelerometerX();
+					ret.setValue(Sensor.scaleValue(-1, 1, scale_min, scale_max, val));
+				}
+			});
+		}
+		else
+		{
+			setStatus("Unable to find accelerometer");
+			ret = new Static(ac, 0);
+		}
+		return ret;
+	}
+
+	/**
+	 * Return a UGen that is mapped to Accelerometer Y value
+	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
+	 */
+	public UGen getAccelerometer_Y(){
+		return getAccelerometer_Y(-1, 1);
+	}
+
+	/**
+	 * Return a UGen that is mapped to Accelerometer Y value
+	 * @param scale_min the value for axis pointing to ground
+	 * @param scale_max the value for axis pointing to sky
+	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
+	 */
+	public UGen getAccelerometer_Y(double scale_min, double scale_max){
+		UGen ret;
+		Accelerometer accel = getDefaultAccelerometer();
+		if (accel != null){
+			ret = new Glide(0);
+
+			accel.addValueChangedListener(new SensorValueChangedListener() {
+				@Override
+				public void sensorUpdated(Sensor sensor) {
+					float val = accel.getAccelerometerY();
+					ret.setValue(Sensor.scaleValue(-1, 1, scale_min, scale_max, val));
+				}
+			});
+		}
+		else
+		{
+			setStatus("Unable to find accelerometer");
+			ret = new Static(ac, 0);
+		}
+		return ret;
+	}
+
+	/**
+	 * Return a UGen that is mapped to Accelerometer Z value
+	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
+	 */
+	public UGen getAccelerometer_Z(){
+		return getAccelerometer_Z(-1, 1);
+	}
+	/**
+	 * Return a UGen that is mapped to Accelerometer Z value
+	 * @param scale_min the value for axis pointing to ground
+	 * @param scale_max the value for axis pointing to sky
+	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
+	 */
+	public UGen getAccelerometer_Z(double scale_min, double scale_max){
+		UGen ret;
+		Accelerometer accel = getDefaultAccelerometer();
+		if (accel != null){
+			ret = new Glide(0);
+
+			accel.addValueChangedListener(new SensorValueChangedListener() {
+				@Override
+				public void sensorUpdated(Sensor sensor) {
+					float val = accel.getAccelerometerZ();
+					ret.setValue(Sensor.scaleValue(-1, 1, scale_min, scale_max, val));
+				}
+			});
+		}
+		else
+		{
+			setStatus("Unable to find accelerometer");
+			ret = new Static(ac, 0);
+		}
+		return ret;
+	}
+
+	/**
+	 * Return a UGen that is mapped to Gyroscope Yaw value
+	 * @return UGen object mapped to the axis. If no gyroscope is found, will return a static with value 0
+	 */
+	public UGen getGyroscopeYaw(){
+		UGen ret;
+		Gyroscope gyro = getDefaultGyroscope();
+		if (gyro != null){
+			ret = new Glide(0);
+
+			gyro.addValueChangedListener(new SensorValueChangedListener() {
+				@Override
+				public void sensorUpdated(Sensor sensor) {
+					ret.setValue(gyro.getYaw());
+				}
+			});
+		}
+		else
+		{
+			setStatus("Unable to find gyroscope");
+			ret = new Static(ac, 0);
+		}
+		return ret;
+	}
+
+	/**
+	 * Return a UGen that is mapped to Gyroscope Pitch value
+	 * @return UGen object mapped to the axis. If no gyroscope is found, will return a static with value 0
+	 */
+	public UGen getGyroscopePitch(){
+		UGen ret;
+		Gyroscope gyro = getDefaultGyroscope();
+		if (gyro != null){
+			ret = new Glide(0);
+
+			gyro.addValueChangedListener(new SensorValueChangedListener() {
+				@Override
+				public void sensorUpdated(Sensor sensor) {
+					ret.setValue(gyro.getPitch());
+				}
+			});
+		}
+		else
+		{
+			setStatus("Unable to find gyroscope");
+			ret = new Static(ac, 0);
+		}
+		return ret;
+	}
+
+	/**
+	 * Return a UGen that is mapped to Gyroscope Roll value
+	 * @return UGen object mapped to the axis. If no gyroscope is found, will return a static with value 0
+	 */
+	public UGen getGyroscopeRoll(){
+		UGen ret;
+		Gyroscope gyro = getDefaultGyroscope();
+		if (gyro != null){
+			ret = new Glide(0);
+
+			gyro.addValueChangedListener(new SensorValueChangedListener() {
+				@Override
+				public void sensorUpdated(Sensor sensor) {
+					ret.setValue(gyro.getRoll());
+				}
+			});
+		}
+		else
+		{
+			setStatus("Unable to find gyroscope");
+			ret = new Static(ac, 0);
+		}
+		return ret;
 	}
 }
