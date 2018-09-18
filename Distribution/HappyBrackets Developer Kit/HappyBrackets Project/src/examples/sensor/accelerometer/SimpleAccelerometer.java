@@ -14,7 +14,7 @@ import java.lang.invoke.MethodHandles;
 
 /**
  * This sketch will play a sine wave whose frequency is dependant upon x axis of accelerometer
- * accelerometer values typically range from -1 to +1, however, we are scaling it
+ * accelerometer values typically range from -1 to +1, however, we are scaling it from 0 to 2000
  */
 public class SimpleAccelerometer implements HBAction{
     final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
@@ -26,17 +26,11 @@ public class SimpleAccelerometer implements HBAction{
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
-
-        // define the  frequency we will multiply our accelerometer value with
-        final float MULTIPLIER_FREQUENCY = 1000;
-
-        WaveModule player = new WaveModule(MULTIPLIER_FREQUENCY, 0.1f, Buffer.SINE);
+        WaveModule player = new WaveModule();
 
         // Map a scaled value of Accelerometer X to the frequency
-        player.setFequency(hb.getAccelerometer_X(0, MULTIPLIER_FREQUENCY * 2));
+        player.setFequency(hb.getAccelerometer_X(0, 2000));
         player.connectTo(hb.ac.out);
 
 
