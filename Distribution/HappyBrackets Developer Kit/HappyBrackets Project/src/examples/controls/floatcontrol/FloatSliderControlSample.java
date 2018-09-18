@@ -7,6 +7,7 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.FloatSliderControl;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -29,53 +30,40 @@ public class FloatSliderControlSample implements HBAction {
         final float FREQUENCY_VARIATION = 500; // This is how much we will vary frequency around centre frequency
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
 
-        Glide waveformFrequency = new Glide(CENTRE_FREQUENCY);
-        Glide gainVolume = new Glide(MAX_VOLUME);
+        WaveModule player = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        player.connectTo(hb.ac.out);
 
 
-        // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SINE);
 
-        // set up a gain amplifier to control the volume. We are using the glide object to control this value
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, gainVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
-
+        /*************************************************************
+         * Create Float type Dynamic Controls that display as sliders
+         * Simply type floatSliderControl to generate them
+         *************************************************************/
 
         // Now add a dynamicControl to set the frequency
 
-        /*************************************************************
-         * Create a Float type Dynamic Control that displays as a slider
-         * Simply type floatSliderControl to generate this code
-         *************************************************************/
+        /* Type floatSliderControl to generate this code */
         FloatSliderControl frequencyControl = new FloatSliderControl(this, "Frequency", CENTRE_FREQUENCY, CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION) {
             @Override
-            public void valueChanged(double control_val) {
-                /*** Write your DynamicControl code below this line ***/
+            public void valueChanged(double control_val) { /* Write your DynamicControl code below this line */
+
                 // set our frequency to the control value
-                waveformFrequency.setValue((float)control_val);
-                /*** Write your DynamicControl code above this line ***/
+                player.setFequency(control_val);
+                /* Write your DynamicControl code above this line */
             }
-        };/*** End DynamicControl floatSliderControl code ***/
+        };/* End DynamicControl floatSliderControl code */
 
 
         // Now add a dynamicControl to set the gain
-        /*************************************************************
-         * Create a Float type Dynamic Control that displays as a slider
-         * Simply type floatSliderControl to generate this code
-         *************************************************************/
+        /* Type floatSliderControl to generate this code */
         FloatSliderControl gainControl = new FloatSliderControl(this, "Gain", MAX_VOLUME, 0, MAX_VOLUME) {
             @Override
-            public void valueChanged(double control_val) {
-                /*** Write your DynamicControl code below this line ***/
-                gainVolume.setValue((float)control_val);
-                /*** Write your DynamicControl code above this line ***/
+            public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
+
+                player.setGain(control_val);
+                /* Write your DynamicControl code above this line */
             }
-        };/*** End DynamicControl sliderControl code ***/
+        };/* End DynamicControl sliderControl code */
 
 
     }

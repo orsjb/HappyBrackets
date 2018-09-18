@@ -86,11 +86,49 @@ public class SampleModule extends BasicInstrument{
     }
 
     /**
+     * Pause the Sample PLayback
+     * @param pause_playing true if we want to pause. Set to false to start playing
+     * @return this
+     */
+    public SampleModule pause(boolean pause_playing){
+        if (samplePlayer != null){
+            samplePlayer.pause(pause_playing);
+        }
+
+        return this;
+    }
+
+    /**
+     * Set SamplePlayer to new position
+     * @param new_position new position in milliseconds
+     * @return this
+     */
+    public SampleModule setPosition(double new_position){
+        if (samplePlayer != null){
+            samplePlayer.setPosition(new_position);
+        }
+
+        return this;
+    }
+
+    /**
+     * Set SamplePlayer to end
+     * @return this
+     */
+    public SampleModule setToEnd(){
+        if (samplePlayer != null){
+            samplePlayer.setToEnd();
+        }
+
+        return this;
+    }
+
+    /**
      * set an object to control the playback rate of the samplePlayer
      * @param new_rate_control the new object that will control the playback rate
      * @return this
      */
-    public SampleModule setPlaybackRate(UGen new_rate_control){
+    public SampleModule setRate(UGen new_rate_control){
         if (samplePlayer != null){
             samplePlayer.setRate(new_rate_control);
         }
@@ -106,7 +144,7 @@ public class SampleModule extends BasicInstrument{
      * @param new_rate the new frequency
      * @return this
      */
-    public SampleModule setPlaybackRate(double new_rate){
+    public SampleModule setRate(double new_rate){
         playbackRate.setValue((float)new_rate);
 
         return this;

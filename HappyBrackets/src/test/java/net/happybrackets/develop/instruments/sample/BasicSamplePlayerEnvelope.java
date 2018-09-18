@@ -27,7 +27,7 @@ public class BasicSamplePlayerEnvelope implements HBAction, HBReset {
         Envelope playback_rate = new Envelope(1);
 
         SampleModule player = new SampleModule();
-        player.setPlaybackRate(playback_rate);
+        player.setRate(playback_rate);
 
         if (!player.setSample(player.EXAMPLE_SAMPLE_NAME))
         {

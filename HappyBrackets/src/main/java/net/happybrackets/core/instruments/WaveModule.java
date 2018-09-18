@@ -86,6 +86,23 @@ public class WaveModule extends BasicInstrument{
     }
 
 
+    /**
+     * Pause the waveform
+     * @param pause set true to pause
+     * @return this
+     */
+    public WaveModule pause(boolean pause){
+        waveformGenerator.pause(pause);
+        return this;
+    }
+
+    /**
+     * Test if waveform generator ia paused
+     * @return true if paused
+     */
+    public boolean isPaused(){
+        return waveformGenerator.isPaused();
+    }
 
     /**
      * Set the gain to a new value
@@ -97,6 +114,15 @@ public class WaveModule extends BasicInstrument{
         return this;
     }
 
+
+
+    /**
+     * Get the UGen waveplayer object
+     * @return the waveplayer object
+     */
+    public WavePlayer getWavePlayer(){
+        return waveformGenerator;
+    }
     /**
      * Set an object to control the gain of this waveplayer
      * @param gain_control the new Object that will control the gain

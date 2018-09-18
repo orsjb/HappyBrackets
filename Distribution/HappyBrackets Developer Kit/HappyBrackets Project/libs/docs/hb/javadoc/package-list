@@ -7,6 +7,7 @@ net.happybrackets.controller.network
 net.happybrackets.core
 net.happybrackets.core.config
 net.happybrackets.core.control
+net.happybrackets.core.instruments
 net.happybrackets.core.logging
 net.happybrackets.core.scheduling
 net.happybrackets.device

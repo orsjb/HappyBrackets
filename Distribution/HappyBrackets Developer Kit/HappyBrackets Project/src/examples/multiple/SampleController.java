@@ -72,7 +72,7 @@ public class SampleController implements HBAction {
          *
          * simply type samplePLayer-basic to generate this code and press <ENTER> for each parameter
          **************************************************************/
-        
+
         final float INITIAL_VOLUME = 1; // define how loud we want the sound
         Glide audioVolume = new Glide(INITIAL_VOLUME);
 

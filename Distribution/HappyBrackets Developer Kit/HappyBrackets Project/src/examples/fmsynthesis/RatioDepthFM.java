@@ -3,6 +3,7 @@ package examples.fmsynthesis;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -29,7 +30,6 @@ public class RatioDepthFM implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         final float LOW_CARRIER_FREQUENCY = 1000;  // This is the Lower frequency
         final float HIGH_CARRIER_FREQUENCY = 7000; // This is the higher frequency after envelope
@@ -64,16 +64,11 @@ public class RatioDepthFM implements HBAction {
         };
 
         // This is our actual wavePlayer for making sound. The frequency is the current value of modFunction
-        WavePlayer generatedFMWaveform = new WavePlayer(modFunction, Buffer.SINE);
 
-        // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
+        WaveModule player = new WaveModule(modFunction, INITIAL_VOLUME, Buffer.SINE);
+        player.connectTo(hb.ac.out);
 
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(generatedFMWaveform);
 
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
 
         // now we will make our carrier stay steady for 5 seconds
         carrierFrequency.addSegment(LOW_CARRIER_FREQUENCY, HOLD_FREQUENCY_DURATION);

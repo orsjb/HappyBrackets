@@ -44,24 +44,17 @@ public class PWMOutGPIO implements HBAction, HBReset {
         GPIO.resetAllGPIO();
 
 
-        /*****************************************************
-         * Find a General Purpose (GPIO) PWM Pin.
-         * to create this code, simply type gpioPWMOut
-         *****************************************************/
+        /* Type gpioPWMOut to create this code */
         GPIOPWMOutput outputPin = GPIOPWMOutput.getOutputPin(GPIO_OUTPUT);
 
         if (outputPin == null) {
             hb.setStatus("Fail GPIO PWM " + GPIO_OUTPUT);
-        }
-        /*** End gpioPWMOut code ***/
+        }/*** End gpioPWMOut code ***/
 
 
         if (outputPin != null)
         {
-            /***********************************************************
-             * Create a runnable thread object
-             * simply type threadFunction to generate this code
-             ***********************************************************/
+            /* Type threadFunction to generate this code */
             Thread thread = new Thread(() -> {
                 int SLEEP_TIME = 1; // this is how long between consecutive values
 

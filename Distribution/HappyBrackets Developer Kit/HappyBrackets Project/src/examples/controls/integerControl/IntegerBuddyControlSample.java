@@ -8,6 +8,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.control.IntegerBuddyControl;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -30,35 +31,21 @@ public class IntegerBuddyControlSample implements HBAction {
         final int FREQUENCY_VARIATION = 500; // This is how much we will vary frequency around centre frequency
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
 
-        Glide waveformFrequency = new Glide(CENTRE_FREQUENCY);
-        Glide gainVolume = new Glide(MAX_VOLUME);
-        
-        // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SINE);
 
-        // set up a gain amplifier to control the volume. We are using the glide object to control this value
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, gainVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
+        WaveModule player = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        player.connectTo(hb.ac.out);
 
 
         // Now add a dynamicControl to set the frequency
-        /*************************************************************
-         * Create an integer type Dynamic Control pair that displays as a slider and text box
-         * Simply type intBuddyControl to generate this code
-         *************************************************************/
+        
+        /* Type intBuddyControl to generate this code */
         IntegerBuddyControl frequency = new IntegerBuddyControl(this, "Frequency", CENTRE_FREQUENCY, CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION) {
 
             @Override
-            public void valueChanged(int control_val) {
-                /*** Write your DynamicControl code below this line ***/
+            public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 // set our frequency to the control value
-                waveformFrequency.setValue(control_val);
-                /*** Write your DynamicControl code above this line ***/
+                player.setFequency(control_val);
+                /* Write your DynamicControl code above this line */
             }
         };/*** End DynamicControl frequency code ***/
 

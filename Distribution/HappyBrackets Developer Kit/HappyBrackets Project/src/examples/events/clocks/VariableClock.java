@@ -5,6 +5,7 @@ import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.ugens.*;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -34,32 +35,17 @@ public class VariableClock implements HBAction {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
-        
-        final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
 
-        // We will convert our NOte number to a frequency
-        float next_frequency = Pitch.mtof(currentNote);
-        //create an object we can use to modify frequency of WavePlayer.
-        Glide waveformFrequency = new Glide(next_frequency);
+        WaveModule player = new WaveModule();
+        player.setMidiFequency(currentNote);
+        player.setBuffer(Buffer.SQUARE);
+        player.connectTo(hb.ac.out);
 
-
-        // create a wave player to generate a waveform based on waveformFrequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SQUARE);
-
-        // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
 
         /************************************************************
          * start clockTimer
-         * Create a clock with a interval based on the clock duration isng the Beads Library
+         * Create a clock with a interval based on the clock duration using the Beads Library
          *
          * To create this, just type beadsClockTimer
          ************************************************************/
@@ -87,10 +73,7 @@ public class VariableClock implements HBAction {
                         currentNote = START_NOTE;
                     }
 
-                    // convert or not number to a frequency
-                    float next_frequency = Pitch.mtof(currentNote);
-
-                    waveformFrequency.setValue(next_frequency);
+                    player.setMidiFequency(currentNote);
 
 
                     /*** Write your code to perform functions on the beat above this line ****/

@@ -6,6 +6,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.AccelerometerListener;
@@ -35,35 +36,16 @@ public class SensorControlledClock implements HBAction {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
-        
-        final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
-
-        // We will convert our NOte number to a frequency
-        float next_frequency = Pitch.mtof(currentNote);
-        //create an object we can use to modify frequency of WavePlayer.
-        Glide waveformFrequency = new Glide(next_frequency);
-
-
-        // create a wave player to generate a waveform based on waveformFrequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SQUARE);
-
-        // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
+        WaveModule player = new WaveModule();
+        player.setBuffer(Buffer.SQUARE);
+        player.setMidiFequency(currentNote);
+        player.connectTo(hb.ac.out);
 
         final double CLOCK_INTERVAL = 500;
 
-        /************************************************************
-         * To create this, just type clockTimer
-         ************************************************************/
-        Clock clock = hb.createClock(CLOCK_INTERVAL).addClockTickListener((offset, this_clock) -> {
+        /* To create this, just type clockTimer */
+        Clock clock = hb.createClock(CLOCK_INTERVAL).addClockTickListener((offset, this_clock) -> {/* Write your code below this line */
             /*** Write your Clock tick event code below this line ***/
             if (currentNote < END_NOTE) {
                 // add 2 to the current note
@@ -73,44 +55,34 @@ public class SensorControlledClock implements HBAction {
                 currentNote = START_NOTE;
             }
 
-            // convert or not number to a frequency
-            float new_frequency = Pitch.mtof(currentNote);
+            player.setMidiFequency(currentNote);
 
-            waveformFrequency.setValue(new_frequency);
-
-            /*** Write your Clock tick event code above this line ***/
+            /* Write your code above this line */
         });
 
-        clock.start();
-        /******************* End Clock Timer *************************/
+        clock.start();/* End Clock Timer */
 
         // Let us start changing the speed of the clock with an accelerometer
 
-        /*****************************************************
-         * Find an accelerometer sensor. If no sensor is found
-         * you will receive a status message
-         * accelerometer values typically range from -1 to + 1
-         * to create this code, simply type accelerometerSensor
-         *****************************************************/
+        /** type accelerometerSensor to create this. Values typically range from -1 to + 1 **/
         new AccelerometerListener(hb) {
             @Override
-            public void sensorUpdate(float x_val, float y_val, float z_val) {
-                /******** Write your code below this line ********/
+            public void sensorUpdate(float x_val, float y_val, float z_val) { /*     Write your code below this line     */
+
                 // convert our x_val to be between 1 and three
-                float converted_x = x_val + 2;
+                float converted_x = scaleValue(x_val, 1, 3);
 
                 // just make sure that converted is not zero, otherwise we will get a divide by zero error
                 if (converted_x > 0.0f) {
-
                     // now set our interval so clock is faster on higher number
                     // a lower interval means a higher speed
                     clock.setInterval(CLOCK_INTERVAL / converted_x);
                 }
-                /******** Write your code above this line ********/
 
+                /*  Write your code above this line        */
             }
-        };
-        /*** End accelerometerSensor code ***/
+        };/*  End accelerometerSensor  */
+                
 
     }
 

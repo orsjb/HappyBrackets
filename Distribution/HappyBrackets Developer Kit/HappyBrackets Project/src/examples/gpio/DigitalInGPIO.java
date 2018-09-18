@@ -41,23 +41,18 @@ public class DigitalInGPIO implements HBAction, HBReset {
         // Reset all our GPIO - Only really necessary if the Pin has been assigned as something other than an input before
         GPIO.resetAllGPIO();
 
-        /*****************************************************
-         * Find a General Purpose (GPIO) Input Pin.
-         * to create this code, simply type gpioDigitalIn
-         *****************************************************/
+
+        /* Type gpioDigitalIn to create this code*/
         GPIOInput inputPin = GPIOInput.getInputPin(GPIO_NUMBER, PinPullResistance.PULL_UP);
         if (inputPin != null) {
 
-            inputPin.addStateListener((sensor, new_state) -> {
-                /******** Write your code below this line ********/
+            inputPin.addStateListener((sensor, new_state) -> {/* Write your code below this line */
                 hb.setStatus("GPIO State: " + new_state);
-
-                /******** Write your code above this line ********/
+                /* Write your code above this line */
             });
         } else {
             hb.setStatus("Fail GPIO Input " + GPIO_NUMBER);
-        }
-        /*** End gpioDigitalIn code ***/
+        }/* End gpioDigitalIn code */
 
         /***** Type your HBAction code above this line ******/
     }

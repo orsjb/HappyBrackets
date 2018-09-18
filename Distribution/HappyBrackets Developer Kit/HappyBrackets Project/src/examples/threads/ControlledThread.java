@@ -5,8 +5,10 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.HBReset;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -18,8 +20,10 @@ import java.lang.invoke.MethodHandles;
  * The sleep time in the thread can be varied with a DynamicControl
  * The thread can also be killed
  */
-public class ControlledThread implements HBAction {
+public class ControlledThread implements HBAction, HBReset {
     final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+    // This variable will become true when the composition is reset
+    boolean compositionReset = false;
 
     /***** Type your HBAction code below this line ******/
     final float START_FREQUENCY = 100; // this is the frequency of the waveform we will make
@@ -46,59 +50,39 @@ public class ControlledThread implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        Glide waveformFrequency = new Glide(START_FREQUENCY);
+        WaveModule player = new WaveModule(START_FREQUENCY, 0.1f, Buffer.SINE);
+        player.connectTo(hb.ac.out);
 
-        
-        final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(INITIAL_VOLUME);
-
-        // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SINE);
-
-        // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
-
-        /***********************************************************
-         * Create a runnable thread object
-         * simply type threadFunction to generate this code
-         ***********************************************************/
+        /* Type threadFunction to generate this code */
         Thread thread = new Thread(() -> {
             int SLEEP_TIME = 1000;
-            while (true) {
-                /*** write your code below this line ***/
+            while (!compositionReset) {/* write your code below this line */
                 // double our frequency
                 currentFrequency *= 2;
                 if (currentFrequency > MAX_FREQUENCY) {
                     currentFrequency = START_FREQUENCY;
                 }
 
-                waveformFrequency.setValue(currentFrequency);
+                player.setFequency(currentFrequency);
                 // we will override the sleep time in the beginning of theis thread
                 SLEEP_TIME = threadSleepTime;
-                /*** write your code above this line ***/
-
+                /* write your code above this line */
                 try {
                     Thread.sleep(SLEEP_TIME);
-                } catch (InterruptedException e) {
-                    /*** remove the break below to just resume thread or add your own action***/
+                } catch (InterruptedException e) {/* remove the break below to just resume thread or add your own action */
+
+                    player.getKillTrigger().kill();
                     break;
-                    /*** remove the break above to just resume thread or add your own action ***/
+
                 }
             }
         });
 
-        /*** write your code you want to execute before you start the thread below this line ***/
+        /*  write your code you want to execute before you start the thread below this line */
 
-        /*** write your code you want to execute before you start the thread above this line ***/
+        /* write your code you want to execute before you start the thread above this line */
 
-        thread.start();
-        /****************** End threadObject**************************/
+        thread.start();/* End threadFunction */
 
 
         /*************************************************************
@@ -132,6 +116,17 @@ public class ControlledThread implements HBAction {
         /*** End DynamicControl code ***/
 
         /***** Type your HBAction code below this line ******/
+    }
+
+    /**
+     * Add any code you need to have occur when a reset occurs
+     */
+    @Override
+    public void doReset() {
+        compositionReset = true;
+        /***** Type your HBReset code below this line ******/
+
+        /***** Type your HBReset code above this line ******/
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

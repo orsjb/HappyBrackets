@@ -17,7 +17,7 @@ echo "Jar files will be sent from this folder"
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # move into Device Folder
 
-DEVICE_DATA_PATH="../Device/HappyBrackets"
+DEVICE_DATA_PATH="../Device/HappyBrackets/data"
 cd "$DEVICE_DATA_PATH"
 FILE_PATH="$(pwd)"
 

@@ -7,6 +7,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
@@ -32,55 +33,38 @@ public class SimpleClock implements HBAction {
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
-        
-        final float INITIAL_VOLUME = 0.1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(INITIAL_VOLUME);
+
+        WaveModule player = new WaveModule();
+
+        player.setBuffer(Buffer.SQUARE);
+        player.setMidiFequency(currentNote);
+
+        player.connectTo(hb.ac.out);
 
 
-        // We will convert our NOte number to a frequency
-        float next_frequency = Pitch.mtof(currentNote);
-        //create an object we can use to modify frequency of WavePlayer.
-        Glide waveformFrequency = new Glide(next_frequency);
-
-
-        // create a wave player to generate a waveform based on waveformFrequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SQUARE);
-
-        // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
 
         // create a clock and start changing frequency on each beat
         final float CLOCK_DURATION = 300;
-        /************************************************************
-         * To create this, just type clockTimer
-         ************************************************************/
-        Clock hbClock = hb.createClock(CLOCK_DURATION).addClockTickListener((offset, this_clock) -> {
-            /*** Write your Clock tick event code below this line ***/
+
+        /* To create this, just type clockTimer */
+        Clock hbClock = hb.createClock(CLOCK_DURATION).addClockTickListener((offset, this_clock) -> {/* Write your code below this line */
             if (currentNote < END_NOTE) {
                 // move to the next chromatic note
                 currentNote++;
-                // convert or not number to a frequency
-                float new_frequency = Pitch.mtof(currentNote);
 
-                waveformFrequency.setValue(new_frequency);
+                player.setMidiFequency(currentNote);
             }
             else
             {
-                // we have reached ou maximum note. Lets kill gain and clock
-                gainAmplifier.kill();
+                // Kill our player and stop the clock
+                player.getKillTrigger().kill();
                 this_clock.stop();
             }
-            /*** Write your Clock tick event code above this line ***/
+
+            /* Write your code above this line */
         });
 
-        hbClock.start();
-        /******************* End Clock Timer *************************/
+        hbClock.start();/* End Clock Timer */
 
 
 

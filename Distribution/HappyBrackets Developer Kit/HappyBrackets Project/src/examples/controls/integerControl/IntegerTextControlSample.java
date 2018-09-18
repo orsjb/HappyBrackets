@@ -7,6 +7,7 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.IntegerTextControl;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -28,54 +29,34 @@ public class IntegerTextControlSample implements HBAction {
         final int INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final int MAX_VOLUME = 1; // define how loud we want the sound
 
-        Glide waveformFrequency = new Glide(INITIAL_FREQUENCY);
-        Glide gainVolume = new Glide(MAX_VOLUME);
-        
-        // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SINE);
-
-        // set up a gain amplifier to control the volume. We are using the glide object to control this value
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, gainVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
+        WaveModule player = new WaveModule();
+        player.connectTo(hb.ac.out);
 
 
         // Now add a dynamicControl to set the frequency
 
-        /*************************************************************
-         * Create an integer type Dynamic Control that displays as a text box
-         * Simply type intTextControl to generate this code
-         *************************************************************/
+        /* Type intTextControl to generate this code */
         IntegerTextControl frequency = new IntegerTextControl(this, "Frequency", INITIAL_FREQUENCY) {
             @Override
-            public void valueChanged(int control_val) {
-                /*** Write your DynamicControl code below this line ***/
+            public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 // set our frequency to the control value
-                waveformFrequency.setValue(control_val);
-                /*** Write your DynamicControl code above this line ***/
+                player.setFequency(INITIAL_FREQUENCY);
+                /* Write your DynamicControl code above this line */
             }
-        };/*** End DynamicControl frequency code ***/
+        };/* End DynamicControl frequency code */
 
 
         // Now add a dynamicControl to set the gain
 
-        /*************************************************************
-         * Create an integer type Dynamic Control that displays as a text box
-         * Simply type intTextControl to generate this code
-         *************************************************************/
+        /* Type intTextControl to generate this code */
         IntegerTextControl gainControl = new IntegerTextControl(this, "Gain", MAX_VOLUME) {
             @Override
-            public void valueChanged(int control_val) {
-                /*** Write your DynamicControl code below this line ***/
+            public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 // change our gain according to control value
-                gainVolume.setValue(control_val);
-                /*** Write your DynamicControl code above this line ***/
+                player.setGain(control_val);
+                /* Write your DynamicControl code above this line */
             }
-        };/*** End DynamicControl gainControl code ***/
+        };/* End DynamicControl gainControl code */
 
 
     }

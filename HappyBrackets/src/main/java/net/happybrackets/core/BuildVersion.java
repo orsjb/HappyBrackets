@@ -8,8 +8,8 @@ import java.net.URL;
  */
 public final class BuildVersion {
     static final int MAJOR = 3;
-    static final int MINOR = 2;
-    static final int BUILD = 2;
+    static final int MINOR = 3;
+    static final int BUILD = 0;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}

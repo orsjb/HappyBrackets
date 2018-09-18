@@ -9,6 +9,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.SampleModule;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
@@ -44,81 +45,59 @@ public class SamplePitchShift implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /**************************************************************
-         * Load a sample and play it
-         *
-         * simply type basicSamplePLayer to generate this code and press <ENTER> for each parameter
-         **************************************************************/
-        
         final float INITIAL_VOLUME = 0; // define how loud we want the sound
         Envelope audioVolume = new Envelope(INITIAL_VOLUME);
 
-        Glide sampleSpeed = new Glide(1);
+        /* type basicSamplePLayer to generate this code */
+        // define our sample name
+        final String sample_name = "data/audio/Nylon_Guitar/Clean_A_harm.wav";
+        SampleModule samplePlayer = new SampleModule();
+        if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
+            samplePlayer.connectTo(hb.ac.out);
 
-
-        // Define our sample name
-        final String SAMPLE_NAME = "data/audio/Nylon_Guitar/Clean_A_harm.wav";
-
-        // create our actual sample
-        Sample sample = SampleManager.sample(SAMPLE_NAME);
-
-        // test if we opened the sample successfully
-        if (sample != null) {
-            // Create our sample player
-            SamplePlayer samplePlayer = new SamplePlayer(sample);
-            // Samples are killed by default at end. We will stop this default actions so our sample will stay alive
-            samplePlayer.setKillOnEnd(false);
-
-            // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
-            gainAmplifier.addInput(samplePlayer);
-            hb.ac.out.addInput(gainAmplifier);
-
-            /******** Write your code below this line ********/
-            samplePlayer.setRate(sampleSpeed);
-
-
-            // make an interval for 240 beats per minute
-            double CLOCK_INTERVAL = Clock.BPM2Interval(240);
-            /************************************************************
-             * To create this, just type clockTimer
-             ************************************************************/
-            Clock hbClock = hb.createClock(CLOCK_INTERVAL).addClockTickListener((offset, this_clock) -> {
-                /*** Write your Clock tick event code below this line ***/
-                // first create our envelope to play sound
-                audioVolume.addSegment(1, ENVELOPE_EDGES);
-                audioVolume.addSegment(1, (float)CLOCK_INTERVAL - ENVELOPE_EDGES * 3);
-                audioVolume.addSegment(0, ENVELOPE_EDGES);
-
-
-
-                // we are going to next note in scale
-                nextScaleIndex++;
-
-                // Get the MIDI Amount to shift the note based on Major scale
-                int key_note = Pitch.getRelativeMidiNote(0, Pitch.major, nextScaleIndex);
-
-                // if it exceeds our maximum, then start again
-                if (key_note > MAXIMUM_PITCH)
-                {
-                    nextScaleIndex = 0;
-                }
-
-                double sample_multiplier = Pitch.shiftPitch(1, nextScaleIndex);
-
-                sampleSpeed.setValue((float)sample_multiplier);
-                samplePlayer.setPosition(0);
-
-                /*** Write your Clock tick event code above this line ***/
-            });
-
-            hbClock.start();
-            /******************* End Clock Timer *************************/
-
-            /******** Write your code above this line ********/
+            /* Write your code above this line */
         } else {
-            hb.setStatus("Failed sample " + SAMPLE_NAME); }
-        /*** End samplePlayer code ***/
+            hb.setStatus("Failed sample " + sample_name);
+        }/* End samplePlayer code */
+
+
+        // make an interval for 240 beats per minute
+        double CLOCK_INTERVAL = Clock.BPM2Interval(240);
+        /************************************************************
+         * To create this, just type clockTimer
+         ************************************************************/
+        Clock hbClock = hb.createClock(CLOCK_INTERVAL).addClockTickListener((offset, this_clock) -> {
+            /*** Write your Clock tick event code below this line ***/
+            // first create our envelope to play sound
+            audioVolume.addSegment(1, ENVELOPE_EDGES);
+            audioVolume.addSegment(1, (float)CLOCK_INTERVAL - ENVELOPE_EDGES * 3);
+            audioVolume.addSegment(0, ENVELOPE_EDGES);
+
+
+
+            // we are going to next note in scale
+            nextScaleIndex++;
+
+            // Get the MIDI Amount to shift the note based on Major scale
+            int key_note = Pitch.getRelativeMidiNote(0, Pitch.major, nextScaleIndex);
+
+            // if it exceeds our maximum, then start again
+            if (key_note > MAXIMUM_PITCH)
+            {
+                nextScaleIndex = 0;
+            }
+
+            double sample_multiplier = Pitch.shiftPitch(1, nextScaleIndex);
+
+            samplePlayer.setRate(sample_multiplier);
+            samplePlayer.setPosition(0);
+
+            /*** Write your Clock tick event code above this line ***/
+        });
+
+        hbClock.start();
+        /******************* End Clock Timer *************************/
+
 
     }
 

@@ -7,6 +7,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -39,7 +40,6 @@ public class FrequencyEnvelope implements HBAction {
         final float HOLD_FREQUENCY_TIME = 3000; // 3 seconds
         final float RAMP_DOWN_FREQUENCY_TIME = 5000; // 5 seconds
 
-        Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // Create our envelope using LOW_FREQUENCY as the starting value
         Envelope frequencyEnvelope = new Envelope(LOW_FREQUENCY);
@@ -47,14 +47,9 @@ public class FrequencyEnvelope implements HBAction {
         // create a wave player to generate a waveform using the frequencyEnvelope and a sinewave
         WavePlayer waveformGenerator = new WavePlayer(frequencyEnvelope, Buffer.SINE);
 
-        // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
+        WaveModule player = new WaveModule(frequencyEnvelope, INITIAL_VOLUME, Buffer.SINE);
+        player.connectTo(hb.ac.out);
 
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
 
         // Now start changing the frequency of frequencyEnvelope
         // first add a segment to progress to the higher frequency over 5 seconds
@@ -68,7 +63,7 @@ public class FrequencyEnvelope implements HBAction {
         frequencyEnvelope.addSegment(LOW_FREQUENCY, RAMP_DOWN_FREQUENCY_TIME);
 
         //Now make our frequency hold to the lower frequency, and after holding, kill our gainAmplifier
-        frequencyEnvelope.addSegment(LOW_FREQUENCY, HOLD_FREQUENCY_TIME, new KillTrigger(gainAmplifier));
+        frequencyEnvelope.addSegment(LOW_FREQUENCY, HOLD_FREQUENCY_TIME, new KillTrigger(player.getKillTrigger()));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

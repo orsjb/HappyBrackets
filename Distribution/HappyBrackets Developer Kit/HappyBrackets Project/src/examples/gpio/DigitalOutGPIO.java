@@ -43,29 +43,23 @@ public class DigitalOutGPIO implements HBAction, HBReset {
         // Reset all our GPIO - Only really necessary if the Pin has been assigned as something other than an input before
         GPIO.resetAllGPIO();
 
-        /*****************************************************
-         * Find a General Purpose (GPIO) Digital Output Pin.
-         * to create this code, simply type gpioDigitalOut
-         *****************************************************/
+        /* Type gpioDigitalOut to create this code */
         GPIODigitalOutput outputPin = GPIODigitalOutput.getOutputPin(GPIO_OUTPUT);
         if (outputPin == null) {
             hb.setStatus("Fail GPIO Digital Out " + GPIO_OUTPUT);
-        }
-        /*** End gpioDigitalOut code ***/
+        }/* End gpioDigitalOut code */
 
+
+        // Create a runnable thread to turn Output on and off
         if (outputPin != null)
         {
-            /***********************************************************
-             * Create a runnable thread object
-             * simply type threadFunction to generate this code
-             ***********************************************************/
+            /* Type threadFunction to generate this code */
             Thread thread = new Thread(() -> {
                 int SLEEP_TIME = 500;
-                while (!exitThread) {
-                    /*** write your code below this line ***/
+                while (!exitThread) {/* write your code below this line */
                     outputPin.setState(!outputPin.getState());
 
-                    /*** write your code above this line ***/
+                    /* write your code above this line */
 
                     try {
                         Thread.sleep(SLEEP_TIME);

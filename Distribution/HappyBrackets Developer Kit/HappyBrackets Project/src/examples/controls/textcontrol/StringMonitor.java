@@ -3,6 +3,8 @@ package examples.controls.textcontrol;
 
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.TextControl;
+import net.happybrackets.core.control.TextControlSender;
+import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -20,34 +22,23 @@ public class StringMonitor implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /*************************************************************
-         * Create a string type Dynamic Control that displays as a text box
-         * Simply type textControl to generate this code
-         *************************************************************/
-        TextControl clockMonitor = new TextControl(this, "Clock Count", "") {
-            @Override
-            public void valueChanged(String control_val) {
-                /*** Write your DynamicControl code below this line ***/
-
-                /*** Write your DynamicControl code above this line ***/
-            }
-        };/*** End DynamicControl clockMonitor code ***/
+        /* Type textControlSender to generate this code */
+        TextControl clockMonitor = new TextControlSender(this, "Clock Count", "");
 
 
-        /************************************************************
-         * To create this, just type clockTimer
-         ************************************************************/
-        net.happybrackets.core.scheduling.Clock hbClock = hb.createClock(500.0).addClockTickListener((offset, this_clock) -> {
-            /*** Write your Clock tick event code below this line ***/
+        /* To create this, just type clockTimer */
+        Clock clock = hb.createClock(500).addClockTickListener((offset, this_clock) -> {/* Write your code below this line */
+
             long clock_count = this_clock.getNumberTicks();
 
             String display_text = new String("clock: " + clock_count);
             clockMonitor.setValue(display_text);
-            /*** Write your Clock tick event code above this line ***/
+
+            /* Write your code above this line */
         });
 
-        hbClock.start();
-        /******************* End Clock Timer *************************/
+        clock.start();/* End Clock Timer */
+
 
         /***** Type your HBAction code above this line ******/
     }

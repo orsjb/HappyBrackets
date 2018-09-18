@@ -6,6 +6,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -55,17 +56,10 @@ public class BasicFM implements HBAction {
             }
         };
 
-        // This is our actual wavePlayer for making sound. The frequency is the current value of modFunction
-        WavePlayer generatedFMWaveform = new WavePlayer(modFunction, Buffer.SINE);
+        // Now make our player using the modFunction as the frequency
+        WaveModule player = new WaveModule(modFunction, INITIAL_VOLUME, Buffer.SINE);
+        player.connectTo(hb.ac.out);
 
-        // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(generatedFMWaveform);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
 
     }
 

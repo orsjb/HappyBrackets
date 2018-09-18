@@ -14,10 +14,12 @@ This file wil give a short description of the examples
   [accelerometer]
     SimpleAccelerometer     Uses the x  axis of an accelerometer to change the frequency of a waveform
     MonitorAccelerometer    Displays the values of accelerometer
+    TripleAxisAccelerometer Uses all three values to map three different tones using acceleometerSonsor
 
   [gyroscope]
     SimpleGyroscope         Uses the yaw of a gyroscope to modify the frequency of a waveform
     MonitorGyroscope        Displays the values of the gyroscope
+    TripleAxisGyroscope     Uses gyroscope sensor to map each axis to the frequency of three different waveforms
 
 *******************************************************************
 [samples]   - Play and control audio samples
@@ -42,6 +44,7 @@ This file wil give a short description of the examples
 
     VariableClock           Uses an envelope to modify the speed of a clock using the Beads Clock. Plays a whole tone scale
     SensorControlledClock   Uses the values of an accelerometer to vary the speed of a clock
+    SensorControlledBeadsClock Uses a mapped accelerometer to control a Beads clock
 
   [envelope] - Perform actions based on events that occur when an envelope segment completes
     EnvelopeTrigger         Plays three layers of sound, with each layer commencing after a segment completes

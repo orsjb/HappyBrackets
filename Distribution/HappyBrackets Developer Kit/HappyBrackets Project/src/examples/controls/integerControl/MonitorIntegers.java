@@ -3,10 +3,7 @@ package examples.controls.integerControl;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
-import net.happybrackets.core.control.IntegerBuddyControl;
-import net.happybrackets.core.control.IntegerTextControl;
+import net.happybrackets.core.control.*;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -23,33 +20,13 @@ public class MonitorIntegers implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /*************************************************************
-         * Create an integer type Dynamic Control that displays as a text box
-         * Simply type intTextControl to generate this code
-         *************************************************************/
-        IntegerTextControl clock_beats = new IntegerTextControl(this, "Beat Count", 0) {
-            @Override
-            public void valueChanged(int control_val) {
-                /*** Write your DynamicControl code below this line ***/
-
-                /*** Write your DynamicControl code above this line ***/
-            }
-        };/*** End DynamicControl clock_beats code ***/
+        /* Type intControlSender to generate this code */
+        IntegerControl clock_beats = new IntegerControlSender(this, "Beat Count", 0);
 
 
-        /*************************************************************
-         * Create an integer type Dynamic Control pair that displays as a slider and text box
-         * Simply type intBuddyControl to generate this code
-         *************************************************************/
-        IntegerBuddyControl clock_value = new IntegerBuddyControl(this, "Clock Value", 0, 0, 2000) {
+        /* Type intControlSender to generate this code */
+        IntegerControl clock_value = new IntegerControlSender(this, "Clock Value", 0);
 
-            @Override
-            public void valueChanged(int control_val) {
-                /*** Write your DynamicControl code below this line ***/
-
-                /*** Write your DynamicControl code above this line ***/
-            }
-        };/*** End DynamicControl clock_count code ***/
 
 
         /************************************************************

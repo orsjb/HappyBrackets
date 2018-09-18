@@ -6,6 +6,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -37,22 +38,19 @@ public class GainEnvelope implements HBAction {
         final float HOLD_VOLUME_TIME = 3000; // 3 seconds
         final float FADEOUT_TIME = 5000; // 10 seconds
 
-        Glide audioFrequency = new Glide(INITIAL_FREQUENCY);
-
         // Create our envelope using MIN_VOLUME as the starting value
         Envelope gainEnvelope = new Envelope(MIN_VOLUME);
 
+
         // create a wave player to generate a waveform using the FREQUENCY and a Square wave
-        WavePlayer waveformGenerator = new WavePlayer(audioFrequency, Buffer.SQUARE);
-
-        // set up a gain amplifier to control the volume. We will use the gainEnvelope object to change volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, gainEnvelope);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
+        WaveModule player = new WaveModule();
+        player.setFequency(INITIAL_FREQUENCY);
+        player.setGain(gainEnvelope);
+        player.setBuffer(Buffer.SQUARE);
 
         // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
+        player.connectTo(hb.ac.out);
+
 
         // Now start changing the level of gainEnvelope
         // first add a segment to progress to the higher volume

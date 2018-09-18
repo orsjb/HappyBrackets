@@ -6,6 +6,7 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.*;
+import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -42,78 +43,53 @@ public class GlobalControl implements HBAction {
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
 
-        Glide waveformFrequency = new Glide(INITIAL_FREQUENCY);
-        Glide gainVolume = new Glide(MAX_VOLUME);
-
-        
-
-        // create a wave player to generate a waveform based on frequency and waveform type
-        WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SINE);
-
-        // set up a gain amplifier to control the volume. We are using the glide object to control this value
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, gainVolume);
-
-        // connect our WavePlayer object into the Gain object
-        gainAmplifier.addInput(waveformGenerator);
-
-        // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
+        WaveModule player = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        player.connectTo(hb.ac.out);
 
 
         // Make an array of frequencies to switch between
         float frequencyList [] = {500, 1000, 1500, 2000};
 
 
-        /*************************************************************
-         * Create a Float type Dynamic Control pair
-         * Simply type globalFloatControl to generate this code
-         *************************************************************/
+        /* Type globalFloatControl to generate this code */
         FloatBuddyControl globalFrequencyControl = new FloatBuddyControl(this, "global frequency control", INITIAL_FREQUENCY, 0, INITIAL_FREQUENCY * 3) {
             @Override
-            public void valueChanged(double control_val) {
-                /*** Write your DynamicControl code below this line ***/
+            public void valueChanged(double control_val) { /* Write your DynamicControl code below this line */
                 // this value has been received either from the trigger below
                 // or over the network
-                waveformFrequency.setValue((float) control_val);
-                /*** Write your DynamicControl code above this line ***/
+                player.setFequency(control_val);
+                /* Write your DynamicControl code above this line */
             }
         };
         globalFrequencyControl.setControlScope(ControlScope.GLOBAL);
-        /*** End DynamicControl globalFrequencyControl code ***/
+        /* End DynamicControl globalFrequencyControl code */
 
 
-        /*************************************************************
-         * Create a Boolean type Dynamic Control pair that displays as a check box
-         * Simply type globalBooleanControl to generate this code
-         *************************************************************/
+        /* Type globalBooleanControl to generate this code */
         BooleanControl globalOnOff = new BooleanControl(this, "On / Off", true) {
             @Override
-            public void valueChanged(Boolean control_val) {
-                /*** Write your DynamicControl code below this line ***/
+            public void valueChanged(Boolean control_val) { /* Write your DynamicControl code below this line */
                 if (control_val){
-                    gainVolume.setValue(MAX_VOLUME);
+                    player.setGain(MAX_VOLUME);
                 }
                 else {
-                    gainVolume.setValue(0);
+                    player.setGain(0);
                 }
-                /*** Write your DynamicControl code above this line ***/
+                /* Write your DynamicControl code above this line */
             }
         };
         globalOnOff.setControlScope(ControlScope.GLOBAL);
-        /*** End DynamicControl globalOnOff code ***/
+        /* End DynamicControl globalOnOff code */
 
 
         // Now add a dynamicControl to switch the frequency
         // Note that this is not a global control, however, it sets the
         // value of a global control
-        /*************************************************************
-         * Create a Trigger type Dynamic Control that displays as a button
-         * Simply type triggerControl to generate this code
-         *************************************************************/
+
+        /* Type triggerControl to generate this code */
         TriggerControl triggerControl = new TriggerControl(this, "Change Frequency") {
             @Override
-            public void triggerEvent() {
-                /*** Write your DynamicControl code below this line ***/
+            public void triggerEvent() {  /* Write your DynamicControl code below this line */
                 // get our next frequency
                 float freq = frequencyList[counter % frequencyList.length];
 
@@ -122,7 +98,7 @@ public class GlobalControl implements HBAction {
                 counter++;
                 /*** Write your DynamicControl code above this line ***/
             }
-        };/*** End DynamicControl triggerControl code ***/
+        };/* End DynamicControl triggerControl code */
 
     }
 

@@ -8,6 +8,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.instruments.SampleModule;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -31,87 +32,64 @@ public class SampleChangeSpeed implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /**************************************************************
-         * Load a sample and play it
-         *
-         * simply type samplePLayer-basic to generate this code and press <ENTER> for each parameter
-         **************************************************************/
-        
-        final float INITIAL_VOLUME = 1f; // define how loud we want the sound
-        Glide audioVolume = new Glide(INITIAL_VOLUME);
+        /* type basicSamplePLayer to generate this code */
+        // define our sample name
+        final String sample_name = "data/audio/Roje/i-write.wav";
+        SampleModule samplePlayer = new SampleModule();
+        if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
+            samplePlayer.connectTo(hb.ac.out);
 
-        // Define our sample name
-        final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
-
-        // create our actual sample
-        Sample sample = SampleManager.sample(SAMPLE_NAME);
-
-        // test if we opened the sample successfully
-        if (sample != null) {
-            // Create our sample player
-            SamplePlayer samplePlayer = new SamplePlayer(sample);
-
-            // Samples are killed by default at end. We will stop this default actions so our sample will stay alive
-            samplePlayer.setKillOnEnd(false);
-
-            // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
-            gainAmplifier.addInput(samplePlayer);
-            hb.ac.out.addInput(gainAmplifier);
-
-            /******** Write your code below this line ********/
-
-            // define our speeds
-            final float NORMAL_SPEED = 1;
-            final float HALF_SPEED = 0.5f;
-            final float DOUBLE_SPEED = 2;
-            final float REVERSE = -1;
-
-            // define how long we want to envelope segments to be
-            final int SEGMENT_DURATION = 5000; // five seconds
-
-            // Create an envelope to change speed
-            Envelope speedEnvelope = new Envelope(NORMAL_SPEED);
-
-            // set our sample player to use this envelope as its playback speed
-            samplePlayer.setRate(speedEnvelope);
-
-            // add a segment for each speed we want to play at
-
-            // hold speed
-            speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
-
-            // Change speed
-            speedEnvelope.addSegment(HALF_SPEED, SEGMENT_DURATION);
-            // hold speed
-            speedEnvelope.addSegment(HALF_SPEED, SEGMENT_DURATION);
-
-            // change back to normal speed
-            speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
-            // hold normal speed
-            speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
-
-            // Change speed
-            speedEnvelope.addSegment(DOUBLE_SPEED, SEGMENT_DURATION);
-            // hold speed
-            speedEnvelope.addSegment(DOUBLE_SPEED, SEGMENT_DURATION);
-
-            // change back to normal speed
-            speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
-            // hold normal speed
-            speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
-
-            // Change speed
-            speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION);
-            // hold speed. Then kill our playback at the end
-            speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION, new KillTrigger(gainAmplifier));
-
-
-            /******** Write your code above this line ********/
+            /* Write your code above this line */
         } else {
-            hb.setStatus("Failed sample " + SAMPLE_NAME);
-        }
-        /*** End samplePlayer code ***/
+            hb.setStatus("Failed sample " + sample_name);
+        }/* End samplePlayer code */
+
+        // define our speeds
+        final float NORMAL_SPEED = 1;
+        final float HALF_SPEED = 0.5f;
+        final float DOUBLE_SPEED = 2;
+        final float REVERSE = -1;
+
+        // define how long we want to envelope segments to be
+        final int SEGMENT_DURATION = 5000; // five seconds
+
+        // Create an envelope to change speed
+        Envelope speedEnvelope = new Envelope(NORMAL_SPEED);
+
+        // set our sample player to use this envelope as its playback speed
+        samplePlayer.setRate(speedEnvelope);
+
+        // add a segment for each speed we want to play at
+
+        // hold speed
+        speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
+
+        // Change speed
+        speedEnvelope.addSegment(HALF_SPEED, SEGMENT_DURATION);
+        // hold speed
+        speedEnvelope.addSegment(HALF_SPEED, SEGMENT_DURATION);
+
+        // change back to normal speed
+        speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
+        // hold normal speed
+        speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
+
+        // Change speed
+        speedEnvelope.addSegment(DOUBLE_SPEED, SEGMENT_DURATION);
+        // hold speed
+        speedEnvelope.addSegment(DOUBLE_SPEED, SEGMENT_DURATION);
+
+        // change back to normal speed
+        speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
+        // hold normal speed
+        speedEnvelope.addSegment(NORMAL_SPEED, SEGMENT_DURATION);
+
+        // Change speed
+        speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION);
+        // hold speed. Then kill our playback at the end
+        speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION, new KillTrigger(samplePlayer.getKillTrigger()));
+
+
 
     }
 

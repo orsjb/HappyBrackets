@@ -27,7 +27,7 @@ public class BasicSamplePlayerChangeSample implements HBAction, HBReset {
 
         
         SampleModule player = new SampleModule();
-        player.setPlaybackRate(1);
+        player.setRate(1);
 
         if (!player.setSample(player.EXAMPLE_SAMPLE_NAME))
         {
@@ -46,11 +46,11 @@ public class BasicSamplePlayerChangeSample implements HBAction, HBReset {
                 // let us also make play in reverse
 
                 if (playingRoje) {
-                    player.setPlaybackRate(-1);
+                    player.setRate(-1);
                     player.setSample("data/audio/Nylon_Guitar/Clean_A_harm.wav");
                 }
                 else {
-                    player.setPlaybackRate(-1);
+                    player.setRate(-1);
                     player.setSample(player.EXAMPLE_SAMPLE_NAME);
                 }
                 playingRoje = !playingRoje;

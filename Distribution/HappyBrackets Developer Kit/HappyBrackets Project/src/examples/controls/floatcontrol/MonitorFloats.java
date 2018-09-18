@@ -4,6 +4,8 @@ import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.FloatBuddyControl;
+import net.happybrackets.core.control.FloatControl;
+import net.happybrackets.core.control.FloatControlSender;
 import net.happybrackets.core.control.FloatTextControl;
 import net.happybrackets.device.HB;
 
@@ -21,34 +23,12 @@ public class MonitorFloats implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-
-        /*************************************************************
-         * Create a Float type Dynamic Control that displays as a text box
-         * Simply type floatTextControl to generate this code
-         *************************************************************/
-        FloatTextControl clock_beats = new FloatTextControl(this, "Beat Count", 0) {
-            @Override
-            public void valueChanged(double control_val) {
-                /*** Write your DynamicControl code below this line ***/
-
-                /*** Write your DynamicControl code above this line ***/
-            }
-        };/*** End DynamicControl code clock_beats ***/
+        /* Simply type floatControlSender to generate this code */
+        FloatControl clock_beats = new FloatControlSender(this, "Beat Count", 0);
 
 
-        /*************************************************************
-         * Create a Float type Dynamic Control pair that displays as a slider and text box
-         * Simply type floatBuddyControl to generate this code
-         *************************************************************/
-        FloatBuddyControl clock_value = new FloatBuddyControl(this, "Clock Count", 0, -1, 2000) {
-            @Override
-            public void valueChanged(double control_val) {
-                /*** Write your DynamicControl code below this line ***/
-
-                /*** Write your DynamicControl code above this line ***/
-            }
-        };/*** End DynamicControl clock_value code ***/
-
+        /* Simply type floatControlSender to generate this code */
+        FloatControl clock_value = new FloatControlSender(this, "Clock Count", 0);
 
 
         /************************************************************
