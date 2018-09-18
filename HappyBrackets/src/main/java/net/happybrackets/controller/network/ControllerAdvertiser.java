@@ -92,6 +92,7 @@ public class ControllerAdvertiser {
 	int replyPort; // leave it undefined so we can see a warning if it does not get assigned
 	int broadcastPort;
 
+
 	private List <CachedMessage> cachedNetworkMessage = new ArrayList<>();
 
 
@@ -101,11 +102,29 @@ public class ControllerAdvertiser {
 	DatagramSocket advertiseTxSocket = null;
 	ByteBuffer byteBuf;
 
+	/**
+	 * Are we only doing Multicaste message
+	 * @return true if we are only doing multicast and are not doing broadcast
+	 */
+	public boolean isOnlyMulticastMessages() {
+		return onlyMulticastMessages;
+	}
+
+	/**
+	 * Set if we are going to only allow multicast ot set to false if we will also put broadcast messages
+	 * @param onlyMulticastMessages true if we are only going to allow multicast messages. Fals if we will also do broadcast messages
+	 */
+	public void setOnlyMulticastMessages(boolean onlyMulticastMessages) {
+		this.onlyMulticastMessages = onlyMulticastMessages;
+	}
+
+	// if we set this false, we will also send broadcast messages
+	boolean onlyMulticastMessages =  true;
 
 	/**
 	 * check if the number of network devices has changed from what we have as
 	 * our cached messages
-	 * @return true if the number of networks with broadcast is not equql tro what we have cached
+	 * @return true if the number of networks with broadcast is not equal tro what we have cached
 	 */
 	boolean networkChanged(){
 		List<NetworkInterface> interfaces = Device.viableInterfaces();
@@ -128,57 +147,59 @@ public class ControllerAdvertiser {
 	 */
 	void loadNetworkBroadcastAdverticements() {
 		cachedNetworkMessage.clear();
-		OSCMessage msg = new OSCMessage(
-				OSCVocabulary.CONTROLLER.CONTROLLER,
-				new Object[]{
-						Device.getDeviceName(),
-						replyPort
-				}
-		);
-		OSCPacketCodec codec = new OSCPacketCodec();
 
-		try {
-			byteBuf.clear();
-			codec.encode(msg, byteBuf);
-			byteBuf.flip();
-			byte[] buff = new byte[byteBuf.limit()];
-			byteBuf.get(buff);
+		if (!onlyMulticastMessages) {
+			OSCMessage msg = new OSCMessage(
+					OSCVocabulary.CONTROLLER.CONTROLLER,
+					new Object[]{
+							Device.getDeviceName(),
+							replyPort
+					}
+			);
+			OSCPacketCodec codec = new OSCPacketCodec();
 
-			int secondaryBroadcastPort = DefaultConfig.SECONDARY_BROADCAST_PORT;
+			try {
+				byteBuf.clear();
+				codec.encode(msg, byteBuf);
+				byteBuf.flip();
+				byte[] buff = new byte[byteBuf.limit()];
+				byteBuf.get(buff);
 
-			List<NetworkInterface> interfaces = Device.viableInterfaces();
+				int secondaryBroadcastPort = DefaultConfig.SECONDARY_BROADCAST_PORT;
 
-			interfaces.forEach(ni -> {
+				List<NetworkInterface> interfaces = Device.viableInterfaces();
 
-				InetAddress broadcast = BroadcastManager.getBroadcast(ni);
+				interfaces.forEach(ni -> {
 
-
-				if (broadcast != null) {
-                    try {
-                        // Now we are going to broadcast on network interface specific
-                        DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
-                        CachedMessage message = new CachedMessage(msg, buff, packet, broadcast);
-                        cachedNetworkMessage.add(message);
-
-                        DatagramPacket secondary_packet = new DatagramPacket(buff, buff.length, broadcast, secondaryBroadcastPort);
-                        CachedMessage secondary_message = new CachedMessage(msg, buff, secondary_packet, broadcast);
-                        cachedNetworkMessage.add(secondary_message);
-
-                        // now we need to add another one for non multicast port
+					InetAddress broadcast = BroadcastManager.getBroadcast(ni);
 
 
-                    } catch (Exception ex) {
-                        logger.error("Unable to create cached message", ex);
-                    }
+					if (broadcast != null) {
+						try {
+							// Now we are going to broadcast on network interface specific
+							DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
+							CachedMessage message = new CachedMessage(msg, buff, packet, broadcast);
+							cachedNetworkMessage.add(message);
 
-                }
+							DatagramPacket secondary_packet = new DatagramPacket(buff, buff.length, broadcast, secondaryBroadcastPort);
+							CachedMessage secondary_message = new CachedMessage(msg, buff, secondary_packet, broadcast);
+							cachedNetworkMessage.add(secondary_message);
 
-			});
+							// now we need to add another one for non multicast port
 
-		} catch (Exception ex) {
-			logger.error("Unable to create cached message", ex);
+
+						} catch (Exception ex) {
+							logger.error("Unable to create cached message", ex);
+						}
+
+					}
+
+				});
+
+			} catch (Exception ex) {
+				logger.error("Unable to create cached message", ex);
+			}
 		}
-
 	}
 
 
@@ -251,39 +272,41 @@ public class ControllerAdvertiser {
 						}
 
 
-						DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
+						if (true || !onlyMulticastMessages) {
+							DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
 
-						// Now send a broadcast
-						try {
-							advertiseTxSocket.send(packet);
-						} catch (Exception ex) {
-							//System.out.println(ex.getMessage());
-						}
-
-						try {
-							for (CachedMessage cachedMessage : cachedNetworkMessage) {
-								DatagramPacket cached_packet = cachedMessage.cachedPacket;
-								try {
-									advertiseTxSocket.send(cached_packet);
-								} catch (IOException e) {
-									e.printStackTrace();
-									reload_cached_messages = true;
-								}
+							// Now send a broadcast
+							try {
+								advertiseTxSocket.send(packet);
+							} catch (Exception ex) {
+								//System.out.println(ex.getMessage());
 							}
 
-						} catch (Exception ex_all) {
+							try {
+								for (CachedMessage cachedMessage : cachedNetworkMessage) {
+									DatagramPacket cached_packet = cachedMessage.cachedPacket;
+									try {
+										advertiseTxSocket.send(cached_packet);
+									} catch (IOException e) {
+										e.printStackTrace();
+										reload_cached_messages = true;
+									}
+								}
 
-						}
+							} catch (Exception ex_all) {
 
-						List<NetworkInterface> interfaces = Device.viableInterfaces();
+							}
 
-						// if our network has changed, do a reload of our cached messages
-						if (networkChanged()) {
-							reload_cached_messages = true;
-						}
+							List<NetworkInterface> interfaces = Device.viableInterfaces();
 
-						if (reload_cached_messages) {
-							loadNetworkBroadcastAdverticements();
+							// if our network has changed, do a reload of our cached messages
+							if (networkChanged()) {
+								reload_cached_messages = true;
+							}
+
+							if (reload_cached_messages) {
+								loadNetworkBroadcastAdverticements();
+							}
 						}
 					}
 

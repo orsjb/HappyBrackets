@@ -13,7 +13,7 @@ public class RefreshDevicesMenu extends AnAction {
         try {
             // first clean out broadcaster
             
-            ControllerEngine.getInstance().getBroadcastManager().dispose();
+            //ControllerEngine.getInstance().getBroadcastManager().dispose();
             DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
             connection.rescanDevices();
             connection.setDisableAdvertise(false);

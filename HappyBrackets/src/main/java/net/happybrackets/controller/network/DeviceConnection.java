@@ -127,8 +127,18 @@ public class DeviceConnection {
 		}
 
 	}
-	BroadcastManager broadcastManager;
-	private final int replyPort; // this is the port we want the device to return calls to
+
+	//BroadcastManager broadcastManager;
+
+	/**
+	 * Get the reply port for the new OSC Server
+	 * @return the Port created
+	 */
+	public int getReplyPort() {
+		return replyPort;
+	}
+
+	int replyPort = 0; // this is the port we want the device to return calls to
 
 	// flag to disable sending and receiving OSC
 	private static boolean disableAdvertising = false;
@@ -173,10 +183,11 @@ public class DeviceConnection {
 		void isFavourite(boolean enabled);
 	}
 
-	public DeviceConnection(ControllerConfig config, BroadcastManager broadcast) {
+	public DeviceConnection(ControllerConfig config) {
 		this.config = config;
-		broadcastManager = broadcast;
-		replyPort = broadcast.getPort();
+		//broadcastManager = broadcast;
+		//replyPort = broadcast.getPort();
+
 
 		//read the known devices from file
 		try {
@@ -190,16 +201,22 @@ public class DeviceConnection {
 		} catch (FileNotFoundException e1) {
 			logger.error("Unable to read '{}'", config.getKnownDevicesFile());
 		}
+
+		/*
 		broadcast.addPersistentBroadcastListener(new OSCListener() {
 			@Override
 			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
 				incomingMessage(msg, sender);
 			}
 		});
+		*/
+
 		// create the OSC Server
 		try {
-			oscServer = OSCServer.newUsing(OSCServer.UDP, config.getStatusFromDevicePort());
+			oscServer = OSCServer.newUsing(OSCServer.UDP);
 			oscServer.start();
+			replyPort = oscServer.getLocalAddress().getPort();
+
 			logger.info("Created and started OSCServer for address {}", oscServer.getLocalAddress());
 		} catch (IOException e) {
 			logger.error("Error setting up new OSCServer!", e);
@@ -239,7 +256,7 @@ public class DeviceConnection {
 
 	public void setDisableAdvertise(boolean disable){
 		disableAdvertising = disable;
-		broadcastManager.setDisableSend(disable);
+		//broadcastManager.setDisableSend(disable);
 
 		synchronized (disabledAdvertiseListener)
 		{

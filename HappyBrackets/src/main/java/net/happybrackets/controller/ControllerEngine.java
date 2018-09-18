@@ -29,7 +29,7 @@ public class ControllerEngine {
     DeviceConnection deviceConnection = null;
     private FileServer httpServer;
 
-    protected BroadcastManager broadcastManager;
+    //protected BroadcastManager broadcastManager;
 
 
     protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
@@ -76,12 +76,12 @@ public class ControllerEngine {
             logger.debug("Stopping ControllerAdvertiser");
             controllerAdvertiser.stop();
         }
-
+/*
         if (broadcastManager != null) {
             logger.debug("Disposing of BroadcastManager");
             broadcastManager.dispose();
         }
-
+*/
         if (deviceConnection != null) {
             logger.debug("Disposing of DeviceConnection");
             deviceConnection.dispose();
@@ -104,10 +104,12 @@ public class ControllerEngine {
         }
 
         logger.info("Starting ControllerAdvertiser");
-        broadcastManager = new BroadcastManager(controllerConfig.getMulticastAddr(), listen_port);
+        //broadcastManager = new BroadcastManager(controllerConfig.getMulticastAddr(), listen_port);
 
         //set up device connection
-        deviceConnection = new DeviceConnection(controllerConfig, broadcastManager);
+        deviceConnection = new DeviceConnection(controllerConfig);
+
+        listen_port =  deviceConnection.getReplyPort();
 
         controllerAdvertiser = new ControllerAdvertiser(controllerConfig.getMulticastAddr(), controllerConfig.getBroadcastPort(), listen_port);
 
@@ -139,12 +141,12 @@ public class ControllerEngine {
         return settings;
     }
 
-
+/*
     public BroadcastManager getBroadcastManager() {
         return broadcastManager;
     }
 
-
+*/
     /**
      * Make or controller start it network Communication
      */
@@ -152,12 +154,14 @@ public class ControllerEngine {
 
         if (controllerAdvertiser != null && !controllerStarted)
         {
+            /*
             if (broadcastManager != null)
             {
                 // we will make the start wait so our toolwindow can settle down
                 broadcastManager.setWaitForStart(true);
-                broadcastManager.startRefreshThread();
+                //broadcastManager.startRefreshThread();
             }
+            */
             controllerStarted = true;
             controllerAdvertiser.start();
         }

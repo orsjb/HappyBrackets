@@ -24,7 +24,7 @@ public class AdvertiseMenu extends AnAction {
     public void update(AnActionEvent event) {
         try {
 
-            int advertise_port = ControllerEngine.getInstance().getBroadcastManager().getPort();
+            int advertise_port = ControllerEngine.getInstance().getDeviceConnection().getReplyPort();
 
             DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
             boolean disabled = connection.getDisabledAdvertise();

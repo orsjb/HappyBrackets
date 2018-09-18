@@ -64,6 +64,11 @@
               description="Refreshes the devices list by displaying only devices that are connected">
       </action>
 
+      <action id="HappyBrackets.Broadcast" class="net.happybrackets.intellij_plugin.menu.BroadcastEnableMenu"
+              text="Enable Broadcast"
+              description="Enables Broadcast in addition to multicast">
+      </action>
+
     </group>
 
     <group id="HappyBracketsDebugGroup" class="net.happybrackets.intellij_plugin.menu.HappyBracketsDebugMenu" popup="true"
