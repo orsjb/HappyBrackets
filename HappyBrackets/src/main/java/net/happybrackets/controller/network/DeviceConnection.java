@@ -61,6 +61,8 @@ public class DeviceConnection {
 		return showOnlyFavourites;
 	}
 
+	// create locks for our device lists
+	private final Object devicesByHostnameLock = new Object();
 
 
 	/**
@@ -159,18 +161,19 @@ public class DeviceConnection {
 	public void clearDevices(boolean clear_favourites){
 		List<LocalDeviceRepresentation> devices_to_remove = new ArrayList<LocalDeviceRepresentation>();
 
-		for(LocalDeviceRepresentation device : devicesByHostname.values())
-		{
-			if (device != null) {
-				if (clear_favourites || !device.isFavouriteDevice()) {
-					devices_to_remove.add(device);
+		synchronized (devicesByHostnameLock) {
+			for (LocalDeviceRepresentation device : devicesByHostname.values()) {
+				if (device != null) {
+					if (clear_favourites || !device.isFavouriteDevice()) {
+						devices_to_remove.add(device);
+					}
 				}
 			}
-		}
 
-		for (LocalDeviceRepresentation device:  devices_to_remove)
-		{
-			device.removeDevice();
+			for (LocalDeviceRepresentation device : devices_to_remove) {
+				device.removeDevice();
+			}
+
 		}
 
 	}
@@ -364,7 +367,7 @@ public class DeviceConnection {
 
 			InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
 			int device_id = 0;
-			int device_server_port =  0;
+			int device_server_port = 0;
 
 			String device_name = (String) msg.getArg(DEVICE_NAME);
 
@@ -375,7 +378,12 @@ public class DeviceConnection {
 				//logger.debug("Received message from device: " + device_name);
 				//			System.out.println("Device Alive Message: " + deviceName);
 				//see if we have this device yet
-				LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
+
+				LocalDeviceRepresentation this_device = null;
+
+				synchronized (devicesByHostnameLock) {
+					this_device = devicesByHostname.get(device_name);
+				}
 
 				// we need to prevent overwriting an ID that has already been set
 				if (msg.getArgCount() > DEVICE_ID) {
@@ -388,12 +396,11 @@ public class DeviceConnection {
 					invalid_pi = true;
 				}
 
-				if (msg.getArgCount() > DEVICE_SERVER_PORT){
-					try
-					{
+				if (msg.getArgCount() > DEVICE_SERVER_PORT) {
+					try {
 						device_server_port = (int) msg.getArg(DEVICE_SERVER_PORT);
+					} catch (Exception ex) {
 					}
-					catch (Exception ex){}
 				}
 
 				//logger.debug("Getting device from store: name=" + device_name + ", result=" + this_device);
@@ -445,17 +452,22 @@ public class DeviceConnection {
 							Platform.runLater(new Runnable() {
 								@Override
 								public void run() {
-									String device_name = device.deviceName;
-									theDevices.remove(devicesByHostname.get(device_name));
-									devicesByHostname.remove(device_name);
-									logger.info("Removed Device from list: {}", device_name);
+									synchronized (devicesByHostnameLock) {
+										String device_name = device.deviceName;
+										theDevices.remove(devicesByHostname.get(device_name));
+										devicesByHostname.remove(device_name);
+										logger.info("Removed Device from list: {}", device_name);
+									}
 								}
 							});
 						}
 					});
 
-					devicesByHostname.put(device_name, this_device);
-					logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
+					synchronized (devicesByHostnameLock) {
+						devicesByHostname.put(device_name, this_device);
+					}
+
+					//logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
 					final LocalDeviceRepresentation device_to_add = this_device;
 					//adding needs to be done in an "app" thread because it affects the GUI.
 					Platform.runLater(new Runnable() {
@@ -505,6 +517,7 @@ public class DeviceConnection {
 			return;
 		}
 
+
 	}
 
 	private void sendIdToDevice(final LocalDeviceRepresentation local_device){
@@ -542,15 +555,16 @@ public class DeviceConnection {
 				final int DEVICE_NAME = 0;
 				try {
 					String device_name = (String) msg.getArg(DEVICE_NAME);
-					LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
+					synchronized (devicesByHostnameLock) {
+						LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
 
-					if (this_device != null) {
+						if (this_device != null) {
 
-						if (!this_device.isIgnoringDevice()) {
-							this_device.incomingMessage(msg, sender);
+							if (!this_device.isIgnoringDevice()) {
+								this_device.incomingMessage(msg, sender);
+							}
 						}
 					}
-
 				}
 				catch (Exception ex){}
 			}
@@ -567,8 +581,10 @@ public class DeviceConnection {
 
 
 	public void sendToAllDevices(String msg_name, Object... args) {
-		for(LocalDeviceRepresentation device : devicesByHostname.values()) {
-			sendToDevice(device, msg_name, args);
+		synchronized (devicesByHostnameLock) {
+			for (LocalDeviceRepresentation device : devicesByHostname.values()) {
+				sendToDevice(device, msg_name, args);
+			}
 		}
 	}
 
@@ -596,16 +612,18 @@ public class DeviceConnection {
 
 	private void checkDeviceAliveness() {
 		long timeNow = System.currentTimeMillis();
-		List<String> devices_to_remove = new ArrayList<String>();
-		for(String deviceName : devicesByHostname.keySet()) {
-			if(!deviceName.startsWith("Virtual Test Device")) {
-				LocalDeviceRepresentation this_device = devicesByHostname.get(deviceName);
-				if (!this_device.isIgnoringDevice()) {
-					long time_since_seen = timeNow - this_device.lastTimeSeen;
-					if (time_since_seen > config.getAliveInterval() * 5) {    //config this number?
-						this_device.setIsConnected(false);
-					}
 
+		synchronized (devicesByHostnameLock) {
+			for (String deviceName : devicesByHostname.keySet()) {
+				if (!deviceName.startsWith("Virtual Test Device")) {
+					LocalDeviceRepresentation this_device = devicesByHostname.get(deviceName);
+					if (!this_device.isIgnoringDevice()) {
+						long time_since_seen = timeNow - this_device.lastTimeSeen;
+						if (time_since_seen > config.getAliveInterval() * 5) {    //config this number?
+							this_device.setIsConnected(false);
+						}
+
+					}
 				}
 			}
 		}
@@ -672,7 +690,10 @@ public class DeviceConnection {
         String address  = "127.0.0.1";
 		LocalDeviceRepresentation virtual_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, this.oscServer, this.config, replyPort);
 		theDevices.add(virtual_test_device);
-		devicesByHostname.put(name, virtual_test_device);
+
+		synchronized (devicesByHostnameLock) {
+			devicesByHostname.put(name, virtual_test_device);
+		}
 	}
 
 	/**
