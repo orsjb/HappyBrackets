@@ -840,28 +840,30 @@ public class LocalDeviceRepresentation {
 			for (DeviceRemovedListener listener : deviceRemovedListenerList) {
 				listener.deviceRemoved(this);
 			}
-			// close our TCP Port
-
-			closeClientPort();
-			// Just because a device is removed does not mean it is no longer a favourite
-			synchronized (favouriteChangedListenersLock) {
-				favouriteChangedListeners.clear();
-			}
-
-			synchronized (deviceIdUpdateListenerListLock){
-				deviceIdUpdateListenerList.clear();
-			}
-
-			synchronized (statusUpdateListenerListLock){
-				statusUpdateListenerList.clear();
-			}
-
 			deviceRemovedListenerList.clear();
 
-			dynamicControlScreen.removeDynamicControlScene();
-			dynamicControlScreen = null;
-
 		}
+		// close our TCP Port
+
+		closeClientPort();
+		// Just because a device is removed does not mean it is no longer a favourite
+		synchronized (favouriteChangedListenersLock) {
+			favouriteChangedListeners.clear();
+		}
+
+		synchronized (deviceIdUpdateListenerListLock) {
+			deviceIdUpdateListenerList.clear();
+		}
+
+		synchronized (statusUpdateListenerListLock) {
+			statusUpdateListenerList.clear();
+		}
+
+		
+		dynamicControlScreen.removeDynamicControlScene();
+		dynamicControlScreen = null;
+
+
 	}
 
 	/**
