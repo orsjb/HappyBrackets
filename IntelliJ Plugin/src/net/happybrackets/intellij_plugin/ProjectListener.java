@@ -49,7 +49,11 @@ public class ProjectListener implements VetoableProjectManagerListener {
 
     @Override
     public void projectClosed(Project project) {
+        try {
+            String project_path = project.getBaseDir().getCanonicalPath();
+            SimulatorShell.projectClosing(project_path);
 
+        }catch (Exception ex){}
     }
 
     @Override

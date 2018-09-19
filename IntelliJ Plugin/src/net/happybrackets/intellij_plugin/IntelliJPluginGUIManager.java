@@ -16,6 +16,7 @@
 
 package net.happybrackets.intellij_plugin;
 
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.fileChooser.*;
 import com.intellij.openapi.fileChooser.FileChooser;
@@ -802,9 +803,40 @@ public class IntelliJPluginGUIManager {
 
 			}
 		});
-
 		messagepaths.getChildren().add(send_selected_OSC_button);
-		
+
+		Button runSimulatorButton =  new Button("Run Simulator");
+
+		runSimulatorButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (SimulatorShell.isRunning()){
+					SimulatorShell.killSimulator();
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							runSimulatorButton.setText("Run Simulator");
+						}
+					});
+				}
+				// run simulator
+				else if (SimulatorShell.runSimulator("")) // we will put in a path later
+				{
+					NotificationMessage.displayNotification("Started simulator", NotificationType.INFORMATION);
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							runSimulatorButton.setText("Stop Simulator");
+						}
+					});
+				}
+				else {
+					NotificationMessage.displayNotification("Failed to start simulator", NotificationType.ERROR);
+				}
+			}
+		});
+
+		//messagepaths.getChildren().add(runSimulatorButton);
 		VBox custom_command_pane = new VBox(defaultElementSpacing);
 		custom_command_pane.getChildren().addAll(code_field, messagepaths);
 		return custom_command_pane;
