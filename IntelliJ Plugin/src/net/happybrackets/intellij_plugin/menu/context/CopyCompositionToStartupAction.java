@@ -4,6 +4,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.sun.org.apache.xml.internal.dtm.ref.sax2dtm.SAX2DTM;
 import net.happybrackets.controller.network.SendToDevice;
@@ -101,6 +102,7 @@ public class CopyCompositionToStartupAction extends SendCompositionAction {
                                          File src = new File(parent_path + "/" + filename);
                                          FileUtils.copyFileToDirectory(src, target_dir);
                                          success = true;
+                                         LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(target_dir + "/" + filename));
                                      }
                                  }
 

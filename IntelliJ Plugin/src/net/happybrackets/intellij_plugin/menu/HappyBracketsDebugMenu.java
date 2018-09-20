@@ -5,9 +5,11 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.intellij_plugin.menu.examples.HappyBracketsExamplesFolderMenu;
 
+import java.io.File;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -72,8 +74,11 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                 else {
                     //We need to create a new menu
 
+
+                    LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(activating_project.getBasePath()));
                     // scan the project root to see if we have an examples folder
                     VirtualFile[] vFiles = ProjectRootManager.getInstance(activating_project).getContentSourceRoots();
+
 
                     for (VirtualFile file : vFiles) {
 
@@ -86,6 +91,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
                                         new_folder_menu.setPopup(true);
                                         happy_brackets_menu.add(new_folder_menu);
                                         examplesFolderMenuHashtable.put(new_project_hash, new_folder_menu);
+
                                     }
                                 }
                             }

@@ -257,6 +257,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
                                 e.printStackTrace();
                             }
 
+                            LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(rootPath));
                             LocalFileSystem.getInstance().refresh(true);
 
                             HappyBracketsDebugMenu.forceRelaodMenus();
