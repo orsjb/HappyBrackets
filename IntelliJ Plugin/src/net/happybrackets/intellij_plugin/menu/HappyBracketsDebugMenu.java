@@ -41,7 +41,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
      * Also sets the Active Project
      * @param activating_project the project that is being activated at the time
      */
-    public synchronized static void loadExamplesMenu(Project activating_project){
+    public synchronized static void loadExamplesMenu(Project activating_project) {
 
         try {
             String new_project_hash = activating_project.getLocationHash();
@@ -64,48 +64,42 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
 
 
                 // see if we have already made one that we are going to put in
-                HappyBracketsExamplesFolderMenu new_menu =  examplesFolderMenuHashtable.get(new_project_hash);
+                HappyBracketsExamplesFolderMenu new_menu = examplesFolderMenuHashtable.get(new_project_hash);
 
-                if (new_menu != null)
-                {
+                if (new_menu != null) {
                     // we have already made a menu. Use this one
                     happy_brackets_menu.add(new_menu);
-                }
-                else {
+                } else {
                     //We need to create a new menu
 
 
-                    LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(activating_project.getBasePath()));
-                    // scan the project root to see if we have an examples folder
-                    VirtualFile[] vFiles = ProjectRootManager.getInstance(activating_project).getContentSourceRoots();
+                    String source_pathname = activating_project.getBasePath() + File.separatorChar + "src";
+                    VirtualFile src_directory = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(source_pathname));
+                    if (src_directory.isDirectory()) {
+                        for (VirtualFile root_child : src_directory.getChildren()) {
+                            if (root_child.getUrl().endsWith(EXAMPLES_FOLDER)) {
+                                if (root_child.isDirectory()) {
+                                    // We are in examples folder.
+                                    HappyBracketsExamplesFolderMenu new_folder_menu = new HappyBracketsExamplesFolderMenu(root_child);
+                                    new_folder_menu.setPopup(true);
+                                    happy_brackets_menu.add(new_folder_menu);
+                                    examplesFolderMenuHashtable.put(new_project_hash, new_folder_menu);
 
-
-                    for (VirtualFile file : vFiles) {
-
-                        if (file.isDirectory()) {
-                            for (VirtualFile root_child : file.getChildren()) {
-                                if (root_child.getUrl().endsWith(EXAMPLES_FOLDER)) {
-                                    if (root_child.isDirectory()) {
-                                        // We are in examples folder.
-                                        HappyBracketsExamplesFolderMenu new_folder_menu = new HappyBracketsExamplesFolderMenu(root_child);
-                                        new_folder_menu.setPopup(true);
-                                        happy_brackets_menu.add(new_folder_menu);
-                                        examplesFolderMenuHashtable.put(new_project_hash, new_folder_menu);
-
-                                    }
                                 }
                             }
-
                         }
 
                     }
+
                 }
+
                 // Let us set the example project to this one
                 activeProjectHash = new_project_hash;
                 forceReload = false;
 
             }
-            } catch (Exception ex) {
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
