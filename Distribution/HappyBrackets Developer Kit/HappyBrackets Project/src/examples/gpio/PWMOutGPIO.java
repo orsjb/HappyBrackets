@@ -10,7 +10,7 @@ import net.happybrackets.device.sensors.gpio.GPIOPWMOutput;
 import java.lang.invoke.MethodHandles;
 
 /**
- * This composition will SEND PWM output on GPIO_1 (pin 12 on PI header)
+ * This composition will SEND PWM output on GPIO_23 (pin 33 on PI header)
  * See http://pi4j.com/pins/model-zero-rev1.html for pinouts
  *
  * The LED will grow brighter and then softer
@@ -21,7 +21,7 @@ import java.lang.invoke.MethodHandles;
  *                                 ↗ ↗
  *
  *                                ┃ ╱┃
- *    _________________╱╲  ╱╲  ___┃╱ ┃_______________ GPIO_1 (pin 12)
+ *    _________________╱╲  ╱╲  ___┃╱ ┃_______________ GPIO_23 (pin 33)
  * __|__                 ╲╱  ╲╱   ┃╲ ┃
  *  ___                           ┃ ╲┃
  *   _
@@ -31,7 +31,7 @@ public class PWMOutGPIO implements HBAction, HBReset {
 
     boolean exitThread = false;
 
-    final int GPIO_OUTPUT = 1;
+    final int GPIO_OUTPUT = 23;
 
     @Override
     public void action(HB hb) {

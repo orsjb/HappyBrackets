@@ -10,7 +10,7 @@ import net.happybrackets.device.sensors.gpio.GPIOInput;
 import java.lang.invoke.MethodHandles;
 
 /**
- * This composition will read a digital input on GPIO_2 (pin 13 on PI header)
+ * This composition will read a digital input on GPIO_4 (pin 16 on PI header)
  * See http://pi4j.com/pins/model-zero-rev1.html for pinouts
  *
  * The Pin has been configures so the pin floats high
@@ -20,7 +20,7 @@ import java.lang.invoke.MethodHandles;
  *
  *                       ╱
  *                      ╱
- *    _________________╱      _______________ GPIO_2 (pin 13)
+ *    _________________╱      _______________ GPIO_4 (pin 16)
  * __|__
  *  ___
  *   _
@@ -29,13 +29,13 @@ import java.lang.invoke.MethodHandles;
 public class DigitalInGPIO implements HBAction, HBReset {
 
     // Define what outr GPIO Input pin is
-    final int GPIO_NUMBER = 2;
+    final int GPIO_NUMBER = 4;
 
     @Override
     public void action(HB hb) {
         /***** Type your HBAction code below this line ******/
         // remove this code if you do not want other compositions to run at the same time as this one
-        hb.reset();
+        //hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         // Reset all our GPIO - Only really necessary if the Pin has been assigned as something other than an input before
