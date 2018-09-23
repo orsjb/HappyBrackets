@@ -98,12 +98,13 @@ public class ControllerAdvertiser {
 
 	CachedMessage cachedBroadcastMessage = null;
 	CachedMessage cachedMulticastMessage = null;
+	CachedMessage cachedLocalhostMessage = null;
 
 	DatagramSocket advertiseTxSocket = null;
 	ByteBuffer byteBuf;
 
 	/**
-	 * Are we only doing Multicaste message
+	 * Are we only doing Multicast message
 	 * @return true if we are only doing multicast and are not doing broadcast
 	 */
 	public boolean isOnlyMulticastMessages() {
@@ -120,6 +121,16 @@ public class ControllerAdvertiser {
 
 	// if we set this false, we will also send broadcast messages
 	boolean onlyMulticastMessages =  true;
+
+	/**
+	 * Set if we are going to advertise on localhost
+	 * @param sendLocalHost true if we are going to advertise on localhost
+	 */
+	public void setSendLocalHost(boolean sendLocalHost) {
+		this.sendLocalHost = sendLocalHost;
+	}
+
+	boolean sendLocalHost = false;
 
 	/**
 	 * check if the number of network devices has changed from what we have as
@@ -242,6 +253,7 @@ public class ControllerAdvertiser {
 			byteBuf.get(buff);
 			InetAddress broadcast = InetAddress.getByName("255.255.255.255");
 			InetAddress multicast = InetAddress.getByName(multicast_address);
+			InetAddress localhost = InetAddress.getLoopbackAddress();
 
 			// Now we are going to broadcast on network interface specific
 			DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
@@ -249,6 +261,10 @@ public class ControllerAdvertiser {
 
 			DatagramPacket multicast_packet = new DatagramPacket(buff, buff.length, multicast, broadcastPort);
 			cachedMulticastMessage = new CachedMessage(msg, buff, multicast_packet, multicast);
+
+			DatagramPacket locahost_packet = new DatagramPacket(buff, buff.length, localhost, broadcastPort);
+			cachedLocalhostMessage = new CachedMessage(msg, buff, locahost_packet, localhost);
+
 
 			//Do not load these at startup - could be locking up
 			//loadNetworkBroadcastAdverticements();
@@ -272,7 +288,15 @@ public class ControllerAdvertiser {
 						}
 
 
-						if (true || !onlyMulticastMessages) {
+						if (sendLocalHost){
+							try {
+								advertiseTxSocket.send(cachedLocalhostMessage.cachedPacket);
+							} catch (IOException e) {
+								//e.printStackTrace();
+							}
+						}
+
+						if (!onlyMulticastMessages) {
 							DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
 
 							// Now send a broadcast

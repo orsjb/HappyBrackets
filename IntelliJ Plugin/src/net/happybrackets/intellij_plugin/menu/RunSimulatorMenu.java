@@ -27,16 +27,14 @@ public class RunSimulatorMenu extends AnAction {
 
             if (SimulatorShell.isRunning()){
                 SimulatorShell.killSimulator();
-                if (multicastOnly){
-                    advertiser.setOnlyMulticastMessages(multicastOnly);
-                }
+
+                // we only want
+                advertiser.setSendLocalHost(false);
             }
             else {
                 if (SimulatorShell.runSimulator(project_path)){
-                    multicastOnly = advertiser.isOnlyMulticastMessages();
-
-                    // we need broadcast as well as multicast to communicate with simulator
-                    advertiser.setOnlyMulticastMessages(false);
+                    // we need to advertise on localhost
+                    advertiser.setSendLocalHost(true);
                 }
             }
 
