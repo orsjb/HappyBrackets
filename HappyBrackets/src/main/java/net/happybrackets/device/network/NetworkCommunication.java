@@ -217,7 +217,7 @@ public class NetworkCommunication {
 
 					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_NAME)) {
 						String name = (String) msg.getArg(0);
-						hb.setFreindlyName(name);
+						hb.setFriendlyName(name);
 						logger.info("I have been given a friendly name by the controller: {}", name);
 					}
 					else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {
@@ -384,7 +384,7 @@ public class NetworkCommunication {
 
 					} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SET_NAME)) {
 						String name = (String) msg.getArg(0);
-						hb.setFreindlyName(name);
+						hb.setFriendlyName(name);
 						logger.info("I have been given a friendly name by the controller: {}", name);
 					}
 					else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GET_LOGS)) {

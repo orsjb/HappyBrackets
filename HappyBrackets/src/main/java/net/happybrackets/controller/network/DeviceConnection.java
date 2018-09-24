@@ -87,7 +87,9 @@ public class DeviceConnection {
 			selectedDevices.remove(project_hash);
 		}
 
-		selectedDevices.put(project_hash, selected_device);
+		if (selected_device != null) {
+			selectedDevices.put(project_hash, selected_device);
+		}
 	}
 
 	// If we only want to show favourites, we will also want to remove them from our list

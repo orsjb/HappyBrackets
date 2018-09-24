@@ -1115,7 +1115,7 @@ public class HB {
 	 * We will set the friendly of the device here. It may be set by a controller
 	 * @param name the friendly name
 	 */
-	public void setFreindlyName(String name){
+	public void setFriendlyName(String name){
 		myDeviceId.setFriendlyName(name);
 	}
 
@@ -1124,10 +1124,15 @@ public class HB {
 	 * Reboots the device immediately.
 	 */
 	public static void rebootDevice() {
-		try {
-			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo reboot"}).waitFor();
-		} catch (Exception e) {
-			logger.error("Unable to reboot device!", e);
+		if (enableSimulators){
+			System.exit(0);
+		}
+		else {
+			try {
+				Runtime.getRuntime().exec(new String[]{"/bin/bash", "-c", "sudo reboot"}).waitFor();
+			} catch (Exception e) {
+				logger.error("Unable to reboot device!", e);
+			}
 		}
 	}
 
@@ -1135,10 +1140,15 @@ public class HB {
 	 * Shuts down the device immediately.
 	 */
 	public static void shutdownDevice() {
-		try {
-			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","sudo shutdown now"}).waitFor();
-		} catch (Exception e) {
-			logger.error("Unable to shutdown device!", e);
+		if (enableSimulators){
+			System.exit(0);
+		}
+		else {
+			try {
+				Runtime.getRuntime().exec(new String[]{"/bin/bash", "-c", "sudo shutdown now"}).waitFor();
+			} catch (Exception e) {
+				logger.error("Unable to shutdown device!", e);
+			}
 		}
 	}
 
