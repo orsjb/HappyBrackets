@@ -107,7 +107,7 @@ public class SimulatorShell {
                 {
                     // if it is a success then we have successfully killed process
                     if (exit_value == 0) {
-                        processId = 0;
+
                         NotificationMessage.displayNotification("Simulator Stopped", NotificationType.INFORMATION);
                     } else {
                         NotificationMessage.displayNotification("Unable to stop simulator", NotificationType.ERROR);
@@ -116,6 +116,7 @@ public class SimulatorShell {
 
                 try {
                     killer.executeCommand("kill " + processId);
+                    processId = 0; // set process to zero here otherwise we won't be able to start it back up
                 } catch (IOException e) {
 
                     System.out.println(e.getMessage());
