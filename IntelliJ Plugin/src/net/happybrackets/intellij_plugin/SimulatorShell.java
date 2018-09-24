@@ -17,6 +17,10 @@ public class SimulatorShell {
     static final String DEVICE_SCRIPT_PATH =  "/Device/HappyBrackets/scripts/";
 
     private static String MAC_SIMULATOR = "run-simulator.sh";
+    private static String WIN_SIMULATOR = "run-simulator.bat";
+
+    private static Process simulatorProcess = null;
+
 
     /**
      * Run the simulator from the specified project path
@@ -53,14 +57,27 @@ public class SimulatorShell {
             NotificationMessage.displayNotification("Starting simulator", NotificationType.INFORMATION);
             ret = true;
         } catch (IOException e) {
-            NotificationMessage.displayNotification("Failed to start simulator", NotificationType.ERROR);
+
+            // Ok - let us try to run windows version instead
+            try {
+                ProcessBuilder pb = new ProcessBuilder("cmd", "/c", WIN_SIMULATOR);
+                File dir = new File(script_path);
+                pb.directory(dir);
+                simulatorProcess = pb.start();
+                NotificationMessage.displayNotification("Starting simulator", NotificationType.INFORMATION);
+                ret = true;
+            } catch (IOException ex) {
+
+
+                NotificationMessage.displayNotification("Failed to start simulator", NotificationType.ERROR);
+            }
         }
 
         return ret;
     }
 
     public static boolean isRunning(){
-        return processId != 0;
+        return processId != 0 || simulatorProcess != null;
     }
 
 
@@ -78,25 +95,31 @@ public class SimulatorShell {
      */
     public static void killSimulator(){
         if (isRunning()) {
-            ShellExecute killer = new ShellExecute();
-
-            killer.addProcessCompleteListener((shellExecute, exit_value) ->
+            if (simulatorProcess != null)
             {
-                // if it is a success then we have successfully killed process
-                if (exit_value == 0){
-                    processId = 0;
-                    NotificationMessage.displayNotification("Simulator Stopped", NotificationType.INFORMATION);
-                }
-                else{
-                    NotificationMessage.displayNotification("Unable to stop simulator", NotificationType.ERROR);
-                }
-            });
+                simulatorProcess.destroyForcibly();
+                simulatorProcess = null;
+            }
+            else {
+                ShellExecute killer = new ShellExecute();
 
-            try {
-                killer.executeCommand("kill " + processId);
-            } catch (IOException e) {
+                killer.addProcessCompleteListener((shellExecute, exit_value) ->
+                {
+                    // if it is a success then we have successfully killed process
+                    if (exit_value == 0) {
+                        processId = 0;
+                        NotificationMessage.displayNotification("Simulator Stopped", NotificationType.INFORMATION);
+                    } else {
+                        NotificationMessage.displayNotification("Unable to stop simulator", NotificationType.ERROR);
+                    }
+                });
 
-                System.out.println(e.getMessage());
+                try {
+                    killer.executeCommand("kill " + processId);
+                } catch (IOException e) {
+
+                    System.out.println(e.getMessage());
+                }
             }
         }
     }
