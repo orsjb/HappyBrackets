@@ -95,6 +95,10 @@ public class ControllerAdvertiser {
 
 	private List <CachedMessage> cachedNetworkMessage = new ArrayList<>();
 
+	// we will store any devices we see here and send to them specifically
+	private Map<InetAddress, CachedMessage> deviceAdvertisedMessage = new Hashtable<>();
+
+	private final Object deviceAdvertisedMessageLock = new Object();
 
 	CachedMessage cachedBroadcastMessage = null;
 	CachedMessage cachedMulticastMessage = null;
@@ -102,6 +106,20 @@ public class ControllerAdvertiser {
 
 	DatagramSocket advertiseTxSocket = null;
 	ByteBuffer byteBuf;
+
+	public void deviceAliveReceived (SocketAddress device_address){
+		try {
+			InetAddress inetAddress = ((InetSocketAddress) device_address).getAddress();
+
+			synchronized (deviceAdvertisedMessageLock){
+				if (!deviceAdvertisedMessage.containsKey(inetAddress)){
+					deviceAdvertisedMessage.put(inetAddress, buildCachedMessage(inetAddress, broadcastPort));
+				}
+			}
+		}
+		catch (Exception ex){}
+
+	}
 
 	/**
 	 * Are we only doing Multicast message
@@ -153,6 +171,37 @@ public class ControllerAdvertiser {
 
 		return num_interfaces != cachedNetworkMessage.size();
 	}
+
+
+	/**
+	 * Build a cached message to send to a target address
+	 * @param address the address to send to
+	 * @param port the target address port
+	 * @return the cached message
+	 * @throws IOException if unable to create
+	 */
+	CachedMessage buildCachedMessage(InetAddress address, int port) throws IOException {
+		OSCMessage msg = new OSCMessage(
+				OSCVocabulary.CONTROLLER.CONTROLLER,
+				new Object[]{
+						Device.getDeviceName(),
+						replyPort
+				}
+		);
+		OSCPacketCodec codec = new OSCPacketCodec();
+
+		byteBuf.clear();
+		codec.encode(msg, byteBuf);
+		byteBuf.flip();
+		byte[] buff = new byte[byteBuf.limit()];
+		byteBuf.get(buff);
+
+		DatagramPacket packet = new DatagramPacket(buff, buff.length, address, port);
+		CachedMessage message = new CachedMessage(msg, buff, packet, address);
+		return message;
+	}
+
+
 	/**
 	 * Load a set of Broadcast messages in the standard broadcast message fails
 	 */
@@ -160,21 +209,8 @@ public class ControllerAdvertiser {
 		cachedNetworkMessage.clear();
 
 		if (!onlyMulticastMessages) {
-			OSCMessage msg = new OSCMessage(
-					OSCVocabulary.CONTROLLER.CONTROLLER,
-					new Object[]{
-							Device.getDeviceName(),
-							replyPort
-					}
-			);
-			OSCPacketCodec codec = new OSCPacketCodec();
 
 			try {
-				byteBuf.clear();
-				codec.encode(msg, byteBuf);
-				byteBuf.flip();
-				byte[] buff = new byte[byteBuf.limit()];
-				byteBuf.get(buff);
 
 				int secondaryBroadcastPort = DefaultConfig.SECONDARY_BROADCAST_PORT;
 
@@ -188,15 +224,13 @@ public class ControllerAdvertiser {
 					if (broadcast != null) {
 						try {
 							// Now we are going to broadcast on network interface specific
-							DatagramPacket packet = new DatagramPacket(buff, buff.length, broadcast, broadcastPort);
-							CachedMessage message = new CachedMessage(msg, buff, packet, broadcast);
-							cachedNetworkMessage.add(message);
 
-							DatagramPacket secondary_packet = new DatagramPacket(buff, buff.length, broadcast, secondaryBroadcastPort);
-							CachedMessage secondary_message = new CachedMessage(msg, buff, secondary_packet, broadcast);
-							cachedNetworkMessage.add(secondary_message);
+							cachedNetworkMessage.add(buildCachedMessage(broadcast, broadcastPort));
+
 
 							// now we need to add another one for non multicast port
+							cachedNetworkMessage.add(buildCachedMessage(broadcast, secondaryBroadcastPort));
+
 
 
 						} catch (Exception ex) {
@@ -294,6 +328,18 @@ public class ControllerAdvertiser {
 							} catch (IOException e) {
 								//e.printStackTrace();
 							}
+						}
+
+						synchronized (deviceAdvertisedMessageLock){
+							for (CachedMessage message : deviceAdvertisedMessage.values()) {
+								if (message != null) {
+									try{
+										DatagramPacket cached_packet = message.getCachedPacket();
+										advertiseTxSocket.send(cached_packet);
+									}catch (Exception ex){}
+								}
+							}
+
 						}
 
 						if (!onlyMulticastMessages) {

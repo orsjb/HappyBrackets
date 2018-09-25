@@ -109,6 +109,13 @@ public class ControllerEngine {
         //set up device connection
         deviceConnection = new DeviceConnection(controllerConfig);
 
+        deviceConnection.addDeviceAliveListener(device_address -> {
+            // this event will not actually happen until we get some sort of advertisement
+            if (controllerAdvertiser != null){
+                controllerAdvertiser.deviceAliveReceived(device_address);
+            }
+        });
+
         listen_port =  deviceConnection.getReplyPort();
 
         controllerAdvertiser = new ControllerAdvertiser(controllerConfig.getMulticastAddr(), controllerConfig.getBroadcastPort(), listen_port);

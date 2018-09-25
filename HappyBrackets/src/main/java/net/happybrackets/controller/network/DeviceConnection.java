@@ -40,6 +40,13 @@ import org.slf4j.LoggerFactory;
 
 public class DeviceConnection {
 
+	/**
+	 * Define  an interface for detecting sending address of device alive messages
+	 */
+	public interface DeviceAliveListener{
+		void deviceAlive(SocketAddress device_address);
+	}
+
 	final static Logger logger = LoggerFactory.getLogger(DeviceConnection.class);
 	public static final boolean verbose = false;
 
@@ -49,6 +56,7 @@ public class DeviceConnection {
 	private Map<String, KnownDeviceID> knownDevices = new Hashtable<String, KnownDeviceID>();
 	// We will have a selected device based on project
 	private Map<String, LocalDeviceRepresentation> selectedDevices = new Hashtable<String, LocalDeviceRepresentation>();
+
 
 	private int newID = -1;
 	private ControllerConfig config;
@@ -64,6 +72,20 @@ public class DeviceConnection {
 	// create locks for our device lists
 	private final Object devicesByHostnameLock = new Object();
 
+
+	private List<DeviceAliveListener> deviceAliveListenerList = new ArrayList<>();
+
+	private final Object deviceAliveListenerListLock = new Object();
+
+	/**
+	 * Add listener to see which IP address is live
+	 * @param listener the listener
+	 */
+	public void addDeviceAliveListener(DeviceAliveListener listener){
+		synchronized (deviceAliveListenerListLock){
+			deviceAliveListenerList.add(listener);
+		}
+	}
 
 	/**
 	 * Get the LocalDevice  that is selected in this project
@@ -244,7 +266,7 @@ public class DeviceConnection {
 					try {
 						Thread.sleep(config.getAliveInterval());
 					} catch (InterruptedException e) {
-						logger.error("Poll interval interupted for alive devices checkup", e);
+						logger.error("Poll interval interrupted for alive devices checkup", e);
 					}
 				}
 			}
@@ -553,6 +575,12 @@ public class DeviceConnection {
 		if (!disableAdvertising) {
 			if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
 				processAliveMessage(msg, sender);
+
+				synchronized (deviceAliveListenerListLock){
+					for (DeviceAliveListener listener:deviceAliveListenerList) {
+						listener.deviceAlive(sender);
+					}
+				}
 			} else {
 				final int DEVICE_NAME = 0;
 				try {
