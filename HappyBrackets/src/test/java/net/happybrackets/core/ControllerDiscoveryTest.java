@@ -60,6 +60,7 @@ public class ControllerDiscoveryTest {
 		broadcastManager.startRefreshThread();
 
 		advertiser = new ControllerAdvertiser(deviceEnv.getMulticastAddr(), deviceEnv.getBroadcastPort(), deviceEnv.getBroadcastPort());
+		advertiser.setSendLocalHost(true);
 		advertiser.start();
 
 
