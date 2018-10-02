@@ -154,7 +154,7 @@ public class TestDynamicControl_1 implements HBAction {
             });
         }
         catch (Exception ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
 
     }
