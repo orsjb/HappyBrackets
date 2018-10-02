@@ -93,7 +93,7 @@ public class ControllerSettings {
             props.store(writer, "Settings for the Happy Brackets IntelliJ Plugin.");
         }
         catch (Exception ex) {
-            System.err.println("Unable to save settings. Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
