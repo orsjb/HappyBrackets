@@ -902,8 +902,7 @@ public class DynamicControlScreen {
 
 
                 } catch (Exception ex) {
-                    String error_message = ex.getMessage();
-                    System.out.println(error_message);
+                    ex.printStackTrace();
                 }
             });
         });

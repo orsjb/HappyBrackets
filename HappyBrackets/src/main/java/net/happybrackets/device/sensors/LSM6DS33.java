@@ -236,10 +236,10 @@ public class LSM6DS33 extends Sensor implements AccelerometerSensor, GyroscopeSe
 						notifyListeners();
 
 					} catch (IOException e) {
-							// System.out.println("MiniMU not receiving data.");
-							// Assuming we might like this in dev?
-							logger.debug("LSM6DS33 not receiving data.");
-						System.out.println("LSM6DS33 task " + e.getMessage());
+						// System.out.println("MiniMU not receiving data.");
+						// Assuming we might like this in dev?
+						logger.debug("LSM6DS33 not receiving data.");
+						e.printStackTrace();
 					}
 					try {
 						Thread.sleep(10);		//TODO this should not be hardwired.

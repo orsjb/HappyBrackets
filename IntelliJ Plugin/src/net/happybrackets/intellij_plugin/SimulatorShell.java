@@ -119,7 +119,7 @@ public class SimulatorShell {
                     processId = 0; // set process to zero here otherwise we won't be able to start it back up
                 } catch (IOException e) {
 
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }

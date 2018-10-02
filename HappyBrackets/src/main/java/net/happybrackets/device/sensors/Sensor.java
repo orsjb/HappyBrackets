@@ -189,7 +189,7 @@ public abstract class Sensor {
             }
             catch (Exception ex)
             {
-                System.out.println("Exception in notifyListeners " +  ex.getMessage());
+                ex.printStackTrace();
             }
 
         }
@@ -202,7 +202,7 @@ public abstract class Sensor {
             }
             catch (Exception ex)
             {
-                System.out.println("Exception in notifyListeners " +  ex.getMessage());
+                ex.printStackTrace();
             }
         }
 
@@ -213,7 +213,7 @@ public abstract class Sensor {
             }
             catch (Exception ex)
             {
-                System.out.println("Exception in notifyListeners " +  ex.getMessage());
+                ex.printStackTrace();
             }
 
         }
@@ -226,7 +226,7 @@ public abstract class Sensor {
             }
             catch (Exception ex)
             {
-                System.out.println("Exception in notifyListeners " +  ex.getMessage());
+                ex.printStackTrace();
             }
         }
 
