@@ -13,7 +13,8 @@ BUF=1024
 SR=44100
 BITS=16
 INS=0
-OUTS=1 
+OUTS=1
+DEVICE=0
 AUTOSTART=true 
 ACCESSMODE=local
 ACTION=
@@ -87,4 +88,4 @@ cd ${DIR}/..
 
 echo “Running HappyBrackets”
 
-java -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG
+java -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART device=$DEVICE access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG
