@@ -128,7 +128,7 @@ public class SampleSpeedAndDirection implements HBAction {
              *****************************************************/
             new AccelerometerListener(hb) {
                 @Override
-                public void sensorUpdate(float x_val, float y_val, float z_val) {
+                public void sensorUpdated(float x_val, float y_val, float z_val) {
                     /******** Write your code below this line ********/
                     // we will make range go from stopped to double
                     sampleSpeed.setValue(x_val + 1);

@@ -30,7 +30,7 @@ public abstract class AccelerometerListener {
                 float z_val = accelerometer.getAccelerometerZ();
 
                 /******** Write your code below this line ********/
-                sensorUpdate(x_val, y_val, z_val);
+                sensorUpdated(x_val, y_val, z_val);
 
                 /******** Write your code above this line ********/
 
@@ -73,5 +73,5 @@ public abstract class AccelerometerListener {
      * @param y_val y value of accelerometer
      * @param z_val z value of accelerometer
      */
-    abstract public void  sensorUpdate (float x_val, float y_val, float z_val);
+    abstract public void  sensorUpdated (float x_val, float y_val, float z_val);
 }

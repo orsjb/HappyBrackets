@@ -25,7 +25,7 @@ then
 else
     # code if not found
     echo "Append hostname to hosts file"
-    echo -n "$MACHINE_TEXT" >> /etc/hosts
+    echo -n "$MACHINE_TEXT"$'\n' >> /etc/hosts
 fi
 
 # reboot with correct hostname if required

@@ -6,6 +6,7 @@ import com.intellij.openapi.project.VetoableProjectManagerListener;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.ex.WindowManagerEx;
 import net.happybrackets.intellij_plugin.menu.HappyBracketsDebugMenu;
+import net.happybrackets.intellij_plugin.menu.UpdateProjectMenu;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -19,7 +20,7 @@ public class ProjectListener implements VetoableProjectManagerListener {
 
             // populate menu the first time
             HappyBracketsDebugMenu.loadExamplesMenu(project);
-
+            UpdateProjectMenu.checkProjectVersionCompatibility(project);
             // change the menu to contain the opened project's menu items on focus gain
             IdeFrame project_frame = WindowManagerEx.getInstanceEx().findFrameFor(project);
             if (project_frame != null) {

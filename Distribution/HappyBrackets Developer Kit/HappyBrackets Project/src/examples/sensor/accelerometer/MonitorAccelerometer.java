@@ -55,7 +55,7 @@ public class MonitorAccelerometer implements HBAction {
          *****************************************************/
         new AccelerometerListener(hb) {
             @Override
-            public void sensorUpdate(float x_val, float y_val, float z_val) {
+            public void sensorUpdated(float x_val, float y_val, float z_val) {
                 /******** Write your code below this line ********/
                 displayX.setValue(x_val);
                 displayY.setValue(y_val);

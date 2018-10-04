@@ -33,7 +33,7 @@ public class BasicWaveControl implements HBAction, HBReset {
          *****************************************************/
         new AccelerometerListener(hb) {
             @Override
-            public void sensorUpdate(float x_val, float y_val, float z_val) {
+            public void sensorUpdated(float x_val, float y_val, float z_val) {
                 /* accelerometer values typically range from -1 to + 1 */
                 /******** Write your code below this line ********/
 

@@ -39,7 +39,7 @@ public class TripleAxisAccelerometer implements HBAction, HBReset {
         /** type accelerometerSensor to create this. Values typically range from -1 to + 1 **/
         new AccelerometerListener(hb) {
             @Override
-            public void sensorUpdate(float x_val, float y_val, float z_val) { /*     Write your code below this line     */
+            public void sensorUpdated(float x_val, float y_val, float z_val) { /*     Write your code below this line     */
 
                 x_player.setFequency(scaleValue(x_val, 0, 1000));
                 y_player.setFequency(scaleValue(y_val, 0, 1000));

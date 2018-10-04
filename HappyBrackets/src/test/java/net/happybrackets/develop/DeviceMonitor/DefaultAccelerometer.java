@@ -45,7 +45,7 @@ public class DefaultAccelerometer implements HBAction{
          *****************************************************/
         new AccelerometerListener(hb) {
             @Override
-            public void sensorUpdate(float x_val, float y_val, float z_val) {
+            public void sensorUpdated(float x_val, float y_val, float z_val) {
                 /******** Write your code below this line ********/
                 float scaled_x = Sensor.scaleValue(-1, 1, 200, 1000, x_val);
                 System.out.println("" + scaled_x);
