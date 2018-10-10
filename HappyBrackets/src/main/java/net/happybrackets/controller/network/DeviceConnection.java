@@ -167,7 +167,7 @@ public class DeviceConnection {
 	int replyPort = 0; // this is the port we want the device to return calls to
 
 	// flag to disable sending and receiving OSC
-	private static boolean disableAdvertising = false;
+	private static boolean disableAdvertising = true;
 
 	/**
 	 * Remove all devices from List and make them become rescanned;

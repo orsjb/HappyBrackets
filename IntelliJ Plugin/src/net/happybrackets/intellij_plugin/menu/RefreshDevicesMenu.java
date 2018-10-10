@@ -15,6 +15,10 @@ public class RefreshDevicesMenu extends AnAction {
             
             //ControllerEngine.getInstance().getBroadcastManager().dispose();
             DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+            ControllerEngine.getInstance().startDeviceCommunication();
+            // we will make sure we do not have advertising disabled
+            connection.setDisableAdvertise(false);
+
             connection.rescanDevices();
             connection.setDisableAdvertise(false);
         } catch (Exception ex) {

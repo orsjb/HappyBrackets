@@ -93,7 +93,15 @@ public class ControllerAdvertiser {
 	int broadcastPort;
 
 
+	// if we set this false, we will also send broadcast messages
+	boolean onlyMulticastMessages =  true;
+
+	// we will do a network poll once if this flag becomes true
+	private boolean probeBroadcast = false;
+
 	private List <CachedMessage> cachedNetworkMessage = new ArrayList<>();
+
+	private final Object cachedNetworkMessageLock = new Object();
 
 	// we will store any devices we see here and send to them specifically
 	private Map<InetAddress, CachedMessage> deviceAdvertisedMessage = new Hashtable<>();
@@ -122,6 +130,13 @@ public class ControllerAdvertiser {
 	}
 
 	/**
+	 * Make the advertiser do one poll on broadcast
+	 */
+	public void doBroadcastProbe(){
+		loadNetworkBroadcastAdverticements();
+		probeBroadcast = true;
+	}
+	/**
 	 * Are we only doing Multicast message
 	 * @return true if we are only doing multicast and are not doing broadcast
 	 */
@@ -137,8 +152,6 @@ public class ControllerAdvertiser {
 		this.onlyMulticastMessages = onlyMulticastMessages;
 	}
 
-	// if we set this false, we will also send broadcast messages
-	boolean onlyMulticastMessages =  true;
 
 	/**
 	 * Set if we are going to advertise on localhost
@@ -169,7 +182,9 @@ public class ControllerAdvertiser {
 			}
 		};
 
-		return num_interfaces != cachedNetworkMessage.size();
+		synchronized (cachedNetworkMessageLock) {
+			return num_interfaces != cachedNetworkMessage.size();
+		}
 	}
 
 
@@ -205,10 +220,9 @@ public class ControllerAdvertiser {
 	/**
 	 * Load a set of Broadcast messages in the standard broadcast message fails
 	 */
-	void loadNetworkBroadcastAdverticements() {
-		cachedNetworkMessage.clear();
-
-		if (!onlyMulticastMessages) {
+	public void loadNetworkBroadcastAdverticements() {
+		synchronized (cachedNetworkMessageLock) {
+			cachedNetworkMessage.clear();
 
 			try {
 
@@ -232,7 +246,6 @@ public class ControllerAdvertiser {
 							cachedNetworkMessage.add(buildCachedMessage(broadcast, secondaryBroadcastPort));
 
 
-
 						} catch (Exception ex) {
 							logger.error("Unable to create cached message", ex);
 						}
@@ -245,6 +258,7 @@ public class ControllerAdvertiser {
 				logger.error("Unable to create cached message", ex);
 			}
 		}
+
 	}
 
 
@@ -342,7 +356,7 @@ public class ControllerAdvertiser {
 
 						}
 
-						if (!onlyMulticastMessages) {
+						if (probeBroadcast || !onlyMulticastMessages) {
 							DatagramPacket packet = cachedBroadcastMessage.getCachedPacket();
 
 							// Now send a broadcast
@@ -352,20 +366,26 @@ public class ControllerAdvertiser {
 								//System.out.println(ex.getMessage());
 							}
 
-							try {
-								for (CachedMessage cachedMessage : cachedNetworkMessage) {
-									DatagramPacket cached_packet = cachedMessage.cachedPacket;
-									try {
-										advertiseTxSocket.send(cached_packet);
-									} catch (IOException e) {
-										e.printStackTrace();
-										reload_cached_messages = true;
+							synchronized (cachedNetworkMessageLock) {
+								try {
+									for (CachedMessage cachedMessage : cachedNetworkMessage) {
+										DatagramPacket cached_packet = cachedMessage.cachedPacket;
+										try {
+											advertiseTxSocket.send(cached_packet);
+										} catch (IOException e) {
+											e.printStackTrace();
+											reload_cached_messages = true;
+										}
 									}
+
+								} catch (Exception ex_all) {
+
 								}
 
-							} catch (Exception ex_all) {
-
+								// we will turn off broadcast poll if we turned it on
+								probeBroadcast = false;
 							}
+
 
 							List<NetworkInterface> interfaces = Device.viableInterfaces();
 
@@ -377,6 +397,7 @@ public class ControllerAdvertiser {
 							if (reload_cached_messages) {
 								loadNetworkBroadcastAdverticements();
 							}
+
 						}
 					}
 

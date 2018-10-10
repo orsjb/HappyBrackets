@@ -118,7 +118,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         tool_window.setTitle(" - " + version_text);
 
         // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them
-        ControllerEngine.getInstance().startDeviceCommunication();
+        //ControllerEngine.getInstance().startDeviceCommunication();
 
         // Load our known devces based on project
         loadProjectKnownDevices(project_dir);

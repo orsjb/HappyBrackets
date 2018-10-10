@@ -51,6 +51,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.config.ControllerConfig;
+import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
@@ -167,6 +168,8 @@ public class IntelliJPluginGUIManager {
 		TitledPane composition_pane = new TitledPane("Compositions", makeCompositionPane());
 		TitledPane commands_pane = new TitledPane("Commands", makeCustomCommandsPane());
 
+		Node probe_pane = makeProbePanel();
+
 		//TitledPane debug_pane = new TitledPane("Debug", makeDebugPane());
 
 		//config_pane.setExpanded(false);
@@ -176,7 +179,7 @@ public class IntelliJPluginGUIManager {
 		VBox main_container = new VBox(5);
 		main_container.setFillWidth(true);
 		//main_container.getChildren().addAll(config_pane, known_devices_pane, global_pane, composition_pane,  device_pane);
-		main_container.getChildren().addAll(commands_pane,   device_pane);
+		main_container.getChildren().addAll(commands_pane,  probe_pane, device_pane);
 
 		ScrollPane main_scroll = new ScrollPane();
 		main_scroll.setFitToWidth(true);
@@ -968,7 +971,39 @@ public class IntelliJPluginGUIManager {
 	}
 
 
+	private Node makeProbePanel(){
+		FlowPane device_panel = new FlowPane(defaultElementSpacing, defaultElementSpacing);
+
+		device_panel.setAlignment(Pos.TOP_LEFT);
+		Button probe_button = new Button("Proble");
+		probe_button.setTooltip(new Tooltip("Look for devices on the network"));
+
+		probe_button.setOnMouseClicked(event -> {
+
+			DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+			ControllerEngine.getInstance().startDeviceCommunication();
+			// we will make sure we do not have advertising disabled
+			connection.setDisableAdvertise(false);
+
+			// we will do a single broadcast type advertise if broadcast is not enabled
+			ControllerAdvertiser advertiser = ControllerEngine.getInstance().getControllerAdvertiser();
+
+			boolean multicast_only = advertiser.isOnlyMulticastMessages();
+			if (multicast_only){
+				advertiser.doBroadcastProbe();
+
+			}
+
+		});
+
+		FlowPane device_buttons = new FlowPane(defaultElementSpacing, defaultElementSpacing);
+		device_buttons.getChildren().add(probe_button);
+
+		device_panel.getChildren().add(device_buttons);
+		return device_panel;
+	}
 	private Node makeDevicePane() {
+
 		//list of Devices
 		deviceListView = new ListView<LocalDeviceRepresentation>();
 		deviceListView.setItems(deviceConnection.getDevices());
@@ -979,6 +1014,7 @@ public class IntelliJPluginGUIManager {
 			}
 		});
 		deviceListView.setMinHeight(minTextAreaHeight);
+
 
 		return deviceListView;
 	}

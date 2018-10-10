@@ -7,6 +7,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.network.ControllerAdvertiser;
+import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.intellij_plugin.SimulatorShell;
 
 public class RunSimulatorMenu extends AnAction {
@@ -20,6 +21,11 @@ public class RunSimulatorMenu extends AnAction {
         try {
 
             Project current_project = e.getProject();
+
+            DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+            ControllerEngine.getInstance().startDeviceCommunication();
+            // we will make sure we do not have advertising disabled
+            connection.setDisableAdvertise(false);
 
             String project_path = current_project.getBaseDir().getCanonicalPath();
 
