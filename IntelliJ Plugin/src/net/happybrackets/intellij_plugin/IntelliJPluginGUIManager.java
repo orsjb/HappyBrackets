@@ -975,8 +975,8 @@ public class IntelliJPluginGUIManager {
 		FlowPane device_panel = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 
 		device_panel.setAlignment(Pos.TOP_LEFT);
-		Button probe_button = new Button("Proble");
-		probe_button.setTooltip(new Tooltip("Look for devices on the network"));
+		Button probe_button = new Button("Probe");
+		probe_button.setTooltip(new Tooltip("Probe for devices on the network"));
 
 		probe_button.setOnMouseClicked(event -> {
 
