@@ -93,6 +93,9 @@ public class HBScheduler {
         // set our reference time when thread starts
         AverageCalculator lagCalulator = new AverageCalculator();
 
+        double start_wait = getSchedulerTime();
+        double waitTime = nextScheduledTime - getSchedulerTime() - lagCalulator.averageValue();
+
         while (!exitThread) {
             synchronized (scheduleObject) {
                 try {
@@ -105,7 +108,7 @@ public class HBScheduler {
 
 
                     // calculate how long we need to wait and reduce by the average lag time
-                    double waitTime = nextScheduledTime - getSchedulerTime() -  lagCalulator.averageValue();
+                    waitTime = nextScheduledTime - getSchedulerTime() - lagCalulator.averageValue();
 
                     // don't allow a time of zero or less
                     if (waitTime <= 0) {
@@ -113,14 +116,14 @@ public class HBScheduler {
                     }
 
                     // mark the time we started the wait
-                    double start_wait = getSchedulerTime();
+                    start_wait = getSchedulerTime();
 
                     if (needsReschedule()) {
                         adjustScheduler();
                         reschedulerReTriggered = true;
                         displayDebug("runSchedule increment");
                         scheduleObject.wait(RESCHEDULE_INCREMENT);
-                    }else {
+                    } else {
                         // we need to round down our Milliseconds
                         double wait_ms = waitTime - 0.5;
 
@@ -130,36 +133,47 @@ public class HBScheduler {
                         displayDebug("runSchedule round down");
                         scheduleObject.wait((long) wait_ms, (int) ns_wait);
                     }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
-                    double current_time = getSchedulerTime();
 
-                    // see if we have a timed wait.
-                    // If a new item has been added or reschedule required then we did not wait the full time and we are just recalculating what our new start point will be
-                    // if we do, then we need to calculate extra time we waited
-                    if (!reschedulerReTriggered) {
-                        // se how much time we actually waited
+                double current_time = getSchedulerTime();
 
-                        double actual_wait = current_time - start_wait;
-                        double lag = actual_wait - waitTime;
-                        lagCalulator.addValue(lag);
-                    }
-                    else {
-                        // set our thread notified flag to false - it will get set if a new schehule has been added
-                        reschedulerReTriggered = false;
-                    }
+                // see if we have a timed wait.
+                // If a new item has been added or reschedule required then we did not wait the full time and we are just recalculating what our new start point will be
+                // if we do, then we need to calculate extra time we waited
+                if (!reschedulerReTriggered) {
+                    // se how much time we actually waited
 
-                    // define the
-                    double schedule_threshold = getSchedulerTime() + lagCalulator.averageValue();
+                    double actual_wait = current_time - start_wait;
+                    double lag = actual_wait - waitTime;
+                    lagCalulator.addValue(lag);
+                } else {
+                    // set our thread notified flag to false - it will get set if a new schehule has been added
+                    reschedulerReTriggered = false;
+                }
 
-                    // now let us iterate through priority queue to see what needs to be actioned
-                    while (nextScheduledTime < schedule_threshold) {
-                        displayDebug("runSchedule less next rescheduled ");
-                        //System.out.println("While " + nextScheduledTime  + " < " + schedule_threshold);
-                        // see if next item is due
-                        ScheduledObject next_item = scheduledObjects.peek();
+                // define the
+                double schedule_threshold = getSchedulerTime() + lagCalulator.averageValue();
+
+                // now let us iterate through priority queue to see what needs to be actioned
+                while (nextScheduledTime < schedule_threshold) {
+                    displayDebug("runSchedule less next rescheduled ");
+                    //System.out.println("While " + nextScheduledTime  + " < " + schedule_threshold);
+                    // see if next item is due
+                    // we need to put this only in places to protect the priority queue
+                    ScheduledObject next_item = null;
+
+                    boolean run_schedule = false;
+
+                    synchronized (scheduleObject) {
+                        next_item = scheduledObjects.peek();
+
                         if (next_item == null) {
                             nextScheduledTime = current_time + WAIT_MAX;
-                        } else {
+                        }else {
                             if (next_item.getScheduledTime() <= schedule_threshold) {
                                 // this is it pop it off front first
                                 displayDebug("runSchedule Poll");
@@ -167,22 +181,24 @@ public class HBScheduler {
 
                                 // now notify the listener for it
                                 if (!next_item.isCancelled()) {
-                                    displayDebug("runSchedule Do schedule");
-                                    next_item.getScheduledEventListener().doScheduledEvent(next_item.getScheduledTime(), next_item.getScheduledObject());
-                                    displayDebug("runSchedule Schedule doneZ");
+                                    run_schedule = true;
                                 }
 
                             } else { // our next scheduled item is at front of queue
                                 nextScheduledTime = next_item.getScheduledTime();
                             }
                         }
-                    }
+                    } // end synchronised
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    if (run_schedule){
+                        displayDebug("runSchedule Do schedule");
+                        next_item.getScheduledEventListener().doScheduledEvent(next_item.getScheduledTime(), next_item.getScheduledObject());
+                        displayDebug("runSchedule Schedule done");
+                    }
                 }
 
-            }
+
+
         }
         displayDebug("runSchedule Complete");
     }
