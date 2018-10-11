@@ -30,15 +30,15 @@ public class ControlMap {
         void controlRemoved(DynamicControl control);
     }
 
-    private List<dynamicControlCreatedListener> controlCreatedListenerList = Collections.synchronizedList( new ArrayList<>());
+    private List<dynamicControlCreatedListener> controlCreatedListenerList =  new ArrayList<>();
 
-    private List<dynamicControlAdvertiseListener> controlListenerList = Collections.synchronizedList(new ArrayList<>());
+    private List<dynamicControlAdvertiseListener> controlListenerList = new ArrayList<>();
 
-    private List<dynamicControlRemovedListener> controlRemovedListenerList = Collections.synchronizedList(new ArrayList<>());
+    private List<dynamicControlRemovedListener> controlRemovedListenerList = new ArrayList<>();
 
 
     // create a group of listeners for global controls over network
-    private List<dynamicControlAdvertiseListener> globalControlListenerList = Collections.synchronizedList(new ArrayList<>());
+    private List<dynamicControlAdvertiseListener> globalControlListenerList = new ArrayList<>();
 
     // We will enforce singleton by instatiating it once
     private static ControlMap singletonInstance = null;
@@ -50,31 +50,44 @@ public class ControlMap {
     private LinkedHashMap<String, List<DynamicControl>> controlScopedDevices = new LinkedHashMap<>();
 
 
+    // create locks for collections
+    private final Object controlCreatedListenerListLock = new Object();
+    private final Object controlListenerListLock = new Object();
+    private final Object controlRemovedListenerListLock = new Object();
+    private final Object globalControlListenerListLock = new Object();
+    private final Object dynamicControlsLock = new Object();
+    private final Object controlScopedDevicesLock = new Object();
+
+
     public void addDynamicControlCreatedListener(dynamicControlCreatedListener listener){
-        controlCreatedListenerList.add(listener);
+        //synchronized (controlCreatedListenerListLock) {
+            controlCreatedListenerList.add(listener);
+        //}
     }
 
     public void addDynamicControlAdvertiseListener(dynamicControlAdvertiseListener listener){
-        synchronized (controlListenerList)
+        //synchronized (controlListenerListLock)
         {
             controlListenerList.add(listener);
         }
     }
 
     public void addDynamicControlRemovedListener(dynamicControlRemovedListener listener){
-        synchronized (controlRemovedListenerList){
+        //synchronized (controlRemovedListenerListLock)
+        {
             controlRemovedListenerList.add(listener);
         }
     }
 
     public void removeDynamicControlRemovedListener(dynamicControlRemovedListener listener){
-        synchronized (controlRemovedListenerList){
+        //synchronized (controlRemovedListenerListLock)
+        {
             controlRemovedListenerList.remove(listener);
         }
     }
 
     public void addGlobalDynamicControlAdvertiseListener(dynamicControlAdvertiseListener listener){
-        synchronized (globalControlListenerList)
+        //synchronized (globalControlListenerListLock)
         {
             globalControlListenerList.add(listener);
         }
@@ -88,8 +101,11 @@ public class ControlMap {
      */
     private synchronized void sendDynamicControlMessage(OSCMessage msg)
     {
-        for (dynamicControlAdvertiseListener listener : controlListenerList) {
-            listener.dynamicControlEvent(msg);
+        //synchronized (controlListenerListLock)
+        {
+            for (dynamicControlAdvertiseListener listener : controlListenerList) {
+                listener.dynamicControlEvent(msg);
+            }
         }
     }
 
@@ -125,7 +141,7 @@ public class ControlMap {
      */
     public void addControl(DynamicControl control)
     {
-        synchronized (dynamicControls)
+        //synchronized (dynamicControlsLock)
         {
             dynamicControls.put(control.getControlMapKey(), control);
             // We are going to add ourselves as a listener to the update value so we can send any updates to controller
@@ -133,7 +149,7 @@ public class ControlMap {
                 @Override
                 public void update(DynamicControl control) {
 
-                    // We need to update all the identical controls if this control is not sk
+                    // We need to update all the identical controls if this control is not us
                     if (control.getControlScope() != ControlScope.UNIQUE) {
                         List<DynamicControl> name_list = getControlsByName(control.getControlName());
                         for (DynamicControl mimic_control : name_list) {
@@ -144,7 +160,13 @@ public class ControlMap {
 
                         }
                         // we need to see if this was a global scope
-                        if (globalControlListenerList.size() > 0) {
+                        boolean send_global = false;
+                        //synchronized (globalControlListenerListLock)
+                        {
+                            send_global = globalControlListenerList.size() > 0;
+                        }
+
+                        if (send_global) {
 
                             if (control.getControlScope() == ControlScope.GLOBAL) {
                                 // needs to be broadcast
@@ -168,14 +190,24 @@ public class ControlMap {
             getControlsByName(name).add(control);
 
         }
-        if (controlListenerList.size() > 0)
+
+        boolean send_message = false;
+        //synchronized (controlListenerListLock)
+        {
+            send_message = controlListenerList.size() > 0;
+        }
+
+        if (send_message)
         {
             OSCMessage msg = control.buildCreateMessage();
             sendDynamicControlMessage(msg);
         }
 
-        for (dynamicControlCreatedListener dynamicControlCreatedListener : controlCreatedListenerList) {
-            dynamicControlCreatedListener.controlCreated(control);
+        //synchronized (controlCreatedListenerListLock)
+        {
+            for (dynamicControlCreatedListener dynamicControlCreatedListener : controlCreatedListenerList) {
+                dynamicControlCreatedListener.controlCreated(control);
+            }
         }
     }
 
@@ -185,8 +217,11 @@ public class ControlMap {
      */
     private synchronized void sendGlobalDynamicControlMessage(OSCMessage msg) {
 
-        for (dynamicControlAdvertiseListener listener : globalControlListenerList) {
-            listener.dynamicControlEvent(msg);
+        //synchronized (globalControlListenerListLock)
+        {
+            for (dynamicControlAdvertiseListener listener : globalControlListenerList) {
+                listener.dynamicControlEvent(msg);
+            }
         }
     }
 
@@ -199,13 +234,15 @@ public class ControlMap {
      */
     public List<DynamicControl> getControlsByName(String name)
     {
-        List<DynamicControl> name_list = controlScopedDevices.get(name);
-        if (name_list == null)
+        List<DynamicControl> name_list;
+        //synchronized (controlScopedDevicesLock)
         {
-            name_list = new ArrayList<>();
-            controlScopedDevices.put(name, name_list);
+            name_list = controlScopedDevices.get(name);
+            if (name_list == null) {
+                name_list = new ArrayList<>();
+                controlScopedDevices.put(name, name_list);
+            }
         }
-
         return name_list;
     }
     /**
@@ -215,7 +252,7 @@ public class ControlMap {
      */
     public DynamicControl getControl(String map_key)
     {
-        synchronized (dynamicControls)
+        //synchronized (dynamicControlsLock)
         {
             return  dynamicControls.getOrDefault(map_key, null);
         }
@@ -227,7 +264,7 @@ public class ControlMap {
      * @param control the control to remove
      */
     public void removeControl(DynamicControl control){
-        synchronized (dynamicControls)
+        //synchronized (dynamicControlsLock)
         {
             control.eraseListeners();
             OSCMessage msg = control.buildRemoveMessage();
@@ -250,7 +287,7 @@ public class ControlMap {
      * @param control control bein g removed
      */
     private void notifyRemovedListeners(DynamicControl control) {
-        synchronized (controlRemovedListenerList)
+        //synchronized (controlRemovedListenerListLock)
         {
             for (dynamicControlRemovedListener listener: controlRemovedListenerList){
                 listener.controlRemoved(control);
@@ -264,7 +301,7 @@ public class ControlMap {
      */
     public void clearAllListeners()
     {
-        synchronized (dynamicControls)
+        //synchronized (dynamicControlsLock)
         {
             Collection<DynamicControl> controls = dynamicControls.values();
             for (DynamicControl control : controls) {
@@ -275,7 +312,9 @@ public class ControlMap {
 
             }
             dynamicControls.clear();
-
+        }
+        //synchronized (controlScopedDevicesLock)
+        {
             // Clear all Control scope Objects
             controlScopedDevices.forEach((name, named_list)->{
                 named_list.clear();
@@ -286,7 +325,7 @@ public class ControlMap {
 
     }
 
-    public LinkedHashMap<String, DynamicControl> getDynamicControls(){
+    private LinkedHashMap<String, DynamicControl> getDynamicControls(){
         return dynamicControls;
     }
 
@@ -298,9 +337,12 @@ public class ControlMap {
     {
         List<DynamicControl> sorted_list = new ArrayList<DynamicControl>();
 
-        dynamicControls.forEach((key, value) -> {
-            sorted_list.add(value);
-        });
+        //synchronized (dynamicControlsLock)
+        {
+            dynamicControls.forEach((key, value) -> {
+                sorted_list.add(value);
+            });
+        }
 
         return sorted_list;
     }

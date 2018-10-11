@@ -3,6 +3,9 @@ package net.happybrackets.core.control;
 import de.sciss.net.OSCMessage;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.scheduling.HBScheduler;
+import net.happybrackets.core.scheduling.ScheduledEventListener;
+import net.happybrackets.core.scheduling.ScheduledObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +19,27 @@ import java.util.List;
  *
  * The messages are send and received via DynamicControlListener
  *
- * The ControlScope determines wehther the control can be seen in other classes or even other devices on the network
+ * The ControlScope determines whether the control can be seen in other classes or even other devices on the network
  */
-public class DynamicControl {
+public class DynamicControl implements ScheduledEventListener {
+
+    @Override
+    public void doScheduledEvent(double scheduledTime, Object param) {
+
+        FutureControlMessage message = (FutureControlMessage) param;
+        this.objVal = message.controlValue;
+        this.executionTime = 0;
+
+        notifyLocalListeners();
+
+        if (!message.localOnly) {
+            notifyValueSetListeners();
+        }
+
+        synchronized (futureMessageListLock) {
+            futureMessageList.remove(message);
+        }
+    }
 
     /**
      * Create an Interface to listen to
@@ -69,11 +90,34 @@ public class DynamicControl {
         EXECUTE_TIME
     }
 
+    // When an event nis scheduled in the future, we will create one of these and schedule it
+    class FutureControlMessage{
+        /**
+         * Create a Future COntrol message
+         * @param value the value to be executed
+         * @param execution_time the time the value needs to be executed
+         */
+        public FutureControlMessage(Object value, double execution_time){
+            controlValue = value;
+            executionTime = execution_time;
+        }
+
+        Object controlValue;
+        double executionTime;
+        boolean localOnly = false; // if we are local only, we will not sendValue changed listeners
+
+        /// have a copy of our pending scheduled object in case we want to cancel it
+        ScheduledObject pendingSchedule = null;
+    }
+
     static ControlMap controlMap = ControlMap.getInstance();
 
-    private static int instanceCounter = 0; // we will use this to order the creation of our objects and give them a unique number on device
-    private Object instanceCounterLock = new Object();
+    private static final Object controlMapLock = new Object();
 
+    private static int instanceCounter = 0; // we will use this to order the creation of our objects and give them a unique number on device
+    private final Object instanceCounterLock = new Object();
+
+    private final Object valueChangedLock = new Object();
     private final String controlMapKey;
 
 
@@ -81,6 +125,8 @@ public class DynamicControl {
     private List<DynamicControlListener> controlListenerList = new ArrayList<>();
     private List<DynamicControlListener> globalControlListenerList = new ArrayList<>();
     private List<ControlScopeChangedListener> controlScopeChangedList = new ArrayList<>();
+
+    private List<FutureControlMessage> futureMessageList =  new ArrayList<>();
 
     // This listener is only called when value on control set
     private List<DynamicControlListener> valueSetListenerList = new ArrayList<>();
@@ -90,8 +136,10 @@ public class DynamicControl {
     private final Object controlListenerLock = new Object();
     private final Object globalListenerLock = new Object();
     private final Object valueSetListenerLock = new Object();
+    private final Object futureMessageListLock = new Object();
 
 
+    static boolean disableScheduler = false; // set flag if we are going to disable scheduler - eg, in GUI
     /**
      * Create the text we will display at the beginning of tooltip
      * @param tooltipPrefix The starting text of the tooltip
@@ -125,6 +173,14 @@ public class DynamicControl {
 
     boolean disabled = false; // Whether the control is disabled on control Screen
 
+
+    /**
+     * Set whether we disable setting all values in context of scheduler
+     * @param disabled set true to disable
+     */
+    public static void setDisableScheduler(boolean disabled){
+        disableScheduler = disabled;
+    }
 
     /**
      * Whether we disable the control on the screen
@@ -283,7 +339,9 @@ public class DynamicControl {
      */
     public DynamicControl(ControlType control_type, String name, Object initial_value) {
         this(new Object(), control_type, name, initial_value, true);
-        controlMap.addControl(this);
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
     }
 
 
@@ -296,7 +354,9 @@ public class DynamicControl {
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name) {
         this(parent_sketch, control_type, name,  null,true);
-        controlMap.addControl(this);
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
     }
 
     /**
@@ -308,7 +368,9 @@ public class DynamicControl {
      */
     public DynamicControl(ControlType control_type, String name) {
         this(new Object(), control_type, name, convertValue(control_type, null), true);
-        controlMap.addControl(this);
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
     }
 
     /**
@@ -322,7 +384,9 @@ public class DynamicControl {
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
         this(parent_sketch, control_type, name, initial_value, true);
-        controlMap.addControl(this);
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
     }
 
 
@@ -343,7 +407,9 @@ public class DynamicControl {
         minimumDisplayValue = convertValue (control_type, min_value);
         maximumDisplayValue  = convertValue (control_type, max_value);
 
-        controlMap.addControl(this);
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
     }    /**
      * A dynamic control that can be accessed from outside
      * it is created with the sketch object that contains it along with the type
@@ -360,7 +426,9 @@ public class DynamicControl {
         minimumDisplayValue = convertValue (control_type, min_value);
         maximumDisplayValue  = convertValue (control_type, max_value);
 
-        controlMap.addControl(this);
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
     }
 
 
@@ -405,7 +473,11 @@ public class DynamicControl {
      */
     public static DynamicControl getControl(String map_key) {
 
-        return controlMap.getControl(map_key);
+        DynamicControl ret = null;
+        synchronized (controlMapLock) {
+            ret = controlMap.getControl(map_key);
+        }
+        return ret;
     }
 
     /**
@@ -438,18 +510,21 @@ public class DynamicControl {
                 // Otherwise it must e global. We have a match
 
             }
-            if (scope_matches){
+            if (scope_matches) {
                 // do not use setters as we only want to generate one notifyLocalListeners
                 boolean changed = false;
 
-                if (!objVal.equals(mirror_control.objVal)) {
-                    objVal = mirror_control.objVal;
-                    changed = true;
-                }
+                    if (mirror_control.executionTime == 0) { // his needs to be done now
+                        if (!objVal.equals(mirror_control.objVal)) {
+                            //objVal = mirror_control.objVal; // let this get done inside the scheduleValue return
+                            changed = true;
+                        }
 
 
-                if (changed) {
-                    notifyLocalListeners();
+                        if (changed) {
+                            scheduleValue(mirror_control.objVal, 0);
+                        }
+
                 }
             }
         }
@@ -457,7 +532,47 @@ public class DynamicControl {
     }
 
 
+    /**
+     * Schedule this control to change its value in context of scheduler
+     * @param value the value to send
+     * @param execution_time the time it needs to be executed
+     * @param local_only if true, will not send value changed to valueChangedListeners
+     */
+    void scheduleValue(Object value, double execution_time, boolean local_only){
 
+        // We need to convert the Object value into the exact type. EG, integer must be cast to boolean if that is thr control type
+        Object converted_value = convertValue(controlType, value);
+
+        if (disableScheduler){
+            this.objVal = converted_value;
+            this.executionTime = 0;
+
+            notifyLocalListeners();
+
+            if (!local_only) {
+                notifyValueSetListeners();
+            }
+        }
+        else {
+            FutureControlMessage message = new FutureControlMessage(converted_value, execution_time);
+
+            message.localOnly = local_only;
+
+            message.pendingSchedule = HBScheduler.getGlobalScheduler().addScheduledObject(executionTime, message, this);
+            synchronized (futureMessageListLock) {
+                futureMessageList.add(message);
+            }
+        }
+    }
+    /**
+     * Schedule this control to send a value to it's locallisteners at a scheduled time. Will also notify valueListeners (eg GUI controls)
+     * @param value the value to send
+     * @param execution_time the time it needs to be executed
+     */
+    void scheduleValue(Object value, double execution_time) {
+
+        scheduleValue(value, execution_time, false);
+    }
 
     /**
      * Process the Global Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
@@ -480,22 +595,23 @@ public class DynamicControl {
 
         // Make sure we ignore messages from this device
         if (!device_name.equals(Device.getDeviceName())) {
-            List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
-            for (DynamicControl named_control : named_controls) {
-                if (named_control.controlScope == ControlScope.GLOBAL && control_type.equals(named_control.controlType)) {
-                    // we must NOT call setVal as this will generate a global series again.
-                    // Just notifyListeners specific to this control but not globally
+            synchronized (controlMapLock) {
+                List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
+                for (DynamicControl named_control : named_controls) {
+                    if (named_control.controlScope == ControlScope.GLOBAL && control_type.equals(named_control.controlType)) {
+                        // we must NOT call setVal as this will generate a global series again.
+                        // Just notifyListeners specific to this control but not globally
 
-                    // we need to see if this is a boolean Object as OSC does not support that
-                    if (control_type == ControlType.BOOLEAN){
-                        int osc_val = (int) obj_val;
-                        Boolean bool_val = osc_val != 0;
-                        obj_val = bool_val;
+                        // we need to see if this is a boolean Object as OSC does not support that
+                        if (control_type == ControlType.BOOLEAN) {
+                            int osc_val = (int) obj_val;
+                            Boolean bool_val = osc_val != 0;
+                            obj_val = bool_val;
+                        }
+
+                        // We need to schedule this value
+                        named_control.scheduleValue(obj_val, execution_time);
                     }
-
-                    named_control.executionTime = execution_time;
-                    named_control.objVal = obj_val;
-                    named_control.notifyLocalListeners();
                 }
             }
         }
@@ -520,6 +636,7 @@ public class DynamicControl {
 
         if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
         {
+            // this should always be zero
             execution_time = (int) msg.getArg(UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
         }
 
@@ -541,23 +658,34 @@ public class DynamicControl {
             control.disabled = disable;
 
             if (!obj_val.equals(control.objVal)) {
-                control.objVal = convertValue(control.controlType, obj_val);
-                control.executionTime = execution_time;
                 changed = true;
             }
 
             if (!control_scope.equals(control.controlScope)) {
                 control.controlScope = control_scope;
-                control.executionTime = execution_time;
+                //control.executionTime = execution_time;
                 changed = true;
                 control_scope_changed = true;
             }
 
             if (changed) {
-                control.notifyLocalListeners();
+                control.scheduleValue(obj_val, 0, true);
+                /*
                 if (control.getControlScope() != ControlScope.UNIQUE){
-                    control.notifyGlobalListeners();
+                    // we will execute via schedule if necessary
+                    control.scheduleValue(obj_val, execution_time);
+
+                    //control.notifyGlobalListeners();
                 }
+                else
+                {
+
+                    control.objVal = convertValue(control.controlType, obj_val);
+                    control.executionTime = execution_time;
+
+                    control.notifyLocalListeners();
+                }
+                */
 
             }
             if (control_scope_changed)
@@ -610,7 +738,7 @@ public class DynamicControl {
                         controlMapKey,
                         OSCArgumentObject(objVal),
                         controlScope.ordinal(),
-                        (int)executionTime,
+                        0, // We will make zero as we want to update now  (int)executionTime,
                         disabled? 1:0
                 });
 
@@ -679,7 +807,9 @@ public class DynamicControl {
         }
 
 
-        controlMap.addControl(this);
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
     }
 
     /**
@@ -708,7 +838,7 @@ public class DynamicControl {
      * Additionally, the value will propagate to any controls that match the control scope
      * If we are using a trigger, send a random number or a unique value
      * @param val the value to set
-     * @param execution_time the JVM time we want this to occur
+     * @param execution_time the Scheduler time we want this to occur
      * @return this object
      */
     public DynamicControl setValue(Object val, long execution_time)
@@ -724,9 +854,11 @@ public class DynamicControl {
             else {
                 objVal = val;
             }
-            notifyValueSetListeners();
-            notifyLocalListeners();
+
             notifyGlobalListeners();
+
+            scheduleValue(val, execution_time);
+
         }
         return this;
     }
@@ -880,6 +1012,16 @@ public class DynamicControl {
      */
     public DynamicControl eraseListeners()
     {
+        // We need to
+        synchronized (futureMessageListLock){
+            for (FutureControlMessage message:
+                 futureMessageList) {
+                message.pendingSchedule.setCancelled(true);
+
+            }
+            futureMessageList.clear();
+        }
+
         synchronized (controlListenerLock) {controlListenerList.clear();}
         synchronized (controlScopeChangedLock) {controlScopeChangedList.clear();}
         return this;

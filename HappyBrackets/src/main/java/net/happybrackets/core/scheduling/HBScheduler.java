@@ -97,6 +97,7 @@ public class HBScheduler {
             synchronized (scheduleObject) {
                 try {
 
+                    displayDebug("runSchedule ");
                     //System.out.println("Wait " + waitTime);
                     // we will flag if we timed out or whether we received a notification
                     reschedulerReTriggered = false;
@@ -117,6 +118,7 @@ public class HBScheduler {
                     if (needsReschedule()) {
                         adjustScheduler();
                         reschedulerReTriggered = true;
+                        displayDebug("runSchedule increment");
                         scheduleObject.wait(RESCHEDULE_INCREMENT);
                     }else {
                         // we need to round down our Milliseconds
@@ -125,6 +127,7 @@ public class HBScheduler {
                         // now add our nanoseconds
                         double ns_wait = (waitTime - wait_ms) * 1000000;
 
+                        displayDebug("runSchedule round down");
                         scheduleObject.wait((long) wait_ms, (int) ns_wait);
                     }
 
@@ -150,6 +153,7 @@ public class HBScheduler {
 
                     // now let us iterate through priority queue to see what needs to be actioned
                     while (nextScheduledTime < schedule_threshold) {
+                        displayDebug("runSchedule less next rescheduled ");
                         //System.out.println("While " + nextScheduledTime  + " < " + schedule_threshold);
                         // see if next item is due
                         ScheduledObject next_item = scheduledObjects.peek();
@@ -158,11 +162,14 @@ public class HBScheduler {
                         } else {
                             if (next_item.getScheduledTime() <= schedule_threshold) {
                                 // this is it pop it off front first
+                                displayDebug("runSchedule Poll");
                                 scheduledObjects.poll();
 
                                 // now notify the listener for it
                                 if (!next_item.isCancelled()) {
+                                    displayDebug("runSchedule Do schedule");
                                     next_item.getScheduledEventListener().doScheduledEvent(next_item.getScheduledTime(), next_item.getScheduledObject());
+                                    displayDebug("runSchedule Schedule doneZ");
                                 }
 
                             } else { // our next scheduled item is at front of queue
@@ -177,6 +184,7 @@ public class HBScheduler {
 
             }
         }
+        displayDebug("runSchedule Complete");
     }
 
     /**
@@ -212,7 +220,9 @@ public class HBScheduler {
 
         ScheduledObject ret = new ScheduledObject(scheduled_time, param, listener);
 
+        displayDebug("addScheduledObject Object");
         synchronized (scheduleObject){
+            displayDebug("LOck Obtained");
             scheduledObjects.add(ret);
             // see if our time is less than next time
             if (scheduled_time < nextScheduledTime){
@@ -226,7 +236,18 @@ public class HBScheduler {
             }
 
         }
+        displayDebug("addScheduledObject leave");
         return ret;
+    }
+
+    private void displayDebug(String debug){
+        if (displayNotify){
+            StackTraceElement l = new Exception().getStackTrace()[1];
+            System.out.println(
+                    l.getClassName()+"/"+l.getMethodName()+":"+l.getLineNumber());
+
+            System.out.println(debug);
+        }
     }
     /**
      * Get the time JVM has been running

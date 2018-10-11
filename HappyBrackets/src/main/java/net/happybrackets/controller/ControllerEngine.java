@@ -6,6 +6,7 @@ import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.BroadcastManager;
+import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ public class ControllerEngine {
     final static Logger logger = LoggerFactory.getLogger(ControllerEngine.class);
 
     private ControllerEngine() {
+        DynamicControl.setDisableScheduler(true);
     }
 
 

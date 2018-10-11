@@ -87,8 +87,9 @@ public class SchedulerTest {
 
 
         scheduler.endScheduler();
-        assert (numberRecieved == NUM_ITEMS);
+
         System.out.println("Number received " + numberRecieved + " Max Jitter " + maxJitter);
+        assert (numberRecieved == NUM_ITEMS);
         System.out.println("------------------- Scheduler testing complete -----------------------");
     }
 }

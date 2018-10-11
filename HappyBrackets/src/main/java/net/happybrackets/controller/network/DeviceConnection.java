@@ -520,6 +520,11 @@ public class DeviceConnection {
 
 						this_device.setSocketAddress(sending_address);
 
+						// if we are localhost then we should make a tcp connection
+						if(sending_address.isLoopbackAddress()){
+							this_device.openClientPort(device_server_port);
+						}
+
 						// Make sure we don't have a zero device_id from device
 						if (device_id != 0) {
 							this_device.setID(device_id);
