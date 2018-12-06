@@ -46,6 +46,9 @@ This file wil give a short description of the examples
     SensorControlledClock   Uses the values of an accelerometer to vary the speed of a clock
     SensorControlledBeadsClock Uses a mapped accelerometer to control a Beads clock
 
+  [delay]
+    DelayPitch - Uses the Delay object to hold a pitch at a frequency for a certain period
+
   [envelope] - Perform actions based on events that occur when an envelope segment completes
     EnvelopeTrigger         Plays three layers of sound, with each layer commencing after a segment completes
 
@@ -88,6 +91,7 @@ This file wil give a short description of the examples
   [gpio]           - Accessing GPIO pins on the device
     DigitalInGPIO  - Read digital values from GPIO Digital input
     DigitalOutGPIO - Write digital values to GPIO Digital output
+    DigitalOutGPIO - Pulse a GPIO digital output for a set time. Uses a delay
     PWMOutGPIO     - Write PWM values to GPIO PWM Output
 
   [integercontrol] - Integer values displayed or set as slider, textbox or both
