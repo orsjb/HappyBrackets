@@ -170,6 +170,10 @@ public class IntelliJPluginGUIManager {
 
 		Node probe_pane = makeProbePanel();
 
+		device_pane.setOnMouseClicked(event -> {
+			doProbe();
+		});
+
 		//TitledPane debug_pane = new TitledPane("Debug", makeDebugPane());
 
 		//config_pane.setExpanded(false);
@@ -971,6 +975,25 @@ public class IntelliJPluginGUIManager {
 	}
 
 
+	/**
+	 * Do a probe of devices. If advertiser has not started, do the start
+	 */
+	private void doProbe(){
+		DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+		ControllerEngine.getInstance().startDeviceCommunication();
+		// we will make sure we do not have advertising disabled
+		connection.setDisableAdvertise(false);
+
+		// we will do a single broadcast type advertise if broadcast is not enabled
+		ControllerAdvertiser advertiser = ControllerEngine.getInstance().getControllerAdvertiser();
+
+		boolean multicast_only = advertiser.isOnlyMulticastMessages();
+		if (multicast_only){
+			advertiser.doBroadcastProbe();
+
+		}
+	}
+
 	private Node makeProbePanel(){
 		FlowPane device_panel = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 
@@ -979,20 +1002,7 @@ public class IntelliJPluginGUIManager {
 		probe_button.setTooltip(new Tooltip("Probe for devices on the network"));
 
 		probe_button.setOnMouseClicked(event -> {
-
-			DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
-			ControllerEngine.getInstance().startDeviceCommunication();
-			// we will make sure we do not have advertising disabled
-			connection.setDisableAdvertise(false);
-
-			// we will do a single broadcast type advertise if broadcast is not enabled
-			ControllerAdvertiser advertiser = ControllerEngine.getInstance().getControllerAdvertiser();
-
-			boolean multicast_only = advertiser.isOnlyMulticastMessages();
-			if (multicast_only){
-				advertiser.doBroadcastProbe();
-
-			}
+			doProbe();
 
 		});
 
