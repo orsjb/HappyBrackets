@@ -66,6 +66,9 @@ import ch.qos.logback.classic.Level;
 @SuppressWarnings("ALL")
 public class HappyBracketsToolWindow implements ToolWindowFactory {
 
+    // define how long to wait before starting thread
+    final int AUTO_PROBE_WAIT_PERIOD = 10000;
+
     static boolean staticSetup = false;
     //static String currentConfigString;
     //static ControllerSettings settings;
@@ -131,6 +134,24 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 controller_engine.getDeviceConnection().setDisableAdvertise(new_active_creates > 0);
             }
         }
+
+        // Now let us Wait a certain period and automaticaly start the proble for devices
+        new Thread(() -> {
+                try {
+                    Thread.sleep(AUTO_PROBE_WAIT_PERIOD);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            ControllerEngine.getInstance().doProbe();
+                        }
+                    });
+
+                } catch (InterruptedException e) {
+
+                }
+        }).start();/* End threadFunction */
+
+
     }
 
     /**

@@ -175,6 +175,25 @@ public class ControllerEngine {
             controllerAdvertiser.start();
         }
     }
+
+    /**
+     * Do a probe of devices. If advertiser has not started, do the start
+     */
+    public void doProbe(){
+        DeviceConnection connection = this.getDeviceConnection();
+        startDeviceCommunication();
+        // we will make sure we do not have advertising disabled
+        connection.setDisableAdvertise(false);
+
+        // we will do a single broadcast type advertise if broadcast is not enabled
+        ControllerAdvertiser advertiser = getControllerAdvertiser();
+
+        boolean multicast_only = advertiser.isOnlyMulticastMessages();
+        if (multicast_only){
+            advertiser.doBroadcastProbe();
+
+        }
+    }
 }
 
 
