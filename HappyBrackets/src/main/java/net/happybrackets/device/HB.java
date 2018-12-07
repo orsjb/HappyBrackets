@@ -372,6 +372,10 @@ public class HB {
 		clockInterval = new Envelope(ac, 500);
 		clock = new Clock(ac, clockInterval);
 
+		// Do following call twice because of delays from JIT compiler. This is a JAVA
+		HBScheduler.getGlobalScheduler().synchroniseClocks();
+		HBScheduler.getGlobalScheduler().synchroniseClocks();
+
 		int poly_limit = 0;
 		String multi_cast_address = "::FFFF:225.2.2.5";
 		int broadcast_port = 2222;

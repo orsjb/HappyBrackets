@@ -1,11 +1,17 @@
 package net.happybrackets.core.scheduling;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.PriorityQueue;
 
 /**
  * Stores events with the time they need to be executed and executes them when they are due
  */
 public class HBScheduler {
+
+    // we will use 1 Dec 2018 as our global reference start clock
+    public final LocalDateTime REFERENCE_TIME = LocalDateTime.ofEpochSecond(1543622400, 0, ZoneOffset.UTC);
 
     private static HBScheduler globalScheduler = null;
 
@@ -84,6 +90,51 @@ public class HBScheduler {
         scheduleThread.setPriority(priority);
         scheduleThread.start();
 
+    }
+
+    /**
+     * Get the amount of time difference between system clock and our scheduler
+     * @return the amount of time difference between two clocks
+     */
+    public double getClockSkew(){
+        double current = getCalcTime();
+        double scheduler_time = getSchedulerTime();
+
+        double schedule_diff = current - scheduler_time;
+        return schedule_diff;
+    }
+    /**
+     * Synchronise our timer with the system time on next tick
+     * @return the number of milliseconds we will be moving scheduler
+     */
+    public double synchroniseClocks(){
+        return synchroniseClocks(0);
+    }
+
+    /**
+     * Synchronise our timer with the system time
+     * @param slew_time the amount of milliseconds that we want to take to complete it
+     * @return the number of milliseconds we will be moving scheduler
+     */
+    public double synchroniseClocks(long slew_time){
+
+        double schedule_diff = getClockSkew();
+        adjustScheduleTime(schedule_diff, slew_time);
+        return schedule_diff;
+    }
+
+    /**
+     * Get the calculated time in ms from 1 Dec 2018 from System Clock
+     * @return number of milliseconds since 1 Dec 2018 GMT
+     */
+    public double getCalcTime(){
+        // get current time in GMT
+        final LocalDateTime gmt = LocalDateTime.now(ZoneOffset.UTC);
+
+        Duration gmt_diff =  Duration.between(REFERENCE_TIME, gmt);
+        // compare to our reference
+        double calc_gmt = gmt_diff.toNanos() / 1000000d;
+        return calc_gmt;
     }
 
     /**
