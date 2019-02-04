@@ -39,6 +39,7 @@ import java.util.function.BiConsumer;
 
 public class ControllerAdvertiser {
 
+	int secondaryBroadcastPort = DefaultConfig.SECONDARY_BROADCAST_PORT;
 	/**
 	 * Class that contains a cached message to send to UDP to reduce garbage
 	 */
@@ -122,6 +123,8 @@ public class ControllerAdvertiser {
 			synchronized (deviceAdvertisedMessageLock){
 				if (!deviceAdvertisedMessage.containsKey(inetAddress)){
 					deviceAdvertisedMessage.put(inetAddress, buildCachedMessage(inetAddress, broadcastPort));
+					deviceAdvertisedMessage.put(inetAddress, buildCachedMessage(inetAddress, secondaryBroadcastPort));
+
 				}
 			}
 		}
@@ -225,8 +228,6 @@ public class ControllerAdvertiser {
 			cachedNetworkMessage.clear();
 
 			try {
-
-				int secondaryBroadcastPort = DefaultConfig.SECONDARY_BROADCAST_PORT;
 
 				List<NetworkInterface> interfaces = Device.viableInterfaces();
 
@@ -350,7 +351,11 @@ public class ControllerAdvertiser {
 									try{
 										DatagramPacket cached_packet = message.getCachedPacket();
 										advertiseTxSocket.send(cached_packet);
-									}catch (Exception ex){}
+										//System.out.println("Send advertise to " + cached_packet.getAddress().toString());
+									}catch (Exception ex){
+										System.out.println("Unable to send advertise to specific device");
+										System.out.println(ex.getMessage());
+									}
 								}
 							}
 
