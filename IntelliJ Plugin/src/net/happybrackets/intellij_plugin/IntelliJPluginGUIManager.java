@@ -30,6 +30,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -76,6 +77,7 @@ import javax.swing.SwingUtilities;
  * Sets up the plugin GUI and handles associated events.
  */
 public class IntelliJPluginGUIManager {
+	private static final String PROBE_TEXT = "Probe";
 	private String compositionsPath;
 	private String currentCompositionSelection = null;
 	private ControllerConfig config;
@@ -975,13 +977,46 @@ public class IntelliJPluginGUIManager {
 	}
 
 
+	/**
+	 * Create the text we want to display for the probe tooltip
+	 * @param num_devices The total number of devices we have listed
+	 * @param num_connected The number that have a connected status
+	 * @return Text to display in tooltip
+	 */
+	private String buildProbeToolTipText(int num_devices, int num_connected){
+		String ret = "Click to probe for devices on the network";
 
+		if (num_devices > 0){
+			ret = num_connected + " connected from " + num_devices + " listed. " + ret;
+		}
+		return ret;
+	}
 	private Node makeProbePanel(){
 		FlowPane device_panel = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 
 		device_panel.setAlignment(Pos.TOP_LEFT);
-		Button probe_button = new Button("Probe");
-		probe_button.setTooltip(new Tooltip("Probe for devices on the network"));
+
+
+		String probe_text = PROBE_TEXT;
+		ObservableList<LocalDeviceRepresentation> devices = ControllerEngine.getInstance().getDeviceConnection().getDevices();
+
+		int num_devices = 0;
+		int connected_devices = 0;
+		for (LocalDeviceRepresentation device:
+				devices) {
+			num_devices++;
+			if (device.getIsConnected()){
+				connected_devices++;
+			}
+		}
+
+		if (num_devices > 0){
+			probe_text = connected_devices + "/" + num_devices+ " - " + PROBE_TEXT;
+		}
+		Button probe_button = new Button(PROBE_TEXT);
+
+
+		probe_button.setTooltip(new Tooltip(buildProbeToolTipText(num_devices, connected_devices)));
 
 		probe_button.setOnMouseClicked(event -> {
 			ControllerEngine.getInstance().doProbe();
@@ -992,6 +1027,43 @@ public class IntelliJPluginGUIManager {
 		device_buttons.getChildren().add(probe_button);
 
 		device_panel.getChildren().add(device_buttons);
+
+		// we need to display how many devices
+
+		LocalDeviceRepresentation.addDeviceConnectedUpdateListener(new LocalDeviceRepresentation.DeviceConnectedUpdateListener() {
+			@Override
+			public void update(LocalDeviceRepresentation localdevice, boolean connected) {
+
+				int num_devices = 0;
+				int connected_devices = 0;
+				for (LocalDeviceRepresentation device:
+						devices) {
+					num_devices++;
+					if (device.getIsConnected()){
+						connected_devices++;
+					}
+				}
+
+				int finalNum_devices = num_devices;
+				int finalConnected_devices = connected_devices;
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						if (finalNum_devices == 0){
+							probe_button.setText(PROBE_TEXT);
+						}
+						else {
+							probe_button.setText(finalConnected_devices + "/" + finalNum_devices+ " - " + PROBE_TEXT);
+						}
+						probe_button.setTooltip(new Tooltip(buildProbeToolTipText(finalNum_devices, finalConnected_devices)));
+					}
+				});
+			}
+		});
+
+
+
+
 		return device_panel;
 	}
 	private Node makeDevicePane() {
