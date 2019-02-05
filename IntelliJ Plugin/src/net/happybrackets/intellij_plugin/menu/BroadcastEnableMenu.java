@@ -15,9 +15,11 @@ public class BroadcastEnableMenu extends AnAction {
 
             ControllerAdvertiser advertiser = ControllerEngine.getInstance().getControllerAdvertiser();
 
-            boolean multicast_only = advertiser.isOnlyMulticastMessages();
+            if (advertiser != null) {
+                boolean multicast_only = advertiser.isOnlyMulticastMessages();
 
-            advertiser.setOnlyMulticastMessages(!multicast_only);
+                advertiser.setOnlyMulticastMessages(!multicast_only);
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -30,14 +32,16 @@ public class BroadcastEnableMenu extends AnAction {
         try {
             ControllerAdvertiser advertiser = ControllerEngine.getInstance().getControllerAdvertiser();
 
-            boolean multicast_only = advertiser.isOnlyMulticastMessages();
+            if (advertiser != null) {
+                boolean multicast_only = advertiser.isOnlyMulticastMessages();
 
-            String menu_text = "Multicast only";
-            if (multicast_only) {
-                menu_text = "Multicast and Broadcast";
+                String menu_text = "Multicast only";
+                if (multicast_only) {
+                    menu_text = "Multicast and Broadcast";
 
+                }
+                event.getPresentation().setText(menu_text);
             }
-            event.getPresentation().setText(menu_text);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
