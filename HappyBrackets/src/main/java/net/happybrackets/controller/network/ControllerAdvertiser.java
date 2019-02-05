@@ -114,7 +114,6 @@ public class ControllerAdvertiser {
 	CachedMessage cachedLocalhostMessage = null;
 
 	DatagramSocket advertiseTxSocket = null;
-	ByteBuffer byteBuf;
 
 	public void deviceAliveReceived (SocketAddress device_address){
 		try {
@@ -208,6 +207,8 @@ public class ControllerAdvertiser {
 		);
 		OSCPacketCodec codec = new OSCPacketCodec();
 
+		ByteBuffer byteBuf = ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
+
 		byteBuf.clear();
 		codec.encode(msg, byteBuf);
 		byteBuf.flip();
@@ -273,8 +274,7 @@ public class ControllerAdvertiser {
 
 		replyPort = reply_port;
 		broadcastPort = broadcast_port;
-
-		byteBuf = ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
+		ByteBuffer byteBuf = ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
 
 		try {
 			advertiseTxSocket = new DatagramSocket();
