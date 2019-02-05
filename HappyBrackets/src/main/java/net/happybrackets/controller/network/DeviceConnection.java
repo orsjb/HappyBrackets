@@ -210,6 +210,44 @@ public class DeviceConnection {
 		void isFavourite(boolean enabled);
 	}
 
+	public void startDeviceConnection(){
+		try {
+			oscServer = OSCServer.newUsing(OSCServer.UDP);
+			oscServer.start();
+			replyPort = oscServer.getLocalAddress().getPort();
+
+			logger.info("Created and started OSCServer for address {}", oscServer.getLocalAddress());
+		} catch (IOException e) {
+			logger.error("Error setting up new OSCServer!", e);
+		}
+
+		// set up to listen for basic messages
+		oscServer.addOSCListener(new OSCListener() {
+			@Override
+			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
+				incomingMessage(msg, source);
+			}
+		});
+
+		// set up thread to watch for lost devices
+		new Thread() {
+			public void run() {
+				while(true) {
+
+					checkDeviceAliveness();
+
+
+					try {
+						Thread.sleep(config.getAliveInterval());
+					} catch (InterruptedException e) {
+						logger.error("Poll interval interrupted for alive devices checkup", e);
+					}
+				}
+			}
+		}.start();
+
+	}
+
 	public DeviceConnection(ControllerConfig config) {
 		this.config = config;
 		//broadcastManager = broadcast;
@@ -239,38 +277,7 @@ public class DeviceConnection {
 		*/
 
 		// create the OSC Server
-		try {
-			oscServer = OSCServer.newUsing(OSCServer.UDP);
-			oscServer.start();
-			replyPort = oscServer.getLocalAddress().getPort();
 
-			logger.info("Created and started OSCServer for address {}", oscServer.getLocalAddress());
-		} catch (IOException e) {
-			logger.error("Error setting up new OSCServer!", e);
-		}
-		// set up to listen for basic messages
-		oscServer.addOSCListener(new OSCListener() {
-			@Override
-			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
-				incomingMessage(msg, source);
-			}
-		});
-		// set up thread to watch for lost devices
-		new Thread() {
-			public void run() {
-				while(true) {
-
-					checkDeviceAliveness();
-
-
-					try {
-						Thread.sleep(config.getAliveInterval());
-					} catch (InterruptedException e) {
-						logger.error("Poll interval interrupted for alive devices checkup", e);
-					}
-				}
-			}
-		}.start();
 	}
 
 	/**
@@ -473,6 +480,7 @@ public class DeviceConnection {
 					this_device.addDeviceRemovedListener(new LocalDeviceRepresentation.DeviceRemovedListener() {
 						@Override
 						public void deviceRemoved(LocalDeviceRepresentation device) {
+
 							Platform.runLater(new Runnable() {
 								@Override
 								public void run() {
@@ -481,6 +489,7 @@ public class DeviceConnection {
 										theDevices.remove(devicesByHostname.get(device_name));
 										devicesByHostname.remove(device_name);
 										logger.info("Removed Device from list: {}", device_name);
+										device.sendConnectionListeners();
 									}
 								}
 							});
@@ -498,6 +507,7 @@ public class DeviceConnection {
 						@Override
 						public void run() {
 							theDevices.add(device_to_add);
+							device_to_add.sendConnectionListeners();
 						}
 					});
 					//make sure this device knows its ID
