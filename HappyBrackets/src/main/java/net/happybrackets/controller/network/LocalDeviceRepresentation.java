@@ -84,6 +84,9 @@ public class LocalDeviceRepresentation {
 	private boolean encryptionEnabled = false;
 
 
+	// create a set of listeners to see if any change in connection happens
+	private static List<DeviceConnectedUpdateListener> globalConnectedUpdateListenerList = new ArrayList<>();
+
 	final Object dynamicControlLock = new Object();
 
 	public boolean isEncryptionEnabled() {
@@ -346,6 +349,10 @@ public class LocalDeviceRepresentation {
 		void update(boolean connected);
 	}
 
+	public interface DeviceConnectedUpdateListener {
+		void update(LocalDeviceRepresentation device, boolean connected);
+	}
+
 	public interface DeviceIdUpdateListener {
 		void update(int new_id);
 	}
@@ -370,8 +377,7 @@ public class LocalDeviceRepresentation {
 	private List<SocketAddressChangedListener> socketAddressChangedListenerList = new ArrayList<>();
 	private List<DeviceIdUpdateListener> deviceIdUpdateListenerList = new ArrayList<>();
 	private List<DeviceRemovedListener> deviceRemovedListenerList = new ArrayList<>();
-	private List<FavouriteChangedListener> favouriteChangedListeners = new ArrayList<>()
-;
+	private List<FavouriteChangedListener> favouriteChangedListeners = new ArrayList<>();
 	private List<DynamicControl.DynamicControlListener> addDynamicControlListenerList = new ArrayList<>();
 	private List<DynamicControl.DynamicControlListener> removeDynamicControlListenerList = new ArrayList<>();
 
@@ -634,9 +640,18 @@ public class LocalDeviceRepresentation {
 				}
 			}
 		});*/
+
+
 	}
 
 
+	public void sendConnectionListeners(){
+		for (DeviceConnectedUpdateListener listener:
+				globalConnectedUpdateListenerList) {
+			listener.update(this, isConnected);
+
+		}
+	}
 	/**
 	 * Notifiy Device that it has been displayed and we can start any functions that required the item to be displayed
 	 */
@@ -1056,6 +1071,10 @@ public class LocalDeviceRepresentation {
 		}
 	}
 
+	public static  void addDeviceConnectedUpdateListener(DeviceConnectedUpdateListener listener){
+		globalConnectedUpdateListenerList.add(listener);
+	}
+
 	public void addLoggingStateListener(ConnectedUpdateListener listener){
 		synchronized (loggingStateListenerLock)
 		{
@@ -1139,6 +1158,7 @@ public class LocalDeviceRepresentation {
 					listener.update(connected);
 				}
 			}
+			sendConnectionListeners();
 			setStatus(isConnected? "Connected" : "Disconnected");
 		}
 
