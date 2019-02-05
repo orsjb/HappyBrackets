@@ -130,4 +130,10 @@ echo ""
 echo "If you make this change, the SSID this PI will search for will be 'PINet'"
 echo "Password is 'happybrackets'"
 
+echo "To automatically rename your PI, type the following commands"
+echo "sudo wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/auto-rename.sh"
+echo "sudo mv auto-rename.sh /home/pi/HappyBrackets/scripts/"
+echo "sudo chmod +x /home/pi/HappyBrackets/scripts/auto-rename.sh"
+
+
 
