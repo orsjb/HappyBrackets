@@ -92,18 +92,6 @@ public class ControllerEngine {
         logger.debug("Compositions path: {}", controllerConfig.getCompositionsPath());
 
 
-        int listen_port = controllerConfig.getBroadcastPort();
-
-        try {
-            //setup controller broadcast
-            DatagramSocket alive_socket = new DatagramSocket();
-            alive_socket.setReuseAddress(true);
-            listen_port = alive_socket.getLocalPort();
-        }
-        catch (Exception ex)
-        {
-            logger.error("Unable to create unique socket ", ex );
-        }
 
         logger.info("Starting ControllerAdvertiser");
         //broadcastManager = new BroadcastManager(controllerConfig.getMulticastAddr(), listen_port);
@@ -111,16 +99,6 @@ public class ControllerEngine {
         //set up device connection
         deviceConnection = new DeviceConnection(controllerConfig);
 
-        deviceConnection.addDeviceAliveListener(device_address -> {
-            // this event will not actually happen until we get some sort of advertisement
-            if (controllerAdvertiser != null){
-                controllerAdvertiser.deviceAliveReceived(device_address);
-            }
-        });
-
-        listen_port =  deviceConnection.getReplyPort();
-
-        controllerAdvertiser = new ControllerAdvertiser(controllerConfig.getMulticastAddr(), controllerConfig.getBroadcastPort(), listen_port);
 
         // Do Not start until we are at the end of initialisation
         //controllerAdvertiser.start();
@@ -161,19 +139,29 @@ public class ControllerEngine {
      */
     public synchronized void startDeviceCommunication(){
 
+        if (controllerAdvertiser == null) {
+            deviceConnection.startDeviceConnection();
+
+            deviceConnection.addDeviceAliveListener(device_address -> {
+                // this event will not actually happen until we get some sort of advertisement
+                if (controllerAdvertiser != null) {
+                    controllerAdvertiser.deviceAliveReceived(device_address);
+                }
+            });
+
+            int listen_port = deviceConnection.getReplyPort();
+
+            controllerAdvertiser = new ControllerAdvertiser(controllerConfig.getMulticastAddr(), controllerConfig.getBroadcastPort(), listen_port);
+
+        }
+
+
         if (controllerAdvertiser != null && !controllerStarted)
         {
-            /*
-            if (broadcastManager != null)
-            {
-                // we will make the start wait so our toolwindow can settle down
-                broadcastManager.setWaitForStart(true);
-                //broadcastManager.startRefreshThread();
-            }
-            */
             controllerStarted = true;
             controllerAdvertiser.start();
         }
+
     }
 
     /**
