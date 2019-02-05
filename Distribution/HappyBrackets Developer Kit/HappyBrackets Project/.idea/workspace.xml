@@ -21,96 +21,48 @@
     </SUITE>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="SensorControlledClock.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java">
+    <leaf>
+      <file leaf-file-name="send-folder.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/send-folder.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="870">
-              <caret line="69" column="37" selection-start-line="69" selection-start-column="37" selection-end-line="69" selection-end-column="37" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="-141">
+              <caret line="130" column="49" selection-start-line="130" selection-start-column="49" selection-end-line="130" selection-end-column="49" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SampleRateAccelerometer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java">
+      <file leaf-file-name="run.sh" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1140">
-              <caret line="86" column="41" selection-start-line="86" selection-start-column="41" selection-end-line="86" selection-end-column="41" />
+            <state relative-caret-position="285">
+              <caret line="93" lean-forward="true" selection-start-line="93" selection-end-line="93" selection-end-column="22" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MonitorAccelerometer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java">
+      <file leaf-file-name="send-scripts.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/send-scripts.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="57" column="37" selection-start-line="57" selection-start-column="37" selection-end-line="57" selection-end-column="37" />
+            <state relative-caret-position="90">
+              <caret line="112" selection-start-line="112" selection-end-line="116" selection-end-column="10" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SampleSpeedAndDirection.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleSpeedAndDirection.java">
+      <file leaf-file-name="send-startupclasses.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/send-startupclasses.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="130" column="41" selection-start-line="130" selection-start-column="41" selection-end-line="130" selection-end-column="41" />
+            <state relative-caret-position="390">
+              <caret line="118" selection-start-line="118" selection-end-line="118" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EnvelopeTrigger.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/events/envelope/EnvelopeTrigger.java">
+      <file leaf-file-name="send-audio.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/send-audio.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DelayPitch.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/events/delay/DelayPitch.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="15" column="23" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="contents.txt" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="49" column="77" selection-start-line="49" selection-start-column="77" selection-end-line="49" selection-end-column="77" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PulseDigitalOutGPIO.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/gpio/PulseDigitalOutGPIO.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="68" lean-forward="true" selection-start-line="68" selection-end-line="68" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DigitalOutGPIO.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="29" column="27" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BasicFM.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/BasicFM.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+            <state relative-caret-position="255">
+              <caret line="119" selection-start-line="119" selection-end-line="119" />
             </state>
           </provider>
         </entry>
@@ -166,7 +118,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" />
         <option value="$PROJECT_DIR$/src/examples/threads/CreatedThread.java" />
         <option value="$PROJECT_DIR$/src/examples/threads/SimpleThread.java" />
         <option value="$PROJECT_DIR$/src/examples/midi/scales/MajorScale.java" />
@@ -203,10 +154,7 @@
         <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java" />
         <option value="$PROJECT_DIR$/data/change_dir.sh" />
-        <option value="$PROJECT_DIR$/data/send-audio.sh" />
         <option value="$PROJECT_DIR$/data/send-jars.sh" />
-        <option value="$PROJECT_DIR$/data/send-scripts.sh" />
-        <option value="$PROJECT_DIR$/data/send-startupclasses.sh" />
         <option value="$PROJECT_DIR$/data/_README" />
         <option value="$PROJECT_DIR$/src/examples/sensor/accelerometer/TripleAxisAccelerometer.java" />
         <option value="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java" />
@@ -217,6 +165,10 @@
         <option value="$PROJECT_DIR$/src/examples/events/delay/PulseGpio.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/PulseDigitalOutGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/contents.txt" />
+        <option value="$PROJECT_DIR$/data/send-scripts.sh" />
+        <option value="$PROJECT_DIR$/data/send-startupclasses.sh" />
+        <option value="$PROJECT_DIR$/data/send-audio.sh" />
+        <option value="$PROJECT_DIR$/data/send-folder.sh" />
       </list>
     </option>
   </component>
@@ -227,7 +179,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="x" value="1778" />
+    <option name="y" value="-59" />
     <option name="width" value="1440" />
     <option name="height" value="877" />
   </component>
@@ -236,7 +189,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
@@ -263,6 +216,24 @@
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="Device" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="Device" type="462c0819:PsiDirectoryNode" />
+              <item name="HappyBrackets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="Device" type="462c0819:PsiDirectoryNode" />
+              <item name="HappyBrackets" type="462c0819:PsiDirectoryNode" />
+              <item name="scripts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -285,33 +256,11 @@
               <item name="examples" type="462c0819:PsiDirectoryNode" />
               <item name="events" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="examples" type="462c0819:PsiDirectoryNode" />
-              <item name="events" type="462c0819:PsiDirectoryNode" />
-              <item name="delay" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="examples" type="462c0819:PsiDirectoryNode" />
-              <item name="fmsynthesis" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="examples" type="462c0819:PsiDirectoryNode" />
-              <item name="gpio" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -323,12 +272,8 @@
     <property name="settings.editor.selected.configurable" value="project.propCompiler" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/data" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/examples" />
-      <recent name="$PROJECT_DIR$/config" />
-      <recent name="$PROJECT_DIR$/src/net/happybrackets/v2examples/controls/integerControl" />
-      <recent name="$PROJECT_DIR$/src/net/happybrackets/v2examples" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="examples.gpio" />
@@ -337,8 +282,12 @@
       <recent name="net.happybrackets.v2examples.threads" />
       <recent name="net.happybrackets.v2examples.controls.booleancontrol" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/src/examples" />
+      <recent name="$PROJECT_DIR$/config" />
+      <recent name="$PROJECT_DIR$/src/net/happybrackets/v2examples/controls/integerControl" />
+      <recent name="$PROJECT_DIR$/src/net/happybrackets/v2examples" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -445,31 +394,31 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="877" extended-state="6" />
+    <frame x="1694" y="-13" width="1440" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.48958334" weight="0.32722512" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.6097222" side_tool="true" visible="true" weight="0.3561644" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5100143" side_tool="true" visible="true" weight="0.32435897" />
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.24878837" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39027777" weight="0.3561644" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49097222" weight="0.32460734" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.4899857" visible="true" weight="0.32435897" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24027778" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24320458" />
       <window_info anchor="bottom" id="Problems" order="8" />
-      <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.20625" />
+      <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.32474965" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.48958334" weight="0.32722512" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" x="105" y="191" width="1080" height="530" id="Documentation" order="4" type="FLOATING" />
@@ -517,20 +466,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="60" column="13" lean-forward="true" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -705,31 +640,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-startupclasses.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="29" selection-start-line="25" selection-start-column="29" selection-end-line="25" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-scripts.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="29" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/send-jars.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
           <caret line="24" selection-start-line="24" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-audio.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="29" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -764,37 +678,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="69" column="37" selection-start-line="69" selection-start-column="37" selection-end-line="69" selection-end-column="37" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1140">
-          <caret line="86" column="41" selection-start-line="86" selection-start-column="41" selection-end-line="86" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="57" column="37" selection-start-line="57" selection-start-column="37" selection-end-line="57" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleSpeedAndDirection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="130" column="41" selection-start-line="130" selection-start-column="41" selection-end-line="130" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/BasicFM.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
@@ -802,24 +685,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/envelope/EnvelopeTrigger.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/delay/PulseGpio.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret lean-forward="true" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/delay/PulseGpio.java" />
     <entry file="file://$PROJECT_DIR$/src/examples/gpio/PulseDigitalOutGPIO.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="68" lean-forward="true" selection-start-line="68" selection-end-line="68" />
+        <state relative-caret-position="915">
+          <caret line="68" selection-start-line="68" selection-end-line="68" />
         </state>
       </provider>
     </entry>
@@ -830,6 +700,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="274">
+          <caret line="49" column="77" selection-start-line="49" selection-start-column="77" selection-end-line="49" selection-end-column="77" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/events/delay/DelayPitch.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -837,10 +714,73 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/contents.txt">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/envelope/EnvelopeTrigger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="49" column="77" selection-start-line="49" selection-start-column="77" selection-end-line="49" selection-end-column="77" />
+        <state relative-caret-position="120">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleSpeedAndDirection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="130" column="41" selection-start-line="130" selection-start-column="41" selection-end-line="130" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="57" column="37" selection-start-line="57" selection-start-column="37" selection-end-line="57" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="86" column="41" selection-start-line="86" selection-start-column="41" selection-end-line="86" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="62">
+          <caret line="69" column="37" selection-start-line="69" selection-start-column="37" selection-end-line="69" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-scripts.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="112" selection-start-line="112" selection-end-line="116" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-startupclasses.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="118" selection-start-line="118" selection-end-line="118" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-audio.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="119" selection-start-line="119" selection-end-line="119" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-folder.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-141">
+          <caret line="130" column="49" selection-start-line="130" selection-start-column="49" selection-end-line="130" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="93" lean-forward="true" selection-start-line="93" selection-end-line="93" selection-end-column="22" />
         </state>
       </provider>
     </entry>

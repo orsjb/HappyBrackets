@@ -1,31 +1,42 @@
 #!/bin/bash
 
-### Script to upload audio to PI by automating the scp command
-### The device is added as a parameter to the script
-
-
-
-if [ $# -gt 0 ]; then
-    DEVICE_NAME=$1
-else
-   echo "Enter the device address - eg 192.168.0.3"
-   read DEVICE
-   DEVICE_NAME=$DEVICE
-fi
-
-echo "Audio will be sent from this folder"
-
-SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# move into Device Folder
+### Script to upload folder to PI by automating the scp command
+### The device and folder can be added as a parameter to the script
 
 DEVICE_DATA_PATH="../Device/HappyBrackets/data"
 cd "$DEVICE_DATA_PATH"
 FILE_PATH="$(pwd)"
 
 echo "Current dir" $FILE_PATH
+echo "Folders available to send are as follows:"
+
+find . -type d
 
 
-echo "Send audio FROM ${FILE_PATH} to ${DEVICE_NAME} "
+if [ $# -gt 0 ]; then
+    FOLDER_NAME=$1
+else
+   echo "You need to enter the foldername that you want to send. Available folders are listed above"
+     read FOLDER
+     FOLDER_NAME=$FOLDER
+fi
+
+if [ $# -gt 1 ]; then
+    FOLDER_NAME=$2
+else
+   echo "Enter the device address - eg 192.168.0.3"
+   read DEVICE
+   DEVICE_NAME=$DEVICE
+fi
+
+echo "Files will be sent from this folder"
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# move into Device Folder
+
+
+
+
+echo "Send folder FROM ${FILE_PATH} to ${DEVICE_NAME} "
 
 
 ## first see if we can use expect to save our passwords inside the script
@@ -73,8 +84,10 @@ function expect_password {
   "
 }
 
+
+
 if [ "$DEVICE_NAME" != "" ]; then
-# run scp
+# run scp 
     while true
     do
         HOST_ADDRESS="pi@${DEVICE_NAME}"
@@ -84,36 +97,39 @@ if [ "$DEVICE_NAME" != "" ]; then
         if [ -f "/usr/bin/expect" ]
         then
 
-            expect_password "sh -c \"scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r audio/* $HOST_ADDRESS:~/HappyBrackets/data/audio/\""
+            // first make folder
+            expect_password "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $HOST_ADDRESS \"mkdir -p ~/HappyBrackets/data/$FOLDER_NAME\""
+
+            expect_password "sh -c \"scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $FOLDER_NAME/* $HOST_ADDRESS:~/HappyBrackets/data/$FOLDER_NAME/\""
 
 
             # now we need to SSH into device so we can do a restart of PI
             echo "We need to reboot our device"
 
-            echo "sudo shutdown -r now"
+            echo "sync"
 
-            #Do a spawn to flush
+            #Do a spawn to sync
 
             expect_password "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $HOST_ADDRESS \"sync\""
 
 
         else
-            HOST_ADDRESS="pi@${DEVICE_NAME}"
-            echo “Sending audio to ${HOST_ADDRESS}”
-            scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $FILE_PATH/audio/* $HOST_ADDRESS:~/HappyBrackets/data/audio/
+            ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $HOST_ADDRESS "mkdir -p ~/HappyBrackets/data/$FOLDER_NAME"
+            scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $FILE_PATH/$FOLDER_NAME/* $HOST_ADDRESS:~/HappyBrackets/data/$FOLDER_NAME/
 
-            echo "We need to flush files to your device to prevent disk becoming corrupt. The following line will be sent when you enter you password"
+            # now we need to SSH into device so we can do a sync of PI filsystem
+            echo "We need to sync our device"
 
             echo "sync"
 
             ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $HOST_ADDRESS "sync"
 
-
         fi
 
 
-        #see if we want to update another device - see if they entered the device name
-        if [ $# -gt 0 ]; then
+        #see if we want to update another device - see if they entered the device name-
+        # note this is different to other scripts
+        if [ $# -gt 1 ]; then
             echo "No More devices"
             exit 0
         fi
@@ -129,7 +145,7 @@ if [ "$DEVICE_NAME" != "" ]; then
 
                 [yY] | [yY][Ee][Ss] )
                     echo "Repeat"
-		    echo "Enter the device address"
+		    echo "Enter the device address - eg 192.168.0.3"
 		    read DEVICE
 		    DEVICE_NAME=$DEVICE
 		    echo "${DEVICE_NAME}"
@@ -149,7 +165,7 @@ if [ "$DEVICE_NAME" != "" ]; then
 
 
 else
-    echo "You need to enter the device address and the Source Folder as argument to call. eg ${0} 192.168.0.10 ~/Documents/mydownload/"
+    echo "You need to enter the device name and the Source Folder as argument to call. eg ${0} 192.168.0.5 ~/Documents/mydownload/"
 fi
 
 

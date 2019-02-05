@@ -110,6 +110,11 @@ if [ "$DEVICE_NAME" != "" ]; then
 
         fi
 
+        #see if we want to update another device - see if they entered the device name
+        if [ $# -gt 0 ]; then
+            echo "No More devices"
+            exit 0
+        fi
 
         #see if we want to update another device
         while true

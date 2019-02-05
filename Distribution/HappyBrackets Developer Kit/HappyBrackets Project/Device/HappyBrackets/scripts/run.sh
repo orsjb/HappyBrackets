@@ -91,7 +91,11 @@ done <$CONFIG_FILE
 
 
 ### run the auto-rename script
-scripts/auto-rename.sh
+if [ -f scripts/auto-rename.sh ]
+then
+  scripts/auto-rename.sh
+fi
+
 
 echo “Running HappyBrackets”
 
