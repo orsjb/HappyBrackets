@@ -21,12 +21,12 @@
     </SUITE>
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="send-folder.sh" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/data/send-folder.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="162" column="12" lean-forward="true" selection-start-line="136" selection-start-column="8" selection-end-line="162" selection-end-column="12" />
+            <state relative-caret-position="455">
+              <caret line="162" column="12" selection-start-line="136" selection-start-column="8" selection-end-line="162" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -143,8 +143,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1670" />
-    <option name="y" value="-53" />
+    <option name="x" value="1844" />
+    <option name="y" value="-157" />
     <option name="width" value="1440" />
     <option name="height" value="877" />
   </component>
@@ -153,8 +153,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="AndroidView" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -187,6 +187,13 @@
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name="Device" type="462c0819:PsiDirectoryNode" />
               <item name="HappyBrackets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="Device" type="462c0819:PsiDirectoryNode" />
+              <item name="HappyBrackets" type="462c0819:PsiDirectoryNode" />
+              <item name="scripts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
@@ -236,8 +243,12 @@
     <property name="settings.editor.selected.configurable" value="project.propCompiler" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Device/HappyBrackets/scripts" />
+      <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/src/examples" />
+      <recent name="$PROJECT_DIR$/config" />
+      <recent name="$PROJECT_DIR$/src/net/happybrackets/v2examples/controls/integerControl" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="examples.gpio" />
@@ -246,12 +257,8 @@
       <recent name="net.happybrackets.v2examples.threads" />
       <recent name="net.happybrackets.v2examples.controls.booleancontrol" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/data" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/examples" />
-      <recent name="$PROJECT_DIR$/config" />
-      <recent name="$PROJECT_DIR$/src/net/happybrackets/v2examples/controls/integerControl" />
-      <recent name="$PROJECT_DIR$/src/net/happybrackets/v2examples" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -358,21 +365,22 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1670" y="-53" width="1440" height="877" extended-state="0" />
+    <frame x="1844" y="-157" width="1440" height="877" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5107296" side_tool="true" visible="true" weight="0.32435897" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.51216024" side_tool="true" visible="true" weight="0.32435897" />
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.24878837" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39027777" weight="0.3561644" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.4892704" visible="true" weight="0.32435897" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.48783976" visible="true" weight="0.32435897" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24320458" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25035766" />
       <window_info anchor="bottom" id="Problems" order="8" />
       <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.32260373" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
@@ -429,13 +437,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="122">
-          <caret line="118" lean-forward="true" selection-start-line="118" selection-end-line="118" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="182">
@@ -726,13 +727,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/data/scripts/test-rename.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" selection-start-line="10" selection-end-line="13" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/data/scripts/test-rename.sh" />
     <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/setup/setup-happybrackets-pi.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="215">
@@ -740,10 +735,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run-simulator.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/data/send-folder.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="162" column="12" lean-forward="true" selection-start-line="136" selection-start-column="8" selection-end-line="162" selection-end-column="12" />
+        <state relative-caret-position="455">
+          <caret line="162" column="12" selection-start-line="136" selection-start-column="8" selection-end-line="162" selection-end-column="12" />
         </state>
       </provider>
     </entry>

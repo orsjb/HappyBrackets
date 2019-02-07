@@ -35,6 +35,8 @@ public class AutoHBStart implements HBAction{
         Gain g = new Gain(hb.ac, 1);
         g.addInput(wp);
         hb.ac.out.addInput(g);
+        int num_outputs = hb.ac.out.getOuts();
+        System.out.println(num_outputs + " outputs");
 
     }
 

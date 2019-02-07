@@ -16,9 +16,7 @@
 
 package net.happybrackets.device;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -230,6 +228,37 @@ public class HB {
 
 		boolean ret = false;
 		String current = System.getProperty("user.dir");
+		String simulator_file = current + "/scripts/simulator.config";
+
+
+		String[] start_args = new String[]{
+				"buf=1024",
+				"sr=44100",
+				"bits=16",
+				"ins=0",
+				"outs=1",
+				"device=0",
+				"start=true",
+				"access=local"
+		};
+
+
+		try (BufferedReader br = new BufferedReader(new FileReader(simulator_file))) {
+			ArrayList<String> ar = new ArrayList<String>();
+			String line;
+			while ((line = br.readLine()) != null) {
+				// process the line.
+				System.out.println(line);
+				ar.add(line.trim().toLowerCase());
+			}
+			start_args = new String[ar.size()];
+
+			for (int i = 0; i < ar.size(); i++){
+				start_args[i] = ar.get(i);
+			}
+		}
+		catch (Exception ex){}
+
 		System.out.println(current);
 		// we will enable simulators of Sensors
 		enableSimulators = true;
@@ -237,16 +266,7 @@ public class HB {
 		if (HBInstance == null) {
 
 			HB.AccessMode mode = HB.AccessMode.LOCAL;
-			String[] start_args = new String[]{
-					"buf=1024",
-					"sr=44100",
-					"bits=16",
-					"ins=0",
-					"outs=1",
-                    "device=0",
-					"start=true",
-					"access=local"
-			};
+
 
 			HB hb = new HB(AudioSetup.getAudioContext(start_args), mode, false);
 			hb.startAudio();
