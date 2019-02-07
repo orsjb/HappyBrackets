@@ -24,12 +24,8 @@ import java.util.*;
 import de.sciss.net.*;
 import net.happybrackets.controller.config.ControllerConfig;
 
-import net.happybrackets.controller.gui.DialogDisplay;
 import net.happybrackets.controller.gui.DynamicControlScreen;
-import net.happybrackets.core.BuildVersion;
-import net.happybrackets.core.DeviceStatus;
-import net.happybrackets.core.ErrorListener;
-import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.*;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
@@ -64,7 +60,7 @@ public class LocalDeviceRepresentation {
 
 	private InetSocketAddress socketAddress;
 
-	private final OSCServer server;
+	private final OSCGenericSender server = new OSCGenericSender();
 
 	private OSCClient client = null;
 
@@ -613,7 +609,7 @@ public class LocalDeviceRepresentation {
 		this.address = addr;
 		this.socketAddress = null;
 		this.deviceId = id;
-		this.server = server;
+		//this.server = server;
 		this.controllerConfig = config;
 		groups = new boolean[4];
 

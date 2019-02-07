@@ -30,9 +30,8 @@ import javafx.collections.ObservableList;
 import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
-import de.sciss.net.OSCServer;
 
-import net.happybrackets.core.BroadcastManager;
+import net.happybrackets.core.OSCGenericReceiver;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.config.KnownDeviceID;
 import org.slf4j.Logger;
@@ -50,7 +49,8 @@ public class DeviceConnection {
 	final static Logger logger = LoggerFactory.getLogger(DeviceConnection.class);
 	public static final boolean verbose = false;
 
-	private OSCServer oscServer;
+	//private OSCServer oscServer;
+	private OSCGenericReceiver oscServer;
 	private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
 	private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
 	private Map<String, KnownDeviceID> knownDevices = new Hashtable<String, KnownDeviceID>();
@@ -212,11 +212,15 @@ public class DeviceConnection {
 
 	public void startDeviceConnection(){
 		try {
-			oscServer = OSCServer.newUsing(OSCServer.UDP);
-			oscServer.start();
-			replyPort = oscServer.getLocalAddress().getPort();
 
-			logger.info("Created and started OSCServer for address {}", oscServer.getLocalAddress());
+
+
+			oscServer = new OSCGenericReceiver(); //OSCServer.newUsing(OSCServer.UDP);
+			oscServer.start();
+			//replyPort = oscServer.getLocalAddress().getPort();
+
+			replyPort = oscServer.getPort();
+			logger.info("Created and started OSCServer for address {}", replyPort);
 		} catch (IOException e) {
 			logger.error("Error setting up new OSCServer!", e);
 		}
@@ -460,7 +464,7 @@ public class DeviceConnection {
 						}
 					}
 
-					this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, oscServer, config, replyPort);
+					this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, null, config, replyPort);
 					this_device.setFriendlyName(friendly_name);
 
 					if (favouriteDevices.contains(device_name)) {
@@ -733,7 +737,7 @@ public class DeviceConnection {
 		String name     = "Virtual Test Device #" + virtualDeviceCount++;
 		String hostname = "myHostname!";
         String address  = "127.0.0.1";
-		LocalDeviceRepresentation virtual_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, this.oscServer, this.config, replyPort);
+		LocalDeviceRepresentation virtual_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, null, this.config, replyPort);
 		theDevices.add(virtual_test_device);
 
 		synchronized (devicesByHostnameLock) {
@@ -745,6 +749,7 @@ public class DeviceConnection {
 	 * Perform shutdown processes. Stops and disposes of the OSC server.
 	 */
 	public void dispose() {
-		oscServer.dispose();
+
+		//oscServer.dispose();
 	}
 }
