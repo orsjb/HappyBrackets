@@ -45,7 +45,7 @@ then
     REWRITE_REQUIRED=true
 fi
 
-if [ -z "$REWRITE_REQUIRED" ] ;
+if [ ! -z "$REWRITE_REQUIRED" ] ;
 then
         echo "Rewrite required"
         echo "$OUT_TEXT" > /etc/hosts
