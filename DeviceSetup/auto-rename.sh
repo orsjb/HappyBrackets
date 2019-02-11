@@ -17,16 +17,41 @@ NEWHOST=hb-${NEWHOST}
 LOCAL_MACHINE="127.0.1.1"
 MACHINE_TEXT="$LOCAL_MACHINE"$'\t'"$NEWHOST"
 
-#we need to add this hostname to hosts file
-if grep -Fxq "$MACHINE_TEXT" /etc/hosts
+#we need to strip out all 127.0.1.1 from hosts unless it is this hostname
+
+OUT_TEXT=""
+while IFS='' read -r line || [[ -n "$line" ]]; do
+
+    if  [[ $line == $LOCAL_MACHINE ]] || [[ $line == $LOCAL_MACHINE* ]] ;
+    then
+      # See if  we are going to override this by checking if it our one
+      if [[ $line ==  $MACHINE_TEXT ]] ;
+      then # this is our valid  host. Keep It
+            OUT_TEXT=$OUT_TEXT$'\n'$line
+            FOUND=true
+      else # this is old and written before we re-wrrote the name. We need to remov$
+       REWRITE_REQUIRED=true
+      fi
+    else
+      OUT_TEXT=$OUT_TEXT$'\n'$line
+    fi
+
+done < "/etc/hosts"
+
+
+if [ ! -z "$FOUND" ] ;
 then
-    # code if found
-    echo "Hostname already in hosts file";
-else
-    # code if not found
-    echo "Append hostname to hosts file"
-    echo -n "$MACHINE_TEXT"$'\n' >> /etc/hosts
+    OUT_TEXT=$OUT_TEXT$'\n'$MACHINE_TEXT
+    REWRITE_REQUIRED=true
+
 fi
+
+if [ ! -z "$REWRITE_REQUIRED" ] ;
+then
+        echo "Rewrite required"
+        echo "$OUT_TEXT" > /etc/hosts
+fi
+
 
 # reboot with correct hostname if required
 
