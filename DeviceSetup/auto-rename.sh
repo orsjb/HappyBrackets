@@ -27,7 +27,6 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
       # See if  we are going to override this by checking if it our one
       if [[ $line ==  $MACHINE_TEXT ]] ;
       then # this is our valid  host. Keep It
-            OUT_TEXT=$OUT_TEXT$'\n'$line
             FOUND=true
       else # this is old and written before we re-wrrote the name. We need to remov$
        REWRITE_REQUIRED=true
@@ -38,15 +37,16 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 
 done < "/etc/hosts"
 
+OUT_TEXT=$OUT_TEXT$'\n'$MACHINE_TEXT
+
 
 if [ ! -z "$FOUND" ] ;
 then
-    OUT_TEXT=$OUT_TEXT$'\n'$MACHINE_TEXT
     REWRITE_REQUIRED=true
 
 fi
 
-if [ ! -z "$REWRITE_REQUIRED" ] ;
+if [ -z "$REWRITE_REQUIRED" ] ;
 then
         echo "Rewrite required"
         echo "$OUT_TEXT" > /etc/hosts
