@@ -27,12 +27,12 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
       # See if  we are going to override this by checking if it our one
       if [[ $line ==  $MACHINE_TEXT ]] ;
       then # this is our valid  host. Keep It
-            FOUND=true
+        FOUND=true
       else # this is old and written before we re-wrrote the name. We need to remov$
-       REWRITE_REQUIRED=true
+        REWRITE_REQUIRED=true
       fi
     else
-      OUT_TEXT=$OUT_TEXT$'\n'$line
+        OUT_TEXT=$OUT_TEXT$'\n'$line
     fi
 
 done < "/etc/hosts"
@@ -40,10 +40,9 @@ done < "/etc/hosts"
 OUT_TEXT=$OUT_TEXT$'\n'$MACHINE_TEXT
 
 
-if [ ! -z "$FOUND" ] ;
+if [ ! -z "$FOUND" ] ; # If our host name is not in there, we will need to do a write
 then
     REWRITE_REQUIRED=true
-
 fi
 
 if [ -z "$REWRITE_REQUIRED" ] ;
