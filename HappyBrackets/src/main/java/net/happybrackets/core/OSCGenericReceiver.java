@@ -26,7 +26,7 @@ public class OSCGenericReceiver {
     /**
      * Create a Receiver port
      * @param port the port to receive
-     * @throws SocketException
+     * @throws SocketException Exception if Unable to open Socket
      */
     public OSCGenericReceiver(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -38,7 +38,7 @@ public class OSCGenericReceiver {
 
     /**
      * Create a OSC Receiver finding own port
-     * @throws SocketException
+     * @throws SocketException Exception if unable to open
      */
     public OSCGenericReceiver() throws IOException {
         this(0);
