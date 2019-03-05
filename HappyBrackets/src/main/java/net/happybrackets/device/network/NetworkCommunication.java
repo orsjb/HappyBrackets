@@ -244,7 +244,13 @@ public class NetworkCommunication {
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
 							hb.masterGainEnv.addSegment((Float) msg.getArg(0), (Float) msg.getArg(1));
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
+							boolean has_classes = hb.hasClassesLoaded();
 							hb.reset();
+
+							// If we have pressed reset previously, we will also mute audio
+							if (!has_classes) {
+								hb.muteAudio(true);
+							}
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET_SOUNDING)) {
 							hb.resetLeaveSounding();
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CLEAR_SOUND)) {
@@ -411,7 +417,13 @@ public class NetworkCommunication {
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
 							hb.masterGainEnv.addSegment((Float) msg.getArg(0), (Float) msg.getArg(1));
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
+							boolean has_classes = hb.hasClassesLoaded();
 							hb.reset();
+
+							// If we have pressed reset previously, we will also mute audio
+							if (!has_classes) {
+								hb.muteAudio(true);
+							}
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET_SOUNDING)) {
 							hb.resetLeaveSounding();
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CLEAR_SOUND)) {

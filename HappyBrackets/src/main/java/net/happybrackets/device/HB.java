@@ -62,6 +62,24 @@ public class HB {
 	private static boolean enableSimulators = false;
 
 
+	/**
+	 * Retrun the Mute Control
+	 * @return the Mute Control
+	 */
+	public MuteControl getMuteControl() {
+		return muteControl;
+	}
+
+	/**
+	 * Set the Mute Control for HB
+	 * @param muteControl the Mute Control we are using
+	 */
+	void setMuteControl(MuteControl muteControl) {
+		this.muteControl = muteControl;
+	}
+
+	private MuteControl muteControl = null;
+
 	private static boolean simulatorOnly = false;
 	/**
 	 * Return whether we will displaysimulator sensors if no hardware sensor is found
@@ -112,6 +130,13 @@ public class HB {
 
 	private boolean useEncryption = false;
 
+	/**
+	 * Determine if we have any classes Loaded
+	 * @return true if we have any classes loaded
+	 */
+	public boolean hasClassesLoaded(){
+		return loadedHBClasses.size() > 0;
+	}
 	/**
 	 * Add Listeners for status change event
 	 * @param listener The listener to add
@@ -215,6 +240,18 @@ public class HB {
 	}
 
 	/**
+	 * Perform a mute or Unmute of Output
+	 * @param mute true if we want to mute
+	 * @return the value of previous mute state.
+	 */
+	public boolean muteAudio(boolean mute){
+		boolean ret = false;
+		if (muteControl != null){
+			ret = muteControl.muteOutput(mute);
+		}
+		return ret;
+	}
+	/**
   	 * Run HB in a debug mode so we can debug sample code in INtelliJ
 	 * run the command like this: HB.runDebug(MethodHandles.lookup().lookupClass());
 	 * @param action_class The class that we are debugging. use MethodHandles.lookup().lookupClass()
@@ -294,6 +331,8 @@ public class HB {
 				if (incomingClass != null) {
 					HBAction action = null;
 					try {
+						// If we have a mute control, disable muting
+						hb.muteAudio(false);
 						action = incomingClass.newInstance();
 						action.action(hb);
 
@@ -600,14 +639,23 @@ public class HB {
 	 * Produces a single short test bleep on the device. Assumes audio is running.
 	 */
 	public void testBleep() {
+
 		Envelope e = new Envelope(ac, 0);
 		Gain g = new Gain(ac, 1, e);
 		WavePlayer wp = new WavePlayer(ac, 500, Buffer.SINE);
 		g.addInput(wp);
 		pl.addInput(g);
+
+		boolean was_muted = muteAudio(false);
+		// Then this is Muted already. Unmute and wait for power to load
+		if (was_muted){
+			e.addSegment(0, 100);
+		}
+
 		e.addSegment(0, 10);
 		e.addSegment(0.2f, 0);
 		e.addSegment(0.2f, 50);
+
 		e.addSegment(0, 10, new KillTrigger(g));
 	}
 
@@ -631,6 +679,22 @@ public class HB {
 		e.addSegment(0f, 400);
 		e.addSegment(0.4f, 0);
 		e.addSegment(0.4f, 600);
+
+		// we will start Muted
+		e.addSegment(0, 100,
+				new Bead() {
+					@Override
+					protected void messageReceived(Bead bead) {/* Write your code below this line */
+
+						/* Write your code above this line */
+						if (loadedHBClasses.size() == 0) {
+							muteAudio(true);
+						} else {
+							muteAudio(false);
+						}
+					}
+				});
+
 		e.addSegment(0, 10, new KillTrigger(g));
 	}
 
@@ -670,6 +734,7 @@ public class HB {
 		e.addSegment(0f, 400);
 		e.addSegment(0.4f, 0);
 		e.addSegment(0.4f, 600);
+
 		e.addSegment(0, 10, new KillTrigger(g));
 	}
 
@@ -781,6 +846,7 @@ public class HB {
 							HBAction action = null;
 							try {
 								action = incomingClass.newInstance();
+								muteAudio(false);
 								action.action(HB.this);
 
 								// we will add to our list here.
@@ -814,6 +880,7 @@ public class HB {
 		try {
 			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(class_name);
 			HBAction action = hbActionClass.newInstance();
+			muteAudio(false);
 			action.action(this);
 			// we will add to our list here.
 			// It is important we do this after the action in case this is the class that called reset
@@ -1016,6 +1083,7 @@ public class HB {
 	public void reset() {
 		resetLeaveSounding();
 		clearSound();
+
 		GPIO.resetGpioListeners();
 		// clear all scheduled events
 		HBScheduler.getGlobalScheduler().reset();

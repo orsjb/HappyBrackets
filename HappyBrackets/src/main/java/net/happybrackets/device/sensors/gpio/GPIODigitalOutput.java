@@ -19,6 +19,11 @@ public abstract class GPIODigitalOutput extends GPIO {
     abstract public void setState(boolean state);
 
     /**
+     * Set whether we are going to prevent this pin from de-provisioning if a reset is called
+     * @param protect set true to stop getting reset from unprovision
+     */
+    abstract public void protectUnprovision(boolean protect);
+    /**
      * Gets the last state set
      * @return the last state set
      */

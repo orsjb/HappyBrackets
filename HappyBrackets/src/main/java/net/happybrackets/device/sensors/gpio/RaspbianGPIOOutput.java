@@ -29,6 +29,11 @@ public class RaspbianGPIOOutput extends GPIODigitalOutput{
     }
 
     @Override
+    public void protectUnprovision(boolean protect) {
+        RaspbianGPIO.protectProvisionedPin(outputPin, protect);
+    }
+
+    @Override
     public boolean getState() {
         return outputPin.isHigh();
     }

@@ -19,4 +19,5 @@ DEVICE=0
 AUTOSTART=true 
 ACCESSMODE=open
 CONFIG=device-config.json
+MUTE=27
 EOL

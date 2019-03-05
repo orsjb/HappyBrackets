@@ -22,11 +22,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="send-folder.sh" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/data/send-folder.sh">
+      <file leaf-file-name="run.sh" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="455">
-              <caret line="162" column="12" selection-start-line="136" selection-start-column="8" selection-end-line="162" selection-end-column="12" />
+            <state relative-caret-position="221">
+              <caret line="30" column="7" lean-forward="true" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -82,7 +82,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControl.java" />
@@ -130,9 +129,10 @@
         <option value="$PROJECT_DIR$/data/send-startupclasses.sh" />
         <option value="$PROJECT_DIR$/data/send-audio.sh" />
         <option value="$PROJECT_DIR$/data/send-folder.sh" />
-        <option value="$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh" />
         <option value="$PROJECT_DIR$/Device/HappyBrackets/setup/setup-happybrackets-pi.sh" />
         <option value="$PROJECT_DIR$/Device/HappyBrackets/data/scripts/test-rename.sh" />
+        <option value="$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh" />
+        <option value="$PROJECT_DIR$/Device/HappyBrackets/scripts/makeconfig.sh" />
       </list>
     </option>
   </component>
@@ -142,19 +142,16 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="1844" />
-    <option name="y" value="-157" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="y" value="23" />
     <option name="width" value="1440" />
-    <option name="height" value="877" />
+    <option name="height" value="836" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -232,6 +229,8 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -365,7 +364,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1844" y="-157" width="1440" height="877" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="839" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
@@ -373,29 +372,29 @@
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.51216024" side_tool="true" visible="true" weight="0.32435897" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.51287556" side_tool="true" visible="true" weight="0.32345015" />
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.24878837" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39027777" weight="0.3561644" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.48783976" visible="true" weight="0.32435897" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39027777" weight="0.3561644" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.48712447" visible="true" weight="0.32345015" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25035766" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2539342" />
       <window_info anchor="bottom" id="Problems" order="8" />
       <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.32260373" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
       <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.48958334" weight="0.32722512" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" x="105" y="191" width="1080" height="530" id="Documentation" order="4" type="FLOATING" />
-      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="Coverage" order="5" sideWeight="0.503937" side_tool="true" weight="0.20553781" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" sideWeight="0.496063" weight="0.1648" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49353796" weight="0.32840723" />
     </layout>
@@ -437,13 +436,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="62" column="15" selection-start-line="62" selection-start-column="15" selection-end-line="62" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="167">
@@ -699,13 +691,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="97" selection-start-line="97" selection-end-line="97" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/send-scripts.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -740,8 +725,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data/send-folder.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
+        <state relative-caret-position="444">
           <caret line="162" column="12" selection-start-line="136" selection-start-column="8" selection-end-line="162" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/makeconfig.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="7" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="30" column="7" lean-forward="true" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
         </state>
       </provider>
     </entry>

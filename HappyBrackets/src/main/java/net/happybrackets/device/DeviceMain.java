@@ -20,6 +20,7 @@ package net.happybrackets.device;
 import net.happybrackets.core.Device;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.core.AudioSetup;
+import net.happybrackets.device.sensors.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,8 @@ public class DeviceMain {
 
 		String configFile = CONFIG_PATH  + DEFAULT_CONFIG_FILE;
 
+		MuteControl muteControl = null;
+
 		TextOutput.printBanner();
 		// Determine access mode.
 		HB.AccessMode mode = HB.AccessMode.OPEN;
@@ -83,11 +86,23 @@ public class DeviceMain {
 				String simulate_value = s.split("[=]")[1];
 				if(simulate_value.equalsIgnoreCase("true")){
 					HB.setEnableSimulators(true);
+					Sensor.setSimulatedOnly(true);
 				}
 			}
 			else if (s.startsWith("config=")) {
 				String config_value = s.split("[=]")[1];
 				configFile = CONFIG_PATH  + config_value;
+			}
+			else if (s.startsWith("mute=")){
+
+				try{
+					String config_value = s.split("[=]")[1];
+					int mute_gpio = Integer.parseInt(config_value);
+					System.out.println("Using GPIO " + mute_gpio + " for Mute control");
+					muteControl = new MuteControl(mute_gpio);
+
+				}
+				catch (Exception ex){}
 			}
 
 		}
@@ -99,6 +114,7 @@ public class DeviceMain {
         logger.debug("Loading config file: {}", configFile);
 		DeviceConfig config = DeviceConfig.load(configFile);
 		HB hb = new HB(AudioSetup.getAudioContext(args), mode);
+		hb.setMuteControl(muteControl);
 		HBInstance = hb;
 		//deal with autostart and parse arguments
 		boolean autostart = true;

@@ -26,6 +26,11 @@ public class GPIOOutputSimulator extends GPIODigitalOutput {
     }
 
     @Override
+    public void protectUnprovision(boolean protect) {
+        // Just ignore - not relevant to simulator
+    }
+
+    @Override
     public boolean getState() {
         return booleanControl.getValue();
     }

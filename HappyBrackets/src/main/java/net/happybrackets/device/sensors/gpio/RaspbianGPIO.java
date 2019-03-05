@@ -2,9 +2,7 @@ package net.happybrackets.device.sensors.gpio;
 
 import com.pi4j.io.gpio.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class RaspbianGPIO {
     private static GpioController gpioController = null;
@@ -21,7 +19,8 @@ public class RaspbianGPIO {
         return GPIO_NAME_PREFIX + gpio_number;
     }
 
-    static List<GpioPin> provisionedPins = Collections.synchronizedList(new ArrayList<>());
+    static Set<GpioPin> provisionedPins = new HashSet<>();
+    static Set<GpioPin> protectedPins = new HashSet<>();
     /**
      * Get the GPIO controller. If it has not been created, then instantiate it
      * @return the Pi4J GpioController
@@ -49,7 +48,9 @@ public class RaspbianGPIO {
      */
     static void removeProvisionedPin(GpioPin pin){
         synchronized (provisionedPins){
-            provisionedPins.remove(pin);
+            if (!protectedPins.contains(pin)) {
+                provisionedPins.remove(pin);
+            }
         }
     }
 
@@ -61,12 +62,28 @@ public class RaspbianGPIO {
             for (GpioPin pin :provisionedPins){
                 System.out.println("Unprovision " + pin.getName());
                 try {
-                    gpioController.unprovisionPin(pin);
+                    if (!protectedPins.contains(pin)) {
+                        gpioController.unprovisionPin(pin);
+                    }
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }
             }
             provisionedPins.clear();
+        }
+    }
+
+    /**
+     * Add or remove protection of removal of provisioned pin
+     * @param gpioPin the GPIO pin to modify its protection status
+     * @param protect true to protect or false to remove protection
+     */
+    public static void protectProvisionedPin(GpioPin gpioPin, boolean protect) {
+        if (protect){
+            protectedPins.add(gpioPin);
+        }
+        else{
+            protectedPins.remove(gpioPin);
         }
     }
 
