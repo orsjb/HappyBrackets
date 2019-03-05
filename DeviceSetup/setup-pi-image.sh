@@ -61,6 +61,10 @@ alsactl store
 update-rc.d ssh enable
 invoke-rc.d ssh start
 
+#Add text to make it easy for people to change to HifiBerry
+HIFI_TEXT=#dtoverlay=hifiberry-dac"
+echo $HIFI_TEXT >> "/boot/config.txt"
+
 #end sudo privilege here
 SUDO_EXE
 
@@ -111,6 +115,7 @@ else # this is a standard non-gui PI
 
     fi
 fi
+
 
 # Network Settings
 echo "***********************************"
