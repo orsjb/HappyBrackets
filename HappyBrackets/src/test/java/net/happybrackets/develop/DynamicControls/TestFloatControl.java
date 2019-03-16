@@ -119,7 +119,7 @@ public class TestFloatControl implements HBAction {
 
                     double current_val =  floatTextControl1.getValue();
 
-                    floatTextControl1.setValue(current_val + 1);
+                    //floatTextControl1.setValue(current_val + 1);
 
 
                     /*** Write your code to perform functions on the beat above this line ****/

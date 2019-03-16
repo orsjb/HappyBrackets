@@ -605,7 +605,9 @@ public class DynamicControlScreen {
                         t.setOnKeyTyped(new EventHandler<KeyEvent>() {
                             @Override
                             public void handle(KeyEvent event) {
-                                if (event.getCode().equals(KeyCode.ENTER)) {
+                                KeyCode keyEvent = event.getCode();
+                                String char_val = event.getCharacter();
+                                if (event.getCode().equals(KeyCode.ENTER) || char_val.equalsIgnoreCase("\r")) {
                                     String text_val = t.getText();
                                     try {
                                         float control_value = Float.valueOf(text_val);

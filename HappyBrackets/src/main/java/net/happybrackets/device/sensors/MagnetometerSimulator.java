@@ -19,6 +19,12 @@ public class MagnetometerSimulator extends Sensor implements MagnetometerSensor 
     DynamicControl control_z_text;
 
     public MagnetometerSimulator(){
+        reloadSimulation();
+        storeSensor(this);
+        setValidLoad(true);
+    }
+
+    public void reloadSimulation(){
         DynamicControl.DynamicControlListener listener = new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
@@ -36,11 +42,7 @@ public class MagnetometerSimulator extends Sensor implements MagnetometerSensor 
         control_z_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
         control_z_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
 
-        storeSensor(this);
-        setValidLoad(true);
     }
-
-
 
     @Override
     public String getSensorName() {

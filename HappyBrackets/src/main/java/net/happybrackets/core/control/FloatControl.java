@@ -1,5 +1,7 @@
 package net.happybrackets.core.control;
 
+import java.math.BigDecimal;
+
 public abstract class FloatControl extends DynamicControlParent {
 
     /**
@@ -18,7 +20,12 @@ public abstract class FloatControl extends DynamicControlParent {
 
     @Override
     void notifyListener(Object val) {
-        valueChanged((float)val);
+        Float f_val =  (float)val;
+
+        // we need to do this change becuase rounding down to a float does not give accutate value
+        double d_val =  new BigDecimal(f_val.toString()).doubleValue();
+
+        valueChanged(d_val);
     }
 
     /**

@@ -31,6 +31,11 @@ public class Magnetometer extends Sensor implements MagnetometerSensor
     }
 
 
+    public void reloadSimulation(){
+        if (defaultSensor != null){
+            defaultSensor.reloadSimulation();
+        }
+    }
     /**
      * Will detect connected Sensor and return it
      * @return

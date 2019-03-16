@@ -117,7 +117,7 @@ public abstract class Sensor {
      * returns true if the sensor was loaded correctly.
      * @return true if sensor was loaded correctly
      */
-    public boolean isValidLoadedSesnor(){
+    public boolean isValidLoadedSensor(){
         // This must be set inside subclasses
         return validLoad;
     }
@@ -237,6 +237,12 @@ public abstract class Sensor {
      * Override this function on any sensors that have resolution or the likes set
      */
     public void resetToDefault(){
+    }
+
+    /**
+     * Override this on any classes you need to do something as a simulated sensor
+     */
+    public void reloadSimulation(){
     }
 
     /**

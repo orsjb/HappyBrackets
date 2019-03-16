@@ -28,6 +28,12 @@ public class Gyroscope extends Sensor implements GyroscopeSensor{
         zRounding = -1;
     }
 
+    public void reloadSimulation(){
+        if (defaultSensor != null){
+            defaultSensor.reloadSimulation();
+        }
+    }
+
     /**
      * Will detect connected Sensor and return it
      * @return

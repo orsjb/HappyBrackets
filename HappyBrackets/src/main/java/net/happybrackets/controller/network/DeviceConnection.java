@@ -31,7 +31,7 @@ import net.happybrackets.controller.config.ControllerConfig;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 
-import net.happybrackets.core.OSCGenericReceiver;
+import net.happybrackets.core.OSCUDPReceiver;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.config.KnownDeviceID;
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ public class DeviceConnection {
 	public static final boolean verbose = false;
 
 	//private OSCServer oscServer;
-	private OSCGenericReceiver oscServer;
+	private OSCUDPReceiver oscServer;
 	private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
 	private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
 	private Map<String, KnownDeviceID> knownDevices = new Hashtable<String, KnownDeviceID>();
@@ -215,8 +215,7 @@ public class DeviceConnection {
 
 
 
-			oscServer = new OSCGenericReceiver(); //OSCServer.newUsing(OSCServer.UDP);
-			oscServer.start();
+			oscServer = new OSCUDPReceiver(true); //OSCServer.newUsing(OSCServer.UDP);
 			//replyPort = oscServer.getLocalAddress().getPort();
 
 			replyPort = oscServer.getPort();

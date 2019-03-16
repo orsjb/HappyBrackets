@@ -54,6 +54,8 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+
 /**
  * HB is the main controller class for a HappyBrackets program. It is accessed from an {@link HBAction}'s {@link HBAction#action(HB)} method, where users can play sounds, create network listeners, send network messages, and perform other actions.
  */
@@ -384,7 +386,14 @@ public class HB {
 							}
 							else
 							{
-								Application.launch(DebugApplication.class);
+								SwingUtilities.invokeLater(() -> {
+									try {
+										Application.launch(DebugApplication.class);
+									} catch (Exception ex) {
+									}
+								});
+
+
 							}
 						}catch (Exception ex)
 						{
@@ -515,6 +524,17 @@ public class HB {
 			broadcast.broadcast(string, args);
 		}
 	}
+
+    /**
+     * Creates a valid OSC message. It converts invalid types to OSC compatible
+     * EG, doubles to floats, boolean to int, long to int
+     * @param name OSC Message name
+     * @param args arguments
+     * @return OSCMessage
+     */
+	public static OSCMessage createOSCMessage(String name, Object ...args){
+        return OSCMessageBuilder.createOscMessage(name, args);
+    }
 
 	/**
 	 * Send an {@link OSCMessage} to the controller. The controller already responds to certain OSCMessages that are already generated automatically. Best not to interefere with these. This function is only really useful if you are going to modify your controller program.
@@ -923,7 +943,7 @@ public class HB {
 
 				if(result != null) {
 					// let is see if it did a valid load
-					if (result.isValidLoadedSesnor()){
+					if (result.isValidLoadedSensor()){
 						sensors.put(sensorClass, result);
 					}
 					else
@@ -937,6 +957,13 @@ public class HB {
 				logger.info("Cannot create sensor: {}", sensorClass);
 				setStatus("No sensor " + sensorClass + " available.");
 			}
+		}
+		else
+		{
+			if (Sensor.isSimulatedOnly()){
+				result.reloadSimulation();
+			}
+
 		}
 		return result;
 	}
@@ -1083,7 +1110,7 @@ public class HB {
 	public void reset() {
 		resetLeaveSounding();
 		clearSound();
-
+		OSCUDPReceiver.resetListeners();
 		GPIO.resetGpioListeners();
 		// clear all scheduled events
 		HBScheduler.getGlobalScheduler().reset();

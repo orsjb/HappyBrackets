@@ -53,6 +53,11 @@ This file wil give a short description of the examples
     EnvelopeTrigger         Plays three layers of sound, with each layer commencing after a segment completes
 
 *******************************************************************
+[osc]
+   [OSCReceiveValues]      - Displays receiving OSC on port 9000
+   [OSCSendAccelerometer]  - Display Sending Accelerometer values to Port 9000 on localhost
+   [OSCSender]             - Displays sending various OSC types
+*******************************************************************
 [midi] - Generate waveforms based on Midi note numbers
   [basic]   - very simple examples
     SimpleMidi          Converts a Midi note number to a frequency to generate playback

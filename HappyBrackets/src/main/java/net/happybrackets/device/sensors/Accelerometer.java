@@ -10,6 +10,7 @@ import net.happybrackets.device.sensors.sensor_types.AccelerometerSensor;
 public class Accelerometer extends Sensor implements AccelerometerSensor {
     private static Sensor defaultSensor = null;
 
+    private boolean using_simulator = false;
     // these are our axis
     private double x, y, z;
 
@@ -33,6 +34,12 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
      */
     @SuppressWarnings("deprecation")
     private Sensor loadSensor(){
+
+        // we are going to force a reload if we are using simulator
+        if (using_simulator)
+        {
+            defaultSensor = null;
+        }
 
         if (defaultSensor == null) {
             System.out.println("Try Load LSM95DS1");
@@ -144,6 +151,8 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
                 AccelerometerSimulator sensor = new AccelerometerSimulator();
 
                 if (sensor != null) {
+                    using_simulator = true;
+
                     sensor.addNonResettableListener(new SensorUpdateListener() {
                         @Override
                         public void sensorUpdated() {
@@ -265,6 +274,11 @@ public class Accelerometer extends Sensor implements AccelerometerSensor {
     }
 
 
+    public void reloadSimulation(){
+        if (defaultSensor != null){
+            defaultSensor.reloadSimulation();
+        }
+    }
     /**
      * Loads the default connected sensor
      */

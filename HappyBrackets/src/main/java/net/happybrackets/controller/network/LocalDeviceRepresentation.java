@@ -60,7 +60,7 @@ public class LocalDeviceRepresentation {
 
 	private InetSocketAddress socketAddress;
 
-	private final OSCGenericSender server = new OSCGenericSender();
+	private final OSCUDPSender server = new OSCUDPSender();
 
 	private OSCClient client = null;
 
@@ -956,20 +956,23 @@ public class LocalDeviceRepresentation {
 				if (this.socketAddress == null) {
 					this.socketAddress =  new InetSocketAddress(preferredAddressStrings.get(0), controllerConfig.getControlToDevicePort());
 				}
-				server.send(msg, socketAddress);
-				success = true;
-			} catch (UnresolvedAddressException | IOException e1) {
+				if (server.send(msg, socketAddress))
+				{
+					success = true;
+				}
+			} catch (UnresolvedAddressException ex) {
 				logger.error("Error sending to device {} using address {}! (Setting socketAddress back to null).",
-						deviceName, preferredAddressStrings.get(0), e1);
+						deviceName, preferredAddressStrings.get(0));
 
 				//set the socketAddress back to null as it will need to be rebuilt
 				socketAddress = null;
 				//rotate the preferredAddressStrings list to try the next one in the list
 				String failed_string = preferredAddressStrings.remove(0);
 				preferredAddressStrings.add(failed_string);
-				if(count > 4) break;
+				if (count > 4) break;
 				count++;
 			}
+
 		}
 
 	}

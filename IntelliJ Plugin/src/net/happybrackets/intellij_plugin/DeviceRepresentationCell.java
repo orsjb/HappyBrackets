@@ -287,8 +287,18 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		name.setOnContextMenuRequested(event -> {
 			ContextMenu contextMenu = new ContextMenu();
-			DeviceNameMenu menus = new DeviceNameMenu(item);
+			MenuItem show_controls_menu = new MenuItem("Show Controls");
+			show_controls_menu.setOnAction(event2 -> {
+				if (!item.showControlScreen()) {
+					DialogDisplay.displayDialog("Unable to create connection with device");
+				}
+			});
+			contextMenu.getItems().add(show_controls_menu);
+			contextMenu.getItems().add(new SeparatorMenuItem());
+
+			PingMenu menus = new PingMenu(item);
 			contextMenu.getItems().addAll(menus.getMenuItems());
+
 			contextMenu.show(main, event.getScreenX(), event.getScreenY());
 		});
 

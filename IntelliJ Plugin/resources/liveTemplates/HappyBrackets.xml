@@ -364,4 +364,12 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
+  <template name="osclistener" value="/* type osclistener to create this code */&#10;        net.happybrackets.core.OSCUDPListener $oscListener$ = new net.happybrackets.core.OSCUDPListener($PORT$) {&#10;            @java.lang.Override&#10;            public void OSCReceived(de.sciss.net.OSCMessage oscMessage, java.net.SocketAddress socketAddress, long time) {&#10;                /* type your code below this line */&#10;                $END$&#10;                /* type your code above this line */&#10;            }&#10;        };&#10;        if ($oscListener$.getPort() &lt; 0){ //port less than zero is an error&#10;            java.lang.String error_message =  $oscListener$.getLastError();&#10;            java.lang.System.out.println(&quot;Error opening port &quot; + $PORT$ + &quot; &quot; + error_message);&#10;        } /** end oscListener code */" description="Creates an OSC Listener" toReformat="true" toShortenFQNames="true">
+    <variable name="oscListener" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
+    <variable name="PORT" expression="typeOfVariable(VAR)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
 </templateSet>
