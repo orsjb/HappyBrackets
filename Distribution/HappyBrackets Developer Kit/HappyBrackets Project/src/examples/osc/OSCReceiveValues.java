@@ -38,7 +38,16 @@ public class OSCReceiveValues implements HBAction, HBReset {
             @Override
             public void OSCReceived(OSCMessage oscMessage, SocketAddress socketAddress, long l) {
                 /* type your code below this line */
+                // first display the source of message and message name
+                String display_val = socketAddress.toString() + ": " + oscMessage.getName();
 
+                for (int i = 0; i < oscMessage.getArgCount(); i++){
+                    // add each arg to display message
+                    display_val = display_val + " " + oscMessage.getArg(i);
+                }
+
+                ;
+                receivedMessageControl.setValue(display_val);
                 /* type your code above this line */
             }
         };
