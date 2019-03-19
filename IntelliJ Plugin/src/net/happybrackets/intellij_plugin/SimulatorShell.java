@@ -24,10 +24,11 @@ public class SimulatorShell {
 
     /**
      * Run the simulator from the specified project path
+     * @param sdk_path the path that the SDK is. We need this to run correct JDK
      * @param project_path the path to load from
      * @return true on success
      */
-    public static boolean runSimulator(String project_path){
+    public static boolean runSimulator(String sdk_path, String project_path){
         boolean ret = false;
 
         String script_path = project_path + DEVICE_SCRIPT_PATH;
@@ -53,14 +54,14 @@ public class SimulatorShell {
         });
 
         try {
-            execute.executeCommand(script_path + MAC_SIMULATOR);
+            execute.executeCommand(script_path + MAC_SIMULATOR  + " " + sdk_path);
             NotificationMessage.displayNotification("Starting simulator", NotificationType.INFORMATION);
             ret = true;
         } catch (IOException e) {
 
             // Ok - let us try to run windows version instead
             try {
-                ProcessBuilder pb = new ProcessBuilder("cmd", "/c", WIN_SIMULATOR);
+                ProcessBuilder pb = new ProcessBuilder("cmd", "/c", WIN_SIMULATOR, sdk_path);
                 File dir = new File(script_path);
                 pb.directory(dir);
                 simulatorProcess = pb.start();

@@ -9,6 +9,15 @@
 #define the file that has custom settings
 DIR=`dirname $0`
 
+JAVA_EXE="java"
+
+#see if we have added  SDK path in there
+if [ $# -gt 0 ]; then
+    JAVA_EXE=$1$JAVA_EXE
+    echo "Use "$JAVA_EXE
+fi
+
+
 CONFIG_FILE=${DIR}/simulator.config
 
 BUF=1024
@@ -21,6 +30,7 @@ ACCESSMODE=open
 ACTION=
 SIMULATE=true
 CONFIG=device-config.json
+
 
 #let us see if we have any specific values we want to use
 while IFS="=" read line val
@@ -85,6 +95,6 @@ done <$CONFIG_FILE
 ### move to the correct dir for running this script (one level above where this script is)
 cd ${DIR}/..
 
-(java -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG  > ramfs/stdout 2>&1) &
+($JAVA_EXE -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG  > ramfs/stdout 2>&1) &
 
 echo $!

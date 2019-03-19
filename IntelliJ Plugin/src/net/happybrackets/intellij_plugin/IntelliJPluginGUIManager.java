@@ -829,7 +829,7 @@ public class IntelliJPluginGUIManager {
 					});
 				}
 				// run simulator
-				else if (SimulatorShell.runSimulator("")) // we will put in a path later
+				else if (SimulatorShell.runSimulator("", "")) // we will put in a path later
 				{
 					NotificationMessage.displayNotification("Started simulator", NotificationType.INFORMATION);
 					Platform.runLater(new Runnable() {
@@ -845,7 +845,7 @@ public class IntelliJPluginGUIManager {
 			}
 		});
 
-		//messagepaths.getChildren().add(runSimulatorButton);
+		//messagepaths.getChildren().add(runSimulatorButton); Make sure you actually make it work first
 		VBox custom_command_pane = new VBox(defaultElementSpacing);
 		custom_command_pane.getChildren().addAll(code_field, messagepaths);
 		return custom_command_pane;

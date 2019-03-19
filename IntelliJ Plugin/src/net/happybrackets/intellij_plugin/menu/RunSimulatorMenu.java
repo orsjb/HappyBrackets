@@ -3,6 +3,7 @@ package net.happybrackets.intellij_plugin.menu;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.controller.ControllerEngine;
@@ -21,6 +22,10 @@ public class RunSimulatorMenu extends AnAction {
         try {
 
             Project current_project = e.getProject();
+            ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
+            Sdk sdk = rootManager.getProjectSdk();
+
+            String sdk_path =  sdk.getHomePath() + "/bin/";
 
             DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
             ControllerEngine.getInstance().startDeviceCommunication();
@@ -38,7 +43,7 @@ public class RunSimulatorMenu extends AnAction {
                 advertiser.setSendLocalHost(false);
             }
             else {
-                if (SimulatorShell.runSimulator(project_path)){
+                if (SimulatorShell.runSimulator(sdk_path, project_path)){
                     // we need to advertise on localhost
                     advertiser.setSendLocalHost(true);
                 }
