@@ -592,7 +592,7 @@ public class DynamicControlScreen {
 
                 case FLOAT:
                     float f_control_value = (float) control.getValue();
-                    // If we have no difference between Maximum and Minimum, we will make a textboox
+                    // If we have no difference between Maximum and Minimum, we will make a textbox
                     if (control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
                         TextField t = new TextField();
                         control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");

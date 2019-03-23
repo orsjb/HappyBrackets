@@ -497,7 +497,7 @@ public class DynamicControl implements ScheduledEventListener {
                 // Now we need to check whether the scope matches us
                 if (getControlScope() == ControlScope.SKETCH)
                 {
-                    scope_matches = this.parentSketch == mirror_control.parentSketch;
+                    scope_matches = this.parentSketch == mirror_control.parentSketch && this.parentSketch != null;
                 }
                 // Now we need to check whether the scope matches us
                 else if (getControlScope() == ControlScope.CLASS)

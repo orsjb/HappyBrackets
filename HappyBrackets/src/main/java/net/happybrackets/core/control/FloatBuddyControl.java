@@ -20,12 +20,18 @@ public abstract class FloatBuddyControl extends FloatControl {
 
         // Now connect a slider to the text control
         DynamicControl text_control = this.getDynamicControl().setControlScope(ControlScope.SKETCH);
-        DynamicControl slider_control = new DynamicControl(parent_sketch, ControlType.FLOAT, name, initial_value, min_val, max_val);
-        slider_control.setControlScope(ControlScope.SKETCH);
+        DynamicControl slider_control = new DynamicControl(new Object(), ControlType.FLOAT, name, initial_value, min_val, max_val);
+        slider_control.setControlScope(ControlScope.UNIQUE);
 
-        text_control.addControlScopeListener(new_scope -> {
-            slider_control.setControlScope(new_scope);
+        // we need to watch that we don't get a loop
+        slider_control.addControlListener(control -> {
+            text_control.setValue(control.getValue());
         });
+
+        text_control.addControlListener(control -> {
+            slider_control.setValue(control.getValue());
+        });
+
 
     }
 
