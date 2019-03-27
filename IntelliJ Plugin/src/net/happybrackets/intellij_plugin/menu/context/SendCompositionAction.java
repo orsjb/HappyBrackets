@@ -21,13 +21,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Class used for sending classes, files and folders to device from controller
+ * We need to detrermine whether we are sending pre-compiled classes, files or folders
+ * and decide where we need to actually send them
+ */
 public abstract class SendCompositionAction extends AnAction {
 
     final static Logger logger = LoggerFactory.getLogger(SendCompositionAction.class);
 
+    /**
+     * Define what type of send action we are required to do based on context
+     */
+    enum SendDataType{
+        SEND_DISABLE,
+        SEND_CLASS,
+        SEND_FILE,
+        SEND_FOLDER
+    };
 
     static public final String JAVA_EXTENSION = "java";
     static public final String CLASS_EXTENSION = "class";
@@ -42,6 +57,35 @@ public abstract class SendCompositionAction extends AnAction {
         }
     }
 
+
+    /**
+     * Determine the type of send action we need to do based on the selected file
+     * @param selected_file the selected file or folder
+     * @return the send type we are required to do
+     */
+    SendDataType getSendDataType(VirtualFile selected_file, AnActionEvent e){
+
+        SendDataType ret = SendDataType.SEND_DISABLE;
+        if (selected_file.isDirectory()){
+            // we will determine whether directory is in our device tree
+
+            ret = SendDataType.SEND_FOLDER;
+        }
+        else if (selected_file.getExtension().equalsIgnoreCase(JAVA_EXTENSION)) {
+            String fileName = selected_file.getNameWithoutExtension();
+            if (getClassFile(e) != null)
+            {
+                ret = SendDataType.SEND_CLASS;
+            }
+        }
+
+        else
+        {
+            // Need to determine whether under device tree
+            ret = SendDataType.SEND_FILE;
+        }
+        return ret;
+    }
     /**
      * Get the devices in our list
      * @return the devices in our list
@@ -77,6 +121,29 @@ public abstract class SendCompositionAction extends AnAction {
      */
     public static String getFullClassName(@NotNull String full_class_path){
         return full_class_path.substring(0, full_class_path.length() - (CLASS_EXTENSION.length() + 1));
+    }
+
+    /**
+     * Test if the selected file is under the Device/ HappyBrackets folder
+     * @param current_project the current project
+     * @param virtualFile the file or folder we are testing
+     * @return
+     */
+    public static boolean fileInDeviceFolder(Project current_project, VirtualFile virtualFile){
+        boolean ret = false;
+        String project_name = current_project.getName();
+
+        ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
+        String filename = virtualFile.getCanonicalPath();
+        String project_path =  current_project.getBasePath();
+        String device_path =  project_path + File.separatorChar + "Device" + File.separatorChar + "HappyBrackets";
+
+
+        if (filename.startsWith(device_path)){
+            ret = true;
+        }
+        return ret;
+
     }
 
     /**

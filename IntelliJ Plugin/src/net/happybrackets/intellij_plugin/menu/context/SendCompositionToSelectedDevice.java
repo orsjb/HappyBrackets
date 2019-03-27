@@ -2,6 +2,7 @@ package net.happybrackets.intellij_plugin.menu.context;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
@@ -18,26 +19,46 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
         try {
             if (e != null) {
                 VirtualFile vfile = selectedFile(e);
+                Project current_project = e.getProject();
                 LocalDeviceRepresentation selected_device = getSelectedDevice(e.getProject());
+
+                String device_name = "selected device";
+
+                if (selected_device != null) {
+                    device_name = selected_device.getFriendlyName();
+
+                }
 
                 boolean enable = false;
 
                 if (vfile != null) {
 
-                    if (vfile.getExtension().equalsIgnoreCase(JAVA_EXTENSION)) {
+                    SendDataType sendDataType = getSendDataType(vfile, e);
+                    String fileName;
 
-                        String fileName = vfile.getNameWithoutExtension();
-                        String text = "Send " + fileName + " to ";
+                    switch (sendDataType){
+                        case SEND_CLASS:
+                            fileName = vfile.getNameWithoutExtension();
+                            e.getPresentation().setText("Send " + fileName + "to " + device_name);
+                            enable = getClassFile(e) != null && selected_device != null;
+                            break;
 
-                        if (selected_device != null) {
-                            String device_name = selected_device.getFriendlyName();
-                            enable = getClassFile(e) != null;
-                            text += device_name;
-                        } else {
-                            text += "selected device";
-                        }
-                        e.getPresentation().setText(text);
+                        case SEND_FOLDER:
+                            fileName = vfile.getName();
+                            e.getPresentation().setText("Send folder " + fileName + "to " + device_name);
 
+                            enable = fileInDeviceFolder(current_project, vfile) && selected_device != null;
+                            break;
+
+                        case SEND_FILE:
+                            fileName = vfile.getName();
+                            e.getPresentation().setText("Send file " + fileName + "to " + device_name);
+                            enable = fileInDeviceFolder(current_project, vfile) && selected_device != null;
+                            break;
+
+                        default:
+                            e.getPresentation().setText("Send file to " + device_name);
+                            enable = false;
                     }
 
                 }
@@ -45,29 +66,62 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
                 e.getPresentation().setEnabled(enable);
             }
         }
-        catch (Exception ex){}
+        catch (Exception ex){
+            if (e != null){
+                try {
+                    e.getPresentation().setEnabled(false);
+                }
+                catch (Exception ex2){}
+            }
+        }
 
     }
 
     @Override
         public void actionPerformed(AnActionEvent e) {
 
-        VirtualFile vfile = getClassFile(e);
+        VirtualFile vfile = selectedFile(e);
+
         LocalDeviceRepresentation selected_device = getSelectedDevice(e.getProject());
 
-
-
         if (vfile != null) {
-            String full_class_name = getFullClassName(vfile.getCanonicalPath());
-            List<LocalDeviceRepresentation> selected = new ArrayList<>();
-            selected.add(selected_device);
-            try {
-                SendToDevice.send(full_class_name, selected);
-            } catch (Exception e1) {
-                displayNotification(e1.getMessage(), NotificationType.ERROR);
+
+            SendDataType sendDataType = getSendDataType(vfile, e);
+
+
+            switch (sendDataType){
+                case SEND_CLASS:
+                    VirtualFile classFile = getClassFile(e);
+                    String full_class_name = getFullClassName(classFile.getCanonicalPath());
+                    List<LocalDeviceRepresentation> selected = new ArrayList<>();
+                    selected.add(selected_device);
+                    try {
+                        SendToDevice.send(full_class_name, selected);
+                    } catch (Exception e1) {
+                        displayNotification(e1.getMessage(), NotificationType.ERROR);
+                    }
+                    break;
+
+                case SEND_FOLDER:
+                    if (!selected_device.sendFolderToDevice(vfile)) {
+                        displayNotification("Unable to send folder", NotificationType.ERROR);
+                    }
+                    break;
+
+                case SEND_FILE:
+                    if (!selected_device.sendFileToDevice(vfile)) {
+                        displayNotification("Unable to send file", NotificationType.ERROR);
+                    }
+                    break;
+
+                default:
+                    displayNotification("Unable to send", NotificationType.WARNING);
+
             }
+
+
         } else{
-            displayNotification("Unable to find class", NotificationType.ERROR);
+            displayNotification("Unable to find file", NotificationType.ERROR);
         }
     }
 

@@ -40,7 +40,14 @@ public class CopyCompositionToStartupAction extends SendCompositionAction {
                 e.getPresentation().setEnabled(enable);
             }
         }
-        catch (Exception ex){}
+        catch (Exception ex){
+            if (e != null){
+                try {
+                    e.getPresentation().setEnabled(false);
+                }
+                catch (Exception ex2){}
+            }
+        }
 
     }
 

@@ -21,6 +21,7 @@ import java.net.*;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.*;
 
+import com.intellij.openapi.vfs.VirtualFile;
 import de.sciss.net.*;
 import net.happybrackets.controller.config.ControllerConfig;
 
@@ -33,7 +34,8 @@ import org.slf4j.LoggerFactory;
 
 public class LocalDeviceRepresentation {
 
-	final Object clientLock = new Object(); // define a lock for tcpClient
+	private final Object clientLock = new Object(); // define a lock for tcpClient
+	private final Object filePortLock = new Object();
 
 
 	public static final int MAX_LOG_DISPLAY_CHARS = 5000;
@@ -51,7 +53,8 @@ public class LocalDeviceRepresentation {
 	public List<String> preferredAddressStrings;    //This list contains, in order of preference: address, hostName, deviceName, hostname.local or deviceName.local.
 	private int deviceId; //
 
-	int serverPort =  0; // This is TCP Server Port. We need to create a client to conec to this
+	int serverPort =  0; // This is TCP Server Port for standard control comms. We need to create a controlCommsClient to connect to this
+	int fileSendPort =  0; // This is TCP port for sending files to device
 	private String status = "Status unknown"; // This is the displayed ID
 
 	private DynamicControlScreen dynamicControlScreen = null;
@@ -62,7 +65,9 @@ public class LocalDeviceRepresentation {
 
 	private final OSCUDPSender server = new OSCUDPSender();
 
-	private OSCClient client = null;
+	private OSCClient controlCommsClient = null;
+	private OSCClient fileSendClient = null;
+
 
 	public final boolean[] groups;
 	private ControllerConfig controllerConfig;
@@ -103,6 +108,30 @@ public class LocalDeviceRepresentation {
 
 
 	/**
+	 * Send the selected file to the the device
+	 * @param virtualFile
+	 * @return true if able to send
+	 */
+	public boolean sendFileToDevice(VirtualFile virtualFile){
+		boolean ret = false;
+		System.out.println("Send File " + virtualFile.getCanonicalPath());
+
+		return ret;
+	}
+
+	/**
+	 * Send the selected folder to the the device
+	 * @param virtualFile
+	 * @return true if able to send
+	 */
+	public boolean sendFolderToDevice(VirtualFile virtualFile){
+		boolean ret = false;
+
+		System.out.println("Send Folder " + virtualFile.getCanonicalPath());
+
+		return ret;
+	}
+	/**
 	 * Get the Address we use to access this device over the network
 	 * @return the network Address
 	 */
@@ -116,17 +145,17 @@ public class LocalDeviceRepresentation {
 	 */
 	void closeClientPort() {
 		synchronized (clientLock) {
-			if (client != null) {
+			if (controlCommsClient != null) {
 				try {
-					if(client.isConnected()) {
-						client.stop();
-						client.dispose();
+					if(controlCommsClient.isConnected()) {
+						controlCommsClient.stop();
+						controlCommsClient.dispose();
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
-				client = null;
+				controlCommsClient = null;
 			}
 		}
 	}
@@ -139,24 +168,24 @@ public class LocalDeviceRepresentation {
 	boolean openClientPort(int port){
 		boolean ret = false;
 		synchronized (clientLock) {
-			if (client == null) {
+			if (controlCommsClient == null) {
 
 				try {
-					client = OSCClient.newUsing(OSCChannel.TCP);
-					client.setTarget(new InetSocketAddress(getAddress(), port));
-					client.start();
+					controlCommsClient = OSCClient.newUsing(OSCChannel.TCP);
+					controlCommsClient.setTarget(new InetSocketAddress(getAddress(), port));
+					controlCommsClient.start();
 
 					ret = true;
 
-					client.addOSCListener(new OSCListener() {
+					controlCommsClient.addOSCListener(new OSCListener() {
 						public void messageReceived(OSCMessage m, SocketAddress addr, long time) {
 							incomingMessage(m, addr);
 						}
 					});
 				} catch (IOException e) {
 					e.printStackTrace();
-					client.dispose();
-					client = null;
+					controlCommsClient.dispose();
+					controlCommsClient = null;
 				}
 
 			}
@@ -165,16 +194,17 @@ public class LocalDeviceRepresentation {
 		return ret;
 	}
 
+
 	/**
-	 * Check if our TCP client is assigned and connected
+	 * Check if our TCP controlCommsClient is assigned and connected
 	 * @return true if connected
 	 */
 	boolean testClientOpen() {
 		boolean ret = false;
 		synchronized (clientLock) {
-			if (client != null)
+			if (controlCommsClient != null)
 			{
-				ret = client.isConnected();
+				ret = controlCommsClient.isConnected();
 			}
 
 		}
@@ -183,7 +213,7 @@ public class LocalDeviceRepresentation {
 	}
 
 	/**
-	 * Set the port we need to connect our client to to communicate via TCP
+	 * Set the port we need to connect our controlCommsClient to to communicate via TCP
 	 * @param port remote port number
 	 */
 	public synchronized void setServerPort(int port){
@@ -193,6 +223,84 @@ public class LocalDeviceRepresentation {
 			serverPort = port;
 
 		}
+
+	}
+
+	/**
+	 * Close the TCP port for sending File data to client
+	 */
+	void closeFileSendClientPort() {
+		synchronized (filePortLock) {
+			if (fileSendClient != null) {
+				try {
+					if(fileSendClient.isConnected()) {
+						fileSendClient.stop();
+						fileSendClient.dispose();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				fileSendClient = null;
+			}
+		}
+	}
+
+	/**
+	 * Open TCP Client and assign listeners
+	 * @param port  Port to connect to
+	 * @return  true on success
+	 */
+	boolean openFileSendClientPort(int port){
+		boolean ret = false;
+		synchronized (filePortLock) {
+			if (fileSendClient == null) {
+
+				try {
+					fileSendClient = OSCClient.newUsing(OSCChannel.TCP);
+					fileSendClient.setTarget(new InetSocketAddress(getAddress(), port));
+					fileSendClient.start();
+
+					ret = true;
+
+					fileSendClient.addOSCListener(new OSCListener() {
+						public void messageReceived(OSCMessage m, SocketAddress addr, long time) {
+							incomingFileMessage(m, addr);
+						}
+					});
+				} catch (IOException e) {
+					e.printStackTrace();
+					fileSendClient.dispose();
+					fileSendClient = null;
+				}
+
+			}
+		}
+
+		return ret;
+	}
+
+
+
+	/**
+	 * Set the port we need to connect our File sender to to communicate via TCP
+	 * @param port remote port number
+	 */
+	public synchronized void setFileSendServerPort(int port){
+
+		if (fileSendPort != port){
+			closeFileSendClientPort();
+			fileSendPort = port;
+
+		}
+
+	}
+	/**
+	 * Perform actions on File Messages
+	 * @param m The OSC message containing message
+	 * @param addr address of sender
+	 */
+	void incomingFileMessage(OSCMessage m, SocketAddress addr){
 
 	}
 
@@ -678,7 +786,25 @@ public class LocalDeviceRepresentation {
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.LOG)) {
 			processLogMessage(msg, sender);
 		}
+		else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FILE_PORT)){
+			processFilePortMessage(msg, sender);
+		}
 
+	}
+
+	/**
+	 * Process our File port
+	 * @param msg
+	 * @param sender
+	 */
+	private void processFilePortMessage(OSCMessage msg, SocketAddress sender) {
+		try{
+			int file_port = (int)msg.getArg(0);
+			setFileSendServerPort(file_port);
+		}
+		catch (Exception ex){
+
+		}
 	}
 
 
@@ -906,6 +1032,7 @@ public class LocalDeviceRepresentation {
 	public void sendVersionRequest(){
 		send(OSCVocabulary.Device.VERSION, replyPortObject);
 		send(OSCVocabulary.Device.FRIENDLY_NAME, replyPortObject);
+		send(OSCVocabulary.Device.FILE_PORT, replyPortObject);
 	}
 
 	/**
@@ -942,7 +1069,7 @@ public class LocalDeviceRepresentation {
 		if (testClientOpen()) { // if we can send TCP = then lets do it that way
 			synchronized (clientLock){
 				try {
-					client.send(msg);
+					controlCommsClient.send(msg);
 					success = true;
 				} catch (IOException e) {
 					e.printStackTrace();

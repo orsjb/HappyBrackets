@@ -43,6 +43,7 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
+import net.happybrackets.device.network.FileReceiver;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.config.DeviceConfig;
@@ -108,6 +109,19 @@ public class HB {
 		myDeviceId.setConnectToServerPort(tcpServerPort);
     }
 
+	/**
+	 * Class for receiving non java files from network
+	 */
+	public FileReceiver fileReceiver = null;
+
+	public int getFileReceiverPort(){
+		int ret = 0;
+
+		if (fileReceiver != null){
+			ret = fileReceiver.getReceiverPort();
+		}
+		return ret;
+	}
     public interface StatusChangedListener{
 		void statusChanged(String new_status);
 	}
@@ -476,6 +490,8 @@ public class HB {
 			System.out.print(".");
 
 			DeviceConfig config = DeviceConfig.getInstance();
+
+			fileReceiver = new FileReceiver();
 
 			if (config != null) {
 				DeviceConfig.getInstance().listenForController(broadcast);
