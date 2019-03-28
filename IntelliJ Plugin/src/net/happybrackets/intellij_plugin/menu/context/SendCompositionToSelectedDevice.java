@@ -103,13 +103,13 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
                     break;
 
                 case SEND_FOLDER:
-                    if (!selected_device.sendFolderToDevice(vfile)) {
+                    if (!selected_device.sendFolderToDevice(vfile, getTargetFolder(e.getProject(), vfile))) {
                         displayNotification("Unable to send folder", NotificationType.ERROR);
                     }
                     break;
 
                 case SEND_FILE:
-                    if (!selected_device.sendFileToDevice(vfile)) {
+                    if (!selected_device.sendFileToDevice(vfile, getTargetFolder(e.getProject(), vfile))) {
                         displayNotification("Unable to send file", NotificationType.ERROR);
                     }
                     break;

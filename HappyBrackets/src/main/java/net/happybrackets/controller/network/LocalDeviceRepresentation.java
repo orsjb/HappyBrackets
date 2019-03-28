@@ -109,25 +109,27 @@ public class LocalDeviceRepresentation {
 
 	/**
 	 * Send the selected file to the the device
-	 * @param virtualFile
+	 * @param virtualFile the file we are sending
+	 * @param target_folder the target folder on device
 	 * @return true if able to send
 	 */
-	public boolean sendFileToDevice(VirtualFile virtualFile){
+	public boolean sendFileToDevice(VirtualFile virtualFile, String target_folder){
 		boolean ret = false;
-		System.out.println("Send File " + virtualFile.getCanonicalPath());
+		System.out.println("Send File " + virtualFile.getCanonicalPath() + " to " + target_folder);
 
 		return ret;
 	}
 
 	/**
 	 * Send the selected folder to the the device
-	 * @param virtualFile
+	 * @param virtualFile the file we are sending
+	 * @param target_folder the target folder on device
 	 * @return true if able to send
 	 */
-	public boolean sendFolderToDevice(VirtualFile virtualFile){
+	public boolean sendFolderToDevice(VirtualFile virtualFile, String target_folder){
 		boolean ret = false;
 
-		System.out.println("Send Folder " + virtualFile.getCanonicalPath());
+		System.out.println("Send Folder " + virtualFile.getCanonicalPath()  + " to " + target_folder);
 
 		return ret;
 	}

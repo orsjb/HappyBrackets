@@ -80,7 +80,6 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
 
             SendDataType sendDataType = getSendDataType(vfile, e);
 
-
             switch (sendDataType){
                 case SEND_CLASS:
                     VirtualFile classFile = getClassFile(e);
@@ -96,7 +95,7 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
                 case SEND_FOLDER:
                     for (LocalDeviceRepresentation device:
                             getDevices()) {
-                        if (!device.sendFolderToDevice(vfile)) {
+                        if (!device.sendFolderToDevice(vfile, getTargetFolder(e.getProject(), vfile))) {
                             displayNotification("Unable to send folder", NotificationType.ERROR);
                         }
                     }
@@ -106,7 +105,7 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
                 case SEND_FILE:
                     for (LocalDeviceRepresentation device:
                             getDevices()) {
-                        if (!device.sendFileToDevice(vfile)) {
+                        if (!device.sendFileToDevice(vfile, getTargetFolder(e.getProject(), vfile))) {
                             displayNotification("Unable to send file", NotificationType.ERROR);
                         }
                     }

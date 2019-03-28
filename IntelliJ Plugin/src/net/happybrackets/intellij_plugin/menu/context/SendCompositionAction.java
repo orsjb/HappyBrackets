@@ -48,6 +48,8 @@ public abstract class SendCompositionAction extends AnAction {
     static public final String CLASS_EXTENSION = "class";
 
     static final String OUTPUT_PATH = "/build/production/";
+    static final String PROJECT_DEVICE_PATH = File.separatorChar + "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar;
+
     private DeviceConnection deviceConnection = null;
 
     private void initConnection(){
@@ -66,10 +68,15 @@ public abstract class SendCompositionAction extends AnAction {
     SendDataType getSendDataType(VirtualFile selected_file, AnActionEvent e){
 
         SendDataType ret = SendDataType.SEND_DISABLE;
+        String file_ext = selected_file.getExtension();
+
         if (selected_file.isDirectory()){
             // we will determine whether directory is in our device tree
 
             ret = SendDataType.SEND_FOLDER;
+        }
+        else if (file_ext == null){
+            ret = SendDataType.SEND_FILE;
         }
         else if (selected_file.getExtension().equalsIgnoreCase(JAVA_EXTENSION)) {
             String fileName = selected_file.getNameWithoutExtension();
@@ -124,19 +131,17 @@ public abstract class SendCompositionAction extends AnAction {
     }
 
     /**
-     * Test if the selected file is under the Device/ HappyBrackets folder
+     * Test if the selected file is under the Device/HappyBrackets folder
      * @param current_project the current project
      * @param virtualFile the file or folder we are testing
      * @return
      */
     public static boolean fileInDeviceFolder(Project current_project, VirtualFile virtualFile){
         boolean ret = false;
-        String project_name = current_project.getName();
 
-        ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
         String filename = virtualFile.getCanonicalPath();
         String project_path =  current_project.getBasePath();
-        String device_path =  project_path + File.separatorChar + "Device" + File.separatorChar + "HappyBrackets";
+        String device_path =  project_path + PROJECT_DEVICE_PATH;
 
 
         if (filename.startsWith(device_path)){
@@ -146,6 +151,18 @@ public abstract class SendCompositionAction extends AnAction {
 
     }
 
+    /**
+     * Get the target folder in device
+     * @param current_project the project
+     * @param virtualFile the file or folder we want to send
+     * @return the name of the target file or folder
+     */
+    public static String getTargetFolder(Project current_project, VirtualFile virtualFile){
+        String filename = virtualFile.getCanonicalPath();
+        String project_path =  current_project.getBasePath();
+        String device_path =  project_path + PROJECT_DEVICE_PATH;
+        return filename.replace(device_path, "");
+    }
     /**
      * Get the class File for the defined Java Virtual file
      * @param current_project the project we are in
