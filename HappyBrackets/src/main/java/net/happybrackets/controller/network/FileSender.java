@@ -4,6 +4,8 @@ import de.sciss.net.OSCChannel;
 import de.sciss.net.OSCClient;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
+import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.device.HB;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -19,6 +21,7 @@ import java.util.Set;
 public class FileSender {
 
     Set<FileSendStreamer> fileSendStreamerList = new HashSet<>();
+    private final Object fileStreamerLock = new Object();
     FileSendStreamer currentFile = null;
 
     // we will synchronise this object
@@ -26,8 +29,91 @@ public class FileSender {
 
     private final Object filePortLock = new Object();
     int fileSendPort =  0; // This is TCP port for sending files to device
+    String fileSendAddress = "";
+
     private OSCClient fileSendClient = null;
 
+    boolean exitThread = false;
+
+    final int MAX_FILE_DATA = 1024 * 7;
+
+    FileSender(){
+
+        Thread thread = new Thread(() -> {
+
+            while (!exitThread) {/* write your code below this line */
+                synchronized (fileSendEvent){
+                    try {
+                        fileSendEvent.wait();
+                        while (sendNextFileData())
+                        {
+                            fileSendEvent.notify();
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
+
+        thread.start();/* End threadFunction */
+    }
+
+    /**
+     * Send File Data to the device
+     * @return true if we still have more data to send
+     */
+    private boolean sendNextFileData(){
+        System.out.println("Read Next File");
+        if (currentFile == null){
+            synchronized (fileStreamerLock) {
+                if (fileSendStreamerList.size() > 0) {
+                    currentFile = fileSendStreamerList.iterator().next();
+                }
+            }
+        }
+        if (currentFile != null){
+            try {
+                // Open the OSC Port and send data
+
+                if (!testClientOpen()){
+                    openFileSendClientPort(fileSendAddress, fileSendPort);
+                }
+                if (testClientOpen()) {
+                    byte[] file_data = currentFile.readData(MAX_FILE_DATA);
+                    OSCMessage message = HB.createOSCMessage(OSCVocabulary.FileSendMessage.WRITE, currentFile.targetFilename, file_data);
+                    System.out.println("Sent " + file_data.length + " bytes");
+
+                    fileSendClient.send(message);
+                    if (currentFile.complete) {
+                        message = HB.createOSCMessage(OSCVocabulary.FileSendMessage.COMPLETE, currentFile.targetFilename);
+                        fileSendClient.send(message);
+                        synchronized (fileStreamerLock) {
+                            fileSendStreamerList.remove(currentFile);
+                            currentFile = null;
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                synchronized (fileStreamerLock) {
+                    fileSendStreamerList.remove(currentFile);
+                    currentFile = null;
+                }
+            }
+
+        }
+
+        if (currentFile == null) {
+            if (fileSendStreamerList.size() > 0) {
+                currentFile = fileSendStreamerList.iterator().next();
+            }
+        }
+        return currentFile != null;
+    }
     /**
      * Add a file to be sent to device
      * After adding, will automatically start to send to device
@@ -38,7 +124,7 @@ public class FileSender {
     boolean addFile (String source_file, String target_file){
        boolean ret = false;
 
-        System.out.println("Send " + source_file + " to " + target_file);
+       System.out.println("Send " + source_file + " to " + target_file);
        FileSendStreamer fileSendStreamer = new FileSendStreamer(source_file, target_file);
        if (!fileSendStreamerList.contains(fileSendStreamer)){
            fileSendStreamerList.add(fileSendStreamer);
@@ -70,6 +156,23 @@ public class FileSender {
                 fileSendClient = null;
             }
         }
+    }
+
+    /**
+     * Check if our TCP port is assigned and connected
+     * @return true if connected
+     */
+    boolean testClientOpen() {
+        boolean ret = false;
+        synchronized (filePortLock) {
+            if (fileSendClient != null)
+            {
+                ret = fileSendClient.isConnected();
+            }
+
+        }
+        return ret;
+
     }
 
     /**
@@ -113,18 +216,22 @@ public class FileSender {
      * @param addr address of sender
      */
     void incomingFileMessage(OSCMessage m, SocketAddress addr){
-
+        synchronized (fileSendEvent){
+            fileSendEvent.notify();
+        }
     }
 
     /**
      * Set the port we need to connect our File sender to to communicate via TCP
+     * @param address the address we need to send messages to
      * @param port remote port number
      */
-    public synchronized void setFileSendServerPort(int port){
+    public synchronized void setFileSendServerPort(String address, int port){
 
-        if (fileSendPort != port){
+        if (fileSendPort != port || fileSendAddress.equalsIgnoreCase(address)){
             closeFileSendClientPort();
             fileSendPort = port;
+            fileSendAddress = address;
         }
 
     }

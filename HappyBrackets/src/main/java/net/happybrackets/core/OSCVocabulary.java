@@ -46,6 +46,14 @@ public final class OSCVocabulary {
         public static final String DESTROY = CONTROL + "/destroy";
     }
 
+    public final class FileSendMessage
+    {
+        public static final String CONTROL = "/file";
+        public static final String WRITE = CONTROL + "/write";
+        public static final String COMPLETE = CONTROL + "/complete";
+        public static final String CANCEL = CONTROL + "/cancel";
+    }
+
     public final class CONTROLLER
     {
         public static final String CONTROLLER = "/hb/controller";

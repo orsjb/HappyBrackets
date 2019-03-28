@@ -113,10 +113,8 @@ public class LocalDeviceRepresentation {
 	 * @return true if able to send
 	 */
 	public boolean sendFileToDevice(String source_file, String target_path){
-		boolean ret = false;
-		fileSender.addFile(source_file, target_path);
 
-		return ret;
+		return fileSender.addFile(source_file, target_path);
 	}
 
 	/**
@@ -222,7 +220,7 @@ public class LocalDeviceRepresentation {
 	 */
 	public synchronized void setFileSendServerPort(int port){
 
-		fileSender.setFileSendServerPort(port);
+		fileSender.setFileSendServerPort(getAddress(), port);
 	}
 
 

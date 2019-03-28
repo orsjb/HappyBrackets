@@ -42,9 +42,14 @@ public class FileSendStreamer implements Comparable{
             if (fileInputStream != null) {
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 int data = fileInputStream.read();
-                while (buffer.size() < max_bytes && data != -1) {
+                while (data != -1) {
                     buffer.write(data);
-                    data = fileInputStream.read();
+                    if (buffer.size() < max_bytes) {
+                        data = fileInputStream.read();
+                    }
+                    else {
+                        break;
+                    }
                 }
                 if (data == -1){
                     fileInputStream.close();
