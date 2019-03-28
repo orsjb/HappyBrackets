@@ -21,7 +21,6 @@ import java.net.*;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.*;
 
-import com.intellij.openapi.vfs.VirtualFile;
 import de.sciss.net.*;
 import net.happybrackets.controller.config.ControllerConfig;
 
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
 public class LocalDeviceRepresentation {
 
 	private final Object clientLock = new Object(); // define a lock for tcpClient
-	private final Object filePortLock = new Object();
+
 
 
 	public static final int MAX_LOG_DISPLAY_CHARS = 5000;
@@ -54,7 +53,7 @@ public class LocalDeviceRepresentation {
 	private int deviceId; //
 
 	int serverPort =  0; // This is TCP Server Port for standard control comms. We need to create a controlCommsClient to connect to this
-	int fileSendPort =  0; // This is TCP port for sending files to device
+
 	private String status = "Status unknown"; // This is the displayed ID
 
 	private DynamicControlScreen dynamicControlScreen = null;
@@ -66,7 +65,6 @@ public class LocalDeviceRepresentation {
 	private final OSCUDPSender server = new OSCUDPSender();
 
 	private OSCClient controlCommsClient = null;
-	private OSCClient fileSendClient = null;
 
 
 	public final boolean[] groups;
@@ -84,6 +82,7 @@ public class LocalDeviceRepresentation {
 	private boolean isFavouriteDevice = false;
 	private boolean encryptionEnabled = false;
 
+	private FileSender fileSender = new FileSender();
 
 	// create a set of listeners to see if any change in connection happens
 	private static List<DeviceConnectedUpdateListener> globalConnectedUpdateListenerList = new ArrayList<>();
@@ -109,30 +108,17 @@ public class LocalDeviceRepresentation {
 
 	/**
 	 * Send the selected file to the the device
-	 * @param virtualFile the file we are sending
-	 * @param target_folder the target folder on device
+	 * @param source_file the file we are sending
+	 * @param target_path the target path on device
 	 * @return true if able to send
 	 */
-	public boolean sendFileToDevice(VirtualFile virtualFile, String target_folder){
+	public boolean sendFileToDevice(String source_file, String target_path){
 		boolean ret = false;
-		System.out.println("Send File " + virtualFile.getCanonicalPath() + " to " + target_folder);
+		fileSender.addFile(source_file, target_path);
 
 		return ret;
 	}
 
-	/**
-	 * Send the selected folder to the the device
-	 * @param virtualFile the file we are sending
-	 * @param target_folder the target folder on device
-	 * @return true if able to send
-	 */
-	public boolean sendFolderToDevice(VirtualFile virtualFile, String target_folder){
-		boolean ret = false;
-
-		System.out.println("Send Folder " + virtualFile.getCanonicalPath()  + " to " + target_folder);
-
-		return ret;
-	}
 	/**
 	 * Get the Address we use to access this device over the network
 	 * @return the network Address
@@ -228,60 +214,6 @@ public class LocalDeviceRepresentation {
 
 	}
 
-	/**
-	 * Close the TCP port for sending File data to client
-	 */
-	void closeFileSendClientPort() {
-		synchronized (filePortLock) {
-			if (fileSendClient != null) {
-				try {
-					if(fileSendClient.isConnected()) {
-						fileSendClient.stop();
-						fileSendClient.dispose();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				fileSendClient = null;
-			}
-		}
-	}
-
-	/**
-	 * Open TCP Client and assign listeners
-	 * @param port  Port to connect to
-	 * @return  true on success
-	 */
-	boolean openFileSendClientPort(int port){
-		boolean ret = false;
-		synchronized (filePortLock) {
-			if (fileSendClient == null) {
-
-				try {
-					fileSendClient = OSCClient.newUsing(OSCChannel.TCP);
-					fileSendClient.setTarget(new InetSocketAddress(getAddress(), port));
-					fileSendClient.start();
-
-					ret = true;
-
-					fileSendClient.addOSCListener(new OSCListener() {
-						public void messageReceived(OSCMessage m, SocketAddress addr, long time) {
-							incomingFileMessage(m, addr);
-						}
-					});
-				} catch (IOException e) {
-					e.printStackTrace();
-					fileSendClient.dispose();
-					fileSendClient = null;
-				}
-
-			}
-		}
-
-		return ret;
-	}
-
 
 
 	/**
@@ -290,24 +222,12 @@ public class LocalDeviceRepresentation {
 	 */
 	public synchronized void setFileSendServerPort(int port){
 
-		if (fileSendPort != port){
-			closeFileSendClientPort();
-			fileSendPort = port;
-
-		}
-
-	}
-	/**
-	 * Perform actions on File Messages
-	 * @param m The OSC message containing message
-	 * @param addr address of sender
-	 */
-	void incomingFileMessage(OSCMessage m, SocketAddress addr){
-
+		fileSender.setFileSendServerPort(port);
 	}
 
+
 	/**
-	 * Get the remote server port that we need to cnnect to to create a TCP connection with this device
+	 * Get the remote server port that we need to connect to to create a TCP connection with this device
 	 * @return the Port we need to connect to TCP server
 	 */
 	public int getServerPort(){

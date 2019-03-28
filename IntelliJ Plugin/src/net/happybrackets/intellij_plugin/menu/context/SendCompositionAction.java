@@ -16,12 +16,14 @@ import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.intellij_plugin.menu.examples.ExampleAction;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -60,6 +62,39 @@ public abstract class SendCompositionAction extends AnAction {
     }
 
 
+    /**
+     * Return a full list of files below a folder
+     * @param virtualFolder the parent folder
+     * @return an ArrayList of VirtualFiles
+     */
+    ArrayList<VirtualFile> getFilesInFolder(VirtualFile virtualFolder){
+        ArrayList<VirtualFile> files = new ArrayList<>();
+
+        ArrayList<VirtualFile> folders = new ArrayList<>();
+
+        for (VirtualFile root_child :  virtualFolder.getChildren())
+        {
+            if (root_child.isDirectory())
+            {
+                folders.add(root_child);
+            }
+            else
+            {
+                files.add(root_child);
+            }
+        }
+
+        for (VirtualFile folder : folders)
+        {
+            ArrayList<VirtualFile> children = getFilesInFolder(folder);
+            for (VirtualFile child :
+                    children) {
+                files.add(child);
+            }
+        }
+
+        return files;
+    }
     /**
      * Determine the type of send action we need to do based on the selected file
      * @param selected_file the selected file or folder
