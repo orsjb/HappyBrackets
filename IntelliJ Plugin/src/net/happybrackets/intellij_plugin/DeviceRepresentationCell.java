@@ -527,14 +527,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
             public void run() {
                 statusText.setText(STATUS_PREFIX + state);
 
-                if (localDevice.isInvalidVersion())
-                {
-                    if (invalidTextWarning == null)
-                    {
-                        invalidTextWarning = new Text(localDevice.getInvalidVersionWarning());
-                        main.add(invalidTextWarning, 0, 2, num_columns, 1);
-                    }
-                }
+                if (localDevice != null) {
+					if (localDevice.isInvalidVersion()) {
+						if (invalidTextWarning == null) {
+							invalidTextWarning = new Text(localDevice.getInvalidVersionWarning());
+							main.add(invalidTextWarning, 0, 2, num_columns, 1);
+						}
+					}
+				}
             }
         }));
 
