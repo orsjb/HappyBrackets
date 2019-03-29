@@ -290,19 +290,6 @@ public class NetworkCommunication {
 							System.out.println("Version sent " + BuildVersion.getVersionText() + " to port " + target_port) ;
 
 						}
-						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FILE_PORT)){
-							int file_port = hb.fileReceiver.getReceiverPort();
-							InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
-
-							send(OSCVocabulary.Device.FILE_PORT,
-									new Object[]{
-											file_port
-									},
-									target_address);
-
-							System.out.println("FILE_PORT sent " + file_port ) ;
-
-						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
 							if (msg.getArgCount() > 0) {
 								target_port = (Integer) msg.getArg(0);
@@ -466,17 +453,6 @@ public class NetworkCommunication {
 									src);
 
 							System.out.println("Version sent " + BuildVersion.getVersionText() + " to tcp " ) ;
-
-						}
-						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FILE_PORT)){
-							int file_port = hb.fileReceiver.getReceiverPort();
-							send(OSCVocabulary.Device.FILE_PORT,
-									new Object[]{
-											file_port
-									},
-									src);
-
-							System.out.println("FILE_PORT sent " + file_port + " to tcp " ) ;
 
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {

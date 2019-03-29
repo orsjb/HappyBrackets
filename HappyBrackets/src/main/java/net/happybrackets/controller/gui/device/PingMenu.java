@@ -77,6 +77,11 @@ public class PingMenu extends DeviceMenu {
         request_status_menu.setDisable(localDeviceRepresentation.isIgnoringDevice());
         request_status_menu.setOnAction(event -> localDeviceRepresentation.sendStatusRequest());
 
+        MenuItem cancel_send_menu = new MenuItem("Cancel Send");
+        cancel_send_menu.setDisable(!localDeviceRepresentation.getFileSender().isSending());
+        cancel_send_menu.setOnAction(event -> localDeviceRepresentation.getFileSender().cancelSend());
+
+
 
         MenuItem request_version_menu = new MenuItem("Request Version");
         request_version_menu.setDisable(localDeviceRepresentation.isIgnoringDevice());
@@ -151,7 +156,7 @@ public class PingMenu extends DeviceMenu {
         }).start());
         return new MenuItem[]{copy_ip_address_menu, copy_ssh_command_menu,
                 copy_host_command_menu, new SeparatorMenuItem(),
-                request_status_menu, request_version_menu,
+                request_status_menu, cancel_send_menu, request_version_menu,
                 new SeparatorMenuItem(),
                 remove_item_menu, ignore_controls_item_menu, favourite_item_menu,
                 new SeparatorMenuItem(), encrypt_item_menu,

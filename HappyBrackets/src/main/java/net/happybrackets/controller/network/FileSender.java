@@ -20,6 +20,16 @@ import java.util.Set;
  */
 public class FileSender {
 
+    public interface FileSendStatusListener {
+        void writingFile(String filename);
+        void writeSuccess(String filename);
+        void writeError(String filename);
+    }
+
+    // Create a list of listeners for file messages
+    private List<FileSendStatusListener> writeStatusListenerList = new ArrayList<>();
+    private Object writeStatusListenerListLock = new Object();
+
     Set<FileSendStreamer> fileSendStreamerList = new HashSet<>();
     private final Object fileStreamerLock = new Object();
     FileSendStreamer currentFile = null;
@@ -34,8 +44,51 @@ public class FileSender {
     private OSCClient fileSendClient = null;
 
     boolean exitThread = false;
+    boolean cancelSend = false;
 
     final int MAX_FILE_DATA = 1024 * 7;
+
+    /**
+     * Add listener for FileSend Status
+     * @param listener listener
+     */
+    public void addWriteStatusListener(FileSendStatusListener listener){
+        synchronized (writeStatusListenerListLock){
+            writeStatusListenerList.add(listener);
+        }
+    }
+
+    /**
+     * Flag to indicate whether we are sending by looking inside the file queue
+     * @return true if files in queue
+     */
+    public boolean isSending(){
+        boolean ret = false;
+
+        synchronized (fileStreamerLock) {
+            ret = fileSendStreamerList.size() > 0;
+        }
+         return ret;
+    }
+
+    /**
+     * Remove listener for FileSend Status
+     * @param listener listener
+     */
+    public void removeWriteStatusListener(FileSendStatusListener listener){
+        synchronized (writeStatusListenerListLock){
+            writeStatusListenerList.remove(listener);
+        }
+    }
+
+    /**
+     * Erase all listeners
+     */
+    public void clearWriteStatusListeners(){
+        synchronized (writeStatusListenerListLock){
+            writeStatusListenerList.clear();
+        }
+    }
 
     FileSender(){
 
@@ -45,7 +98,8 @@ public class FileSender {
                 synchronized (fileSendEvent){
                     try {
                         fileSendEvent.wait();
-                        while (sendNextFileData())
+
+                        while (sendNextFileData() && !cancelSend)
                         {
                             fileSendEvent.notify();
                         }
@@ -76,11 +130,6 @@ public class FileSender {
         }
         if (currentFile != null){
             try {
-                // Open the OSC Port and send data
-
-                if (!testClientOpen()){
-                    openFileSendClientPort(fileSendAddress, fileSendPort);
-                }
                 if (testClientOpen()) {
                     byte[] file_data = currentFile.readData(MAX_FILE_DATA);
                     OSCMessage message = HB.createOSCMessage(OSCVocabulary.FileSendMessage.WRITE, currentFile.targetFilename, file_data);
@@ -108,8 +157,10 @@ public class FileSender {
         }
 
         if (currentFile == null) {
-            if (fileSendStreamerList.size() > 0) {
-                currentFile = fileSendStreamerList.iterator().next();
+            synchronized (fileStreamerLock) {
+                if (fileSendStreamerList.size() > 0) {
+                    currentFile = fileSendStreamerList.iterator().next();
+                }
             }
         }
         return currentFile != null;
@@ -126,18 +177,58 @@ public class FileSender {
 
        System.out.println("Send " + source_file + " to " + target_file);
        FileSendStreamer fileSendStreamer = new FileSendStreamer(source_file, target_file);
-       if (!fileSendStreamerList.contains(fileSendStreamer)){
-           fileSendStreamerList.add(fileSendStreamer);
+       cancelSend = false;
 
-           synchronized (fileSendEvent){
-               fileSendEvent.notify();
-           }
-           ret = true;
-       }
+       boolean do_notify = false;
+
+        if (!testClientOpen()){
+            openFileSendClientPort(fileSendAddress, fileSendPort);
+        }
+        if (testClientOpen()) {
+            synchronized (fileStreamerLock) {
+
+                do_notify = fileSendStreamerList.size() < 1;
+
+                if (!fileSendStreamerList.contains(fileSendStreamer)) {
+                    fileSendStreamerList.add(fileSendStreamer);
+                    ret = true;
+                }
+
+            }
+
+            if (do_notify)
+            {
+                if (testClientOpen()) {
+                    try {
+                        fileSendClient.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.START));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                synchronized (fileSendEvent){
+                    fileSendEvent.notify();
+                }
+            }
+        }
+
 
        return ret;
     }
 
+    public void cancelSend(){
+        cancelSend = true;
+        synchronized (fileStreamerLock) {
+            fileSendStreamerList.clear();
+        }
+
+        if (testClientOpen()) {
+            try {
+                fileSendClient.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.CANCEL));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     /**
      * Close the TCP port for sending File data to client
      */
@@ -215,9 +306,41 @@ public class FileSender {
      * @param m The OSC message containing message
      * @param addr address of sender
      */
-    void incomingFileMessage(OSCMessage m, SocketAddress addr){
-        synchronized (fileSendEvent){
-            fileSendEvent.notify();
+    void incomingFileMessage(OSCMessage m, SocketAddress addr) {
+
+        System.out.println(m.getName());
+        try {
+            if (OSCVocabulary.match(m, OSCVocabulary.FileSendMessage.WRITE)) {
+                String filename = (String) m.getArg(0);
+                synchronized (writeStatusListenerListLock){
+                    for (FileSendStatusListener listener:
+                            writeStatusListenerList) {
+                        listener.writingFile(filename);
+                    }
+                }
+
+            }
+            else if (OSCVocabulary.match(m, OSCVocabulary.FileSendMessage.COMPLETE)) {
+                String filename = (String) m.getArg(0);
+                synchronized (writeStatusListenerListLock){
+                    for (FileSendStatusListener listener:
+                            writeStatusListenerList) {
+                        listener.writeSuccess(filename);
+                    }
+                }
+
+            }
+            else if (OSCVocabulary.match(m, OSCVocabulary.FileSendMessage.ERROR)) {
+                String filename = (String) m.getArg(0);
+                synchronized (writeStatusListenerListLock){
+                    for (FileSendStatusListener listener:
+                            writeStatusListenerList) {
+                        listener.writeError(filename);
+                    }
+                }
+            }
+
+        } catch (Exception ex) {
         }
     }
 
@@ -228,8 +351,13 @@ public class FileSender {
      */
     public synchronized void setFileSendServerPort(String address, int port){
 
-        if (fileSendPort != port || fileSendAddress.equalsIgnoreCase(address)){
-            closeFileSendClientPort();
+        if (fileSendPort != port || !fileSendAddress.equalsIgnoreCase(address)){
+
+            // if we are switching ports from localhost to network, this becomes a problem
+            // let us just leave teh connection open if it has one
+            // If it fails, then let open use the new parameters
+            //closeFileSendClientPort();
+
             fileSendPort = port;
             fileSendAddress = address;
         }

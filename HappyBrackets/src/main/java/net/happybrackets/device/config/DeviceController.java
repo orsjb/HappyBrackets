@@ -35,6 +35,7 @@ import java.nio.ByteBuffer;
 public class DeviceController {
 
 
+    static  int filePort;
     private String hostname;
 
     private InetSocketAddress socketAddress;
@@ -86,7 +87,8 @@ public class DeviceController {
                             Device.getDeviceName(), //Device.selectHostname(ni),
                             "", //Device.selectIP(ni),
                             deviceId,
-                            connectPort
+                            connectPort,
+                            filePort
                     }
             );
 
@@ -111,11 +113,12 @@ public class DeviceController {
      * @param address ip address of controller
      * @param port  port the controller UDP port
      * @param connectPort the Port we need to connect to TCP server
+     * @param filePort the port we receive non class files on
      * @return a hash code that combines these factors
      */
-    public static int buildHashCode(String address, int port, int connectPort)
+    public static int buildHashCode(String address, int port, int connectPort, int filePort)
     {
-        String hash_build = address + port + connectPort;
+        String hash_build = address + port + connectPort + filePort;
         return hash_build.hashCode();
     }
     /**
@@ -125,15 +128,17 @@ public class DeviceController {
      * @param port the port we send messages on
      * @param device_id the device id we were when were made
      * @param connectPort the Port we need to connect to TCP server
+     * @param filePort   the port we receive non-class files on
      */
-    public DeviceController(String hostname, String address, int port, int device_id, int connectPort) {
+    public DeviceController(String hostname, String address, int port, int device_id, int connectPort, int filePort) {
         byteBuf	= ByteBuffer.allocateDirect(OSCChannel.DEFAULTBUFSIZE);
 
         this.hostname = hostname;
         this.connectPort = connectPort;
+        this.filePort = filePort;
 
         socketAddress = new InetSocketAddress(address, port);
-        hash = buildHashCode(address, port, connectPort);
+        hash = buildHashCode(address, port, connectPort, filePort);
         lastTimeSeen = System.currentTimeMillis();
 
         deviceId = device_id;

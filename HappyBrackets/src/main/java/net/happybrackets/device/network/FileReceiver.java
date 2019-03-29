@@ -4,14 +4,17 @@ import de.sciss.net.OSCMessage;
 import de.sciss.net.OSCServer;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.scheduling.HBScheduler;
+import net.happybrackets.device.HB;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.CopyOption;
+import java.net.SocketAddress;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Class that receives files from network so we can store them
@@ -25,9 +28,15 @@ public class FileReceiver {
 
     final static String TEMP_PATH = "ramfs" + File.separatorChar;
 
-    String currentTargetFile = "";
-    String currentSourceFile = "";
-    FileOutputStream tempFile;
+    private class ClientFileTransfer {
+        String currentTargetFile = "";
+        String currentSourceFile = "";
+        FileOutputStream tempFile;
+        boolean started = false;
+    }
+
+    Map<String, ClientFileTransfer> clientFileTransferMap = new Hashtable<>();
+
 
     /**
      * Get the OSC port we are using for File reception
@@ -48,17 +57,34 @@ public class FileReceiver {
             // Now add a listener
             controllerOscServer.addOSCListener((msg, sender, time) -> {
 
-                if (OSCVocabulary.match(msg, OSCVocabulary.FileSendMessage.WRITE)){
-                    performWriteMessage(msg);
-                }
-                else if (OSCVocabulary.match(msg, OSCVocabulary.FileSendMessage.COMPLETE)){
-                    performCompleteMessage(msg);
-                }
-                else if (OSCVocabulary.match(msg, OSCVocabulary.FileSendMessage.CANCEL)){
-                    cancelTransfer();
+                try {
+                    if (OSCVocabulary.match(msg, OSCVocabulary.FileSendMessage.WRITE)) {
+                        performWriteMessage(msg, sender);
+
+                    }
+                    else if (OSCVocabulary.match(msg, OSCVocabulary.FileSendMessage.START)){
+                        performStart(sender);
+                    }
+                    else if (OSCVocabulary.match(msg, OSCVocabulary.FileSendMessage.COMPLETE)) {
+                        performCompleteMessage(msg, sender);
+
+                    }
+
+                    else if (OSCVocabulary.match(msg, OSCVocabulary.FileSendMessage.CANCEL)) {
+                        try {
+                            cancelTransfer(sender);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.ERROR, ""), sender);
+
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                System.out.println("File Send Message " + msg.getName());
+                //System.out.println("File Send Message " + msg.getName());
             });
 
             controllerOscServer.start();
@@ -69,43 +95,97 @@ public class FileReceiver {
 
     }
 
+    private void performStart(SocketAddress sender) {
+        ClientFileTransfer client;
+        //reset files and allow data to be received
+        if (clientFileTransferMap.containsKey(sender.toString())){
+            client = clientFileTransferMap.get(sender.toString());
+
+        }
+        else
+        {
+            client = new ClientFileTransfer();
+            clientFileTransferMap.put(sender.toString(), client);
+        }
+        client.tempFile = null;
+        client.started = true;
+
+    }
+
     /**
-     * Cancel transfer of current messgae
+     * Cancel transfer of current message
+     * @param sender
      */
-    void cancelTransfer(){
-        System.out.println("Cancel");
+    void cancelTransfer(SocketAddress sender) throws IOException {
+        System.out.println("Cancel Transfer");
+        if (clientFileTransferMap.containsKey(sender.toString())) {
+            ClientFileTransfer client = clientFileTransferMap.get(sender.toString());
+            client.started = false;
+
+            controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.CANCEL, client.currentTargetFile), sender);
+            if (client.tempFile != null) {
+                client.tempFile.close();
+                client.tempFile = null;
+                Files.deleteIfExists(new File(client.currentSourceFile).toPath());
+                client.currentSourceFile = null;
+            }
+        }
     }
     /**
      * Perform a write message
      * @param msg the OSC Message with the data
+     * @param sender
      */
-    boolean performWriteMessage(OSCMessage msg){
+    boolean performWriteMessage(OSCMessage msg, SocketAddress sender){
         boolean ret = false;
-        currentTargetFile = (String) msg.getArg(0);
-        byte [] data = (byte []) msg.getArg(1);
+        String currentTargetFile = "";
 
-        System.out.println("Received " + data.length + " bytes");
-        if (tempFile == null){
-            currentSourceFile = TEMP_PATH + HBScheduler.getGlobalScheduler().getCalcTime();
+        String client_key = sender.toString();
 
-            try {
-                tempFile = new FileOutputStream(currentSourceFile);
-            } catch (FileNotFoundException e) {
-                currentSourceFile = "";
+        if (clientFileTransferMap.containsKey(client_key)) {
+            ClientFileTransfer client = clientFileTransferMap.get(sender.toString());
+            if (client.started) {
+                client.currentTargetFile = (String) msg.getArg(0);
+
+                currentTargetFile = client.currentTargetFile;
+                byte[] data = (byte[]) msg.getArg(1);
+
+                // If we don't have a temp file, create one
+                if (client.tempFile == null) {
+                    client.currentSourceFile = TEMP_PATH + HBScheduler.getGlobalScheduler().getCalcTime();
+
+                    try {
+                        client.tempFile = new FileOutputStream(client.currentSourceFile);
+                        controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.WRITE, client.currentTargetFile), sender);
+                        System.out.println("Start write file " + currentTargetFile);
+                    } catch (FileNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // Now Write data to file
+                if (client.tempFile != null) {
+                    try {
+                        client.tempFile.write(data);
+                        ret = true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        try {
+                            client.tempFile.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
             }
         }
-
-        if (tempFile != null){
+        if (!ret){
             try {
-                tempFile.write(data);
+                controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.ERROR, currentTargetFile), sender);
             } catch (IOException e) {
                 e.printStackTrace();
-                try {
-                    tempFile.close();
-                    currentSourceFile = "";
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
             }
         }
         return ret;
@@ -113,28 +193,46 @@ public class FileReceiver {
     /**
      * Perform a complete message
      * @param msg the OSC Message with the data
+     * @param sender
      */
-    void performCompleteMessage(OSCMessage msg){
+    boolean performCompleteMessage(OSCMessage msg, SocketAddress sender){
         String filename = (String) msg.getArg(0);
+        String currentTargetFile = "";
 
         System.out.println("Complete File " + filename);
-        if (tempFile != null){
-            try {
-                tempFile.close();
-                tempFile = null;
+        boolean ret = false;
+        if (clientFileTransferMap.containsKey(sender.toString())) {
+            ClientFileTransfer client = clientFileTransferMap.get(sender.toString());
+            currentTargetFile = client.currentTargetFile;
 
-                Files.move(new File(currentSourceFile).toPath(), new File(currentTargetFile).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                currentSourceFile = "";
-                currentTargetFile = "";
+            if (client.started) {
+                if (client.tempFile != null) {
+                    try {
+                        client.tempFile.close();
+                        client.tempFile = null;
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                tempFile = null;
-                currentSourceFile = "";
+                        Files.move(new File(client.currentSourceFile).toPath(), new File(client.currentTargetFile).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.COMPLETE, client.currentTargetFile), sender);
+                        System.out.println("Complete write file " + currentTargetFile);
+                        ret = true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        client.tempFile = null;
+                    }
+                }
             }
+
         }
 
-
+        if (!ret)
+        {
+            try {
+                controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.ERROR, currentTargetFile), sender);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return ret;
     }
 
 }

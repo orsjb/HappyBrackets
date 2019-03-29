@@ -31,7 +31,7 @@ import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LocalDeviceRepresentation {
+public class LocalDeviceRepresentation implements FileSender.FileSendStatusListener {
 
 	private final Object clientLock = new Object(); // define a lock for tcpClient
 
@@ -81,6 +81,14 @@ public class LocalDeviceRepresentation {
 	private boolean ignoreDevice = false;
 	private boolean isFavouriteDevice = false;
 	private boolean encryptionEnabled = false;
+
+	/**
+	 * Get the Filesender object
+	 * @return FileSender
+	 */
+	public FileSender getFileSender() {
+		return fileSender;
+	}
 
 	private FileSender fileSender = new FileSender();
 
@@ -362,6 +370,21 @@ public class LocalDeviceRepresentation {
 
 		String status_text = "V: " + getVersionText();
 		setStatus(status_text);
+	}
+
+	@Override
+	public void writingFile(String filename) {
+		setStatus("Writing " + filename);
+	}
+
+	@Override
+	public void writeSuccess(String filename) {
+		setStatus("Wrote " + filename);
+	}
+
+	@Override
+	public void writeError(String filename) {
+		setStatus("Error " + filename);
 	}
 
 
@@ -650,22 +673,8 @@ public class LocalDeviceRepresentation {
 
 		// Set-up log monitor.
 		currentLogPage = "";
-		/*
-		server.addOSCListener(new OSCListener() {
-			@Override
-			public void messageReceived(OSCMessage msg, SocketAddress source, long timestamp) {
-				if (OSCVocabulary.match(msg, OSCVocabulary.Device.LOG) && ((Integer) msg.getArg(0)) == id) {
-					String new_log_output = (String) msg.getArg(1);
-					log = log + "\n" + new_log_output;
-					logger.debug("Received new log output from device {} ({}): {}", hostname, id, new_log_output);
-					for (LogListener listener : logListenerList) {
-						listener.newLogMessage(new_log_output);
-					}
-				}
-			}
-		});*/
 
-
+		fileSender.addWriteStatusListener(this);
 	}
 
 
@@ -706,26 +715,9 @@ public class LocalDeviceRepresentation {
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.LOG)) {
 			processLogMessage(msg, sender);
 		}
-		else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FILE_PORT)){
-			processFilePortMessage(msg, sender);
-		}
 
 	}
 
-	/**
-	 * Process our File port
-	 * @param msg
-	 * @param sender
-	 */
-	private void processFilePortMessage(OSCMessage msg, SocketAddress sender) {
-		try{
-			int file_port = (int)msg.getArg(0);
-			setFileSendServerPort(file_port);
-		}
-		catch (Exception ex){
-
-		}
-	}
 
 
 	private synchronized void processLogMessage(OSCMessage msg, SocketAddress sender) {
@@ -903,6 +895,11 @@ public class LocalDeviceRepresentation {
 		// close our TCP Port
 
 		closeClientPort();
+
+		//cancel any file sends
+		fileSender.cancelSend();
+		fileSender.clearWriteStatusListeners();
+
 		// Just because a device is removed does not mean it is no longer a favourite
 		synchronized (favouriteChangedListenersLock) {
 			favouriteChangedListeners.clear();
@@ -952,7 +949,6 @@ public class LocalDeviceRepresentation {
 	public void sendVersionRequest(){
 		send(OSCVocabulary.Device.VERSION, replyPortObject);
 		send(OSCVocabulary.Device.FRIENDLY_NAME, replyPortObject);
-		send(OSCVocabulary.Device.FILE_PORT, replyPortObject);
 	}
 
 	/**

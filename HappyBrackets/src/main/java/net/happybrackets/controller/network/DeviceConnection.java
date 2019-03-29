@@ -395,6 +395,7 @@ public class DeviceConnection {
 		final int DEVICE_ADDRESS = 2;
 		final int DEVICE_ID = 3;
 		final int DEVICE_SERVER_PORT = 4;
+		final int DEVICE_FILE_PORT = 5;
 
 		try {
 			boolean invalid_pi = false;
@@ -402,6 +403,7 @@ public class DeviceConnection {
 			InetAddress sending_address = ((InetSocketAddress) sender).getAddress();
 			int device_id = 0;
 			int device_server_port = 0;
+			int device_file_port = 0;
 
 			String device_name = (String) msg.getArg(DEVICE_NAME);
 
@@ -433,6 +435,13 @@ public class DeviceConnection {
 				if (msg.getArgCount() > DEVICE_SERVER_PORT) {
 					try {
 						device_server_port = (int) msg.getArg(DEVICE_SERVER_PORT);
+					} catch (Exception ex) {
+					}
+				}
+
+				if (msg.getArgCount() > DEVICE_FILE_PORT) {
+					try {
+						device_file_port = (int) msg.getArg(DEVICE_FILE_PORT);
 					} catch (Exception ex) {
 					}
 				}
@@ -538,6 +547,7 @@ public class DeviceConnection {
 							this_device.openClientPort(device_server_port);
 						}
 
+						this_device.setFileSendServerPort(device_file_port);
 						// Make sure we don't have a zero device_id from device
 						if (device_id != 0) {
 							this_device.setID(device_id);

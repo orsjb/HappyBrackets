@@ -54,6 +54,7 @@ public interface ControllerDiscoverer {
 					int device_id = 0;
 
 					int connectPort = 0; // we need to tell controller how to connect with us
+					int fileport = 0;
 
 					HB device_instance = DeviceMain.getHB();
 
@@ -61,9 +62,10 @@ public interface ControllerDiscoverer {
 					{
 						device_id = device_instance.myIndex();
 						connectPort = device_instance.myConnectPort();
+						fileport = device_instance.getFileReceiverPort();
 					}
 
-					device_config.deviceControllerFound(advertised_hostname, address, port, device_id, connectPort);
+					device_config.deviceControllerFound(advertised_hostname, address, port, device_id, connectPort, fileport);
 
 				}
 			}
