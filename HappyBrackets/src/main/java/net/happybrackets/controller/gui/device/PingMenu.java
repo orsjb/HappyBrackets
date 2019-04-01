@@ -78,8 +78,8 @@ public class PingMenu extends DeviceMenu {
         request_status_menu.setOnAction(event -> localDeviceRepresentation.sendStatusRequest());
 
         MenuItem cancel_send_menu = new MenuItem("Cancel Send");
-        cancel_send_menu.setDisable(!localDeviceRepresentation.getFileSender().isSending());
-        cancel_send_menu.setOnAction(event -> localDeviceRepresentation.getFileSender().cancelSend());
+        cancel_send_menu.setDisable(!localDeviceRepresentation.getFileIsSending());
+        cancel_send_menu.setOnAction(event -> localDeviceRepresentation.cancelSendFile());
 
 
 

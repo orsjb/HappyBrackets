@@ -48,10 +48,11 @@ public class FileReceiver {
 
     /**
      * Constructor opens first available TCP port for OSC Messages
+     * @param oscServer the OSC server to receieve files through
      */
-    public FileReceiver(){
+    public FileReceiver(OSCServer oscServer){
         try {
-            controllerOscServer =  OSCServer.newUsing(OSCServer.TCP, 0);
+            controllerOscServer =  oscServer;
             oscPort =  controllerOscServer.getLocalAddress().getPort();
 
             // Now add a listener
@@ -87,7 +88,6 @@ public class FileReceiver {
                 //System.out.println("File Send Message " + msg.getName());
             });
 
-            controllerOscServer.start();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -211,7 +211,17 @@ public class FileReceiver {
                         client.tempFile.close();
                         client.tempFile = null;
 
-                        Files.move(new File(client.currentSourceFile).toPath(), new File(client.currentTargetFile).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        // we ned to also create directory for file to go into
+                        File target_path = new File(client.currentTargetFile);
+
+                        String path = target_path.getParentFile().getAbsolutePath();
+
+                        System.out.println("Create path " + path);
+                        new File(path).mkdir();
+
+                        Files.move(new File(client.currentSourceFile).toPath(), target_path.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+
                         controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.COMPLETE, client.currentTargetFile), sender);
                         System.out.println("Complete write file " + currentTargetFile);
                         ret = true;

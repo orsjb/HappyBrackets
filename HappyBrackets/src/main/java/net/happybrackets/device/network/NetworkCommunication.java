@@ -46,7 +46,11 @@ public class NetworkCommunication {
 	private OSCServer oscServer;				//The OSC server
 	private InetAddress broadcastAddress;		//Global Broadcast address
 	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
-																//Listeners to incoming OSC messages
+
+	/**
+	 * Class for receiving non java files from network
+	 */
+	public FileReceiver fileReceiver = null;															//Listeners to incoming OSC messages
 
 	// Define a set of Sockets that will receive dynamic Control events. These will only be controllers who have done a get request
 	private Set<SocketAddress> dynamicControlControllerListeners =  Collections.synchronizedSet(new HashSet<SocketAddress>());
@@ -174,6 +178,7 @@ public class NetworkCommunication {
 		int oscPort =  controllerOscServer.getLocalAddress().getPort();
 
 		hb.setTCPServerPort(oscPort);
+		fileReceiver = new FileReceiver(controllerOscServer);
 		System.out.println("Local controllerOscServer Port " + oscPort);
 
 		if (DeviceConfig.getInstance() != null) {

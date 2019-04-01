@@ -39,20 +39,20 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
                     switch (sendDataType){
                         case SEND_CLASS:
                             fileName = vfile.getNameWithoutExtension();
-                            e.getPresentation().setText("Send " + fileName + "to " + device_name);
+                            e.getPresentation().setText("Send " + fileName + " to " + device_name);
                             enable = getClassFile(e) != null && selected_device != null;
                             break;
 
                         case SEND_FOLDER:
                             fileName = vfile.getName();
-                            e.getPresentation().setText("Send folder " + fileName + "to " + device_name);
+                            e.getPresentation().setText("Send folder " + fileName + " to " + device_name);
 
                             enable = fileInDeviceFolder(current_project, vfile) && selected_device != null;
                             break;
 
                         case SEND_FILE:
                             fileName = vfile.getName();
-                            e.getPresentation().setText("Send file " + fileName + "to " + device_name);
+                            e.getPresentation().setText("Send file " + fileName + " to " + device_name);
                             enable = fileInDeviceFolder(current_project, vfile) && selected_device != null;
                             break;
 

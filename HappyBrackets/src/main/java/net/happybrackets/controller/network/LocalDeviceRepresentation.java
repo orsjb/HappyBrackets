@@ -82,16 +82,29 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	private boolean isFavouriteDevice = false;
 	private boolean encryptionEnabled = false;
 
+
+	private FileSender fileSender = null;
+
 	/**
-	 * Get the Filesender object
-	 * @return FileSender
+	 * Get if we are sending a file
+	 * @return true if we are sendinmg a file
 	 */
-	public FileSender getFileSender() {
-		return fileSender;
+	public boolean getFileIsSending(){
+		boolean ret = false;
+		if (fileSender != null){
+			ret = fileSender.isSending();
+		}
+		return ret;
 	}
 
-	private FileSender fileSender = new FileSender();
-
+	/**
+	 * Cancel semnding of file if we are seninf a file
+	 */
+	public void cancelSendFile(){
+		if (fileSender != null){
+			fileSender.cancelSend();
+		}
+	}
 	// create a set of listeners to see if any change in connection happens
 	private static List<DeviceConnectedUpdateListener> globalConnectedUpdateListenerList = new ArrayList<>();
 
@@ -122,7 +135,13 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	 */
 	public boolean sendFileToDevice(String source_file, String target_path){
 
-		return fileSender.addFile(source_file, target_path);
+		openControlPort();
+		boolean ret = false;
+		if (fileSender != null){
+			ret = fileSender.addFile(source_file, target_path);
+		}
+
+		return ret;
 	}
 
 	/**
@@ -169,6 +188,8 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 					controlCommsClient.setTarget(new InetSocketAddress(getAddress(), port));
 					controlCommsClient.start();
 
+					fileSender = new FileSender(controlCommsClient);
+					fileSender.addWriteStatusListener(this);
 					ret = true;
 
 					controlCommsClient.addOSCListener(new OSCListener() {
@@ -222,14 +243,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 
 
-	/**
-	 * Set the port we need to connect our File sender to to communicate via TCP
-	 * @param port remote port number
-	 */
-	public synchronized void setFileSendServerPort(int port){
-
-		fileSender.setFileSendServerPort(getAddress(), port);
-	}
 
 
 	/**
@@ -504,15 +517,26 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 
 	/**
+	 * Open the control Port for TCP Communication
+	 * @return true if port is opened. If not opened, it will open itm and on success, return true
+	 */
+	public boolean openControlPort(){
+		boolean ret = true;
+		if (!testClientOpen()) {
+			ret = openClientPort(serverPort);
+		}
+
+		return ret;
+	}
+	/**
 	 * Open TCP Port and show the control screen
 	 @return TRue if a TCP connection was made and controls could be shown
 	 */
 	public boolean showControlScreen() {
 		boolean ret = false;
 
-		if (!testClientOpen()) {
-			openClientPort(serverPort);
-		}
+
+		openControlPort();
 
 		// we will only show control screen if we have a valid TCP port
 		if (testClientOpen()) {
@@ -674,7 +698,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		// Set-up log monitor.
 		currentLogPage = "";
 
-		fileSender.addWriteStatusListener(this);
 	}
 
 
@@ -896,9 +919,11 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 		closeClientPort();
 
-		//cancel any file sends
-		fileSender.cancelSend();
-		fileSender.clearWriteStatusListeners();
+		if (fileSender != null) {
+			//cancel any file sends
+			fileSender.cancelSend();
+			fileSender.clearWriteStatusListeners();
+		}
 
 		// Just because a device is removed does not mean it is no longer a favourite
 		synchronized (favouriteChangedListenersLock) {

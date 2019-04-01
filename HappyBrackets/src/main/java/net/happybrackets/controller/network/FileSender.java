@@ -90,7 +90,13 @@ public class FileSender {
         }
     }
 
-    FileSender(){
+    FileSender(OSCClient oscClient){
+
+        fileSendClient = oscClient;
+
+        fileSendClient.addOSCListener((msg, sender, time) -> {
+            incomingFileMessage(msg, sender);
+        });
 
         Thread thread = new Thread(() -> {
 
@@ -181,9 +187,6 @@ public class FileSender {
 
        boolean do_notify = false;
 
-        if (!testClientOpen()){
-            openFileSendClientPort(fileSendAddress, fileSendPort);
-        }
         if (testClientOpen()) {
             synchronized (fileStreamerLock) {
 
@@ -229,25 +232,7 @@ public class FileSender {
             }
         }
     }
-    /**
-     * Close the TCP port for sending File data to client
-     */
-    void closeFileSendClientPort() {
-        synchronized (filePortLock) {
-            if (fileSendClient != null) {
-                try {
-                    if(fileSendClient.isConnected()) {
-                        fileSendClient.stop();
-                        fileSendClient.dispose();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                fileSendClient = null;
-            }
-        }
-    }
 
     /**
      * Check if our TCP port is assigned and connected
@@ -266,40 +251,6 @@ public class FileSender {
 
     }
 
-    /**
-     * Open TCP Client and assign listeners
-     * @param address the address of the device
-     * @param port  Port to connect to
-     * @return  true on success
-     */
-    boolean openFileSendClientPort(String address, int port){
-        boolean ret = false;
-        synchronized (filePortLock) {
-            if (fileSendClient == null) {
-
-                try {
-                    fileSendClient = OSCClient.newUsing(OSCChannel.TCP);
-                    fileSendClient.setTarget(new InetSocketAddress(address, port));
-                    fileSendClient.start();
-
-                    ret = true;
-
-                    fileSendClient.addOSCListener(new OSCListener() {
-                        public void messageReceived(OSCMessage m, SocketAddress addr, long time) {
-                            incomingFileMessage(m, addr);
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    fileSendClient.dispose();
-                    fileSendClient = null;
-                }
-
-            }
-        }
-
-        return ret;
-    }
 
     /**
      * Perform actions on File Messages

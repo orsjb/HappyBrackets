@@ -62,7 +62,7 @@ public interface ControllerDiscoverer {
 					{
 						device_id = device_instance.myIndex();
 						connectPort = device_instance.myConnectPort();
-						fileport = device_instance.getFileReceiverPort();
+
 					}
 
 					device_config.deviceControllerFound(advertised_hostname, address, port, device_id, connectPort, fileport);
