@@ -81,6 +81,10 @@ GUI_FILE=/etc/xdg/lxsession/LXDE-pi/autostart
 
 if [ -f "$GUI_FILE" ]; then
     echo "This PI is a GUI Program. We need to append our startup script to it"
+    # first let us add screen saver so we can disable it easy
+    sudo apt-get install xscreensaver
+
+    #now append our startup text
     START_TEXT="@/usr/bin/sudo /home/pi/HappyBrackets/scripts/run.sh"
 
     #we need to add this startup text to GUI init file
