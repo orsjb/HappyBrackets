@@ -62,8 +62,8 @@ update-rc.d ssh enable
 invoke-rc.d ssh start
 
 #Add text to make it easy for people to change to HifiBerry
-HIFI_TEXT=#dtoverlay=hifiberry-dac"
-echo $HIFI_TEXT >> "/boot/config.txt"
+#HIFI_TEXT=#dtoverlay=hifiberry-dac"
+#echo $HIFI_TEXT >> "/boot/config.txt"
 
 #end sudo privilege here
 SUDO_EXE
@@ -96,7 +96,7 @@ if [ -f "$GUI_FILE" ]; then
     else
         # code if not found
         echo "Append startup text to file"
-        echo $START_TEXT >>$GUI_FILE
+        sudo echo $START_TEXT >>$GUI_FILE
     fi
 
 else # this is a standard non-gui PI
