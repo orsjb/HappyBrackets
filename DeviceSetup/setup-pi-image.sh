@@ -77,7 +77,7 @@ echo $USER
 # now we need to see if we are going to start HappyBrackets from rc.local or from GUI Startup
 #we should be back to PI user
 
-GUI_FILE=~/.config/lxsession/LXDE-pi/autostart
+GUI_FILE=/etc/xdg/lxsession/LXDE-pi/autostart
 
 if [ -f "$GUI_FILE" ]; then
     echo "This PI is a GUI Program. We need to append our startup script to it"
