@@ -61,12 +61,14 @@ alsactl store
 update-rc.d ssh enable
 invoke-rc.d ssh start
 
-#Add text to make it easy for people to change to HifiBerry
-#HIFI_TEXT=#dtoverlay=hifiberry-dac"
-#echo $HIFI_TEXT >> "/boot/config.txt"
+#end sudo privilege here
+SUDO_EXE
 
+# now we need to see if we are going to start HappyBrackets from rc.local or from GUI Startup
+#we should be back to PI user
 
-
+echo "Who am I"
+echo $USER
 
 # now we need to see if we are going to start HappyBrackets from rc.local or from GUI Startup
 #we should be back to PI user
@@ -75,10 +77,6 @@ GUI_FILE=/etc/xdg/lxsession/LXDE-pi/autostart
 
 if [ -f "$GUI_FILE" ]; then
     echo "This PI is a GUI Program. We need to append our startup script to it"
-    # first let us add screen saver so we can disable it easy
-    apt-get install xscreensaver
-
-    #now append our startup text
     START_TEXT="@/usr/bin/sudo /home/pi/HappyBrackets/scripts/run.sh"
 
     #we need to add this startup text to GUI init file
@@ -90,7 +88,7 @@ if [ -f "$GUI_FILE" ]; then
     else
         # code if not found
         echo "Append startup text to file"
-        echo $START_TEXT>>$GUI_FILE
+        echo $START_TEXT | sudo tee -a $GUI_FILE
     fi
 
 else # this is a standard non-gui PI
@@ -107,15 +105,13 @@ else # this is a standard non-gui PI
     else
         # code if not found
         # set up autorun
-        wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/rc.local
-        mv rc.local /etc/
-        chmod +x /etc/rc.local
+        sudo wget --no-check-certificate -N https://raw.githubusercontent.com/orsjb/HappyBrackets/master/DeviceSetup/rc.local
+        sudo mv rc.local /etc/
+        sudo chmod +x /etc/rc.local
 
     fi
 fi
 
-#end sudo privilege here
-SUDO_EXE
 
 # Network Settings
 echo "***********************************"
