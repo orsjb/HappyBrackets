@@ -90,7 +90,7 @@ if [ -f "$GUI_FILE" ]; then
     else
         # code if not found
         echo "Append startup text to file"
-        echo $START_TEXT >>$GUI_FILE
+        echo $START_TEXT>>$GUI_FILE
     fi
 
 else # this is a standard non-gui PI
