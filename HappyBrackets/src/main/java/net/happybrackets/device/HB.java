@@ -1450,6 +1450,9 @@ public class HB {
 		if (defaultAccelerometer == null){
 			defaultAccelerometer = (Accelerometer)getSensor(Accelerometer.class);
 		}
+		if (isEnableSimulators()){
+			defaultAccelerometer.reloadSimulation();
+		}
 		return defaultAccelerometer;
 	}
 
@@ -1461,6 +1464,11 @@ public class HB {
 	private synchronized Gyroscope getDefaultGyroscope(){
 		if (defaultGyroscope == null){
 			defaultGyroscope = (Gyroscope) getSensor(Gyroscope.class);
+		}
+		if (isEnableSimulators()){
+			{
+				defaultGyroscope.reloadSimulation();
+			}
 		}
 		return defaultGyroscope;
 	}

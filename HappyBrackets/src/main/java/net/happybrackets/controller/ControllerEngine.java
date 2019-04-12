@@ -6,6 +6,7 @@ import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.BroadcastManager;
+import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,6 +139,8 @@ public class ControllerEngine {
      * Make or controller start it network Communication
      */
     public synchronized void startDeviceCommunication(){
+
+        ControlMap.disableControlMimic(true);
 
         if (controllerAdvertiser == null) {
             deviceConnection.startDeviceConnection();

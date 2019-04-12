@@ -11,7 +11,7 @@ public abstract class FloatSliderControl extends FloatControl {
      * @param max_val Maximum value to display on Slider
      */
     public FloatSliderControl(Object parent_sketch, String name, double initial_value, double min_val, double max_val) {
-        super(parent_sketch, name, initial_value, min_val, max_val);
+        super(parent_sketch, name, initial_value, min_val, max_val, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);
     }
 
     /**
@@ -26,13 +26,13 @@ public abstract class FloatSliderControl extends FloatControl {
     }
 
     /**
-     * Change whether to disable control in display
+     * Change how to display object
      * We must do this in subclass
-     * @param disabled The new Control Scope
+     * @param display_type The new Control Scope
      * @return this object
      */
-    public FloatSliderControl setDisabled(boolean disabled){
-        getDynamicControl().setDisabled(disabled);
+    public FloatSliderControl setDisplayType(DynamicControl.DISPLAY_TYPE display_type){
+        getDynamicControl().setDisplayType(display_type);
         return this;
     }
 }

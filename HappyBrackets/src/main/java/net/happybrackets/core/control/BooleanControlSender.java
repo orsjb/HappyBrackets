@@ -15,6 +15,7 @@ public class BooleanControlSender extends BooleanControl {
      */
     public BooleanControlSender(Object parent_sketch, String name, Boolean initial_value) {
         super(parent_sketch, name, initial_value);
+        getDynamicControl().setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED);
     }
 
     @Override
@@ -23,7 +24,7 @@ public class BooleanControlSender extends BooleanControl {
     }
     /**
      * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
-     * If the object is ControlScope Sketch or Unique, it will be disabled in the gui
+     * If the object is ControlScope Sketch or Unique, it will be displayType in the gui
      * @param new_scope The new Control Scope
      * @return this object
      */
@@ -31,7 +32,7 @@ public class BooleanControlSender extends BooleanControl {
         getDynamicControl().setControlScope(new_scope);
 
         // we do not want to be able to change this object in the GUI if noting could be connected to it
-        setDisabled(new_scope == ControlScope.SKETCH || new_scope == ControlScope.UNIQUE);
+        //setDisabled(new_scope == ControlScope.SKETCH || new_scope == ControlScope.UNIQUE);
         return this;
     }
 }

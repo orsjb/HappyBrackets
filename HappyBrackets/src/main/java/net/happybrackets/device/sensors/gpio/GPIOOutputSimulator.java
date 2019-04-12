@@ -2,6 +2,7 @@ package net.happybrackets.device.sensors.gpio;
 
 import net.happybrackets.core.control.BooleanControl;
 import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.DynamicControl;
 
 public class GPIOOutputSimulator extends GPIODigitalOutput {
 
@@ -17,7 +18,7 @@ public class GPIOOutputSimulator extends GPIODigitalOutput {
             @Override
             public void valueChanged(Boolean control_val) {
             }
-        }.setDisabled(true);
+        }.setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED);
     }
 
     @Override

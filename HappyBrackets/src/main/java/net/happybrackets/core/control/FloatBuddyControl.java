@@ -16,21 +16,10 @@ public abstract class FloatBuddyControl extends FloatControl {
          * sometimes displays wrong value in GUI when using a pair
          * Text control gives best behaviour when setting via setValue
          ************************************************************/
-        super(parent_sketch, name, initial_value, 0, 0);
+        super(parent_sketch, name, initial_value, min_val, max_val, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
 
         // Now connect a slider to the text control
         DynamicControl text_control = this.getDynamicControl().setControlScope(ControlScope.SKETCH);
-        DynamicControl slider_control = new DynamicControl(new Object(), ControlType.FLOAT, name, initial_value, min_val, max_val);
-        slider_control.setControlScope(ControlScope.UNIQUE);
-
-        // we need to watch that we don't get a loop
-        slider_control.addControlListener(control -> {
-            text_control.setValue(control.getValue());
-        });
-
-        text_control.addControlListener(control -> {
-            slider_control.setValue(control.getValue());
-        });
 
 
     }
@@ -47,13 +36,13 @@ public abstract class FloatBuddyControl extends FloatControl {
     }
 
     /**
-     * Change whether to disable control in display
+     * Change how to display object
      * We must do this in subclass
-     * @param disabled The new Control Scope
+     * @param display_type The new Control Scope
      * @return this object
      */
-    public FloatBuddyControl setDisabled(boolean disabled){
-        getDynamicControl().setDisabled(disabled);
+    public FloatBuddyControl setDisplayType(DynamicControl.DISPLAY_TYPE display_type){
+        getDynamicControl().setDisplayType(display_type);
         return this;
     }
 

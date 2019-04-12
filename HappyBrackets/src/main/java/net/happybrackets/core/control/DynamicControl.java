@@ -23,6 +23,19 @@ import java.util.List;
  */
 public class DynamicControl implements ScheduledEventListener {
 
+
+
+    /**
+     * Define how we want the object displayed in the plugin
+     */
+    public  enum DISPLAY_TYPE {
+        DISPLAY_DEFAULT,
+        DISPLAY_HIDDEN,
+        DISPLAY_DISABLED,
+        DISPLAY_ENABLED_BUDDY,
+        DISPLAY_DISABLED_BUDDY
+    }
+
     @Override
     public void doScheduledEvent(double scheduledTime, Object param) {
 
@@ -32,9 +45,9 @@ public class DynamicControl implements ScheduledEventListener {
 
         notifyLocalListeners();
 
-        if (!message.localOnly) {
+        //if (!message.localOnly) {
             notifyValueSetListeners();
-        }
+        //}
 
         synchronized (futureMessageListLock) {
             futureMessageList.remove(message);
@@ -65,7 +78,7 @@ public class DynamicControl implements ScheduledEventListener {
         MIN_VAL,
         MAX_VAL,
         CONTROL_SCOPE,
-        DISABLED
+        DISPLAY_TYPE_VAL
     }
 
     // Define the Arguments used in an Update message
@@ -77,7 +90,7 @@ public class DynamicControl implements ScheduledEventListener {
         OBJ_VAL,
         CONTROL_SCOPE,
         EXECUTE_TIME,
-        DISABLED
+        DISPLAY_TYPE_VAL
     }
 
 
@@ -171,7 +184,7 @@ public class DynamicControl implements ScheduledEventListener {
     // This is the time we want to execute the control value
     private long executionTime =  0;
 
-    boolean disabled = false; // Whether the control is disabled on control Screen
+    DISPLAY_TYPE displayType = DISPLAY_TYPE.DISPLAY_DEFAULT; // Whether the control is displayType on control Screen
 
 
     /**
@@ -184,19 +197,19 @@ public class DynamicControl implements ScheduledEventListener {
 
     /**
      * Whether we disable the control on the screen
-     * @return true if we disable control on screen
+     * @return How we will disable control on screen
      */
-    public boolean getDisabled(){
-        return disabled;
+    public DISPLAY_TYPE getDisplayType(){
+        return displayType;
     }
 
     /**
-     * Set whether we will disable control of object on the screen
-     * @param disable_control whether we want to disable control
+     * Set how we will display control  object on the screen
+     * @param display_type how we will display control
      * @return this
      */
-    public DynamicControl setDisabled(boolean disable_control){
-        disabled = disable_control;
+    public DynamicControl setDisplayType(DISPLAY_TYPE display_type){
+        displayType = display_type;
         notifyValueSetListeners();
         notifyLocalListeners();
         return  this;
@@ -306,13 +319,15 @@ public class DynamicControl implements ScheduledEventListener {
      * @param control_type  The type of control you want to create
      * @param name          The name we will give to differentiate between different controls in this class
      * @param initial_value The initial value of the control
-     * @param init_only This is unused and just used because be cannot add default parameters to
-     *                  a constructor - hence, a private constructor
+     * @param display_type  how we want to display the object
+     *
      */
-    private DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, boolean init_only) {
+    private DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, DISPLAY_TYPE display_type) {
         if (parent_sketch == null){
             parent_sketch = new Object();
         }
+
+        displayType = display_type;
         parentSketch = parent_sketch;
         parentSketchName = parent_sketch.getClass().getName();
         controlType = control_type;
@@ -338,7 +353,7 @@ public class DynamicControl implements ScheduledEventListener {
      * @param initial_value The initial value of the control
      */
     public DynamicControl(ControlType control_type, String name, Object initial_value) {
-        this(new Object(), control_type, name, initial_value, true);
+        this(new Object(), control_type, name, initial_value, DISPLAY_TYPE.DISPLAY_DEFAULT);
         synchronized (controlMapLock) {
             controlMap.addControl(this);
         }
@@ -353,7 +368,7 @@ public class DynamicControl implements ScheduledEventListener {
      * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name) {
-        this(parent_sketch, control_type, name,  null,true);
+        this(parent_sketch, control_type, name,  null, DISPLAY_TYPE.DISPLAY_DEFAULT);
         synchronized (controlMapLock) {
             controlMap.addControl(this);
         }
@@ -367,7 +382,7 @@ public class DynamicControl implements ScheduledEventListener {
      * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
      */
     public DynamicControl(ControlType control_type, String name) {
-        this(new Object(), control_type, name, convertValue(control_type, null), true);
+        this(new Object(), control_type, name, convertValue(control_type, null), DISPLAY_TYPE.DISPLAY_DEFAULT);
         synchronized (controlMapLock) {
             controlMap.addControl(this);
         }
@@ -383,7 +398,7 @@ public class DynamicControl implements ScheduledEventListener {
      * @param initial_value The initial value of the control
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value) {
-        this(parent_sketch, control_type, name, initial_value, true);
+        this(parent_sketch, control_type, name, initial_value, DISPLAY_TYPE.DISPLAY_DEFAULT);
         synchronized (controlMapLock) {
             controlMap.addControl(this);
         }
@@ -402,7 +417,7 @@ public class DynamicControl implements ScheduledEventListener {
      * @param max_value     The maximum display value of the control. Only used for display purposes
      */
     public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
-        this(parent_sketch, control_type, name, initial_value, true);
+        this(parent_sketch, control_type, name, initial_value, DISPLAY_TYPE.DISPLAY_DEFAULT);
 
         minimumDisplayValue = convertValue (control_type, min_value);
         maximumDisplayValue  = convertValue (control_type, max_value);
@@ -410,7 +425,32 @@ public class DynamicControl implements ScheduledEventListener {
         synchronized (controlMapLock) {
             controlMap.addControl(this);
         }
-    }    /**
+    }
+
+    /**
+     * A dynamic control that can be accessed from outside
+     * it is created with the sketch object that contains it along with the type
+     *
+     * @param parent_sketch the object calling - typically this, however, you can use any class object
+     * @param control_type  The type of control message you want to send
+     * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
+     * @param initial_value The initial value of the control
+     * @param min_value     The minimum display value of the control. Only used for display purposes
+     * @param max_value     The maximum display value of the control. Only used for display purposes
+     * @param display_type  The way we want the control displayed
+     */
+    public DynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value, DISPLAY_TYPE display_type) {
+        this(parent_sketch, control_type, name, initial_value, display_type);
+
+        minimumDisplayValue = convertValue (control_type, min_value);
+        maximumDisplayValue  = convertValue (control_type, max_value);
+
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
+    }
+
+    /**
      * A dynamic control that can be accessed from outside
      * it is created with the sketch object that contains it along with the type
      *
@@ -421,7 +461,7 @@ public class DynamicControl implements ScheduledEventListener {
      * @param max_value     The maximum display value of the control. Only used for display purposes
      */
     public DynamicControl(ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
-        this(new Object(), control_type, name, initial_value, true);
+        this(new Object(), control_type, name, initial_value, DISPLAY_TYPE.DISPLAY_DEFAULT);
 
         minimumDisplayValue = convertValue (control_type, min_value);
         maximumDisplayValue  = convertValue (control_type, max_value);
@@ -632,7 +672,7 @@ public class DynamicControl implements ScheduledEventListener {
         ControlScope control_scope = ControlScope.values ()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
 
         long execution_time = 0;
-        boolean disable = false;
+        DISPLAY_TYPE display_type = DISPLAY_TYPE.DISPLAY_DEFAULT;
 
         if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
         {
@@ -640,10 +680,10 @@ public class DynamicControl implements ScheduledEventListener {
             execution_time = (int) msg.getArg(UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
         }
 
-        if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.DISABLED.ordinal())
+        if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal())
         {
-            int osc_val = (int) msg.getArg(UPDATE_MESSAGE_ARGS.DISABLED.ordinal());
-            disable = osc_val != 0;
+            int osc_val = (int) msg.getArg(UPDATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal());
+            display_type = DISPLAY_TYPE.values ()[osc_val];
         }
 
 
@@ -655,7 +695,7 @@ public class DynamicControl implements ScheduledEventListener {
 
             boolean control_scope_changed = false;
 
-            control.disabled = disable;
+            control.displayType = display_type;
 
             if (!obj_val.equals(control.objVal)) {
                 changed = true;
@@ -670,13 +710,15 @@ public class DynamicControl implements ScheduledEventListener {
 
             if (changed) {
                 control.scheduleValue(obj_val, 0, true);
-                /*
+
                 if (control.getControlScope() != ControlScope.UNIQUE){
                     // we will execute via schedule if necessary
-                    control.scheduleValue(obj_val, execution_time);
+                    //control.scheduleValue(obj_val, execution_time);
 
-                    //control.notifyGlobalListeners();
+                    control.objVal = obj_val;
+                    control.notifyGlobalListeners();
                 }
+                /*
                 else
                 {
 
@@ -739,7 +781,7 @@ public class DynamicControl implements ScheduledEventListener {
                         OSCArgumentObject(objVal),
                         controlScope.ordinal(),
                         0, // We will make zero as we want to update now  (int)executionTime,
-                        disabled? 1:0
+                        displayType.ordinal()
                 });
 
     }
@@ -776,7 +818,7 @@ public class DynamicControl implements ScheduledEventListener {
                         OSCArgumentObject(minimumDisplayValue),
                         OSCArgumentObject(maximumDisplayValue),
                         controlScope.ordinal(),
-                        disabled?1:0
+                        displayType.ordinal()
                 });
 
     }
@@ -800,10 +842,10 @@ public class DynamicControl implements ScheduledEventListener {
         maximumDisplayValue = convertValue  (controlType, msg.getArg(CREATE_MESSAGE_ARGS.MAX_VAL.ordinal()));
         controlScope = ControlScope.values ()[(int) msg.getArg(CREATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
 
-        if (msg.getArgCount() > CREATE_MESSAGE_ARGS.DISABLED.ordinal())
+        if (msg.getArgCount() > CREATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal())
         {
-            int osc_val = (int) msg.getArg(CREATE_MESSAGE_ARGS.DISABLED.ordinal());
-            disabled = osc_val != 0;
+            int osc_val = (int) msg.getArg(CREATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal());
+            displayType = DISPLAY_TYPE.values ()[osc_val];
         }
 
 

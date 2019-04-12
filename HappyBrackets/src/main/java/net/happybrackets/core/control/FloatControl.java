@@ -12,9 +12,10 @@ public abstract class FloatControl extends DynamicControlParent {
      * @param initial_value Initial value of the object
      * @param min_val Minimum value to display on Slider
      * @param max_val Maximum value to display on Slider
+     * @param display_type The way we want object displayed
      */
-    protected FloatControl(Object parent_sketch, String name, double initial_value, double min_val, double max_val) {
-        super(new DynamicControl(parent_sketch, ControlType.FLOAT, name, initial_value, min_val, max_val));
+    protected FloatControl(Object parent_sketch, String name, double initial_value, double min_val, double max_val, DynamicControl.DISPLAY_TYPE display_type) {
+        super(new DynamicControl(parent_sketch, ControlType.FLOAT, name, initial_value, min_val, max_val, display_type));
     }
 
 
