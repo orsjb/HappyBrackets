@@ -204,7 +204,7 @@ public class OSCUDPReceiver implements StaticUDPReceiver.UDPPacketListener{
     @Override
     public void messageReceived(DatagramPacket packet, SocketAddress sender) {
         byteBuf.clear();
-        byteBuf.put(packet.getData());
+        byteBuf.put(packet.getData(), 0, packet.getLength());
         final OSCPacket p;
 
         try {
