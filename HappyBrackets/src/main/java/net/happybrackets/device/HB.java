@@ -1176,6 +1176,23 @@ public class HB {
 	}
 
 	/**
+	 * Get the default  HappyBrackets audio output as a UGen
+	 * @return the default HappyBrackets audio Output Ugen
+	 */
+	public static UGen getAudioOutput(){
+		return HB.HBInstance.ac.out;
+	}
+
+	/**
+	 * Get the number of audio channels on the defaul HappyBrackets audio output <br />
+	 * This parameter is dependant upon the configuration of the device
+	 * @return the number of channels
+	 */
+	public static int getNumOutChannels(){
+		return getAudioOutput().getOuts();
+	}
+
+	/**
 	 * Like {@link #clearSound()} but with a fade out of the specified duration before clearing.
 	 *
 	 * @param fadeTime the fade out time in milliseconds.
