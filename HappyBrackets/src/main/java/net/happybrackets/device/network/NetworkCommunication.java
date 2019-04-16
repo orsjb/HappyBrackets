@@ -150,9 +150,30 @@ public class NetworkCommunication {
 		_hb.addStatusChangedListener(new HB.StatusChangedListener() {
 			@Override
 			public void statusChanged(String new_status) {
-				DeviceStatus.getInstance().setStatusText(new_status);
+
 				if (DeviceConfig.getInstance() != null) {
+					DeviceStatus.getInstance().setStatusText(new_status);
 					DeviceConfig.getInstance().sendMessageToAllControllers(DeviceStatus.getInstance().getCachedStatusMessage().cachedPacket);
+				}
+			}
+
+			@Override
+			public void classLoadedMessage(Class<? extends HBAction> incomingClass) {
+				if (DeviceConfig.getInstance() != null) {
+					String simple_class_name = incomingClass.getSimpleName();
+					String full_class_name = incomingClass.getName();
+
+					OSCMessage oscMessage = OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.CLASS_LOADED, simple_class_name, full_class_name);
+
+					UDPCachedMessage message = null;
+					try {
+						message = new UDPCachedMessage(oscMessage);
+						DeviceConfig.getInstance().sendMessageToAllControllers(message.getCachedPacket());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+
 				}
 			}
 		});

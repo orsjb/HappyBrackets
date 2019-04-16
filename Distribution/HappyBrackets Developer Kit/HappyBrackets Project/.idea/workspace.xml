@@ -21,12 +21,12 @@
     </SUITE>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="run.sh" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh">
+    <leaf>
+      <file leaf-file-name="FrequencyEnvelope.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="30" column="7" lean-forward="true" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
+            <state relative-caret-position="45">
+              <caret line="24" lean-forward="true" selection-start-line="22" selection-end-line="24" />
             </state>
           </provider>
         </entry>
@@ -82,7 +82,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" />
@@ -98,7 +97,6 @@
         <option value="$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" />
-        <option value="$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/DigitalInGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java" />
@@ -133,6 +131,8 @@
         <option value="$PROJECT_DIR$/Device/HappyBrackets/data/scripts/test-rename.sh" />
         <option value="$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh" />
         <option value="$PROJECT_DIR$/Device/HappyBrackets/scripts/makeconfig.sh" />
+        <option value="$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java" />
+        <option value="$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java" />
       </list>
     </option>
   </component>
@@ -152,6 +152,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -167,12 +170,13 @@
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
+              <item name=".idea" type="462c0819:PsiDirectoryNode" />
+              <item name="fileTemplates" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
@@ -215,6 +219,13 @@
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="basic" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
               <item name="controls" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -228,9 +239,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
-      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -239,7 +247,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="project.propCompiler" />
+    <property name="settings.editor.selected.configurable" value="fileTemplates" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -364,7 +372,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="839" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="836" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
@@ -372,29 +380,29 @@
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.51287556" side_tool="true" visible="true" weight="0.32345015" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5152778" side_tool="true" visible="true" weight="0.32283464" />
       <window_info anchor="right" id="Maven Projects" order="3" weight="0.24878837" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.39027777" weight="0.3561644" />
-      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.48712447" visible="true" weight="0.32345015" />
+      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.48472223" visible="true" weight="0.32283464" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2539342" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25694445" />
       <window_info anchor="bottom" id="Problems" order="8" />
-      <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.32260373" />
+      <window_info anchor="right" id="HappyBrackets" order="3" sideWeight="0.496063" visible="true" weight="0.32222223" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.46566522" weight="0.39692307" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.48958334" weight="0.32722512" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" x="105" y="191" width="1080" height="530" id="Documentation" order="4" type="FLOATING" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="Coverage" order="5" sideWeight="0.503937" side_tool="true" weight="0.20553781" />
-      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" sideWeight="0.496063" weight="0.1648" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49353796" weight="0.32840723" />
     </layout>
@@ -436,13 +444,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="61" column="22" selection-start-line="61" selection-start-column="22" selection-end-line="61" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
@@ -461,13 +462,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="828">
           <caret line="165" column="28" selection-start-line="165" selection-start-column="28" selection-end-line="165" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-159">
-          <caret line="3" column="38" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
         </state>
       </provider>
     </entry>
@@ -575,20 +569,8 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data/change_dir.sh" />
-    <entry file="file://$PROJECT_DIR$/data/_README">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="81" selection-start-column="81" selection-end-column="81" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-jars.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/_README" />
+    <entry file="file://$PROJECT_DIR$/data/send-jars.sh" />
     <entry file="file://$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="99">
@@ -691,27 +673,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-scripts.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="112" selection-start-line="112" selection-end-line="116" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-startupclasses.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="118" selection-start-line="118" selection-end-line="118" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-audio.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="119" selection-start-line="119" selection-end-line="119" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-scripts.sh" />
+    <entry file="file://$PROJECT_DIR$/data/send-startupclasses.sh" />
+    <entry file="file://$PROJECT_DIR$/data/send-audio.sh" />
     <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/data/scripts/test-rename.sh" />
     <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/setup/setup-happybrackets-pi.sh">
       <provider selected="true" editor-type-id="text-editor">
@@ -723,13 +687,7 @@
     <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run-simulator.sh">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-folder.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="444">
-          <caret line="162" column="12" selection-start-line="136" selection-start-column="8" selection-end-line="162" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/send-folder.sh" />
     <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/makeconfig.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
@@ -741,6 +699,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="30" column="7" lean-forward="true" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/fileTemplates/HappyBracketsSketch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="24" lean-forward="true" selection-start-line="22" selection-end-line="24" />
         </state>
       </provider>
     </entry>
