@@ -13,8 +13,14 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.UserPrincipal;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
+
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 
 /**
  * Class that receives files from network so we can store them
@@ -224,8 +230,37 @@ public class FileReceiver {
                         }
 
 
+                        boolean set_executable  = false;
+                        Set<PosixFilePermission> permission_set = new HashSet<PosixFilePermission>();
+
+                        UserPrincipal userPrincipal = null;
+
+                        // See what permissions we currently have on this file. If it has executable, we need to make target executable also
+                        if (target_path.exists()){
+                            try {
+                                permission_set = Files.getPosixFilePermissions(target_path.toPath(), NOFOLLOW_LINKS);
+
+                                set_executable = target_path.canExecute();
+                                userPrincipal = Files.getOwner(target_path.toPath(), NOFOLLOW_LINKS);
+
+                            }
+                            catch (Exception ex){}
+
+                        }
+
                         Files.move(new File(client.currentSourceFile).toPath(), target_path.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
+
+                        // Now set to executable
+                        if (set_executable){
+                            target_path = new File(client.currentTargetFile);
+                            try{
+                                Files.setPosixFilePermissions(target_path.toPath(), permission_set);
+                                Files.setOwner(target_path.toPath(), userPrincipal);
+                            }
+                            catch (Exception ex){}
+
+                        }
 
                         controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.COMPLETE, client.currentTargetFile), sender);
                         System.out.println("Complete write file " + currentTargetFile);
