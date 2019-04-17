@@ -11,7 +11,7 @@ public abstract class IntegerSliderControl extends IntegerControl {
      * @param max_val Maximum value to display on Slider
      */
     public IntegerSliderControl(Object parent_sketch, String name, int initial_value, int min_val, int max_val) {
-        super(parent_sketch, name, initial_value, min_val, max_val);
+        super(parent_sketch, name, initial_value, min_val, max_val, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);
     }
 
 
@@ -27,13 +27,13 @@ public abstract class IntegerSliderControl extends IntegerControl {
     }
 
     /**
-     * Change whether to disable control in display
+     * Change how to display object
      * We must do this in subclass
-     * @param disabled The new Control Scope
+     * @param display_type The new Control Scope
      * @return this object
      */
-    public IntegerSliderControl setDisabled(boolean disabled){
-        getDynamicControl().setDisabled(disabled);
+    public IntegerSliderControl setDisplayType(DynamicControl.DISPLAY_TYPE display_type){
+        getDynamicControl().setDisplayType(display_type);
         return this;
     }
 }

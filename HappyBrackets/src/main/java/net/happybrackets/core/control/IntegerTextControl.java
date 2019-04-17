@@ -9,7 +9,7 @@ public abstract class IntegerTextControl extends IntegerControl {
      * @param initial_value Initial value of the object
      */
     public IntegerTextControl(Object parent_sketch, String name, int initial_value) {
-        super(parent_sketch, name, initial_value, 0, 0);
+        super(parent_sketch, name, initial_value, 0, 0, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);
     }
 
     /**
@@ -24,13 +24,13 @@ public abstract class IntegerTextControl extends IntegerControl {
     }
 
     /**
-     * Change whether to disable control in display
+     * Change how to display object
      * We must do this in subclass
-     * @param disabled The new Control Scope
+     * @param display_type The new Control Scope
      * @return this object
      */
-    public IntegerTextControl setDisabled(boolean disabled){
-        getDynamicControl().setDisabled(disabled);
+    public IntegerTextControl setDisplayType(DynamicControl.DISPLAY_TYPE display_type){
+        getDynamicControl().setDisplayType(display_type);
         return this;
     }
 }

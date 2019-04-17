@@ -1,9 +1,5 @@
 package net.happybrackets.develop.DynamicControls;
 
-import de.sciss.net.OSCListener;
-import de.sciss.net.OSCMessage;
-import javafx.application.Application;
-import javafx.stage.Stage;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
@@ -13,14 +9,12 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Noise;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
-import java.net.SocketAddress;
 
 public class TestDynamicControl_1 implements HBAction {
 
@@ -47,8 +41,8 @@ public class TestDynamicControl_1 implements HBAction {
             float_control.setControlScope(ControlScope.DEVICE);
             checkbox_control.setControlScope(ControlScope.GLOBAL);
 
-            text_mirror.setDisabled(true);
-            slider_control.setDisabled(true);
+            text_mirror.setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED);
+            slider_control.setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED);
             //hb.setPresetValue("Name", 1);
             //hb.setPresetValue("Name", 1);
 

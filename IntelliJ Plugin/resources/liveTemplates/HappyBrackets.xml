@@ -1,8 +1,8 @@
-<templateSet group="HappyBrackets">≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤≤`
-  <template name="accelerometerSensor" value=" $COMMENT$ &#10;        new net.happybrackets.device.sensors.AccelerometerListener(hb) {@java.lang.Override&#10;            public void sensorUpdated(float x_val, float y_val, float z_val) { $COMMENT_LINE_TOP$&#10;                $END$&#10;            $COMMENT_LINE_BOTTOM$}&#10;        };/*  End accelerometerSensor  */" description="Inserts an accelerometer sensor listener" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/** type accelerometerSensor to create this. Values typically range from -1 to + 1 **/&quot;" alwaysStopAt="true" />
-    <variable name="COMMENT_LINE_TOP" expression="" defaultValue="&quot;/*     Write your code below this line     */&quot;" alwaysStopAt="true" />
-    <variable name="COMMENT_LINE_BOTTOM" expression="" defaultValue="&quot;/*  Write your code above this line        */&quot;" alwaysStopAt="true" />
+<templateSet group="HappyBrackets">
+  <template name="accelerometerSensor" value=" $COMMENT$ &#10;        new net.happybrackets.device.sensors.AccelerometerListener(hb) {@java.lang.Override&#10;            public void sensorUpdated(float x_val, float y_val, float z_val) { $COMMENT_LINE_TOP$&#10;                $END$&#10;            $COMMENT_LINE_BOTTOM$&#10;}&#10;        };//  End accelerometerSensor " description="Inserts an accelerometer sensor listener" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// type accelerometerSensor to create this. Values typically range from -1 to + 1 &quot;" alwaysStopAt="true" />
+    <variable name="COMMENT_LINE_TOP" expression="" defaultValue="&quot;// Write your code below this line     &quot;" alwaysStopAt="true" />
+    <variable name="COMMENT_LINE_BOTTOM" expression="" defaultValue="&quot;// Write your code above this line&quot;" alwaysStopAt="true" />
     <context>
       <option name="JAVA_EXPRESSION" value="true" />
       <option name="JAVA_STATEMENT" value="true" />
@@ -23,26 +23,26 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="basicSamplePlayer" value="$COMMENT$&#10;        // define our sample name&#10;        final java.lang.String $SAMPLE_NAME_VAR$ = &quot;$SAMPLE_NAME$&quot;;&#10;net.happybrackets.core.instruments.SampleModule $sampleModule$ = new net.happybrackets.core.instruments.SampleModule();&#10;if ($sampleModule$.setSample($SAMPLE_NAME_VAR$)) {$COMMENT_LINE_1$&#10;    $sampleModule$.connectTo(hb.ac.out);&#10;    $END$&#10;$COMMENT_LINE_2$&#10;}else {&#10;    hb.setStatus(&quot;Failed sample &quot; + $SAMPLE_NAME_VAR$);&#10;}/* End samplePlayer code */" description="creates a Simple SamplePlayer" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* type basicSamplePLayer to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="basicSamplePlayer" value="$COMMENT$&#10;        // define our sample name&#10;        final java.lang.String $SAMPLE_NAME_VAR$ = &quot;$SAMPLE_NAME$&quot;;&#10;net.happybrackets.core.instruments.SampleModule $sampleModule$ = new net.happybrackets.core.instruments.SampleModule();&#10;if ($sampleModule$.setSample($SAMPLE_NAME_VAR$)) {$COMMENT_LINE_1$&#10;    $sampleModule$.connectTo(hb.ac.out);&#10;    $END$&#10;$COMMENT_LINE_2$&#10;}else {&#10;    hb.setStatus(&quot;Failed sample &quot; + $SAMPLE_NAME_VAR$);&#10;}// End samplePlayer code " description="creates a Simple SamplePlayer" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// type basicSamplePLayer to generate this code &quot;" alwaysStopAt="true" />
     <variable name="SAMPLE_NAME_VAR" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="SAMPLE_NAME" expression="variableOfType(Type)" defaultValue="&quot;data/audio/Roje/i-write.wav&quot;" alwaysStopAt="true" />
     <variable name="sampleModule" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
-    <variable name="COMMENT_LINE_1" expression="" defaultValue="&quot;/* Write your code below this line */&quot;" alwaysStopAt="true" />
-    <variable name="COMMENT_LINE_2" expression="" defaultValue="&quot;/* Write your code above this line */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT_LINE_1" expression="" defaultValue="&quot;// Write your code below this line &quot;" alwaysStopAt="true" />
+    <variable name="COMMENT_LINE_2" expression="" defaultValue="&quot;// Write your code above this line &quot;" alwaysStopAt="true" />
     <context>
       <option name="JAVA_EXPRESSION" value="true" />
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="beadMessage" value="$COMMENT_1$&#10;new net.beadsproject.beads.core.Bead() {&#10;            @java.lang.Override&#10;            protected void messageReceived(net.beadsproject.beads.core.Bead bead) {/* Write your code below this line */&#10;                $END$&#10;                /* Write your code above this line */&#10;                &#10;            }&#10;        }" description="Create a Bead message listener" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT_1" expression="" defaultValue="&quot;/* type beadMessage to create this code */&quot;" alwaysStopAt="true" />
+  <template name="beadMessage" value="$COMMENT_1$&#10;new net.beadsproject.beads.core.Bead() {&#10;            @java.lang.Override&#10;            protected void messageReceived(net.beadsproject.beads.core.Bead bead) {// Write your code below this line &#10;                $END$&#10;                // Write your code above this line &#10;                &#10;            }&#10;        }" description="Create a Bead message listener" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT_1" expression="" defaultValue="&quot;// type beadMessage to create this code &quot;" alwaysStopAt="true" />
     <context>
       <option name="JAVA_EXPRESSION" value="true" />
     </context>
   </template>
-  <template name="booleanControl" value="$COMMENT$&#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControl(this, &quot;$NAME$&quot;, $INIT_VALUE$) {&#10;    @java.lang.Override&#10;    public void valueChanged(java.lang.Boolean control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;};/* End DynamicControl $CONTROL_NAME$ code */&#10;&#10;" description="Creates a Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* type booleanControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="booleanControl" value="$COMMENT$&#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControl(this, &quot;$NAME$&quot;, $INIT_VALUE$) {&#10;    @java.lang.Override&#10;    public void valueChanged(java.lang.Boolean control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;};// End DynamicControl $CONTROL_NAME$ code &#10;&#10;" description="Creates a Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// type booleanControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;false&quot;" alwaysStopAt="true" />
@@ -51,15 +51,15 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="beadsClockTimer" value="/************************************************************&#10;         * Create a clock with a interval based on the clock duration&#10;         *&#10;         * To create this, just type beadsClockTimer&#10;         ************************************************************/&#10;        // Create a clock with beat interval of CLOCK_INTERVAL ms&#10;        net.beadsproject.beads.ugens.Clock clock = new net.beadsproject.beads.ugens.Clock($INTERVAL$);&#10;&#10;&#10;        // let us handle triggers&#10;        clock.addMessageListener(new net.beadsproject.beads.core.Bead() {&#10;            @java.lang.Override&#10;            protected void messageReceived(net.beadsproject.beads.core.Bead bead) {&#10;                // see if we are at the start of a beat&#10;                boolean start_of_beat = clock.getCount() % clock.getTicksPerBeat() == 0;&#10;                if (start_of_beat) {&#10;                    /*** Write your code to perform functions on the beat below this line ****/&#10;                    &#10;                    $END$&#10;&#10;                    /*** Write your code to perform functions on the beat above this line ****/&#10;                }&#10;                else&#10;                {&#10;                    /*** Write your code to perform functions off the beat below this line ****/&#10;&#10;                    /*** Write your code to perform functions off the beat above this line ****/&#10;                }&#10;            }&#10;        });&#10;        /*********************** end beadsClockTimer **********************/" description="Creates a clock timer using the Beads Library" toReformat="true" toShortenFQNames="true">
+  <template name="beadsClockTimer" value="// To create this, just type beadsClockTimer&#10;        // Create a clock with beat interval of CLOCK_INTERVAL ms&#10;        net.beadsproject.beads.ugens.Clock clock = new net.beadsproject.beads.ugens.Clock($INTERVAL$);&#10;&#10;&#10;        // let us handle triggers&#10;        clock.addMessageListener(new net.beadsproject.beads.core.Bead() {&#10;            @java.lang.Override&#10;            protected void messageReceived(net.beadsproject.beads.core.Bead bead) {&#10;                // see if we are at the start of a beat&#10;                boolean start_of_beat = clock.getCount() % clock.getTicksPerBeat() == 0;&#10;                if (start_of_beat) {&#10;                    // Write your code to perform functions on the beat below this line&#10;                    &#10;                    $END$&#10;&#10;                    // Write your code to perform functions on the beat above this line&#10;                }&#10;                else&#10;                {&#10;                    // Write your code to perform functions off the beat below this line &#10;&#10;                    // Write your code to perform functions off the beat above this line&#10;                }&#10;            }&#10;        });&#10;        // end beadsClockTimer" description="Creates a clock timer using the Beads Library" toReformat="true" toShortenFQNames="true">
     <variable name="INTERVAL" expression="variableOfType(Float)" defaultValue="&quot;500&quot;" alwaysStopAt="true" />
     <context>
       <option name="JAVA_EXPRESSION" value="true" />
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="clockTimer" value="$COMMENT$&#10;        net.happybrackets.core.scheduling.Clock $CONTROL_NAME$ = hb.createClock($INTERVAL$).addClockTickListener((offset, this_clock)-&gt;{/* Write your code below this line */&#10;            $END$&#10;            /* Write your code above this line */&#10;        });&#10;        &#10;        $CONTROL_NAME$.start();/* End Clock Timer */" description="Creates a simple clock timer" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* To create this, just type clockTimer */&quot;" alwaysStopAt="true" />
+  <template name="clockTimer" value="$COMMENT$&#10;        net.happybrackets.core.scheduling.Clock $CONTROL_NAME$ = hb.createClock($INTERVAL$).addClockTickListener((offset, this_clock)-&gt;{// Write your code below this line &#10;            $END$&#10;            // Write your code above this line &#10;        });&#10;        &#10;        $CONTROL_NAME$.start();// End Clock Timer " description="Creates a simple clock timer" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// To create this, just type clockTimer &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;hbClock&quot;" alwaysStopAt="true" />
     <variable name="INTERVAL" expression="variableOfType(Double)" defaultValue="&quot;500&quot;" alwaysStopAt="true" />
     <context>
@@ -67,8 +67,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="floatBuddyControl" value="$COMMENT$&#10;         net.happybrackets.core.control.FloatControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatBuddyControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;             @java.lang.Override &#10;             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */&#10;                 $END$&#10;                 /* Write your DynamicControl code above this line */&#10;             }&#10;         };/* End DynamicControl $CONTROL_NAME$ code */&#10;&#10;" description="Creates a float type DynamicControl pair that displays as a slider and text buddies" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Simply type floatBuddyControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="floatBuddyControl" value="$COMMENT$&#10;         net.happybrackets.core.control.FloatControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatBuddyControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;             @java.lang.Override &#10;             public void valueChanged(double control_val) {// Write your DynamicControl code below this line &#10;                 $END$&#10;                 // Write your DynamicControl code above this line &#10;             }&#10;         };// End DynamicControl $CONTROL_NAME$ code &#10;&#10;" description="Creates a float type DynamicControl pair that displays as a slider and text buddies" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Simply type floatBuddyControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;floatControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Float)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -79,8 +79,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="floatSliderControl" value="$COMMENT$&#10;         net.happybrackets.core.control.FloatControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatSliderControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;             @java.lang.Override &#10;             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */&#10;                 $END$&#10;                 /* Write your DynamicControl code above this line */&#10;             }&#10;         };/* End DynamicControl $CONTROL_NAME$ code */&#10;         " description="Creates a float type DynamicControl that displays as a slider" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type floatSliderControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="floatSliderControl" value="$COMMENT$&#10;         net.happybrackets.core.control.FloatControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatSliderControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;             @java.lang.Override &#10;             public void valueChanged(double control_val) {// Write your DynamicControl code below this line &#10;                 $END$&#10;                 // Write your DynamicControl code above this line &#10;             }&#10;         };// End DynamicControl $CONTROL_NAME$ code &#10;         " description="Creates a float type DynamicControl that displays as a slider" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type floatSliderControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;floatControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Float)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -91,8 +91,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="floatTextControl" value="$COMMENT$&#10;         net.happybrackets.core.control.FloatTextControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatTextControl(this, &quot;$NAME$&quot;, $INIT_VALUE$) {&#10;             @java.lang.Override&#10;             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */&#10;                 $END$&#10;                 /* Write your DynamicControl code above this line */&#10;             }&#10;         };/* End DynamicControl code $CONTROL_NAME$ */" description="Creates a float type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type floatTextControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="floatTextControl" value="$COMMENT$&#10;         net.happybrackets.core.control.FloatTextControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatTextControl(this, &quot;$NAME$&quot;, $INIT_VALUE$) {&#10;             @java.lang.Override&#10;             public void valueChanged(double control_val) {// Write your DynamicControl code below this line &#10;                 $END$&#10;                 // Write your DynamicControl code above this line &#10;             }&#10;         };// End DynamicControl code $CONTROL_NAME$ " description="Creates a float type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type floatTextControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;floatControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Type)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -101,8 +101,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="globalBooleanControl" value="$COMMENT$&#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControl(this, &quot;$NAME$&quot;, $INIT_VALUE$) {&#10;    @java.lang.Override&#10;    public void valueChanged(java.lang.Boolean control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);/* End DynamicControl $CONTROL_NAME$ code */&#10;" description="Creates a global Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalBooleanControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="globalBooleanControl" value="$COMMENT$&#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControl(this, &quot;$NAME$&quot;, $INIT_VALUE$) {&#10;    @java.lang.Override&#10;    public void valueChanged(java.lang.Boolean control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);// End DynamicControl $CONTROL_NAME$ code &#10;" description="Creates a global Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalBooleanControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;global control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;false&quot;" alwaysStopAt="true" />
@@ -111,8 +111,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="globalFloatControl" value="$COMMENT$&#10;net.happybrackets.core.control.FloatControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatBuddyControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;    @java.lang.Override&#10;    public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);/* End DynamicControl $CONTROL_NAME$ code */" description="Creates a global float type DynamicControl pair" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalFloatControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="globalFloatControl" value="$COMMENT$&#10;net.happybrackets.core.control.FloatControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatBuddyControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;    @java.lang.Override&#10;    public void valueChanged(double control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);// End DynamicControl $CONTROL_NAME$ code " description="Creates a global float type DynamicControl pair" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalFloatControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;globalControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;global control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Float)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -123,8 +123,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="globalIntControl" value="$COMMENT$&#10;net.happybrackets.core.control.IntegerControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerBuddyControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;    @java.lang.Override&#10;    public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);/* End DynamicControl $CONTROL_NAME$ code */&#10;" description="Creates a global integer type DynamicControl buddy pair" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalIntControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="globalIntControl" value="$COMMENT$&#10;net.happybrackets.core.control.IntegerControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerBuddyControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;    @java.lang.Override&#10;    public void valueChanged(int control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);// End DynamicControl $CONTROL_NAME$ code &#10;" description="Creates a global integer type DynamicControl buddy pair" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalIntControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;globalControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;global control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Type)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -135,8 +135,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="globalTriggerControl" value="$COMMENT$&#10;net.happybrackets.core.control.TriggerControl $CONTROL_NAME$ = new net.happybrackets.core.control.TriggerControl(this, &quot;$NAME$&quot;) {&#10;    @java.lang.Override&#10;    public void triggerEvent() {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);/* End DynamicControl $CONTROL_NAME$ code */" description="Creates a global trigger DynamicControl" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalTriggerControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="globalTriggerControl" value="$COMMENT$&#10;net.happybrackets.core.control.TriggerControl $CONTROL_NAME$ = new net.happybrackets.core.control.TriggerControl(this, &quot;$NAME$&quot;) {&#10;    @java.lang.Override&#10;    public void triggerEvent() {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);// End DynamicControl $CONTROL_NAME$ code " description="Creates a global trigger DynamicControl" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalTriggerControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;globalControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;global control name&quot;" alwaysStopAt="true" />
     <context>
@@ -144,17 +144,17 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="gyroscopeSensor" value="$COMMENT$&#10;new net.happybrackets.device.sensors.GyroscopeListener(hb) {&#10;            @java.lang.Override&#10;            public void sensorUpdated(float pitch, float roll, float yaw) {$COMMENT_LINE_1$&#10;                $END$&#10;                $COMMENT_LINE_2$&#10;            }&#10;        };/*** End gyroscopeSensor code ***/" description="Inserts a gyroscope sensor listener" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/** type gyroscopeSensor to create this. Values typically range from -1 to + 1 **/&quot;" alwaysStopAt="true" />
-    <variable name="COMMENT_LINE_1" expression="" defaultValue="&quot;/* Write your code below this line */&quot;" alwaysStopAt="true" />
-    <variable name="COMMENT_LINE_2" expression="" defaultValue="&quot;/* Write your code above this line */&quot;" alwaysStopAt="true" />
+  <template name="gyroscopeSensor" value="$COMMENT$&#10;new net.happybrackets.device.sensors.GyroscopeListener(hb) {&#10;            @java.lang.Override&#10;            public void sensorUpdated(float pitch, float roll, float yaw) {$COMMENT_LINE_1$&#10;                $END$&#10;                $COMMENT_LINE_2$&#10;            }&#10;        };// End gyroscopeSensor code" description="Inserts a gyroscope sensor listener" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// type gyroscopeSensor to create this. Values typically range from -1 to + 1 &quot;" alwaysStopAt="true" />
+    <variable name="COMMENT_LINE_1" expression="" defaultValue="&quot;// Write your code below this line &quot;" alwaysStopAt="true" />
+    <variable name="COMMENT_LINE_2" expression="" defaultValue="&quot;// Write your code above this line &quot;" alwaysStopAt="true" />
     <context>
       <option name="JAVA_EXPRESSION" value="true" />
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="intBuddyControl" value="$COMMENT$&#10;net.happybrackets.core.control.IntegerControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerBuddyControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;    @java.lang.Override&#10;    public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;};/* End DynamicControl $CONTROL_NAME$ code */&#10;" description="Creates an integer type DynamicControl pair that displays as a slider and text buddies" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type intBuddyControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="intBuddyControl" value="$COMMENT$&#10;net.happybrackets.core.control.IntegerControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerBuddyControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;    @java.lang.Override&#10;    public void valueChanged(int control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;};// End DynamicControl $CONTROL_NAME$ code &#10;" description="Creates an integer type DynamicControl pair that displays as a slider and text buddies" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type intBuddyControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;intControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Type)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -165,8 +165,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="intSliderControl" value="$COMMENT$&#10;net.happybrackets.core.control.IntegerControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerSliderControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;    @java.lang.Override&#10;    public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;};/* End DynamicControl $CONTROL_NAME$ code */&#10;" description="Creates an integer type DynamicControl that displays as a slider" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type intSliderControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="intSliderControl" value="$COMMENT$&#10;net.happybrackets.core.control.IntegerControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerSliderControl(this, &quot;$NAME$&quot;, $INIT_VALUE$, $MIN$, $MAX$) {&#10;    @java.lang.Override&#10;    public void valueChanged(int control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;};// End DynamicControl $CONTROL_NAME$ code &#10;" description="Creates an integer type DynamicControl that displays as a slider" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type intSliderControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;intControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;int control&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Type)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -177,8 +177,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="intTextControl" value="$COMMENT$&#10;net.happybrackets.core.control.IntegerTextControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerTextControl(this, &quot;$NAME$&quot;, $INIT_VALUE$) {&#10;    @java.lang.Override&#10;    public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;};/* End DynamicControl $CONTROL_NAME$ code */&#10;" description="Creates an integer type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type intTextControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="intTextControl" value="$COMMENT$&#10;net.happybrackets.core.control.IntegerTextControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerTextControl(this, &quot;$NAME$&quot;, $INIT_VALUE$) {&#10;    @java.lang.Override&#10;    public void valueChanged(int control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;};// End DynamicControl $CONTROL_NAME$ code &#10;" description="Creates an integer type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type intTextControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;intControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Float)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -187,8 +187,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="textControl" value="$COMMENT$&#10;net.happybrackets.core.control.TextControl $CONTROL_NAME$ = new net.happybrackets.core.control.TextControl(this, &quot;$NAME$&quot;, &quot;$INIT_VALUE$&quot;) {&#10;    @java.lang.Override&#10;    public void valueChanged(java.lang.String control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;};/* End DynamicControl $CONTROL_NAME$ code */&#10;&#10;        " description="Creates a string type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type textControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="textControl" value="$COMMENT$&#10;net.happybrackets.core.control.TextControl $CONTROL_NAME$ = new net.happybrackets.core.control.TextControl(this, &quot;$NAME$&quot;, &quot;$INIT_VALUE$&quot;) {&#10;    @java.lang.Override&#10;    public void valueChanged(java.lang.String control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;};// End DynamicControl $CONTROL_NAME$ code &#10;&#10;        " description="Creates a string type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type textControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;&quot;" alwaysStopAt="true" />
@@ -197,8 +197,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="triggerControl" value="$COMMENT$&#10;net.happybrackets.core.control.TriggerControl $CONTROL_NAME$ = new net.happybrackets.core.control.TriggerControl(this, &quot;$NAME$&quot;) {&#10;    @java.lang.Override&#10;    public void triggerEvent() {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;};/* End DynamicControl $CONTROL_NAME$ code */&#10;" description="Creates a Trigger type DynamicControl that displays as a button" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type triggerControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="triggerControl" value="$COMMENT$&#10;net.happybrackets.core.control.TriggerControl $CONTROL_NAME$ = new net.happybrackets.core.control.TriggerControl(this, &quot;$NAME$&quot;) {&#10;    @java.lang.Override&#10;    public void triggerEvent() {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;};// End DynamicControl $CONTROL_NAME$ code &#10;" description="Creates a Trigger type DynamicControl that displays as a button" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type triggerControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;triggerControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <context>
@@ -206,8 +206,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="globalTextControl" value="$COMMENT$&#10;net.happybrackets.core.control.TextControl $CONTROL_NAME$ = new net.happybrackets.core.control.TextControl(this, &quot;$NAME$&quot;, &quot;$INIT_VALUE$&quot;) {&#10;    @java.lang.Override&#10;    public void valueChanged(java.lang.String control_val) {/* Write your DynamicControl code below this line */&#10;        $END$&#10;        /* Write your DynamicControl code above this line */&#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);/* End DynamicControl $CONTROL_NAME$ code */&#10;&#10;        " description="Creates a global string type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalTextControl to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="globalTextControl" value="$COMMENT$&#10;net.happybrackets.core.control.TextControl $CONTROL_NAME$ = new net.happybrackets.core.control.TextControl(this, &quot;$NAME$&quot;, &quot;$INIT_VALUE$&quot;) {&#10;    @java.lang.Override&#10;    public void valueChanged(java.lang.String control_val) {// Write your DynamicControl code below this line &#10;        $END$&#10;        // Write your DynamicControl code above this line &#10;    }&#10;}.setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);// End DynamicControl $CONTROL_NAME$ code &#10;&#10;        " description="Creates a global string type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalTextControl to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;global control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;&quot;" alwaysStopAt="true" />
@@ -216,8 +216,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="gpioDigitalIn" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIOInput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIOInput.getInputPin($GPIO_NUMBER$, com.pi4j.io.gpio.PinPullResistance.$PIN_PULL$);&#10;        if ($VAR_NAME$ != null){&#10;&#10;            $VAR_NAME$.addStateListener((sensor, new_state) -&gt; {/* Write your code below this line */&#10;                $END$&#10;                /* Write your code above this line */                &#10;            });&#10;        }&#10;        else&#10;        {&#10;            hb.setStatus(&quot;Fail GPIO Input &quot; + $GPIO_NUMBER$);&#10;        }/* End gpioDigitalIn code */" description="Find a GPIO Digital Input Pin" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type gpioDigitalIn to create this code*/&quot;" alwaysStopAt="true" />
+  <template name="gpioDigitalIn" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIOInput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIOInput.getInputPin($GPIO_NUMBER$, com.pi4j.io.gpio.PinPullResistance.$PIN_PULL$);&#10;        if ($VAR_NAME$ != null){&#10;&#10;            $VAR_NAME$.addStateListener((sensor, new_state) -&gt; {// Write your code below this line &#10;                $END$&#10;                // Write your code above this line                 &#10;            });&#10;        }&#10;        else&#10;        {&#10;            hb.setStatus(&quot;Fail GPIO Input &quot; + $GPIO_NUMBER$);&#10;        }// End gpioDigitalIn code " description="Find a GPIO Digital Input Pin" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type gpioDigitalIn to create this code&quot;" alwaysStopAt="true" />
     <variable name="VAR_NAME" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="GPIO_NUMBER" expression="variableOfType(Integer)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
     <variable name="PIN_PULL" expression="enum(com.pi4j.io.gpio.PinPullResistance)" defaultValue="&quot;PULL_DOWN&quot;" alwaysStopAt="true" />
@@ -226,8 +226,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="gpioPWMOut" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIOPWMOutput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIOPWMOutput.getOutputPin($GPIO_NUMBER$);&#10;&#10;        if ($VAR_NAME$ == null){&#10;            hb.setStatus(&quot;Fail GPIO PWM &quot; + $GPIO_NUMBER$);&#10;        }/*** End gpioPWMOut code ***/&#10;        $END$" description="Find a GPIO PWM Output Pin" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type gpioPWMOut to create this code */&quot;" alwaysStopAt="true" />
+  <template name="gpioPWMOut" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIOPWMOutput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIOPWMOutput.getOutputPin($GPIO_NUMBER$);&#10;&#10;        if ($VAR_NAME$ == null){&#10;            hb.setStatus(&quot;Fail GPIO PWM &quot; + $GPIO_NUMBER$);&#10;        }// End gpioPWMOut code &#10;        $END$" description="Find a GPIO PWM Output Pin" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type gpioPWMOut to create this code &quot;" alwaysStopAt="true" />
     <variable name="VAR_NAME" expression="suggestVariableName" defaultValue="" alwaysStopAt="true" />
     <variable name="GPIO_NUMBER" expression="variableOfType(Integer)" defaultValue="&quot;1&quot;" alwaysStopAt="true" />
     <context>
@@ -235,8 +235,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="gpioDigitalOut" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIODigitalOutput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIODigitalOutput.getOutputPin($GPIO_NUMBER$);&#10;        if ($VAR_NAME$ == null){&#10;            hb.setStatus(&quot;Fail GPIO Digital Out &quot; + $GPIO_NUMBER$);&#10;        }/* End gpioDigitalOut code */&#10;        $END$" description="Find a GPIO Digital Output Pin" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type gpioDigitalOut to create this code */&quot;" alwaysStopAt="true" />
+  <template name="gpioDigitalOut" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIODigitalOutput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIODigitalOutput.getOutputPin($GPIO_NUMBER$);&#10;        if ($VAR_NAME$ == null){&#10;            hb.setStatus(&quot;Fail GPIO Digital Out &quot; + $GPIO_NUMBER$);&#10;        }// End gpioDigitalOut code &#10;        $END$" description="Find a GPIO Digital Output Pin" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type gpioDigitalOut to create this code &quot;" alwaysStopAt="true" />
     <variable name="VAR_NAME" expression="suggestVariableName" defaultValue="" alwaysStopAt="true" />
     <variable name="GPIO_NUMBER" expression="variableOfType(Integer)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
     <context>
@@ -244,8 +244,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="synchronizedThread" value="$COMMENT$&#10;        new java.lang.Thread(() -&gt; {&#10;            while ($RUN_CONDITION$) {&#10;                synchronized ($OBJECTNAME$){&#10;                    try {&#10;                        $OBJECTNAME$.wait();&#10;&#10;                    } catch (java.lang.InterruptedException e) {&#10;                        e.printStackTrace();&#10;                    }&#10;                }&#10;                //Add the function you need to execute here&#10;                $END$        &#10;            }&#10;        }).start(); /* end synchronizedThread */" description="Creates a syncronised thread" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type synchronizedThread to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="synchronizedThread" value="$COMMENT$&#10;        new java.lang.Thread(() -&gt; {&#10;            while ($RUN_CONDITION$) {&#10;                synchronized ($OBJECTNAME$){&#10;                    try {&#10;                        $OBJECTNAME$.wait();&#10;&#10;                    } catch (java.lang.InterruptedException e) {&#10;                        e.printStackTrace();&#10;                    }&#10;                }&#10;                //Add the function you need to execute here&#10;                $END$        &#10;            }&#10;        }).start(); // end synchronizedThread " description="Creates a syncronised thread" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type synchronizedThread to generate this code &quot;" alwaysStopAt="true" />
     <variable name="RUN_CONDITION" expression="variableOfType(Boolean)" defaultValue="&quot;!compositionReset&quot;" alwaysStopAt="true" />
     <variable name="OBJECTNAME" expression="variableOfType(Object)" defaultValue="" alwaysStopAt="true" />
     <context>
@@ -254,7 +254,7 @@
     </context>
   </template>
   <template name="floatControlSender" value="$COMMEMNT$&#10;        net.happybrackets.core.control.FloatControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatControlSender(this, &quot;$NAME$&quot;, $INIT_VALUE$);&#10;        $END$" description="Create a Float Control for sending values only" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMEMNT" expression="" defaultValue="&quot;/* Simply type floatControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMEMNT" expression="" defaultValue="&quot;// Simply type floatControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;floatControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore" defaultValue="&quot;Control Name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Type)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -264,7 +264,7 @@
     </context>
   </template>
   <template name="globalFloatControlSender" value="$COMMENT$&#10;        net.happybrackets.core.control.FloatControl $CONTROL_NAME$ = new net.happybrackets.core.control.FloatControlSender(this, &quot;$NAME$&quot;, $INIT_VALUE$).setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);&#10;        $END$" description="Create a Global Float Control for sending values only" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalFloatControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalFloatControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;floatControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore" defaultValue="&quot;Control Name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Type)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -274,7 +274,7 @@
     </context>
   </template>
   <template name="intControlSender" value="$COMMENT$&#10;        net.happybrackets.core.control.IntegerControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerControlSender(this, &quot;$NAME$&quot;, $INIT_VALUE$);&#10;        $END$" description="Create a Integer Control for sending values only" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type intControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type intControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;floatControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore" defaultValue="&quot;Control Name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Type)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -284,7 +284,7 @@
     </context>
   </template>
   <template name="globalIntControlSender" value="$COMMENT$&#10;        net.happybrackets.core.control.IntegerControl $CONTROL_NAME$ = new net.happybrackets.core.control.IntegerControlSender(this, &quot;$NAME$&quot;, $INIT_VALUE$).setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);&#10;        $END$" description="Create a Global Integer Control for sending values only" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalIntControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalIntControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;floatControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore" defaultValue="&quot;Control Name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Type)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -294,7 +294,7 @@
     </context>
   </template>
   <template name="textControlSender" value="$COMMENT$&#10;net.happybrackets.core.control.TextControl $CONTROL_NAME$ = new net.happybrackets.core.control.TextControlSender(this, &quot;$NAME$&quot;, &quot;$INIT_VALUE$&quot;);&#10;&#10;        " description="Creates a send only string type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type textControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type textControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;&quot;" alwaysStopAt="true" />
@@ -304,7 +304,7 @@
     </context>
   </template>
   <template name="globalTextControlSender" value="$COMMENT$&#10;net.happybrackets.core.control.TextControl $CONTROL_NAME$ = new net.happybrackets.core.control.TextControlSender(this, &quot;$NAME$&quot;, &quot;$INIT_VALUE$&quot;).setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);&#10;&#10;        " description="Creates a global send only string type DynamicControl that displays as a text box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalTextControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalTextControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;&quot;" alwaysStopAt="true" />
@@ -313,7 +313,7 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="booleanControlSender" value="/* Type booleanControlSender to generate this code */&#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControlSender(this, &quot;$NAME$&quot;, $INIT_VALUE$);" description="Creates a send only  Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
+  <template name="booleanControlSender" value="// Type booleanControlSender to generate this code &#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControlSender(this, &quot;$NAME$&quot;, $INIT_VALUE$);" description="Creates a send only  Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;false&quot;" alwaysStopAt="true" />
@@ -323,7 +323,7 @@
     </context>
   </template>
   <template name="globalBooleanControlSender" value="$COMMENT$&#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControlSender(this, &quot;$NAME$&quot;, $INIT_VALUE$).setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);" description="Creates a global send only  Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalBooleanControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalBooleanControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;false&quot;" alwaysStopAt="true" />
@@ -333,7 +333,7 @@
     </context>
   </template>
   <template name="globalTriggerControlSender" value="$COMMENT$&#10;net.happybrackets.core.control.TriggerControl $CONTROL_NAME$ = new net.happybrackets.core.control.TriggerControlSender(this, &quot;$NAME$&quot;).setControlScope(net.happybrackets.core.control.ControlScope.GLOBAL);" description="Creates a global send only global trigger DynamicControl" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type globalTriggerControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type globalTriggerControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;globalControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;global control name&quot;" alwaysStopAt="true" />
     <context>
@@ -342,7 +342,7 @@
     </context>
   </template>
   <template name="triggerControlSender" value="$COMMENT$&#10;net.happybrackets.core.control.TriggerControl $CONTROL_NAME$ = new net.happybrackets.core.control.TriggerControlSender(this, &quot;$NAME$&quot;);" description="Creates a  send only global trigger DynamicControl" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type triggerControlSender to generate this code */&quot;" alwaysStopAt="true" />
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type triggerControlSender to generate this code &quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;globalControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;global control name&quot;" alwaysStopAt="true" />
     <context>
@@ -350,21 +350,21 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="threadFunction" value="$COMMENT$&#10;        java.lang.Thread $VARIABLE_NAME$ = new java.lang.Thread(() -&gt; {&#10;            int SLEEP_TIME = $SLEEP_TIME$;&#10;            while ($RUN_CONDITION$) {/* write your code below this line */&#10;                $END$&#10;                /* write your code above this line */&#10;                try {&#10;                    java.lang.Thread.sleep(SLEEP_TIME);&#10;                } catch (java.lang.InterruptedException e) {$BREAK1$&#10;                    break;&#10;                    $BREAK2$&#10;                }&#10;            }&#10;        });&#10;&#10;        $PRESTART1$&#10;&#10;        $PRESTART2$&#10;&#10;        $VARIABLE_NAME$.start();/* End threadFunction */" description="Creates a new thread" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;/* Type threadFunction to generate this code */&quot;" alwaysStopAt="true" />
+  <template name="threadFunction" value="$COMMENT$&#10;        java.lang.Thread $VARIABLE_NAME$ = new java.lang.Thread(() -&gt; {&#10;            int SLEEP_TIME = $SLEEP_TIME$;&#10;            while ($RUN_CONDITION$) {// write your code below this line &#10;                $END$&#10;                // write your code above this line &#10;                try {&#10;                    java.lang.Thread.sleep(SLEEP_TIME);&#10;                } catch (java.lang.InterruptedException e) {$BREAK1$&#10;                    break;&#10;                    $BREAK2$&#10;                }&#10;            }&#10;        });&#10;&#10;        $PRESTART1$&#10;&#10;        $PRESTART2$&#10;&#10;        $VARIABLE_NAME$.start();// End threadFunction " description="Creates a new thread" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type threadFunction to generate this code &quot;" alwaysStopAt="true" />
     <variable name="VARIABLE_NAME" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="SLEEP_TIME" expression="variableOfType(Integer)" defaultValue="&quot;1000&quot;" alwaysStopAt="true" />
     <variable name="RUN_CONDITION" expression="variableOfType(Boolean)" defaultValue="&quot;!compositionReset&quot;" alwaysStopAt="false" />
-    <variable name="BREAK1" expression="" defaultValue="&quot;/* remove the break below to just resume thread or add your own action */&quot;" alwaysStopAt="true" />
-    <variable name="BREAK2" expression="" defaultValue="?/* remove the break above to just resume thread or add your own action */&quot;" alwaysStopAt="true" />
-    <variable name="PRESTART1" expression="" defaultValue="&quot;/*  write your code you want to execute before you start the thread below this line */&quot;" alwaysStopAt="true" />
-    <variable name="PRESTART2" expression="" defaultValue="&quot;/* write your code you want to execute before you start the thread above this line */&quot;" alwaysStopAt="true" />
+    <variable name="BREAK1" expression="" defaultValue="&quot;// remove the break below to just resume thread or add your own action &quot;" alwaysStopAt="true" />
+    <variable name="BREAK2" expression="" defaultValue="?// remove the break above to just resume thread or add your own action &quot;" alwaysStopAt="true" />
+    <variable name="PRESTART1" expression="" defaultValue="&quot;//  write your code you want to execute before you start the thread below this line &quot;" alwaysStopAt="true" />
+    <variable name="PRESTART2" expression="" defaultValue="&quot;// write your code you want to execute before you start the thread above this line &quot;" alwaysStopAt="true" />
     <context>
       <option name="JAVA_EXPRESSION" value="true" />
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="osclistener" value="/* type osclistener to create this code */&#10;        net.happybrackets.core.OSCUDPListener $oscListener$ = new net.happybrackets.core.OSCUDPListener($PORT$) {&#10;            @java.lang.Override&#10;            public void OSCReceived(de.sciss.net.OSCMessage oscMessage, java.net.SocketAddress socketAddress, long time) {&#10;                /* type your code below this line */&#10;                $END$&#10;                /* type your code above this line */&#10;            }&#10;        };&#10;        if ($oscListener$.getPort() &lt; 0){ //port less than zero is an error&#10;            java.lang.String error_message =  $oscListener$.getLastError();&#10;            java.lang.System.out.println(&quot;Error opening port &quot; + $PORT$ + &quot; &quot; + error_message);&#10;        } /** end oscListener code */" description="Creates an OSC Listener" toReformat="true" toShortenFQNames="true">
+  <template name="osclistener" value="// type osclistener to create this code &#10;        net.happybrackets.core.OSCUDPListener $oscListener$ = new net.happybrackets.core.OSCUDPListener($PORT$) {&#10;            @java.lang.Override&#10;            public void OSCReceived(de.sciss.net.OSCMessage oscMessage, java.net.SocketAddress socketAddress, long time) {&#10;                // type your code below this line &#10;                $END$&#10;                // type your code above this line &#10;            }&#10;        };&#10;        if ($oscListener$.getPort() &lt; 0){ //port less than zero is an error&#10;            java.lang.String error_message =  $oscListener$.getLastError();&#10;            java.lang.System.out.println(&quot;Error opening port &quot; + $PORT$ + &quot; &quot; + error_message);&#10;        } // end oscListener code " description="Creates an OSC Listener" toReformat="true" toShortenFQNames="true">
     <variable name="oscListener" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="PORT" expression="typeOfVariable(VAR)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
     <context>

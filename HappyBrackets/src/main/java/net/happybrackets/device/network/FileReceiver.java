@@ -214,10 +214,15 @@ public class FileReceiver {
                         // we ned to also create directory for file to go into
                         File target_path = new File(client.currentTargetFile);
 
-                        String path = target_path.getParentFile().getAbsolutePath();
+                        File parent_file = target_path.getParentFile();
 
-                        System.out.println("Create path " + path);
-                        new File(path).mkdir();
+                        if (parent_file != null) {
+                            String path = parent_file.getAbsolutePath();
+
+                            System.out.println("Create path " + path);
+                            new File(path).mkdir();
+                        }
+
 
                         Files.move(new File(client.currentSourceFile).toPath(), target_path.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -237,7 +242,12 @@ public class FileReceiver {
         if (!ret)
         {
             try {
-                controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.ERROR, currentTargetFile), sender);
+                if (currentTargetFile.isEmpty()){
+                    controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.ERROR, "Last File"), sender);
+                }
+                else{
+                    controllerOscServer.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.ERROR, currentTargetFile), sender);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

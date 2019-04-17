@@ -632,7 +632,10 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			pendingControls.clear();
 		}
 
-		dynamicControlScreen.eraseDynamicControls();
+		try {
+			dynamicControlScreen.eraseDynamicControls();
+		}catch (Exception ex){}
+
 		Collection<DynamicControl> removal_list;
 		synchronized (dynamicControls) {
 			removal_list = dynamicControls.values();

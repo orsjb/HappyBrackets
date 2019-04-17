@@ -49,13 +49,13 @@ public abstract class BooleanControl extends DynamicControlParent {
     }
 
     /**
-     * Change whether to disable control in display
+     * Change how to display object
      * We must do this in subclass
-     * @param disabled The new Control Scope
+     * @param display_type The new Control Scope
      * @return this object
      */
-    public BooleanControl setDisabled(boolean disabled){
-        getDynamicControl().setDisabled(disabled);
+    public BooleanControl setDisplayType(DynamicControl.DISPLAY_TYPE display_type){
+        getDynamicControl().setDisplayType(display_type);
         return this;
     }
 

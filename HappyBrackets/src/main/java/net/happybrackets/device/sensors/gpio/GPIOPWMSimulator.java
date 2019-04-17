@@ -2,6 +2,7 @@ package net.happybrackets.device.sensors.gpio;
 
 import net.happybrackets.core.control.BooleanControl;
 import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.control.IntegerSliderControl;
 
 public class GPIOPWMSimulator extends GPIOPWMOutput {
@@ -25,7 +26,7 @@ public class GPIOPWMSimulator extends GPIOPWMOutput {
 
                 /*** Write your DynamicControl code above this line ***/
             }
-        }.setDisabled(true);/*** End DynamicControl integerSliderControl code ***/
+        }.setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED);/*** End DynamicControl integerSliderControl code ***/
 
 
     }

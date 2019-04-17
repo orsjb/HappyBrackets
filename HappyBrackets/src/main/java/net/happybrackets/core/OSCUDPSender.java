@@ -2,6 +2,7 @@ package net.happybrackets.core;
 
 import de.sciss.net.OSCChannel;
 import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCPacket;
 import de.sciss.net.OSCPacketCodec;
 
 import java.io.IOException;
@@ -26,12 +27,12 @@ public class OSCUDPSender {
     public String getLastError(){return lastError;}
 
     /**
-     * Send OSC Message given a OSC Message and Socket address
+     * Send OSC given a OSC Message or packet and Socket address
      * @param msg OSC Message
      * @param inetSocketAddress SocketAddress
      * @return true on success. If failed, call getLastError
      */
-    public synchronized boolean send(OSCMessage msg, InetSocketAddress inetSocketAddress) {
+    public synchronized boolean send(OSCPacket msg, InetSocketAddress inetSocketAddress) {
         boolean ret = false;
 
         byteBuf.clear();
@@ -56,26 +57,26 @@ public class OSCUDPSender {
     }
 
     /**
-     * Send OSC Message given a OSC Message and iNetAddress and port
+     * Send OSC given a OSC Message or packet and iNetAddress and port
      * @param msg  OSC Message
      * @param inetAddress iNetAddress
      * @param port UDP Port
      * @return true on success. If failed, call getLastError
      */
-    public synchronized boolean send(OSCMessage msg, InetAddress inetAddress, int port){
+    public synchronized boolean send(OSCPacket msg, InetAddress inetAddress, int port){
 
         InetSocketAddress osc_target = new InetSocketAddress(inetAddress, port);
         return send(msg, osc_target);
     }
 
     /**
-     * Send OSC Message given a OSC Message and iNetAddress and port
+     * Send OSC given a OSC Message or packet and iNetAddress and port
      * @param msg  OSC Message
      * @param hostaddress host address
      * @param port UDP Port
      * @return true on success. If failed, call getLastError
      */
-    public synchronized boolean send(OSCMessage msg, String hostaddress, int port)  {
+    public synchronized boolean send(OSCPacket msg, String hostaddress, int port)  {
         boolean ret = false;
         InetSocketAddress osc_target = null;
         try {

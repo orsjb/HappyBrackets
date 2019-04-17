@@ -8,20 +8,21 @@ import net.happybrackets.device.sensors.sensor_types.GyroscopeSensor;
 public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
     final String CONTROL_PREFIX = "Gyro-";
 
-    DynamicControl control_x_slider;
-    DynamicControl control_x_text;
+    DynamicControl control_x;
 
-    DynamicControl control_y_slider;
-    DynamicControl control_y_text;
 
-    DynamicControl control_z_slider;
-    DynamicControl control_z_text;
+    DynamicControl control_y;
+
+
+    DynamicControl control_z;
+
 
     public GyroscopeSimulator(){
         reloadSimulation();
         storeSensor(this);
         setValidLoad(true);
     }
+
 
 
     public void reloadSimulation(){
@@ -31,15 +32,14 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
         };
 
 
-        control_y_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Pitch", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
-        control_y_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Pitch", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
+        control_y = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Pitch", 0.0, -1, 1).setControlScope(ControlScope.UNIQUE).addControlListener(listener).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
 
 
-        control_x_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Roll", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
-        control_x_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Roll", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
+        control_x = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Roll", 0.0, -1, 1).setControlScope(ControlScope.UNIQUE).addControlListener(listener).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
 
-        control_z_slider = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Yaw", 0.0, -1, 1).setControlScope(ControlScope.SKETCH);
-        control_z_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Yaw", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
+
+        control_z = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "Yaw", 0.0, -1, 1).setControlScope(ControlScope.UNIQUE).addControlListener(listener).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
+
 
     }
 
@@ -55,17 +55,17 @@ public class GyroscopeSimulator extends Sensor implements GyroscopeSensor {
 
     @Override
     public float getGyroscopeX() {
-        return (float)control_x_text.getValue();
+        return (float)control_x.getValue();
     }
 
     @Override
     public float getGyroscopeY() {
-        return (float)control_y_text.getValue();
+        return (float)control_y.getValue();
     }
 
     @Override
     public float getGyroscopeZ() {
-        return (float)control_z_text.getValue();
+        return (float)control_z.getValue();
     }
 
     @Override

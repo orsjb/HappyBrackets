@@ -113,6 +113,7 @@ public class HB {
 
     public interface StatusChangedListener{
 		void statusChanged(String new_status);
+		void classLoadedMessage(Class<? extends HBAction> incomingClass);
 	}
 
 	/**
@@ -852,7 +853,7 @@ public class HB {
 									// this means we're done with the sequence, time to recreate
 									// the classloader to avoid duplicate errors
 									loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-									setStatus("Successful Load  " + class_name);
+
 								} else {
 									logger.debug("new object (not HBAction) >> " + c.getName());
 								}
@@ -872,6 +873,7 @@ public class HB {
 								muteAudio(false);
 								action.action(HB.this);
 
+								sendClassLoaded(incomingClass);
 								// we will add to our list here.
 								// It is important we do this after the action in case this is the class that called reset
 								synchronized (loadedHBClasses) {
@@ -905,6 +907,7 @@ public class HB {
 			HBAction action = hbActionClass.newInstance();
 			muteAudio(false);
 			action.action(this);
+			sendClassLoaded(hbActionClass);
 			// we will add to our list here.
 			// It is important we do this after the action in case this is the class that called reset
 			synchronized (loadedHBClasses) {
@@ -1176,6 +1179,34 @@ public class HB {
 	}
 
 	/**
+	 * Get the default  HappyBrackets audio output as a UGen
+	 * @return the default HappyBrackets audio Output Ugen
+	 */
+	public static UGen getAudioOutput(){
+		UGen ret = null;
+		if (HB.HBInstance != null){
+			if (HB.HBInstance.ac != null){
+				ret = HB.HBInstance.ac.out;
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Get the number of audio channels on the default HappyBrackets audio output <br>
+	 * This parameter is dependant upon the configuration of the device
+	 * @return the number of channels
+	 */
+	public static int getNumOutChannels(){
+		int ret = 0;
+
+		if (getAudioOutput() != null){
+			ret =  getAudioOutput().getOuts();
+		}
+		return ret;
+	}
+
+	/**
 	 * Like {@link #clearSound()} but with a fade out of the specified duration before clearing.
 	 *
 	 * @param fadeTime the fade out time in milliseconds.
@@ -1292,6 +1323,21 @@ public class HB {
 		}
 	}
 
+	/**
+	 * Send a message that a class has been loaded
+	 * @param incomingClass the class that has been loaded
+	 */
+	void sendClassLoaded(Class<? extends HBAction> incomingClass){
+		String class_name = incomingClass.getSimpleName();
+		setStatus("Successful Load " + class_name);
+		synchronized (statusChangedListenerList)
+		{
+			for (StatusChangedListener listener : statusChangedListenerList) {
+				listener.classLoadedMessage(incomingClass);
+			}
+		}
+
+	}
 	/**
 	 * Returns the current status @{@link String} of the device.
 	 * @return the status of the device.
@@ -1450,6 +1496,9 @@ public class HB {
 		if (defaultAccelerometer == null){
 			defaultAccelerometer = (Accelerometer)getSensor(Accelerometer.class);
 		}
+		if (isEnableSimulators()){
+			defaultAccelerometer.reloadSimulation();
+		}
 		return defaultAccelerometer;
 	}
 
@@ -1461,6 +1510,11 @@ public class HB {
 	private synchronized Gyroscope getDefaultGyroscope(){
 		if (defaultGyroscope == null){
 			defaultGyroscope = (Gyroscope) getSensor(Gyroscope.class);
+		}
+		if (isEnableSimulators()){
+			{
+				defaultGyroscope.reloadSimulation();
+			}
 		}
 		return defaultGyroscope;
 	}

@@ -50,6 +50,10 @@ public class ControlMap {
     private LinkedHashMap<String, List<DynamicControl>> controlScopedDevices = new LinkedHashMap<>();
 
 
+    // When we are in the IDE, we do not want to pass messages about the plugin
+    // Just let the device send them
+    static boolean disableControlMimic = false;
+
     // create locks for collections
     private final Object controlCreatedListenerListLock = new Object();
     private final Object controlListenerListLock = new Object();
@@ -58,6 +62,14 @@ public class ControlMap {
     private final Object dynamicControlsLock = new Object();
     private final Object controlScopedDevicesLock = new Object();
 
+    /**
+     * We will disable sending messages to other controls with same name and scope
+     * when we are in plugin
+     * @param disable set tru for plugin
+     */
+    public static void disableControlMimic(boolean disable){
+        disableControlMimic = disable;
+    }
 
     public void addDynamicControlCreatedListener(dynamicControlCreatedListener listener){
         //synchronized (controlCreatedListenerListLock) {
@@ -144,39 +156,42 @@ public class ControlMap {
         //synchronized (dynamicControlsLock)
         {
             dynamicControls.put(control.getControlMapKey(), control);
-            // We are going to add ourselves as a listener to the update value so we can send any updates to controller
-            control.addGlobalControlListener(new DynamicControl.DynamicControlListener() {
-                @Override
-                public void update(DynamicControl control) {
 
-                    // We need to update all the identical controls if this control is not us
-                    if (control.getControlScope() != ControlScope.UNIQUE) {
-                        List<DynamicControl> name_list = getControlsByName(control.getControlName());
-                        for (DynamicControl mimic_control : name_list) {
-                            if (mimic_control != control) { // Make sure it is not us
-                                mimic_control.updateControl(control);
+            if (!disableControlMimic) {
+                // We are going to add ourselves as a listener to the update value so we can send any updates to controller
+                control.addGlobalControlListener(new DynamicControl.DynamicControlListener() {
+                    @Override
+                    public void update(DynamicControl control) {
+
+                        // We need to update all the identical controls if this control is not us
+                        if (control.getControlScope() != ControlScope.UNIQUE) {
+                            List<DynamicControl> name_list = getControlsByName(control.getControlName());
+                            for (DynamicControl mimic_control : name_list) {
+                                if (mimic_control != control) { // Make sure it is not us
+                                    mimic_control.updateControl(control);
+                                }
+
+
+                            }
+                            // we need to see if this was a global scope
+                            boolean send_global = false;
+                            //synchronized (globalControlListenerListLock)
+                            {
+                                send_global = globalControlListenerList.size() > 0;
                             }
 
+                            if (send_global) {
 
-                        }
-                        // we need to see if this was a global scope
-                        boolean send_global = false;
-                        //synchronized (globalControlListenerListLock)
-                        {
-                            send_global = globalControlListenerList.size() > 0;
-                        }
-
-                        if (send_global) {
-
-                            if (control.getControlScope() == ControlScope.GLOBAL) {
-                                // needs to be broadcast
-                                OSCMessage msg = control.buildGlobalMessage();
-                                sendGlobalDynamicControlMessage(msg);
+                                if (control.getControlScope() == ControlScope.GLOBAL) {
+                                    // needs to be broadcast
+                                    OSCMessage msg = control.buildGlobalMessage();
+                                    sendGlobalDynamicControlMessage(msg);
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
+            } // end !disableControlMimic
 
             control.addValueSetListener(new DynamicControl.DynamicControlListener() {
                 @Override
