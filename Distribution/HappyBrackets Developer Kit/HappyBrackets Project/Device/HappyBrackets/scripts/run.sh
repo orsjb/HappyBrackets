@@ -8,7 +8,8 @@ sudo mount -t ramfs -o size=512 ramfs /home/pi/HappyBrackets/ramfs
 ### move to the correct dir for running this script (one level above where this script is)
 DIR=`dirname $0`
 cd ${DIR}/..
-
+ # do a chmod so everything belongs to PI
+sudo chown -R pi:pi /home/pi/HappyBrackets
 
 #if we want to set specific parameters for a device, place them in device.config
 CONFIG_FILE=scripts/$HOSTNAME.config
