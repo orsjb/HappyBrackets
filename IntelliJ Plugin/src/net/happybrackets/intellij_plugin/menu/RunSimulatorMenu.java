@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu;
 
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
@@ -10,6 +11,8 @@ import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.intellij_plugin.SimulatorShell;
+
+import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
 
 public class RunSimulatorMenu extends AnAction {
 
@@ -43,6 +46,7 @@ public class RunSimulatorMenu extends AnAction {
                 advertiser.setSendLocalHost(false);
             }
             else {
+                //displayNotification("Try run Simulator at " + project_path, NotificationType.INFORMATION);
                 if (SimulatorShell.runSimulator(sdk_path, project_path)){
                     // we need to advertise on localhost
                     advertiser.setSendLocalHost(true);

@@ -54,7 +54,9 @@ public class SimulatorShell {
         });
 
         try {
-            execute.executeCommand(script_path + MAC_SIMULATOR  + " " + sdk_path);
+            execute.runProcess(script_path + MAC_SIMULATOR, sdk_path);
+
+            //execute.executeCommand(script_path + MAC_SIMULATOR  + " " + sdk_path);
             NotificationMessage.displayNotification("Starting simulator", NotificationType.INFORMATION);
             ret = true;
         } catch (IOException e) {
