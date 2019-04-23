@@ -37,7 +37,7 @@ public class BasicWaveControl implements HBAction, HBReset {
                 /* accelerometer values typically range from -1 to + 1 */
                 /******** Write your code below this line ********/
 
-                player.setFequency(scaleValue(x_val, 1000, 2000) );
+                player.setFrequency(scaleValue(x_val, 1000, 2000) );
 
                 /******** Write your code above this line ********/
 

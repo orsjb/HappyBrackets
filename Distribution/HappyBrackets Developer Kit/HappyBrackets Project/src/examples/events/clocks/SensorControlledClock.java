@@ -39,7 +39,7 @@ public class SensorControlledClock implements HBAction {
 
         WaveModule player = new WaveModule();
         player.setBuffer(Buffer.SQUARE);
-        player.setMidiFequency(currentNote);
+        player.setMidiFrequency(currentNote);
         player.connectTo(hb.ac.out);
 
         final double CLOCK_INTERVAL = 500;
@@ -55,7 +55,7 @@ public class SensorControlledClock implements HBAction {
                 currentNote = START_NOTE;
             }
 
-            player.setMidiFequency(currentNote);
+            player.setMidiFrequency(currentNote);
 
             /* Write your code above this line */
         });

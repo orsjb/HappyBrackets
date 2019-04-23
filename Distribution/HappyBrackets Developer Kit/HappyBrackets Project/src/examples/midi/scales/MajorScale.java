@@ -43,7 +43,7 @@ public class MajorScale implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         WaveModule player = new WaveModule();
-        player.setMidiFequency(BASE_TONIC);
+        player.setMidiFrequency(BASE_TONIC);
         player.setBuffer(Buffer.SQUARE);
         player.connectTo(hb.ac.out);
 
@@ -73,7 +73,7 @@ public class MajorScale implements HBAction {
             }
 
             // convert our MIDI pitch to a frequency
-            player.setMidiFequency(key_note);
+            player.setMidiFrequency(key_note);
 
 
             /* Write your code above this line */

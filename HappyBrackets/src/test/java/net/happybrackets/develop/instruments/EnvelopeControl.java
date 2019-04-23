@@ -30,7 +30,7 @@ public class EnvelopeControl implements HBAction, HBReset {
 
         WaveModule player = new WaveModule(1000, 0.1, Buffer.SINE);
 
-        player.setFequency(frequencyEnvelope);
+        player.setFrequency(frequencyEnvelope);
         player.setGain(gainEnvelope);
         frequencyEnvelope.addSegment(1000, 1000);
         frequencyEnvelope.addSegment(2000, 2000);

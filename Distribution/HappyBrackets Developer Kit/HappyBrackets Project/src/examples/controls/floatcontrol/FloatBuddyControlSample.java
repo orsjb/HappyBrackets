@@ -44,7 +44,7 @@ public class FloatBuddyControlSample implements HBAction {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line ***/
                 // set our frequency to the control value
-                player.setFequency(control_val);
+                player.setFrequency(control_val);
                 /* Write your DynamicControl code above this line */
             }
         };/*** End DynamicControl floatBuddyControl code ***/

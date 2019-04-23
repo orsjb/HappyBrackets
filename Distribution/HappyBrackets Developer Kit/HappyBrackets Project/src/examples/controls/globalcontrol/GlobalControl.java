@@ -57,7 +57,7 @@ public class GlobalControl implements HBAction {
             public void valueChanged(double control_val) { /* Write your DynamicControl code below this line */
                 // this value has been received either from the trigger below
                 // or over the network
-                player.setFequency(control_val);
+                player.setFrequency(control_val);
                 /* Write your DynamicControl code above this line */
             }
         };

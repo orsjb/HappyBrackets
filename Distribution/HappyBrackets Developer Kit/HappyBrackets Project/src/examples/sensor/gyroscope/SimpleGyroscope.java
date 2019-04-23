@@ -36,7 +36,7 @@ public class SimpleGyroscope implements HBAction{
         final float MULTIPLIER_FREQUENCY = 500;
 
         WaveModule player = new WaveModule();
-        player.setFequency(new Function(hb.getGyroscopeYaw()) {
+        player.setFrequency(new Function(hb.getGyroscopeYaw()) {
             @Override
             public float calculate() {
                 float yaw = x[0];

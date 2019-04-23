@@ -44,7 +44,7 @@ public class GainEnvelope implements HBAction {
 
         // create a wave player to generate a waveform using the FREQUENCY and a Square wave
         WaveModule player = new WaveModule();
-        player.setFequency(INITIAL_FREQUENCY);
+        player.setFrequency(INITIAL_FREQUENCY);
         player.setGain(gainEnvelope);
         player.setBuffer(Buffer.SQUARE);
 

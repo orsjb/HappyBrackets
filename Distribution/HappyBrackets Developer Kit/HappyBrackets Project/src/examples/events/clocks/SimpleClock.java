@@ -37,7 +37,7 @@ public class SimpleClock implements HBAction {
         WaveModule player = new WaveModule();
 
         player.setBuffer(Buffer.SQUARE);
-        player.setMidiFequency(currentNote);
+        player.setMidiFrequency(currentNote);
 
         player.connectTo(hb.ac.out);
 
@@ -52,7 +52,7 @@ public class SimpleClock implements HBAction {
                 // move to the next chromatic note
                 currentNote++;
 
-                player.setMidiFequency(currentNote);
+                player.setMidiFrequency(currentNote);
             }
             else
             {

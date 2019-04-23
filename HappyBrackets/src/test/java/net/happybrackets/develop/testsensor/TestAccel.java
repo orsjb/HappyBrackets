@@ -25,7 +25,7 @@ public class TestAccel implements HBAction, HBReset {
 
 
         WaveModule player = new WaveModule()
-                .setFequency(hb.getAccelerometer_X(1000, 2000))
+                .setFrequency(hb.getAccelerometer_X(1000, 2000))
                 .setGain(new Function(hb.getGyroscopePitch()) {
                     @Override
                     public float calculate() {

@@ -40,7 +40,7 @@ public class IntegerTextControlSample implements HBAction {
             @Override
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 // set our frequency to the control value
-                player.setFequency(INITIAL_FREQUENCY);
+                player.setFrequency(INITIAL_FREQUENCY);
                 /* Write your DynamicControl code above this line */
             }
         };/* End DynamicControl frequency code */

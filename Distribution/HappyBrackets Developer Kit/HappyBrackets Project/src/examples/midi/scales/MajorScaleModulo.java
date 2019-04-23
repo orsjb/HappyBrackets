@@ -85,7 +85,7 @@ public class MajorScaleModulo implements HBAction {
                 nextScaleIndex = 0;
             }
             // convert our MIDI pitch to a frequency
-            player.setMidiFequency(key_note);
+            player.setMidiFrequency(key_note);
 
             /*** Write your Clock tick event code above this line ***/
         });
