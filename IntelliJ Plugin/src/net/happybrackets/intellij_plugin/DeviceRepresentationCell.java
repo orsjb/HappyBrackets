@@ -420,20 +420,20 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 							}
 							else
 							{
-								displayNotification("Unable to find class", NotificationType.ERROR);
+								displayNotification("Unable to find class. The class may not have finsihed compiling or you may have an error in your code.", NotificationType.ERROR);
 							}
 						} catch (Exception ex2) {
 
 						}
 					});
 				} catch (Exception ex) {
-					displayNotification(ex.getMessage(), NotificationType.ERROR);
+					displayNotification("Unable to find class. The class may not have finsihed compiling or you may have an error in your code.",  NotificationType.ERROR);
 
 				}
 
 			}catch (Exception ex){
 				System.out.println(ex.getMessage());
-				displayNotification(ex.getMessage(), NotificationType.ERROR);
+				displayNotification("Unable to find class. The class may not have finsihed compiling or you may have an error in your code.", NotificationType.ERROR);
 			}
 
 			// we will send current composition to device

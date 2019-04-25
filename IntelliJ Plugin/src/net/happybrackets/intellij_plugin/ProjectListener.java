@@ -15,6 +15,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
 public class ProjectListener implements VetoableProjectManagerListener {
+
+
     public void projectOpened(final Project project) {
         try {
 
@@ -28,7 +30,9 @@ public class ProjectListener implements VetoableProjectManagerListener {
                 SwingUtilities.windowForComponent(frame_component).addWindowFocusListener(new WindowFocusListener() {
                     @Override
                     public void windowGainedFocus(WindowEvent e) {
-                        HappyBracketsDebugMenu.loadExamplesMenu(project);
+                        try {
+                            HappyBracketsDebugMenu.loadExamplesMenu(project);
+                        }catch (Exception ex){}
 
                     }
 
@@ -43,7 +47,7 @@ public class ProjectListener implements VetoableProjectManagerListener {
 
         }catch (Exception ex)
         {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
     }
 

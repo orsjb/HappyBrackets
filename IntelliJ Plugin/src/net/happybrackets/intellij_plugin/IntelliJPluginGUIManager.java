@@ -24,6 +24,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
+import com.intellij.openapi.wm.IdeFrame;
+import com.intellij.openapi.wm.WindowManager;
 import com.sun.javafx.css.Style;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -52,7 +54,6 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.config.ControllerConfig;
-import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
@@ -79,9 +80,10 @@ import javax.swing.SwingUtilities;
 public class IntelliJPluginGUIManager {
 	private static final String PROBE_TEXT = "Probe";
 	private String compositionsPath;
+	private String locationHash;
 	private String currentCompositionSelection = null;
 	private ControllerConfig config;
-	private final Project project;
+	//private final Project project;
 	private DeviceConnection deviceConnection;
 	private ListView<LocalDeviceRepresentation> deviceListView;
 	private ComboBox<String> compositionSelector;
@@ -104,10 +106,32 @@ public class IntelliJPluginGUIManager {
 	private static final int SELECTED = -2; // Send to selected device(s).
 
 
+	/**
+	 * Get the current project based by comparing location hash
+	 * @return The current ptoject, otherwise, null
+	 */
+	Project getThisProject(){
+		Project ret = null;
+
+		for (IdeFrame frame : WindowManager.getInstance().getAllProjectFrames()) {
+			if (frame.getProject() != null) {
+				Project p = frame.getProject();
+				if (p.getLocationHash().equalsIgnoreCase(locationHash)){
+					ret = p;
+					break;
+				}
+			}
+
+		}
+		return ret;
+	}
+
 
 	public IntelliJPluginGUIManager(Project project) {
-		this.project = project;
+		//this.project = project;
+		locationHash = project.getLocationHash();
 		init();
+		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath() + "/" + project.getName();
 		commandHistory = new ArrayList<>();
 	}
 
@@ -117,7 +141,7 @@ public class IntelliJPluginGUIManager {
 		//initial compositions path
 		//assume that this path is a path to a root classes folder, relative to the project
 		//e.g., build/classes/tutorial or build/classes/compositions
-		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath() + "/" + project.getName();
+		//compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath() + "/" + project.getName();
 
 		deviceErrorListeners = new HashMap<>();
 		// Add ErrorListener's to the devices so we can report to the user when an error occurs communicating
@@ -344,7 +368,7 @@ public class IntelliJPluginGUIManager {
 			//select a file
 			FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
 			fsd.withShowHiddenFiles(true);
-			final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, project);
+			final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, getThisProject());
 
 			String current_file_path = ControllerEngine.getInstance().getSettings().getString(setting);
 			File currentFile = current_file_path != null ? new File(ControllerEngine.getInstance().getSettings().getString(setting)) : null;
@@ -713,7 +737,7 @@ public class IntelliJPluginGUIManager {
 			@Override
 			public void changed(ObservableValue<? extends LocalDeviceRepresentation> observable, LocalDeviceRepresentation old_value, LocalDeviceRepresentation new_value) {
 				disableControl(composition_send_selected_button, new_value == null);
-				deviceConnection.setDeviceSelected(project.getLocationHash(), new_value);
+				deviceConnection.setDeviceSelected(locationHash, new_value);
 			}
 		});
 
