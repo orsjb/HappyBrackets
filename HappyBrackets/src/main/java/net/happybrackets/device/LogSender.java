@@ -189,11 +189,17 @@ public class LogSender {
 
                     complete = line == null;
 
-                    networkCommunication.send(OSCVocabulary.Device.LOG,
-                            new Object[]{
-                                    Device.getDeviceName(),
-                                    sb.toString()
-                            });
+                    String log_string = sb.toString();
+
+                    if (log_string != null) {
+                        if (!log_string.isEmpty()) {
+                            networkCommunication.send(OSCVocabulary.Device.LOG,
+                                    new Object[]{
+                                            Device.getDeviceName(),
+                                            sb.toString()
+                                    });
+                        }
+                    }
                 } catch (Exception ex) {
                     logger.error("Error sending new log message.", ex);
                 }

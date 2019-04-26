@@ -38,7 +38,7 @@ public class VariableClock implements HBAction {
 
 
         WaveModule player = new WaveModule();
-        player.setMidiFequency(currentNote);
+        player.setMidiFrequency(currentNote);
         player.setBuffer(Buffer.SQUARE);
         player.connectTo(hb.ac.out);
 
@@ -73,7 +73,7 @@ public class VariableClock implements HBAction {
                         currentNote = START_NOTE;
                     }
 
-                    player.setMidiFequency(currentNote);
+                    player.setMidiFrequency(currentNote);
 
 
                     /*** Write your code to perform functions on the beat above this line ****/

@@ -44,7 +44,7 @@ public class TriggerControlSample implements HBAction {
 
 
         WaveModule player = new WaveModule();
-        player.setFequency(frequencyList[0]);
+        player.setFrequency(frequencyList[0]);
         player.connectTo(hb.ac.out);
 
 
@@ -63,7 +63,7 @@ public class TriggerControlSample implements HBAction {
                 counter++;
                 float freq = frequencyList[counter % frequencyList.length];
 
-                player.setFequency(freq);
+                player.setFrequency(freq);
                 // now display that value
                 frequencyDisplay.setValue(freq);
 

@@ -29,7 +29,7 @@ public class SimpleMIDI implements HBAction {
 
         WaveModule player = new WaveModule();
 
-        player.setMidiFequency(MIDI_NOTE);
+        player.setMidiFrequency(MIDI_NOTE);
         player.setBuffer(Buffer.SQUARE);
         player.connectTo(hb.ac.out);
 

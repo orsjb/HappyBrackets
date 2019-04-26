@@ -46,7 +46,7 @@ public class SimpleThread implements HBAction, HBReset {
                     currentFrequency = START_FREQUENCY;
                 }
 
-                player.setFequency(currentFrequency);
+                player.setFrequency(currentFrequency);
 
                 /* write your code above this line */
                 try {

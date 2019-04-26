@@ -30,7 +30,7 @@ public class SimpleAccelerometer implements HBAction{
         WaveModule player = new WaveModule();
 
         // Map a scaled value of Accelerometer X to the frequency
-        player.setFequency(hb.getAccelerometer_X(0, 2000));
+        player.setFrequency(hb.getAccelerometer_X(0, 2000));
         player.connectTo(hb.ac.out);
 
 

@@ -1,6 +1,8 @@
 package net.happybrackets.intellij_plugin;
 
 
+import com.intellij.openapi.wm.IdeFrame;
+import com.intellij.openapi.wm.WindowManager;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -48,13 +50,34 @@ public class ConfigurationScreen {
 
     private Button[] configApplyButton = new Button[2]; // 0 = overall config, 1 = known devices.
     private Stage displayStage = new Stage();
-    private Project currentProject;
+    //private Project currentProject;
+    private String locationHash;
 
     final static Logger logger = LoggerFactory.getLogger(ConfigurationScreen.class);
 
+    /**
+     * Get the current project based by comparing location hash
+     * @return The current ptoject, otherwise, null
+     */
+    Project getThisProject(){
+        Project ret = null;
+
+        for (IdeFrame frame : WindowManager.getInstance().getAllProjectFrames()) {
+            if (frame.getProject() != null) {
+                Project p = frame.getProject();
+                if (p.getLocationHash().equalsIgnoreCase(locationHash)){
+                    ret = p;
+                    break;
+                }
+            }
+
+        }
+        return ret;
+    }
     public ConfigurationScreen(Project project)
     {
-        currentProject = project;
+        //currentProject = project;
+        locationHash = project.getLocationHash();
         displayStage.setTitle("HappyBrackets Settings");
         TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
         TitledPane known_devices_pane = new TitledPane("Known Devices", makeConfigurationPane(1));
@@ -150,7 +173,7 @@ public class ConfigurationScreen {
                 //select a file
                 FileSaverDescriptor fsd = new FileSaverDescriptor("Select " + label.toLowerCase() + " file to save to.", "Select " + label.toLowerCase() + " file to save to.");
                 fsd.withShowHiddenFiles(true);
-                final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, currentProject);
+                final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(fsd, getThisProject());
 
                 String current_file_path = control_engine.getSettings().getString(setting);
                 File currentFile = current_file_path != null ? new File(control_engine.getSettings().getString(setting)) : null;

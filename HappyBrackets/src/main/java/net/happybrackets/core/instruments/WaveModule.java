@@ -137,11 +137,26 @@ public class WaveModule extends BasicInstrument{
 
 
     /**
-     * set an object to control the frequency of the waveplayery
+     * set an object to control the frequency of the waveplayer
+     * @param new_frequency_control the new object that will control the frequency
+     * @return this
+     * @deprecated use setFrequency instead. This was a type
+     */
+    public WaveModule setFequency(UGen new_frequency_control){
+        // assign new frequency object to wave player
+        waveformGenerator.setFrequency(new_frequency_control);
+        // now assign new one
+        frequencyControl = new_frequency_control;
+
+        return this;
+    }
+
+    /**
+     * set an object to control the frequency of the waveplayer
      * @param new_frequency_control the new object that will control the frequency
      * @return this
      */
-    public WaveModule setFequency(UGen new_frequency_control){
+    public WaveModule setFrequency(UGen new_frequency_control){
         // assign new frequency object to wave player
         waveformGenerator.setFrequency(new_frequency_control);
         // now assign new one
@@ -154,8 +169,20 @@ public class WaveModule extends BasicInstrument{
      * set the frequency of the waveplayer to this frequency
      * @param new_frequency the new frequency
      * @return this
+    * @deprecated use setFrequency instead. This was a type
      */
     public WaveModule setFequency(double new_frequency){
+        frequencyControl.setValue((float)new_frequency);
+
+        return this;
+    }
+
+    /**
+     * set the frequency of the waveplayer to this frequency
+     * @param new_frequency the new frequency
+     * @return this
+     */
+    public WaveModule setFrequency(double new_frequency){
         frequencyControl.setValue((float)new_frequency);
 
         return this;
@@ -165,9 +192,19 @@ public class WaveModule extends BasicInstrument{
      * Set the frequency based on Midi Note Number
      * @param midi_note_number the Midi Note number
      * @return this
+     * @deprecated replaed due to misspelling. Use setMidiFrequency
      */
     public WaveModule setMidiFequency(int midi_note_number){
         return setFequency(Pitch.mtof(midi_note_number));
+    }
+
+    /**
+     * Set the frequency based on Midi Note Number
+     * @param midi_note_number the Midi Note number
+     * @return this
+     */
+    public WaveModule setMidiFrequency(int midi_note_number){
+        return setFrequency(Pitch.mtof(midi_note_number));
     }
 
     /**

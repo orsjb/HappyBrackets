@@ -47,7 +47,7 @@ public class CustomScale implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         WaveModule player = new WaveModule();
-        player.setMidiFequency(BASE_TONIC);
+        player.setMidiFrequency(BASE_TONIC);
         player.setBuffer(Buffer.SQUARE);
         player.connectTo(hb.ac.out);
 
@@ -72,7 +72,7 @@ public class CustomScale implements HBAction {
             }
 
 
-            player.setMidiFequency(key_note);
+            player.setMidiFrequency(key_note);
 
             /*** Write your Clock tick event code above this line ***/
         });

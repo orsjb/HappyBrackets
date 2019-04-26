@@ -33,21 +33,21 @@ public class DelayPitch implements HBAction, HBReset {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         WaveModule waveModule = new WaveModule();
-        waveModule.setFequency(ORIGINAL_PITCH);
+        waveModule.setFrequency(ORIGINAL_PITCH);
         waveModule.setGain(0.1f);
         waveModule.setBuffer(Buffer.SINE);
         waveModule.connectTo(hb.ac.out);
 
         /* To create this, just type clockTimer */
         Clock clock = hb.createClock(500).addClockTickListener((offset, this_clock) -> {/* Write your code below this line */
-            waveModule.setFequency(HIGH_PITCH);
+            waveModule.setFrequency(HIGH_PITCH);
 
             // now create the delay to switch back to original pitch
             new Delay(HOLD_TIME, waveModule, (v, o) -> {
                 // v is how far out we were from our exact delay time in ms and is a double
                 // o is the parameter we passed in, which was the waveplayer
                 System.out.println("Delay offset by " + v + " ms");
-                ((WaveModule)o).setFequency(ORIGINAL_PITCH);
+                ((WaveModule)o).setFrequency(ORIGINAL_PITCH);
             });
 
             /* Write your code above this line */

@@ -34,27 +34,24 @@ public class DelayTest {
             System.out.println("---------------- Delay test " + i + " Interval: " + (long) DELAY_INTERVAL + " -----------------------");
 
             Delay testDelay = new Delay(DELAY_INTERVAL, HBScheduler.getGlobalScheduler().getSchedulerTime(),
-                    new Delay.DelayListener() {
-                        @Override
-                        public void delayComplete(double offset, Object param) {
-                            double elapsed_time = HBScheduler.getGlobalScheduler().getSchedulerTime();
-                            if (SHOW_TICK) {
-                                System.out.println("Tick " + (long) elapsed_time + " " + offset);
-                            }
-                            delayRecieved = true;
-                            // make sure we are at the correct time
-                            double called_time = (double) param;
-                            System.out.println(elapsed_time + " " + called_time + " " + DELAY_INTERVAL);
+                    (offset, param) -> {
+                        double elapsed_time = HBScheduler.getGlobalScheduler().getSchedulerTime();
+                        if (SHOW_TICK) {
+                            System.out.println("Tick " + (long) elapsed_time + " " + offset);
+                        }
+                        delayRecieved = true;
+                        // make sure we are at the correct time
+                        double called_time = (double) param;
+                        System.out.println(elapsed_time + " " + called_time + " " + DELAY_INTERVAL);
 
-                            assert (Math.abs(elapsed_time - (called_time + DELAY_INTERVAL)) < MAX_ALLOWED_JITTER);
+                        assert (Math.abs(elapsed_time - (called_time + DELAY_INTERVAL)) < MAX_ALLOWED_JITTER);
 
-                            if (maxJitter < Math.abs(offset)) {
-                                maxJitter = Math.abs(offset);
-                            }
+                        if (maxJitter < Math.abs(offset)) {
+                            maxJitter = Math.abs(offset);
+                        }
 
-                            synchronized (completeWait) {
-                                completeWait.notify();
-                            }
+                        synchronized (completeWait) {
+                            completeWait.notify();
                         }
                     });
 

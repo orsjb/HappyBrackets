@@ -63,7 +63,7 @@ public class ControlledThread implements HBAction, HBReset {
                     currentFrequency = START_FREQUENCY;
                 }
 
-                player.setFequency(currentFrequency);
+                player.setFrequency(currentFrequency);
                 // we will override the sleep time in the beginning of theis thread
                 SLEEP_TIME = threadSleepTime;
                 /* write your code above this line */

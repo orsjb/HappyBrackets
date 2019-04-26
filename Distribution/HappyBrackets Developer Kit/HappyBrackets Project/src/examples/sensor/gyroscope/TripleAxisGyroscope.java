@@ -44,9 +44,9 @@ public class TripleAxisGyroscope implements HBAction, HBReset {
         new GyroscopeListener(hb) {
             @Override
             public void sensorUpdated(float pitch, float roll, float yaw) {/* Write your code below this line */
-                yaw_player.setFequency(yaw * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
-                pitch_player.setFequency(pitch * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
-                roll_player.setFequency(roll * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
+                yaw_player.setFrequency(yaw * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
+                pitch_player.setFrequency(pitch * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
+                roll_player.setFrequency(roll * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
 
 
                 /* Write your code above this line */

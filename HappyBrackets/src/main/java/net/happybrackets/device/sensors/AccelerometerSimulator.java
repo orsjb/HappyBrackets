@@ -37,7 +37,7 @@ public class AccelerometerSimulator extends Sensor implements AccelerometerSenso
 
         //control_x_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "x", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
 
-        control_y = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0, -1, 1).setControlScope(ControlScope.UNIQUE).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);;
+        control_y = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0, -1, 1).setControlScope(ControlScope.UNIQUE).addControlListener(listener).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);;
         //control_y_text = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "y", 0.0).setControlScope(ControlScope.SKETCH).addControlListener(listener);
 
         control_z = new DynamicControl(this, ControlType.FLOAT, CONTROL_PREFIX + "z", 0.0, -1, 1).setControlScope(ControlScope.UNIQUE).addControlListener(listener).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);

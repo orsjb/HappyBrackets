@@ -28,7 +28,7 @@ public class MidiNotes implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        WaveModule player = new WaveModule().setMidiFequency(MIN_NOTE).setBuffer(Buffer.SQUARE);
+        WaveModule player = new WaveModule().setMidiFrequency(MIN_NOTE).setBuffer(Buffer.SQUARE);
 
         player.connectTo(hb.ac.out);
 
@@ -40,7 +40,7 @@ public class MidiNotes implements HBAction, HBReset {
                 midiNote = MIN_NOTE;
             }
 
-            player.setMidiFequency(midiNote);
+            player.setMidiFrequency(midiNote);
 
             /*** Write your Clock tick event code above this line ***/
         });

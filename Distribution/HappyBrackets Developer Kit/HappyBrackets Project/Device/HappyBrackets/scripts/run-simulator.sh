@@ -7,7 +7,9 @@
 ### args to HB.jar are: buf (buffer size, default=1024), sr (sample rate, default=44100), bits (sample bit size, default=16), ins (input channels, default=0), outs (output channels, default=1), start (autostart audio, default=true), access (live code access mode, either ‘open’, ‘local’ or ‘closed’, default=open), followed by the full class path to any HBAction you wish to auto run. All args except the last one can be entered in any order.
 
 #define the file that has custom settings
-DIR=`dirname $0`
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "Current dir" $DIR
 
 JAVA_EXE="java"
 
@@ -17,8 +19,12 @@ if [ $# -gt 0 ]; then
     echo "Use "$JAVA_EXE
 fi
 
+### move to the correct dir for running this script (one level above where this script is)
 
-CONFIG_FILE=${DIR}/simulator.config
+cd "$DIR"/..
+
+
+CONFIG_FILE=scripts/simulator.config
 
 BUF=1024
 SR=44100
@@ -91,9 +97,6 @@ do
     fi
 
 done <$CONFIG_FILE
-
-### move to the correct dir for running this script (one level above where this script is)
-cd ${DIR}/..
 
 ($JAVA_EXE -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG  > ramfs/stdout 2>&1) &
 

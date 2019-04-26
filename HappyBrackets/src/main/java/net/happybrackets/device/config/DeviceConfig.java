@@ -168,7 +168,7 @@ public class DeviceConfig extends LoadableConfig implements ControllerDiscoverer
 				try {
 					broadcastSocket.send(packet);
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			});
 		}
