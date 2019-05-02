@@ -8,13 +8,13 @@
 
 
 #define the file that has custom settings
-CONFIG_FILE=$HOSTNAME.config
+CONFIG_FILE="../config/"$HOSTNAME.config
 
 BUF=1024
 SR=44100
 BITS=16
 INS=0
-OUTS=1 
+OUTS=2
 AUTOSTART=true 
 ACCESSMODE=open
 ACTION=

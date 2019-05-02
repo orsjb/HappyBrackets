@@ -4,7 +4,7 @@
 
 
 #if we want to set sepcific parameters for a device, place them in $HOSTNAME.config
-CONFIG_FILE=$HOSTNAME.config
+CONFIG_FILE="../config/"$HOSTNAME.config
 
 
 #define default values
@@ -14,7 +14,7 @@ BUF=1024
 SR=44100
 BITS=16
 INS=0
-OUTS=1 
+OUTS=2
 DEVICE=0
 AUTOSTART=true 
 ACCESSMODE=open

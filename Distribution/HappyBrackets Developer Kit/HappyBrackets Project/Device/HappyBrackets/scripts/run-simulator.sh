@@ -24,13 +24,13 @@ fi
 cd "$DIR"/..
 
 
-CONFIG_FILE=scripts/simulator.config
+CONFIG_FILE=config/simulator.config
 
 BUF=1024
 SR=44100
 BITS=16
 INS=0
-OUTS=1
+OUTS=2
 AUTOSTART=true 
 ACCESSMODE=open
 ACTION=
