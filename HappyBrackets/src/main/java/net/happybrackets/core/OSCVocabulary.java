@@ -34,6 +34,7 @@ public final class OSCVocabulary {
         public static final String FRIENDLY_NAME = "/device/friendly";
         public static final String SET_ENCRYPTION = "/device/encrypt";
         public static final String CLASS_LOADED = "/device/classloaded";
+        public static final String SIMULATOR_HOME_PATH = "/device/simulatorpath";
 
     }
 

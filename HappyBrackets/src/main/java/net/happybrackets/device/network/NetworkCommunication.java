@@ -27,6 +27,7 @@ import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.config.LocalConfigManagement;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -315,6 +316,8 @@ public class NetworkCommunication {
 
 							System.out.println("Version sent " + BuildVersion.getVersionText() + " to port " + target_port) ;
 
+							// also send simulator path to localhost
+							sendSimulatorHomePath(target_port);
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
 							if (msg.getArgCount() > 0) {
@@ -480,6 +483,10 @@ public class NetworkCommunication {
 
 							System.out.println("Version sent " + BuildVersion.getVersionText() + " to tcp " ) ;
 
+							InetAddress src_address = ((InetSocketAddress) src).getAddress();
+							if (src_address.isLoopbackAddress()){
+								send(createSimulatorHomePathMessage(), src);
+							}
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
 
@@ -666,6 +673,37 @@ public class NetworkCommunication {
 		}.start();
 	}
 
+
+	/**
+	 * If we are a simulator, send the home path to the localhost on the controller port.
+	 * Only the localhost can get this message
+	 * @param port the controller port
+	 */
+	private void sendSimulatorHomePath(int port){
+		try {
+			InetSocketAddress target_address  =  new InetSocketAddress(InetAddress.getLocalHost(), port);
+
+			send(createSimulatorHomePathMessage(),
+					target_address);
+		} catch (UnknownHostException e) {
+			//e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create a message that has the home directory of this device
+	 * @return teh absolute home directory
+	 */
+	OSCMessage createSimulatorHomePathMessage(){
+		String home_path = "";
+		File target_path = new File("");
+
+
+		if (target_path != null) {
+			home_path = target_path.getAbsolutePath();
+		}
+		return OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.SIMULATOR_HOME_PATH, home_path);
+	}
 
 	/**
 	 * Send an OSC message to the controller. This assumes that you have implemented code on the controller side to respond to this message.

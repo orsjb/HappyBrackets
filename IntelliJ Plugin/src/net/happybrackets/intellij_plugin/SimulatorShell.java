@@ -2,10 +2,14 @@ package net.happybrackets.intellij_plugin;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.roots.ModuleRootManager;
+import net.happybrackets.controller.ControllerEngine;
+import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.core.ShellExecute;
 
 import java.io.File;
 import java.io.IOException;
+
+import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
 
 public class SimulatorShell {
 
@@ -79,8 +83,24 @@ public class SimulatorShell {
         return ret;
     }
 
+    /**
+     * See if we have a local simulator riunning on localhost
+     * @return true if we have one on a loopback address
+     */
     public static boolean isRunning(){
-        return processId != 0 || simulatorProcess != null;
+
+        boolean ret = false;
+        for (LocalDeviceRepresentation device:
+                ControllerEngine.getInstance().getDeviceConnection().getDevices()) {
+
+            // se if the device is a local simulator
+            if (device.isLocalSimulator()){
+                ret = device.getIsConnected();
+                break;
+            }
+        }
+
+        return ret;
     }
 
 
@@ -97,34 +117,25 @@ public class SimulatorShell {
      * Kill the simulator based on process ID
      */
     public static void killSimulator(){
-        if (isRunning()) {
-            if (simulatorProcess != null)
-            {
-                simulatorProcess.destroyForcibly();
-                simulatorProcess = null;
+        
+        // Also see if we have one running on localhost that we did not start
+        LocalDeviceRepresentation local_device = null;
+        for (LocalDeviceRepresentation device:
+                ControllerEngine.getInstance().getDeviceConnection().getDevices()) {
+
+            // se if the device is a local simulator
+            if (device.isLocalSimulator()) {
+                local_device = device;
+                break;
             }
-            else {
-                ShellExecute killer = new ShellExecute();
+        }
+        if (local_device != null){
+            try {
 
-                killer.addProcessCompleteListener((shellExecute, exit_value) ->
-                {
-                    // if it is a success then we have successfully killed process
-                    if (exit_value == 0) {
 
-                        NotificationMessage.displayNotification("Simulator Stopped", NotificationType.INFORMATION);
-                    } else {
-                        NotificationMessage.displayNotification("Unable to stop simulator", NotificationType.ERROR);
-                    }
-                });
-
-                try {
-                    killer.executeCommand("kill " + processId);
-                    processId = 0; // set process to zero here otherwise we won't be able to start it back up
-                } catch (IOException e) {
-
-                    e.printStackTrace();
-                }
-            }
+                local_device.shutdownDevice();
+                NotificationMessage.displayNotification("Shutdown sent to simulator", NotificationType.INFORMATION);
+            }catch (Exception ex){}
         }
     }
 

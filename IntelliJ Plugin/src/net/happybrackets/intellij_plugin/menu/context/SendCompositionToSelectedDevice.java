@@ -98,7 +98,7 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
                     try {
                         SendToDevice.send(full_class_name, selected);
                     } catch (Exception e1) {
-                        String message = "Unable to send class. The class may not have finsihed compiling or you may have an error in your code.";
+                        String message = "Unable to send class. The class may not have finished compiling or you may have an error in your code.";
                         displayNotification(message, NotificationType.ERROR);
                     }
                     break;

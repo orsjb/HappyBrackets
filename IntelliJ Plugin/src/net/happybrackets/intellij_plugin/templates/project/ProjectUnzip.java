@@ -1,7 +1,6 @@
 package net.happybrackets.intellij_plugin.templates.project;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +17,8 @@ public class ProjectUnzip {
 
     String [] EXECUTABLE_EXT = new String [] {"sh", "command"};
 
-    List<String> skipFileListe = new ArrayList<>();
+    List<String> skipFileList = new ArrayList<>();
+    List<String> skipIfExistsFileList = new ArrayList<>();
 
 
     /**
@@ -26,7 +26,15 @@ public class ProjectUnzip {
      * @param filename filename to ignore
      */
     public void addSkipFile(String filename){
-        skipFileListe.add(filename);
+        skipFileList.add(filename);
+    }
+
+    /**
+     * Add Files that we do not want to overwrite from the archive
+     * @param filename filename to ignore
+     */
+    public void addSkipFileIfExists(String filename){
+        skipIfExistsFileList.add(filename);
     }
 
     /**
@@ -50,7 +58,7 @@ public class ProjectUnzip {
             if (!fileName.startsWith(MAC_FOLDER)) {
 
 
-                boolean skip_file = skipFileListe.contains(fileName);
+                boolean skip_file = skipFileList.contains(fileName);
                 if (!skip_file) {
                     File newFile = new File(target_folder + File.separatorChar + fileName);
 
@@ -58,15 +66,21 @@ public class ProjectUnzip {
                         newFile.mkdir();
                     } else {
 
-                        FileOutputStream fos = new FileOutputStream(newFile);
-                        int len;
-                        while ((len = zis.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
-                        fos.close();
+                        boolean file_exists = newFile.exists();
+                        if (!file_exists || !skipIfExistsFileList.contains(fileName)) {
+                            FileOutputStream fos = new FileOutputStream(newFile);
+                            int len;
+                            while ((len = zis.read(buffer)) > 0) {
+                                fos.write(buffer, 0, len);
+                            }
+                            fos.close();
 
-                        // we need to be a bit smarter and define which files we actually want to do this with
-                        newFile.setExecutable(true);
+                            // we need to be a bit smarter and define which files we actually want to do this with
+                            newFile.setExecutable(true);
+                        }
+                        else {
+                            System.out.println("Skip " + fileName);
+                        }
                     }
 
                 } // !skip file

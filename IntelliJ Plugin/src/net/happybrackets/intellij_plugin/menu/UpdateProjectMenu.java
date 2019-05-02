@@ -91,6 +91,7 @@ public class UpdateProjectMenu extends AnAction {
         String base_path = current_project.getBaseDir().getCanonicalPath();
         String [] ARCHIVE_SKIP_FILES = HappyBracketsProject.ARCHIVE_SKIP_FILES;
         String [] HB_JAR_LOCATION = HappyBracketsProject.HB_JAR_LOCATION;
+        String [] ARCHIVE_NO_UPDATE_FILES = HappyBracketsProject.NO_UPDATE_FILES;
 
         // unzip our archived project
         ProjectUnzip unzip = new ProjectUnzip();
@@ -100,6 +101,12 @@ public class UpdateProjectMenu extends AnAction {
         for (int i= 0; i < ARCHIVE_SKIP_FILES.length; i++) {
             unzip.addSkipFile(ARCHIVE_SKIP_FILES[i]);
         }
+
+        // do not add the files we do not want to overwrite, but create if they don't exist
+        for (int i= 0; i < ARCHIVE_NO_UPDATE_FILES.length; i++) {
+            unzip.addSkipFileIfExists(ARCHIVE_NO_UPDATE_FILES[i]);
+        }
+
 
         unzip.addSkipFile(HappyBracketsProject.MODULES_FILE);
 
@@ -138,6 +145,8 @@ public class UpdateProjectMenu extends AnAction {
                 DialogDisplay.displayDialog("You will need to manually move your audio, scripts, classes and jars files across to " + base_path + HAPPY_BRACKETS_DEVICE_FOLDER);
             }
         }catch (Exception ex){}
+
+        // copy our simulator file
 
         // we are not going top remove their old data files
         DialogDisplay.displayDialog("Updated project to " + BuildVersion.getVersionBuildText());

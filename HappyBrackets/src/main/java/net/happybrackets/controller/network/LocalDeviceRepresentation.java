@@ -36,6 +36,35 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	private final Object clientLock = new Object(); // define a lock for tcpClient
 
 
+	/**
+	 * Return the home directory if this s a simulator.
+	 * The message is only ever received if the device is on the localhost
+	 * @return the path of the device home directory if it is a simulator
+	 */
+	public String getSimulatorHomePath() {
+		return simulatorHomePath;
+	}
+
+	/**
+	 * Returns whether we are the simulator on the local host
+	 * @return true if we are a simulator
+	 */
+	public boolean isLocalSimulator(){
+		boolean ret = !simulatorHomePath.isEmpty();
+
+		// if there is no path, check if it is on loopback address
+		if (!ret){
+			try {
+				InetAddress device_address = InetAddress.getByName(getAddress());
+				ret = device_address.isLoopbackAddress();
+			} catch (UnknownHostException e) {
+				//e.printStackTrace();
+			}
+		}
+		return ret;
+	}
+
+	String simulatorHomePath = ""; // this variable will only be set on localhost
 
 	public static final int MAX_LOG_DISPLAY_CHARS = 5000;
 
@@ -740,10 +769,21 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			processDynamicControlMessage(msg, sender);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.LOG)) {
 			processLogMessage(msg, sender);
+		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SIMULATOR_HOME_PATH)) {
+			processSimulatorHomeMessage(msg, sender);
 		}
+
 
 	}
 
+	/**
+	 * Store the ho me path of the simulator. We can use this to see what project the simulator was launched from
+	 * @param msg The OSC Message
+	 * @param sender the sending address
+	 */
+	private void processSimulatorHomeMessage(OSCMessage msg, SocketAddress sender) {
+		simulatorHomePath = (String)msg.getArg(0);
+	}
 
 
 	private synchronized void processLogMessage(OSCMessage msg, SocketAddress sender) {

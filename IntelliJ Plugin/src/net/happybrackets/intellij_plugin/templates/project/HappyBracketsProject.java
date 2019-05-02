@@ -89,13 +89,17 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
     public static final String HAPPY_BRACKETS_DEVICE_FOLDER = File.separatorChar + "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar;
 
+    public static final String SIMULATOR_CONFIG_FILE = "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar + "config" + File.separatorChar + "simulator.config";
 
     // This is where we need to extract the HB.jar files to in a new project
     public static final String [] HB_JAR_LOCATION = new String[]{
             HAPPY_BRACKETS_DEVICE_FOLDER
     };
 
-
+    // This is where we need to extract the HB.jar files to in a new project
+    public static final String [] NO_UPDATE_FILES = new String[]{
+            SIMULATOR_CONFIG_FILE
+    };
 
     @Override
     public Icon getIcon() {
