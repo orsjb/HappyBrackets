@@ -45,9 +45,9 @@ public class DynamicControl implements ScheduledEventListener {
 
         notifyLocalListeners();
 
-        //if (!message.localOnly) {
+        if (!message.localOnly) {
             notifyValueSetListeners();
-        //}
+        }
 
         synchronized (futureMessageListLock) {
             futureMessageList.remove(message);
@@ -583,7 +583,7 @@ public class DynamicControl implements ScheduledEventListener {
         // We need to convert the Object value into the exact type. EG, integer must be cast to boolean if that is thr control type
         Object converted_value = convertValue(controlType, value);
 
-        if (disableScheduler){
+        if (disableScheduler || execution_time ==  0){
             this.objVal = converted_value;
             this.executionTime = 0;
 
