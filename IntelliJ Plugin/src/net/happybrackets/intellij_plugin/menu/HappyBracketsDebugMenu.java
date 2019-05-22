@@ -75,9 +75,13 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
 
                     String source_pathname = activating_project.getBasePath() + File.separatorChar + "src";
                     VirtualFile src_directory = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(source_pathname));
+                    String src_dir_text = src_directory.getUrl() + "/";
+
                     if (src_directory.isDirectory()) {
                         for (VirtualFile root_child : src_directory.getChildren()) {
-                            if (root_child.getUrl().endsWith(EXAMPLES_FOLDER)) {
+                            String root_folder_name = root_child.getUrl().replace(src_dir_text, "");
+
+                            if (root_folder_name.equalsIgnoreCase(EXAMPLES_FOLDER)) {
                                 if (root_child.isDirectory()) {
                                     // We are in examples folder.
                                     HappyBracketsExamplesFolderMenu new_folder_menu = new HappyBracketsExamplesFolderMenu(root_child);

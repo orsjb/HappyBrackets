@@ -58,6 +58,10 @@ This file wil give a short description of the examples
    [OSCSendAccelerometer]  - Display Sending Accelerometer values to Port 9000 on localhost
    [OSCSender]             - Displays sending various OSC types
 *******************************************************************
+[pihat] - Do GPIO using UNSW Pi Hats
+ [PiHatDigitalInGPIO]   Displays GPIO input using UNSW Pi Hat
+ [PiHatDigitalOutGPIO]  Display GPIO output using UNSW Pi Hat
+*******************************************************************
 [midi] - Generate waveforms based on Midi note numbers
   [basic]   - very simple examples
     SimpleMidi          Converts a Midi note number to a frequency to generate playback
