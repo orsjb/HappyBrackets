@@ -314,7 +314,7 @@ public class NetworkCommunication {
 									},
 									target_address);
 
-							System.out.println("Version sent " + BuildVersion.getVersionText() + " to port " + target_port) ;
+							System.out.println("Version sent " + BuildVersion.getVersionText() + " to port " + target_address.toString() + " " + target_port ) ;
 
 							// also send simulator path to localhost
 							sendSimulatorHomePath(target_port);
@@ -332,7 +332,7 @@ public class NetworkCommunication {
 									},
 									target_address);
 
-							System.out.println("Name sent " + BuildVersion.getVersionText() + " to port " + target_port) ;
+							System.out.println("Name sent " + BuildVersion.getVersionText() + " to port " + target_address.toString() + " " + target_port) ;
 
 						}
 
@@ -481,9 +481,11 @@ public class NetworkCommunication {
 									},
 									src);
 
-							System.out.println("Version sent " + BuildVersion.getVersionText() + " to tcp " ) ;
-
 							InetAddress src_address = ((InetSocketAddress) src).getAddress();
+
+							System.out.println("Version sent " + BuildVersion.getVersionText() + " to tcp " + src_address.toString() ) ;
+
+
 							if (src_address.isLoopbackAddress()){
 								send(createSimulatorHomePathMessage(), src);
 							}

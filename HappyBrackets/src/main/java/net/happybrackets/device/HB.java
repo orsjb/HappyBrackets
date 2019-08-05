@@ -43,7 +43,6 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
-import net.happybrackets.device.network.FileReceiver;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.config.DeviceConfig;
@@ -208,6 +207,14 @@ public class HB {
 	 * A {@link Hashtable} to store generic objects.
 	 */
 	public final Hashtable<String, Object> share = new Hashtable<String, Object>();
+
+	// registered data
+	/**
+	 * A {@link Hashtable} to store generic objects that do not get cleared when reset, however, are still volatile.
+	 */
+	private Hashtable<String, Object> registered = new Hashtable<String, Object>();
+
+
 	private int nextElementID = 0;
 
 	/**
@@ -1000,6 +1007,43 @@ public class HB {
 	}
 
 	/**
+	 * Puts an {@link Object} into the global memory store with a given name. This overwrites any object that was previously stored with the given name.
+	 * Values does not get reset, however, is still volatile
+	 *
+	 * @param name {@link String} name to store the object with.
+	 * @param value {@link Object} to store.
+     */
+	public void registerVariable(String name, Object value) {
+		registered.put(name, value);
+	}
+
+
+	/**
+	 * Gets an @{@link Object} with the given name from the registered memory store. Returns null if there is no object with this name.
+	 * @param name {@link String} name object is mapped as
+	 * @return an @{@link Object} or null if there is no object.
+	 */
+	public Object getRegisteredVariable(String name) {
+		Object ret =  null;
+
+		if (registered.containsKey(name)){
+			ret = registered.get(name);
+		}
+		return  ret;
+	}
+
+	/**
+	 * Erases @{@link Object} with the given name from the registered memory store.
+	 * @param name {@link String} name object is mapped as
+	 */
+	public void clearRegisteredVariable(String name) {
+		if (registered.containsKey(name)){
+			registered.remove(name);
+		}
+
+	}
+
+	/**
 	 * Gets an @{@link Object} with the given name from the global memory store. Returns null if there is no object with this name.
 	 * @param s the name of the object.
 	 * @return an @{@link Object} or null if there is no object.
@@ -1329,7 +1373,7 @@ public class HB {
 	 */
 	void sendClassLoaded(Class<? extends HBAction> incomingClass){
 		String class_name = incomingClass.getSimpleName();
-		setStatus("Successful Load " + class_name);
+		//setStatus("Successful Load " + class_name);
 		synchronized (statusChangedListenerList)
 		{
 			for (StatusChangedListener listener : statusChangedListenerList) {
