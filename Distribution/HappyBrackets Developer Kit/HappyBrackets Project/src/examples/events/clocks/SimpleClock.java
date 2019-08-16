@@ -39,7 +39,7 @@ public class SimpleClock implements HBAction {
         player.setBuffer(Buffer.SQUARE);
         player.setMidiFrequency(currentNote);
 
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
 

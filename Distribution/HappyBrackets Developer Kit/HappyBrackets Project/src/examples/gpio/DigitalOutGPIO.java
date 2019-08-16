@@ -46,7 +46,7 @@ public class DigitalOutGPIO implements HBAction, HBReset {
         /* Type gpioDigitalOut to create this code */
         GPIODigitalOutput outputPin = GPIODigitalOutput.getOutputPin(GPIO_OUTPUT);
         if (outputPin == null) {
-            hb.setStatus("Fail GPIO Digital Out " + GPIO_OUTPUT);
+            HB.HBInstance.setStatus("Fail GPIO Digital Out " + GPIO_OUTPUT);
         }/* End gpioDigitalOut code */
 
 

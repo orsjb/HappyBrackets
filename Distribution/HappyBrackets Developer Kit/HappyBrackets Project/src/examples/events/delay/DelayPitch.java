@@ -36,7 +36,7 @@ public class DelayPitch implements HBAction, HBReset {
         waveModule.setFrequency(ORIGINAL_PITCH);
         waveModule.setGain(0.1f);
         waveModule.setBuffer(Buffer.SINE);
-        waveModule.connectTo(hb.ac.out);
+        waveModule.connectTo(HB.getAudioOutput());
 
         /* To create this, just type clockTimer */
         Clock clock = hb.createClock(500).addClockTickListener((offset, this_clock) -> {/* Write your code below this line */

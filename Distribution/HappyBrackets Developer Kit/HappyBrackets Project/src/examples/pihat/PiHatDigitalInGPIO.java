@@ -56,18 +56,18 @@ public class PiHatDigitalInGPIO implements HBAction, HBReset {
         if (inputPin != null) {
 
             inputPin.addStateListener((sensor, new_state) -> {/* Write your code below this line */
-                hb.setStatus("GPIO State: " + new_state);
+                HB.HBInstance.setStatus("GPIO State: " + new_state);
                 /* Write your code above this line */
             });
         } else {
-            hb.setStatus("Fail GPIO Input " + GPIO_NUMBER);
+            HB.HBInstance.setStatus("Fail GPIO Input " + GPIO_NUMBER);
         }/* End gpioDigitalIn code */
 
 
         // Enable our GPIO on the PiHat
         GPIODigitalOutput outputPin = GPIODigitalOutput.getOutputPin(GPIO_ENABLE);
         if (outputPin == null) {
-            hb.setStatus("Fail GPIO Digital Out " + GPIO_ENABLE);
+            HB.HBInstance.setStatus("Fail GPIO Digital Out " + GPIO_ENABLE);
         }/* End gpioDigitalOut code */
         else {
             outputPin.setState(true);

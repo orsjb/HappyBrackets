@@ -31,7 +31,7 @@ public class SimpleAccelerometer implements HBAction{
 
         // Map a scaled value of Accelerometer X to the frequency
         player.setFrequency(hb.getAccelerometer_X(0, 2000));
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
     }

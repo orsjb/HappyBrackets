@@ -45,7 +45,7 @@ public class SimpleGyroscope implements HBAction{
             }
         });
 
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
     }
 
 

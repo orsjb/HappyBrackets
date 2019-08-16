@@ -40,7 +40,7 @@ public class VariableClock implements HBAction {
         WaveModule player = new WaveModule();
         player.setMidiFrequency(currentNote);
         player.setBuffer(Buffer.SQUARE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
         /************************************************************

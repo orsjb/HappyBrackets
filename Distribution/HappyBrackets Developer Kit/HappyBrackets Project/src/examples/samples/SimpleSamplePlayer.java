@@ -29,11 +29,11 @@ public class SimpleSamplePlayer implements HBAction
         final String sample_name = "data/audio/Roje/i-write.wav";
         SampleModule player = new SampleModule();
         if (player.setSample(sample_name)) {/* Write your code below this line */
-            player.connectTo(hb.ac.out);
+            player.connectTo(HB.getAudioOutput());
 
             /* Write your code above this line */
         } else {
-            hb.setStatus("Failed sample " + sample_name);
+            HB.HBInstance.setStatus("Failed sample " + sample_name);
         }/* End samplePlayer code */
 
     }

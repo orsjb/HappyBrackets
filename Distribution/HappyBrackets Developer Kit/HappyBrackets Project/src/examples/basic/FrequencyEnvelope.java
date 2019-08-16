@@ -48,7 +48,7 @@ public class FrequencyEnvelope implements HBAction {
         WavePlayer waveformGenerator = new WavePlayer(frequencyEnvelope, Buffer.SINE);
 
         WaveModule player = new WaveModule(frequencyEnvelope, INITIAL_VOLUME, Buffer.SINE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
         // Now start changing the frequency of frequencyEnvelope

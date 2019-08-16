@@ -52,7 +52,7 @@ public class PiHatDigitalOutGPIO implements HBAction, HBReset {
         /* Type gpioDigitalOut to create this code */
         GPIODigitalOutput outputPin = GPIODigitalOutput.getOutputPin(GPIO_OUTPUT);
         if (outputPin == null) {
-            hb.setStatus("Fail GPIO Digital Out " + GPIO_OUTPUT);
+            HB.HBInstance.setStatus("Fail GPIO Digital Out " + GPIO_OUTPUT);
         }/* End gpioDigitalOut code */
 
 
@@ -88,7 +88,7 @@ public class PiHatDigitalOutGPIO implements HBAction, HBReset {
             // Enable our GPIO on the PiHat
             GPIODigitalOutput enablePin = GPIODigitalOutput.getOutputPin(GPIO_ENABLE);
             if (enablePin == null) {
-                hb.setStatus("Fail GPIO Digital Out " + GPIO_ENABLE);
+                HB.HBInstance.setStatus("Fail GPIO Digital Out " + GPIO_ENABLE);
             }
             else {
                 enablePin.setState(true);

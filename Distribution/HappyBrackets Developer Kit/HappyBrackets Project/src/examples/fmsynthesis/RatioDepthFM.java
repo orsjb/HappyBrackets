@@ -66,7 +66,7 @@ public class RatioDepthFM implements HBAction {
         // This is our actual wavePlayer for making sound. The frequency is the current value of modFunction
 
         WaveModule player = new WaveModule(modFunction, INITIAL_VOLUME, Buffer.SINE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
 

@@ -45,7 +45,7 @@ public class TriggerControlSample implements HBAction {
 
         WaveModule player = new WaveModule();
         player.setFrequency(frequencyList[0]);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
 

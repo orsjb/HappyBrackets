@@ -36,11 +36,11 @@ public class AlternatingLoopedSamplePlayer implements HBAction {
         final String sample_name = "data/audio/Roje/i-write.wav";
         SampleModule samplePlayer = new SampleModule();
         if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
-            samplePlayer.connectTo(hb.ac.out);
+            samplePlayer.connectTo(HB.getAudioOutput());
 
             /* Write your code above this line */
         } else {
-            hb.setStatus("Failed sample " + sample_name);
+            HB.HBInstance.setStatus("Failed sample " + sample_name);
         }/* End samplePlayer code */
 
             // define our loop type. we will loop forwards

@@ -51,7 +51,7 @@ public class ControlledThread implements HBAction, HBReset {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         WaveModule player = new WaveModule(START_FREQUENCY, 0.1f, Buffer.SINE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
         /* Type threadFunction to generate this code */
         Thread thread = new Thread(() -> {

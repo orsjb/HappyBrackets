@@ -60,7 +60,7 @@ public class CreatedThread implements HBAction {
         gainAmplifier.addInput(waveformGenerator);
 
         // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
+        HB.getAudioOutput().addInput(gainAmplifier);
 
 
         /*************************************************************

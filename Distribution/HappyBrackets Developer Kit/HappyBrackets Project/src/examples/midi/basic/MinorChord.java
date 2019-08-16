@@ -57,7 +57,7 @@ public class MinorChord implements HBAction {
         gainAmplifier.addInput(fifthWaveform);
 
         // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
+        HB.getAudioOutput().addInput(gainAmplifier);
 
     }
 

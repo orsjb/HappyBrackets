@@ -58,7 +58,7 @@ public class BasicFM implements HBAction {
 
         // Now make our player using the modFunction as the frequency
         WaveModule player = new WaveModule(modFunction, INITIAL_VOLUME, Buffer.SINE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
     }

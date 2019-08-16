@@ -49,7 +49,7 @@ public class GainEnvelope implements HBAction {
         player.setBuffer(Buffer.SQUARE);
 
         // Now plug the gain object into the audio output
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
         // Now start changing the level of gainEnvelope

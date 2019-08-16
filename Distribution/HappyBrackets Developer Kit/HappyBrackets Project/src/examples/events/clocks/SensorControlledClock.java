@@ -40,7 +40,7 @@ public class SensorControlledClock implements HBAction {
         WaveModule player = new WaveModule();
         player.setBuffer(Buffer.SQUARE);
         player.setMidiFrequency(currentNote);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
         final double CLOCK_INTERVAL = 500;
 

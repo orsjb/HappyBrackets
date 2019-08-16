@@ -27,13 +27,13 @@ public class TripleAxisAccelerometer implements HBAction, HBReset {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         WaveModule x_player = new WaveModule(1000, 0.1f, Buffer.SINE);
-        x_player.connectTo(hb.ac.out);
+        x_player.connectTo(HB.getAudioOutput());
 
         WaveModule y_player = new WaveModule(1000, 0.1f, Buffer.SQUARE);
-        y_player.connectTo(hb.ac.out);
+        y_player.connectTo(HB.getAudioOutput());
 
         WaveModule z_player = new WaveModule(1000, 0.1f, Buffer.SAW);
-        z_player.connectTo(hb.ac.out);
+        z_player.connectTo(HB.getAudioOutput());
 
 
         /** type accelerometerSensor to create this. Values typically range from -1 to + 1 **/

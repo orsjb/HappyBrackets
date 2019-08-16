@@ -33,7 +33,7 @@ public class IntegerBuddyControlSample implements HBAction {
 
 
         WaveModule player = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
         // Now add a dynamicControl to set the frequency

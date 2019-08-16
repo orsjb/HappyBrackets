@@ -92,7 +92,7 @@ public class SampleController implements HBAction {
             // Connect our sample player to audio
             Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
             gainAmplifier.addInput(samplePlayer);
-            hb.ac.out.addInput(gainAmplifier);
+            HB.getAudioOutput().addInput(gainAmplifier);
 
             /******** Write your code below this line ********/
 
@@ -323,7 +323,7 @@ public class SampleController implements HBAction {
             /*** End DynamicControl code ***/
             /******** Write your code above this line ********/
         } else {
-            hb.setStatus("Failed sample " + SAMPLE_NAME);
+            HB.HBInstance.setStatus("Failed sample " + SAMPLE_NAME);
         }
         /*** End samplePlayer code ***/
 

@@ -33,7 +33,7 @@ public class LoopedSamplePlayer implements HBAction {
 
             /* Write your code above this line */
         } else {
-            hb.setStatus("Failed sample " + sample_name);
+            HB.HBInstance.setStatus("Failed sample " + sample_name);
         }/* End samplePlayer code */
 
         // define our loop type. we will loop forwards

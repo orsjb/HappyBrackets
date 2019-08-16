@@ -47,7 +47,7 @@ public class MajorScaleModulo implements HBAction {
 
 
         WaveModule player = new WaveModule(Pitch.mtof(BASE_TONIC), 0.1f, Buffer.SQUARE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
 

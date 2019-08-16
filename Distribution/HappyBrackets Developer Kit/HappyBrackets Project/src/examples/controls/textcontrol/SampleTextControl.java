@@ -39,11 +39,11 @@ public class SampleTextControl implements HBAction, HBReset {
         final String s = "data/audio/Roje/i-write.wav";
         SampleModule samplePlayer = new SampleModule();
         if (samplePlayer.setSample(s)) {/* Write your code below this line */
-            samplePlayer.connectTo(hb.ac.out);
+            samplePlayer.connectTo(HB.getAudioOutput());
 
             /* Write your code above this line */
         } else {
-            hb.setStatus("Failed sample " + s);
+            HB.HBInstance.setStatus("Failed sample " + s);
         }/* End samplePlayer code */
 
         // make our sample loop

@@ -31,7 +31,7 @@ public class SimpleMIDI implements HBAction {
 
         player.setMidiFrequency(MIDI_NOTE);
         player.setBuffer(Buffer.SQUARE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
 

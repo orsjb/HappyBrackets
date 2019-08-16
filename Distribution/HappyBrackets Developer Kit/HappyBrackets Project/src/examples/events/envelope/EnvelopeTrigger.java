@@ -42,7 +42,7 @@ public class EnvelopeTrigger implements HBAction {
         gainAmplifier.addInput(waveformGenerator);
 
         // Now plug the gain object into the audio output
-        hb.ac.out.addInput(gainAmplifier);
+        HB.getAudioOutput().addInput(gainAmplifier);
 
         // now add some events
         final float SEGMENT_DURATION  = 4000; // THis is how long we will make our segments

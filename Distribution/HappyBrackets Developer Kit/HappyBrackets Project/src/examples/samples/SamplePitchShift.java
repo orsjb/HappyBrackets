@@ -53,11 +53,11 @@ public class SamplePitchShift implements HBAction {
         final String sample_name = "data/audio/Nylon_Guitar/Clean_A_harm.wav";
         SampleModule samplePlayer = new SampleModule();
         if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
-            samplePlayer.connectTo(hb.ac.out);
+            samplePlayer.connectTo(HB.getAudioOutput());
 
             /* Write your code above this line */
         } else {
-            hb.setStatus("Failed sample " + sample_name);
+            HB.HBInstance.setStatus("Failed sample " + sample_name);
         }/* End samplePlayer code */
 
 

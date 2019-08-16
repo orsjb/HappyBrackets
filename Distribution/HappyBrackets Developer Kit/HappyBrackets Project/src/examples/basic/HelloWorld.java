@@ -31,7 +31,7 @@ public class HelloWorld implements HBAction {
         WaveModule waveModule = new WaveModule(INITIAL_FREQUENCY, INITIAL_VOLUME, Buffer.SINE);
 
         // Now plug the gain object into the audio output
-        waveModule.connectTo(hb.ac.out);
+        waveModule.connectTo(HB.getAudioOutput());
 
 
 

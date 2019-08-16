@@ -30,7 +30,7 @@ public class IntegerTextControlSample implements HBAction {
         final int MAX_VOLUME = 1; // define how loud we want the sound
 
         WaveModule player = new WaveModule();
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
         // Now add a dynamicControl to set the frequency

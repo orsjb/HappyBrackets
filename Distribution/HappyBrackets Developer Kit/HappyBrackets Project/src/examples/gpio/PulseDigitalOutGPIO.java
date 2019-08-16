@@ -38,7 +38,7 @@ public class PulseDigitalOutGPIO implements HBAction, HBReset {
         /***** Type your HBAction code below this line ******/
         // remove this code if you do not want other compositions to run at the same time as this one
         hb.reset();
-        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
+        HB.HBInstance.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         // Reset all our GPIO - Only really necessary if the Pin has been assigned as something other than an input before
         GPIO.resetAllGPIO();
@@ -46,7 +46,7 @@ public class PulseDigitalOutGPIO implements HBAction, HBReset {
         /* Type gpioDigitalOut to create this code */
         GPIODigitalOutput outputPin = GPIODigitalOutput.getOutputPin(GPIO_OUTPUT);
         if (outputPin == null) {
-            hb.setStatus("Fail GPIO Digital Out " + GPIO_OUTPUT);
+            HB.HBInstance.setStatus("Fail GPIO Digital Out " + GPIO_OUTPUT);
         }/* End gpioDigitalOut code */
 
 

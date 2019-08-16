@@ -49,7 +49,7 @@ public class CustomScale implements HBAction {
         WaveModule player = new WaveModule();
         player.setMidiFrequency(BASE_TONIC);
         player.setBuffer(Buffer.SQUARE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
 
         /************************************************************

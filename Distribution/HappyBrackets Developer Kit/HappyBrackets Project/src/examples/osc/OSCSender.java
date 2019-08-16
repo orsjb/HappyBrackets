@@ -36,7 +36,7 @@ public class OSCSender implements HBAction, HBReset {
         /***** Type your HBAction code below this line ******/
         // remove this code if you do not want other compositions to run at the same time as this one
         //hb.reset();
-        hb.setStatus(this.getClass().getSimpleName() + " Loaded");
+        HB.HBInstance.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         // We will make a display to see
         target_display = new TextControlSender(this, "Final Target", "");

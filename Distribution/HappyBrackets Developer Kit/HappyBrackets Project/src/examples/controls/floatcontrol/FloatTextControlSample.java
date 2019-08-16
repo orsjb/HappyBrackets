@@ -29,7 +29,7 @@ public class FloatTextControlSample implements HBAction {
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
 
         WaveModule player = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
-        player.connectTo(hb.ac.out);
+        player.connectTo(HB.getAudioOutput());
 
         /*************************************************************
          * Create Float type Dynamic Controls that displays as a text box
