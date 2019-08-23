@@ -120,6 +120,11 @@ public class HB {
 	 */
 	private static List <Object> loadedHBClasses = Collections.synchronizedList(new ArrayList<Object>());
 
+	/**
+	 * We will store the INetAddress of the controllers that create the classes
+	 */
+	private  Map<Object, InetAddress> classSenders = Collections.synchronizedMap( new Hashtable<Object, InetAddress>());
+
 	private List<StatusChangedListener> statusChangedListenerList  = new ArrayList<>();
 
 	// We will create a static one to know whether we are in Debug or run
@@ -134,6 +139,21 @@ public class HB {
 	}
 
 	private boolean useEncryption = false;
+
+	/**
+	 * Get the {@link InetAddress} of the controller that sent the class
+	 * If the class was loaded on startup it will be null
+	 * @param classObject the class that was sent by the controller
+	 * @return Address of controller that sent the class. If was a startup class, then returns null
+	 */
+	public InetAddress getSendingController(Object classObject){
+		InetAddress ret = null;
+
+		if (classSenders.containsKey(classObject)){
+			ret = classSenders.get(classObject);
+		}
+		return ret;
+	}
 
 	/**
 	 * Determine if we have any classes Loaded
@@ -347,6 +367,9 @@ public class HB {
 						// If we have a mute control, disable muting
 						hb.muteAudio(false);
 						action = incomingClass.newInstance();
+
+						// add our controller address before we call action
+						hb.classSenders.put(action, InetAddress.getLocalHost());
 						action.action(hb);
 
 						// we will add to our list here.
@@ -878,6 +901,10 @@ public class HB {
 							try {
 								action = incomingClass.newInstance();
 								muteAudio(false);
+
+								// Makwe sure we call befor action so we can use it in our action
+								classSenders.put(action, incomingAddress);
+
 								action.action(HB.this);
 
 								sendClassLoaded(incomingClass);
@@ -1164,6 +1191,7 @@ public class HB {
 		GPIO.resetGpioListeners();
 		// clear all scheduled events
 		HBScheduler.getGlobalScheduler().reset();
+
 		synchronized (loadedHBClasses) {
 			for (Object loaded_class : loadedHBClasses) {
 

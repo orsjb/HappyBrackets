@@ -54,6 +54,7 @@ This file wil give a short description of the examples
 
 *******************************************************************
 [osc]
+   [GetControllerAddress] - Dislays the IP address of the controller that sent this class
    [OSCReceiveValues]      - Displays receiving OSC on port 9000
    [OSCSendAccelerometer]  - Display Sending Accelerometer values to Port 9000 on localhost
    [OSCSender]             - Displays sending various OSC types

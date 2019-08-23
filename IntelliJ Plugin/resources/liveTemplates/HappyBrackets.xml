@@ -14,7 +14,7 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="basicWavePlayer" value="$COMMENT$&#10;        net.happybrackets.core.instruments.WaveModule $waveModule$ = new net.happybrackets.core.instruments.WaveModule();&#10;$waveModule$.setFrequency($FREQUENCY$);&#10;$waveModule$.setGain($VOLUME$);&#10;$waveModule$.setBuffer(net.beadsproject.beads.data.Buffer.SINE);&#10;$waveModule$.connectTo(hb.ac.out);&#10;&#10;$END$" description="Creates minimal entries to make audio with a WavePlayer" toReformat="true" toShortenFQNames="true">
+  <template name="basicWavePlayer" value="$COMMENT$&#10;        net.happybrackets.core.instruments.WaveModule $waveModule$ = new net.happybrackets.core.instruments.WaveModule();&#10;$waveModule$.setFrequency($FREQUENCY$);&#10;$waveModule$.setGain($VOLUME$);&#10;$waveModule$.setBuffer(net.beadsproject.beads.data.Buffer.SINE);&#10;$waveModule$.connectTo(net.happybrackets.device.HB.getAudioOutput());&#10;&#10;$END$" description="Creates minimal entries to make audio with a WavePlayer" toReformat="true" toShortenFQNames="true">
     <variable name="COMMENT" expression="" defaultValue="&quot;// type basicWavePlayer to generate this code &quot;" alwaysStopAt="true" />
     <variable name="waveModule" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="FREQUENCY" expression="variableOfType(Float)" defaultValue="&quot;1000&quot;" alwaysStopAt="true" />
@@ -24,7 +24,7 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="basicSamplePlayer" value="$COMMENT$&#10;        // define our sample name&#10;        final java.lang.String $SAMPLE_NAME_VAR$ = &quot;$SAMPLE_NAME$&quot;;&#10;net.happybrackets.core.instruments.SampleModule $sampleModule$ = new net.happybrackets.core.instruments.SampleModule();&#10;if ($sampleModule$.setSample($SAMPLE_NAME_VAR$)) {$COMMENT_LINE_1$&#10;    $sampleModule$.connectTo(hb.ac.out);&#10;    $END$&#10;$COMMENT_LINE_2$&#10;}else {&#10;    hb.setStatus(&quot;Failed sample &quot; + $SAMPLE_NAME_VAR$);&#10;}// End samplePlayer code " description="creates a Simple SamplePlayer" toReformat="true" toShortenFQNames="true">
+  <template name="basicSamplePlayer" value="$COMMENT$&#10;        // define our sample name&#10;        final java.lang.String $SAMPLE_NAME_VAR$ = &quot;$SAMPLE_NAME$&quot;;&#10;net.happybrackets.core.instruments.SampleModule $sampleModule$ = new net.happybrackets.core.instruments.SampleModule();&#10;if ($sampleModule$.setSample($SAMPLE_NAME_VAR$)) {$COMMENT_LINE_1$&#10;    $sampleModule$.connectTo(net.happybrackets.device.HB.getAudioOutput());&#10;    $END$&#10;$COMMENT_LINE_2$&#10;}else {&#10;    net.happybrackets.device.HB.HBInstance.setStatus(&quot;Failed sample &quot; + $SAMPLE_NAME_VAR$);&#10;}// End samplePlayer code " description="creates a Simple SamplePlayer" toReformat="true" toShortenFQNames="true">
     <variable name="COMMENT" expression="" defaultValue="&quot;// type basicSamplePLayer to generate this code &quot;" alwaysStopAt="true" />
     <variable name="SAMPLE_NAME_VAR" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="SAMPLE_NAME" expression="variableOfType(Type)" defaultValue="&quot;data/audio/Roje/i-write.wav&quot;" alwaysStopAt="true" />
@@ -217,7 +217,7 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="gpioDigitalIn" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIOInput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIOInput.getInputPin($GPIO_NUMBER$, com.pi4j.io.gpio.PinPullResistance.$PIN_PULL$);&#10;        if ($VAR_NAME$ != null){&#10;&#10;            $VAR_NAME$.addStateListener((sensor, new_state) -&gt; {// Write your code below this line &#10;                $END$&#10;                // Write your code above this line                 &#10;            });&#10;        }&#10;        else&#10;        {&#10;            hb.setStatus(&quot;Fail GPIO Input &quot; + $GPIO_NUMBER$);&#10;        }// End gpioDigitalIn code " description="Find a GPIO Digital Input Pin" toReformat="true" toShortenFQNames="true">
+  <template name="gpioDigitalIn" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIOInput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIOInput.getInputPin($GPIO_NUMBER$, com.pi4j.io.gpio.PinPullResistance.$PIN_PULL$);&#10;        if ($VAR_NAME$ != null){&#10;&#10;            $VAR_NAME$.addStateListener((sensor, new_state) -&gt; {// Write your code below this line &#10;                $END$&#10;                // Write your code above this line                 &#10;            });&#10;        }&#10;        else&#10;        {&#10;            net.happybrackets.device.HB.HBInstance.setStatus(&quot;Fail GPIO Input &quot; + $GPIO_NUMBER$);&#10;        }// End gpioDigitalIn code " description="Find a GPIO Digital Input Pin" toReformat="true" toShortenFQNames="true">
     <variable name="COMMENT" expression="" defaultValue="&quot;// Type gpioDigitalIn to create this code&quot;" alwaysStopAt="true" />
     <variable name="VAR_NAME" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="GPIO_NUMBER" expression="variableOfType(Integer)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -227,7 +227,7 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="gpioPWMOut" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIOPWMOutput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIOPWMOutput.getOutputPin($GPIO_NUMBER$);&#10;&#10;        if ($VAR_NAME$ == null){&#10;            hb.setStatus(&quot;Fail GPIO PWM &quot; + $GPIO_NUMBER$);&#10;        }// End gpioPWMOut code &#10;        $END$" description="Find a GPIO PWM Output Pin" toReformat="true" toShortenFQNames="true">
+  <template name="gpioPWMOut" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIOPWMOutput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIOPWMOutput.getOutputPin($GPIO_NUMBER$);&#10;&#10;        if ($VAR_NAME$ == null){&#10;            net.happybrackets.device.HB.HBInstance.setStatus(&quot;Fail GPIO PWM &quot; + $GPIO_NUMBER$);&#10;        }// End gpioPWMOut code &#10;        $END$" description="Find a GPIO PWM Output Pin" toReformat="true" toShortenFQNames="true">
     <variable name="COMMENT" expression="" defaultValue="&quot;// Type gpioPWMOut to create this code &quot;" alwaysStopAt="true" />
     <variable name="VAR_NAME" expression="suggestVariableName" defaultValue="" alwaysStopAt="true" />
     <variable name="GPIO_NUMBER" expression="variableOfType(Integer)" defaultValue="&quot;1&quot;" alwaysStopAt="true" />
@@ -236,7 +236,7 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="gpioDigitalOut" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIODigitalOutput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIODigitalOutput.getOutputPin($GPIO_NUMBER$);&#10;        if ($VAR_NAME$ == null){&#10;            hb.setStatus(&quot;Fail GPIO Digital Out &quot; + $GPIO_NUMBER$);&#10;        }// End gpioDigitalOut code &#10;        $END$" description="Find a GPIO Digital Output Pin" toReformat="true" toShortenFQNames="true">
+  <template name="gpioDigitalOut" value="$COMMENT$&#10;        net.happybrackets.device.sensors.gpio.GPIODigitalOutput $VAR_NAME$ = net.happybrackets.device.sensors.gpio.GPIODigitalOutput.getOutputPin($GPIO_NUMBER$);&#10;        if ($VAR_NAME$ == null){&#10;            net.happybrackets.device.HB.HBInstance.setStatus(&quot;Fail GPIO Digital Out &quot; + $GPIO_NUMBER$);&#10;        }// End gpioDigitalOut code &#10;        $END$" description="Find a GPIO Digital Output Pin" toReformat="true" toShortenFQNames="true">
     <variable name="COMMENT" expression="" defaultValue="&quot;// Type gpioDigitalOut to create this code &quot;" alwaysStopAt="true" />
     <variable name="VAR_NAME" expression="suggestVariableName" defaultValue="" alwaysStopAt="true" />
     <variable name="GPIO_NUMBER" expression="variableOfType(Integer)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
@@ -368,6 +368,16 @@
   <template name="osclistener" value="// type osclistener to create this code &#10;        net.happybrackets.core.OSCUDPListener $oscListener$ = new net.happybrackets.core.OSCUDPListener($PORT$) {&#10;            @java.lang.Override&#10;            public void OSCReceived(de.sciss.net.OSCMessage oscMessage, java.net.SocketAddress socketAddress, long time) {&#10;                // type your code below this line &#10;                $END$&#10;                // type your code above this line &#10;            }&#10;        };&#10;        if ($oscListener$.getPort() &lt; 0){ //port less than zero is an error&#10;            java.lang.String error_message =  $oscListener$.getLastError();&#10;            java.lang.System.out.println(&quot;Error opening port &quot; + $PORT$ + &quot; &quot; + error_message);&#10;        } // end oscListener code " description="Creates an OSC Listener" toReformat="true" toShortenFQNames="true">
     <variable name="oscListener" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="PORT" expression="typeOfVariable(VAR)" defaultValue="&quot;0&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="delayline" value="$COMMENT$ &#10;            net.happybrackets.core.scheduling.Delay $CONTROL_NAME$ = new net.happybrackets.core.scheduling.Delay($HOLD_TIME$, $PARAM$, (v, o) -&gt; {&#10;                // v is how far out we were from our exact delay time in ms and is a double&#10;                // o is the parameter we passed in type your code below this line&#10;                $END$&#10;                // type your code above this line&#10;            });" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// type delayline to create this code&quot;" alwaysStopAt="true" />
+    <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;delay&quot;" alwaysStopAt="true" />
+    <variable name="HOLD_TIME" expression="variableOfType(Type)" defaultValue="&quot;500.0&quot;" alwaysStopAt="true" />
+    <variable name="PARAM" expression="variableOfType(Type)" defaultValue="&quot;null&quot;" alwaysStopAt="true" />
     <context>
       <option name="JAVA_EXPRESSION" value="true" />
       <option name="JAVA_STATEMENT" value="true" />

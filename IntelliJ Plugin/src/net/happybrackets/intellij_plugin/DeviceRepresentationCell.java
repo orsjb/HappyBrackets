@@ -252,6 +252,22 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		main.add(connected_icon, next_column, current_row);
 		next_column++;
 		connected_icon.setOnAction(event -> {localDevice.showControlScreen();});
+
+		connected_icon.setOnMouseClicked(event -> {
+			ContextMenu contextMenu = new ContextMenu();
+			MenuItem show_controls_menu = new MenuItem("Show Controls");
+			if (event.isControlDown()){
+
+				contextMenu.getItems().add(show_controls_menu);
+				contextMenu.getItems().add(new SeparatorMenuItem());
+
+				PingMenu menus = new PingMenu(item);
+				contextMenu.getItems().addAll(menus.getMenuItems());
+
+				contextMenu.show(main, event.getScreenX(), event.getScreenY());
+			}
+		});
+
 		connected_icon.setAlignment(Pos.CENTER_LEFT);
 
 		connected_icon.setTooltip(new Tooltip("Click to display Controls"));
