@@ -103,7 +103,9 @@ public class FileSender {
             while (!exitThread) {/* write your code below this line */
                 synchronized (fileSendEvent){
                     try {
-                        fileSendEvent.wait();
+                        // Put a 5 second timer in as there is sometimes a race condition
+                        // where the event gets set before the thread starts
+                        fileSendEvent.wait(5000);
 
                         while (sendNextFileData() && !cancelSend)
                         {
@@ -126,7 +128,7 @@ public class FileSender {
      * @return true if we still have more data to send
      */
     private boolean sendNextFileData(){
-        System.out.println("Read Next File");
+        //System.out.println("Read Next File");
         if (currentFile == null){
             synchronized (fileStreamerLock) {
                 if (fileSendStreamerList.size() > 0) {
@@ -139,7 +141,7 @@ public class FileSender {
                 if (testClientOpen()) {
                     byte[] file_data = currentFile.readData(MAX_FILE_DATA);
                     OSCMessage message = HB.createOSCMessage(OSCVocabulary.FileSendMessage.WRITE, currentFile.targetFilename, file_data);
-                    System.out.println("Sent " + file_data.length + " bytes");
+                    //System.out.println("Sent " + file_data.length + " bytes");
 
                     fileSendClient.send(message);
                     if (currentFile.complete) {
@@ -150,6 +152,9 @@ public class FileSender {
                             currentFile = null;
                         }
                     }
+                }
+                else {
+                    System.out.println("Client Not Open on Send Next file");
                 }
 
             } catch (Exception e) {
@@ -188,6 +193,7 @@ public class FileSender {
        boolean do_notify = false;
 
         if (testClientOpen()) {
+            System.out.println("Client Open");
             synchronized (fileStreamerLock) {
 
                 do_notify = fileSendStreamerList.size() < 1;
@@ -201,6 +207,7 @@ public class FileSender {
 
             if (do_notify)
             {
+                System.out.println("Do Notify");
                 if (testClientOpen()) {
                     try {
                         fileSendClient.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.START));
@@ -208,10 +215,16 @@ public class FileSender {
                         e.printStackTrace();
                     }
                 }
+                else {
+                    System.out.println("Client Not Open after notify");
+                }
                 synchronized (fileSendEvent){
                     fileSendEvent.notify();
                 }
             }
+        }
+        else {
+            System.out.println("Unable to Open Client");
         }
 
 

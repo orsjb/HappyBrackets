@@ -164,10 +164,13 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	 */
 	public boolean sendFileToDevice(String source_file, String target_path){
 
-		openControlPort();
+
 		boolean ret = false;
-		if (fileSender != null){
-			ret = fileSender.addFile(source_file, target_path);
+
+		if (openControlPort()) {
+			if (fileSender != null) {
+				ret = fileSender.addFile(source_file, target_path);
+			}
 		}
 
 		return ret;
