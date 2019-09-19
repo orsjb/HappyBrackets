@@ -15,7 +15,7 @@ public class GetControllerAddress implements HBAction {
         hb.reset(); //Clears any running code on the device
         //Write your sketch below
 
-        // Get teh IP Address of controller that sent this to us
+        // Get the IP Address of controller that sent this to us
         InetAddress controllerAddress =  hb.getSendingController(this);
 
         if (controllerAddress != null){
