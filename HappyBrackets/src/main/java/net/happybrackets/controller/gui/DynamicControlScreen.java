@@ -865,6 +865,41 @@ public class DynamicControlScreen {
                     }
                     break;
 
+                case OBJECT:
+                    TextField ob = new TextField();
+                    control.setTooltipPrefix("Object Message. You cannot change this");
+                    ob.setTooltip(new Tooltip(control.getTooltipText()));
+                    ob.setDisable(true);
+                    ob.setText(control.getValue().toString());
+                    dynamicControlGridPane.add(ob, 1, nextControlRow++);
+                    control_group = new ControlCellGroup(control_label, ob);
+                    dynamicControlsList.put(control.getControlMapKey(), control_group);
+
+                    control_group.listener = new DynamicControl.DynamicControlListener() {
+                        @Override
+                        public void update(DynamicControl control) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    ob.setText(control.getValue().toString());
+                                }
+                            });
+                        }
+                    };
+
+                    control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
+                        @Override
+                        public void controlScopeChanged(ControlScope new_scope) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    ob.setTooltip(new Tooltip(control.getTooltipText()));
+                                }
+                            });
+
+                        }
+                    };
+
+
+                    break;
                 case TEXT:
                     if (hidden){
                         break;

@@ -383,4 +383,25 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
+  <template name="classObjectControl" value="$COMMENT$&#10;        net.happybrackets.core.control.ClassObjectControl $CONTROL_NAME$ = new net.happybrackets.core.control.ClassObjectControl(this, &quot;$NAME$&quot;, $CONTROL_VAL$) {&#10;            @java.lang.Override&#10;            public void valueChanged(java.lang.Object object_val) {&#10;                $CLASS$ control_val = ($CLASS$) object_val;&#10;                // Write your DynamicControl code below this line&#10;                $END$&#10;                // Write your DynamicControl code above this line&#10;            }&#10;&#10;        };// End DynamicControl $CONTROL_NAME$ code" description="Creates a class specific type DynamicControl" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type classObjectControl to generate this code&quot;" alwaysStopAt="true" />
+    <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;classObjectControl&quot;" alwaysStopAt="true" />
+    <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;controlName&quot;" alwaysStopAt="true" />
+    <variable name="CONTROL_VAL" expression="variableOfType(Type)" defaultValue="" alwaysStopAt="true" />
+    <variable name="CLASS" expression="className()" defaultValue="&quot;class Type&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="classObjectControlSender" value="$COMMENT$&#10;        net.happybrackets.core.control.ClassObjectControlSender $CONTROL_NAME$ = new net.happybrackets.core.control.ClassObjectControlSender(this, &quot;$NAME$&quot;, $CONTROL_VAL$);" description="Creates a class specific type DynamicControl object sender" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// Type classObjectControlSender to generate this code&quot;" alwaysStopAt="true" />
+    <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;classObjectControl&quot;" alwaysStopAt="true" />
+    <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;controlName&quot;" alwaysStopAt="true" />
+    <variable name="CONTROL_VAL" expression="variableOfType(Type)" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
 </templateSet>

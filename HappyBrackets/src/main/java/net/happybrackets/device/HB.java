@@ -477,6 +477,7 @@ public class HB {
 		// Do following call twice because of delays from JIT compiler. This is a JAVA
 		HBScheduler.getGlobalScheduler().synchroniseClocks();
 		HBScheduler.getGlobalScheduler().synchroniseClocks();
+		HBScheduler.getGlobalScheduler().synchroniseClocks();
 
 		int poly_limit = 0;
 		String multi_cast_address = "::FFFF:225.2.2.5";

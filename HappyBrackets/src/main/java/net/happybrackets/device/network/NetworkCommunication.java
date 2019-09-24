@@ -554,7 +554,7 @@ public class NetworkCommunication {
 					}
 				} catch (Exception ex)
 				{
-					logger.error("Error processing OSC message!", ex);
+						logger.error("Error processing OSC message!", ex);
 				}
 
 			}

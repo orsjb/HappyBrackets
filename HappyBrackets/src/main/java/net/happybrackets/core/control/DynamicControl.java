@@ -1,5 +1,6 @@
 package net.happybrackets.core.control;
 
+import com.google.gson.Gson;
 import de.sciss.net.OSCMessage;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
@@ -23,7 +24,18 @@ import java.util.List;
  */
 public class DynamicControl implements ScheduledEventListener {
 
+    static Gson gson = new Gson();
 
+    // flag for testing
+    static boolean ignoreName = false;
+
+    /**
+     * Set ignore name for testing
+     * @param ignore true to ignore
+     */
+    static void setIgnoreName(boolean ignore){
+        ignoreName =  true;
+    }
 
     /**
      * Define how we want the object displayed in the plugin
@@ -102,6 +114,9 @@ public class DynamicControl implements ScheduledEventListener {
         OBJ_VAL,
         EXECUTE_TIME
     }
+
+    // Define where our first Array type global dynamic control message is in OSC
+    final static int OSC_GLOBAL_ARRAY_ARG = GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal() + 1;
 
     // When an event nis scheduled in the future, we will create one of these and schedule it
     class FutureControlMessage{
@@ -630,11 +645,12 @@ public class DynamicControl implements ScheduledEventListener {
 
         if (msg.getArgCount() > GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
         {
-            execution_time = (int) msg.getArg(GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
+            Object time = msg.getArg(GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
+            execution_time = (int) time;
         }
 
         // Make sure we ignore messages from this device
-        if (!device_name.equals(Device.getDeviceName())) {
+        if (ignoreName || !device_name.equals(Device.getDeviceName())) {
             synchronized (controlMapLock) {
                 List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
                 for (DynamicControl named_control : named_controls) {
@@ -647,6 +663,19 @@ public class DynamicControl implements ScheduledEventListener {
                             int osc_val = (int) obj_val;
                             Boolean bool_val = osc_val != 0;
                             obj_val = bool_val;
+                        }
+                        else if (control_type == ControlType.OBJECT){
+                            if (! (obj_val instanceof String)){
+                                // This is not a Json Message
+                                // We will need to get all the remaining OSC arguments after the schedule time and store that as ObjVal
+                                int num_args = msg.getArgCount() - OSC_GLOBAL_ARRAY_ARG;
+                                Object [] restore_args =  new Object[num_args];
+                                for (int i = 0; i < num_args; i++){
+                                    restore_args[i] = msg.getArg(OSC_GLOBAL_ARRAY_ARG + i);
+                                }
+
+                                obj_val = restore_args;
+                            }
                         }
 
                         // We need to schedule this value
@@ -772,13 +801,19 @@ public class DynamicControl implements ScheduledEventListener {
      * @return OSC Message To send to specific control
      */
     public OSCMessage buildUpdateMessage(){
+
+        Object sendObjType = objVal;
+        if (controlType == ControlType.OBJECT){
+            sendObjType = objVal.toString();
+        }
+
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.UPDATE,
                 new Object[]{
                         deviceName,
                         controlName,
                         controlType.ordinal(),
                         controlMapKey,
-                        OSCArgumentObject(objVal),
+                        OSCArgumentObject(sendObjType),
                         controlScope.ordinal(),
                         0, // We will make zero as we want to update now  (int)executionTime,
                         displayType.ordinal()
@@ -791,21 +826,62 @@ public class DynamicControl implements ScheduledEventListener {
      * @return OSC Message directed to controls with same name, scope, but on different devices
      */
     public OSCMessage buildGlobalMessage(){
-        return new OSCMessage(OSCVocabulary.DynamicControlMessage.GLOBAL,
-                new Object[]{
-                        deviceName,
-                        controlName,
-                        controlType.ordinal(),
-                        OSCArgumentObject(objVal),
-                        (int)executionTime
-                });
 
+        if (controlType == ControlType.OBJECT){
+
+            // we need to see if we have a custom encode function
+            if (objVal instanceof CustomGlobalEncoder){
+                Object [] encode_data = ((CustomGlobalEncoder)objVal).encodeGlobalMessage();
+                int num_args = OSC_GLOBAL_ARRAY_ARG + encode_data.length;
+                Object [] osc_args = new Object[num_args];
+                osc_args[0] = deviceName;
+                osc_args[1] = controlName;
+                osc_args[2] = controlType.ordinal();
+                osc_args[3] = 0; // by defining zero we are going to say this is NOT json
+                osc_args[4] = (int)executionTime;
+
+                // now encode the object parameters
+                for (int i = 0; i < encode_data.length; i++){
+                    osc_args[OSC_GLOBAL_ARRAY_ARG + i] = encode_data[i];
+                }
+                return new OSCMessage(OSCVocabulary.DynamicControlMessage.GLOBAL,
+                        osc_args);
+            }
+            else
+            {
+                String jsonString =  gson.toJson(objVal);
+                return new OSCMessage(OSCVocabulary.DynamicControlMessage.GLOBAL,
+                        new Object[]{
+                                deviceName,
+                                controlName,
+                                controlType.ordinal(),
+                                jsonString,
+                                (int) executionTime
+                        });
+            }
+        }
+        else {
+            return new OSCMessage(OSCVocabulary.DynamicControlMessage.GLOBAL,
+                    new Object[]{
+                            deviceName,
+                            controlName,
+                            controlType.ordinal(),
+                            OSCArgumentObject(objVal),
+                            (int) executionTime
+                    });
+        }
     }
     /**
      * Build the OSC Message for a create message
      * @return OSC Message required to create the object
      */
     public OSCMessage buildCreateMessage() {
+
+        Object sendObjType = objVal;
+        if (controlType == ControlType.OBJECT){
+            sendObjType = objVal.toString();
+        }
+
         return new OSCMessage(OSCVocabulary.DynamicControlMessage.CREATE,
                 new Object[]{
                         deviceName,
@@ -814,7 +890,7 @@ public class DynamicControl implements ScheduledEventListener {
                         parentSketchName,
                         parentId,
                         controlType.ordinal(),
-                        OSCArgumentObject(objVal),
+                        OSCArgumentObject(sendObjType),
                         OSCArgumentObject(minimumDisplayValue),
                         OSCArgumentObject(maximumDisplayValue),
                         controlScope.ordinal(),

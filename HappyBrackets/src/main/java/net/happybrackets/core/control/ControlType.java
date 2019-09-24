@@ -14,7 +14,6 @@ public enum ControlType {
     TEXT,
     FLOAT,
     BOOLEAN,
-    TRIGGER/*,
-    Add In Version 3.0
-    OBJECT*/
+    TRIGGER,
+    OBJECT
 }
