@@ -6,7 +6,7 @@ import com.google.gson.Gson;
  * Encodes x, y and z parameters as an Object array so it can be passed via a Dynamic Control message
  * The conversion only takes place if the message is passed as a global message
  */
-public class AccelerometerMessage implements CustomGlobalEncoder{
+public class TripleAxisMessage implements CustomGlobalEncoder{
     static Gson gson = new Gson();
 
     float x = 0, y = 0, z = 0;
@@ -18,19 +18,19 @@ public class AccelerometerMessage implements CustomGlobalEncoder{
     }
 
     @Override
-    public AccelerometerMessage restore(Object restore_data) {
-        AccelerometerMessage ret =  null;
+    public TripleAxisMessage restore(Object restore_data) {
+        TripleAxisMessage ret =  null;
 
         // First see if this is just the class
-        if (restore_data instanceof AccelerometerMessage){
-            ret = (AccelerometerMessage)restore_data;
+        if (restore_data instanceof TripleAxisMessage){
+            ret = (TripleAxisMessage)restore_data;
         }
         // let us see if it is JsonData
         else if (restore_data instanceof String){
-            ret = new Gson().fromJson((String) restore_data, AccelerometerMessage.class);
+            ret = new Gson().fromJson((String) restore_data, TripleAxisMessage.class);
         }
         else if (restore_data instanceof Object[]){
-            ret =  new AccelerometerMessage((Object[]) restore_data);
+            ret =  new TripleAxisMessage((Object[]) restore_data);
         }
 
         return ret;
@@ -40,7 +40,7 @@ public class AccelerometerMessage implements CustomGlobalEncoder{
     /**
      * Default constructor with zero values
      */
-    public AccelerometerMessage(){};
+    public TripleAxisMessage(){};
 
     /**
      * Constructor
@@ -48,7 +48,7 @@ public class AccelerometerMessage implements CustomGlobalEncoder{
      * @param y y_value
      * @param z z_value
      */
-    public AccelerometerMessage (float x, float y, float z){
+    public TripleAxisMessage(float x, float y, float z){
         this.x = x;
         this.y = y;
         this.z = z;
@@ -58,7 +58,7 @@ public class AccelerometerMessage implements CustomGlobalEncoder{
      * Constructor using defined Object array as input.
      * @param args the arguments in object array as x, y and z
      */
-    private AccelerometerMessage (Object... args){
+    private TripleAxisMessage(Object... args){
         x = (float) args[0];
         y = (float) args[1];
         z = (float) args[2];
@@ -73,14 +73,62 @@ public class AccelerometerMessage implements CustomGlobalEncoder{
     public boolean equals(Object other){
         if (other == null){
             return false;
-        }else if (! (other instanceof AccelerometerMessage))
+        }else if (! (other instanceof TripleAxisMessage))
         {
             return false;
         }
         else {
-            AccelerometerMessage right  = (AccelerometerMessage)other;
+            TripleAxisMessage right  = (TripleAxisMessage)other;
 
             return Float.compare (x, right.x) == 0 && Float.compare (y, right.y) == 0 && Float.compare (z, right.z) == 0;
         }
+    }
+
+    /**
+     * Get X axis value
+     * @return x Value
+     */
+    public float getX() {
+        return x;
+    }
+
+    /**
+     * Get Y axis value
+     * @return y Value
+     */
+    public float getY() {
+        return y;
+    }
+
+    /**
+     * Get Z axis value
+     * @return z Value
+     */
+    public float getZ() {
+        return z;
+    }
+
+    /**
+     * Set X axis value
+     * @param x new axis value
+     */
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    /**
+     * Set Y axis value
+     * @param y new axis value
+     */
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    /**
+     * Set Z axis value
+     * @param z new axis value
+     */
+    public void setZ(float z) {
+        this.z = z;
     }
 }

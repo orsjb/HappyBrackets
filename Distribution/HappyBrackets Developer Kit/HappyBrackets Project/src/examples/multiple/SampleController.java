@@ -7,8 +7,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.*;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -45,8 +44,8 @@ public class SampleController implements HBAction {
     
 
     // we will make two class member control references so we can set them in a class function
-    DynamicControl audioSliderPosition = null;
-    DynamicControl audioTextPosition = null;
+    FloatControl audioSliderPosition = null;
+    TextControl audioTextPosition = null;
 
     // create a samplePlayer we can access inside class functions
     SamplePlayer samplePlayer = null;
@@ -101,40 +100,36 @@ public class SampleController implements HBAction {
 
             // Create an on Off Control
 
-            /*************************************************************
-             * Create a Boolean type Dynamic Control that displays as a check box
-             *
-             * Simply type booleanControl to generate this code
-             *************************************************************/
-            DynamicControl stopPlayControl = hb.createDynamicControl(this, ControlType.BOOLEAN, "Play", true)
-                    .addControlListener(control -> {
-                        boolean control_val = (boolean) control.getValue();
+            // type booleanControl to generate this code 
+            BooleanControl stopPlayControl = new BooleanControl(this, "Play", true) {
+                @Override
+                public void valueChanged(Boolean control_val) {// Write your DynamicControl code below this line 
+                    // if true, we will play
+                    samplePlayer.pause(!control_val);
 
-                        /*** Write your DynamicControl code below this line ***/
-                        // if true, we will play
-                        samplePlayer.pause(!control_val);
+                    // if we are going to play, we will create the updateThread, otherwise we will kill it
 
-                        // if we are going to play, we will create the updateThread, otherwise we will kill it
-
-                        if (control_val){
-                            // create a new thread if one does not exists
-                            if (updateThread == null) {
-                                updateThread = createUpdateThread();
-                            }
+                    if (control_val){
+                        // create a new thread if one does not exists
+                        if (updateThread == null) {
+                            updateThread = createUpdateThread();
                         }
-                        else
+                    }
+                    else
+                    {
+                        // if we have a thread, kill it
+                        if (updateThread != null)
                         {
-                            // if we have a thread, kill it
-                            if (updateThread != null)
-                            {
-                                updateThread.interrupt();
-                                updateThread = null;
-                            }
+                            updateThread.interrupt();
+                            updateThread = null;
                         }
+                    }
 
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
+                    // Write your DynamicControl code above this line 
+                }
+            };// End DynamicControl stopPlayControl code 
+
+
             // get our sample duration
             sampleDuration = (float)sample.getLength();
 
@@ -164,95 +159,74 @@ public class SampleController implements HBAction {
             samplePlayer.setRate(calculatedRate);
 
             // Use a Buddy control to change the PlaybackRate
-            /*************************************************************
-             * Create a Float type Dynamic Control pair that displays as a slider and text box
-             *
-             * Simply type floatBuddyControl to generate this code
-             *************************************************************/
-            DynamicControl playbackRateControl = hb.createControlBuddyPair(this, ControlType.FLOAT, "Playback Rate", START_PLAY_RATE, 0, MAX_PLAYBACK_RATE)
-
-                    .addControlListener(control -> {
-                        float control_val = (float) control.getValue();
-
-                        /*** Write your DynamicControl code below this line ***/
-                        playbackRate.setValue(control_val);
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
+            // Simply type floatBuddyControl to generate this code
+            FloatControl playbackRateControl = new FloatBuddyControl(this, "Playback Rate", START_PLAY_RATE, 0, MAX_PLAYBACK_RATE) {
+                @Override
+                public void valueChanged(double control_val) {// Write your DynamicControl code below this line
+                    playbackRate.setValue((float)control_val);
+                    // Write your DynamicControl code above this line
+                }
+            };// End DynamicControl playbackRateControl code
 
 
             // create a checkbox to make it play forward or reverse
-            /*************************************************************
-             * Create a Boolean type Dynamic Control pair that displays as a check box
-             *
-             * Simply type booleanControl to generate this code
-             *************************************************************/
-            DynamicControl directionControl = hb.createDynamicControl(this, ControlType.BOOLEAN, "Reverse", false)
-                    .addControlListener(control -> {
-                        boolean control_val = (boolean) control.getValue();
+            // type booleanControl to generate this code
+            BooleanControl directionControl = new BooleanControl(this, "Reverse", false) {
+                @Override
+                public void valueChanged(Boolean control_val) {// Write your DynamicControl code below this line
+                    if (!control_val){
+                        playbackDirection.setValue(PLAY_FORWARD);
+                    }
+                    else{
+                        playbackDirection.setValue(PLAY_REVERSE);
+                    }
+                    // Write your DynamicControl code above this line
+                }
+            };// End DynamicControl directionControl code
 
-                        /*** Write your DynamicControl code below this line ***/
-                        if (!control_val){
-                            playbackDirection.setValue(PLAY_FORWARD);
-                        }
-                        else{
-                            playbackDirection.setValue(PLAY_REVERSE);
-                        }
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
+
 
             // display a slider for position
-            /*************************************************************
-             * Create a Float type Dynamic Control that displays as a slider
-             *
-             * Simply type floatSliderControl to generate this code
-             *************************************************************/
-            DynamicControl audioPosition = hb.createDynamicControl(this, ControlType.FLOAT, "Audio Position", 0, 0, sampleDuration)
-                    .addControlListener(control -> {
-                        float control_val = (float) control.getValue();
+            // Type floatSliderControl to generate this code 
+            FloatControl audioPosition = new FloatSliderControl(this, "Audio Position", 0, 0, sampleDuration) {
+                @Override
+                public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
+                    samplePlayer.setPosition(control_val);
+                    setAudioTextPosition(control_val);
+                    // Write your DynamicControl code above this line 
+                }
+            };// End DynamicControl audioPosition code 
 
-                        /*** Write your DynamicControl code below this line ***/
-
-                        samplePlayer.setPosition(control_val);
-                        setAudioTextPosition(control_val);
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
 
             // set our newly created control to the class reference
             audioSliderPosition = audioPosition;
 
-            /*************************************************************
-             * Create a string type Dynamic Control that displays as a text box
-             *
-             * Simply type textControl to generate this code
-             *************************************************************/
-            DynamicControl audioPositionText = hb.createDynamicControl(this, ControlType.TEXT, "Audio Position", "")
-                    .addControlListener(control -> {
-                        String control_val = (String) control.getValue();
+            // Type textControl to generate this code 
+            TextControl audioPositionText = new TextControl(this, "Audio Position", "") {
+                @Override
+                public void valueChanged(String control_val) {// Write your DynamicControl code below this line 
+                    // we will decode our string value to audio position
 
-                        /*** Write your DynamicControl code below this line ***/
-                        // we will decode our string value to audio position
+                    // we only want to do this if we are stopped
+                    if (samplePlayer.isPaused()) {
+                        // our string will be hh:mm:ss.m
+                        try {
+                            String[] units = control_val.split(":"); //will break the string up into an array
+                            int hours = Integer.parseInt(units[0]); //first element
+                            int minutes = Integer.parseInt(units[1]); //second element
+                            float seconds = Float.parseFloat(units[2]); // thirsd element
+                            float audio_seconds = 360 * hours + 60 * minutes + seconds; //add up our values
 
-                        // we only want to do this if we are stopped
-                        if (samplePlayer.isPaused()) {
-                            // our string will be hh:mm:ss.m
-                            try {
-                                String[] units = control_val.split(":"); //will break the string up into an array
-                                int hours = Integer.parseInt(units[0]); //first element
-                                int minutes = Integer.parseInt(units[1]); //second element
-                                float seconds = Float.parseFloat(units[2]); // thirsd element
-                                float audio_seconds = 360 * hours + 60 * minutes + seconds; //add up our values
-
-                                float audio_position =  audio_seconds * 1000;
-                                setAudioSliderPosition(audio_position);
-                            } catch (Exception ex) {
-                            }
+                            float audio_position =  audio_seconds * 1000;
+                            setAudioSliderPosition(audio_position);
+                        } catch (Exception ex) {
                         }
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
+                    }
+                    // Write your DynamicControl code above this line 
+                }
+            };// End DynamicControl audioPositionText code 
+
+
 
             // set newly create DynamicControl to our class variable
 
@@ -269,58 +243,44 @@ public class SampleController implements HBAction {
             samplePlayer.setLoopStart(loop_start);
             samplePlayer.setLoopEnd(loop_end);
 
-            /*************************************************************
-             * Create a Float type Dynamic Control pair that displays as a slider and text box
-             *
-             * Simply type floatBuddyControl to generate this code
-             *************************************************************/
-            DynamicControl loopStartControl = hb.createControlBuddyPair(this, ControlType.FLOAT, "Loop start", 0, 0, sampleDuration)
-                    .addControlListener(control -> {
-                        float control_val = (float) control.getValue();
+            // Simply type floatBuddyControl to generate this code 
+            FloatControl loopStartControl = new FloatBuddyControl(this, "Loop start", 0, 0, sampleDuration) {
+                @Override
+                public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
+                    float current_audio_position = (float)samplePlayer.getPosition();
 
-                        /*** Write your DynamicControl code below this line ***/
-                        float current_audio_position = (float)samplePlayer.getPosition();
+                    if (current_audio_position < control_val){
+                        samplePlayer.setPosition(control_val);
+                    }
+                    loop_start.setValue((float)control_val);
+                    // Write your DynamicControl code above this line 
+                }
+            };// End DynamicControl loopStartControl code 
 
-                        if (current_audio_position < control_val){
-                            samplePlayer.setPosition(control_val);
-                        }
-                        loop_start.setValue(control_val);
 
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
 
-            /*************************************************************
-             * Create a Float type Dynamic Control pair that displays as a slider and text box
-             *
-             * Simply type floatBuddyControl to generate this code
-             *************************************************************/
-            DynamicControl loopEndControl = hb.createControlBuddyPair(this, ControlType.FLOAT, "Loop End", sampleDuration, 0, sampleDuration)
-                    .addControlListener(control -> {
-                        float control_val = (float) control.getValue();
-
-                        /*** Write your DynamicControl code below this line ***/
-                        loop_end.setValue(control_val);
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
+            // Simply type floatBuddyControl to generate this code 
+            FloatControl loopEndControl = new FloatBuddyControl(this, "Loop End", sampleDuration, 0, sampleDuration) {
+                @Override
+                public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
+                    loop_end.setValue((float)control_val);
+                    // Write your DynamicControl code above this line 
+                }
+            };// End DynamicControl loopEndControl code 
 
 
             // Add a control to make sample player start at loop start position
 
-            /*************************************************************
-             * Create a Trigger type Dynamic Control that displays as a button
-             *
-             * Simply type triggerControl to generate this code
-             *************************************************************/
-            DynamicControl startLoop = hb.createDynamicControl(this, ControlType.TRIGGER, "Start Loop")
-                    .addControlListener(control -> {
+            // Type triggerControl to generate this code 
+            TriggerControl startLoop = new TriggerControl(this, "Start Loop") {
+                @Override
+                public void triggerEvent() {// Write your DynamicControl code below this line 
+                    samplePlayer.setPosition(loop_start.getCurrentValue());
+                    // Write your DynamicControl code above this line 
+                }
+            };// End DynamicControl startLoop code 
 
-                        /*** Write your DynamicControl code below this line ***/
-                        samplePlayer.setPosition(loop_start.getCurrentValue());
-                        /*** Write your DynamicControl code above this line ***/
-                    });
-            /*** End DynamicControl code ***/
+
             /******** Write your code above this line ********/
         } else {
             HB.HBInstance.setStatus("Failed sample " + SAMPLE_NAME);

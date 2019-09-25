@@ -27,7 +27,7 @@ public class FloatBuddyControlSample implements HBAction {
 
         final float CENTRE_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float FREQUENCY_VARIATION = 500; // This is how much we will vary frequency around centre frequency
-        final float MAX_VOLUME = 0.1f; // define how loud we want the sound
+        final double MAX_VOLUME = 0.1; // define how loud we want the sound
 
         WaveModule player = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
         player.connectTo(HB.getAudioOutput());

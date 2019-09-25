@@ -21,12 +21,7 @@ public abstract class FloatControl extends DynamicControlParent {
 
     @Override
     void notifyListener(Object val) {
-        Float f_val =  (float)val;
-
-        // we need to do this change becuase rounding down to a float does not give accutate value
-        double d_val =  new BigDecimal(f_val.toString()).doubleValue();
-
-        valueChanged(d_val);
+        valueChanged((double)val);
     }
 
     /**
@@ -34,7 +29,7 @@ public abstract class FloatControl extends DynamicControlParent {
      * @return the control value
      */
     public double getValue(){
-        return (float) getDynamicControl().getValue();
+        return (double) getDynamicControl().getValue();
     }
 
     public abstract void valueChanged(double control_val);

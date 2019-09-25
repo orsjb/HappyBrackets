@@ -3,9 +3,7 @@ package examples.controls.booleancontrol;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.BooleanControl;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.*;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -25,28 +23,11 @@ public class MonitorBoolean implements HBAction {
         final int TOGGLE_VALUE = 100;
 
 
-        /*************************************************************
-         * Create an integer type Dynamic Control that displays as a text box
-         *
-         * Simply type intTextControl to generate this code
-         *************************************************************/
-        DynamicControl clock_beats = hb.createDynamicControl(this, ControlType.INT, "Beat Count");
-        // we have removed the listener because it was unnecessary
-        /*** End DynamicControl code ***/
+        // Type intControlSender to generate this code 
+        IntegerControl clock_beats = new IntegerControlSender(this, "Beat Count", 0);
 
-
-        /*************************************************************
-         * Create a Boolean type Dynamic Control that displays as a check box
-         * Simply type booleanControl to generate this code
-         *************************************************************/
-        BooleanControl booleanControl = new BooleanControl(this, "Beat Toggle", false) {
-            @Override
-            public void valueChanged(Boolean control_val) {
-                /*** Write your DynamicControl code below this line ***/
-
-                /*** Write your DynamicControl code above this line ***/
-            }
-        };/*** End DynamicControl booleanControl code ***/
+        // Type booleanControlSender to generate this code 
+        BooleanControl beatToggleDisplay = new BooleanControlSender(this, "Beat Toggle", false);
 
 
         /************************************************************
@@ -75,9 +56,9 @@ public class MonitorBoolean implements HBAction {
 
                     clock_beats.setValue(num_beats);
                     if (num_beats % TOGGLE_VALUE == 0){
-                        boolean current_state = booleanControl.getValue();
+                        boolean current_state = beatToggleDisplay.getValue();
 
-                        booleanControl.setValue(!current_state);
+                        beatToggleDisplay.setValue(!current_state);
                     }
 
 

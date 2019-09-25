@@ -19,11 +19,28 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
      * derive from this class
      * @param parent_sketch The parent object for control
      * @param name The name to Display
-     * @param initial_value Initial value of the object. The value in the return function  {@link ClassObjectControl#valueChanged(Object)}  will be cast
+     * @param class_type Initial value of the object. The value in the return function  {@link ClassObjectControl#valueChanged(Object)}  will be cast
      */
-    protected ClassObjectControl(Object parent_sketch, String name, Object initial_value) {
-        super(new DynamicControl(parent_sketch, ControlType.OBJECT, name, initial_value));
-        classType = initial_value.getClass();
+    protected ClassObjectControl(Object parent_sketch, String name, Class<?> class_type) {
+        super(new DynamicControl(parent_sketch, ControlType.OBJECT, name, createDefaultObject(class_type)));
+        classType = class_type;
+    }
+
+    static protected Object createDefaultObject(Class<?> class_type){
+        Object ret = "";
+
+        try {
+            ret = class_type.getConstructor().newInstance();
+        } catch (InstantiationException e) {
+            //e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            //e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            //e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            //e.printStackTrace();
+        }
+        return ret;
     }
 
     @Override

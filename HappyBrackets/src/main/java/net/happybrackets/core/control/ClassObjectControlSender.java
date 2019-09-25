@@ -9,10 +9,10 @@ public class ClassObjectControlSender extends ClassObjectControl {
      * Constructor for ClassObjectControlSender
      * @param parent_sketch The parent object for control
      * @param name The name to Display
-     * @param initial_value Initial value of the object
+     * @param class_type Initial value of the object
      */
-    public ClassObjectControlSender(Object parent_sketch, String name, Object initial_value) {
-        super(parent_sketch, name, initial_value);
+    public ClassObjectControlSender(Object parent_sketch, String name, Class<?> class_type) {
+        super(parent_sketch, name, class_type);
     }
 
     @Override

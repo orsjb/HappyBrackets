@@ -5,8 +5,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.*;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -63,95 +62,81 @@ public class CreatedThread implements HBAction {
         HB.getAudioOutput().addInput(gainAmplifier);
 
 
-        /*************************************************************
-         * Create a Trigger type Dynamic Control that displays as a button
-         *
-         * Simply type triggerControl to generate this code
-         *************************************************************/
-        DynamicControl threadStarter = hb.createDynamicControl(this, ControlType.TRIGGER, "New Thread")
-                .addControlListener(control -> {
+        // Type triggerControl to generate this code 
+        TriggerControl threadStarter = new TriggerControl(this, "New Thread") {
+            @Override
+            public void triggerEvent() {// Write your DynamicControl code below this line 
+                // first see if we have a thread running. If we do, then kill it
+                if (runningThread != null) {
+                    runningThread.interrupt();
+                    runningThread = null;
+                }
 
-                    /*** Write your DynamicControl code below this line ***/
-
-                    // first see if we have a thread running. If we do, then kill it
-                    if (runningThread != null) {
-                        runningThread.interrupt();
-                        runningThread = null;
-                    }
-
-                    /***********************************************************
-                     * Create a runnable thread object
-                     * simply type threadFunction to generate this code
-                     ***********************************************************/
-                    runningThread = new Thread(() -> {
-                        int SLEEP_TIME = 1000;
-                        while (true) {
-                            /*** write your code below this line ***/
-                            // double our frequency
-                            currentFrequency *= 2;
-                            if (currentFrequency > MAX_FREQUENCY) {
-                                currentFrequency = START_FREQUENCY;
-                            }
-
-                            waveformFrequency.setValue(currentFrequency);
-
-                            // we will override the sleep time in the beginning of theis thread
-                            SLEEP_TIME = threadSleepTime;
-                            /*** write your code above this line ***/
-
-                            try {
-                                Thread.sleep(SLEEP_TIME);
-                            } catch (InterruptedException e) {
-                                /*** remove the break below to just resume thread or add your own action***/
-                                break;
-                                /*** remove the break above to just resume thread or add your own action ***/
-                            }
+                /***********************************************************
+                 * Create a runnable thread object
+                 * simply type threadFunction to generate this code
+                 ***********************************************************/
+                runningThread = new Thread(() -> {
+                    int SLEEP_TIME = 1000;
+                    while (true) {
+                        /*** write your code below this line ***/
+                        // double our frequency
+                        currentFrequency *= 2;
+                        if (currentFrequency > MAX_FREQUENCY) {
+                            currentFrequency = START_FREQUENCY;
                         }
-                    });
 
-                    /*** write your code you want to execute before you start the thread below this line ***/
+                        waveformFrequency.setValue(currentFrequency);
 
-                    /*** write your code you want to execute before you start the thread above this line ***/
+                        // we will override the sleep time in the beginning of theis thread
+                        SLEEP_TIME = threadSleepTime;
+                        /*** write your code above this line ***/
 
-                    runningThread.start();
-                    /****************** End threadObject**************************/
-
-                    /*** Write your DynamicControl code above this line ***/
-                });
-        /*** End DynamicControl code ***/
-
-        /*************************************************************
-         * Create a Trigger type Dynamic Control that displays as a button
-         *
-         * Simply type triggerControl to generate this code
-         *************************************************************/
-        DynamicControl threadKiller = hb.createDynamicControl(this, ControlType.TRIGGER, "Kill Thread")
-                .addControlListener(control -> {
-
-                    /*** Write your DynamicControl code below this line ***/
-                    if (runningThread != null) {
-                        runningThread.interrupt();
-                        runningThread = null;
+                        try {
+                            Thread.sleep(SLEEP_TIME);
+                        } catch (InterruptedException e) {
+                            /*** remove the break below to just resume thread or add your own action***/
+                            break;
+                            /*** remove the break above to just resume thread or add your own action ***/
+                        }
                     }
-                    /*** Write your DynamicControl code above this line ***/
                 });
-        /*** End DynamicControl code ***/
+
+                /*** write your code you want to execute before you start the thread below this line ***/
+
+                /*** write your code you want to execute before you start the thread above this line ***/
+
+                runningThread.start();
+                /****************** End threadObject**************************/
+
+                // Write your DynamicControl code above this line 
+            }
+        };// End DynamicControl threadStarter code 
+
+
+        // Type triggerControl to generate this code 
+        TriggerControl threadKiller = new TriggerControl(this, "KIll Thread") {
+            @Override
+            public void triggerEvent() {// Write your DynamicControl code below this line 
+                if (runningThread != null) {
+                    runningThread.interrupt();
+                    runningThread = null;
+                }
+                // Write your DynamicControl code above this line 
+            }
+        };// End DynamicControl threadKiller code 
+
 
         // Create a control pair to set the sleep time of the thread
-        /*************************************************************
-         * Create an integer type Dynamic Control pair that displays as a slider and text box
-         *
-         * Simply type intBuddyControl to generate this code
-         *************************************************************/
-        DynamicControl threadSleepControl = hb.createControlBuddyPair(this, ControlType.INT, "Thread Sleep", DEFAULT_SLEEP_TIME, MINIMUM_SLEEP_TIME, MAXIMUM_SLEEP_TIME)
-                .addControlListener(control -> {
-                    int control_val = (int) control.getValue();
+        // Type intBuddyControl to generate this code
+        IntegerControl threadSleepControl = new IntegerBuddyControl(this, "Thread Sleep", DEFAULT_SLEEP_TIME, MINIMUM_SLEEP_TIME, MAXIMUM_SLEEP_TIME) {
+            @Override
+            public void valueChanged(int control_val) {// Write your DynamicControl code below this line
+                threadSleepTime = control_val;
+                // Write your DynamicControl code above this line
+            }
+        };// End DynamicControl threadSleepControl code
 
-                    /*** Write your DynamicControl code below this line ***/
-                    threadSleepTime = control_val;
-                    /*** Write your DynamicControl code above this line ***/
-                });
-        /*** End DynamicControl code ***/
 
         /***** Type your HBAction code below this line ******/
     }

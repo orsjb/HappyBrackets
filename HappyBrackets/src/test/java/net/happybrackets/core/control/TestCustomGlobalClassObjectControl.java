@@ -20,14 +20,14 @@ public class TestCustomGlobalClassObjectControl {
         // Ignore Device name so we do not ignore GLobal message from same device name
         DynamicControl.setIgnoreName(true);
 
-        AccelerometerMessage customGlobalMessage = new AccelerometerMessage((float)Math.random(), (float)Math.random(), (float)Math.random() );
-        AccelerometerMessage secondGlobalMessage = new AccelerometerMessage((float)Math.random(), (float)Math.random(), (float)Math.random() );
+        TripleAxisMessage customGlobalMessage = new TripleAxisMessage((float)Math.random(), (float)Math.random(), (float)Math.random() );
+        TripleAxisMessage secondGlobalMessage = new TripleAxisMessage((float)Math.random(), (float)Math.random(), (float)Math.random() );
 
-        ClassObjectControl objectControl = new ClassObjectControl(this, CONTROL_NAME, customGlobalMessage) {
+        ClassObjectControl objectControl = new ClassObjectControl(this, CONTROL_NAME, TripleAxisMessage.class) {
             @Override
             public void valueChanged(Object control_val) {
                 if (control_val != null){
-                    AccelerometerMessage  decoded = (AccelerometerMessage)control_val;
+                    TripleAxisMessage decoded = (TripleAxisMessage)control_val;
                     // Check the value of our decode here
                     testSuccess = decoded.equals(secondGlobalMessage);
                 }

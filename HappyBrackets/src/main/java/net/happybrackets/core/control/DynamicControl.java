@@ -16,7 +16,7 @@ import java.util.List;
  * devices, and a graphical environment
  * The values can be represented as sliders, text boxes, check boxes, and buttons
  *
- * A message can either be an integer, a float, a string, a boolean, or a trigger
+ * A message can either be an integer, a double, a string, a boolean, or a trigger
  *
  * The messages are send and received via DynamicControlListener
  *
@@ -250,20 +250,25 @@ public class DynamicControl implements ScheduledEventListener {
         // Convert if we are a float control
         if (control_type == ControlType.FLOAT) {
             if (source_value == null){
-                ret = 0f;
+                ret = 0.0;
             }else if (source_value instanceof Integer) {
                 Integer i = (Integer) source_value;
-                float f = i.floatValue();
+                double f = i.doubleValue();
                 ret = f;
 
             }else if (source_value instanceof Double) {
                 Double d = (Double) source_value;
-                float f = d.floatValue();
-                ret = f;
+                ret = d;
 
             }else if (source_value instanceof Long) {
                 Long l = (Long) source_value;
-                float f = l.floatValue();
+                double f = l.doubleValue();
+                ret = f;
+            } else if (source_value instanceof Float) {
+                double f = (Float) source_value;
+                ret = f;
+            } else if (source_value instanceof String) {
+                double f = Double.parseDouble((String)source_value);
                 ret = f;
             }
             // Convert if we are an int control
@@ -513,7 +518,9 @@ public class DynamicControl implements ScheduledEventListener {
         if (old_scope != new_scope) {
             controlScope = new_scope;
             notifyValueSetListeners();
-            notifyLocalListeners();
+
+            // prevent control scope from changing the value
+            //notifyLocalListeners();
             notifyControlChangeListeners();
 
         }
@@ -793,6 +800,10 @@ public class DynamicControl implements ScheduledEventListener {
             boolean b = (Boolean) obj_val;
             return b? 1:0;
         }
+        else if (obj_val instanceof  Double){
+            String s = ((Double)obj_val).toString();
+            ret = s;
+        }
         return ret;
 
     }
@@ -967,7 +978,7 @@ public class DynamicControl implements ScheduledEventListener {
         if (!objVal.equals(val)) {
             if (controlType == ControlType.FLOAT)
             {
-                objVal = (Float) val;
+                objVal = (Double) val;
             }
             else {
                 objVal = val;

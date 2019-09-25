@@ -2,8 +2,9 @@ package net.happybrackets.core.control;
 
 // Create a generic Class to pass as an object. It will go as a JSON string
 class GenericTestMessageObject {
-    String val;
+    String val ="";
 
+    public GenericTestMessageObject(){};
     public GenericTestMessageObject(String message){
         val = message;
     }

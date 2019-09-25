@@ -84,6 +84,10 @@ This file wil give a short description of the examples
 *******************************************************************
 [controls] - demonstrates DynamicControls and GUI manipulation
 
+  [classobjectcontrols] - Class objects
+    GlobalCustomExample - Send a custom class as a global message
+    GlobalReceiveAccelerometer - receive a class that has three floating point axis values as a single message. Use example with GlobalSendAccelerometer GlobalReceiveAccelerometer
+    GlobalSendAccelerometer - convert accelerometer tilt values, convert to degrees, and send as a single message as a global control. Use with
   [booleancontrol] - true or false controls. Display or set with a checkbox
     BooleanControlSample    Starts and stops a sine wave with a checkbox
     MonitorBoolean          Monitor the value of a Beads Clock being on the beat on GUI with a checkbox

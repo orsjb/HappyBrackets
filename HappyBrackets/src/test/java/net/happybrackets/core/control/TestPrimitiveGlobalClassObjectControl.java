@@ -24,7 +24,7 @@ public class TestPrimitiveGlobalClassObjectControl {
 
         double secondGlobalMessage = Math.random();
 
-        ClassObjectControl objectControl = new ClassObjectControl(this, CONTROL_NAME, genericGlobalMessage) {
+        ClassObjectControl objectControl = new ClassObjectControl(this, CONTROL_NAME, double.class) {
             @Override
             public void valueChanged(Object control_val) {
                 if (control_val != null){

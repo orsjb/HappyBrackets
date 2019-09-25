@@ -58,7 +58,7 @@ public class TestDynamicControl_1 implements HBAction {
             float_text.addControlListener(new DynamicControl.DynamicControlListener() {
                 @Override
                 public void update(DynamicControl control) {
-                    float f = (float) control.getValue();
+                    double f = ((double)control.getValue());
                     System.out.println("Float val " + f);
 
                 }
@@ -76,7 +76,7 @@ public class TestDynamicControl_1 implements HBAction {
             float_control.addControlListener(new DynamicControl.DynamicControlListener() {
                 @Override
                 public void update(DynamicControl control) {
-                    float f = (float) control.getValue();
+                    float f = (float) ((double)control.getValue());
                     System.out.println("Float Val " + f);
                 }
             });

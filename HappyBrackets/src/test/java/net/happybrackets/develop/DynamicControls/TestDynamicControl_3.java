@@ -38,7 +38,7 @@ public class TestDynamicControl_3 implements HBAction {
         hb.createDynamicControl(ControlType.FLOAT, "test no parent ").addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
-                System.out.println((float)control.getValue());
+                System.out.println((double)control.getValue());
             }
         });
 
@@ -46,14 +46,14 @@ public class TestDynamicControl_3 implements HBAction {
         hb.createDynamicControl(ControlType.FLOAT, "test no parent with init", 10).addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
-                System.out.println((float)control.getValue());
+                System.out.println((double)control.getValue());
             }
         });
 
         hb.createDynamicControl(ControlType.FLOAT, "test no parent with max min", 10, 0, 1).addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl control) {
-                System.out.println((float)control.getValue());
+                System.out.println((double)control.getValue());
             }
         });
 

@@ -32,7 +32,7 @@ public class TestDynamicControl_2 implements HBAction {
         base_freq.addControlListener(new DynamicControl.DynamicControlListener() {
             @Override
             public void update(DynamicControl dynamicControl) {
-                float new_val = (float)dynamicControl.getValue();
+                float new_val = (float)((double)dynamicControl.getValue());
                 System.out.println("Base Freq " +  new_val);
             }
         });

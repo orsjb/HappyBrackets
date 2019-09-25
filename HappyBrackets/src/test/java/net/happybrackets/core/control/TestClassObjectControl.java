@@ -22,7 +22,7 @@ public class TestClassObjectControl {
         GenericTestMessageObject genericGlobalMessage = new GenericTestMessageObject("Hello");
         GenericTestMessageObject secondGlobalMessage = new GenericTestMessageObject("Goodbye");
 
-        ClassObjectControl objectControl = new ClassObjectControl(this, CONTROL_NAME, genericGlobalMessage) {
+        ClassObjectControl objectControl = new ClassObjectControl(this, CONTROL_NAME, GenericTestMessageObject.class) {
             @Override
             public void valueChanged(Object control_val) {
                 if (control_val != null){
@@ -34,7 +34,7 @@ public class TestClassObjectControl {
         }.setControlScope(ControlScope.SKETCH);
 
 
-        ClassObjectControlSender objectSender = new ClassObjectControlSender(this, CONTROL_NAME, genericGlobalMessage).setControlScope(ControlScope.SKETCH);
+        ClassObjectControlSender objectSender = new ClassObjectControlSender(this, CONTROL_NAME, GenericTestMessageObject.class).setControlScope(ControlScope.SKETCH);
 
         objectSender.setValue(secondGlobalMessage);
 

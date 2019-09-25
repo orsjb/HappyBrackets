@@ -6,6 +6,7 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.FloatTextControl;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
@@ -26,7 +27,7 @@ public class FloatTextControlSample implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
-        final float MAX_VOLUME = 0.1f; // define how loud we want the sound
+        final double MAX_VOLUME = 0.1; // define how loud we want the sound
 
         WaveModule player = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
         player.connectTo(HB.getAudioOutput());
@@ -40,7 +41,7 @@ public class FloatTextControlSample implements HBAction {
         // Now add a dynamicControl to set the frequency
 
         /* Type floatTextControl to generate this code */
-        net.happybrackets.core.control.FloatTextControl frequencyControl = new net.happybrackets.core.control.FloatTextControl(this, "Frequency", INITIAL_FREQUENCY) {
+        FloatTextControl frequencyControl = new FloatTextControl(this, "Frequency", INITIAL_FREQUENCY) {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
 
@@ -54,7 +55,7 @@ public class FloatTextControlSample implements HBAction {
         // Now add a dynamicControl to set the gain
 
         /* Type floatTextControl to generate this code */
-        net.happybrackets.core.control.FloatTextControl gainControl = new net.happybrackets.core.control.FloatTextControl(this, "Gain", MAX_VOLUME) {
+        FloatTextControl gainControl = new FloatTextControl(this, "Gain", MAX_VOLUME) {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
                 // change our gain according to control value

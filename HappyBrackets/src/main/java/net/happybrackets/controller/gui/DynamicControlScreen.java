@@ -684,7 +684,7 @@ public class DynamicControlScreen {
                         break;
                     }
 
-                    float f_control_value = (float) control.getValue();
+                    double f_control_value = (double) control.getValue();
                     // If we have no difference between Maximum and Minimum, we will make a textboox
                     boolean show_float_text = display_buddy || control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue());
                     boolean show_float_slider = display_buddy || !show_float_text;
@@ -697,7 +697,7 @@ public class DynamicControlScreen {
                         control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
                         t.setTooltip(new Tooltip(control.getTooltipText()));
                         t.setDisable(disable);
-                        t.setText(Float.toString(f_control_value));
+                        t.setText(Double.toString(f_control_value));
                         dynamicControlGridPane.add(t, 1, nextControlRow++);
                         control_group = new ControlCellGroup(control_label, t);
                         dynamicControlsList.put(control.getControlMapKey(), control_group);
@@ -709,7 +709,7 @@ public class DynamicControlScreen {
                                 if (event.getCode().equals(KeyCode.ENTER) || char_val.equalsIgnoreCase("\r")) {
                                     String text_val = t.getText();
                                     try {
-                                        float control_value = Float.valueOf(text_val);
+                                        double control_value = Double.valueOf(text_val);
 
                                         control.setValue(control_value);
                                         //localDevice.sendDynamicControl(control);
@@ -727,7 +727,7 @@ public class DynamicControlScreen {
                             public void handle(ActionEvent actionEvent) {
                                 String text_val = t.getText();
                                 try {
-                                    float control_value = Float.valueOf(text_val);
+                                    double control_value = Double.valueOf(text_val);
 
                                     control.setValue(control_value);
                                     //localDevice.sendDynamicControl(control);
@@ -746,7 +746,7 @@ public class DynamicControlScreen {
                                         boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
                                                 || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
 
-                                        t.setText(Float.toString((float) control.getValue()));
+                                        t.setText(Double.toString((double) control.getValue()));
                                         t.setDisable(disable);
                                     }
                                 });
@@ -772,7 +772,7 @@ public class DynamicControlScreen {
                         // we have this one as a buddy. We will check for null throughout
                         final TextField finalBuddyTextControl = buddyTextControl;
 
-                        Slider f = new Slider((float) control.getMinimumDisplayValue(), (float) control.getMaximumDisplayValue(), (float) control.getValue());
+                        Slider f = new Slider((double) control.getMinimumDisplayValue(), (double) control.getMaximumDisplayValue(), (double) control.getValue());
                         //f.setMaxWidth(100);
                         control.setTooltipPrefix("Change the slider value to generate an event for this control");
                         f.setTooltip(new Tooltip(control.getTooltipText()));
@@ -795,7 +795,7 @@ public class DynamicControlScreen {
                                     if (f.isFocused()) {
                                         if (oldval != newval) {
                                             if (finalBuddyTextControl != null) {
-                                                finalBuddyTextControl.setText(Float.toString(newval.floatValue()));
+                                                finalBuddyTextControl.setText(Double.toString(newval.doubleValue()));
                                             }
                                         }
                                     }
@@ -813,7 +813,7 @@ public class DynamicControlScreen {
 
                                 if (f.isFocused()) {
                                     if (oldval != newval) {
-                                        control.setValue(newval.floatValue());
+                                        control.setValue(newval.doubleValue());
                                         //localDevice.sendDynamicControl(control);
                                     }
                                 }
@@ -835,11 +835,11 @@ public class DynamicControlScreen {
 
                                         if (!f.isFocused()) {
 
-                                            f.setValue((float) control.getValue());
+                                            f.setValue((double) control.getValue());
 
                                             // We also need to set value of buddy if we have one
                                             if (finalBuddyTextControl != null){
-                                                finalBuddyTextControl.setText(Float.toString((float) control.getValue()));
+                                                finalBuddyTextControl.setText(Double.toString((double) control.getValue()));
                                             }
                                         }
                                     }

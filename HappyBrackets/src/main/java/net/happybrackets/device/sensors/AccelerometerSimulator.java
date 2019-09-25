@@ -57,16 +57,16 @@ public class AccelerometerSimulator extends Sensor implements AccelerometerSenso
 
     @Override
     public float getAccelerometerX() {
-        return (float) control_x.getValue();
+        return (float) ((double) control_x.getValue());
     }
 
     @Override
     public float getAccelerometerY() {
-        return (float) control_y.getValue();
+        return (float) ((double)control_y.getValue());
     }
 
     @Override
     public float getAccelerometerZ() {
-        return (float) control_z.getValue();
+        return (float) ((double)control_z.getValue());
     }
 }

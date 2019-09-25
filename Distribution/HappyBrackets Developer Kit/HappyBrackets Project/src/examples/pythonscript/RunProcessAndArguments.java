@@ -2,8 +2,7 @@ package examples.pythonscript;
 
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.ShellExecute;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.*;
 import net.happybrackets.device.HB;
 
 import java.io.IOException;
@@ -30,21 +29,9 @@ public class RunProcessAndArguments implements HBAction {
         final String PROGRAM_NAME = "python";
         final String SCRIPT_NAME = "data/scripts/hellopython.py";
 
-        /*************************************************************
-         * Create a string type Dynamic Control that displays as a text box
-         *
-         * Simply type textControl to generate this code
-         *************************************************************/
-        DynamicControl text_display = hb.createDynamicControl(this, ControlType.TEXT, "Program State", "")
-                .addControlListener(control -> {
-                    String control_val = (String) control.getValue();
-
-                    /*** Write your DynamicControl code below this line ***/
-
-                    /*** Write your DynamicControl code above this line ***/
-                });
-        /*** End DynamicControl text_display code ***/
-
+        // Type textControlSender to generate this code 
+        TextControl text_display = new TextControlSender(this, "Program State", "");
+        
 
         /**************************************************
          * Create an executor that uses commandline
@@ -73,19 +60,15 @@ public class RunProcessAndArguments implements HBAction {
         }
 
 
-        /*************************************************************
-         * Create a Trigger type Dynamic Control that displays as a button
-         *
-         * Simply type triggerControl to generate this code
-         *************************************************************/
-        DynamicControl killTrigger = hb.createDynamicControl(this, ControlType.TRIGGER, "Kill Process")
-                .addControlListener(control -> {
+        // Type triggerControl to generate this code 
+        TriggerControl killTrigger = new TriggerControl(this, "Kill process") {
+            @Override
+            public void triggerEvent() {// Write your DynamicControl code below this line 
+                executor.killProcess();
+                // Write your DynamicControl code above this line 
+            }
+        };// End DynamicControl killTrigger code 
 
-                    /*** Write your DynamicControl code below this line ***/
-                    executor.killProcess();
-                    /*** Write your DynamicControl code above this line ***/
-                });
-        /*** End DynamicControl code ***/
 
         /***** Type your HBAction code above this line ******/
     }

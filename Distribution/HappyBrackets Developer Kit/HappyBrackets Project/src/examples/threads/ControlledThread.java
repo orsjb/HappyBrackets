@@ -6,8 +6,7 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.*;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
@@ -85,35 +84,25 @@ public class ControlledThread implements HBAction, HBReset {
         thread.start();/* End threadFunction */
 
 
-        /*************************************************************
-         * Create a Trigger type Dynamic Control that displays as a button
-         *
-         * Simply type triggerControl to generate this code
-         *************************************************************/
-        DynamicControl threadKiller = hb.createDynamicControl(this, ControlType.TRIGGER, "Kill Thread")
-                .addControlListener(control -> {
-
-                    /*** Write your DynamicControl code below this line ***/
-                    thread.interrupt();
-                    /*** Write your DynamicControl code above this line ***/
-                });
-        /*** End DynamicControl code ***/
+        // Type triggerControl to generate this code 
+        TriggerControl threadKiller = new TriggerControl(this, "Kill Thread") {
+            @Override
+            public void triggerEvent() {// Write your DynamicControl code below this line 
+                thread.interrupt();
+                // Write your DynamicControl code above this line 
+            }
+        };// End DynamicControl threadKiller code 
 
         // Create a control pair to set the sleep time of the thread
-        /*************************************************************
-         * Create an integer type Dynamic Control pair that displays as a slider and text box
-         *
-         * Simply type intBuddyControl to generate this code
-         *************************************************************/
-        DynamicControl threadSleepControl = hb.createControlBuddyPair(this, ControlType.INT, "Thread Sleep", DEFAULT_SLEEP_TIME, MINIMUM_SLEEP_TIME, MAXIMUM_SLEEP_TIME)
-                .addControlListener(control -> {
-                    int control_val = (int) control.getValue();
+        // Type intBuddyControl to generate this code
+        IntegerControl threadSleepControl = new IntegerBuddyControl(this, "Thread Sleep", DEFAULT_SLEEP_TIME, MINIMUM_SLEEP_TIME, MAXIMUM_SLEEP_TIME) {
+            @Override
+            public void valueChanged(int control_val) {// Write your DynamicControl code below this line
+                threadSleepTime = control_val;
+                // Write your DynamicControl code above this line
+            }
+        };// End DynamicControl threadSleepControl code
 
-                    /*** Write your DynamicControl code below this line ***/
-                    threadSleepTime = control_val;
-                    /*** Write your DynamicControl code above this line ***/
-                });
-        /*** End DynamicControl code ***/
 
         /***** Type your HBAction code below this line ******/
     }
