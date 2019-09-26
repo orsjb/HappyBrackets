@@ -3,6 +3,8 @@ package examples.sensor.gyroscope;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.FloatBuddyControl;
+import net.happybrackets.core.control.FloatControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.GyroscopeListener;
 
@@ -21,32 +23,38 @@ public class MonitorGyroscope implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         /***** Type your HBAction code below this line ******/
-        /*************************************************************
-         * Create a Float type Dynamic Control pair that displays as a slider and text box
-         *
-         * Simply type floatBuddyControl to generate this code
-         *************************************************************/
-        DynamicControl displayYaw = hb.createControlBuddyPair(this, ControlType.FLOAT, "Yaw", 0, -1, 1);
-        // Listener removed as it is unnecessary
-        /*** End DynamicControl code ***/
 
-        /*************************************************************
-         * Create a Float type Dynamic Control pair that displays as a slider and text box
-         *
-         * Simply type floatBuddyControl to generate this code
-         *************************************************************/
-        DynamicControl displayPitch = hb.createControlBuddyPair(this, ControlType.FLOAT, "Pitch", 0, -1, 1);
-        // Listener removed as it is unnecessary
-        /*** End DynamicControl code ***/
 
-        /*************************************************************
-         * Create a Float type Dynamic Control pair that displays as a slider and text box
-         *
-         * Simply type floatBuddyControl to generate this code
-         *************************************************************/
-        DynamicControl displayRoll = hb.createControlBuddyPair(this, ControlType.FLOAT, "Roll", 0, -1, 1);
-        // Listener removed as it is unnecessary
-        /*** End DynamicControl code ***/
+        // Simply type floatBuddyControl to generate this code
+        FloatControl displayYaw = new FloatBuddyControl(this, "Yaw Monitor", 0, -1, 1) {
+            @Override
+            public void valueChanged(double control_val) {// Write your DynamicControl code below this line
+
+                // Write your DynamicControl code above this line
+            }
+        };// End DynamicControl displayX code
+
+
+        // Simply type floatBuddyControl to generate this code
+        FloatControl displayPitch = new FloatBuddyControl(this, "Pitch Monitor", 0, -1, 1) {
+            @Override
+            public void valueChanged(double control_val) {// Write your DynamicControl code below this line
+
+                // Write your DynamicControl code above this line
+            }
+        };// End DynamicControl displayY code
+
+
+        // Simply type floatBuddyControl to generate this code
+        FloatControl displayRoll = new FloatBuddyControl(this, "Roll Monitor", 0, -1, 1) {
+            @Override
+            public void valueChanged(double control_val) {// Write your DynamicControl code below this line
+
+                // Write your DynamicControl code above this line
+            }
+        };// End DynamicControl displayZ code
+
+
 
 
         /*****************************************************

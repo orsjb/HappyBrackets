@@ -46,9 +46,12 @@ public class ControlMap {
     // create a map based on Device name and instance number
     private LinkedHashMap<String, DynamicControl> dynamicControls = new  LinkedHashMap<>();
 
-    // Devices are mapped based on name
+    // Devices are mapped based on name. We find controls based by name
     private LinkedHashMap<String, List<DynamicControl>> controlScopedDevices = new LinkedHashMap<>();
 
+
+    // Define array of Dynamic controls used for simulation. These do not get removed on reset
+    private List<DynamicControl> sensorSimulation = new ArrayList<>();
 
     // When we are in the IDE, we do not want to pass messages about the plugin
     // Just let the device send them
@@ -65,7 +68,7 @@ public class ControlMap {
     /**
      * We will disable sending messages to other controls with same name and scope
      * when we are in plugin
-     * @param disable set tru for plugin
+     * @param disable set true for plugin
      */
     public static void disableControlMimic(boolean disable){
         disableControlMimic = disable;
@@ -298,6 +301,22 @@ public class ControlMap {
     }
 
     /**
+     * Add a control to the sensorSimulation list. These do not get removed
+     * @param control the {@link DynamicControl} object we are adding
+     */
+    public void addSensorSimulationControl(DynamicControl control){
+        sensorSimulation.add(control);
+    }
+
+    /**
+     * Test if the Dynamic Control is a sensor Simulation
+     * @param control the {@link DynamicControl} object we are adding
+     * @return true if has been previously added through  {@link #addSensorSimulationControl(DynamicControl)} ()}
+     */
+    public boolean isSensorSimulation(DynamicControl control){
+        return sensorSimulation.contains(control);
+    }
+    /**
      * Notify all listners that control has been removed and then clear list
      * @param control control bein g removed
      */
@@ -320,13 +339,21 @@ public class ControlMap {
         {
             Collection<DynamicControl> controls = dynamicControls.values();
             for (DynamicControl control : controls) {
-                control.eraseListeners();
+                if (!control.isSimulatorControl()) {
+                    control.eraseListeners();
 
-                OSCMessage msg = control.buildRemoveMessage();
-                sendDynamicControlMessage(msg);
-
+                    OSCMessage msg = control.buildRemoveMessage();
+                    sendDynamicControlMessage(msg);
+                }
             }
             dynamicControls.clear();
+
+            // now add our simulator controls back
+            for (DynamicControl control:
+                 sensorSimulation) {
+                dynamicControls.put(control.getControlMapKey(), control);
+            }
+
         }
         //synchronized (controlScopedDevicesLock)
         {

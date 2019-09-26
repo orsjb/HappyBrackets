@@ -1001,9 +1001,10 @@ public class HB {
 		}
 		else
 		{
-			if (Sensor.isSimulatedOnly()){
-				result.reloadSimulation();
-			}
+			// Do not make Simulation sensors reload. Instead, we will
+			//if (Sensor.isSimulatedOnly()){
+				//result.reloadSimulation();
+			//}
 
 		}
 		return result;

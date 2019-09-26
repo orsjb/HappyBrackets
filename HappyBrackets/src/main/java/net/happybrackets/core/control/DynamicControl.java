@@ -28,6 +28,7 @@ public class DynamicControl implements ScheduledEventListener {
 
     // flag for testing
     static boolean ignoreName = false;
+    private boolean isSimulatorControl = false;
 
     /**
      * Set ignore name for testing
@@ -426,6 +427,25 @@ public class DynamicControl implements ScheduledEventListener {
 
 
     /**
+     * Set this control as a SensorSimulation control so it does not get removed on reset
+     * @return this
+     */
+    public DynamicControl setSensorSimulationController(){
+        controlMap.addSensorSimulationControl(this);
+        isSimulatorControl = true;
+        return this;
+    }
+
+
+    /**
+     * See if control is a simulator control
+     * @return true if a simulator control
+     */
+    public boolean isSimulatorControl() {
+        return isSimulatorControl;
+    }
+
+    /**
      * A dynamic control that can be accessed from outside
      * it is created with the sketch object that contains it along with the type
      *
@@ -544,7 +564,7 @@ public class DynamicControl implements ScheduledEventListener {
 
     /**
      * Update the parameters of this control with another. This would have been caused by an object having other than SKETCH control scope
-     * If the parameters are changed, this object will notify it's listeners that a change has occured
+     * If the parameters are changed, this object will notify it's listeners that a change has occurred
      * @param mirror_control The control that we are copying from
      * @return this object
      */
@@ -732,6 +752,8 @@ public class DynamicControl implements ScheduledEventListener {
             boolean control_scope_changed = false;
 
             control.displayType = display_type;
+
+            obj_val = convertValue(control.controlType, obj_val);
 
             if (!obj_val.equals(control.objVal)) {
                 changed = true;
