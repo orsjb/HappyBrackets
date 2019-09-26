@@ -50,7 +50,7 @@ public abstract class SendCompositionAction extends AnAction {
     static public final String CLASS_EXTENSION = "class";
 
     static final String OUTPUT_PATH = "/build/production/";
-    static final String PROJECT_DEVICE_PATH = "/Device/HappyBrackets/";
+    static final String PROJECT_DEVICE_PATH = "/Device/HappyBrackets";
 
     private DeviceConnection deviceConnection = null;
 
@@ -195,7 +195,7 @@ public abstract class SendCompositionAction extends AnAction {
     public static String getTargetFolder(Project current_project, VirtualFile virtualFile){
         String filename = virtualFile.getCanonicalPath();
         String project_path =  current_project.getBasePath();
-        String device_path =  project_path + PROJECT_DEVICE_PATH;
+        String device_path =  project_path + PROJECT_DEVICE_PATH + "/";
         return filename.replace(device_path, "");
     }
     /**
