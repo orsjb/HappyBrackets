@@ -47,7 +47,7 @@ public class GenericGlobalMessage {
 
         System.out.println(message);
 
-        DynamicControl.processGlobalMessage(message); // The control Listener will get called
+        DynamicControl.processOSCControlMessage(message, ControlScope.GLOBAL); // The control Listener will get called
 
         assert (testSuccess);
     }

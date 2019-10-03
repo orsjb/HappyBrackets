@@ -41,7 +41,7 @@ public class CutsomGlobalMessage {
 
         System.out.println(message);
 
-        DynamicControl.processGlobalMessage(message);
+        DynamicControl.processOSCControlMessage(message, ControlScope.GLOBAL);
         assert (testSuccess);
 
     }

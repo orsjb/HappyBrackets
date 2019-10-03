@@ -10,8 +10,6 @@ import net.happybrackets.core.scheduling.ScheduledObject;
 import net.happybrackets.device.HB;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 
@@ -167,7 +165,7 @@ public class DynamicControl implements ScheduledEventListener {
 
 
     // Define  Global Message arguments
-    private enum GLOBAL_MESSAGE_ARGS {
+    private enum NETWORK_TRANSMIT_MESSAGE_ARGS {
         DEVICE_NAME,
         CONTROL_NAME,
         CONTROL_TYPE,
@@ -181,7 +179,7 @@ public class DynamicControl implements ScheduledEventListener {
     }
 
     // Define where our first Array type global dynamic control message is in OSC
-    final static int OSC_GLOBAL_ARRAY_ARG = GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal() + 1;
+    final static int OSC_TRANSMIT_ARRAY_ARG = NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME.ordinal() + 1;
 
     // When an event nis scheduled in the future, we will create one of these and schedule it
     class FutureControlMessage{
@@ -826,22 +824,23 @@ public class DynamicControl implements ScheduledEventListener {
 
     }
     /**
-     * Process the Global Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
+     * Process the Global or Target Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
      * We will not process messages that have come from this device because they will be actioned through local listeners
      * @param msg OSC message with new value
+     * @param controlScope the type of {@link ControlScope};
      */
-    public static void processGlobalMessage(OSCMessage msg) {
+    public static void processOSCControlMessage(OSCMessage msg, ControlScope controlScope) {
 
-        String device_name = (String) msg.getArg(GLOBAL_MESSAGE_ARGS.DEVICE_NAME.ordinal());
-        String control_name = (String) msg.getArg(GLOBAL_MESSAGE_ARGS.CONTROL_NAME.ordinal());
-        ControlType control_type = ControlType.values()[(int) msg.getArg(GLOBAL_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
-        Object obj_val = msg.getArg(GLOBAL_MESSAGE_ARGS.OBJ_VAL.ordinal());
+        String device_name = (String) msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.DEVICE_NAME.ordinal());
+        String control_name = (String) msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.CONTROL_NAME.ordinal());
+        ControlType control_type = ControlType.values()[(int) msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
+        Object obj_val = msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.OBJ_VAL.ordinal());
 
         long execution_time = 0;
 
-        if (msg.getArgCount() > GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
+        if (msg.getArgCount() > NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
         {
-            Object time = msg.getArg(GLOBAL_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
+            Object time = msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
             execution_time = (int) time;
         }
 
@@ -850,7 +849,7 @@ public class DynamicControl implements ScheduledEventListener {
             synchronized (controlMapLock) {
                 List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
                 for (DynamicControl named_control : named_controls) {
-                    if (named_control.controlScope == ControlScope.GLOBAL && control_type.equals(named_control.controlType)) {
+                    if (named_control.controlScope == controlScope && control_type.equals(named_control.controlType)) {
                         // we must NOT call setVal as this will generate a global series again.
                         // Just notifyListeners specific to this control but not globally
 
@@ -864,10 +863,10 @@ public class DynamicControl implements ScheduledEventListener {
                             if (! (obj_val instanceof String)){
                                 // This is not a Json Message
                                 // We will need to get all the remaining OSC arguments after the schedule time and store that as ObjVal
-                                int num_args = msg.getArgCount() - OSC_GLOBAL_ARRAY_ARG;
+                                int num_args = msg.getArgCount() - OSC_TRANSMIT_ARRAY_ARG;
                                 Object [] restore_args =  new Object[num_args];
                                 for (int i = 0; i < num_args; i++){
-                                    restore_args[i] = msg.getArg(OSC_GLOBAL_ARRAY_ARG + i);
+                                    restore_args[i] = msg.getArg(OSC_TRANSMIT_ARRAY_ARG + i);
                                 }
 
                                 obj_val = restore_args;
@@ -1024,17 +1023,23 @@ public class DynamicControl implements ScheduledEventListener {
     }
 
     /**
-     * Build OSC Message that specifies a Global update
+     * Build OSC Message that specifies a Network update
      * @return OSC Message directed to controls with same name, scope, but on different devices
      */
     public OSCMessage buildGlobalMessage(){
+
+        String OSC_MessageName = OSCVocabulary.DynamicControlMessage.GLOBAL;
+
+        if (controlScope ==  ControlScope.TARGET){
+            OSC_MessageName = OSCVocabulary.DynamicControlMessage.TARGET;
+        }
 
         if (controlType == ControlType.OBJECT){
 
             // we need to see if we have a custom encode function
             if (objVal instanceof CustomGlobalEncoder){
                 Object [] encode_data = ((CustomGlobalEncoder)objVal).encodeGlobalMessage();
-                int num_args = OSC_GLOBAL_ARRAY_ARG + encode_data.length;
+                int num_args = OSC_TRANSMIT_ARRAY_ARG + encode_data.length;
                 Object [] osc_args = new Object[num_args];
                 osc_args[0] = deviceName;
                 osc_args[1] = controlName;
@@ -1044,15 +1049,15 @@ public class DynamicControl implements ScheduledEventListener {
 
                 // now encode the object parameters
                 for (int i = 0; i < encode_data.length; i++){
-                    osc_args[OSC_GLOBAL_ARRAY_ARG + i] = encode_data[i];
+                    osc_args[OSC_TRANSMIT_ARRAY_ARG + i] = encode_data[i];
                 }
-                return new OSCMessage(OSCVocabulary.DynamicControlMessage.GLOBAL,
+                return new OSCMessage(OSC_MessageName,
                         osc_args);
             }
             else
             {
                 String jsonString =  gson.toJson(objVal);
-                return new OSCMessage(OSCVocabulary.DynamicControlMessage.GLOBAL,
+                return new OSCMessage(OSC_MessageName,
                         new Object[]{
                                 deviceName,
                                 controlName,

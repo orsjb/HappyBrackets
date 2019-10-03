@@ -33,7 +33,7 @@ public class TestFloatControl {
         OSCMessage message = test_control2.buildGlobalMessage();
 
 
-        DynamicControl.processGlobalMessage(message); // The control Listener will get called
+        DynamicControl.processOSCControlMessage(message, ControlScope.GLOBAL); // The control Listener will get called
 
 
         assert (testSuccess);

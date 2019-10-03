@@ -21,6 +21,7 @@ import de.sciss.net.*;
 import net.happybrackets.core.*;
 import net.happybrackets.core.config.DefaultConfig;
 import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
@@ -137,9 +138,7 @@ public class NetworkCommunication {
 							{
 								do_broadcast = true;
 							}
-							else if (target.size() == 0){
-								do_broadcast = true;
-							}
+
 
 							if (do_broadcast) {
 								packet.setAddress(broadcastAddress);
@@ -413,7 +412,10 @@ public class NetworkCommunication {
 							DynamicControl.processUpdateMessage(msg);
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GLOBAL)){
-							DynamicControl.processGlobalMessage(msg);
+							DynamicControl.processOSCControlMessage(msg, ControlScope.GLOBAL);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.TARGET)){
+							DynamicControl.processOSCControlMessage(msg, ControlScope.TARGET);
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DEVICE_NAME)){
 							InetAddress src_address = ((InetSocketAddress) src).getAddress();
@@ -583,7 +585,10 @@ public class NetworkCommunication {
 							DynamicControl.processUpdateMessage(msg);
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GLOBAL)){
-							DynamicControl.processGlobalMessage(msg);
+							DynamicControl.processOSCControlMessage(msg, ControlScope.GLOBAL);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.TARGET)){
+							DynamicControl.processOSCControlMessage(msg, ControlScope.TARGET);
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DEVICE_NAME)){
 							InetAddress src_address = ((InetSocketAddress) src).getAddress();
