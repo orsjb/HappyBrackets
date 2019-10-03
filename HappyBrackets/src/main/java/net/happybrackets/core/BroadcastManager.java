@@ -491,7 +491,7 @@ public class BroadcastManager {
             }
             else {
                 if (ni.isLoopback()) {
-                    broadcast = InetAddress.getByName("localhost");
+                    broadcast = InetAddress.getLoopbackAddress();
                 } else {
                     for (InterfaceAddress interface_address : ni.getInterfaceAddresses()) {
                         broadcast = interface_address.getBroadcast();

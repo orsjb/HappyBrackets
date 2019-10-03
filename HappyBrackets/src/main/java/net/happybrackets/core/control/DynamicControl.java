@@ -7,9 +7,13 @@ import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.core.scheduling.ScheduledEventListener;
 import net.happybrackets.core.scheduling.ScheduledObject;
+import net.happybrackets.device.HB;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.UnknownHostException;
+import java.util.*;
 
 /**
  * This class facilitates sending message values between sketches,
@@ -38,6 +42,13 @@ public class DynamicControl implements ScheduledEventListener {
         ignoreName =  true;
     }
 
+
+    /**
+     * Define a list of target devices. Can be either device name or IP address
+     * If it is a device name, there will be a lookup of stored device names
+     */
+    Set<String> targetDevices = new HashSet<>();
+
     /**
      * Define how we want the object displayed in the plugin
      */
@@ -47,6 +58,14 @@ public class DynamicControl implements ScheduledEventListener {
         DISPLAY_DISABLED,
         DISPLAY_ENABLED_BUDDY,
         DISPLAY_DISABLED_BUDDY
+    }
+
+    /**
+     * Return all mapped device addresses for this control
+     * @return returns the set of mapped targeted devices
+     */
+    public Set<String>  getTargetDeviceAddresses(){
+        return targetDevices;
     }
 
     @Override
@@ -65,6 +84,46 @@ public class DynamicControl implements ScheduledEventListener {
         synchronized (futureMessageListLock) {
             futureMessageList.remove(message);
         }
+    }
+
+    /**
+     * Add a device address as a string or device name to use in Target Scope Message
+     * @param deviceName device name or IP Address
+     */
+    public synchronized void addTargetDevice(String deviceName){
+        targetDevices.add(deviceName);
+    }
+
+    /**
+     * Add a device {@link InetAddress} for use in Target Scope Message
+     * @param deviceAddress the target address
+     */
+    public void addTargetDevice(InetAddress deviceAddress){
+        addTargetDevice(deviceAddress.getHostAddress());
+    }
+
+    /**
+     * Clear all devices as Targets
+     */
+    public synchronized void clearTargetDevices(){
+        targetDevices.clear();
+    }
+
+
+    /**
+     * Remove a device address as a string or device name to use in Target Scope Message
+     * @param deviceName device name or IP Address
+     */
+    public synchronized void removeTargetDevice(String deviceName){
+        targetDevices.remove(deviceName);
+    }
+
+    /**
+     * Add a device {@link InetAddress} for use in Target Scope Message
+     * @param deviceAddress the target address
+     */
+    public void removeTargetDevice(InetAddress deviceAddress){
+        removeTargetDevice(deviceAddress.getHostAddress());
     }
 
     /**
@@ -114,6 +173,11 @@ public class DynamicControl implements ScheduledEventListener {
         CONTROL_TYPE,
         OBJ_VAL,
         EXECUTE_TIME
+    }
+
+    // Define  Device Name Message arguments
+    private enum DEVICE_NAME_ARGS {
+        DEVICE_NAME
     }
 
     // Define where our first Array type global dynamic control message is in OSC
@@ -589,7 +653,11 @@ public class DynamicControl implements ScheduledEventListener {
                 else if (getControlScope() == ControlScope.DEVICE){
                     scope_matches = this.deviceName.equals(mirror_control.deviceName);
                 }
-                // Otherwise it must e global. We have a match
+                else if (getControlScope() == ControlScope.TARGET){
+                    // check if our mirror has this address
+                    scope_matches = mirror_control.targetsThisDevice();
+                }
+                // Otherwise it must be global. We have a match
 
             }
             if (scope_matches) {
@@ -611,6 +679,35 @@ public class DynamicControl implements ScheduledEventListener {
             }
         }
         return this;
+    }
+
+    /**
+     * Check whether this device is targeted by checking the loopback, localhost and devicenames
+     * @return
+     */
+    private boolean targetsThisDevice() {
+        boolean ret = false;
+        String device_name = Device.getDeviceName();
+        String loopback = InetAddress.getLoopbackAddress().getHostAddress();
+
+        for (String device:
+             targetDevices) {
+            if (device_name.equalsIgnoreCase(device)){
+                return true;
+            }
+            if (device_name.equalsIgnoreCase(loopback)){
+                return true;
+            }
+            try {
+                if (InetAddress.getLocalHost().getHostAddress().equalsIgnoreCase(device)){
+                    return true;
+                }
+            } catch (UnknownHostException e) {
+                //e.printStackTrace();
+            }
+        }
+
+        return ret;
     }
 
 
@@ -656,6 +753,78 @@ public class DynamicControl implements ScheduledEventListener {
         scheduleValue(value, execution_time, false);
     }
 
+
+    /**
+     * Process the DynamicControl deviceName message and map device name to IPAddress
+     * We ignore our own device
+     * @param src_address The address of the device
+     * @param msg The OSC Message that has device name
+     */
+    public static void processDeviceNameMessage(InetAddress src_address, OSCMessage msg) {
+        String device_name = (String) msg.getArg(DEVICE_NAME_ARGS.DEVICE_NAME.ordinal());
+        if (!Device.getDeviceName().equalsIgnoreCase(device_name)) {
+            HB.HBInstance.addDeviceAddress(device_name, src_address);
+        }
+    }
+
+    /**
+     * Process the DynamicControl deviceRequest message
+     * Send a deviceName back to src.  Test that their name is mapped correctly
+     * If name is not mapped we will request from all devices globally
+     * @param src_address The address of the device
+     * @param msg The OSC Message that has device name
+     */
+    public static void processRequestNameMessage(InetAddress src_address, OSCMessage msg) {
+        String device_name = (String) msg.getArg(DEVICE_NAME_ARGS.DEVICE_NAME.ordinal());
+
+        // ignore ourself
+        if (!Device.getDeviceName().equalsIgnoreCase(device_name)) {
+            // send them our message
+
+            OSCMessage nameMessage = buildDeviceNameMessage();
+            ControlMap.getInstance().sendGlobalDynamicControlMessage(nameMessage, null);
+
+            // See if we have them mapped the same
+            boolean address_changed =  HB.HBInstance.addDeviceAddress(device_name, src_address);
+
+            if (address_changed){
+                // request all
+                postRequestNamesMessage();
+            }
+        }
+    }
+
+    /**
+     * Post a request device name message to other devices so we can target them specifically and update our map
+     */
+    public static void postRequestNamesMessage(){
+        OSCMessage requestMessage = buildDeviceRequestNameMessage();
+        ControlMap.getInstance().sendGlobalDynamicControlMessage(requestMessage, null);
+    }
+
+
+    /**
+     * Build OSC Message that gives our device name
+     * @return OSC Message that has name
+     */
+    public static OSCMessage buildDeviceNameMessage(){
+        return new OSCMessage(OSCVocabulary.DynamicControlMessage.DEVICE_NAME,
+                new Object[]{
+                        Device.getDeviceName(),
+                });
+    }
+
+    /**
+     * Build OSC Message that requests devices send us their name
+     * @return OSC Message to request name
+     */
+    public static OSCMessage buildDeviceRequestNameMessage(){
+        return new OSCMessage(OSCVocabulary.DynamicControlMessage.REQUEST_NAME,
+                new Object[]{
+                        Device.getDeviceName(),
+                });
+
+    }
     /**
      * Process the Global Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
      * We will not process messages that have come from this device because they will be actioned through local listeners

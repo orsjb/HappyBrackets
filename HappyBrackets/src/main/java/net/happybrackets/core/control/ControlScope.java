@@ -9,6 +9,7 @@ package net.happybrackets.core.control;
  * CLASS - messages are also sent to other controls with the same name and scope belonging to other instances of the same class.
  * DEVICE - messages are also sent to other controls with the same name and scope on the same device
  * GLOBAL - messages are also sent to other controls with the same name and scope on the entire network.
+ * TARGETED - messages are also sent to other controls with the same name and scope on specific or targeted devices on the network.
  */
 public enum ControlScope {
     /**
@@ -33,7 +34,12 @@ public enum ControlScope {
     /**
      * messages are sent to registered listeners and also sent to other controls with the same name and scope on the entire network.
      */
-    GLOBAL
+    GLOBAL,
+
+    /**
+     * Messages are sent to registered listeners with the same scope and specific or targeted devices on the network
+     */
+    TARGET
 
 
 }

@@ -59,6 +59,15 @@ public class DynamicControlScreen {
 
     ColumnConstraints column1 = new ColumnConstraints(100,100, Double.MAX_VALUE);
     ColumnConstraints column2 = new ColumnConstraints(200,300,Double.MAX_VALUE);
+    private boolean isShowing = false;
+
+    /**
+     * See if the Screen has been shown before
+     * @return true if it has been shown
+     */
+    public boolean getIsShowing(){
+        return isShowing;
+    }
 
     public interface DynamicControlScreenLoaded{
         void loadComplete(DynamicControlScreen screen, boolean loaded);
@@ -308,6 +317,20 @@ public class DynamicControlScreen {
                     CheckMenuItem always_on_top = new CheckMenuItem("Always on top");
                     always_on_top.setSelected(alwaysOnTop);
                     contextMenu.getItems().addAll(always_on_top);
+
+
+                    MenuItem rebuild_controls_menu = new MenuItem("Rebuild Controls");
+                    rebuild_controls_menu.setOnAction(event2 -> {
+                                eraseDynamicControls();
+
+                                localDevice.sendControlsRequest();
+                            }
+                    );
+
+
+                    contextMenu.getItems().add(rebuild_controls_menu);
+
+
 
                     if (localDevice != null)
                     {
@@ -995,6 +1018,7 @@ public class DynamicControlScreen {
     public void show(){
         dynamicControlStage.show();
         dynamicControlStage.toFront();
+        isShowing = true;
     }
 
     /**
@@ -1098,7 +1122,7 @@ public class DynamicControlScreen {
 
 
         // add a button to rebuild controls list
-        Button rebuild_button = new Button("Rebuild Contols");
+        Button rebuild_button = new Button("Rebuild Controls");
         rebuild_button.setTooltip(new Tooltip("Clear the controls displayed and request controls from the device"));
 
         rebuild_button.setOnMouseClicked(new EventHandler<MouseEvent>() {

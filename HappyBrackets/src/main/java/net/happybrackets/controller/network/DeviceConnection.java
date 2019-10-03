@@ -212,9 +212,6 @@ public class DeviceConnection {
 
 	public void startDeviceConnection(){
 		try {
-
-
-
 			oscServer = new OSCUDPReceiver(true); //OSCServer.newUsing(OSCServer.UDP);
 			//replyPort = oscServer.getLocalAddress().getPort();
 
@@ -383,11 +380,11 @@ public class DeviceConnection {
     }
 
 
-		/**
-         * process alive message from device
-         * @param msg OSC Message
-         * @param sender the Socket Address of where the message originated
-         */
+	/**
+	 * process alive message from device
+	 * @param msg OSC Message
+	 * @param sender the Socket Address of where the message originated
+	 */
 	private void processAliveMessage(OSCMessage msg, SocketAddress sender) {
 		// Lets put some constants here so we can read them
 		final int DEVICE_NAME = 0;
@@ -571,6 +568,10 @@ public class DeviceConnection {
 
 	}
 
+	/**
+	 * Send the device ID to the device. The local_device has ID already inside it
+	 * @param local_device the device to send to
+	 */
 	private void sendIdToDevice(final LocalDeviceRepresentation local_device){
 		new Thread() {
 			public void run() {
@@ -631,12 +632,22 @@ public class DeviceConnection {
 	}
 
 
-
+	/**
+	 * Send an OSC message to a device
+	 * @param device the device to send to
+	 * @param msg_name message name
+	 * @param args message arguments
+	 */
 	public void sendToDevice(LocalDeviceRepresentation device, String msg_name, Object... args) {
 		device.send(msg_name, args);
 	}
 
 
+	/**
+	 * Send a Message to all devices
+	 * @param msg_name the message to send
+	 * @param args Arguments to add to message
+	 */
 	public void sendToAllDevices(String msg_name, Object... args) {
 		synchronized (devicesByHostnameLock) {
 			for (LocalDeviceRepresentation device : devicesByHostname.values()) {
@@ -645,18 +656,59 @@ public class DeviceConnection {
 		}
 	}
 
+
+	/**
+	 * Get the IP Addresses as Strings for all devices listed as connected
+	 * @return list of IP addresses
+	 */
+	public List<LocalDeviceRepresentation> getAllActiveDevices(){
+
+		List<LocalDeviceRepresentation> ret = new ArrayList<>();
+
+		synchronized (devicesByHostnameLock) {
+			for (LocalDeviceRepresentation device : devicesByHostname.values()) {
+				if (device.getIsConnected()) {
+					String address = device.getAddress();
+					if (!address.isEmpty()) {
+						ret.add(device);
+					}
+				}
+
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Send message to a list of devices
+	 * @param devices the list of devices to send message to
+	 * @param msg_name message name
+	 * @param args message arguments
+	 */
 	public void sendToDeviceList(Iterable<LocalDeviceRepresentation> devices, String msg_name, Object... args) {
 		for (LocalDeviceRepresentation device : devices) {
 			sendToDevice(device, msg_name, args);
 		}
 	}
 
+	/**
+	 * Send message to named devices
+	 * @param list list of device names
+	 * @param msg_name message name
+	 * @param args message arguments
+	 */
 	public void sendToDeviceList(String[] list, String msg_name, Object... args) {
 		for(String deviceName : list) {
 			sendToDevice(devicesByHostname.get(deviceName), msg_name, args);
 		}
 	}
 
+	/**
+	 * Send message to device group
+	 * @param group group ID
+	 * @param msg_name message name
+	 * @param args message arguments
+	 */
 	public void sendToDeviceGroup(int group, String msg_name, Object... args) {
 		//send to group - group is defined by each LocalDeviceRep having group[i] flag
 		for(LocalDeviceRepresentation device : theDevices) {
@@ -667,6 +719,9 @@ public class DeviceConnection {
 
 	}
 
+	/**
+	 * Perform check of device aliveness and change status accordingly
+	 */
 	private void checkDeviceAliveness() {
 		long timeNow = System.currentTimeMillis();
 
@@ -690,10 +745,16 @@ public class DeviceConnection {
 
 	//standard messages to Device
 
+	/**
+	 * Perform reboot of all devices
+	 */
 	public void deviceReboot() {
 		sendToAllDevices(OSCVocabulary.Device.REBOOT);
 	}
 
+	/**
+	 * perform shutdown of all devices
+	 */
 	public void deviceShutdown() {
 		sendToAllDevices(OSCVocabulary.Device.SHUTDOWN);
 	}

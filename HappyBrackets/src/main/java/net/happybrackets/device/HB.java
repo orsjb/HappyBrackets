@@ -20,6 +20,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -63,9 +64,14 @@ public class HB {
 
 	private static boolean enableSimulators = false;
 
+	// Define a map that associates a device name with an InetAddress
+	private Map<String, InetAddress> deviceAddressByHostname = new Hashtable<String, InetAddress>();
+
+
+
 
 	/**
-	 * Retrun the Mute Control
+	 * Return the Mute Control
 	 * @return the Mute Control
 	 */
 	public MuteControl getMuteControl() {
@@ -384,14 +390,17 @@ public class HB {
 						{
 							if (incomingClass.isAssignableFrom(Application.class)) {
 								// now we try and JavaFX calls
+								System.out.println("Incoming class assignable");
 								DynamicControlScreen debugControlsScreen = new DynamicControlScreen("Debug");
 
 
+								System.out.println("Add Listener");
 								debugControlsScreen.addDynamicControlScreenLoadedListener(new DynamicControlScreen.DynamicControlScreenLoaded() {
 									@Override
 									public void loadComplete(DynamicControlScreen screen, boolean loaded) {
 										// screen load is complete.
 										//Now Add all controls
+										System.out.println("Listener Load Complete");
 										ControlMap control_map = ControlMap.getInstance();
 
 										List<DynamicControl> controls = control_map.GetSortedControls();
@@ -415,11 +424,14 @@ public class HB {
 									}
 								});
 
+								System.out.println("Create Dynamic Control Stage");
 								// now we have a listener to see when stage is made, let us load the stage
 								debugControlsScreen.createDynamicControlStage();
 							}
 							else
 							{
+
+								System.out.println("Swing Invoke Later");
 								SwingUtilities.invokeLater(() -> {
 									try {
 										Application.launch(DebugApplication.class);
@@ -526,6 +538,8 @@ public class HB {
 
 				broadcast.startRefreshThread();
 				testBleep3();
+
+				DynamicControl.postRequestNamesMessage();
 			}
 			else
 			{
@@ -543,6 +557,8 @@ public class HB {
 		logger.info("HB initialised");
 
 		HBInstance = this;
+
+		addDeviceAddress(Device.getDeviceName(), InetAddress.getLoopbackAddress());
 	}
 
 
@@ -1771,6 +1787,64 @@ public class HB {
 			setStatus("Unable to find gyroscope");
 			ret = new Static(ac, 0);
 		}
+		return ret;
+	}
+
+	/**
+	 * Return the {@link InetAddress} associated with this device name
+	 * @param name device name
+	 * @return The address associated with the name. If not stored will return null
+	 */
+	public synchronized InetAddress getDeviceAddress(String name){
+		return deviceAddressByHostname.get(name);
+	}
+
+	/**
+	 * Associate a device name with an {@link InetAddress}
+	 * @param name The device name to use as a key
+	 * @param address the {@link InetAddress} to associate with the name
+	 * @return true if the device was added or update
+	 */
+	public synchronized boolean addDeviceAddress(String name, InetAddress address){
+		boolean ret = true;
+			InetAddress stored = deviceAddressByHostname.get(name);
+			if (stored != null) {
+				if (stored.getHostAddress().equalsIgnoreCase(address.getHostAddress())){
+					ret = false;
+				}
+			}
+
+		deviceAddressByHostname.put(name, address);
+
+		return ret;
+	}
+
+	/**
+	 * Detect whether this {@link InetAddress} is actually this device
+	 * @param address the address we are testing for
+	 * @return true if this is one of our addresses
+	 */
+	static public boolean isOurAddress(InetAddress address){
+		boolean ret = false;
+		if (address != null){
+			String target_address = address.getHostAddress();
+			String loopback = InetAddress.getLoopbackAddress().getHostAddress();
+
+			if (target_address.equalsIgnoreCase(loopback)){
+				ret = true;
+			}
+			else
+			{
+				try {
+					if (InetAddress.getLocalHost().getHostAddress().equalsIgnoreCase(target_address)){
+						ret = true;
+					}
+				} catch (UnknownHostException e) {
+					//e.printStackTrace();
+				}
+			}
+		}
+
 		return ret;
 	}
 }

@@ -57,7 +57,7 @@ public class TestOSCTransmitter {
 //        transmitter.connect();
 
         OSCTransmitter transmitter = OSCTransmitter.newUsing(OSCChannel.UDP);
-        transmitter.setTarget(new InetSocketAddress("localhost", 5002));
+        transmitter.setTarget(new InetSocketAddress(InetAddress.getLoopbackAddress(), 5002));
         transmitter.connect();
 
         new Thread() {

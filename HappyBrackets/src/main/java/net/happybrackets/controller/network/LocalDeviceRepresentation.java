@@ -102,6 +102,8 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	private final Object[] replyPortObject; //we will use this as a cached Object to send in OSC Message
 	private boolean loggingEnabled = false;
 
+	private final Object dynamicControlsLock = new Object();
+
 	private Map<String, DynamicControl> dynamicControls = Collections.synchronizedMap( new Hashtable<String, DynamicControl>());
 	private Queue <DynamicControl> pendingControls =  new LinkedList<DynamicControl>();
 
@@ -321,6 +323,13 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 
 	/**
+	 * Get DynamicControl Screen
+	 * @return The dynamicControlScreen associated with this device
+	 */
+	public DynamicControlScreen getDynamicControlScreen(){
+		return dynamicControlScreen;
+	}
+	/**
 	 * If true, we will ignore this device and not respond to any of its messages
 	 * @return true if we are ignoring
 	 */
@@ -364,6 +373,10 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	}
 
 
+	/**
+	 * Return if the device has it's status as actively connected
+	 * @return true if connected
+	 */
 	public boolean getIsConnected() {
 		return this.isConnected;
 	}
@@ -600,7 +613,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	public void addDynamicControl(DynamicControl control) {
 		synchronized (dynamicControlLock) {
 
-			synchronized (dynamicControls) {
+			synchronized (dynamicControlsLock) {
 				dynamicControls.put(control.getControlMapKey(), control);
 			}
 
@@ -669,7 +682,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		}catch (Exception ex){}
 
 		Collection<DynamicControl> removal_list;
-		synchronized (dynamicControls) {
+		synchronized (dynamicControlsLock) {
 			removal_list = dynamicControls.values();
 		}
 
@@ -685,7 +698,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	 */
 	public void removeDynamicControl(DynamicControl control) {
 		synchronized (dynamicControlLock) {
-			synchronized (dynamicControls) {
+			synchronized (dynamicControlsLock) {
 				dynamicControls.remove(control.getControlMapKey());
 			}
 

@@ -38,6 +38,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import net.happybrackets.controller.gui.DialogDisplay;
+import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
@@ -259,6 +260,23 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			if (event.isControlDown()){
 
 				contextMenu.getItems().add(show_controls_menu);
+
+				if (item.getDynamicControlScreen() != null) {
+					MenuItem rebuild_controls_menu = new MenuItem("Rebuild Controls");
+					rebuild_controls_menu.setOnAction(event2 -> {
+						DynamicControlScreen screen = item.getDynamicControlScreen();
+						if (screen != null) {
+							screen.eraseDynamicControls();
+						}
+
+						item.sendControlsRequest();
+					});
+
+					contextMenu.getItems().add(rebuild_controls_menu);
+
+					rebuild_controls_menu.setDisable(!item.getDynamicControlScreen().getIsShowing());
+				}
+
 				contextMenu.getItems().add(new SeparatorMenuItem());
 
 				PingMenu menus = new PingMenu(item);
@@ -310,6 +328,24 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				}
 			});
 			contextMenu.getItems().add(show_controls_menu);
+
+			if (item.getDynamicControlScreen() != null) {
+				MenuItem rebuild_controls_menu = new MenuItem("Rebuild Controls");
+				rebuild_controls_menu.setOnAction(event2 -> {
+					DynamicControlScreen screen = item.getDynamicControlScreen();
+					if (screen != null) {
+						screen.eraseDynamicControls();
+					}
+
+					item.sendControlsRequest();
+				});
+
+				contextMenu.getItems().add(rebuild_controls_menu);
+
+				rebuild_controls_menu.setDisable(!item.getDynamicControlScreen().getIsShowing());
+			}
+
+
 			contextMenu.getItems().add(new SeparatorMenuItem());
 
 			PingMenu menus = new PingMenu(item);
@@ -480,6 +516,24 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 				}
 			});
 			contextMenu.getItems().add(show_controls_menu);
+			// see if we can add a rebuild Controls menu here
+
+			if (item.getDynamicControlScreen() != null) {
+				MenuItem rebuild_controls_menu = new MenuItem("Rebuild Controls");
+				rebuild_controls_menu.setOnAction(event2 -> {
+					DynamicControlScreen screen = item.getDynamicControlScreen();
+					if (screen != null) {
+						screen.eraseDynamicControls();
+					}
+
+					item.sendControlsRequest();
+				});
+
+				contextMenu.getItems().add(rebuild_controls_menu);
+
+				rebuild_controls_menu.setDisable(!item.getDynamicControlScreen().getIsShowing());
+			}
+
 			contextMenu.getItems().add(new SeparatorMenuItem());
 
 			PingMenu menus = new PingMenu(item);

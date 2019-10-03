@@ -40,12 +40,14 @@ public final class OSCVocabulary {
 
     public final class DynamicControlMessage
     {
-        public static final String CONTROL = "/control";
+        public static final String CONTROL = "/con";
         public static final String GET = CONTROL + "/get";
         public static final String UPDATE = CONTROL + "/update";
         public static final String GLOBAL = CONTROL + "/global";
         public static final String CREATE = CONTROL + "/create";
         public static final String DESTROY = CONTROL + "/destroy";
+        public static final String DEVICE_NAME = CONTROL + "/device";
+        public static final String REQUEST_NAME = CONTROL + "/device";
     }
 
     public final class FileSendMessage

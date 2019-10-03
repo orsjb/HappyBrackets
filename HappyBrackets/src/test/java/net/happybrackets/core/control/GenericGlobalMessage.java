@@ -29,7 +29,7 @@ public class GenericGlobalMessage {
         test_control.setControlScope(ControlScope.GLOBAL);
         test_control2.setControlScope(ControlScope.GLOBAL);
 
-        // we will test if our message decoded as an OSC message inside liustener
+        // we will test if our message decoded as an OSC message inside listener
         test_control.addControlListener(control -> {
             Object value =  control.getValue();
 

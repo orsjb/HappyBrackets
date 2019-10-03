@@ -112,7 +112,7 @@ public class NetworkCommunication {
 
 		ControlMap.getInstance().addDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
 			@Override
-			public void dynamicControlEvent(OSCMessage msg) {
+			public void dynamicControlEvent(OSCMessage msg, Collection<String> target) {
 				// Send all Dynamic Control Messages to the respective controllers
 				sendDynamicControlEventToControllers(msg);
 			}
@@ -121,7 +121,7 @@ public class NetworkCommunication {
 
 		ControlMap.getInstance().addGlobalDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
 			@Override
-			public void dynamicControlEvent(OSCMessage msg) {
+			public void dynamicControlEvent(OSCMessage msg, Collection<String> target) {
 				// Send all Dynamic Control Messages to the Broadcast Address so all will receive them
 				try {
 					if (DeviceConfig.getInstance() != null) {
@@ -131,9 +131,61 @@ public class NetworkCommunication {
 						if (advertiseTxSocket != null) {
 							int device_port = DeviceConfig.getInstance().getControlToDevicePort();
 							DatagramPacket packet = cached_message.getCachedPacket();
-							packet.setAddress(broadcastAddress);
-							packet.setPort(device_port);
-							advertiseTxSocket.send(packet);
+							boolean do_broadcast = false;
+
+							if (target == null)
+							{
+								do_broadcast = true;
+							}
+							else if (target.size() == 0){
+								do_broadcast = true;
+							}
+
+							if (do_broadcast) {
+								packet.setAddress(broadcastAddress);
+								packet.setPort(device_port);
+								try {
+									advertiseTxSocket.send(packet);
+								} catch (IOException e) {
+									System.out.println("Unable to broadcast");
+								}
+							}
+							else{
+								for (String device:
+									 target) {
+									if (device.equalsIgnoreCase(Device.getDeviceName())){
+										// skip it
+										continue;
+									}
+									// first see if we have a Mapped name
+									InetAddress target_address = HB.HBInstance.getDeviceAddress(device);
+
+									if (target_address == null){
+										// see if we can convert it from a string
+										try {
+											target_address = InetAddress.getByName(device);
+
+											// if it is us, we will ignore
+											if (HB.isOurAddress(target_address)){
+												continue;
+											}
+										}
+										catch (Exception ex){}
+
+									}
+									 if (target_address == null){
+										 System.out.println("Unable to resolve Address for " + device);
+									 }
+									 else {
+
+										 packet.setAddress(target_address);
+										 packet.setPort(device_port);
+										 advertiseTxSocket.send(packet);
+									 }
+
+								}
+							}
+
 						}
 
 						// Now send the message to all controllers
@@ -356,9 +408,6 @@ public class NetworkCommunication {
 								}
 							}
 
-
-
-
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.UPDATE)){
 							DynamicControl.processUpdateMessage(msg);
@@ -366,6 +415,15 @@ public class NetworkCommunication {
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GLOBAL)){
 							DynamicControl.processGlobalMessage(msg);
 						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DEVICE_NAME)){
+							InetAddress src_address = ((InetSocketAddress) src).getAddress();
+							DynamicControl.processDeviceNameMessage(src_address, msg);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.REQUEST_NAME)){
+							InetAddress src_address = ((InetSocketAddress) src).getAddress();
+							DynamicControl.processRequestNameMessage(src_address, msg);
+						}
+
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
 							//TODO: add interfaces path to device config
 							boolean status = LocalConfigManagement.updateInterfaces(
@@ -526,6 +584,14 @@ public class NetworkCommunication {
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.GLOBAL)){
 							DynamicControl.processGlobalMessage(msg);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.DEVICE_NAME)){
+							InetAddress src_address = ((InetSocketAddress) src).getAddress();
+							DynamicControl.processDeviceNameMessage(src_address, msg);
+						}
+						else if (OSCVocabulary.match(msg, OSCVocabulary.DynamicControlMessage.REQUEST_NAME)){
+							InetAddress src_address = ((InetSocketAddress) src).getAddress();
+							DynamicControl.processRequestNameMessage(src_address, msg);
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
 							//TODO: add interfaces path to device config

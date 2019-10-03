@@ -2,6 +2,7 @@ package net.happybrackets.core.control;
 
 import de.sciss.net.OSCMessage;
 
+import java.net.InetAddress;
 import java.util.*;
 
 /**
@@ -13,7 +14,7 @@ public class ControlMap {
      * Create an interface used for sending OSC Messages to various listeners
      */
     public interface dynamicControlAdvertiseListener{
-        void dynamicControlEvent(OSCMessage msg);
+        void dynamicControlEvent(OSCMessage msg,  Collection<String> targets);
     }
 
     /**
@@ -113,13 +114,14 @@ public class ControlMap {
     /**
      * Sennd OSC Message to controllers. Using an event based interface allows us to reduce coupling
      * @param msg
+     * @param addresses set of device names or  that the message needs to be sent to. Can be null
      */
-    private synchronized void sendDynamicControlMessage(OSCMessage msg)
+    private synchronized void sendDynamicControlMessage(OSCMessage msg,  Collection<String> addresses)
     {
         //synchronized (controlListenerListLock)
         {
             for (dynamicControlAdvertiseListener listener : controlListenerList) {
-                listener.dynamicControlEvent(msg);
+                listener.dynamicControlEvent(msg, addresses);
             }
         }
     }
@@ -148,7 +150,7 @@ public class ControlMap {
     void sendUpdateMessage (DynamicControl control)
     {
         OSCMessage msg = control.buildUpdateMessage();
-        sendDynamicControlMessage(msg);
+        sendDynamicControlMessage(msg, null);
     }
     /**
      * Add a control to our map. Generate a control added event
@@ -188,7 +190,12 @@ public class ControlMap {
                                 if (control.getControlScope() == ControlScope.GLOBAL) {
                                     // needs to be broadcast
                                     OSCMessage msg = control.buildGlobalMessage();
-                                    sendGlobalDynamicControlMessage(msg);
+                                    sendGlobalDynamicControlMessage(msg, null);
+                                }
+                                else if (control.getControlScope() == ControlScope.TARGET) {
+                                    // needs to be broadcast
+                                    OSCMessage msg = control.buildGlobalMessage();
+                                    sendGlobalDynamicControlMessage(msg, control.getTargetDeviceAddresses());
                                 }
                             }
                         }
@@ -218,7 +225,7 @@ public class ControlMap {
         if (send_message)
         {
             OSCMessage msg = control.buildCreateMessage();
-            sendDynamicControlMessage(msg);
+            sendDynamicControlMessage(msg, null);
         }
 
         //synchronized (controlCreatedListenerListLock)
@@ -232,13 +239,14 @@ public class ControlMap {
     /**
      * Send OSC Message across to global senders - this message is for Global Scope controls
      * @param msg the Control Message to send
+     * @param targetAddresses collection of address to send message to. Can be null, in which case will be broadcast
      */
-    private synchronized void sendGlobalDynamicControlMessage(OSCMessage msg) {
+    synchronized void sendGlobalDynamicControlMessage(OSCMessage msg, Collection<String> targetAddresses) {
 
         //synchronized (globalControlListenerListLock)
         {
             for (dynamicControlAdvertiseListener listener : globalControlListenerList) {
-                listener.dynamicControlEvent(msg);
+                listener.dynamicControlEvent(msg, targetAddresses);
             }
         }
     }
@@ -286,7 +294,7 @@ public class ControlMap {
         {
             control.eraseListeners();
             OSCMessage msg = control.buildRemoveMessage();
-            sendDynamicControlMessage(msg);
+            sendDynamicControlMessage(msg, null);
 
             notifyRemovedListeners(control);
 
@@ -343,7 +351,7 @@ public class ControlMap {
                     control.eraseListeners();
 
                     OSCMessage msg = control.buildRemoveMessage();
-                    sendDynamicControlMessage(msg);
+                    sendDynamicControlMessage(msg, null);
                 }
             }
             dynamicControls.clear();
