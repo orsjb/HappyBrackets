@@ -81,21 +81,40 @@ abstract class DynamicControlParent {
     }
 
     /**
-     * Add a device name or IP address as a target for {@link DynamicControl} messages.
+     * Add one or more device names or IP address as a target for {@link DynamicControl} messages.
      * The control must have {@link ControlScope#TARGET} scope to have any effect
-     * @param device the device name or IP address to target
+     * @param devices the device name or IP address to target
      */
-    public void addControlTarget(String device){
-        control.addTargetDevice(device);
+    public void addControlTarget(String... devices){
+        control.addTargetDevice(devices);
     }
 
     /**
-     * Add an {@link InetAddress} as a target for {@link DynamicControl} messages.
+     * Clear existing targets and add one or more device names or IP address as a target for {@link DynamicControl} messages.
      * The control must have {@link ControlScope#TARGET} scope to have any effect
-     * @param device the address of the target
+     * @param devices the device name or IP address to target
      */
-    public void addControlTarget(InetAddress device){
-        control.addTargetDevice(device);
+    public void setControlTarget(String... devices){
+        control.setTargetDevice(devices);
+    }
+
+
+    /**
+     * Add one or more {@link InetAddress} as a target for {@link DynamicControl} messages.
+     * The control must have {@link ControlScope#TARGET} scope to have any effect
+     * @param deviceAddresses the addresses of the targets
+     */
+    public void addControlTarget(InetAddress... deviceAddresses){
+        control.addTargetDevice(deviceAddresses);
+    }
+
+    /**
+     * Clear existing targets and add one or more {@link InetAddress} as a target for {@link DynamicControl} messages.
+     * The control must have {@link ControlScope#TARGET} scope to have any effect
+     * @param deviceAddresses the addresses of the targets
+     */
+    public void setControlTarget(InetAddress... deviceAddresses){
+        control.setTargetDevice(deviceAddresses);
     }
 
     /**
@@ -106,21 +125,21 @@ abstract class DynamicControlParent {
     }
 
     /**
-     * Remove a device name or IP address as a target for {@link DynamicControl} messages.
+     * Remove one or more device name or IP address as a target for {@link DynamicControl} messages.
      * The control must have {@link ControlScope#TARGET} scope to have any effect
-     * @param device the device name or IP address to target
+     * @param devices the device names or IP addresses to remove as targets
      */
-    public void removeControlTarget(String device){
-        control.removeTargetDevice(device);
+    public void removeControlTarget(String... devices){
+        control.removeTargetDevice(devices);
     }
 
     /**
-     * Remove an {@link InetAddress} as a target for {@link DynamicControl} messages.
+     * Remove one or more {@link InetAddress} as a target for {@link DynamicControl} messages.
      * The control must have {@link ControlScope#TARGET} scope to have any effect
-     * @param device the address of the target
+     * @param inetAddresses the addresses of the targets to remove
      */
-    public void removeControlTarget(InetAddress device){
-        control.removeTargetDevice(device);
+    public void removeControlTarget(InetAddress... inetAddresses){
+        control.removeTargetDevice(inetAddresses);
     }
 
     abstract void notifyListener(Object val);

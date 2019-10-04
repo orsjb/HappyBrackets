@@ -85,19 +85,48 @@ public class DynamicControl implements ScheduledEventListener {
     }
 
     /**
-     * Add a device address as a string or device name to use in Target Scope Message
-     * @param deviceName device name or IP Address
+     * Add one or more device names or addresses as strings to use in {@link ControlScope#TARGET} Message
+     * @param deviceNames device name or IP Address
      */
-    public synchronized void addTargetDevice(String deviceName){
-        targetDevices.add(deviceName);
+    public synchronized void addTargetDevice(String... deviceNames){
+        for (String name:
+                deviceNames) {
+            targetDevices.add(name);
+        }
+    }
+
+
+    /**
+     * Remove all set target devices and replace with the those provided as arguments
+     * Adds device address as a string or device name to {@link ControlScope#TARGET} Message
+     * @param deviceNames device name or IP Address
+     */
+    public synchronized void setTargetDevice(String... deviceNames){
+        targetDevices.clear();
+        addTargetDevice(deviceNames);
     }
 
     /**
-     * Add a device {@link InetAddress} for use in Target Scope Message
-     * @param deviceAddress the target address
+     * Remove all set target devices and replace with the those provided as arguments
+     * Adds device addresses to {@link ControlScope#TARGET} Message
+     * @param inetAddresses device name or IP Address
      */
-    public void addTargetDevice(InetAddress deviceAddress){
-        addTargetDevice(deviceAddress.getHostAddress());
+    public synchronized void setTargetDevice(InetAddress... inetAddresses){
+        targetDevices.clear();
+        addTargetDevice(inetAddresses);
+    }
+
+    /**
+     * Add one or more device {@link InetAddress} for use in {@link ControlScope#TARGET} Message
+     * @param inetAddresses the target addresses to add
+     */
+    public void addTargetDevice(InetAddress... inetAddresses){
+        for (InetAddress address:
+                inetAddresses) {
+            targetDevices.add(address.getHostAddress());
+
+        }
+
     }
 
     /**
@@ -109,19 +138,27 @@ public class DynamicControl implements ScheduledEventListener {
 
 
     /**
-     * Remove a device address as a string or device name to use in Target Scope Message
-     * @param deviceName device name or IP Address
+     * Remove one or more device names or addresses as a string.
+     * For use in {@link ControlScope#TARGET}  Messages
+     * @param deviceNames device names or IP Addresses to remove
      */
-    public synchronized void removeTargetDevice(String deviceName){
-        targetDevices.remove(deviceName);
+    public synchronized void removeTargetDevice(String... deviceNames){
+        for (String name:
+                deviceNames) {
+            targetDevices.remove(name);
+        }
+
     }
 
     /**
-     * Add a device {@link InetAddress} for use in Target Scope Message
-     * @param deviceAddress the target address
+     * Remove one or more {@link InetAddress} for use in {@link ControlScope#TARGET} Message
+     * @param inetAddresses the target addresses to remove
      */
-    public void removeTargetDevice(InetAddress deviceAddress){
-        removeTargetDevice(deviceAddress.getHostAddress());
+    public void removeTargetDevice(InetAddress... inetAddresses){
+        for (InetAddress address:
+                inetAddresses) {
+            targetDevices.remove(address.getHostAddress());
+        }
     }
 
     /**
