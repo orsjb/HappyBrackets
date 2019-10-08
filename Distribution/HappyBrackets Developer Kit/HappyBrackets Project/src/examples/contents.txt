@@ -101,6 +101,7 @@ This file wil give a short description of the examples
   [globalcontrol] - Sending and receiving values across the network
     GlobalControl           Send global floating point values to change frequency across network
                             and global boolean values to turn sound on and off
+    TargetControl - Displays how different devices can be targeted on the network
 
   [gpio]           - Accessing GPIO pins on the device
     DigitalInGPIO  - Read digital values from GPIO Digital input

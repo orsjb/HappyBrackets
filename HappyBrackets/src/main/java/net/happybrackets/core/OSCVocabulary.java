@@ -48,7 +48,7 @@ public final class OSCVocabulary {
         public static final String CREATE = CONTROL + "/create";
         public static final String DESTROY = CONTROL + "/destroy";
         public static final String DEVICE_NAME = CONTROL + "/device";
-        public static final String REQUEST_NAME = CONTROL + "/device";
+        public static final String REQUEST_NAME = CONTROL + "/request";
     }
 
     public final class FileSendMessage

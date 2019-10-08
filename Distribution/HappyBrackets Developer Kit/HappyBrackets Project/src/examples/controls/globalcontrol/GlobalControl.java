@@ -19,12 +19,11 @@ import java.lang.invoke.MethodHandles;
  * The global control then sends its value to all listeners on the network
  *
  * Additionally, changing the DynamicControl via GUI will also send global value across network
+ * The name of the device that sent the message will be displayed in the sendingDevice text Control
  *
  * Run this on two different devices
  */
 public class GlobalControl implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     /**********************************************
      We need to make our counter a class variable so
      it can be accessed within the message handler
@@ -46,6 +45,9 @@ public class GlobalControl implements HBAction {
         WaveModule player = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
         player.connectTo(HB.getAudioOutput());
 
+        // This will display the sending device
+        TextControl sendingDevice = new TextControlSender(this, "Sending Device", "");
+
 
         // Make an array of frequencies to switch between
         float frequencyList [] = {500, 1000, 1500, 2000};
@@ -58,6 +60,9 @@ public class GlobalControl implements HBAction {
                 // this value has been received either from the trigger below
                 // or over the network
                 player.setFrequency(control_val);
+
+                // now display the sending device
+                sendingDevice.setValue(getSendingDevice());
                 /* Write your DynamicControl code above this line */
             }
         };
@@ -75,6 +80,9 @@ public class GlobalControl implements HBAction {
                 else {
                     player.setGain(0);
                 }
+                // now display the sending device
+                sendingDevice.setValue(getSendingDevice());
+
                 /* Write your DynamicControl code above this line */
             }
         };

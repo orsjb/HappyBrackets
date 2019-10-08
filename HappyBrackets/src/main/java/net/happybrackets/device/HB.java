@@ -559,6 +559,7 @@ public class HB {
 		HBInstance = this;
 
 		addDeviceAddress(Device.getDeviceName(), InetAddress.getLoopbackAddress());
+		DynamicControl.postRequestNamesMessage();
 	}
 
 
@@ -1791,12 +1792,25 @@ public class HB {
 	}
 
 	/**
-	 * Return the {@link InetAddress} associated with this device name
-	 * @param name device name
+	 * Return the {@link InetAddress} associated with this device name that we can address that device with
+	 * If the device is this, then it will return the loopback address
+	 * @param name The name of the device we require the address of
 	 * @return The address associated with the name. If not stored will return null
 	 */
 	public synchronized InetAddress getDeviceAddress(String name){
 		return deviceAddressByHostname.get(name);
+	}
+
+	/**
+	 * Get the names of the devices that we know are on the network.
+	 * The devices can be targeted with Dynamic controls with {@link ControlScope#TARGET} using the device name.
+	 * If you require the {@link InetAddress}of the device, for example, if you want to use OpenSoundControl,
+	 * then use the device name in the function {@link #getDeviceAddress(String)}
+	 * @return a collection of device names that we know about
+	 */
+	public synchronized Collection<String> getKnownDeviceNames(){
+
+		return deviceAddressByHostname.keySet();
 	}
 
 	/**

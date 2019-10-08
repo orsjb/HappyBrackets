@@ -2,7 +2,7 @@ package net.happybrackets.core.control;
 
 import java.net.InetAddress;
 
-abstract class DynamicControlParent {
+public abstract class DynamicControlParent {
 
     private DynamicControl control = null;
 
@@ -15,6 +15,7 @@ abstract class DynamicControlParent {
             control.eraseListeners();
         }
     }
+
 
     /**
      * Constructor
@@ -51,6 +52,14 @@ abstract class DynamicControlParent {
         return  this;
     }
 
+
+    /**
+     * Get the name of the device that sent the message. If the message was local, will return this device name
+     * @return name of device that sent message
+     */
+    public String getSendingDevice(){
+        return control.getSendingDevice();
+    }
 
 
     /**

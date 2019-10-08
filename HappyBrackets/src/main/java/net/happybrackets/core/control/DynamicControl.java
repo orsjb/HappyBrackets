@@ -47,6 +47,23 @@ public class DynamicControl implements ScheduledEventListener {
      */
     Set<String> targetDevices = new HashSet<>();
 
+    // The device name that set last message to this control
+    // A Null value will indicate that it was this device
+    String sendingDevice = null;
+
+    /**
+     * Get the name of the device that sent the message. If the message was local, will return this device name
+     * @return name of device that sent message
+     */
+    public String getSendingDevice(){
+        String ret = sendingDevice;
+
+        if (ret == null) {
+            ret = deviceName;
+        }
+        return ret;
+    }
+
     /**
      * Define how we want the object displayed in the plugin
      */
@@ -72,6 +89,7 @@ public class DynamicControl implements ScheduledEventListener {
         FutureControlMessage message = (FutureControlMessage) param;
         this.objVal = message.controlValue;
         this.executionTime = 0;
+        this.sendingDevice = message.sourceDevice;
 
         notifyLocalListeners();
 
@@ -218,14 +236,16 @@ public class DynamicControl implements ScheduledEventListener {
     // Define where our first Array type global dynamic control message is in OSC
     final static int OSC_TRANSMIT_ARRAY_ARG = NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME.ordinal() + 1;
 
-    // When an event nis scheduled in the future, we will create one of these and schedule it
+    // When an event is scheduled in the future, we will create one of these and schedule it
     class FutureControlMessage{
         /**
-         * Create a Future COntrol message
+         * Create a Future Control message
+         * @param source_device the source device name
          * @param value the value to be executed
          * @param execution_time the time the value needs to be executed
          */
-        public FutureControlMessage(Object value, double execution_time){
+        public FutureControlMessage(String source_device, Object value, double execution_time){
+            sourceDevice = source_device;
             controlValue = value;
             executionTime = execution_time;
         }
@@ -233,6 +253,7 @@ public class DynamicControl implements ScheduledEventListener {
         Object controlValue;
         double executionTime;
         boolean localOnly = false; // if we are local only, we will not sendValue changed listeners
+        String sourceDevice;
 
         /// have a copy of our pending scheduled object in case we want to cancel it
         ScheduledObject pendingSchedule = null;
@@ -707,7 +728,7 @@ public class DynamicControl implements ScheduledEventListener {
 
 
                         if (changed) {
-                            scheduleValue(mirror_control.objVal, 0);
+                            scheduleValue(null, mirror_control.objVal, 0);
                         }
 
                 }
@@ -748,11 +769,12 @@ public class DynamicControl implements ScheduledEventListener {
 
     /**
      * Schedule this control to change its value in context of scheduler
+     * @param source_device the device name that was the source of this message - can be null
      * @param value the value to send
      * @param execution_time the time it needs to be executed
-     * @param local_only if true, will not send value changed to valueChangedListeners
+     * @param local_only if true, will not send value changed to notifyValueSetListeners
      */
-    void scheduleValue(Object value, double execution_time, boolean local_only){
+    void scheduleValue(String source_device, Object value, double execution_time, boolean local_only){
 
         // We need to convert the Object value into the exact type. EG, integer must be cast to boolean if that is thr control type
         Object converted_value = convertValue(controlType, value);
@@ -760,6 +782,7 @@ public class DynamicControl implements ScheduledEventListener {
         if (disableScheduler || execution_time ==  0){
             this.objVal = converted_value;
             this.executionTime = 0;
+            this.sendingDevice = source_device;
 
             notifyLocalListeners();
 
@@ -768,7 +791,7 @@ public class DynamicControl implements ScheduledEventListener {
             }
         }
         else {
-            FutureControlMessage message = new FutureControlMessage(converted_value, execution_time);
+            FutureControlMessage message = new FutureControlMessage(source_device, converted_value, execution_time);
 
             message.localOnly = local_only;
 
@@ -780,12 +803,13 @@ public class DynamicControl implements ScheduledEventListener {
     }
     /**
      * Schedule this control to send a value to it's locallisteners at a scheduled time. Will also notify valueListeners (eg GUI controls)
+     * @param source_device the device name that was the source of this message - can be null
      * @param value the value to send
      * @param execution_time the time it needs to be executed
      */
-    void scheduleValue(Object value, double execution_time) {
+    void scheduleValue(String source_device, Object value, double execution_time) {
 
-        scheduleValue(value, execution_time, false);
+        scheduleValue(source_device, value, execution_time, false);
     }
 
 
@@ -861,7 +885,7 @@ public class DynamicControl implements ScheduledEventListener {
 
     }
     /**
-     * Process the Global or Target Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
+     * Process the {@link ControlScope#GLOBAL} or {@link ControlScope#TARGET} Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
      * We will not process messages that have come from this device because they will be actioned through local listeners
      * @param msg OSC message with new value
      * @param controlScope the type of {@link ControlScope};
@@ -911,7 +935,7 @@ public class DynamicControl implements ScheduledEventListener {
                         }
 
                         // We need to schedule this value
-                        named_control.scheduleValue(obj_val, execution_time);
+                        named_control.scheduleValue(device_name, obj_val, execution_time);
                     }
                 }
             }
@@ -972,25 +996,13 @@ public class DynamicControl implements ScheduledEventListener {
             }
 
             if (changed) {
-                control.scheduleValue(obj_val, 0, true);
+                control.scheduleValue(null, obj_val, 0, true);
 
                 if (control.getControlScope() != ControlScope.UNIQUE){
-                    // we will execute via schedule if necessary
-                    //control.scheduleValue(obj_val, execution_time);
 
                     control.objVal = obj_val;
                     control.notifyGlobalListeners();
                 }
-                /*
-                else
-                {
-
-                    control.objVal = convertValue(control.controlType, obj_val);
-                    control.executionTime = execution_time;
-
-                    control.notifyLocalListeners();
-                }
-                */
 
             }
             if (control_scope_changed)
@@ -1063,7 +1075,7 @@ public class DynamicControl implements ScheduledEventListener {
      * Build OSC Message that specifies a Network update
      * @return OSC Message directed to controls with same name, scope, but on different devices
      */
-    public OSCMessage buildGlobalMessage(){
+    public OSCMessage buildNetworkSendlMessage(){
 
         String OSC_MessageName = OSCVocabulary.DynamicControlMessage.GLOBAL;
 
@@ -1105,7 +1117,7 @@ public class DynamicControl implements ScheduledEventListener {
             }
         }
         else {
-            return new OSCMessage(OSCVocabulary.DynamicControlMessage.GLOBAL,
+            return new OSCMessage(OSC_MessageName,
                     new Object[]{
                             deviceName,
                             controlName,
@@ -1219,7 +1231,7 @@ public class DynamicControl implements ScheduledEventListener {
 
             notifyGlobalListeners();
 
-            scheduleValue(val, execution_time);
+            scheduleValue(null, val, execution_time);
 
         }
         return this;

@@ -30,7 +30,7 @@ public class TestFloatControl {
         DynamicControl test_control2 = new DynamicControl(this, ControlType.FLOAT, CONTROL_NAME, randomVal).setControlScope(ControlScope.GLOBAL);
 
         // encode our message
-        OSCMessage message = test_control2.buildGlobalMessage();
+        OSCMessage message = test_control2.buildNetworkSendlMessage();
 
 
         DynamicControl.processOSCControlMessage(message, ControlScope.GLOBAL); // The control Listener will get called

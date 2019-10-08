@@ -37,11 +37,13 @@ public class CutsomGlobalMessage {
         });
 
         // encode our message
-        OSCMessage message = test_control.buildGlobalMessage();
+        OSCMessage message = test_control.buildNetworkSendlMessage();
 
         System.out.println(message);
 
         DynamicControl.processOSCControlMessage(message, ControlScope.GLOBAL);
+
+
         assert (testSuccess);
 
     }

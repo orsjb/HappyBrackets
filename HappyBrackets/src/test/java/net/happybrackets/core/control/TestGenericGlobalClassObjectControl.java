@@ -37,7 +37,7 @@ public class TestGenericGlobalClassObjectControl {
 
         DynamicControl test_control2 = new DynamicControl(this, ControlType.OBJECT, CONTROL_NAME, secondGlobalMessage);
         // encode our message
-        OSCMessage message = test_control2.buildGlobalMessage();
+        OSCMessage message = test_control2.buildNetworkSendlMessage();
 
 
         DynamicControl.processOSCControlMessage(message, ControlScope.GLOBAL); // The control Listener will get called

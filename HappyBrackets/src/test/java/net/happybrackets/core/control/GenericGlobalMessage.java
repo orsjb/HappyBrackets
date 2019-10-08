@@ -37,13 +37,15 @@ public class GenericGlobalMessage {
                 GenericTestMessageObject decoded = new Gson().fromJson((String) value, GenericTestMessageObject.class);
                 System.out.println(decoded);
 
+                String sending_device = control.getSendingDevice();
+                System.out.println("Sending device " + sending_device);
                 // Check the value of our decode here
                 testSuccess = decoded.equals(genericGlobalMessage);
             }
         });
 
         // encode our message
-        OSCMessage message = test_control.buildGlobalMessage();
+        OSCMessage message = test_control.buildNetworkSendlMessage();
 
         System.out.println(message);
 
