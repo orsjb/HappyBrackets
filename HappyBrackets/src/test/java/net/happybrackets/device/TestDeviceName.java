@@ -15,6 +15,10 @@ public class TestDeviceName {
         try {
             HB.runDebug(null);
 
+            HB.HBInstance.addDeviceConnectedEventListener((device_name, device_address) -> {
+                System.out.println(device_name + " detected at " + device_address.getHostAddress());
+            });
+
             assert (!HB.HBInstance.addDeviceAddress(Device.getDeviceName(), InetAddress.getLoopbackAddress()));
 
             InetAddress broadcast = InetAddress.getByName("255.255.255.255");

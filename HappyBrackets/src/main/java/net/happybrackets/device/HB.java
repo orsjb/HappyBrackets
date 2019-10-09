@@ -44,6 +44,7 @@ import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
+import net.happybrackets.device.network.DeviceConnectedEventListener;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.config.DeviceConfig;
@@ -68,6 +69,7 @@ public class HB {
 	private Map<String, InetAddress> deviceAddressByHostname = new Hashtable<String, InetAddress>();
 
 
+	private List<DeviceConnectedEventListener> deviceConnectedEventsListeners = new ArrayList<>();
 
 
 	/**
@@ -1208,6 +1210,7 @@ public class HB {
 		clearSound();
 		OSCUDPReceiver.resetListeners();
 		GPIO.resetGpioListeners();
+		deviceConnectedEventsListeners.clear();
 		// clear all scheduled events
 		HBScheduler.getGlobalScheduler().reset();
 
@@ -1814,21 +1817,36 @@ public class HB {
 	}
 
 	/**
+	 * Add a {@link DeviceConnectedEventListener} to be informed when a new device is detected on the network
+	 * @param listener the listener that will be notified when a device is connected
+	 */
+	public void addDeviceConnectedEventListener(DeviceConnectedEventListener listener){
+		deviceConnectedEventsListeners.add(listener);
+	}
+
+	/**
 	 * Associate a device name with an {@link InetAddress}
 	 * @param name The device name to use as a key
 	 * @param address the {@link InetAddress} to associate with the name
 	 * @return true if the device was added or update
 	 */
-	public synchronized boolean addDeviceAddress(String name, InetAddress address){
+	public synchronized boolean addDeviceAddress(String name, InetAddress address) {
 		boolean ret = true;
-			InetAddress stored = deviceAddressByHostname.get(name);
-			if (stored != null) {
-				if (stored.getHostAddress().equalsIgnoreCase(address.getHostAddress())){
-					ret = false;
-				}
+		InetAddress stored = deviceAddressByHostname.get(name);
+		if (stored != null) {
+			if (stored.getHostAddress().equalsIgnoreCase(address.getHostAddress())) {
+				ret = false;
 			}
+		}
 
 		deviceAddressByHostname.put(name, address);
+
+		if (ret) {
+			for (DeviceConnectedEventListener listener:
+					deviceConnectedEventsListeners) {
+				listener.deviceConnected(name, address);
+			}
+		}
 
 		return ret;
 	}

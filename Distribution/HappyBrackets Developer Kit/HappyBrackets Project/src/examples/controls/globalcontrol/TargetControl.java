@@ -5,6 +5,7 @@ import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.*;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
+import net.happybrackets.device.network.DeviceConnectedEventListener;
 
 import java.lang.invoke.MethodHandles;
 import java.net.InetAddress;
@@ -18,11 +19,14 @@ import java.util.Collection;
  * Two target controls are created - one for sending and one for receiving.  The sending control has targets added and removed from it
  *
  * Adding a target will cause messages to be sent to that device, which will receive the value through the receivingControl.
+ *
+ * Each time a new device connects to the network, we will receive a DeviceConnectedEventListener event which will give us details about it
+ * We will then add controls for it
  * This will also set the status on that device
  *
  * Run this on two or more different devices
  */
-public class TargetControl implements HBAction {
+public class TargetControl implements HBAction, DeviceConnectedEventListener {
     /**********************************************
      We need to make our counter a class variable so
      it can be accessed within the message handler
@@ -30,6 +34,8 @@ public class TargetControl implements HBAction {
     // Now create an index counter to select a frequency
     int counter = 0;
 
+    // This is the control we will use to send messages to targets
+    IntegerControl sendingControl = null;
 
     @Override
     public void action(HB hb) {
@@ -45,7 +51,7 @@ public class TargetControl implements HBAction {
 
 
         // Type intBuddyControl to generate this code. This is set to Target Scope
-        IntegerControl sendingControl = new IntegerBuddyControl(this, "Target Control", 0, -100, 100) {
+        sendingControl = new IntegerBuddyControl(this, "Target Control", 0, -100, 100) {
             @Override
             public void valueChanged(int control_val) {// Write your DynamicControl code below this line
                 // Write your DynamicControl code above this line 
@@ -72,33 +78,51 @@ public class TargetControl implements HBAction {
 
             InetAddress device_address = hb.getDeviceAddress(device_name);
             if (device_address != null) {
-                String display_name = device_name + " - " + device_address.getHostAddress();
-                TextControl deviceNameDisplay = new TextControlSender(this, "Device Name", display_name);
-
-                // create controls for adding and removing devices
-                TriggerControl addControl = new TriggerControl(this, "Add Target " + device_name) {
-                    @Override
-                    public void triggerEvent() {// Write your DynamicControl code below this line
-                        // add the device as a target
-                        System.out.println("Add device target " + device_name);
-                        sendingControl.addControlTarget(device_name);
-                        // Write your DynamicControl code above this line 
-                    }
-                };// End DynamicControl addControl code
-
-                // Type triggerControl to generate this code 
-                TriggerControl removeControl = new TriggerControl(this, "Remove target " + device_name) {
-                    @Override
-                    public void triggerEvent() {// Write your DynamicControl code below this line 
-                        sendingControl.removeControlTarget(device_name);
-                        // Write your DynamicControl code above this line 
-                    }
-                };// End DynamicControl removeControl code 
-
+                addDeviceControls(device_name, device_address);
 
             }
         }
 
+        // Now add ourselves as a listener for new devices
+        hb.addDeviceConnectedEventListener(this);
+
+    }
+
+    /**
+     * Add device controls for a device given it's name and {@link InetAddress}
+     * @param device_name the device name
+     * @param device_address the Address of the device
+     */
+    void addDeviceControls(String device_name, InetAddress device_address){
+        String display_name = device_name + " - " + device_address.getHostAddress();
+        TextControl deviceNameDisplay = new TextControlSender(this, "Device Name", display_name);
+
+        // create controls for adding and removing devices
+        TriggerControl addControl = new TriggerControl(this, "Add Target " + device_name) {
+            @Override
+            public void triggerEvent() {// Write your DynamicControl code below this line
+                // add the device as a target
+                System.out.println("Add device target " + device_name);
+                sendingControl.addControlTarget(device_name);
+                // Write your DynamicControl code above this line
+            }
+        };// End DynamicControl addControl code
+
+        // Type triggerControl to generate this code
+        TriggerControl removeControl = new TriggerControl(this, "Remove target " + device_name) {
+            @Override
+            public void triggerEvent() {// Write your DynamicControl code below this line
+                sendingControl.removeControlTarget(device_name);
+                // Write your DynamicControl code above this line
+            }
+        };// End DynamicControl removeControl code
+
+    }
+
+    @Override
+    public void deviceConnected(String s, InetAddress inetAddress) {
+        System.out.println("Detected " + s + " at " + inetAddress.getHostAddress());
+        addDeviceControls(s, inetAddress);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">
@@ -115,5 +139,7 @@ public class TargetControl implements HBAction {
             e.printStackTrace();
         }
     }
+
+
     //</editor-fold>
 }
