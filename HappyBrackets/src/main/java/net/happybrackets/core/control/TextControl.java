@@ -38,6 +38,15 @@ public abstract class TextControl extends DynamicControlParent {
     }
 
     /**
+     * set the value for the control. This will notify all the listeners
+     * @param val the value to set to
+     * @param scheduler_time the scheduler time this is supposed to occur at
+     */
+    public void setValue(String val, double scheduler_time){
+        getDynamicControl().setValue(val, scheduler_time);
+    }
+
+    /**
      * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
      * We must do this in subclass
      * @param new_scope The new Control Scope

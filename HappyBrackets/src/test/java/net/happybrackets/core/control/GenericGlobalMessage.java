@@ -45,7 +45,7 @@ public class GenericGlobalMessage {
         });
 
         // encode our message
-        OSCMessage message = test_control.buildNetworkSendlMessage();
+        OSCMessage message = test_control.buildNetworkSendMessage();
 
         System.out.println(message);
 

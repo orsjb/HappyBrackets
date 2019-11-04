@@ -40,9 +40,9 @@ public final class OSCVocabulary {
 
     public final class DynamicControlMessage
     {
-        public static final String CONTROL = "/con";
+        public static final String CONTROL = "/cont";
         public static final String GET = CONTROL + "/get";
-        public static final String UPDATE = CONTROL + "/update";
+        public static final String UPDATE = CONTROL + "/up";
         public static final String GLOBAL = CONTROL + "/global";
         public static final String TARGET = CONTROL + "/target";
         public static final String CREATE = CONTROL + "/create";

@@ -113,6 +113,14 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
     public void setValue(Object val){
         getDynamicControl().setValue(val);
     }
+    /**
+     * set the value for the control. This will notify all the listeners
+     * @param val the value to set to
+     * @param scheduler_time the scheduler time this is supposed to occur at
+     */
+    public void setValue(Object val, double scheduler_time){
+        getDynamicControl().setValue(val, scheduler_time);
+    }
 
     /**
      * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope

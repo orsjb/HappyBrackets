@@ -193,7 +193,7 @@ public class NetworkCommunication {
 					}
 
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		});

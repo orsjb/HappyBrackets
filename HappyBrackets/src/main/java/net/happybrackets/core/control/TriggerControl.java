@@ -28,6 +28,14 @@ abstract public class TriggerControl extends DynamicControlParent{
         getDynamicControl().setValue(null);
     }
 
+    /**
+     * Send a trigger event
+     * @param scheduler_time the scheduler time this is supposed to occur at
+     */
+    public void send(double scheduler_time){
+        getDynamicControl().setValue(null, scheduler_time);
+    }
+
     public abstract void triggerEvent();
 
     /**

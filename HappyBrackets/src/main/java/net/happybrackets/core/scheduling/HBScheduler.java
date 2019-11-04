@@ -341,20 +341,7 @@ public class HBScheduler {
      * @param new_time the new time
      */
     public void setScheduleTime(double new_time){
-        synchronized (scheduleObject){
-            // see if our time is less than next time
-            scheduleSlideTime = 0;
-            scheduleSlideTime = getSchedulerTime() + new_time;
-
-
-            if (new_time < nextScheduledTime){
-                nextScheduledTime = new_time;
-                reschedulerReTriggered = true;
-
-                scheduleObject.notify();
-            }
-
-        }
+        adjustScheduleTime (new_time - getSchedulerTime(), 0);
     }
     /**
      * Adjust the scheduler time
@@ -392,7 +379,9 @@ public class HBScheduler {
      * This will be done inside our schedule function only
      */
     private void adjustScheduler(){
-        double time_remaining = completeRescheduleTime - getUptime();
+        double uptime = getUptime();
+
+        double time_remaining = completeRescheduleTime - uptime;
         if (time_remaining < RESCHEDULE_INCREMENT){
             scheduleSlideTime += rescheduleAmount;
             rescheduleAmount = 0;
@@ -402,7 +391,7 @@ public class HBScheduler {
             double number_increments = time_remaining / RESCHEDULE_INCREMENT;
 
             double adjustment = rescheduleAmount /  number_increments;
-            scheduleSlideTime += rescheduleAmount;
+            scheduleSlideTime += adjustment;
             rescheduleAmount -= adjustment;
         }
 

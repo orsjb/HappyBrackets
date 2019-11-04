@@ -40,12 +40,40 @@ public class DynamicControl implements ScheduledEventListener {
         ignoreName =  true;
     }
 
+    static int deviceSendId = 0; // we will use this to number all messages we send. They can be filtered at receiver by testing last message mapped
 
     /**
      * Define a list of target devices. Can be either device name or IP address
      * If it is a device name, there will be a lookup of stored device names
      */
     Set<String> targetDevices = new HashSet<>();
+
+    // we will map Message ID to device name. If the last ID is in this map, we will ignore message
+    static Map<String, Integer> messageIdMap = new Hashtable<>();
+
+
+    /**
+     * See if we will process a control message based on device name and message_id
+     * If the message_id is mapped against the device_name, ignore message, otherwise store mapping and return true;
+     * @param device_name the device name
+     * @param message_id the message_id
+     * @return true if we are going to process this message
+     */
+    static boolean enableProcessControlMessage(String device_name, int message_id){
+        boolean ret = true;
+
+        if (messageIdMap.containsKey(device_name)) {
+            if (messageIdMap.get(device_name) == message_id) {
+                ret = false;
+            }
+        }
+
+        if (ret){
+            messageIdMap.put(device_name, message_id);
+        }
+
+        return ret;
+    }
 
     // The device name that set last message to this control
     // A Null value will indicate that it was this device
@@ -214,7 +242,6 @@ public class DynamicControl implements ScheduledEventListener {
         MAP_KEY,
         OBJ_VAL,
         CONTROL_SCOPE,
-        EXECUTE_TIME,
         DISPLAY_TYPE_VAL
     }
 
@@ -225,7 +252,11 @@ public class DynamicControl implements ScheduledEventListener {
         CONTROL_NAME,
         CONTROL_TYPE,
         OBJ_VAL,
-        EXECUTE_TIME
+        EXECUTE_TIME_MLILI_MS, // Most Significant Int of Milliseconds - stored as int
+        EXECUTE_TIME_MLILI_LS, // Least Significant Bit of Milliseconds - stored as int
+        EXECUTE_TIME_NANO, // Number on Nano Seconds - stored as int
+        MESSAGE_ID // we will increment an integer and send the message multiple times. We will ignore message if last message was this one
+
     }
 
     // Define  Device Name Message arguments
@@ -234,7 +265,7 @@ public class DynamicControl implements ScheduledEventListener {
     }
 
     // Define where our first Array type global dynamic control message is in OSC
-    final static int OSC_TRANSMIT_ARRAY_ARG = NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME.ordinal() + 1;
+    final static int OSC_TRANSMIT_ARRAY_ARG = NETWORK_TRANSMIT_MESSAGE_ARGS.MESSAGE_ID.ordinal() + 1;
 
     // When an event is scheduled in the future, we will create one of these and schedule it
     class FutureControlMessage{
@@ -318,7 +349,7 @@ public class DynamicControl implements ScheduledEventListener {
     private Object minimumDisplayValue = 0;
 
     // This is the time we want to execute the control value
-    private long executionTime =  0;
+    private double executionTime =  0;
 
     DISPLAY_TYPE displayType = DISPLAY_TYPE.DISPLAY_DEFAULT; // Whether the control is displayType on control Screen
 
@@ -347,7 +378,7 @@ public class DynamicControl implements ScheduledEventListener {
     public DynamicControl setDisplayType(DISPLAY_TYPE display_type){
         displayType = display_type;
         notifyValueSetListeners();
-        notifyLocalListeners();
+        //notifyLocalListeners();
         return  this;
     }
 
@@ -355,7 +386,7 @@ public class DynamicControl implements ScheduledEventListener {
      * Returns the JVM execution time we last used when we set the value
      * @return lastExecution time set
      */
-    public long getExecutionTime(){
+    public double getExecutionTime(){
         return executionTime;
     }
 
@@ -720,7 +751,7 @@ public class DynamicControl implements ScheduledEventListener {
                 // do not use setters as we only want to generate one notifyLocalListeners
                 boolean changed = false;
 
-                    if (mirror_control.executionTime == 0) { // his needs to be done now
+                    if (mirror_control.executionTime <= 0.0) { // his needs to be done now
                         if (!objVal.equals(mirror_control.objVal)) {
                             //objVal = mirror_control.objVal; // let this get done inside the scheduleValue return
                             changed = true;
@@ -795,7 +826,7 @@ public class DynamicControl implements ScheduledEventListener {
 
             message.localOnly = local_only;
 
-            message.pendingSchedule = HBScheduler.getGlobalScheduler().addScheduledObject(executionTime, message, this);
+            message.pendingSchedule = HBScheduler.getGlobalScheduler().addScheduledObject(execution_time, message, this);
             synchronized (futureMessageListLock) {
                 futureMessageList.add(message);
             }
@@ -884,6 +915,68 @@ public class DynamicControl implements ScheduledEventListener {
                 });
 
     }
+
+    /**
+     * Convert two halves of a long stored integer values into a long value
+     * @param msi most significant integer
+     * @param lsi least significant integer
+     * @return a long value consisting of the concatenation of both int values
+     */
+    public static long integersToLong(int msi, int lsi){
+        return (long) msi << 32 | lsi & 0xFFFFFFFFL;
+    }
+
+
+    /**
+     * Convert a long into two integers in an array of two integers
+     * @param l_value the Long values that needs to be encoded
+     * @return an array of two integers. ret[0] will be most significant integer while int [1] will be lease significant
+     */
+    public static int [] longToIntegers (long l_value){
+        int msi = (int) (l_value >> 32); // this is most significant integer
+        int lsi = (int) l_value; // This is LSB that has been trimmed down;
+        return new int[]{msi, lsi};
+    }
+
+
+    /**
+     * Convert a SchedulerTime into  integers in an array of three integers
+     * @param d_val the double values that needs to be encoded
+     * @return an array of three integers. ret[0] will be most significant integer while int [1] will be lease significant. int [2] is the number of nano seconds
+     */
+    public static int [] scheduleTimeToIntegers (double d_val){
+
+        long lval = (long)d_val;
+
+        int msi = (int) (lval >> 32); // this is most significant integer
+        int lsi = (int) lval; // This is LSB that has been trimmed down;
+
+        double nano = d_val - lval;
+
+        nano *= 1000000;
+
+        int n = (int) nano;
+
+        return new int[]{msi, lsi, n};
+    }
+
+    /**
+     * Convert three integers to a double representing scheduler time
+     * @param msi the most significant value of millisecond value
+     * @param lsi the least significant value of millisecond value
+     * @param nano the number of nanoseconds
+     * @return a double representing the scheduler time
+     */
+    public static double integersToScheduleTime(int msi, int lsi, int nano){
+        long milliseconds =  integersToLong(msi, lsi);
+
+        double ret = milliseconds;
+
+        double nanoseconds =  nano;
+
+        return ret + nanoseconds / 1000000d;
+    }
+
     /**
      * Process the {@link ControlScope#GLOBAL} or {@link ControlScope#TARGET} Message from an OSC Message. Examine buildUpdateMessage for parameters inside Message
      * We will not process messages that have come from this device because they will be actioned through local listeners
@@ -893,54 +986,58 @@ public class DynamicControl implements ScheduledEventListener {
     public static void processOSCControlMessage(OSCMessage msg, ControlScope controlScope) {
 
         String device_name = (String) msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.DEVICE_NAME.ordinal());
-        String control_name = (String) msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.CONTROL_NAME.ordinal());
-        ControlType control_type = ControlType.values()[(int) msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
-        Object obj_val = msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.OBJ_VAL.ordinal());
 
-        long execution_time = 0;
-
-        if (msg.getArgCount() > NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
-        {
-            Object time = msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
-            execution_time = (int) time;
-        }
+        int message_id = (int)msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.MESSAGE_ID.ordinal());
 
         // Make sure we ignore messages from this device
         if (ignoreName || !device_name.equals(Device.getDeviceName())) {
-            synchronized (controlMapLock) {
-                List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
-                for (DynamicControl named_control : named_controls) {
-                    if (named_control.controlScope == controlScope && control_type.equals(named_control.controlType)) {
-                        // we must NOT call setVal as this will generate a global series again.
-                        // Just notifyListeners specific to this control but not globally
 
-                        // we need to see if this is a boolean Object as OSC does not support that
-                        if (control_type == ControlType.BOOLEAN) {
-                            int osc_val = (int) obj_val;
-                            Boolean bool_val = osc_val != 0;
-                            obj_val = bool_val;
-                        }
-                        else if (control_type == ControlType.OBJECT){
-                            if (! (obj_val instanceof String)){
-                                // This is not a Json Message
-                                // We will need to get all the remaining OSC arguments after the schedule time and store that as ObjVal
-                                int num_args = msg.getArgCount() - OSC_TRANSMIT_ARRAY_ARG;
-                                Object [] restore_args =  new Object[num_args];
-                                for (int i = 0; i < num_args; i++){
-                                    restore_args[i] = msg.getArg(OSC_TRANSMIT_ARRAY_ARG + i);
+            if (enableProcessControlMessage(device_name, message_id)) {
+                String control_name = (String) msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.CONTROL_NAME.ordinal());
+                ControlType control_type = ControlType.values()[(int) msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.CONTROL_TYPE.ordinal())];
+                Object obj_val = msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.OBJ_VAL.ordinal());
+
+
+                Object ms_max = msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME_MLILI_MS.ordinal());
+                Object ms_min = msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME_MLILI_LS.ordinal());
+                Object nano = msg.getArg(NETWORK_TRANSMIT_MESSAGE_ARGS.EXECUTE_TIME_NANO.ordinal());
+
+                double execution_time = integersToScheduleTime((int) ms_max, (int) ms_min, (int) nano);
+
+
+                synchronized (controlMapLock) {
+                    List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
+                    for (DynamicControl named_control : named_controls) {
+                        if (named_control.controlScope == controlScope && control_type.equals(named_control.controlType)) {
+                            // we must NOT call setVal as this will generate a global series again.
+                            // Just notifyListeners specific to this control but not globally
+
+                            // we need to see if this is a boolean Object as OSC does not support that
+                            if (control_type == ControlType.BOOLEAN) {
+                                int osc_val = (int) obj_val;
+                                Boolean bool_val = osc_val != 0;
+                                obj_val = bool_val;
+                            } else if (control_type == ControlType.OBJECT) {
+                                if (!(obj_val instanceof String)) {
+                                    // This is not a Json Message
+                                    // We will need to get all the remaining OSC arguments after the schedule time and store that as ObjVal
+                                    int num_args = msg.getArgCount() - OSC_TRANSMIT_ARRAY_ARG;
+                                    Object[] restore_args = new Object[num_args];
+                                    for (int i = 0; i < num_args; i++) {
+                                        restore_args[i] = msg.getArg(OSC_TRANSMIT_ARRAY_ARG + i);
+                                    }
+
+                                    obj_val = restore_args;
                                 }
-
-                                obj_val = restore_args;
                             }
-                        }
 
-                        // We need to schedule this value
-                        named_control.scheduleValue(device_name, obj_val, execution_time);
+                            // We need to schedule this value
+                            named_control.scheduleValue(device_name, obj_val, execution_time);
+                        }
                     }
                 }
             }
         }
-
     }
 
 
@@ -956,14 +1053,7 @@ public class DynamicControl implements ScheduledEventListener {
         Object obj_val = msg.getArg(UPDATE_MESSAGE_ARGS.OBJ_VAL.ordinal());
         ControlScope control_scope = ControlScope.values ()[(int) msg.getArg(UPDATE_MESSAGE_ARGS.CONTROL_SCOPE.ordinal())];
 
-        long execution_time = 0;
         DISPLAY_TYPE display_type = DISPLAY_TYPE.DISPLAY_DEFAULT;
-
-        if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal())
-        {
-            // this should always be zero
-            execution_time = (int) msg.getArg(UPDATE_MESSAGE_ARGS.EXECUTE_TIME.ordinal());
-        }
 
         if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal())
         {
@@ -1052,6 +1142,7 @@ public class DynamicControl implements ScheduledEventListener {
      */
     public OSCMessage buildUpdateMessage(){
 
+
         Object sendObjType = objVal;
         if (controlType == ControlType.OBJECT){
             sendObjType = objVal.toString();
@@ -1065,7 +1156,6 @@ public class DynamicControl implements ScheduledEventListener {
                         controlMapKey,
                         OSCArgumentObject(sendObjType),
                         controlScope.ordinal(),
-                        0, // We will make zero as we want to update now  (int)executionTime,
                         displayType.ordinal()
                 });
 
@@ -1075,9 +1165,14 @@ public class DynamicControl implements ScheduledEventListener {
      * Build OSC Message that specifies a Network update
      * @return OSC Message directed to controls with same name, scope, but on different devices
      */
-    public OSCMessage buildNetworkSendlMessage(){
+    public OSCMessage buildNetworkSendMessage(){
+
+        deviceSendId++;
 
         String OSC_MessageName = OSCVocabulary.DynamicControlMessage.GLOBAL;
+
+        // define the arguments for send time
+        int [] execution_args =  scheduleTimeToIntegers(executionTime);
 
         if (controlScope ==  ControlScope.TARGET){
             OSC_MessageName = OSCVocabulary.DynamicControlMessage.TARGET;
@@ -1085,6 +1180,16 @@ public class DynamicControl implements ScheduledEventListener {
 
         if (controlType == ControlType.OBJECT){
 
+            /*
+                    DEVICE_NAME,
+        CONTROL_NAME,
+        CONTROL_TYPE,
+        OBJ_VAL,
+        EXECUTE_TIME_MLILI_MS, // Most Significant Int of Milliseconds - stored as int
+        EXECUTE_TIME_MLILI_LS, // Least Significant Bit of Milliseconds - stored as int
+        EXECUTE_TIME_NANO // Number on Nano Seconds - stored as int
+        
+             */
             // we need to see if we have a custom encode function
             if (objVal instanceof CustomGlobalEncoder){
                 Object [] encode_data = ((CustomGlobalEncoder)objVal).encodeGlobalMessage();
@@ -1094,7 +1199,14 @@ public class DynamicControl implements ScheduledEventListener {
                 osc_args[1] = controlName;
                 osc_args[2] = controlType.ordinal();
                 osc_args[3] = 0; // by defining zero we are going to say this is NOT json
-                osc_args[4] = (int)executionTime;
+
+
+                
+                osc_args[4] = execution_args [0];
+                osc_args[5] = execution_args [1];
+                osc_args[6] = execution_args [2];
+                osc_args[7] = deviceSendId;
+
 
                 // now encode the object parameters
                 for (int i = 0; i < encode_data.length; i++){
@@ -1112,7 +1224,10 @@ public class DynamicControl implements ScheduledEventListener {
                                 controlName,
                                 controlType.ordinal(),
                                 jsonString,
-                                (int) executionTime
+                                execution_args[0],
+                                execution_args[1],
+                                execution_args[2],
+                                deviceSendId
                         });
             }
         }
@@ -1123,7 +1238,10 @@ public class DynamicControl implements ScheduledEventListener {
                             controlName,
                             controlType.ordinal(),
                             OSCArgumentObject(objVal),
-                            (int) executionTime
+                            execution_args[0],
+                            execution_args[1],
+                            execution_args[2],
+                            deviceSendId
                     });
         }
     }
@@ -1215,7 +1333,7 @@ public class DynamicControl implements ScheduledEventListener {
      * @param execution_time the Scheduler time we want this to occur
      * @return this object
      */
-    public DynamicControl setValue(Object val, long execution_time)
+    public DynamicControl setValue(Object val, double execution_time)
     {
         executionTime = execution_time;
         val = convertValue (controlType, val);

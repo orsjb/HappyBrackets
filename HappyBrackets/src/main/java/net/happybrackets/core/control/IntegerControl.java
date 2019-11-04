@@ -39,4 +39,13 @@ public abstract class IntegerControl extends DynamicControlParent {
     public void setValue(int val){
         getDynamicControl().setValue(val);
     }
+
+    /**
+     * set the value for the control. This will notify all the listeners
+     * @param val the value to set to
+     * @param scheduler_time the scheduler time this is supposed to occur at
+     */
+    public void setValue(int val, double scheduler_time){
+        getDynamicControl().setValue(val, scheduler_time);
+    }
 }

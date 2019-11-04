@@ -9,6 +9,8 @@ import java.util.*;
  */
 public class ControlMap {
 
+    static final int MAX_NETWORK_MESSAGE_SEND = 3;
+
     /**
      * Create an interface used for sending OSC Messages to various listeners
      */
@@ -158,13 +160,21 @@ public class ControlMap {
                     if (send_network) {
                         if (control1.getControlScope() == ControlScope.GLOBAL) {
                             // needs to be broadcast
-                            OSCMessage msg = control1.buildNetworkSendlMessage();
-                            sendGlobalDynamicControlMessage(msg, null);
+                            OSCMessage msg = control1.buildNetworkSendMessage();
+
+                            // we will resend the max number of times. The device will ignore those it does not require
+                            for (int i = 0; i < MAX_NETWORK_MESSAGE_SEND; i++) {
+                                sendGlobalDynamicControlMessage(msg, null);
+                            }
                         } else if (control1.getControlScope() == ControlScope.TARGET) {
                             // we will only build message if we have targets to send to
                             if (control1.getTargetDeviceAddresses().size() > 0) {
-                                OSCMessage msg = control1.buildNetworkSendlMessage();
-                                sendGlobalDynamicControlMessage(msg, control1.getTargetDeviceAddresses());
+                                OSCMessage msg = control1.buildNetworkSendMessage();
+
+                                // we will resend the max number of times. The device will ignore those it does not require
+                                for (int i = 0; i < MAX_NETWORK_MESSAGE_SEND; i++) {
+                                    sendGlobalDynamicControlMessage(msg, control1.getTargetDeviceAddresses());
+                                }
                             }
                         }
                     } // end send network

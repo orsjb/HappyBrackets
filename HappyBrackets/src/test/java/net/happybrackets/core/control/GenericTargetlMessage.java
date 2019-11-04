@@ -1,6 +1,5 @@
 package net.happybrackets.core.control;
 
-import com.google.gson.Gson;
 import de.sciss.net.OSCMessage;
 import net.happybrackets.core.Device;
 import org.junit.Test;
@@ -69,7 +68,7 @@ public class GenericTargetlMessage {
         });
 
         // encode our message
-        OSCMessage message = test_control.buildNetworkSendlMessage();
+        OSCMessage message = test_control.buildNetworkSendMessage();
 
         System.out.println(message);
 

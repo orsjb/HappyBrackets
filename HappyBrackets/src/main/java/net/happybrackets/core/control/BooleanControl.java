@@ -31,11 +31,21 @@ public abstract class BooleanControl extends DynamicControlParent {
 
     /**
      * set the value for the control. This will notify all the listeners
-     * @param val teh value to set to
+     * @param val the value to set to
      */
     public void setValue(Boolean val){
         getDynamicControl().setValue(val);
     }
+
+    /**
+     * set the value for the control. This will notify all the listeners
+     * @param val the value to set to
+     * @param scheduler_time the scheduler time this is supposed to occur at
+     */
+    public void setValue(Boolean val, double scheduler_time){
+        getDynamicControl().setValue(val, scheduler_time);
+    }
+
 
     /**
      * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
