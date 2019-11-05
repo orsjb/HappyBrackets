@@ -87,6 +87,7 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
 
                     try {
                         SendToDevice.send(full_class_name, getDevices());
+                        displayNotification("Sent " + classFile.getNameWithoutExtension() + " to all devices", NotificationType.INFORMATION);
                     } catch (Exception e1) {
                         String message = "Unable to send class. The class may not have finished compiling or you may have an error in your code.";
                         displayNotification(message, NotificationType.ERROR);

@@ -467,10 +467,10 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 								selected.add(item);
 								try {
 									SendToDevice.send(full_class_name, selected);
-									displayNotification("Sent " + full_class_name, NotificationType.INFORMATION);
+									displayNotification("Sent " + class_file.getNameWithoutExtension() + " to " + item.getFriendlyName(), NotificationType.INFORMATION);
 								} catch (Exception e) {
 									displayNotification(e.getMessage(), NotificationType.ERROR);
-									displayNotification(full_class_name + " may not have finished compiling or you may have an error in your code.", NotificationType.ERROR);
+									displayNotification(class_file.getName() + " may not have finished compiling or you may have an error in your code.", NotificationType.ERROR);
 								}
 							}
 							else
