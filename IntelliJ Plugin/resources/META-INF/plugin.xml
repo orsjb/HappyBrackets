@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>4.6.0.0</version>
+  <version>4.7.0.1</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -101,10 +101,11 @@
       <add-to-group group-id="HappyBracketsIntellijPlugin.MainMenu" anchor="last"/>
     </group>
 
-    <action id="HappyBracketsRebootMenu" class="net.happybrackets.intellij_plugin.menu.global.RebootAction"
-            text="Reboot All Devices" description="Reboot all devices">
+    <action id="HappyBracketsResyncgMenu" class="net.happybrackets.intellij_plugin.menu.global.SynchroniseDevicesAction"
+            text="Resync All Devices" description="Resync all devices">
       <add-to-group group-id="HappyBracketsGlobalGroup"/>
     </action>
+
 
     <action id="HappyBracketsShutdownMenu" class="net.happybrackets.intellij_plugin.menu.global.ShutdownAction"
             text="Shutdown All Devices" description="Shutdown all devices">

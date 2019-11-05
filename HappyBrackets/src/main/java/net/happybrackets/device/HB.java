@@ -42,6 +42,7 @@ import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.ClockAdjustment;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
 import net.happybrackets.device.network.DeviceConnectedEventListener;
@@ -117,8 +118,7 @@ public class HB {
     }
 
 
-
-    public interface StatusChangedListener{
+	public interface StatusChangedListener{
 		void statusChanged(String new_status);
 		void classLoadedMessage(Class<? extends HBAction> incomingClass);
 	}
@@ -488,10 +488,10 @@ public class HB {
 		clockInterval = new Envelope(ac, 500);
 		clock = new Clock(ac, clockInterval);
 
-		// Do following call twice because of delays from JIT compiler. This is a JAVA
-		HBScheduler.getGlobalScheduler().synchroniseClocks();
-		HBScheduler.getGlobalScheduler().synchroniseClocks();
-		HBScheduler.getGlobalScheduler().synchroniseClocks();
+		// Do following call twice because of delays from JIT compiler. Synchronises clocks to system time
+		synchroniseClocks();
+		synchroniseClocks();
+		synchroniseClocks();
 
 		int poly_limit = 0;
 		String multi_cast_address = "::FFFF:225.2.2.5";
@@ -1878,5 +1878,90 @@ public class HB {
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Get the global {@link HBScheduler}
+	 * @return teh global scheduler
+	 */
+	static public HBScheduler getScheduler(){
+		return HBScheduler.getGlobalScheduler();
+	}
+
+	/**
+	 * Get the amount of time elapsed since we set reference time in {@link HBScheduler}
+	 * @return the elapsed time in milliseconds
+	 */
+	static public double getSchedulerTime(){
+		return getScheduler().getSchedulerTime();
+	}
+
+	/**
+	 * Set the global {@link HBScheduler} scheduled time to this time
+	 * @param new_time the new time
+	 */
+	static public void setScheduleTime(double new_time){
+		getScheduler().setScheduleTime(new_time);
+	}
+
+	/**
+	 * Adjust the {@link HBScheduler} scheduler time
+	 * @param amount the amount of milliseconds we need to adjust our time by. A positive amount will advance the scheduler
+	 * @param duration the number of milliseconds over which we want this change to occur so we don't just get a jump
+	 */
+	static public void adjustScheduleTime(double amount, long duration){
+		getScheduler().adjustScheduleTime(amount, duration);
+	}
+
+	/**
+	 * Synchronise {@link HBScheduler} timer with the system time on next tick
+	 * @return the number of milliseconds we will be moving scheduler
+	 */
+	static public double synchroniseClocks(){
+		return getScheduler().synchroniseClocks(0);
+	}
+
+	/**
+	 * Synchronise global {@link HBScheduler} timer with the system time
+	 * @param slew_time the amount of milliseconds that we want to take to complete it
+	 * @return the number of milliseconds we will be moving scheduler
+	 */
+	static public double synchroniseClocks(long slew_time){
+		return synchroniseClocks(slew_time);
+	}
+
+
+	/**
+	 * Send a schedule adjustment message to one or more devices.
+	 * Will set adjust {@link HBScheduler} on that device
+	 * @param amount the amount of milliseconds we need to adjust our time by. A positive amount will advance the scheduler
+	 * @param duration the number of milliseconds over which we want this change to occur so we don't just get a jump
+	 * @param targets The names of HB devices. If this is null, will send a broadcast
+	 *
+	 * @return true if able to send to at least one address
+	 */
+	static public boolean sendScheduleChange(double amount, long duration, Collection<String> targets){
+		ClockAdjustment adjustmentMessage = new ClockAdjustment(amount, duration);
+
+		// encode our message
+		OSCMessage message = HBScheduler.buildNetworkSendMessage(OSCVocabulary.SchedulerMessage.ADJUST, adjustmentMessage);
+
+		return NetworkCommunication.sendNetworkOSCMessages(message, targets, false);
+	}
+
+	/**
+	 * Send a Schedule Set time to one or more targets
+	 * @param new_time the new time to set our device scheduler to
+	 * @param targets The names of HB devices. If this is null, will send a broadcast
+	 *
+	 * @return true if able to send to at least one address
+	 */
+	static public boolean sendScheduleSetTime(double new_time, Collection<String> targets){
+		ClockAdjustment adjustmentMessage = new ClockAdjustment(new_time, 0);
+
+		// encode our message
+		OSCMessage message = HBScheduler.buildNetworkSendMessage(OSCVocabulary.SchedulerMessage.SET, adjustmentMessage);
+
+		return NetworkCommunication.sendNetworkOSCMessages(message, targets, false);
 	}
 }

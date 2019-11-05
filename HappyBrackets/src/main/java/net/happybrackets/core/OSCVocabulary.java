@@ -51,6 +51,13 @@ public final class OSCVocabulary {
         public static final String REQUEST_NAME = CONTROL + "/request";
     }
 
+    public final class SchedulerMessage
+    {
+        public static final String TIME = "/time";
+        public static final String SET = TIME + "/set";
+        public static final String ADJUST = TIME + "/adj";
+
+    }
     public final class FileSendMessage
     {
         public static final String CONTROL = "/file";

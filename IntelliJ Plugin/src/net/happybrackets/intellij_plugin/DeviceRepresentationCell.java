@@ -39,6 +39,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import net.happybrackets.controller.gui.DialogDisplay;
 import net.happybrackets.controller.gui.DynamicControlScreen;
+import net.happybrackets.controller.gui.device.DeviceMenu;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import javafx.geometry.Orientation;
 import javafx.scene.text.Text;
@@ -466,8 +467,10 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 								selected.add(item);
 								try {
 									SendToDevice.send(full_class_name, selected);
+									displayNotification("Sent " + full_class_name, NotificationType.INFORMATION);
 								} catch (Exception e) {
 									displayNotification(e.getMessage(), NotificationType.ERROR);
+									displayNotification(full_class_name + " may not have finished compiling or you may have an error in your code.", NotificationType.ERROR);
 								}
 							}
 							else
@@ -612,5 +615,4 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		setGraphic(main);
 
 	}
-
 }

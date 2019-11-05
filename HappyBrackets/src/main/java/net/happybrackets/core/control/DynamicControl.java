@@ -59,7 +59,7 @@ public class DynamicControl implements ScheduledEventListener {
      * @param message_id the message_id
      * @return true if we are going to process this message
      */
-    static boolean enableProcessControlMessage(String device_name, int message_id){
+    public static boolean enableProcessControlMessage(String device_name, int message_id){
         boolean ret = true;
 
         if (messageIdMap.containsKey(device_name)) {
@@ -247,7 +247,7 @@ public class DynamicControl implements ScheduledEventListener {
 
 
     // Define  Global Message arguments
-    private enum NETWORK_TRANSMIT_MESSAGE_ARGS {
+    public enum NETWORK_TRANSMIT_MESSAGE_ARGS {
         DEVICE_NAME,
         CONTROL_NAME,
         CONTROL_TYPE,

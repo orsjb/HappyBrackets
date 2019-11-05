@@ -139,6 +139,16 @@ public class PingMenu extends DeviceMenu {
             }
         }).start());
 
+        // we are going to set Device to our Time
+        MenuItem synchronise_item = new MenuItem("Synchronise Device");
+        synchronise_item.setDisable(localDeviceRepresentation.isIgnoringDevice());
+        synchronise_item.setOnAction(event -> new Thread(() -> {
+            try {
+                localDeviceRepresentation.synchroniseDevice();
+            } catch (Exception ex) {
+            }
+        }).start());
+
         MenuItem shutdown_menu = new MenuItem("Shutdown Device");
         shutdown_menu.setDisable(localDeviceRepresentation.isIgnoringDevice());
         shutdown_menu.setOnAction(event -> new Thread(() -> {
@@ -154,12 +164,14 @@ public class PingMenu extends DeviceMenu {
             } catch (Exception ex) {
             }
         }).start());
+
+
         return new MenuItem[]{copy_ip_address_menu, copy_ssh_command_menu,
                 copy_host_command_menu, new SeparatorMenuItem(),
                 request_status_menu, cancel_send_menu, request_version_menu,
                 new SeparatorMenuItem(),
                 remove_item_menu, ignore_controls_item_menu, favourite_item_menu,
                 new SeparatorMenuItem(), encrypt_item_menu,
-                reboot_menu, shutdown_menu};
+                synchronise_item, reboot_menu, shutdown_menu};
     }
 }

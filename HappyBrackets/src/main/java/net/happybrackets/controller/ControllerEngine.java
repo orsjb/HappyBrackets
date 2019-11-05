@@ -8,6 +8,7 @@ import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.HBScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,15 @@ public class ControllerEngine {
 
 
     protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
+
+    /**
+     * Get the Controller Config
+     * @return the Controller config
+     */
+    public ControllerConfig getControllerConfig() {
+        return controllerConfig;
+    }
+
     ControllerConfig controllerConfig;
     ControllerSettings settings;
     String currentConfigString;
@@ -163,6 +173,9 @@ public class ControllerEngine {
         {
             controllerStarted = true;
             controllerAdvertiser.start();
+
+            // Tell Our Scheduler we are conrtroller
+            HBScheduler.setDeviceController();
         }
 
     }

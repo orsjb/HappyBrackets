@@ -23,6 +23,7 @@ import net.happybrackets.core.config.DefaultConfig;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.HB;
@@ -46,7 +47,7 @@ public class NetworkCommunication {
 	final static Logger logger = LoggerFactory.getLogger(NetworkCommunication.class);
 
 	private OSCServer oscServer;				//The OSC server
-	private InetAddress broadcastAddress;		//Global Broadcast address
+	static private InetAddress broadcastAddress;		//Global Broadcast address
 	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
 
 	/**
@@ -61,7 +62,7 @@ public class NetworkCommunication {
 
 	private OSCServer controllerOscServer;
 	private final LogSender logSender;
-	DatagramSocket advertiseTxSocket = null;
+	static DatagramSocket advertiseTxSocket = null;
 
 
 	/**
@@ -123,78 +124,11 @@ public class NetworkCommunication {
 		ControlMap.getInstance().addGlobalDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
 			@Override
 			public void dynamicControlEvent(OSCMessage msg, Collection<String> target) {
-				// Send all Dynamic Control Messages to the Broadcast Address so all will receive them
-				try {
-					if (DeviceConfig.getInstance() != null) {
-						UDPCachedMessage cached_message = new UDPCachedMessage(msg);
-						// We need to send message On broadcast channel on the standard listening port. We are sending to device, not controller
-						// this is why we are using control to device port
-						if (advertiseTxSocket != null) {
-							int device_port = DeviceConfig.getInstance().getControlToDevicePort();
-							DatagramPacket packet = cached_message.getCachedPacket();
-							boolean do_broadcast = false;
+				// send message across network but NOT to us
+				sendNetworkOSCMessages(msg, target, true);
 
-							if (target == null)
-							{
-								do_broadcast = true;
-							}
-
-
-							if (do_broadcast) {
-								packet.setAddress(broadcastAddress);
-								packet.setPort(device_port);
-								try {
-									advertiseTxSocket.send(packet);
-								} catch (IOException e) {
-									System.out.println("Unable to broadcast");
-								}
-							}
-							else{
-								for (String device:
-									 target) {
-									if (device.equalsIgnoreCase(Device.getDeviceName())){
-										// skip it
-										continue;
-									}
-									// first see if we have a Mapped name
-									InetAddress target_address = HB.HBInstance.getDeviceAddress(device);
-
-									if (target_address == null){
-										// see if we can convert it from a string
-										try {
-											target_address = InetAddress.getByName(device);
-
-											// if it is us, we will ignore
-											if (HB.isOurAddress(target_address)){
-												continue;
-											}
-										}
-										catch (Exception ex){}
-
-									}
-									 if (target_address == null){
-										 System.out.println("Unable to resolve Address for " + device);
-									 }
-									 else {
-
-										 packet.setAddress(target_address);
-										 packet.setPort(device_port);
-										 advertiseTxSocket.send(packet);
-									 }
-
-								}
-							}
-
-						}
-
-						// Now send the message to all controllers
-						sendDynamicControlEventToControllers(msg);
-						//DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
-					}
-
-				} catch (IOException e) {
-					//e.printStackTrace();
-				}
+				// Now send the message to all controllers
+				sendDynamicControlEventToControllers(msg);
 			}
 		});
 
@@ -437,6 +371,11 @@ public class NetworkCommunication {
 							else logger.error("Unable to update interfaces file");
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
 							//ignore
+
+						}
+						else if (OSCVocabulary.startsWith(msg, OSCVocabulary.SchedulerMessage.TIME)){
+							HBScheduler.ProcessSchedulerMessage(msg);
+
 						} else {
 							//all other messages getInstance forwarded to delegate listeners
 							synchronized (listeners) {
@@ -609,7 +548,10 @@ public class NetworkCommunication {
 							else logger.error("Unable to update interfaces file");
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
 							//ignore
-						} else {
+						}else if (OSCVocabulary.startsWith(msg, OSCVocabulary.SchedulerMessage.TIME)){
+							HBScheduler.ProcessSchedulerMessage(msg);
+						}
+						else {
 							//all other messages getInstance forwarded to delegate listeners
 							synchronized (listeners) {
 								Iterator<OSCListener> i = listeners.iterator();
@@ -908,5 +850,95 @@ public class NetworkCommunication {
 			logSender.setSend(send_logs);
 			DeviceStatus.getInstance().setLoggingEnabled(send_logs);
 		}
+	}
+
+	/**
+	 * Send OSC Message across network to one or more targets
+	 * @param msg the OSC Message we are sending
+	 * @param target a list of targets. If null, will broadcast
+	 * @param skip_self set to true if we are not going to send to ourself
+	 * @return true if able to send to at lease one of the addresses
+	 */
+	public static boolean sendNetworkOSCMessages(OSCMessage msg, Collection<String> target, boolean skip_self) {
+		boolean ret = false;
+
+		// Send all Dynamic Control Messages to the Broadcast Address so all will receive them
+		try {
+			if (DeviceConfig.getInstance() != null) {
+				UDPCachedMessage cached_message = new UDPCachedMessage(msg);
+				// We need to send message On broadcast channel on the standard listening port. We are sending to device, not controller
+				// this is why we are using control to device port
+				if (advertiseTxSocket != null) {
+					int device_port = DeviceConfig.getInstance().getControlToDevicePort();
+					DatagramPacket packet = cached_message.getCachedPacket();
+					boolean do_broadcast = false;
+
+					if (target == null)
+					{
+						do_broadcast = true;
+					}
+
+
+					if (do_broadcast) {
+						packet.setAddress(broadcastAddress);
+						packet.setPort(device_port);
+						try {
+							advertiseTxSocket.send(packet);
+							ret = true;
+						} catch (IOException e) {
+							System.out.println("Unable to broadcast");
+						}
+					}
+					else{
+						for (String device:
+								target) {
+							if (device.equalsIgnoreCase(Device.getDeviceName())){
+								if (skip_self) {
+									// skip it
+									continue;
+								}
+							}
+							// first see if we have a Mapped name
+							InetAddress target_address = HB.HBInstance.getDeviceAddress(device);
+
+							if (target_address == null){
+								// see if we can convert it from a string
+								try {
+									target_address = InetAddress.getByName(device);
+
+									// if it is us, we will ignore
+									if (HB.isOurAddress(target_address)){
+										if (skip_self) {
+											continue;
+										}
+									}
+								}
+								catch (Exception ex){}
+
+							}
+							if (target_address == null){
+								System.out.println("Unable to resolve Address for " + device);
+							}
+							else {
+
+								packet.setAddress(target_address);
+								packet.setPort(device_port);
+								advertiseTxSocket.send(packet);
+								ret = true;
+							}
+
+						}
+					}
+
+				}
+
+				//DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
+			}
+
+		} catch (IOException e) {
+			//e.printStackTrace();
+		}
+
+		return ret;
 	}
 }

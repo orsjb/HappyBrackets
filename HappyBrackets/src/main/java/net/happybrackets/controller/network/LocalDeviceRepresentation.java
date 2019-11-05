@@ -28,13 +28,21 @@ import net.happybrackets.controller.gui.DynamicControlScreen;
 import net.happybrackets.core.*;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.ClockAdjustment;
+import net.happybrackets.core.scheduling.HBScheduler;
+import net.happybrackets.device.HB;
+import net.happybrackets.device.config.DeviceConfig;
+import net.happybrackets.device.network.UDPCachedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LocalDeviceRepresentation implements FileSender.FileSendStatusListener {
 
+	private static final int MAX_UDP_SENDS = 3; // use this number of messages to account for
 	private final Object clientLock = new Object(); // define a lock for tcpClient
 
+
+	DatagramSocket advertiseTxSocket = null;
 
 	/**
 	 * Return the home directory if this s a simulator.
@@ -445,8 +453,48 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		setStatus("Error " + filename);
 	}
 
+	/**
+	 * Set the device to our Time
+	 * @return true if able to send the message
+	 */
+    public boolean synchroniseDevice() {
+    	boolean ret = false;
 
-	public interface StatusUpdateListener {
+		if (advertiseTxSocket != null) {
+			double current_time = HBScheduler.getCalcTime();
+			ClockAdjustment adjustmentMessage = new ClockAdjustment(current_time, 0);
+
+			// encode our message
+			OSCMessage message = HBScheduler.buildNetworkSendMessage(OSCVocabulary.SchedulerMessage.SET, adjustmentMessage);
+
+
+			int device_port = controllerConfig.getControlToDevicePort();
+			UDPCachedMessage cached_message = null;
+			try {
+				cached_message = new UDPCachedMessage(message);
+				DatagramPacket packet = cached_message.getCachedPacket();
+				packet.setAddress(getSocketAddress().getAddress());
+				packet.setPort(device_port);
+
+				for (int i = 0; i < MAX_UDP_SENDS; i++) {
+					try {
+						advertiseTxSocket.send(packet);
+						ret = true;
+					} catch (IOException e) {
+						System.out.println("Unable to broadcast");
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		return ret;
+	}
+
+
+    public interface StatusUpdateListener {
 		void update(String state);
 	}
 
@@ -718,6 +766,12 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		this(deviceName, hostname, addr, id, server, config, reply_port);
 		this.socketAddress = socketAddress;
 
+		try {
+			advertiseTxSocket = new DatagramSocket();
+			advertiseTxSocket.setBroadcast(true);
+		}
+		catch (Exception ex){}
+
 	}
 
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, int reply_port) {
@@ -746,6 +800,11 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		// Set-up log monitor.
 		currentLogPage = "";
 
+		try {
+			advertiseTxSocket = new DatagramSocket();
+			advertiseTxSocket.setBroadcast(true);
+		}
+		catch (Exception ex){}
 	}
 
 
