@@ -277,7 +277,8 @@ public class Clock implements ScheduledEventListener {
                 // let our listeners know
                 synchronized (clockTickListenersLock) {
                     // calculate how late or early we are
-                    double offset = clockScheduler.getSchedulerTime() - scheduledTime;
+                    double event_time = clockScheduler.getSchedulerTime();
+                    double offset = event_time - scheduledTime;
 
                     for (ClockTickListener listener : clockTickListeners) {
                         listener.clockTick(offset, this);
@@ -285,6 +286,13 @@ public class Clock implements ScheduledEventListener {
 
                     if (!doCancel) {
                         // now lets set our next time - the scheduler itself will account for any extra time taken
+
+                        // see if our offset is greater than our interval. If it is, we will skip to it
+                        if (Math.abs(offset) > clockInterval){
+                            scheduledTime = event_time;
+                            System.out.println("Interval exceeded");
+                        }
+
                         double next_time = scheduledTime + clockInterval + shiftTime;
                         shiftTime = 0;
 

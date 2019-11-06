@@ -76,7 +76,7 @@ public class Delay implements ScheduledEventListener {
 
     /**
      * Constructor
-     * @param interval the interval in milliseconds Must be greater than 2 milliseconds otherwise could lock up
+     * @param interval the interval in milliseconds If less than zero, the delay will call back on next schedule update
      * @param param  the parameter we want t pass back when our delay has completed
      * @param listener the listener to receive the callback when delay has finished
      * @param scheduler the scheduler to use
@@ -89,6 +89,10 @@ public class Delay implements ScheduledEventListener {
         startTime = delayScheduler.getSchedulerTime();
         delayTime = interval;
         double next_time =  startTime + delayTime;
+
+        if (interval < 0){
+            next_time = 0;
+        }
 
         doCancel = false;
         pendingSchedule = delayScheduler.addScheduledObject(next_time, this, this);

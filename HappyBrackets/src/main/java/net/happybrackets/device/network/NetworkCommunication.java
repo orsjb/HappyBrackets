@@ -935,7 +935,7 @@ public class NetworkCommunication {
 				//DeviceConfig.getInstance().sendMessageToAllControllers(cached_message.getCachedPacket());
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			//e.printStackTrace();
 		}
 

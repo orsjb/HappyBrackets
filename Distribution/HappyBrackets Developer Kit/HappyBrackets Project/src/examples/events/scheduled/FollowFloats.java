@@ -1,0 +1,78 @@
+package examples.events.scheduled;
+
+import net.happybrackets.core.Device;
+import net.happybrackets.core.HBAction;
+import net.happybrackets.core.control.*;
+import net.happybrackets.device.HB;
+
+import java.lang.invoke.MethodHandles;
+import java.net.InetAddress;
+import java.util.Collection;
+
+/**
+ * This example will make all other devices running the sketch to follow the buddy value by one second
+ *
+ */
+public class FollowFloats implements HBAction {
+
+    final int DELAY_TIME = 1000; // The amount we will make other devices delay
+    @Override
+    public void action(HB hb) {
+        hb.reset(); //Clears any running code on the device
+        //Write your sketch below
+
+
+        TriggerControl setClocks = new TriggerControl(this, "Reset Scheduler") {
+            @Override
+            public void triggerEvent() {// Write your DynamicControl code below this line
+                // this will set all clocks to zero
+                HB.sendScheduleSetTime(0, null);
+                // Write your DynamicControl code above this line 
+            }
+        };// End DynamicControl setClocks code 
+
+        // Simply type floatBuddyControl to generate this code
+        // This one will make values change immediately
+        FloatControl globalBuddy = new FloatBuddyControl(this, "Global Buddy", 0, -1, 1) {
+            @Override
+            public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
+
+                hb.setStatus("" + control_val);
+                // Write your DynamicControl code above this line 
+            }
+        }.setControlScope(ControlScope.GLOBAL);// End DynamicControl globalBuddy code
+
+
+        FloatControl leadControl = new FloatBuddyControl(this, "Lead Control", 0, -1, 1) {
+            @Override
+            public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
+
+                double scheduled_time = HB.getSchedulerTime() + DELAY_TIME;
+
+                // tell the target control to follow this value
+                globalBuddy.setValue(control_val, scheduled_time);
+                // Write your DynamicControl code above this line 
+            }
+        };// End DynamicControl leadControl code 
+
+        // write your code above this line
+    }
+
+
+    //<editor-fold defaultstate="collapsed" desc="Debug Start">
+
+    /**
+     * This function is used when running sketch in IntelliJ IDE for debugging or testing
+     *
+     * @param args standard args required
+     */
+    public static void main(String[] args) {
+
+        try {
+            HB.runDebug(MethodHandles.lookup().lookupClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //</editor-fold>
+}

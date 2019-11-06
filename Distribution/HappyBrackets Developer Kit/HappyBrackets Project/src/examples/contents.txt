@@ -38,6 +38,14 @@ This file wil give a short description of the examples
 
 *******************************************************************
 [events]     - Different types of events that can be used
+  [scheduled] - performs scheduled items
+    AdjustSynchroniser - Adjusts scheduler by an amount we set
+    FollowBoolean - Makes  boolean controls schedule global events
+    FollowFloats - Makes float controls schedule global events
+    FollowInts - Makes integer controls schedule global events
+    ScheduleEvent - Schedules playing of a sound some time in the future
+    ShowTime - Displays the time of the synchroniser as a status Message
+
   [clocks]   - Perform actions on clock based events
     SimpleClock             Plays a chromatic scale using a clock.
                             Uses Midi to Frequency function to convert a MIDI note number to a frequency

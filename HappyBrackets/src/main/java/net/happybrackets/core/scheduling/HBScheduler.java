@@ -10,9 +10,7 @@ import net.happybrackets.core.control.CustomGlobalEncoder;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Stores events with the time they need to be executed and executes them when they are due
@@ -52,6 +50,8 @@ public class HBScheduler {
 
     static int deviceSendId = 0; // we will increment these per message
 
+    List<ScheduleAdjustmentListener> scheduleChangeCompleteListeners = new ArrayList<>();
+
 
     /**
      * Use a flag to set this as Controller so we can send messages from simulator as well as controller
@@ -78,6 +78,13 @@ public class HBScheduler {
     static Map<String, Integer> messageIdMap = new Hashtable<>();
 
 
+    /**
+     * Add listener to be notified when our schedule change has completed
+     * @param listener listener
+     */
+    synchronized public void addScheduleChangeListener(ScheduleAdjustmentListener listener){
+        scheduleChangeCompleteListeners.add(listener);
+    }
     /**
      * See if we will process a control message based on device name and message_id
      * If the message_id is mapped against the device_name, ignore message, otherwise store mapping and return true;
@@ -199,10 +206,13 @@ public class HBScheduler {
         double start_wait = getSchedulerTime();
         double waitTime = nextScheduledTime - getSchedulerTime() - lagCalulator.averageValue();
 
+        boolean reschedule_complete = true;
+        boolean sendScheduleChange = false;
+
         while (!exitThread) {
+
             synchronized (scheduleObject) {
                 try {
-
                     displayDebug("runSchedule ");
                     //System.out.println("Wait " + waitTime);
                     // we will flag if we timed out or whether we received a notification
@@ -222,11 +232,19 @@ public class HBScheduler {
                     start_wait = getSchedulerTime();
 
                     if (needsReschedule()) {
+                        reschedule_complete = false;
                         adjustScheduler();
                         reschedulerReTriggered = true;
                         displayDebug("runSchedule increment");
                         scheduleObject.wait(RESCHEDULE_INCREMENT);
-                    } else {
+                    } else  if (!reschedule_complete){
+                        reschedule_complete = true;
+                        sendScheduleChange = true;
+                        reschedulerReTriggered = true;
+                        //scheduleObject.wait(RESCHEDULE_INCREMENT);
+                    }
+                    else {
+
                         // we need to round down our Milliseconds
                         double wait_ms = waitTime - 0.5;
 
@@ -234,6 +252,7 @@ public class HBScheduler {
                         double ns_wait = (waitTime - wait_ms) * 1000000;
 
                         displayDebug("runSchedule round down");
+
                         scheduleObject.wait((long) wait_ms, (int) ns_wait);
                     }
                 } catch (InterruptedException e) {
@@ -260,6 +279,13 @@ public class HBScheduler {
 
             // define the
             double schedule_threshold = getSchedulerTime() + lagCalulator.averageValue();
+
+            synchronized (scheduleObject){
+                if (sendScheduleChange){
+                    notifyScheduleComplete();
+                    sendScheduleChange = false;
+                }
+            }
 
             // now let us iterate through priority queue to see what needs to be actioned
             while (nextScheduledTime < schedule_threshold) {
@@ -291,6 +317,8 @@ public class HBScheduler {
                             nextScheduledTime = next_item.getScheduledTime();
                         }
                     }
+
+
                 } // end synchronised
 
                 if (run_schedule) {
@@ -306,6 +334,16 @@ public class HBScheduler {
     }
 
     /**
+     * Notify Listeners of scchedule complete event
+     */
+    synchronized private void notifyScheduleComplete() {
+        for (ScheduleAdjustmentListener listener:
+                scheduleChangeCompleteListeners) {
+            listener.scheduleComplete(this);
+        }
+    }
+
+    /**
      * End our scheduler. Any items scheduled will be deleted
      */
     public  void endScheduler() {
@@ -315,6 +353,7 @@ public class HBScheduler {
             scheduleObject.notifyAll();
         }
 
+        scheduleChangeCompleteListeners.clear();
     }
 
     /**
@@ -324,6 +363,7 @@ public class HBScheduler {
         synchronized (scheduleObject) {
             scheduledObjects.clear();
         }
+        scheduleChangeCompleteListeners.clear();
     }
     /**
      * Add an object that needs to be notified when its scheduled time has occurred

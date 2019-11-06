@@ -1400,6 +1400,13 @@ public class HB {
 	}
 
 	/**
+	 * Static version of {@link HB#sendStatus(String)}.
+	 * @param status the status message we are sending
+	 */
+	public static void sendStatus(String status){
+		HBInstance.setStatus(status);
+	}
+	/**
 	 * Sets the status @{@link String} of this device. The status string is sent to the controller and is reported in the device's list item. Note that certain application behaviours automatically set the device status, such as when the device has been assigned and ID, or when a new @{@link HBAction} has been loaded onto the device.
 	 * @param s the status of the device.
      */
