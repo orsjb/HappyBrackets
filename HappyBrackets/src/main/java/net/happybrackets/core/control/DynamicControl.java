@@ -762,7 +762,12 @@ public class DynamicControl implements ScheduledEventListener {
                             scheduleValue(null, mirror_control.objVal, 0);
                         }
 
-                }
+                    }
+                    else
+                    {
+                        scheduleValue(null, mirror_control.objVal, mirror_control.executionTime);
+                    }
+
             }
         }
         return this;

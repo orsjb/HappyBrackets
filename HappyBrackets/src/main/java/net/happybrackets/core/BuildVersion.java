@@ -9,7 +9,7 @@ import java.net.URL;
 public final class BuildVersion {
     static final int MAJOR = 4;
     static final int MINOR = 7;
-    static final int BUILD = 0;
+    static final int BUILD = 1;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}
