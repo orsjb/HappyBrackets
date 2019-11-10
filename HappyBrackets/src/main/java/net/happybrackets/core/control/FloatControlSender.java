@@ -14,7 +14,6 @@ public class FloatControlSender extends FloatTextControl {
      */
     public FloatControlSender(Object parent_sketch, String name, double initial_value) {
         super(parent_sketch, name, initial_value);
-        getDynamicControl().setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED);
     }
 
     @Override

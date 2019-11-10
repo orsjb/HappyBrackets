@@ -15,7 +15,6 @@ public class TextControlSender extends TextControl {
      */
     public TextControlSender(Object parent_sketch, String name, String initial_value) {
         super(parent_sketch, name, initial_value);
-        getDynamicControl().setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED);
     }
 
     @Override
