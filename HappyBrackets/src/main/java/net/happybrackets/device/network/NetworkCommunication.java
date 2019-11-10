@@ -707,7 +707,7 @@ public class NetworkCommunication {
 
 	/**
 	 * Create a message that has the home directory of this device
-	 * @return teh absolute home directory
+	 * @return The absolute home directory
 	 */
 	OSCMessage createSimulatorHomePathMessage(){
 		String home_path = "";
