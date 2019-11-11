@@ -30,7 +30,8 @@ package net.happybrackets.core.control;
     myControl.setValue(true);
  </b>
  <br>Will cause the <b>valueChanged</b> function to be called with the new value, causing <b>Read true</b> to be printed to standard output
- <br>
+ <br>Setting the value within the HappyBrackets control display is effected using a checkbox, where a checked value is true
+
  * If you do not require a handler on the class, use the {@link BooleanControlSender} class
  */
 public abstract class BooleanControl extends DynamicControlParent {

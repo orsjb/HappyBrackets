@@ -2,6 +2,16 @@ package net.happybrackets.core.control;
 
 import static net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY;
 
+/**
+ * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#INT} in a simple API
+ * <br>The {@link IntegerBuddyControl} is a hybrid between the {@link IntegerSliderControl} and the {@link IntegerTextControl} in that the value can be changed in the HappyBrackets IDE with both text and a slider
+ * <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via {@link IntegerBuddyControl#IntegerBuddyControl(Object, String, int, int, int)}
+ * <br>The upper and lower limits, however, are only limitations on the display and the actual control can be set to any value available to other {@link IntegerControl} objects
+ * <br> All  {@link IntegerControl} objects with the same name and {@link ControlScope} will respond to a value change.
+ *
+ *
+ * <br> <br> See {@link IntegerControl} for general information about {@link IntegerControl} classes and how to set the value within your code
+ */
 public abstract class IntegerBuddyControl extends IntegerControl {
 
     /**

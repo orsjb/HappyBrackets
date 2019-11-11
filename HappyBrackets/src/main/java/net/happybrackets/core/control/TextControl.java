@@ -1,5 +1,39 @@
 package net.happybrackets.core.control;
 
+/**
+ * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#TEXT} in a simple API
+ * <br> All Text controls with the same name and {@link ControlScope} will respond to a message send. For example:
+ * For example, consider two TextControls with the same {@link ControlScope} and name
+ *
+ * <br> <b>TextControl control1 = new TextControl(this, "Read", "Hello")</b>....
+ * <br> <b>TextControl control2 = new TextControl(this, "Read", "Hello")</b>....
+ *
+ * Setting the value of control1 will cause any objects listening to control1 or control2 to receive the action. EG
+ *
+ * <b>control1.setValue("goodbye");</b>  // This will also set the value of control2
+ *
+ * <br>The control can also schedule messages to be sent at a time in the future by adding the time to the message
+ * using an absolute time in the {@link TextControl#setValue(String, double)}  function. Eg
+ * <br> <b>control1.setValue ("Hi There", HB.getSchedulerTime() + 1000);</b> // this will set control1 value, as well as all other TextControls with same {@link ControlScope} and name, to true 1 second in the future
+ *
+ * <br>When the control receives the value, it will be passed through to the {@link TextControl#valueChanged(String)} listener that is implemented when the class is created.
+ * <br>For example
+ * <b>
+ * <br>TextControl myControl = new TextControl(this,"My Control",""){
+ <br>&emsp@Override
+ <br>&emsp&emsp public void valueChanged(String new_value){
+ <br>&emsp&emsp&emsp System.out.println("Read "+new_value);
+ <br>&emsp&emsp }
+ <br>&emsp };
+
+ <br><br>
+ myControl.setValue("This is text");
+ </b>
+ <br>Will cause the <b>valueChanged</b> function to be called with the new value, causing <b>Read This is text</b> to be printed to standard output
+ <br>Setting the value within the HappyBrackets control display is effected by typing a new value in and pressing ENTER or RETURN
+
+ * If you do not require a handler on the class, use the {@link TextControlSender} class
+ */
 public abstract class TextControl extends DynamicControlParent {
 
     /**

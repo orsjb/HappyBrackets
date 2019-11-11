@@ -1,5 +1,17 @@
 package net.happybrackets.core.control;
 
+/**
+ * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#FLOAT} in a simple API
+ * <br> The difference between {@link FloatControlSender} and other {@link FloatControl} objects  is that @link FloatControlSender} does not have a handler, however, you can still retrieve the current value using the {@link FloatControl#getValue()}
+ * <br> All  {@link FloatControl} objects with the same name and {@link ControlScope} will respond to a message send. For example:
+ * <br> Both {@link FloatControlSender} and {@link FloatTextControl} display the approximate value of the control in the HappyBrackets IDE.
+ * Within the IDE, the value of the value of the control can be changed by typing a new value in and pressing the ENTER or RETURN key.
+ * <br>
+ *
+ * <br>The {@link FloatControlSender} is identical to the  {@link FloatTextControl} except that {@link FloatControlSender} does not have a {@link FloatControl#valueChanged(double)}) handler
+ *
+ * <br> See {@link FloatControl} for general information about {@link FloatControl} classes and how to set the value within your code
+ */
 public abstract class FloatTextControl extends FloatControl {
 
     /**

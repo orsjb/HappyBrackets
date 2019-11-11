@@ -1,8 +1,20 @@
 package net.happybrackets.core.control;
 
 /**
- * This class is used for only sending values and does not implement a listener
- * Writing to the value will send the value to other controls with the same name
+ * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#TEXT} in a simple API
+ * <br> All Text controls with the same name and {@link ControlScope} will respond to a message send. For example:
+ * For example, consider two TextControls with the same {@link ControlScope} and name
+ *
+ * <br> <b>TextControl control1 = new TextControlSender(this, "Read", "Hello");</b>
+ * <br> <b>TextControl control2 = new TextControl(this, "Read", "Hello")</b>....
+ *
+ * Setting the value of control1 will cause any objects listening to control1 or control2 to receive the action. EG
+ *
+ * <b>control1.setValue("goodbye");</b>  // This will also set the value of control2
+ *
+ * <br>The functionality is identical to the {@link TextControl} except {@link TextControlSender} does not have the {@link TextControl#valueChanged(String)} handler;
+ *
+ <br>Setting the value within the HappyBrackets control display is effected by typing a new value in and pressing ENTER or RETURN
  */
 public class TextControlSender extends TextControl {
     /**
