@@ -1,5 +1,15 @@
 package net.happybrackets.core.control;
 
+/**
+ * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#INT} in a simple API
+ * <br>The {@link IntegerSliderControl} can have its value set inside the HappyBrackets IDE using a standard slider control controller by the mouse. trackpad or arrow keys
+ * <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via {@link IntegerSliderControl#IntegerSliderControl(Object, String, int, int, int)}
+ * <br>The upper and lower limits, however, are only limitations on the display and the actual control can be set to any value available to other {@link IntegerControl} objects
+ * <br> All  {@link IntegerControl} objects with the same name and {@link ControlScope} will respond to a value change.
+ *
+ *
+ * <br> <br> See {@link IntegerControl} for general information about {@link IntegerControl} classes and how to set the value within your code
+ */
 public abstract class IntegerSliderControl extends IntegerControl {
 
     /**
