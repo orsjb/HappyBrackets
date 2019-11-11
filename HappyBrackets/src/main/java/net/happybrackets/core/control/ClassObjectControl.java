@@ -5,8 +5,39 @@ import com.google.gson.Gson;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Dynamic Control used for sending class objects inside controls
- * Can be used to send object types such as full classes or doubles
+ * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#OBJECT} in a simple API. This enables sending of entire classes as a single message.
+ * <br> For example, you can send x, y and z values a {@link TripleAxisMessage} using the {@link ClassObjectControl#setValue(Object)}
+ * <br>
+ * <br> All {@link ClassObjectControl} objects with the same name and {@link ControlScope} will respond to a {@link ClassObjectControl#setValue(Object)}.
+ * Additionally, the {@link Class} of the object that we are sending must also be defined. For example:
+ consider two {@link ClassObjectControl} with the same {@link ControlScope} and name:
+ * <br><b>
+ *     <br><br>ClassObjectControl control1 = new ClassObjectControlSender(this, "MyControl", TripleAxisMessage.class);
+ *
+ *     <br><br>
+ *         <br>ClassObjectControl control2 = new ClassObjectControl(this, "MyControl", TripleAxisMessage.class) {
+ *         <br>&emsp;   @Override
+ *         <br>&emsp;   public void valueChanged(Object object_val) {
+ *         <br>&emsp;&emsp;       TripleAxisMessage control_val = (TripleAxisMessage) object_val;
+ *         <br>&emsp;&emsp;System.out.println("x:" + msg.getX() + " y:" + msg.getY() +  " z" + msg.getZ());
+ *         <br>&emsp;   }
+ *
+ *         };
+ *
+ *     <br><br>
+ *     TripleAxisMessage msg = new TripleAxisMessage(0.1f, 0.2f, 0.3f);
+ *     <br>control1.setValue(msg);
+ *
+ * </b>
+ *
+ *
+ <br><br>This will cause the <b>control2</b> to fire the {@link ClassObjectControl#valueChanged(Object)} function with the new value, causing <b>x:0.1 y:0.2 z:0.3</b> to be printed to standard output
+ * <br>The control can also schedule messages to be sent at a time in the future by adding the time to the message
+ * using an absolute time in the {@link ClassObjectControl#setValue(Object, double)}  function. For example, the message can be scheduled to execute in 1 second as follows: <br>
+ * <br> <b>control1.setValue (msg, HB.getSchedulerTime() + 1000);</b>
+ <br><br>Values cannot be set within HappyBrackets control displays
+ * If you do not require a handler on the class, use the {@link ClassObjectControlSender} class
+ *
  *
  */
 public abstract class ClassObjectControl  extends DynamicControlParent {

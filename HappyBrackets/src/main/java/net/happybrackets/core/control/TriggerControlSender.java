@@ -1,8 +1,8 @@
 package net.happybrackets.core.control;
 
 /**
- * This class is used for only sending values and does not implement a listener
- * Performing a send will perform a trigger on other controls with the same name
+ * {@link TriggerControlSender} is identical to the {@link TriggerControl} object except is does not have a {@link TriggerControl#triggerEvent()} handler.
+ * <br>See {@link TriggerControl} for full details
  */
 public class TriggerControlSender extends TriggerControl{
     /**

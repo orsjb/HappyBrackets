@@ -3,8 +3,7 @@ package net.happybrackets.core.control;
 import com.google.gson.Gson;
 
 /**
- * Encodes x, y and z parameters as an Object array so it can be passed via a Dynamic Control message
- * The conversion only takes place if the message is passed as a global message
+ * Encodes three floats-- x, y and z  into parameters so they can be passed via a single {@link ControlType#OBJECT} message.
  */
 public class TripleAxisMessage implements CustomGlobalEncoder{
     static Gson gson = new Gson();

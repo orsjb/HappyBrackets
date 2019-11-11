@@ -1,7 +1,8 @@
 package net.happybrackets.core.control;
 
 /**
- * A class for sending class objects as dynamic control messages.
+ * The {@link ClassObjectControlSender} class is identical to the {@link ClassObjectControl} class except it does not provide the {@link ClassObjectControl#valueChanged(Object)} event handler.
+ * <br> See {@link ClassObjectControl} for full details
  */
 public class ClassObjectControlSender extends ClassObjectControl {
 

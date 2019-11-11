@@ -15,14 +15,17 @@ import java.util.*;
 
 /**
  * This class facilitates sending message values between sketches,
- * devices, and a graphical environment
+ * devices, and a graphical environment.
  * The values can be represented as sliders, text boxes, check boxes, and buttons
  *
- * A message can either be an integer, a double, a string, a boolean, or a trigger
+ * A message can either be an integer, a double, a string, a boolean, a trigger or a complete class.
  *
- * The messages are send and received via DynamicControlListener
+ * Although similar to the send and receive objects in Max in that the name and type
+ * parameter of the {@link DynamicControl} determines message interconnection,
+ * DynamicControls also have an attribute called {@link ControlScope}, which dictates how far (in
+ * a topological sense) the object can reach in order to communicate with other
+ * DynamicControls. DynamicControls can be bound to different objects, the default being the class that instantiated it.
  *
- * The ControlScope determines whether the control can be seen in other classes or even other devices on the network
  */
 public class DynamicControl implements ScheduledEventListener {
 

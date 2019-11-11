@@ -1,36 +1,38 @@
 package net.happybrackets.core.control;
 
 /**
- * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#BOOLEAN} in a simple API
- * <br> All boolean controls with the same name and {@link ControlScope} will respond to a message send. For example:
+ * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#BOOLEAN} in a simple API.
+ * <br>
+ * <br> All {@link BooleanControl} objects with the same name and {@link ControlScope} will respond to a {@link BooleanControl#setValue(Boolean)}. For example:
  * For example, consider two BooleanControls with the same {@link ControlScope} and name
  *
- * <br> <b>BooleanControl control1 = new BooleanControl(this, "Read", false)</b>....
+ * <br><br> <b>BooleanControl control1 = new BooleanControlSender(this, "Read", false);</b>
  * <br> <b>BooleanControl control2 = new BooleanControl(this, "Read", false)</b>....
+ *<br><br>
+ * Setting the value of <b>control1</b> will cause any objects listening to <b>control1</b> or <b>control2</b> to receive the action. EG
  *
- * Setting the value of control1 will cause any objects listening to control1 or control2 to receive the action. EG
+ * <br><b>control1.setValue(true);</b>  // This will also set the value of control2
  *
- * <b>control1.setValue(true);</b>  // This will also set the value of control2
- *
+ * <br>
  * <br>The control can also schedule messages to be sent at a time in the future by adding the time to the message
- * using an absolute time in the {@link BooleanControl#setValue(Boolean, double)}  function. Eg
+ * using an absolute time in the {@link BooleanControl#setValue(Boolean, double)}  function. Eg: <br>
  * <br> <b>control1.setValue (true, HB.getSchedulerTime() + 1000);</b> // this will set control1 value, as well as all other BooleanControls with same {@link ControlScope} and name, to true 1 second in the future
- *
+ * <br>
  * <br>When the control receives the value, it will be passed through to the {@link BooleanControl#valueChanged(Boolean)} listener that is implemented when the class is created.
- * <br>For example
+ * For example:<br>
  * <b>
  * <br>BooleanControl myControl = new BooleanControl(this,"My Control",false){
-     <br>&emsp@Override
-      <br>&emsp&emsp public void valueChanged(Boolean new_value){
-        <br>&emsp&emsp&emsp System.out.println("Read "+new_value);
-        <br>&emsp&emsp }
-        <br>&emsp };
+     <br>&emsp; @Override
+      <br>&emsp;&emsp;public void valueChanged(Boolean new_value){
+        <br>&emsp;&emsp;&emsp;System.out.println("Read "+new_value);
+        <br>&emsp;&emsp;}
+        <br>&emsp;};
 
  <br><br>
     myControl.setValue(true);
  </b>
  <br>Will cause the <b>valueChanged</b> function to be called with the new value, causing <b>Read true</b> to be printed to standard output
- <br>Setting the value within the HappyBrackets control display is effected using a checkbox, where a checked value is true
+ <br><br>Setting the value within the HappyBrackets controls display is effected using a checkbox, where a checked value is true
 
  * If you do not require a handler on the class, use the {@link BooleanControlSender} class
  */

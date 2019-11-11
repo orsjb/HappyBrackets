@@ -43,7 +43,7 @@ public enum ControlType {
 
     /**
      * Object messages enable complete predefined classes as messages, such as {@link TripleAxisMessage}, or classes you define yourself in your code
-     * See {@link ClassObjectControl} for examples
+     * See {@link ClassObjectControl} for examples.
      */
     OBJECT
 }

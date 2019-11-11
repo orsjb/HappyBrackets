@@ -2,6 +2,19 @@ package net.happybrackets.core.control;
 
 import java.net.InetAddress;
 
+/**
+ * The {@link DynamicControlParent} facilitates a simplified abstract API to implement the {@link DynamicControl} class.
+ *
+ * The values can be represented as sliders, text boxes, check boxes, and buttons
+ *
+ * <br><br>A message can either be: <br> an integer - {@link IntegerControl},
+ * <br> a double - {@link FloatControl},
+ * <br> a string - {@link TextControl},
+ * <br> a Boolean - {@link BooleanControl},
+ * <br> a trigger - {@link TriggerControl}, or
+ * <br> a complete class - {@link ClassObjectControl}.
+ *
+ */
 public abstract class DynamicControlParent {
 
     private DynamicControl control = null;

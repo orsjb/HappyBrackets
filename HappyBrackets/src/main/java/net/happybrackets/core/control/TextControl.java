@@ -20,11 +20,11 @@ package net.happybrackets.core.control;
  * <br>For example
  * <b>
  * <br>TextControl myControl = new TextControl(this,"My Control",""){
- <br>&emsp@Override
- <br>&emsp&emsp public void valueChanged(String new_value){
- <br>&emsp&emsp&emsp System.out.println("Read "+new_value);
- <br>&emsp&emsp }
- <br>&emsp };
+ <br>&emsp;@Override
+ <br>&emsp;&emsp;public void valueChanged(String new_value){
+ <br>&emsp;&emsp;&emsp;System.out.println("Read "+new_value);
+ <br>&emsp;&emsp;}
+ <br>&emsp;};
 
  <br><br>
  myControl.setValue("This is text");

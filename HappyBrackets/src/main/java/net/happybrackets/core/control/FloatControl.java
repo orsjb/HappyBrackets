@@ -23,11 +23,11 @@ import java.math.BigDecimal;
  * <br>For example
  * <b>
  * <br>FloatControl myControl = new FloatTextControl(this,"My Control",1.0){
- <br>&emsp@Override
- <br>&emsp&emsp public void valueChanged(double new_value){
- <br>&emsp&emsp&emsp System.out.println("Read "+ new_value);
- <br>&emsp&emsp }
- <br>&emsp };
+ <br>&emsp;@Override
+ <br>&emsp;&emsp;public void valueChanged(double new_value){
+ <br>&emsp;&emsp;&emsp;System.out.println("Read "+ new_value);
+ <br>&emsp;&emsp;}
+ <br>&emsp;};
 
  <br><br>
  myControl.setValue(2.0);

@@ -488,10 +488,8 @@ public class HB {
 		clockInterval = new Envelope(ac, 500);
 		clock = new Clock(ac, clockInterval);
 
-		// Do following call twice because of delays from JIT compiler. Synchronises clocks to system time
-		synchroniseClocks();
-		synchroniseClocks();
-		synchroniseClocks();
+		primeJIT();
+
 
 		int poly_limit = 0;
 		String multi_cast_address = "::FFFF:225.2.2.5";
@@ -1400,6 +1398,26 @@ public class HB {
 	}
 
 	/**
+	 * Force JIT Compiler to compile certain code on startup
+	 */
+	private void primeJIT(){
+		// Do following call twice because of delays from JIT compiler. Synchronises clocks to system time
+		synchroniseClocks();
+		synchroniseClocks();
+		synchroniseClocks();
+
+		List<String> self = new ArrayList<>();
+		self.add(Device.getDeviceName());
+
+		// Prime Our receive Schedule Clock
+		HB.sendScheduleSetTime(HB.getSchedulerTime(), self);
+		HB.sendScheduleSetTime(HB.getSchedulerTime(), self);
+		HB.sendScheduleSetTime(HB.getSchedulerTime(), self);
+
+
+	}
+
+	/**
 	 * Static version of {@link HB#sendStatus(String)}.
 	 * @param status the status message we are sending
 	 */
@@ -1889,7 +1907,7 @@ public class HB {
 
 	/**
 	 * Get the global {@link HBScheduler}
-	 * @return teh global scheduler
+	 * @return The global scheduler
 	 */
 	static public HBScheduler getScheduler(){
 		return HBScheduler.getGlobalScheduler();
