@@ -1,20 +1,18 @@
 package examples.osc;
 
+import de.sciss.net.OSCMessage;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
 import net.happybrackets.core.OSCUDPSender;
 import net.happybrackets.core.control.*;
 import net.happybrackets.device.HB;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 /**
  * This example will show how to send an OSC Message
  */
 public class OSCSender implements HBAction, HBReset {
-    // Change to the number of audio Channels on your device
-    final int NUMBER_AUDIO_CHANNELS = 1;
 
     // This variable will become true when the composition is reset
     boolean compositionReset = false;
@@ -22,7 +20,7 @@ public class OSCSender implements HBAction, HBReset {
     OSCUDPSender oscSender = new OSCUDPSender();
 
     String targetAddress = "127.0.0.1";
-    String OSCAddress = "/myAddress";
+    String OSCMessageName = "/myAddress";
     int oscPort =  9000;
 
     Object oscArgument = null;
@@ -66,10 +64,10 @@ public class OSCSender implements HBAction, HBReset {
             }
         };/* End DynamicControl integerTextControl code */
 
-        new TextControl(this, "OSC Name", OSCAddress) {
+        new TextControl(this, "OSC Name", OSCMessageName) {
             @Override
             public void valueChanged(String control_val) {/* Write your DynamicControl code below this line */
-                OSCAddress = control_val;
+                OSCMessageName = control_val;
                 /* Write your DynamicControl code above this line */
             }
         };/* End DynamicControl textControl code */
@@ -81,8 +79,12 @@ public class OSCSender implements HBAction, HBReset {
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 oscArgument = control_val;
 
-                if (oscSender.send(HB.createOSCMessage(OSCAddress, oscArgument), targetAddress, oscPort)) {
-                    displaySendResult("Sent " + OSCAddress + " " + oscArgument);
+                //create the OSC Message
+                OSCMessage message = HB.createOSCMessage(OSCMessageName, oscArgument);
+
+                //Now send it
+                if (oscSender.send(message, targetAddress, oscPort)) {
+                    displaySendResult("Sent " + OSCMessageName + " " + oscArgument);
                 } else {
                     displaySendResult("Failed Send " + oscSender.getLastError());
                 }
@@ -96,8 +98,10 @@ public class OSCSender implements HBAction, HBReset {
             @Override
             public void valueChanged(Boolean control_val) {/* Write your DynamicControl code below this line */
                 oscArgument = control_val;
-                if (oscSender.send(HB.createOSCMessage(OSCAddress, oscArgument), targetAddress, oscPort)) {
-                    displaySendResult("Sent " + OSCAddress + " " + oscArgument);
+                OSCMessage message = HB.createOSCMessage(OSCMessageName, oscArgument);
+
+                if (oscSender.send(message, targetAddress, oscPort)) {
+                    displaySendResult("Sent " + OSCMessageName + " " + oscArgument);
                 } else {
                     displaySendResult("Failed Send " + oscSender.getLastError());
                 }
@@ -111,8 +115,10 @@ public class OSCSender implements HBAction, HBReset {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
                 oscArgument = control_val;
-                if (oscSender.send(HB.createOSCMessage(OSCAddress, oscArgument), targetAddress, oscPort)) {
-                    displaySendResult("Sent " + OSCAddress + " " + oscArgument);
+                OSCMessage message = HB.createOSCMessage(OSCMessageName, oscArgument);
+
+                if (oscSender.send(message, targetAddress, oscPort)) {
+                    displaySendResult("Sent " + OSCMessageName + " " + oscArgument);
                 } else {
                     displaySendResult("Failed Send " + oscSender.getLastError());
                 }
@@ -127,8 +133,10 @@ public class OSCSender implements HBAction, HBReset {
             @Override
             public void valueChanged(String control_val) {/* Write your DynamicControl code below this line */
                 oscArgument = control_val;
-                if (oscSender.send(HB.createOSCMessage(OSCAddress, oscArgument), targetAddress, oscPort)) {
-                    displaySendResult("Sent " + OSCAddress + " " + oscArgument);
+
+                OSCMessage message = HB.createOSCMessage(OSCMessageName, oscArgument);
+                if (oscSender.send(message, targetAddress, oscPort)) {
+                    displaySendResult("Sent " + OSCMessageName + " " + oscArgument);
                 } else {
                     displaySendResult("Failed Send " + oscSender.getLastError());
                 }
@@ -142,8 +150,9 @@ public class OSCSender implements HBAction, HBReset {
         new TriggerControl(this, "Resend Last Message") {
             @Override
             public void triggerEvent() {/* Write your DynamicControl code below this line */
-                if (oscSender.send(HB.createOSCMessage(OSCAddress, oscArgument), targetAddress, oscPort)) {
-                    displaySendResult("Sent " + OSCAddress + " " + oscArgument);
+                OSCMessage message = HB.createOSCMessage(OSCMessageName, oscArgument);
+                if (oscSender.send(message, targetAddress, oscPort)) {
+                    displaySendResult("Sent " + OSCMessageName + " " + oscArgument);
                 } else {
                     displaySendResult("Failed Send " + oscSender.getLastError());
                 }
