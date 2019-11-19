@@ -202,25 +202,31 @@ public class FileSender {
                     fileSendStreamerList.add(fileSendStreamer);
                     ret = true;
                 }
-
             }
 
             if (do_notify)
             {
-                System.out.println("Do Notify");
                 if (testClientOpen()) {
-                    try {
-                        fileSendClient.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.START));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        // we will run in a separate thread to prevent as lockup on GUI due to locked up TCP
+                        Thread thread = new Thread(() -> {
+                            try {
+                                fileSendClient.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.START));
+                                synchronized (fileSendEvent){
+                                    fileSendEvent.notify();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        });
+
+                        thread.start();// End threadFunction
+
                 }
                 else {
                     System.out.println("Client Not Open after notify");
                 }
-                synchronized (fileSendEvent){
-                    fileSendEvent.notify();
-                }
+
             }
         }
         else {
@@ -238,11 +244,17 @@ public class FileSender {
         }
 
         if (testClientOpen()) {
-            try {
-                fileSendClient.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.CANCEL));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // we will run in a separate thread to prevent as lockup on GUI due to locked up TCP
+            Thread thread = new Thread(() -> {
+                try {
+                    fileSendClient.send(HB.createOSCMessage(OSCVocabulary.FileSendMessage.CANCEL));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+
+            thread.start();// End threadFunction
         }
     }
 
