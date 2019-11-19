@@ -13,8 +13,6 @@ import java.lang.invoke.MethodHandles;
  * Sends accelerometer messages to  OSC on "127.0.0.1", 9000
  */
 public class OSCSendAccelerometer implements HBAction, HBReset {
-    // Change to the number of audio Channels on your device
-    final int NUMBER_AUDIO_CHANNELS = 1;
 
     // This variable will become true when the composition is reset
     boolean compositionReset = false;
