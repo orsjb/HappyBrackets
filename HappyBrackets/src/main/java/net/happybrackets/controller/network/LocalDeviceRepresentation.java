@@ -1120,6 +1120,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	public void sendVersionRequest(){
 		send(OSCVocabulary.Device.VERSION, replyPortObject);
 		send(OSCVocabulary.Device.FRIENDLY_NAME, replyPortObject);
+		send(OSCVocabulary.Device.GAIN, replyPortObject);
 	}
 
 	/**

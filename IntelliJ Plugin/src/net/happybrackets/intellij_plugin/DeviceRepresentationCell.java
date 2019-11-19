@@ -504,35 +504,29 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		Slider s = new Slider(0, 2, 1);
 		s.setOrientation(Orientation.HORIZONTAL);
 		s.setMaxWidth(100);
-		s.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if(event.isPrimaryButtonDown()) {
-					item.send(OSCVocabulary.Device.GAIN, (float) s.getValue(), 50f);
-				}
-			}
-		});
+
 
 		s.valueProperty().addListener((obs, oldval, newval) ->
 		{
-			if (s.isFocused()) {
-				if (Math.abs(oldval.floatValue() - newval.floatValue()) > Math.abs(Float.MIN_VALUE)) {
-					item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f);
-				}
+
+			if (Math.abs(oldval.floatValue() - newval.floatValue()) > Math.abs(Float.MIN_VALUE)) {
+				item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f);
 			}
 		});
 
 		item.addGainChangedListener(gainChangedListener = gain -> Platform.runLater(new Runnable() {
 			public void run() {
-				if (!s.isFocused()){
-					try {
-						float current_value = (float)s.getValue();
-						if (Math.abs(gain - current_value) > Math.abs(Float.MIN_VALUE)) {
-							s.setValue(gain);
-						}
 
-					}catch (Exception ex){};
+				try {
+					float current_value = (float) s.getValue();
+					if (Math.abs(gain - current_value) > Math.abs(Float.MIN_VALUE)) {
+						s.setValue(gain);
+					}
+
+				} catch (Exception ex) {
 				}
+				;
+
 			}
 		}));
 
@@ -649,6 +643,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 
 		setGraphic(main);
+		item.sendVersionRequest();
 
 	}
 }
