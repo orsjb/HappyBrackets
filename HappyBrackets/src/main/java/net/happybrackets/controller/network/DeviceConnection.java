@@ -651,7 +651,14 @@ public class DeviceConnection {
 	public void sendToAllDevices(String msg_name, Object... args) {
 		synchronized (devicesByHostnameLock) {
 			for (LocalDeviceRepresentation device : devicesByHostname.values()) {
-				sendToDevice(device, msg_name, args);
+
+				Thread thread = new Thread(() -> {
+					sendToDevice(device, msg_name, args);
+				});
+
+
+				thread.start();// End threadFunction
+
 			}
 		}
 	}
