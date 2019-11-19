@@ -25,6 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -35,6 +39,7 @@ import java.util.List;
 public class DeviceMain {
     final static Logger logger = LoggerFactory.getLogger(DeviceMain.class);
 
+	static public final String EXAMPLES_FOLDER = "examples";
 
 
 	static HB HBInstance;
@@ -109,6 +114,8 @@ public class DeviceMain {
 
 		logger.debug("Access mode is " + mode);
 
+		eraseExampleClasses();
+
 		//manage configuration files;
 		System.out.println("Setting config file to " +  configFile);
         logger.debug("Loading config file: {}", configFile);
@@ -155,5 +162,28 @@ public class DeviceMain {
 			hb.startAudio();
 		}
 
+	}
+
+	/**
+	 * erase the example classes from the startup directory
+	 */
+	private static void eraseExampleClasses() {
+		try{
+			String path = StartupClasses.STARTUP_FOLDER + EXAMPLES_FOLDER;
+			File file = new File(path);
+			if (file.exists()){
+				if (file.isDirectory()){
+
+					System.out.println("Delete " + path);
+					Files.walk(file.toPath())
+							.sorted(Comparator.reverseOrder())
+							.map(Path::toFile)
+							.forEach(File::delete);
+				}
+			}
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+		}
 	}
 }

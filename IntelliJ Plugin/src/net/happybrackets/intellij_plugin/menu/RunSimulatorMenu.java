@@ -16,6 +16,18 @@ import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotif
 
 public class RunSimulatorMenu extends AnAction {
 
+    public static String getLastSdkPath() {
+        return lastSdkPath;
+    }
+
+    public static String getLastProjectPath() {
+        return lastProjectPath;
+    }
+
+    // Add these global variables so we can run this while debugging the plugin
+    static String lastSdkPath = "";
+    static String lastProjectPath = "";
+
 
     // Flag to store if they had multicast on when they ran simulator
     boolean multicastOnly = false;
@@ -68,6 +80,12 @@ public class RunSimulatorMenu extends AnAction {
             Project current_project = event.getProject();
 
             String project_path = current_project.getBaseDir().getCanonicalPath();
+
+            ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
+            Sdk sdk = rootManager.getProjectSdk();
+
+            lastSdkPath =  sdk.getHomePath() + "/bin/";
+            lastProjectPath = project_path;
 
             boolean simulator_exists = SimulatorShell.simulatorExists(project_path);
 

@@ -63,9 +63,10 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		// if there is no path, check if it is on loopback address
 		if (!ret){
 			try {
-				InetAddress device_address = InetAddress.getByName(getAddress());
-				ret = device_address.isLoopbackAddress();
-			} catch (UnknownHostException e) {
+				String this_device = Device.getDeviceName();
+
+				ret = this_device.equalsIgnoreCase(deviceName);
+			} catch (Exception e) {
 				//e.printStackTrace();
 			}
 		}
@@ -502,6 +503,10 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		void update(boolean connected);
 	}
 
+	public interface GainChangedListener{
+		void gainChanged(float new_gain);
+	}
+
 	public interface DeviceConnectedUpdateListener {
 		void update(LocalDeviceRepresentation device, boolean connected);
 	}
@@ -524,6 +529,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 	private List<StatusUpdateListener> statusUpdateListenerList = new ArrayList<>();
 	private List<StatusUpdateListener> friendlyNameListenerList = new ArrayList<>();
+	private List<GainChangedListener> gainChangedListenerList = new ArrayList<>();
 
 	private List<ConnectedUpdateListener> connectedUpdateListenerList = new ArrayList<>();
 	private List<ConnectedUpdateListener> loggingStateListener = new ArrayList<>();
@@ -544,6 +550,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	private final Object favouriteChangedListenersLock = new Object();
 	private final Object deviceIdUpdateListenerListLock = new Object();
 	private final Object statusUpdateListenerListLock = new Object();
+	private final Object gainChangedListenerListLock = new Object();
 	private final Object connectedUpdateListenerListLock = new Object();
 	private final Object friendlyNameListenerListLock = new Object();
 	private final Object loggingStateListenerLock = new Object();
@@ -846,9 +853,27 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			processLogMessage(msg, sender);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SIMULATOR_HOME_PATH)) {
 			processSimulatorHomeMessage(msg, sender);
+		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
+			processGainMessage(msg, sender);
 		}
 
+	}
 
+	/**
+	 * Process a gain changed message from device
+	 * @param msg the OSC Message
+	 * @param sender The sender
+	 */
+	private void processGainMessage(OSCMessage msg, SocketAddress sender) {
+		try {
+			float gain = (float) msg.getArg(0);
+
+			synchronized (gainChangedListenerListLock) {
+				for (GainChangedListener gainChangedListener : gainChangedListenerList) {
+					gainChangedListener.gainChanged(gain);
+				}
+			}
+		}catch (Exception ex){}
 	}
 
 	/**
@@ -1056,6 +1081,9 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			statusUpdateListenerList.clear();
 		}
 
+		synchronized (gainChangedListenerListLock){
+			gainChangedListenerList.clear();
+		}
 		
 		dynamicControlScreen.removeDynamicControlScene();
 		dynamicControlScreen = null;
@@ -1107,6 +1135,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	 */
 	public void sendStatusRequest(){
 		send(OSCVocabulary.Device.STATUS, replyPortObject);
+		send(OSCVocabulary.Device.GAIN, replyPortObject);
 	}
 
 	private void lazySetupAddressStrings() {
@@ -1227,12 +1256,25 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	}
 
 	public void removeStatusUpdateListener(StatusUpdateListener listener) {
-		StatusUpdateListener removal_object = null;
 
 		synchronized (statusUpdateListenerListLock) {
 			statusUpdateListenerList.remove(listener);
 		}
 	}
+
+	public void addGainChangedListener(GainChangedListener listener) {
+		synchronized (gainChangedListenerListLock) {
+			gainChangedListenerList.add(listener);
+		}
+	}
+
+	public void removeGainCHangedListener(GainChangedListener listener) {
+
+		synchronized (gainChangedListenerListLock) {
+			gainChangedListenerList.remove(listener);
+		}
+	}
+
 
 	public void addFriendlyNameUpdateListener(StatusUpdateListener listener) {
 		synchronized (friendlyNameListenerListLock) {
@@ -1332,7 +1374,8 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			for (StatusUpdateListener statusUpdateListener : statusUpdateListenerList) {
 				statusUpdateListener.update(status);
 			}
-	}}
+		}
+	}
 
     public void setIsConnected(boolean connected) {
 

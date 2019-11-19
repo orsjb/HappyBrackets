@@ -318,9 +318,9 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 				 logger.error("Device not supported.");
 			}
 		} catch (IOException e) {
-			logger.error("Unable to read to I2C device", e);
+			logger.error("Unable to read to I2C device " + device);
 		} catch (InterruptedException e1) {
-			logger.error("InterruptedException encountered when trying to identify device", e1);
+			logger.error("InterruptedException encountered when trying to identify device " + device );
 		}
 
 		return result;
@@ -342,7 +342,7 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 				ret = false;
 			}
 		} catch (IOException e) {
-			logger.error("Unable to write to I2C device", e);
+			logger.error("Unable to write to I2C device " + device);
 			ret = false;
 		}
 
@@ -365,7 +365,7 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
 				ret = false;
             }
         } catch (IOException e) {
-            logger.error("Unable to write to I2C device", e);
+            logger.error("Unable to write to I2C device " + device);
 			ret = false;
         }
 
@@ -782,7 +782,7 @@ public class LSM9DS1 extends Sensor implements GyroscopeSensor, AccelerometerSen
                     try {
                         Thread.sleep(10);		//TODO this should not be hardwired.
                     } catch (InterruptedException e) {
-												logger.error("Polling interval interupted for gyroscope!", e);
+												logger.error("Polling interval interrupted for gyroscope! ");
                     }
                 }
             }

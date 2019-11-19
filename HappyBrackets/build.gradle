@@ -219,7 +219,7 @@ task copyCompileVersionToPlugin {
 task packProjectTemplate (type:Zip) {
     destinationDir buildDir //set our output directory
     archiveName 'HappyBracketsProject.zip'  //set the name of our archive
-    excludes = ['**/HB.jar', '**/ollie.xml', '**/HBVersion.txt', "**/libs/docs/hb/javadoc/**"]
+    excludes = ['**/HB.jar', '**/ollie.xml', '**/HBVersion.txt', "**/libs/docs/hb/javadoc/**", '**/Device/HappyBrackets/data/classes/examples']
 
     //config
     from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/") {

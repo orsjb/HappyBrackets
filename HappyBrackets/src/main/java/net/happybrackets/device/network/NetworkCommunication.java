@@ -162,6 +162,22 @@ public class NetworkCommunication {
 
 				}
 			}
+
+			@Override
+			public void gainChanged(float new_gain) {
+				if (DeviceConfig.getInstance() != null) {
+					OSCMessage oscMessage = OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.GAIN, new_gain);
+
+					UDPCachedMessage message = null;
+					try {
+						message = new UDPCachedMessage(oscMessage);
+						DeviceConfig.getInstance().sendMessageToAllControllers(message.getCachedPacket());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
 		});
 
 
@@ -254,7 +270,21 @@ public class NetworkCommunication {
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SHUTDOWN)) {
 							HB.shutdownDevice();
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
-							hb.masterGainEnv.addSegment((Float) msg.getArg(0), (Float) msg.getArg(1));
+							if (msg.getArgCount() > 1) {
+								hb.setGain((Float) msg.getArg(0), (Float) msg.getArg(1));
+							}
+							else
+							{
+								if (msg.getArgCount() > 0) {
+									target_port = (Integer) msg.getArg(0);
+								}
+
+								InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
+								send(OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.GAIN, hb.getGain()),
+										target_address);
+
+							}
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
 							boolean has_classes = hb.hasClassesLoaded();
 							hb.reset();
@@ -444,7 +474,17 @@ public class NetworkCommunication {
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.SHUTDOWN)) {
 							HB.shutdownDevice();
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
-							hb.masterGainEnv.addSegment((Float) msg.getArg(0), (Float) msg.getArg(1));
+							// see if we are setting or just requesting
+
+							if (msg.getArgCount() > 1) {
+								hb.setGain((Float) msg.getArg(0), (Float) msg.getArg(1));
+							}
+							else
+							{
+								send(OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.GAIN, hb.getGain()),
+										src);
+							}
+
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.RESET)) {
 							boolean has_classes = hb.hasClassesLoaded();
 							hb.reset();
@@ -485,9 +525,9 @@ public class NetworkCommunication {
 							System.out.println("Version sent " + BuildVersion.getVersionText() + " to tcp " + src_address.toString() ) ;
 
 
-							if (src_address.isLoopbackAddress()){
-								send(createSimulatorHomePathMessage(), src);
-							}
+
+							send(createSimulatorHomePathMessage(), src);
+
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
 
@@ -696,11 +736,11 @@ public class NetworkCommunication {
 	 */
 	private void sendSimulatorHomePath(int port){
 		try {
-			InetSocketAddress target_address  =  new InetSocketAddress(InetAddress.getLocalHost(), port);
+			InetSocketAddress target_address  =  new InetSocketAddress(InetAddress.getLoopbackAddress(), port);
 
 			send(createSimulatorHomePathMessage(),
 					target_address);
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			//e.printStackTrace();
 		}
 	}
@@ -716,6 +756,7 @@ public class NetworkCommunication {
 
 		if (target_path != null) {
 			home_path = target_path.getAbsolutePath();
+			System.out.println(home_path);
 		}
 		return OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.SIMULATOR_HOME_PATH, home_path);
 	}

@@ -170,7 +170,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 //    			#define LSM303_MR_REG_M  0x02 // LSM303DLH, LSM303DLM, LSM303DLHC
 
 		} catch(IOException e) {
-			logger.error("Unable to communicate with the MiniMU, we're not going to be getting any sensor data :-(", e);
+			logger.error("Unable to communicate with the MiniMU, we're not going to be getting any sensor data");
 			validLoad = false;
 		}
 
@@ -223,7 +223,7 @@ public class MiniMU extends Sensor implements AccelerometerSensor, GyroscopeSens
 					try {
 						Thread.sleep(10);		//TODO this should not be hardwired.
 					} catch (InterruptedException e) {
-						logger.error("Poll interval interupted while listening for MiniMu!", e);
+						logger.error("Poll interval interuppted while listening for MiniMu!");
 					}
 				}
 			}

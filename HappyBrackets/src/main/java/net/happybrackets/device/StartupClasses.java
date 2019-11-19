@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class StartupClasses {
 
-    static final String STARTUP_FOLDER =  "data/classes/";
+    static public final String STARTUP_FOLDER =  "data/classes/";
     static private final String DEFAULT_STARTUP_FILE =  "startup.txt";
 
 

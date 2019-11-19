@@ -2,10 +2,12 @@ package net.happybrackets.intellij_plugin;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.roots.ModuleRootManager;
+import javafx.application.Platform;
 import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.core.ShellExecute;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -43,12 +45,14 @@ public class SimulatorShell {
             try {
                 // we have a success
                 if (exit_value == 0) {
+                    projectPath = project_path;
+
                     String process_text = shellExecute.getProcessText().trim();
                     processId = Integer.parseInt(process_text);
                     NotificationMessage.displayNotification("Simulator Started", NotificationType.INFORMATION);
 
                     // store our project path
-                    projectPath = project_path;
+
                 }
                 else {
                     NotificationMessage.displayNotification("Unable to determine process ID of simulator", NotificationType.WARNING);
@@ -106,11 +110,21 @@ public class SimulatorShell {
 
     /**
      * If the closing project is the one that started simulator, then kill simulator
+     * If this is not the path that the simulator was loaded at, we will ask if we want to shut simulator
      * @param project_path the path of project
      */
     public static void projectClosing(String project_path){
-        if (project_path.equalsIgnoreCase(projectPath)){
-            killSimulator();
+        try {
+
+            if (!project_path.trim().isEmpty()) {
+                if (project_path.equalsIgnoreCase(projectPath)) {
+                    killSimulator();
+                    projectPath = "";
+                }
+            }
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
         }
     }
     /**
@@ -131,8 +145,6 @@ public class SimulatorShell {
         }
         if (local_device != null){
             try {
-
-
                 local_device.shutdownDevice();
                 NotificationMessage.displayNotification("Shutdown sent to simulator", NotificationType.INFORMATION);
             }catch (Exception ex){}

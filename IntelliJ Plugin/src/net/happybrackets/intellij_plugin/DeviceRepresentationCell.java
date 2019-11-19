@@ -29,6 +29,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -90,6 +91,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
 	private LocalDeviceRepresentation.StatusUpdateListener friendlyNameListener = null;
 	private LocalDeviceRepresentation.FavouriteChangedListener favouriteChangedListener = null;
+	private LocalDeviceRepresentation.GainChangedListener gainChangedListener = null;
+
 
 	/**
 	 * Display a message dialog
@@ -148,6 +151,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		invalidTextWarning = null;
 		friendlyNameListener = null;
 		favouriteChangedListener = null;
+		gainChangedListener = null;
 	}
 
 	@Override
@@ -162,6 +166,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
 			localDevice.removeFriendlyNameUpdateListener(friendlyNameListener);
 			localDevice.removeFavouriteListener(favouriteChangedListener);
+			localDevice.removeGainCHangedListener(gainChangedListener);
 			localDevice.resetDeviceHasDisplayed();
 
 
@@ -499,7 +504,38 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		Slider s = new Slider(0, 2, 1);
 		s.setOrientation(Orientation.HORIZONTAL);
 		s.setMaxWidth(100);
-		s.valueProperty().addListener((obs, oldval, newval) -> item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f));
+		s.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(event.isPrimaryButtonDown()) {
+					item.send(OSCVocabulary.Device.GAIN, (float) s.getValue(), 50f);
+				}
+			}
+		});
+
+		s.valueProperty().addListener((obs, oldval, newval) ->
+		{
+			if (s.isFocused()) {
+				if (Math.abs(oldval.floatValue() - newval.floatValue()) > Math.abs(Float.MIN_VALUE)) {
+					item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f);
+				}
+			}
+		});
+
+		item.addGainChangedListener(gainChangedListener = gain -> Platform.runLater(new Runnable() {
+			public void run() {
+				if (!s.isFocused()){
+					try {
+						float current_value = (float)s.getValue();
+						if (Math.abs(gain - current_value) > Math.abs(Float.MIN_VALUE)) {
+							s.setValue(gain);
+						}
+
+					}catch (Exception ex){};
+				}
+			}
+		}));
+
 		main.add(s, next_column, current_row);
 		next_column++;
 

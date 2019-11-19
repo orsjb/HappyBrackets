@@ -68,6 +68,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import net.happybrackets.core.ErrorListener;
+import net.happybrackets.intellij_plugin.menu.RunSimulatorMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -853,7 +854,7 @@ public class IntelliJPluginGUIManager {
 					});
 				}
 				// run simulator
-				else if (SimulatorShell.runSimulator("", "")) // we will put in a path later
+				else if (SimulatorShell.runSimulator(RunSimulatorMenu.getLastSdkPath(), RunSimulatorMenu.getLastProjectPath())) // we will put in a path later
 				{
 					NotificationMessage.displayNotification("Started simulator", NotificationType.INFORMATION);
 					Platform.runLater(new Runnable() {
@@ -869,7 +870,7 @@ public class IntelliJPluginGUIManager {
 			}
 		});
 
-		//messagepaths.getChildren().add(runSimulatorButton); Make sure you actually make it work first
+		//messagepaths.getChildren().add(runSimulatorButton);// Make sure you actually make it work first
 		VBox custom_command_pane = new VBox(defaultElementSpacing);
 		custom_command_pane.getChildren().addAll(code_field, messagepaths);
 		return custom_command_pane;

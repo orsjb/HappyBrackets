@@ -121,6 +121,7 @@ public class HB {
 	public interface StatusChangedListener{
 		void statusChanged(String new_status);
 		void classLoadedMessage(Class<? extends HBAction> incomingClass);
+		void gainChanged(float new_gain);
 	}
 
 	/**
@@ -1386,6 +1387,7 @@ public class HB {
 	 */
 	public static void shutdownDevice() {
 		if (enableSimulators){
+			System.out.println("Shutdown Simulator");
 			System.exit(0);
 		}
 		else {
@@ -1442,6 +1444,33 @@ public class HB {
 		}
 	}
 
+	/**
+	 * Set the output gain of the device in an envelope.
+	 * @param new_gain the new target gain to set device to
+	 * @param millseconds the duration of the segment to reach the new gain in milliseconds
+	 */
+	public void setGain (float new_gain, float millseconds){
+		masterGainEnv.addSegment(new_gain, millseconds);
+		synchronized (statusChangedListenerList)
+		{
+			for (StatusChangedListener listener : statusChangedListenerList) {
+				listener.gainChanged(new_gain);
+			}
+		}
+
+		if (isEnableSimulators()){
+			System.out.println("Gain changed to : " + new_gain);
+		}
+
+	}
+
+	/**
+	 * Get the current gain of the device
+	 * @return the current masterGain envelope value
+	 */
+	public float getGain(){
+		return masterGainEnv.getCurrentValue();
+	}
 	/**
 	 * Send a message that a class has been loaded
 	 * @param incomingClass the class that has been loaded

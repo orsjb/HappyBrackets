@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import net.happybrackets.device.DeviceMain;
 import net.happybrackets.intellij_plugin.menu.examples.HappyBracketsExamplesFolderMenu;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 public class HappyBracketsDebugMenu extends DefaultActionGroup {
 
-    static final String EXAMPLES_FOLDER = "examples";
+    static final String EXAMPLES_FOLDER = DeviceMain.EXAMPLES_FOLDER;
 
     // The project that is currently active
     static String activeProjectHash = "";
