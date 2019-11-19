@@ -147,6 +147,7 @@ public class SimulatorShell {
             try {
                 local_device.shutdownDevice();
                 NotificationMessage.displayNotification("Shutdown sent to simulator", NotificationType.INFORMATION);
+                local_device.removeDevice();
             }catch (Exception ex){}
         }
     }
