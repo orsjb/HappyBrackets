@@ -92,6 +92,7 @@ public class DeviceMain {
 				if(simulate_value.equalsIgnoreCase("true")){
 					HB.setEnableSimulators(true);
 					Sensor.setSimulatedOnly(true);
+					HB.deviceType =  HB.DeviceType.SIMULATOR;
 				}
 			}
 			else if (s.startsWith("config=")) {
@@ -113,6 +114,10 @@ public class DeviceMain {
 		}
 
 		logger.debug("Access mode is " + mode);
+
+		HB.DeviceType deviceType =  HB.detectDeviceType();
+
+		System.out.println("Detected " + deviceType.name());
 
 		eraseExampleClasses();
 

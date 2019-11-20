@@ -64,6 +64,9 @@ import javax.swing.*;
  */
 public class HB {
 
+    static final int BLINK_INTERVAL = 250;
+    static final int NUM_BLINKS = 6;
+
 	private static boolean enableSimulators = false;
 
 	// Define a map that associates a device name with an InetAddress
@@ -106,6 +109,145 @@ public class HB {
 	 */
 	public static void setEnableSimulators(boolean enableSimulators) {
 		HB.enableSimulators = enableSimulators;
+	}
+
+	/// create an execute shell to set onboard LED
+	private  ShellExecute piLedSetter = new ShellExecute();
+
+	/**
+	 * The Type of Hardware that this instance of HappyBrackets is running on
+	 */
+	public enum DeviceType {
+		/**
+		 * The Harware Type is unknown or undefined
+		 */
+		UNKONWN,
+
+		/**
+		 * The Device is actually being run inside the Debugger
+		 */
+		DEBUGGER,
+
+		/**
+		 * This is a simulator
+		 */
+		SIMULATOR,
+
+		/**
+		 * Raspberry Pi zero
+		 */
+		PI_ZERO,
+
+		/**
+		 * Raspberry Pi V1
+		 */
+		PI_1,
+
+		/**
+		 * Raspberry Pi V2
+		 */
+		PI_2,
+
+		/**
+		 * Raspberry Pi V3
+		 */
+		PI_3,
+
+		/**
+		 * Raspberry Pi V4
+		 */
+		PI_4
+	}
+
+
+	static DeviceType deviceType =  DeviceType.UNKONWN;
+
+
+	/**
+	 * Set the onboard LED value on the Pi based on Integer value.
+	 * @param i_val the value to turn LED on or off is dependeant upon the {@link DeviceType}, so thei function should be called from {@link HB#setDeviceLedValue(boolean)}
+	 */
+	synchronized  void setPiLed(int i_val){
+		try {
+			piLedSetter.runProcess("/bin/sh", "-c", "echo " + i_val + "  > /sys/class/leds/led0/brightness");
+		} catch (IOException e) {
+			//e.printStackTrace();
+		}
+	}
+	/**
+	 * Return the Integer value required to turn the onboard LED on or off based on stored {@link DeviceType}
+	 * @param on true if turning LED on, false if Turning Off
+	 * @return true if able to send value
+	 */
+	public boolean setDeviceLedValue(boolean on) {
+		boolean ret = false;
+
+		switch (deviceType) {
+			case PI_3:
+			case PI_2:
+			case PI_4:
+			case PI_1:
+				setPiLed(on ? 1 : 0);
+				ret = true;
+				break;
+
+			case PI_ZERO:
+				setPiLed(on ? 0 : 1);
+				ret = true;
+				break;
+
+			case DEBUGGER:
+			case SIMULATOR:
+				System.out.println("Led " + on);
+				ret = true;
+
+			default:
+		}
+		return ret;
+	}
+	/**
+	 * The Type of Device this instance of HappyBrackets is running on
+	 * @return the Type of Device
+	 */
+	public static DeviceType getDeviceType(){
+		return deviceType;
+	}
+
+
+
+	/**
+	 * Detect the type of device we are running by reading specific files through filesystem
+	 * If detected, the new {@link DeviceType} is stored
+	 * @return new deviceType detected. If none dected, whatever has been set previously
+	 */
+	public static DeviceType detectDeviceType(){
+
+		try
+		{
+			String detected_type =  "";
+
+			byte[] readAllBytes = java.nio.file.Files.readAllBytes(Paths.get("/proc/device-tree/model"));
+			detected_type = new String( readAllBytes);
+
+			if (!detected_type.isEmpty()){
+				if (detected_type.contains("Pi Zero")){
+					deviceType = DeviceType.PI_ZERO;
+				}
+				else if (detected_type.contains("Pi 1")){
+					deviceType = DeviceType.PI_1;
+				}
+				else if (detected_type.contains("Pi 2")){
+					deviceType = DeviceType.PI_2;
+				}
+				else if (detected_type.contains("Pi 3")){
+					deviceType = DeviceType.PI_3;
+				}
+			}
+		}
+		catch (Exception ex){}
+
+
+		return deviceType;
 	}
 
 	/**
@@ -309,6 +451,8 @@ public class HB {
 		String current = System.getProperty("user.dir");
 		String simulator_file = current + "/scripts/simulator.config";
 
+
+		deviceType =  DeviceType.DEBUGGER;
 
 		String[] start_args = new String[]{
 				"buf=1024",
@@ -730,8 +874,32 @@ public class HB {
 		e.addSegment(0.2f, 50);
 
 		e.addSegment(0, 10, new KillTrigger(g));
+
+		flashLed(NUM_BLINKS, BLINK_INTERVAL);
 	}
 
+    /**
+     * FLash the onboard LED
+     * @param num_blinks the number of times the LED wil blink on and Off
+     * @param interval The interval between blinks
+     */
+	public void flashLed(int num_blinks, int interval){
+
+        setDeviceLedValue(true);
+		// To create this, just type clockTimer. We use interval / 2 becauuse each tick will be toggleing state
+		net.happybrackets.core.scheduling.Clock addClockTickListener = createClock(interval / 2).addClockTickListener((offset, this_clock) -> {// Write your code below this line
+
+			boolean led_state = this_clock.getNumberTicks() % 2 == 0;
+			if (this_clock.getNumberTicks() >= num_blinks * 2){
+				this_clock.stop();
+				this_clock.reset();
+			}
+			setDeviceLedValue(led_state);
+			// Write your code above this line
+		});
+
+		addClockTickListener.start();// End Clock Timer
+	}
 	/**
 	 * Produces a short series of 3 bleeps on the device. Assumes audio is running.
 	 */

@@ -88,8 +88,8 @@ public class AdjustSchedulerToTime {
 
         double diff = calc_gmt - total;
 
-        // make sure times are less than 1
-        assert (Math.abs(diff) < 1);
+        // make sure times are less than 2
+        assert (Math.abs(diff) < 2);
 
         System.out.println(diff);
 
@@ -126,7 +126,7 @@ public class AdjustSchedulerToTime {
         }
 
 
-        schedule_diff = schedule_diff = HBScheduler.getGlobalScheduler().getClockSkew();
+        schedule_diff = HBScheduler.getGlobalScheduler().getClockSkew();
 
         System.out.println("New Schedule diff " + schedule_diff);
         assert (Math.abs(schedule_diff) < 10);

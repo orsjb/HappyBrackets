@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 public abstract class Device {
 
 	final static Logger logger = LoggerFactory.getLogger(Device.class);
+
 
 //	public  final String    myHostname;		//the hostname for this PI (wifi)
 //	public  final String    myIP;

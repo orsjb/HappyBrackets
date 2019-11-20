@@ -38,8 +38,8 @@
       <file leaf-file-name="OSCSender.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCSender.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="114" column="21" selection-start-line="114" selection-start-column="21" selection-end-line="114" selection-end-column="21" />
+            <state relative-caret-position="351">
+              <caret line="127" column="26" selection-start-line="127" selection-start-column="26" selection-end-line="127" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -104,8 +104,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java" />
-        <option value="$PROJECT_DIR$/data/change_dir.sh" />
         <option value="$PROJECT_DIR$/data/send-jars.sh" />
         <option value="$PROJECT_DIR$/data/_README" />
         <option value="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java" />
@@ -155,6 +153,8 @@
         <option value="$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java" />
         <option value="$PROJECT_DIR$/src/examples/contents.txt" />
         <option value="$PROJECT_DIR$/src/examples/osc/OSCSender.java" />
+        <option value="$PROJECT_DIR$/src/examples/osc/OSCSendAccelerometer.java" />
+        <option value="$PROJECT_DIR$/src/examples/osc/OSCReceiveValues.java" />
       </list>
     </option>
   </component>
@@ -244,9 +244,9 @@
           <select />
         </subPane>
       </pane>
+      <pane id="AndroidView" />
       <pane id="Scope" />
       <pane id="PackagesPane" />
-      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -436,24 +436,23 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="836" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1440" height="837" extended-state="6" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="4" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5125" side_tool="true" visible="true" weight="0.18372704" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5208333" side_tool="true" visible="true" weight="0.32110092" />
       <window_info anchor="right" id="Maven Projects" order="6" weight="0.24878837" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.38333333" weight="0.3561644" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.4798611" weight="0.32129514" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.47916666" visible="true" weight="0.32110092" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2638889" />
       <window_info anchor="bottom" id="Problems" order="8" />
-      <window_info anchor="right" id="HappyBrackets" order="7" sideWeight="0.49678457" visible="true" weight="0.14583333" />
+      <window_info active="true" anchor="right" id="HappyBrackets" order="7" sideWeight="0.49678457" visible="true" weight="0.26944444" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
@@ -511,13 +510,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>jar://$PROJECT_DIR$/Device/HappyBrackets/HB.jar!/net/happybrackets/device/HB.class</url>
-          <line>290</line>
+          <line>323</line>
           <properties />
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>jar://$PROJECT_DIR$/Device/HappyBrackets/HB.jar!/net/happybrackets/device/HB.class</url>
-          <line>257</line>
+          <line>290</line>
           <properties />
           <option name="timeStamp" value="33" />
         </line-breakpoint>
@@ -526,14 +525,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="62">
-          <caret line="69" column="37" selection-start-line="69" selection-start-column="37" selection-end-line="69" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/send-scripts.sh" />
     <entry file="file://$PROJECT_DIR$/data/send-startupclasses.sh" />
     <entry file="file://$PROJECT_DIR$/data/send-audio.sh" />
     <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/data/scripts/test-rename.sh" />
@@ -808,13 +799,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/HBVersion.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="5" selection-start-column="5" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="173">
@@ -840,10 +824,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCReceiveValues.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCSendAccelerometer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/HBVersion.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="5" selection-start-column="5" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCSender.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="114" column="21" selection-start-line="114" selection-start-column="21" selection-end-line="114" selection-end-column="21" />
+        <state relative-caret-position="351">
+          <caret line="127" column="26" selection-start-line="127" selection-start-column="26" selection-end-line="127" selection-end-column="26" />
         </state>
       </provider>
     </entry>
