@@ -76,6 +76,9 @@ public class HB {
 	private List<DeviceConnectedEventListener> deviceConnectedEventsListeners = new ArrayList<>();
 
 
+	// create a lock to synchronise getting default sensor
+	private final static Object sensorLock = new Object();
+
 	/**
 	 * Return the Mute Control
 	 * @return the Mute Control
@@ -163,92 +166,6 @@ public class HB {
 	static DeviceType deviceType =  DeviceType.UNKONWN;
 
 
-	/**
-	 * Set the onboard LED value on the Pi based on Integer value.
-	 * @param i_val the value to turn LED on or off is dependeant upon the {@link DeviceType}, so thei function should be called from {@link HB#setDeviceLedValue(boolean)}
-	 */
-	synchronized  void setPiLed(int i_val){
-		try {
-			piLedSetter.runProcess("/bin/sh", "-c", "echo " + i_val + "  > /sys/class/leds/led0/brightness");
-		} catch (IOException e) {
-			//e.printStackTrace();
-		}
-	}
-	/**
-	 * Return the Integer value required to turn the onboard LED on or off based on stored {@link DeviceType}
-	 * @param on true if turning LED on, false if Turning Off
-	 * @return true if able to send value
-	 */
-	public boolean setDeviceLedValue(boolean on) {
-		boolean ret = false;
-
-		switch (deviceType) {
-			case PI_3:
-			case PI_2:
-			case PI_4:
-			case PI_1:
-				setPiLed(on ? 1 : 0);
-				ret = true;
-				break;
-
-			case PI_ZERO:
-				setPiLed(on ? 0 : 1);
-				ret = true;
-				break;
-
-			case DEBUGGER:
-			case SIMULATOR:
-				System.out.println("Led " + on);
-				ret = true;
-
-			default:
-		}
-		return ret;
-	}
-	/**
-	 * The Type of Device this instance of HappyBrackets is running on
-	 * @return the Type of Device
-	 */
-	public static DeviceType getDeviceType(){
-		return deviceType;
-	}
-
-
-
-	/**
-	 * Detect the type of device we are running by reading specific files through filesystem
-	 * If detected, the new {@link DeviceType} is stored
-	 * @return new deviceType detected. If none dected, whatever has been set previously
-	 */
-	public static DeviceType detectDeviceType(){
-
-		try
-		{
-			String detected_type =  "";
-
-			byte[] readAllBytes = java.nio.file.Files.readAllBytes(Paths.get("/proc/device-tree/model"));
-			detected_type = new String( readAllBytes);
-
-			if (!detected_type.isEmpty()){
-				if (detected_type.contains("Pi Zero")){
-					deviceType = DeviceType.PI_ZERO;
-				}
-				else if (detected_type.contains("Pi 1")){
-					deviceType = DeviceType.PI_1;
-				}
-				else if (detected_type.contains("Pi 2")){
-					deviceType = DeviceType.PI_2;
-				}
-				else if (detected_type.contains("Pi 3")){
-					deviceType = DeviceType.PI_3;
-				}
-			}
-		}
-		catch (Exception ex){}
-
-
-		return deviceType;
-	}
 
 	/**
 	 * Set the TCP Osc Port given to us by operating system
@@ -422,6 +339,94 @@ public class HB {
 	public HB(AudioContext _ac) throws IOException {
 		this(_ac, AccessMode.OPEN, false);
 	}
+
+	/**
+	 * Set the onboard LED value on the Pi based on Integer value.
+	 * @param i_val the value to turn LED on or off is dependeant upon the {@link DeviceType}, so thei function should be called from {@link HB#setDeviceLedValue(boolean)}
+	 */
+	synchronized  void setPiLed(int i_val){
+		try {
+			piLedSetter.runProcess("/bin/sh", "-c", "echo " + i_val + "  > /sys/class/leds/led0/brightness");
+		} catch (IOException e) {
+			//e.printStackTrace();
+		}
+	}
+	/**
+	 * Return the Integer value required to turn the onboard LED on or off based on stored {@link DeviceType}
+	 * @param on true if turning LED on, false if Turning Off
+	 * @return true if able to send value
+	 */
+	public static boolean setDeviceLedValue(boolean on) {
+		boolean ret = false;
+
+		switch (deviceType) {
+			case PI_3:
+			case PI_2:
+			case PI_4:
+			case PI_1:
+				HB.HBInstance.setPiLed(on ? 1 : 0);
+				ret = true;
+				break;
+
+			case PI_ZERO:
+				HB.HBInstance.setPiLed(on ? 0 : 1);
+				ret = true;
+				break;
+
+			case DEBUGGER:
+			case SIMULATOR:
+				System.out.println("Led " + on);
+				ret = true;
+
+			default:
+		}
+		return ret;
+	}
+	/**
+	 * The Type of Device this instance of HappyBrackets is running on
+	 * @return the Type of Device
+	 */
+	public static DeviceType getDeviceType(){
+		return deviceType;
+	}
+
+
+
+	/**
+	 * Detect the type of device we are running by reading specific files through filesystem
+	 * If detected, the new {@link DeviceType} is stored
+	 * @return new deviceType detected. If none dected, whatever has been set previously
+	 */
+	public static DeviceType detectDeviceType(){
+
+		try
+		{
+			String detected_type =  "";
+
+			byte[] readAllBytes = java.nio.file.Files.readAllBytes(Paths.get("/proc/device-tree/model"));
+			detected_type = new String( readAllBytes);
+
+			if (!detected_type.isEmpty()){
+				if (detected_type.contains("Pi Zero")){
+					deviceType = DeviceType.PI_ZERO;
+				}
+				else if (detected_type.contains("Pi 1")){
+					deviceType = DeviceType.PI_1;
+				}
+				else if (detected_type.contains("Pi 2")){
+					deviceType = DeviceType.PI_2;
+				}
+				else if (detected_type.contains("Pi 3")){
+					deviceType = DeviceType.PI_3;
+				}
+			}
+		}
+		catch (Exception ex){}
+
+
+		return deviceType;
+	}
+
 
 	/**
 	 * Perform a mute or Unmute of Output
@@ -883,7 +888,7 @@ public class HB {
      * @param num_blinks the number of times the LED wil blink on and Off
      * @param interval The interval between blinks
      */
-	public void flashLed(int num_blinks, int interval){
+	public static void flashLed(int num_blinks, int interval){
 
         setDeviceLedValue(true);
 		// To create this, just type clockTimer. We use interval / 2 becauuse each tick will be toggleing state
@@ -1688,7 +1693,7 @@ public class HB {
 	 * @param initial_value The initial value of the control
 	 * @return Creates a DynamicControl for sending values to other sketches
 	 */
-	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value)
+	public static DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value)
 	{
 		return new DynamicControl(parent_sketch, control_type, name, initial_value);
 	}
@@ -1702,7 +1707,7 @@ public class HB {
 	 * @param name          The name we will give to differentiate between different controls in this class
 	 * @return Creates a DynamicControl for sending values to other sketches
 	 */
-	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name)
+	public static DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name)
 	{
 		return new DynamicControl(parent_sketch, control_type, name);
 	}
@@ -1719,7 +1724,7 @@ public class HB {
 	 * @param max_value     The maximum value of the control
 	 * @return Creates a DynamicControl for sending values to other sketches
 	 */
-	public DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
+	public static DynamicControl createDynamicControl(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
 		return new DynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value);
 	}
 
@@ -1734,7 +1739,7 @@ public class HB {
 	 * @param max_value     The maximum value of the control
 	 * @return Creates a DynamicControl for sending values to other sketches
 	 */
-	public DynamicControl createDynamicControl(ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
+	public static DynamicControl createDynamicControl(ControlType control_type, String name, Object initial_value, Object min_value, Object max_value) {
 		return new DynamicControl(control_type, name, initial_value, min_value, max_value);
 	}
 
@@ -1747,7 +1752,7 @@ public class HB {
 	 * @param initial_value The initial value of the control
 	 * @return Creates a DynamicControl for sending values to other sketches
 	 */
-	public DynamicControl createDynamicControl(ControlType control_type, String name, Object initial_value) {
+	public static DynamicControl createDynamicControl(ControlType control_type, String name, Object initial_value) {
 		return new DynamicControl(control_type, name, initial_value);
 	}
 
@@ -1759,7 +1764,7 @@ public class HB {
 	 * @param name          The name we will give to differentiate between different controls in this class
 	 * @return Creates a DynamicControl for sending values to other sketches
 	 */
-	public DynamicControl createDynamicControl(ControlType control_type, String name) {
+	public static DynamicControl createDynamicControl(ControlType control_type, String name) {
 		return new DynamicControl(control_type, name);
 	}
 
@@ -1776,11 +1781,11 @@ public class HB {
 	 * @param max_value     The maximum value of the control
 	 * @return Returns the text control object, so max and min are hidden.
 	 */
-	public DynamicControl createControlBuddyPair(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value)
+	public static DynamicControl createControlBuddyPair(Object parent_sketch, ControlType control_type, String name, Object initial_value, Object min_value, Object max_value)
 	{
-		DynamicControl text_control = this.createDynamicControl(parent_sketch, control_type, name, initial_value).setControlScope(ControlScope.SKETCH);
+		DynamicControl text_control = createDynamicControl(parent_sketch, control_type, name, initial_value).setControlScope(ControlScope.SKETCH);
 
-		DynamicControl slider_control = this.createDynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value).setControlScope(ControlScope.SKETCH);
+		DynamicControl slider_control = createDynamicControl(parent_sketch, control_type, name, initial_value, min_value, max_value).setControlScope(ControlScope.SKETCH);
 
 		text_control.addControlScopeListener(new_scope -> {
 			slider_control.setControlScope(new_scope);
@@ -1799,7 +1804,7 @@ public class HB {
 	 * @param interval int6erval in milliseconds. Can use fractions of a millisecond
 	 * @return Clock object
 	 */
-	public net.happybrackets.core.scheduling.Clock createClock(double interval){
+	public static net.happybrackets.core.scheduling.Clock createClock(double interval){
 		return new net.happybrackets.core.scheduling.Clock(interval);
 	}
 
@@ -1808,12 +1813,15 @@ public class HB {
 	 ********************************************************************/
 	static Accelerometer defaultAccelerometer = null;
 
-	private synchronized Accelerometer getDefaultAccelerometer(){
-		if (defaultAccelerometer == null){
-			defaultAccelerometer = (Accelerometer)getSensor(Accelerometer.class);
-		}
-		if (isEnableSimulators()){
-			defaultAccelerometer.reloadSimulation();
+
+	private static Accelerometer getDefaultAccelerometer(){
+		synchronized (sensorLock) {
+			if (defaultAccelerometer == null) {
+				defaultAccelerometer = (Accelerometer) HBInstance.getSensor(Accelerometer.class);
+			}
+			if (isEnableSimulators()) {
+				defaultAccelerometer.reloadSimulation();
+			}
 		}
 		return defaultAccelerometer;
 	}
@@ -1823,13 +1831,16 @@ public class HB {
 	 ********************************************************************/
 	static Gyroscope defaultGyroscope = null;
 
-	private synchronized Gyroscope getDefaultGyroscope(){
-		if (defaultGyroscope == null){
-			defaultGyroscope = (Gyroscope) getSensor(Gyroscope.class);
-		}
-		if (isEnableSimulators()){
-			{
-				defaultGyroscope.reloadSimulation();
+
+	private static Gyroscope getDefaultGyroscope(){
+		synchronized (sensorLock) {
+			if (defaultGyroscope == null) {
+				defaultGyroscope = (Gyroscope) HBInstance.getSensor(Gyroscope.class);
+			}
+			if (isEnableSimulators()) {
+				{
+					defaultGyroscope.reloadSimulation();
+				}
 			}
 		}
 		return defaultGyroscope;
@@ -1839,7 +1850,7 @@ public class HB {
 	 * Return a UGen that is mapped to Accelerometer X value
 	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
 	 */
-	public UGen getAccelerometer_X(){
+	public static UGen getAccelerometer_X(){
 		return getAccelerometer_X(-1, 1);
 	}
 	/**
@@ -1848,7 +1859,7 @@ public class HB {
 	 * @param scale_max the value for axis pointing to sky
 	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
 	 */
-	public UGen getAccelerometer_X(double scale_min, double scale_max){
+	public static UGen getAccelerometer_X(double scale_min, double scale_max){
 		UGen ret;
 		Accelerometer accel = getDefaultAccelerometer();
 		if (accel != null){
@@ -1864,8 +1875,8 @@ public class HB {
 		}
 		else
 		{
-			setStatus("Unable to find accelerometer");
-			ret = new Static(ac, 0);
+			sendStatus("Unable to find accelerometer");
+			ret = new Static(HBInstance.ac, 0);
 		}
 		return ret;
 	}
@@ -1874,7 +1885,7 @@ public class HB {
 	 * Return a UGen that is mapped to Accelerometer Y value
 	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
 	 */
-	public UGen getAccelerometer_Y(){
+	public static UGen getAccelerometer_Y(){
 		return getAccelerometer_Y(-1, 1);
 	}
 
@@ -1884,7 +1895,7 @@ public class HB {
 	 * @param scale_max the value for axis pointing to sky
 	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
 	 */
-	public UGen getAccelerometer_Y(double scale_min, double scale_max){
+	public static UGen getAccelerometer_Y(double scale_min, double scale_max){
 		UGen ret;
 		Accelerometer accel = getDefaultAccelerometer();
 		if (accel != null){
@@ -1900,8 +1911,8 @@ public class HB {
 		}
 		else
 		{
-			setStatus("Unable to find accelerometer");
-			ret = new Static(ac, 0);
+			sendStatus("Unable to find accelerometer");
+			ret = new Static(HBInstance.ac, 0);
 		}
 		return ret;
 	}
@@ -1910,7 +1921,7 @@ public class HB {
 	 * Return a UGen that is mapped to Accelerometer Z value
 	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
 	 */
-	public UGen getAccelerometer_Z(){
+	public static UGen getAccelerometer_Z(){
 		return getAccelerometer_Z(-1, 1);
 	}
 	/**
@@ -1919,7 +1930,7 @@ public class HB {
 	 * @param scale_max the value for axis pointing to sky
 	 * @return UGen object mapped to the axis. If no accelerometer is found, will return a static with value 0
 	 */
-	public UGen getAccelerometer_Z(double scale_min, double scale_max){
+	public static UGen getAccelerometer_Z(double scale_min, double scale_max){
 		UGen ret;
 		Accelerometer accel = getDefaultAccelerometer();
 		if (accel != null){
@@ -1935,8 +1946,8 @@ public class HB {
 		}
 		else
 		{
-			setStatus("Unable to find accelerometer");
-			ret = new Static(ac, 0);
+			sendStatus("Unable to find accelerometer");
+			ret = new Static(HBInstance.ac, 0);
 		}
 		return ret;
 	}
@@ -1945,7 +1956,7 @@ public class HB {
 	 * Return a UGen that is mapped to Gyroscope Yaw value
 	 * @return UGen object mapped to the axis. If no gyroscope is found, will return a static with value 0
 	 */
-	public UGen getGyroscopeYaw(){
+	public static UGen getGyroscopeYaw(){
 		UGen ret;
 		Gyroscope gyro = getDefaultGyroscope();
 		if (gyro != null){
@@ -1960,8 +1971,8 @@ public class HB {
 		}
 		else
 		{
-			setStatus("Unable to find gyroscope");
-			ret = new Static(ac, 0);
+			sendStatus("Unable to find gyroscope");
+			ret = new Static(HBInstance.ac, 0);
 		}
 		return ret;
 	}
@@ -1970,7 +1981,7 @@ public class HB {
 	 * Return a UGen that is mapped to Gyroscope Pitch value
 	 * @return UGen object mapped to the axis. If no gyroscope is found, will return a static with value 0
 	 */
-	public UGen getGyroscopePitch(){
+	public static UGen getGyroscopePitch(){
 		UGen ret;
 		Gyroscope gyro = getDefaultGyroscope();
 		if (gyro != null){
@@ -1985,8 +1996,8 @@ public class HB {
 		}
 		else
 		{
-			setStatus("Unable to find gyroscope");
-			ret = new Static(ac, 0);
+			sendStatus("Unable to find gyroscope");
+			ret = new Static(HBInstance.ac, 0);
 		}
 		return ret;
 	}
@@ -1995,7 +2006,7 @@ public class HB {
 	 * Return a UGen that is mapped to Gyroscope Roll value
 	 * @return UGen object mapped to the axis. If no gyroscope is found, will return a static with value 0
 	 */
-	public UGen getGyroscopeRoll(){
+	public static UGen getGyroscopeRoll(){
 		UGen ret;
 		Gyroscope gyro = getDefaultGyroscope();
 		if (gyro != null){
@@ -2010,8 +2021,8 @@ public class HB {
 		}
 		else
 		{
-			setStatus("Unable to find gyroscope");
-			ret = new Static(ac, 0);
+			sendStatus("Unable to find gyroscope");
+			ret = new Static(HBInstance.ac, 0);
 		}
 		return ret;
 	}
