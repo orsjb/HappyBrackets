@@ -12,7 +12,7 @@ import net.happybrackets.device.HB;
 import java.lang.invoke.MethodHandles;
 
 public class LoopedSamplePlayer implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
+
     // define our start and end loop points
     final float LOOP_START = 0;
     final  float LOOP_END = 2000;
@@ -29,20 +29,21 @@ public class LoopedSamplePlayer implements HBAction {
         final String sample_name = "data/audio/Roje/i-write.wav";
         SampleModule samplePlayer = new SampleModule();
         if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
-            samplePlayer.connectTo(hb.ac.out);
+            samplePlayer.connectTo(HB.getAudioOutput());
 
+            // define our loop type. we will loop forwards
+            samplePlayer.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+
+
+            // now set the loop start and end in the actual sample player
+            samplePlayer.setLoopStart(LOOP_START);
+            samplePlayer.setLoopEnd(LOOP_END);
             /* Write your code above this line */
         } else {
-            HB.HBInstance.setStatus("Failed sample " + sample_name);
+            HB.sendStatus("Failed sample " + sample_name);
         }/* End samplePlayer code */
 
-        // define our loop type. we will loop forwards
-        samplePlayer.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
 
-
-        // now set the loop start and end in the actual sample player
-        samplePlayer.setLoopStart(LOOP_START);
-        samplePlayer.setLoopEnd(LOOP_END);
 
     }
 

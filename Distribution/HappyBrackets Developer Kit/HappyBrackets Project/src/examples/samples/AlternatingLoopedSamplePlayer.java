@@ -12,8 +12,6 @@ import net.happybrackets.device.HB;
 import java.lang.invoke.MethodHandles;
 
 public class AlternatingLoopedSamplePlayer implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-
     // define our start and end loop points
     final float LOOP_START = 800;
     final  float LOOP_END = 1800;

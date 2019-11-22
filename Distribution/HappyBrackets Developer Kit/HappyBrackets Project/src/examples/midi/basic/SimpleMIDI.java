@@ -16,7 +16,6 @@ import java.lang.invoke.MethodHandles;
  * It uses function Pitch.mtof, which converts a Midi note number to a frequency
  */
 public class SimpleMIDI implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
     
     @Override
     public void action(HB hb) {

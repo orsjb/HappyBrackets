@@ -26,6 +26,8 @@ import java.util.*;
  * a topological sense) the object can reach in order to communicate with other
  * DynamicControls. DynamicControls can be bound to different objects, the default being the class that instantiated it.
  *
+ * <br>The classes are best accessed through {@link DynamicControlParent} abstractions
+ *
  */
 public class DynamicControl implements ScheduledEventListener {
 

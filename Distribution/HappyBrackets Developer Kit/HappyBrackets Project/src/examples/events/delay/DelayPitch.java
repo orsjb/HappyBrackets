@@ -14,8 +14,6 @@ This sketch plays 400Khz Tone with a clock that changes its pitch to 1Khz for 30
 We will use a delay Object to triger a return to original pitch
  */
 public class DelayPitch implements HBAction, HBReset {
-    // Change to the number of audio Channels on your device
-    final int NUMBER_AUDIO_CHANNELS = 1;
 
     int ORIGINAL_PITCH = 400;
     int HIGH_PITCH = 1000;

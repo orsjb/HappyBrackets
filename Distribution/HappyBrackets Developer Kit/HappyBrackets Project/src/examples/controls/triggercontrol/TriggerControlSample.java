@@ -22,9 +22,6 @@ import java.lang.invoke.MethodHandles;
  *
  */
 public class TriggerControlSample implements HBAction {
-
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     /**********************************************
      We need to make our counter a class variable so
      it can be accessed within the message handler

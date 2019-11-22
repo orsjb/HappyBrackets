@@ -16,9 +16,6 @@ import java.lang.invoke.MethodHandles;
  * the error status is displayed
  */
 public class RunCommandline implements HBAction {
-    // Change to the number of audio Channels on your device
-    final int NUMBER_AUDIO_CHANNELS = 1;
-
     @Override
     public void action(HB hb) {
         /***** Type your HBAction code below this line ******/

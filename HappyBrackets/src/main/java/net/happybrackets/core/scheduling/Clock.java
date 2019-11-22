@@ -5,16 +5,82 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Clock Class that uses HBScheduler
+ * Clock Class that uses the {@link HBScheduler} class. If the {@link HBScheduler} has it's time adjusted, all {@link Clock} objects will follow the time of the {@link HBScheduler} .
+ *
+ * <br>A clock event is detected by adding a {@link ClockTickListener} to it through the {@link #addClockTickListener(ClockTickListener)}. More than one listener can be added to a clock
+ * <br>Clocks are created stopped and must be started outside the clock definition. For example:
+ *
+ * <pre>
+ *
+ *     Clock testclock1 = new Clock(1000);
+ *
+ *     testclock1.addClockTickListener((offset, clock) -> {
+ *          long number_ticks = clock.getNumberTicks();
+ *          System.out.println("Num Ticks: " + number_ticks);
+ *       });
+ *
+ *     <b>testclock1.start();</b>
+ *
+ * </pre>
+ * <br> The clock is stopped through {@link #stop()} or when the sketch is reset
+ * <br> Utility functions {@link #BPM2Interval(double)} and {@link #Interval2BPM(double)} facilitate converting intervals to and from Beats per minute
+ *
+ * <br> It is possible to shift a clock forwards or backwards using {@link #shiftTime(double)}, change the interval through {@link #setInterval(double)},  synchronise to another {@link Clock} using {@link #synchronizeClock(Clock)}, or cause the clock to restart with a zero count using {@link #reset()}
+ * <br> You can obtain status of clock through
+ * function {@link #getNumberTicks()}, {@link #getClockInterval()} and {@link #isRunning()}
  */
 public class Clock implements ScheduledEventListener {
 
     /**
      * ClockTick interface for receiving clock Tick events
+     * <br> The {@link ClockTickListener#clockTick(double, Clock)} receives the scheduled event and is usually represented as a Lambda. For example:
+     <pre>
+     testclock1.addClockTickListener(new Clock.ClockTickListener() {
+     {@literal @}Override
+            public void clockTick(double offset, Clock clock) {
+
+            }
+        });
+
+     </pre>
+
+     is generally represented as:
+     <pre>
+     testclock1.addClockTickListener((offset, clock) -> {
+
+     });
+     </pre>
+
+     * <br>It is also possible to connect the one {@link ClockTickListener} to more than one clock. For example:
+     *
+     * <pre>
+     * Clock testclock1 = new Clock(100);
+     * Clock testclock2 = new Clock(37);
+     *
+     * Clock.ClockTickListener clockTickListener = (offset, clock) -> {
+     *     double clock_interval = clock.getClockInterval();
+     *     long num_ticks =  clock.getNumberTicks();
+     *
+     *     System.out.println("Clock interval " + clock_interval + " has had " + num_ticks + " ticks");
+     * };
+     *
+     * // Now add listener to both clocks
+     * testclock1.addClockTickListener(clockTickListener);
+     * testclock2.addClockTickListener(clockTickListener);
+     *
+     * testclock1.start();
+     * testclock2.start();
+     * </pre>
      */
     public interface ClockTickListener {
         /**
-         * Event occurs when clock tick occurs
+         * Event occurs when clock tick occurs. The offset parameter indicates how far of the exact time in milliseconds the event occurred,
+         * while the clock is the clock that triggered the event.
+         * <pre>
+         * testclock1.addClockTickListener((offset, clock) -> {
+         *
+         * });
+         * </pre>
          * @param offset the number of milliseconds we are off the tick. Positive number is late, negative is early
          * @param clock the clock object sending the message
          */
@@ -40,15 +106,12 @@ public class Clock implements ScheduledEventListener {
     // create a flag to set cancel while we are in  clock test
     private volatile boolean doCancel = false;
 
-
-
-
     private double clockInterval;
 
     private double startTime;
 
     /**
-     * The interval of the clock
+     * The interval of the clock in milliseconds
      * @return the clock interval
      */
     public double getClockInterval() {
@@ -56,7 +119,7 @@ public class Clock implements ScheduledEventListener {
     }
 
     /**
-     * Return the number of clock ticks
+     * Return the number of clock ticks since the clock was started
      * @return number of ticks
      */
     public long getNumberTicks() {
@@ -69,13 +132,11 @@ public class Clock implements ScheduledEventListener {
     private List<ClockTickListener> clockTickListeners = new ArrayList<>();
 
     /**
-     * Constructor using default Scheduler
+     * Constructor using default Scheduler and an interval
      * @param interval the interval in milliseconds Must be greater than 2 milliseconds otherwise could lock up
      */
     public Clock(double interval){
-
         this(interval, HBScheduler.getGlobalScheduler());
-
     }
 
     /**
@@ -166,8 +227,36 @@ public class Clock implements ScheduledEventListener {
     }
 
     /**
-     * Add a listener for this clock
-     * @param listener the listener
+     * Add a {@link ClockTickListener} for this clock. More than one listener can be attached to a {@link Clock} and they
+     * can be added after the clock is already started. For example:
+     *
+     * <pre>
+     * final int TICKS_PER_BEAT = 4;
+     * double interval = Clock.BPM2Interval(120 * TICKS_PER_BEAT);
+     *
+     * Clock testclock1 = new Clock(interval);
+     *
+     * // create a listener for each Beat
+     * testclock1.addClockTickListener((offset, clock) -> {
+     *   if (clock.getNumberTicks() % TICKS_PER_BEAT == 0){
+     *     System.out.println("Beat " + clock.getNumberTicks() / TICKS_PER_BEAT);
+     *   }
+     *
+     * });
+     *
+     * testclock1.start();
+     *
+     * // We can even add listeners after clock is started
+     * // Create a Listener for every Tick not on the beat
+     * testclock1.addClockTickListener((offset, clock) -> {
+     *    long tickNum = clock.getNumberTicks() % TICKS_PER_BEAT;
+     *    System.out.println("tick " + tickNum);
+     * });
+     *
+     * </pre>
+     *
+     * Listeners are removed using {@link #removeClockTickListener(ClockTickListener)}
+     * @param listener the listener to add
      * @return this
      */
     public Clock addClockTickListener(ClockTickListener listener){
@@ -179,7 +268,7 @@ public class Clock implements ScheduledEventListener {
     }
 
     /**
-     * Removes a listener for this clock
+     * Removes a {@link ClockTickListener} for this clock previously added using {@link #addClockTickListener(ClockTickListener)}
      * @param listener the listener to remove
      */
     public void removeClockTickListener(ClockTickListener listener){
@@ -190,7 +279,7 @@ public class Clock implements ScheduledEventListener {
 
 
     /**
-     * Clears all listeners for this clock
+     * Clears all {@link ClockTickListener} for this clock
      */
     public void clearClockTickListener(){
         synchronized (clockTickListenersLock){

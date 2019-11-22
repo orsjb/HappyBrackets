@@ -17,8 +17,6 @@ import java.lang.invoke.MethodHandles;
  * by a dynamicControl that will display as a slider
  */
 public class IntegerSliderControlSample implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     @Override
     public void action(HB hb) {
 

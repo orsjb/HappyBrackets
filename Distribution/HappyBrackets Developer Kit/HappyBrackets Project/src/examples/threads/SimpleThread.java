@@ -17,8 +17,6 @@ import java.lang.invoke.MethodHandles;
  */
 public class SimpleThread implements HBAction, HBReset {
 
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     final float START_FREQUENCY = 100; // this is the frequency of the waveform we will make
     final float MAX_FREQUENCY = 15000; // This is the maximum frequency
 

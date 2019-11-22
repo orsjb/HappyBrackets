@@ -13,7 +13,13 @@ import java.time.ZoneOffset;
 import java.util.*;
 
 /**
- * Stores events with the time they need to be executed and executes them when they are due
+ * Stores events with the time they need to be executed and executes them when they are due. These include {@link Clock}, {@link Delay} and {@link net.happybrackets.core.control.DynamicControl}
+ * <br>The global {@link HBScheduler#getGlobalScheduler()} is the scheduler most scheduled events are triggered to. Moving the {@link HBScheduler#getGlobalScheduler()} forward or backwards in time will cause the objects to have their events moved accordingly.
+ * <br>It is possible to run multiple {@link HBScheduler} if you want to synchronise to more than one epoch.
+ * <br>The time is stored in milliseconds a a {@link Double}, with the zero {@link #REFERENCE_TIME} being  1 Dec 2018 on the System Clock.
+ * <br>The Scheduler can be synchronised to the System Clock through the function {@link #synchroniseClocks()}. The offset between the scheduler and the System Clock can be obtained through {@link #getClockSkew()}
+ * The scheduler can, however, be set to any time independent of the System Clock through calls to
+ * {@link #setScheduleTime(double)} or {@link #adjustScheduleTime}. The current scheduler time can be obtained through {@link #getSchedulerTime()}
  */
 public class HBScheduler {
 
@@ -23,7 +29,9 @@ public class HBScheduler {
         OBJ_VAL
     }
 
-    // we will use 1 Dec 2018 as our global reference start clock
+    /**
+     * 1 Dec 2018 is the global reference start clock.
+     */
     static public final LocalDateTime REFERENCE_TIME = LocalDateTime.ofEpochSecond(1543622400, 0, ZoneOffset.UTC);
 
     private static HBScheduler globalScheduler = null;
@@ -334,7 +342,7 @@ public class HBScheduler {
     }
 
     /**
-     * Notify Listeners of scchedule complete event
+     * Notify Listeners of schedule complete event
      */
     synchronized private void notifyScheduleComplete() {
         for (ScheduleAdjustmentListener listener:
@@ -420,7 +428,8 @@ public class HBScheduler {
 
 
     /**
-     * Get the amount of time elapsed since we set reference time
+     * Get the Scheduler time in milliseconds. This function is particularly useful for scheduling
+     * event to occur in the future by adding the number of milliseconds in the future. An example of its usage is in {@link net.happybrackets.core.control.FloatControl#setValue(double, double)}
      * @return the elapsed time in milliseconds
      */
     public double getSchedulerTime(){
@@ -428,14 +437,19 @@ public class HBScheduler {
     }
 
     /**
-     * Set the scheduled time to this time
+     * Set the scheduler time to this time
      * @param new_time the new time
      */
     public void setScheduleTime(double new_time){
         adjustScheduleTime (new_time - getSchedulerTime(), 0);
     }
     /**
-     * Adjust the scheduler time
+     * Adjust the scheduler time. For example, to advance the scheduler 200 ms over a five second period, we would use the following code
+     * <pre>
+     HBScheduler scheduler = HBScheduler.getGlobalScheduler();
+     scheduler.adjustScheduleTime(200, 5000);
+     * </pre>
+     * Likewise, a negative value will retard the scheduler time
      * @param amount the amount of milliseconds we need to adjust our time by. A positive amount will advance the scheduler
      * @param duration the number of milliseconds over which we want this change to occur so we don't just get a jump
      */
@@ -528,7 +542,7 @@ public class HBScheduler {
     static public boolean ProcessSchedulerMessage(OSCMessage msg) {
         boolean ret = false;
 
-        // This will be a message of type DynamicContrrol Network Message. So we will decode
+        // This will be a message of type DynamicControl Network Message. So we will decode
         String device_name = (String) msg.getArg(MESSAGE_PARAMS.DEVICE_NAME.ordinal());
 
         int message_id = (int) msg.getArg(MESSAGE_PARAMS.MESSAGE_ID.ordinal());

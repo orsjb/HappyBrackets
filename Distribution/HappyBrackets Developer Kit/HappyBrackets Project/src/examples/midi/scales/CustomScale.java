@@ -24,8 +24,6 @@ import java.lang.invoke.MethodHandles;
  */
 public class CustomScale implements HBAction {
 
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     // we need to define class variables so we can access them inside the clock
 
     // we will increment this number to get to next note is scale

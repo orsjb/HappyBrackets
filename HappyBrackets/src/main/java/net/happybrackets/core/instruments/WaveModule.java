@@ -7,7 +7,21 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 
 /**
- * An encapsulated class for generating a basic wave player
+ * An encapsulated class for generating a basic wave player with functions to set
+ * the frequency, gain, and {@link Buffer} type.
+ <pre>
+ WaveModule player = new WaveModule();
+ player.setFrequency(440);
+ player.setGain(0.1f);
+ player.setBuffer(Buffer.SQUARE);
+ player.connectTo(HB.getAudioOutput());
+ </pre>
+ <br> The gain can be set to a {@link UGen} object via {@link #setGainObject(UGen)} or to a specific value
+ * via {@link #setGainValue(double)}
+ <br>
+ <br> The frequency control can be set to a {@link UGen} object via {@link #setFrequency(UGen)}, a specific value
+ * via {@link #setFrequency(double)} (double)}, or to a converted Midi value via {@link #setMidiFrequency(int)}
+ <br> The type of waveform {@link Buffer} is set via {@link #setBuffer(Buffer)}. The waveform can be paused through {@link #pause(boolean)}
  */
 public class WaveModule extends BasicInstrument{
 
@@ -29,14 +43,14 @@ public class WaveModule extends BasicInstrument{
 
 
     /**
-     * Create a Wavelplayer with default parameters of 440hz, 0.1 gain with a sine wave buffer
+     * Create a {@link WaveModule} with default parameters of 440hz, 0.1 gain with a sine wave buffer
      */
     public WaveModule(){
         this(DEFAULT_FREQ, DEFAULT_GAIN, DEFAULT_BUFFER);
     }
 
     /**
-     * Create a basic waveplayer for generating simple wave playback
+     * Create a basic {@link WaveModule} for generating simple wave playback
      * @param frequency the initial frequency
      * @param gain the initial volume. A value of 0.1 is a good value
      * @param waveform_type the type of waveform to use, eg, sine, square, etc...
@@ -46,7 +60,7 @@ public class WaveModule extends BasicInstrument{
     }
 
     /**
-     * Create a basic waveplayer for generating simple wave playback
+     * Create a basic {@link WaveModule} for generating simple wave playback
      * @param frequency_control the Object that will control the frequency
      * @param gain the initial volume. A value of 0.1 is a good value
      * @param waveform_type the type of waveform to use, eg, sine, square, etc...
@@ -56,7 +70,7 @@ public class WaveModule extends BasicInstrument{
     }
 
     /**
-     * Create a basic waveplayer for generating simple wave playback
+     * Create a basic {@link WaveModule} for generating simple wave playback
      * @param frequency the initial frequency
      * @param gain_control the Object that will control the gain
      * @param waveform_type the type of waveform to use, eg, sine, square, etc...
@@ -67,7 +81,7 @@ public class WaveModule extends BasicInstrument{
 
 
     /**
-     * Create a basic waveplayer for generating simple wave playback
+     * Create a basic {@link WaveModule} for generating simple wave playback
      * @param frequency_control the Object that will control the frequency
      * @param gain_control the Object that will control the gain
      * @param waveform_type the type of waveform to use, eg, sine, square, etc...
@@ -117,8 +131,8 @@ public class WaveModule extends BasicInstrument{
 
 
     /**
-     * Get the UGen waveplayer object
-     * @return the waveplayer object
+     * Get the UGen {@link WavePlayer} object
+     * @return the {@link WavePlayer} object
      */
     public WavePlayer getWavePlayer(){
         return waveformGenerator;
@@ -136,23 +150,9 @@ public class WaveModule extends BasicInstrument{
 
 
 
-    /**
-     * set an object to control the frequency of the waveplayer
-     * @param new_frequency_control the new object that will control the frequency
-     * @return this
-     * @deprecated use setFrequency instead. This was a type
-     */
-    public WaveModule setFequency(UGen new_frequency_control){
-        // assign new frequency object to wave player
-        waveformGenerator.setFrequency(new_frequency_control);
-        // now assign new one
-        frequencyControl = new_frequency_control;
-
-        return this;
-    }
 
     /**
-     * set an object to control the frequency of the waveplayer
+     * set an object to control the frequency of the {@link WavePlayer}
      * @param new_frequency_control the new object that will control the frequency
      * @return this
      */
@@ -165,20 +165,9 @@ public class WaveModule extends BasicInstrument{
         return this;
     }
 
-    /**
-     * set the frequency of the waveplayer to this frequency
-     * @param new_frequency the new frequency
-     * @return this
-    * @deprecated use setFrequency instead. This was a type
-     */
-    public WaveModule setFequency(double new_frequency){
-        frequencyControl.setValue((float)new_frequency);
-
-        return this;
-    }
 
     /**
-     * set the frequency of the waveplayer to this frequency
+     * set the frequency of the {@link WavePlayer} to this frequency
      * @param new_frequency the new frequency
      * @return this
      */
@@ -188,15 +177,6 @@ public class WaveModule extends BasicInstrument{
         return this;
     }
 
-    /**
-     * Set the frequency based on Midi Note Number
-     * @param midi_note_number the Midi Note number
-     * @return this
-     * @deprecated replaed due to misspelling. Use setMidiFrequency
-     */
-    public WaveModule setMidiFequency(int midi_note_number){
-        return setFequency(Pitch.mtof(midi_note_number));
-    }
 
     /**
      * Set the frequency based on Midi Note Number

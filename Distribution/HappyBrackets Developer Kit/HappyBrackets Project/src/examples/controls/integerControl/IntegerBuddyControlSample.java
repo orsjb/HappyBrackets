@@ -18,8 +18,6 @@ import java.lang.invoke.MethodHandles;
  * by dynamicControl pairs that will display as a sliders and text boxes
  */
 public class IntegerBuddyControlSample implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     @Override
     public void action(HB hb) {
 

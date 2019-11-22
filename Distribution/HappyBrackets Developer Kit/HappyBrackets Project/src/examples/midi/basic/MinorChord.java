@@ -16,8 +16,6 @@ import java.lang.invoke.MethodHandles;
  * All three wavePlayers are connected to the input of the Gain object
  */
 public class MinorChord implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     @Override
     public void action(HB hb) {
 
@@ -49,7 +47,7 @@ public class MinorChord implements HBAction {
 
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(HB.getNumOutChannels(), audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(tonicWaveform);

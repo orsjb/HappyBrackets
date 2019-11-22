@@ -20,8 +20,6 @@ import java.lang.invoke.MethodHandles;
  * After holding again for 3 seconds, we will kill the gain control to stop sound
  */
 public class FrequencyEnvelope implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-
     @Override
     public void action(HB hb) {
 
@@ -43,9 +41,6 @@ public class FrequencyEnvelope implements HBAction {
 
         // Create our envelope using LOW_FREQUENCY as the starting value
         Envelope frequencyEnvelope = new Envelope(LOW_FREQUENCY);
-
-        // create a wave player to generate a waveform using the frequencyEnvelope and a sinewave
-        WavePlayer waveformGenerator = new WavePlayer(frequencyEnvelope, Buffer.SINE);
 
         WaveModule player = new WaveModule(frequencyEnvelope, INITIAL_VOLUME, Buffer.SINE);
         player.connectTo(HB.getAudioOutput());

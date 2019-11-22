@@ -1,6 +1,7 @@
 package examples.basic;
 
 import net.beadsproject.beads.data.Buffer;
+import net.beadsproject.beads.events.KillTrigger;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
@@ -18,8 +19,6 @@ import java.lang.invoke.MethodHandles;
  * The volume will hold steady for 3 seconds and then fade out over 10 seconds
  */
 public class GainEnvelope implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-
     @Override
     public void action(HB hb) {
 
@@ -60,8 +59,8 @@ public class GainEnvelope implements HBAction {
         // we do this by setting the start of the segment to the value as our MAX_VOLUME
         gainEnvelope.addSegment(MAX_VOLUME, HOLD_VOLUME_TIME);
 
-        //Now make our gain fade out to MIN_VOLUME
-        gainEnvelope.addSegment(MIN_VOLUME, FADEOUT_TIME);
+        //Now make our gain fade out to MIN_VOLUME and then kill it
+        gainEnvelope.addSegment(MIN_VOLUME, FADEOUT_TIME, new KillTrigger(player.getKillTrigger()));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

@@ -40,9 +40,6 @@ import java.lang.invoke.MethodHandles;
  * 7 - A boolean DynamicControl to start and stop playback with a checkbox
  */
 public class SampleController implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
-
     // we will make two class member control references so we can set them in a class function
     FloatControl audioSliderPosition = null;
     TextControl audioTextPosition = null;
@@ -89,7 +86,7 @@ public class SampleController implements HBAction {
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
+            Gain gainAmplifier = new Gain(HB.getNumOutChannels(), audioVolume);
             gainAmplifier.addInput(samplePlayer);
             HB.getAudioOutput().addInput(gainAmplifier);
 

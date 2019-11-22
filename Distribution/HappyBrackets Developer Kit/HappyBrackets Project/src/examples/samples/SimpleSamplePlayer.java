@@ -16,7 +16,6 @@ import java.lang.invoke.MethodHandles;
  */
 public class SimpleSamplePlayer implements HBAction
 {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
     @Override
     public void action(HB hb) {
 

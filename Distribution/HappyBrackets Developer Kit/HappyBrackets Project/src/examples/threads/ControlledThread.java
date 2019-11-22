@@ -20,7 +20,6 @@ import java.lang.invoke.MethodHandles;
  * The thread can also be killed
  */
 public class ControlledThread implements HBAction, HBReset {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
     // This variable will become true when the composition is reset
     boolean compositionReset = false;
 

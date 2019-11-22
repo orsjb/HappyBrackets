@@ -46,7 +46,8 @@ public class ClockTest {
             int expectedNumTicks = (int) (onDuration / CLOCK_INTERVAL);
 
 
-            Clock testclock1 = new Clock(CLOCK_INTERVAL).addClockTickListener((offset, clock) -> {
+            Clock testclock1 = new Clock(CLOCK_INTERVAL);
+            testclock1.addClockTickListener((offset, clock) -> {
                 double elapsed_time = HBScheduler.getGlobalScheduler().getSchedulerTime();
                 if (SHOW_TICK) {
                     System.out.println("Tick " + (long) elapsed_time + " " + offset);

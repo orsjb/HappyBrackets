@@ -13,8 +13,6 @@ import java.lang.invoke.MethodHandles;
  * Uses gyroscope sensor to map each axis to the frequency of three different waveforms
  */
 public class TripleAxisGyroscope implements HBAction, HBReset {
-    // Change to the number of audio Channels on your device
-    final int NUMBER_AUDIO_CHANNELS = 1;
 
     // This variable will become true when the composition is reset
     boolean compositionReset = false;

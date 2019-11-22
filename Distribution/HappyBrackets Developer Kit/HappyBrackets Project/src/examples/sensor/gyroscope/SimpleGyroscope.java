@@ -21,8 +21,6 @@ import java.lang.invoke.MethodHandles;
  * we are using a function to calculate the frequency
  */
 public class SimpleGyroscope implements HBAction{
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     @Override
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one

@@ -20,8 +20,6 @@ import java.lang.invoke.MethodHandles;
  * When the note number has reached our defined END_NOTE, the gain amplifier is killed and playback stops
  */
 public class SimpleClock implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     // These parameters need to be class variables so they can be accessed within the clock
     final int START_NOTE = 40; // this is the MIDI number of first note
     final int END_NOTE = 110;  // this is the last note we will play
@@ -44,10 +42,10 @@ public class SimpleClock implements HBAction {
 
 
         // create a clock and start changing frequency on each beat
-        final float CLOCK_DURATION = 300;
+        final float CLOCK_INTERVAL = 300;
 
         /* To create this, just type clockTimer */
-        Clock hbClock = hb.createClock(CLOCK_DURATION).addClockTickListener((offset, this_clock) -> {/* Write your code below this line */
+        Clock hbClock = HB.createClock(CLOCK_INTERVAL).addClockTickListener((offset, this_clock) -> {/* Write your code below this line */
             if (currentNote < END_NOTE) {
                 // move to the next chromatic note
                 currentNote++;

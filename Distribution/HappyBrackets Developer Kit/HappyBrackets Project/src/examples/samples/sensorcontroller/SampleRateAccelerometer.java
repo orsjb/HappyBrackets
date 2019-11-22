@@ -17,8 +17,6 @@ import java.lang.invoke.MethodHandles;
  * When the accelerometer x value is 1, the speed is double. When it is -1, the speed is double in reverse
  */
 public class SampleRateAccelerometer implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-    
     @Override
     public void action(HB hb) {
         // remove this code if you do not want other compositions to run at the same time as this one
@@ -49,7 +47,7 @@ public class SampleRateAccelerometer implements HBAction {
             samplePlayer.setKillOnEnd(false);
 
             // Connect our sample player to audio
-            Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
+            Gain gainAmplifier = new Gain(HB.getNumOutChannels(), audioVolume);
             gainAmplifier.addInput(samplePlayer);
             HB.getAudioOutput().addInput(gainAmplifier);
 

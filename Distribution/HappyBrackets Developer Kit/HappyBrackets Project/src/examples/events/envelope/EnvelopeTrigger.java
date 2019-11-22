@@ -15,7 +15,6 @@ import java.lang.invoke.MethodHandles;
  * A single envelope is used, however, we add segments to the envelope. When the first segment is completed, the next segment starts
  */
 public class EnvelopeTrigger implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
     
     @Override
     public void action(HB hb) {
@@ -36,7 +35,7 @@ public class EnvelopeTrigger implements HBAction {
         Envelope eventTrigger = new Envelope(VOLUME);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, eventTrigger);
+        Gain gainAmplifier = new Gain(HB.getNumOutChannels(), eventTrigger);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);

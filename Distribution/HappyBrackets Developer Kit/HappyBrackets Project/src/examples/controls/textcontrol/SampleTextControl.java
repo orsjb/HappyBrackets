@@ -11,8 +11,6 @@ import net.happybrackets.device.HB;
 import java.lang.invoke.MethodHandles;
 
 public class SampleTextControl implements HBAction, HBReset {
-    // Change to the number of audio Channels on your device
-    final int NUMBER_AUDIO_CHANNELS = 1;
 
     final String COMMAND_PLAY = "play";
     final String COMMAND_STOP = "stop";

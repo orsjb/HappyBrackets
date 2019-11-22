@@ -6,6 +6,41 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.SamplePlayer;
 
+/**
+ * Encapsulates a basic Sample player into a single class object. It is possible to define the sample name through
+ * {@link #setSample(String)}, define looping through {@link #setLoopStart(UGen)}, {@link #setLoopStart(double)}, {@link #setLoopEnd(UGen)}, {@link #setLoopEnd(UGen)}, {@link #setLoopStart(UGen)} and {@link #setLoopType(SamplePlayer.LoopType)}.
+ *  <br> <br>
+ *  The playback rate of the sample can be controlled through {@link #setRate(UGen)} and {@link #setRate(double)}.
+ *  <br> <br>
+ *  The position of the player can be set through {@link #setPosition(double)} and {@link #setToEnd()}.
+ *  <br>Sample playback can paused through {@link #pause(boolean)}
+ *
+ *  <br> The gain can be set to a {@link UGen} object via {@link #setGainObject(UGen)} or to a specific value
+ *  * via {@link #setGainValue(double)}.
+ *  <br><br>An example of using the {@link SampleModule} might be as follows
+ *  <pre>
+ // define our start and end loop points
+ final float LOOP_START = 0;
+ final  float LOOP_END = 2000;
+
+ final String sample_name = "data/audio/Roje/i-write.wav";
+ SampleModule samplePlayer = new SampleModule();
+ if (samplePlayer.setSample(sample_name)) {
+    samplePlayer.connectTo(HB.getAudioOutput());
+
+    // define our loop type. we will loop forwards
+    samplePlayer.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+
+     // now set the loop start and end in the actual sample player
+    samplePlayer.setLoopStart(LOOP_START);
+    samplePlayer.setLoopEnd(LOOP_END);
+ } else {
+    HB.sendStatus("Failed sample " + sample_name);
+ }
+
+
+ *  </pre>
+ */
 public class SampleModule extends BasicInstrument{
 
     final static float DEFAULT_GAIN = 1;
@@ -124,7 +159,27 @@ public class SampleModule extends BasicInstrument{
     }
 
     /**
-     * set an object to control the playback rate of the samplePlayer
+     * set an object to control the playback rate of the samplePlayer. For example,
+     * to set the playback rate using an envelop, we might use the following code:
+     * <br>
+     * <pre>
+     Envelope sampleRateEnvelope =  new Envelope(0);
+
+     final String s = "data/audio/Roje/i-write.wav";
+     SampleModule sampleModule = new SampleModule();
+     if (sampleModule.setSample(s)) {// Write your code below this line
+
+     sampleModule.setRate(sampleRateEnvelope);
+     sampleModule.connectTo(HB.getAudioOutput());
+
+     sampleRateEnvelope.addSegment(2, 3000); // Set Rate to 2X over 3 seconds
+     sampleRateEnvelope.addSegment(1, 2000); // Set Rate to 1X over 2 seconds
+
+     // Write your code above this line
+     } else {
+     HB.HBInstance.setStatus("Failed sample " + s);
+     }// End samplePlayer code
+     * </pre>
      * @param new_rate_control the new object that will control the playback rate
      * @return this
      */
@@ -140,7 +195,7 @@ public class SampleModule extends BasicInstrument{
     }
 
     /**
-     * set the playback rate to this value
+     * set the playback rate to this value. A negative value makes the sample play backwards
      * @param new_rate the new frequency
      * @return this
      */

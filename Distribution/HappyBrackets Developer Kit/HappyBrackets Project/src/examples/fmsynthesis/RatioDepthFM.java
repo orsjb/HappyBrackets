@@ -20,8 +20,6 @@ import java.lang.invoke.MethodHandles;
  * The carrier will move to high frequency after the hold based on carrierFrequency envelope segment
  */
 public class RatioDepthFM implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-
     @Override
     public void action(HB hb) {
 

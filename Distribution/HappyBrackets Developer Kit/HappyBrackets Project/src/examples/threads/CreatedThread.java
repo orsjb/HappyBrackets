@@ -15,8 +15,6 @@ import java.lang.invoke.MethodHandles;
  * When the frequency is above the maximum, the frequency starts again
  */
 public class CreatedThread implements HBAction {
-    final int NUMBER_AUDIO_CHANNELS = 1; // define how many audio channels our device is using
-
     /***** Type your HBAction code below this line ******/
     final float START_FREQUENCY = 200; // this is the frequency of the waveform we will make
     final float MAX_FREQUENCY = 15000; // This is the maximum frequency
@@ -53,7 +51,7 @@ public class CreatedThread implements HBAction {
         WavePlayer waveformGenerator = new WavePlayer(waveformFrequency, Buffer.SINE);
 
         // set up a gain amplifier to control the volume
-        Gain gainAmplifier = new Gain(NUMBER_AUDIO_CHANNELS, audioVolume);
+        Gain gainAmplifier = new Gain(HB.getNumOutChannels(), audioVolume);
 
         // connect our WavePlayer object into the Gain object
         gainAmplifier.addInput(waveformGenerator);
