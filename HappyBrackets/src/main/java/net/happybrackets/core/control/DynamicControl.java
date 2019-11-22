@@ -347,7 +347,7 @@ public class DynamicControl implements ScheduledEventListener {
     private String parentSketchName;
     private ControlType controlType;
     final String controlName;
-    private ControlScope controlScope = ControlScope.UNIQUE;
+    private ControlScope controlScope = ControlScope.SKETCH;
 
     private Object objVal = 0;
     private Object maximumDisplayValue = 0;
