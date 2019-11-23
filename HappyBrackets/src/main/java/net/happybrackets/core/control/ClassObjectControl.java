@@ -11,30 +11,31 @@ import java.lang.reflect.InvocationTargetException;
  * <br> All {@link ClassObjectControl} objects with the same name and {@link ControlScope} will respond to a {@link ClassObjectControl#setValue(Object)}.
  * Additionally, the {@link Class} of the object that we are sending must also be defined. For example:
  consider two {@link ClassObjectControl} with the same {@link ControlScope} and name:
- * <br><b>
- *     <br><br>ClassObjectControl control1 = new ClassObjectControlSender(this, "MyControl", TripleAxisMessage.class);
- *
- *     <br><br>
- *         <br>ClassObjectControl control2 = new ClassObjectControl(this, "MyControl", TripleAxisMessage.class) {
- *         <br>&emsp;   @Override
- *         <br>&emsp;   public void valueChanged(Object object_val) {
- *         <br>&emsp;&emsp;       TripleAxisMessage control_val = (TripleAxisMessage) object_val;
- *         <br>&emsp;&emsp;System.out.println("x:" + msg.getX() + " y:" + msg.getY() +  " z" + msg.getZ());
- *         <br>&emsp;   }
- *
- *         };
- *
- *     <br><br>
- *     TripleAxisMessage msg = new TripleAxisMessage(0.1f, 0.2f, 0.3f);
- *     <br>control1.setValue(msg);
- *
- * </b>
+
+ <pre>
+    ClassObjectControlSender control1 = new ClassObjectControlSender(this, "Accel", TripleAxisMessage.class);
+
+    ClassObjectControl control2 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class) {
+        {@literal @}Override
+        public void valueChanged(Object object_val) {
+            TripleAxisMessage control_val = (TripleAxisMessage) object_val;
+            System.out.println("x:" + control_val.getX() + " y:" + control_val.getY() +  " z" + control_val.getZ());
+        }
+
+    };
+
+    TripleAxisMessage msg = new TripleAxisMessage(0.1f, 0.2f, 0.3f);
+    control1.setValue(msg);
+ </pre>
  *
  *
  <br><br>This will cause the <b>control2</b> to fire the {@link ClassObjectControl#valueChanged(Object)} function with the new value, causing <b>x:0.1 y:0.2 z:0.3</b> to be printed to standard output
  * <br>The control can also schedule messages to be sent at a time in the future by adding the time to the message
  * using an absolute time in the {@link ClassObjectControl#setValue(Object, double)}  function. For example, the message can be scheduled to execute in 1 second as follows: <br>
  * <br> <b>control1.setValue (msg, HB.getSchedulerTime() + 1000);</b>
+ *
+ * The {@link Class} type must be defined within the control
+ *
  <br><br>Values cannot be set within HappyBrackets control displays
  * If you do not require a handler on the class, use the {@link ClassObjectControlSender} class
  *
@@ -135,17 +136,60 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
         return  ret;
     }
 
+    /**
+     * Fired event that occurs when the value for the control has been set. For example:
+
+     <pre>
+     ClassObjectControlSender control1 = new ClassObjectControlSender(this, "Accel", TripleAxisMessage.class);
+
+     ClassObjectControl control2 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class) {
+        {@literal @}Override
+        <b>public void valueChanged(Object object_val) {
+            TripleAxisMessage control_val = (TripleAxisMessage) object_val;
+            System.out.println("x:" + control_val.getX() + " y:" + control_val.getY() +  " z" + control_val.getZ());
+        }</b>
+
+     };
+
+     TripleAxisMessage msg = new TripleAxisMessage(0.1f, 0.2f, 0.3f);
+     control1.setValue(msg);
+     </pre>
+     <br>This will cause the <b>control2</b> to fire the {@link ClassObjectControl#valueChanged(Object)} function with the new value, causing <b>x:0.1 y:0.2 z:0.3</b> to be printed to standard output
+     * @param control_val The class object that has been received. If the value could not be cast, the function will not be called
+     */
     public abstract void valueChanged(Object control_val);
 
     /**
-     * set the value for the control. This will notify all the listeners
+     * set the value for the control. This will notify all the listeners with same name and {@link ControlScope}. For example:
+     <pre>
+     ClassObjectControlSender control1 = new ClassObjectControlSender(this, "Accel", TripleAxisMessage.class);
+
+     ClassObjectControl control2 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class) {
+        {@literal @}Override
+        public void valueChanged(Object object_val) {
+            TripleAxisMessage control_val = (TripleAxisMessage) object_val;
+            System.out.println("x:" + control_val.getX() + " y:" + control_val.getY() +  " z" + control_val.getZ());
+        }
+
+     };
+
+     TripleAxisMessage msg = new TripleAxisMessage(0.1f, 0.2f, 0.3f);
+     <b>control1.setValue(msg);</b>
+     </pre>
+     <br>This will cause the <b>control2</b> to fire the {@link ClassObjectControl#valueChanged(Object)} function with the new value, causing <b>x:0.1 y:0.2 z:0.3</b> to be printed to standard output
      * @param val the value to set to
      */
     public void setValue(Object val){
         getDynamicControl().setValue(val);
     }
+
     /**
-     * set the value for the control. This will notify all the listeners
+     Identical to the {@link #setValue(Object)} with the exception that the {@link #valueChanged(Object)} event will be caused at the {@link net.happybrackets.core.scheduling.HBScheduler} scheduled time passed in. For example, the
+     following code will cause the {@link #valueChanged(Object)} to be fired 1 second in the future:
+     <pre>
+     TripleAxisMessage msg = new TripleAxisMessage(0.1f, 0.2f, 0.3f);
+     <b>control1.setValue(msg, 1000);</b>
+     </pre>
      * @param val the value to set to
      * @param scheduler_time the scheduler time this is supposed to occur at
      */
@@ -155,7 +199,6 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
 
     /**
      * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
-     * We must do this in subclass
      * @param new_scope The new Control Scope
      * @return this object
      */
@@ -165,9 +208,9 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
     }
 
     /**
-     * Change how to display object
+     * Change how to display object as {@link net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE}
      * We must do this in subclass
-     * @param display_type The new Control Scope
+     * @param display_type The new Display Type
      * @return this object
      */
     public ClassObjectControl setDisplayType(DynamicControl.DISPLAY_TYPE display_type){

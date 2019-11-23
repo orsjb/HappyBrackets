@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class MultiClockListenerTest {
 
-    final int TEST_TIMEOUT = 10000;
+    final int TEST_TIMEOUT = 10;
 
 
     @Test

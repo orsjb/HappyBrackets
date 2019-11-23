@@ -6,33 +6,26 @@ package net.happybrackets.core.control;
  * <br> All {@link BooleanControl} objects with the same name and {@link ControlScope} will respond to a {@link BooleanControl#setValue(Boolean)}. For example:
  * For example, consider two BooleanControls with the same {@link ControlScope} and name
  *
- * <br><br> <b>BooleanControl control1 = new BooleanControlSender(this, "Read", false);</b>
- * <br> <b>BooleanControl control2 = new BooleanControl(this, "Read", false)</b>....
- *<br><br>
- * Setting the value of <b>control1</b> will cause any objects listening to <b>control1</b> or <b>control2</b> to receive the action. EG
- *
- * <br><b>control1.setValue(true);</b>  // This will also set the value of control2
- *
+<pre>
+ BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+ BooleanControl control2 = new BooleanControl(this, "Read", false) {
+    {@literal @}Override
+    public void valueChanged(Boolean control_val) {
+        System.out.println("Read " + control_val);
+    }
+};// End DynamicControl control2 code
+
+ control1.setValue(true); // Setting control1 will also set control2
+ </pre>
+ <br>Will cause the {@link #valueChanged(Boolean)} function to be called with the new value, causing <b>Read true</b> to be printed to standard output
+
  * <br>
  * <br>The control can also schedule messages to be sent at a time in the future by adding the time to the message
  * using an absolute time in the {@link BooleanControl#setValue(Boolean, double)}  function. Eg: <br>
  * <br> <b>control1.setValue (true, HB.getSchedulerTime() + 1000);</b> // this will set control1 value, as well as all other BooleanControls with same {@link ControlScope} and name, to true 1 second in the future
  * <br>
- * <br>When the control receives the value, it will be passed through to the {@link BooleanControl#valueChanged(Boolean)} listener that is implemented when the class is created.
- * For example:<br>
- * <b>
- * <br>BooleanControl myControl = new BooleanControl(this,"My Control",false){
-     <br>&emsp; @Override
-      <br>&emsp;&emsp;public void valueChanged(Boolean new_value){
-        <br>&emsp;&emsp;&emsp;System.out.println("Read "+new_value);
-        <br>&emsp;&emsp;}
-        <br>&emsp;};
-
- <br><br>
-    myControl.setValue(true);
- </b>
- <br>Will cause the <b>valueChanged</b> function to be called with the new value, causing <b>Read true</b> to be printed to standard output
- <br><br>Setting the value within the HappyBrackets controls display is effected using a checkbox, where a checked value is true
+ <br><br>Setting the value within the HappyBrackets controls display is effected using a checkbox, where a checked value is true.
+ <br> It is possible to get current value using the {@link #getValue()}
 
  * If you do not require a handler on the class, use the {@link BooleanControlSender} class
  */
@@ -57,16 +50,59 @@ public abstract class BooleanControl extends DynamicControlParent {
 
     /**
      * Get the value for the control
+     <pre>
+     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+
+     boolean val = <b>control1.getValue();</b> // val will be false
+     control1.setValue(true);
+     val = <b>control1.getValue();</b> // val will be true
+     </pre>
      * @return the control value
      */
     public Boolean getValue(){
         return (Boolean) getDynamicControl().getValue();
     }
 
+    /**
+     * Fired event that occurs when the value for the control has been set. This will pass the message on to all other {@link DynamicControl} with matching name, type and {@link ControlScope} and call {@link #valueChanged(Boolean)}.
+     * The function must be implemented when creating objects
+     <pre>
+     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+     BooleanControl control2 = new BooleanControl(this, "Read", false) {
+       {@literal @}Override
+        <b>public void valueChanged(Boolean control_val) {
+            System.out.println("Read " + control_val);
+        }</b>
+     };// End DynamicControl control2 code
+
+     control1.setValue(true);// Setting control1 will also set control2
+     </pre>
+     <br>Will cause the {@link #valueChanged(Boolean)} function to be called with the new value, causing <b>Read true</b> to be printed to standard output
+     *
+     *
+     * @param control_val The new value of the control
+     */
     public abstract void valueChanged(Boolean control_val);
 
     /**
-     * set the value for the control. This will notify all the listeners
+     * set the value for the control. This will notify all the listeners with same name and {@link ControlScope}. For example
+     *
+     <pre>
+     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+     BooleanControl control2 = new BooleanControl(this, "Read", false) {
+        {@literal @}Override
+        public void valueChanged(Boolean control_val) {
+            System.out.println("Read " + control_val);
+        }
+     };// End DynamicControl control2 code
+
+     <b>control1.setValue(true);</b> // Setting control1 will also set control2
+     </pre>
+     <br>Will cause the {@link #valueChanged(Boolean)} function to be called with the new value, causing <b>Read true</b> to be printed to standard output
+
+     * <br>
+     * <br>The control can also schedule messages to be sent at a time in the future by adding the time to the message
+     * using an absolute time in the {@link BooleanControl#setValue(Boolean, double)}  function.
      * @param val the value to set to
      */
     public void setValue(Boolean val){
@@ -74,7 +110,11 @@ public abstract class BooleanControl extends DynamicControlParent {
     }
 
     /**
-     * set the value for the control. This will notify all the listeners
+     Identical to the {@link #setValue(Boolean)} with the exception that the {@link #valueChanged(Boolean)} event will be caused at the {@link net.happybrackets.core.scheduling.HBScheduler} scheduled time passed in.
+     * <br>For example, the following code will cause matching {@link DynamicControl} objects to respond 1 second in the future
+     * <br>
+     *     <b>control1.setValue (true, HB.getSchedulerTime() + 1000); </b>
+     *
      * @param val the value to set to
      * @param scheduler_time the scheduler time this is supposed to occur at
      */
@@ -84,8 +124,7 @@ public abstract class BooleanControl extends DynamicControlParent {
 
 
     /**
-     * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
-     * We must do this in subclass
+     * Changed the {@link ControlScope} the object has has. It will update control map so the correct events will be generated based on its scope
      * @param new_scope The new Control Scope
      * @return this object
      */
@@ -95,8 +134,7 @@ public abstract class BooleanControl extends DynamicControlParent {
     }
 
     /**
-     * Change how to display object
-     * We must do this in subclass
+     * Change how to display object as {@link net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE}
      * @param display_type The new Control Scope
      * @return this object
      */

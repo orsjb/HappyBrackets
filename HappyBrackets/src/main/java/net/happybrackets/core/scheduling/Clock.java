@@ -14,7 +14,7 @@ import java.util.List;
  *
  *     Clock testclock1 = new Clock(1000);
  *
- *     testclock1.addClockTickListener((offset, clock) -> {
+ *     testclock1.addClockTickListener((offset, clock) -{@literal >} {
  *          long number_ticks = clock.getNumberTicks();
  *          System.out.println("Num Ticks: " + number_ticks);
  *       });
@@ -46,7 +46,7 @@ public class Clock implements ScheduledEventListener {
 
      is generally represented as:
      <pre>
-     testclock1.addClockTickListener((offset, clock) -> {
+     testclock1.addClockTickListener((offset, clock) -{@literal >} {
 
      });
      </pre>
@@ -57,7 +57,7 @@ public class Clock implements ScheduledEventListener {
      * Clock testclock1 = new Clock(100);
      * Clock testclock2 = new Clock(37);
      *
-     * Clock.ClockTickListener clockTickListener = (offset, clock) -> {
+     * Clock.ClockTickListener clockTickListener = (offset, clock) -{@literal >} {
      *     double clock_interval = clock.getClockInterval();
      *     long num_ticks =  clock.getNumberTicks();
      *
@@ -77,7 +77,7 @@ public class Clock implements ScheduledEventListener {
          * Event occurs when clock tick occurs. The offset parameter indicates how far of the exact time in milliseconds the event occurred,
          * while the clock is the clock that triggered the event.
          * <pre>
-         * testclock1.addClockTickListener((offset, clock) -> {
+         * testclock1.addClockTickListener((offset, clock) -{@literal >} {
          *
          * });
          * </pre>
@@ -237,7 +237,7 @@ public class Clock implements ScheduledEventListener {
      * Clock testclock1 = new Clock(interval);
      *
      * // create a listener for each Beat
-     * testclock1.addClockTickListener((offset, clock) -> {
+     * testclock1.addClockTickListener((offset, clock) -{@literal >} {
      *   if (clock.getNumberTicks() % TICKS_PER_BEAT == 0){
      *     System.out.println("Beat " + clock.getNumberTicks() / TICKS_PER_BEAT);
      *   }
@@ -248,7 +248,7 @@ public class Clock implements ScheduledEventListener {
      *
      * // We can even add listeners after clock is started
      * // Create a Listener for every Tick not on the beat
-     * testclock1.addClockTickListener((offset, clock) -> {
+     * testclock1.addClockTickListener((offset, clock) -{@literal >} {
      *    long tickNum = clock.getNumberTicks() % TICKS_PER_BEAT;
      *    System.out.println("tick " + tickNum);
      * });
