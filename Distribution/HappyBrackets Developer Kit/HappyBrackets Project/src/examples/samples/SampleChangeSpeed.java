@@ -85,7 +85,7 @@ public class SampleChangeSpeed implements HBAction {
         // Change speed
         speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION);
         // hold speed. Then kill our playback at the end
-        speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION, new KillTrigger(samplePlayer.getKillTrigger()));
+        speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION, new KillTrigger(samplePlayer));
 
 
 

@@ -69,7 +69,7 @@ public class ControlledThread implements HBAction, HBReset {
                     Thread.sleep(SLEEP_TIME);
                 } catch (InterruptedException e) {/* remove the break below to just resume thread or add your own action */
 
-                    player.getKillTrigger().kill();
+                    player.kill();
                     break;
 
                 }

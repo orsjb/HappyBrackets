@@ -60,7 +60,7 @@ public class GainEnvelope implements HBAction {
         gainEnvelope.addSegment(MAX_VOLUME, HOLD_VOLUME_TIME);
 
         //Now make our gain fade out to MIN_VOLUME and then kill it
-        gainEnvelope.addSegment(MIN_VOLUME, FADEOUT_TIME, new KillTrigger(player.getKillTrigger()));
+        gainEnvelope.addSegment(MIN_VOLUME, FADEOUT_TIME, new KillTrigger(player));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

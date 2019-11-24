@@ -37,8 +37,6 @@ import net.beadsproject.beads.ugens.SamplePlayer;
  } else {
     HB.sendStatus("Failed sample " + sample_name);
  }
-
-
  *  </pre>
  */
 public class SampleModule extends BasicInstrument{
@@ -61,7 +59,7 @@ public class SampleModule extends BasicInstrument{
     SamplePlayer.LoopType loopType = SamplePlayer.LoopType.NO_LOOP_FORWARDS;
 
     /**
-     * Creates basic sample player for playing wave files
+     * Creates basic {@link SampleModule} for playing wave files
      */
     public SampleModule(){
         super(new Glide(DEFAULT_GAIN));
@@ -73,6 +71,15 @@ public class SampleModule extends BasicInstrument{
      * Set the sample. Note that the path is relative to Device/HappyBrackets.
      * Generally, the audio would be in "data/audio/"
      * The example filename is located "data/audio/Roje/i-write.wav"
+     *
+     <pre>
+     final String s = "data/audio/Roje/i-write.wav";
+     SampleModule sampleModule = new SampleModule();
+     <b>if (sampleModule.setSample(s))
+     {
+
+     }</b>
+     </pre>
      * @param filename the filename of the sample
      * @return true if the sample was loaded
      */
@@ -121,16 +128,14 @@ public class SampleModule extends BasicInstrument{
     }
 
     /**
-     * Pause the Sample PLayback
+     * Pause the Sample Playback
      * @param pause_playing true if we want to pause. Set to false to start playing
-     * @return this
      */
-    public SampleModule pause(boolean pause_playing){
+    public void pause(boolean pause_playing){
         if (samplePlayer != null){
             samplePlayer.pause(pause_playing);
         }
 
-        return this;
     }
 
     /**
@@ -168,16 +173,15 @@ public class SampleModule extends BasicInstrument{
      final String s = "data/audio/Roje/i-write.wav";
      SampleModule sampleModule = new SampleModule();
      if (sampleModule.setSample(s)) {// Write your code below this line
+        sampleModule.setRate(sampleRateEnvelope);
+        sampleModule.connectTo(HB.getAudioOutput());
 
-     sampleModule.setRate(sampleRateEnvelope);
-     sampleModule.connectTo(HB.getAudioOutput());
+        sampleRateEnvelope.addSegment(2, 3000); // Set Rate to 2X over 3 seconds
+        sampleRateEnvelope.addSegment(1, 2000); // Set Rate to 1X over 2 seconds
 
-     sampleRateEnvelope.addSegment(2, 3000); // Set Rate to 2X over 3 seconds
-     sampleRateEnvelope.addSegment(1, 2000); // Set Rate to 1X over 2 seconds
-
-     // Write your code above this line
+        // Write your code above this line
      } else {
-     HB.HBInstance.setStatus("Failed sample " + s);
+        HB.HBInstance.setStatus("Failed sample " + s);
      }// End samplePlayer code
      * </pre>
      * @param new_rate_control the new object that will control the playback rate
@@ -225,6 +229,29 @@ public class SampleModule extends BasicInstrument{
 
     /**
      * Set the startLoop position
+     *
+     <br><br>An example of using the {@link SampleModule} loops might be as follows
+     *  <pre>
+     // define our start and end loop points
+     final float LOOP_START = 0;
+     final  float LOOP_END = 2000;
+
+     final String sample_name = "data/audio/Roje/i-write.wav";
+     SampleModule samplePlayer = new SampleModule();
+     if (samplePlayer.setSample(sample_name)) {
+        samplePlayer.connectTo(HB.getAudioOutput());
+
+        // define our loop type. we will loop forwards
+        samplePlayer.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+
+        // now set the loop start and end in the actual sample player
+        samplePlayer.setLoopStart(LOOP_START);
+        samplePlayer.setLoopEnd(LOOP_END);
+     } else {
+        HB.sendStatus("Failed sample " + sample_name);
+     }
+     *  </pre>
+     *
      * @param loop_start loopPoint
      * @return this
      */
@@ -241,7 +268,27 @@ public class SampleModule extends BasicInstrument{
     }
 
     /**
-     * Set the start Loop Control Object
+     * Set the start Loop Control using a {@link UGen}. EG
+     *
+     <pre>
+     Glide loopStart = new Glide(0);
+     Glide loopEnd = new Glide(2000);
+
+     final String sample_name = "data/audio/Roje/i-write.wav";
+     SampleModule samplePlayer = new SampleModule();
+     if (samplePlayer.setSample(sample_name)) {
+        samplePlayer.connectTo(HB.getAudioOutput());
+
+        // define our loop type. we will loop forwards
+        samplePlayer.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+
+        // now set the loop start and end in the actual sample player
+        samplePlayer.setLoopStart(loopStart);
+        samplePlayer.setLoopEnd(loopEnd);
+     } else {
+        HB.sendStatus("Failed sample " + sample_name);
+     }
+     </pre>
      * @param loop_start the Object that will control loopStart
      * @return this
      */
@@ -256,6 +303,7 @@ public class SampleModule extends BasicInstrument{
 
     /**
      * Set the End Loop position
+     * See {@link #setLoopStart(double)} for example code
      * @param loop_end loopPoint
      * @return this
      */
@@ -272,7 +320,8 @@ public class SampleModule extends BasicInstrument{
     }
 
     /**
-     * Set the End Loop Control Object
+     * Set the End Loop using a {@link UGen}. EG
+     * For an example see {@link #setLoopStart(UGen)}
      * @param loop_end the Object that will control loopEnd
      * @return this
      */
@@ -286,7 +335,16 @@ public class SampleModule extends BasicInstrument{
     }
 
     /**
-     * Connect the output of this instrument to the input of another device
+     * Connect the output of this instrument to the input of another device.
+     * For example, to connect the {@link SampleModule} output to a {@link net.beadsproject.beads.ugens.Reverb},
+     * you could do the following:
+     <pre>
+     Reverb reverb = new Reverb();
+     final String sample_name = "data/audio/Roje/i-write.wav";
+     SampleModule samplePlayer = new SampleModule();
+     if (samplePlayer.setSample(sample_name)) {
+        samplePlayer.connectTo(reverb);
+     </pre>
      * @param input_device the device we want to connect it to
      * @return this
      */
@@ -297,7 +355,7 @@ public class SampleModule extends BasicInstrument{
 
 
     /**
-     * Sets the Loop Type for this Sampler
+     * Sets the {@link net.beadsproject.beads.ugens.SamplePlayer.LoopType} Type for this Sampler
      * @param loop_type the type of loop
      * @return this
      */
@@ -312,7 +370,7 @@ public class SampleModule extends BasicInstrument{
     }
 
     /**
-     * Get the Beads SamplePlayer Object
+     * Get the Beads {@link SamplePlayer} Object of this object
      * @return the SamplePlayer
      */
     public SamplePlayer getSamplePlayer() {

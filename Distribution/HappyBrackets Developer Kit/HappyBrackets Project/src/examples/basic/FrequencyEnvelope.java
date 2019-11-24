@@ -58,7 +58,7 @@ public class FrequencyEnvelope implements HBAction {
         frequencyEnvelope.addSegment(LOW_FREQUENCY, RAMP_DOWN_FREQUENCY_TIME);
 
         //Now make our frequency hold to the lower frequency, and after holding, kill our gainAmplifier
-        frequencyEnvelope.addSegment(LOW_FREQUENCY, HOLD_FREQUENCY_TIME, new KillTrigger(player.getKillTrigger()));
+        frequencyEnvelope.addSegment(LOW_FREQUENCY, HOLD_FREQUENCY_TIME, new KillTrigger(player));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

@@ -342,10 +342,10 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="triggerControlSender" value="$COMMENT$&#10;net.happybrackets.core.control.TriggerControl $CONTROL_NAME$ = new net.happybrackets.core.control.TriggerControlSender(this, &quot;$NAME$&quot;);" description="Creates a  send only global trigger DynamicControl" toReformat="true" toShortenFQNames="true">
+  <template name="triggerControlSender" value="$COMMENT$&#10;net.happybrackets.core.control.TriggerControl $CONTROL_NAME$ = new net.happybrackets.core.control.TriggerControlSender(this, &quot;$NAME$&quot;);" description="Creates a send only trigger DynamicControl" toReformat="true" toShortenFQNames="true">
     <variable name="COMMENT" expression="" defaultValue="&quot;// Type triggerControlSender to generate this code &quot;" alwaysStopAt="true" />
-    <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;globalControl&quot;" alwaysStopAt="true" />
-    <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;global control name&quot;" alwaysStopAt="true" />
+    <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;triggerControl&quot;" alwaysStopAt="true" />
+    <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <context>
       <option name="JAVA_EXPRESSION" value="true" />
       <option name="JAVA_STATEMENT" value="true" />

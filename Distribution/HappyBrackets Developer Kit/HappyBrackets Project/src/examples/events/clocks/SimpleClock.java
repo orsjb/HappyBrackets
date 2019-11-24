@@ -55,7 +55,7 @@ public class SimpleClock implements HBAction {
             else
             {
                 // Kill our player and stop the clock
-                player.getKillTrigger().kill();
+                player.kill();
                 this_clock.stop();
             }
 

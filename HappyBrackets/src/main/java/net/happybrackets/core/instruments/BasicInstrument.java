@@ -1,7 +1,9 @@
 package net.happybrackets.core.instruments;
 
 import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
+import net.beadsproject.beads.data.DataBeadReceiver;
 import net.beadsproject.beads.ugens.Gain;
 import net.happybrackets.device.HB;
 
@@ -14,7 +16,7 @@ import net.happybrackets.device.HB;
  * via {@link #setGainValue(double)}
  *
  */
-abstract class BasicInstrument {
+abstract class BasicInstrument extends Bead {
     UGen gainControl;
     Gain gainAmplifier;
 
@@ -69,8 +71,12 @@ abstract class BasicInstrument {
      *   gainEnvelope.addSegment(0.1f, 1000);
      *
      *   //Now make our gain fade out to 0 and then kill it
-     *   gainEnvelope.addSegment(0, 10, new KillTrigger(<b>player.getKillTrigger()</b>));
+     *   gainEnvelope.addSegment(0, 10, new KillTrigger(player));
      *</pre>
+     * @deprecated use the class instead. Eg, instead of
+     * <pre>    new KillTrigger(<b>player.getKillTrigger()</b></pre>
+     * use
+     * <pre>    new KillTrigger(waveModule)</pre>
      * @return the object to send our kill trigger to
      */
     public UGen getKillTrigger(){
@@ -104,6 +110,16 @@ abstract class BasicInstrument {
     public void setGainValue(double new_gain){
         gainControl.setValue((float) new_gain);
 
+    }
+
+    /**
+     * Kill the current control and release resources
+     * Enables the instrument to be added to a kill trigger
+     */
+    public void kill() {
+        if (gainAmplifier != null) {
+            gainAmplifier.kill();
+        }
     }
 
     /**
