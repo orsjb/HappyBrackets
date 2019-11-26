@@ -22,33 +22,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="SampleChangeSpeed.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/samples/SampleChangeSpeed.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="25" selection-start-line="25" selection-end-line="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SimpleMIDI.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/SimpleMIDI.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="17" column="45" selection-start-line="17" selection-start-column="45" selection-end-line="17" selection-end-column="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MajorChord.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/MajorChord.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="23" column="19" selection-start-line="23" selection-start-column="19" selection-end-line="23" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MinorChord.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/MinorChord.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -97,17 +70,44 @@
       <file leaf-file-name="FrequencyEnvelope.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="569">
+            <state relative-caret-position="750">
               <caret line="60" column="95" selection-start-line="60" selection-start-column="95" selection-end-line="60" selection-end-column="95" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ControlledThread.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ControlledThread.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/threads/ControlledThread.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="54" column="42" lean-forward="true" selection-start-line="54" selection-start-column="42" selection-end-line="54" selection-end-column="42" />
+            <state relative-caret-position="660">
+              <caret line="54" column="42" selection-start-line="54" selection-start-column="42" selection-end-line="54" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DelayPitch.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/events/delay/DelayPitch.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="211">
+              <caret line="46" column="72" selection-start-line="46" selection-start-column="60" selection-end-line="46" selection-end-column="72" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DigitalOutGPIO.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-141">
+              <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PulseDigitalOutGPIO.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/examples/gpio/PulseDigitalOutGPIO.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="222">
+              <caret line="62" column="59" selection-start-line="62" selection-start-column="47" selection-end-line="62" selection-end-column="59" />
             </state>
           </provider>
         </entry>
@@ -125,8 +125,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>sensors.Accelerometer</find>
-      <find>ensorNotFoundException</find>
       <find>SensorNotFoundException</find>
       <find>(hb.ac,</find>
       <find>addDe</find>
@@ -155,6 +153,8 @@
       <find>final int NUMBER_AUDIO_CHANNELS = 1;</find>
       <find>NUMBER_AUDIO_CHANNELS</find>
       <find>getKillTrigger</find>
+      <find>offse</find>
+      <find>// v is how far</find>
     </findStrings>
     <replaceStrings>
       <replace>Create a Trigger type Dynamic Control</replace>
@@ -174,7 +174,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/data/send-startupclasses.sh" />
         <option value="$PROJECT_DIR$/data/send-audio.sh" />
         <option value="$PROJECT_DIR$/data/send-folder.sh" />
         <option value="$PROJECT_DIR$/Device/HappyBrackets/setup/setup-happybrackets-pi.sh" />
@@ -187,7 +186,6 @@
         <option value="$PROJECT_DIR$/src/examples/pihat/PiHatDigitalInGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/pihat/PiHatDigitalOutGPIO.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/AlternatingLoopedSamplePlayer.java" />
-        <option value="$PROJECT_DIR$/src/examples/events/delay/DelayPitch.java" />
         <option value="$PROJECT_DIR$/src/examples/osc/GetControllerAddress.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" />
@@ -225,6 +223,8 @@
         <option value="$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java" />
         <option value="$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java" />
         <option value="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" />
+        <option value="$PROJECT_DIR$/src/examples/events/delay/DelayPitch.java" />
+        <option value="$PROJECT_DIR$/src/examples/gpio/PulseDigitalOutGPIO.java" />
       </list>
     </option>
   </component>
@@ -244,6 +244,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="AndroidView" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -342,13 +344,26 @@
               <item name="events" type="462c0819:PsiDirectoryNode" />
               <item name="clocks" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="events" type="462c0819:PsiDirectoryNode" />
+              <item name="delay" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="gpio" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -357,7 +372,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="fileTemplates" />
+    <property name="settings.editor.selected.configurable" value="editing.templates" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -536,7 +551,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="836" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="836" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
@@ -684,27 +699,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-253">
-          <caret line="30" column="37" lean-forward="true" selection-start-line="30" selection-start-column="37" selection-end-line="30" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-433">
-          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/RatioDepthFM.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-553">
-          <caret line="20" column="3" lean-forward="true" selection-start-line="20" selection-start-column="3" selection-end-line="20" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/BasicFM.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -1031,15 +1025,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="569">
+        <state relative-caret-position="750">
           <caret line="60" column="95" selection-start-line="60" selection-start-column="95" selection-end-line="60" selection-end-column="95" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/threads/ControlledThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="54" column="42" lean-forward="true" selection-start-line="54" selection-start-column="42" selection-end-line="54" selection-end-column="42" />
+        <state relative-caret-position="660">
+          <caret line="54" column="42" selection-start-line="54" selection-start-column="42" selection-end-line="54" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/delay/DelayPitch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="46" column="72" selection-start-line="46" selection-start-column="60" selection-end-line="46" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-141">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/PulseDigitalOutGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="62" column="59" selection-start-line="62" selection-start-column="47" selection-end-line="62" selection-end-column="59" />
         </state>
       </provider>
     </entry>

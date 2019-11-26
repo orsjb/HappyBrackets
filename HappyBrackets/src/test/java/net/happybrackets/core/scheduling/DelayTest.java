@@ -31,7 +31,7 @@ public class DelayTest {
             final double DELAY_INTERVAL =   Math.random() * 100 + 10;
 
 
-            System.out.println("---------------- Delay test " + i + " Interval: " + (long) DELAY_INTERVAL + " -----------------------");
+            System.out.println("---------------- DelayExample test " + i + " Interval: " + (long) DELAY_INTERVAL + " -----------------------");
 
 
 
@@ -94,7 +94,7 @@ public class DelayTest {
             }
 
             if (!delayRecieved) {
-                System.out.println("Delay not received");
+                System.out.println("DelayExample not received");
             }
             assert (delayRecieved);
 
@@ -138,6 +138,6 @@ public class DelayTest {
             System.out.println("Maximum jitter: " + maxJitter);
         }
 
-        System.out.println("------------------- Delay testing complete -----------------------");
+        System.out.println("------------------- DelayExample testing complete -----------------------");
     }
 }

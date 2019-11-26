@@ -149,7 +149,7 @@ public class UpdateProjectMenu extends AnAction {
         // copy our simulator file
 
         // we are not going top remove their old data files
-        DialogDisplay.displayDialog("Updated project to " + BuildVersion.getVersionBuildText());
+        DialogDisplay.displayDialog("Updated project to " + BuildVersion.getVersionBuildText() + "  Please close your project and re-open it") ;
 
     }
 

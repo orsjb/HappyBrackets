@@ -187,8 +187,19 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
      Identical to the {@link #setValue(Object)} with the exception that the {@link #valueChanged(Object)} event will be caused at the {@link net.happybrackets.core.scheduling.HBScheduler} scheduled time passed in. For example, the
      following code will cause the {@link #valueChanged(Object)} to be fired 1 second in the future:
      <pre>
+     ClassObjectControlSender control1 = new ClassObjectControlSender(this, "Accel", TripleAxisMessage.class);
+
+     ClassObjectControl control2 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class) {
+        {@literal @}Override
+        public void valueChanged(Object object_val) {
+            TripleAxisMessage control_val = (TripleAxisMessage) object_val;
+            System.out.println("x:" + control_val.getX() + " y:" + control_val.getY() +  " z" + control_val.getZ());
+        }
+
+     };
+
      TripleAxisMessage msg = new TripleAxisMessage(0.1f, 0.2f, 0.3f);
-     <b>control1.setValue(msg, 1000);</b>
+     <b>control1.setValue(msg, HB.getSchedulerTime() + 1000);</b>
      </pre>
      * @param val the value to set to
      * @param scheduler_time the scheduler time this is supposed to occur at

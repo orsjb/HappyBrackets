@@ -60,10 +60,10 @@ public class PulseDigitalOutGPIO implements HBAction, HBReset {
                     outputPin.setState(true);
 
                     // now we will turn it off after 500 ms
-                    new Delay(500, outputPin, (v, o) -> {
-                        // v is how far out we were from our exact delay time in ms and is a double
-                        // o is the parameter we passed in, which was the output pin
-                        ((GPIODigitalOutput)o).setState(false);
+                    new Delay(500, outputPin, (delay_offset, param) -> {
+                        // delay_offset is how far out we were from our exact delay time in ms and is a double
+                        // param is the parameter we passed in, which was the output pin
+                        ((GPIODigitalOutput)param).setState(false);
                     });
                     /* write your code above this line */
 

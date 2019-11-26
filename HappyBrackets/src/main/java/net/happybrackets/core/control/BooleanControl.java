@@ -3,7 +3,7 @@ package net.happybrackets.core.control;
 /**
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#BOOLEAN} in a simple API.
  * <br>
- * <br> All {@link BooleanControl} objects with the same name and {@link ControlScope} will respond to a {@link BooleanControl#setValue(Boolean)}. For example:
+ * <br> All {@link BooleanControl} objects with the same name and {@link ControlScope} will respond to a {@link BooleanControl#setValue(Boolean)}.
  * For example, consider two BooleanControls with the same {@link ControlScope} and name
  *
 <pre>
@@ -113,7 +113,19 @@ public abstract class BooleanControl extends DynamicControlParent {
      Identical to the {@link #setValue(Boolean)} with the exception that the {@link #valueChanged(Boolean)} event will be caused at the {@link net.happybrackets.core.scheduling.HBScheduler} scheduled time passed in.
      * <br>For example, the following code will cause matching {@link DynamicControl} objects to respond 1 second in the future
      * <br>
-     *     <b>control1.setValue (true, HB.getSchedulerTime() + 1000); </b>
+     <pre>
+     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+     BooleanControl control2 = new BooleanControl(this, "Read", false) {
+        {@literal @}Override
+            public void valueChanged(Boolean control_val) {
+            System.out.println("Read " + control_val);
+        }
+     };// End DynamicControl control2 code
+
+     <b>control1.setValue(true, HB.getSchedulerTime() + 1000);</b> // Setting control1 will also set control2
+     </pre>
+     <br>Will cause the {@link #valueChanged(Boolean)} function to be called with the new value one second in the future, causing <b>Read true</b> to be printed to standard output one second in the future
+
      *
      * @param val the value to set to
      * @param scheduler_time the scheduler time this is supposed to occur at

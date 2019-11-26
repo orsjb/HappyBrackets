@@ -164,5 +164,15 @@ public abstract class DynamicControlParent {
         control.removeTargetDevice(inetAddresses);
     }
 
+    /**
+     * Changed the {@link ControlScope} the object has has. It will update control map so the correct events will be generated based on its scope
+     * @param new_scope The new Control Scope
+     * @return this object
+     */
+    public DynamicControlParent setControlScope(ControlScope new_scope){
+        getDynamicControl().setControlScope(new_scope);
+        return this;
+    }
+
     abstract void notifyListener(Object val);
 }

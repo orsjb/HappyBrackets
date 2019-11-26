@@ -72,7 +72,19 @@ abstract public class TriggerControl extends DynamicControlParent{
 
     /**
      * Send a trigger event at a specific time. Identical to the {@link #send()} with the exception that the {@link #triggerEvent()}  event will be caused at the {@link net.happybrackets.core.scheduling.HBScheduler} scheduled time passed in.
-     * For example: <b>control1.send (HB.getSchedulerTime() + 1000);</b> // this will trigger control1 value, as well as all other TriggerControls with same {@link ControlScope} and name, 1 second in the future.
+     * For example:
+     <pre>
+     TriggerControl control1 = new TriggerControlSender(this, "Send");
+
+     TriggerControl control2 = new TriggerControl(this, "Send") {
+        {@literal @}Override
+        public void triggerEvent() {
+            System.out.println("Received Trigger");
+        }
+     };
+     <b>control1.send (HB.getSchedulerTime() + 1000);</b> // this will trigger control1 value, as well as all other TriggerControls with same {@link ControlScope} and name, 1 second in the future.
+     </pre>
+
      * @param scheduler_time the scheduler time this is supposed to occur at
      */
     public void send(double scheduler_time){

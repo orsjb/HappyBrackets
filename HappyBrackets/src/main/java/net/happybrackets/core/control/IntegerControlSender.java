@@ -2,13 +2,13 @@ package net.happybrackets.core.control;
 
 /**
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#INT} in a simple API
- * <br> The difference between {@link IntegerControlSender} and other {@link IntegerControl} objects  is that @link IntegerControlSender} does not have a handler, however, you can still retrieve the current value using the {@link IntegerControl#getValue()}
- * <br> All  {@link IntegerControl} objects with the same name and {@link ControlScope} will respond to a message send.
+ * <br> The difference between {@link IntegerControlSender} and other {@link IntegerControl} objects  is that {@link IntegerControlSender} does not have a handler, however, you can still retrieve the current value using the {@link IntegerControl#getValue()}
+ * <br><br> All  {@link IntegerControl} objects with the same name and {@link ControlScope} will respond to a message send.
  *
- *  * <br> Both {@link IntegerControlSender} and {@link IntegerTextControl} display the approximate value of the control in the HappyBrackets IDE.
- *  * Within the IDE, the value of the value of the control can be changed by typing a new value in and pressing the ENTER or RETURN key.
- **
- * <br>The {@link IntegerControlSender} is identical to the  {@link IntegerTextControl} except that {@link IntegerControlSender} does not have a {@link IntegerControl#valueChanged(int)}) handler
+ * <br><br> Both {@link IntegerControlSender} and {@link IntegerTextControl} display the value of the control in the HappyBrackets IDE as a written number.
+ *  Within the IDE, the value of the value of the control can be changed by typing a new value in and pressing the ENTER or RETURN key.
+ *
+ * <br><br>The {@link IntegerControlSender} is identical to the  {@link IntegerTextControl} except that {@link IntegerControlSender} does not have a {@link IntegerControl#valueChanged(int)}) handler
  *
  * <br> <br> See {@link IntegerControl} for general information about {@link IntegerControl} classes and how to set the value within your code
  */

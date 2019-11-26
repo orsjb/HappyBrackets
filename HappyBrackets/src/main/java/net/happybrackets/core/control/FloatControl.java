@@ -111,8 +111,16 @@ public abstract class FloatControl extends DynamicControlParent {
     /**
      * Identical to the {@link #setValue(double)} with the exception that the {@link #valueChanged(double)} event will be caused at the {@link net.happybrackets.core.scheduling.HBScheduler} scheduled time passed in.
      * <br>For example, the following code will cause matching {@link DynamicControl} objects to respond 1 second in the future
-     * <br>
-     *     <b>control1.setValue (2.0, HB.getSchedulerTime() + 1000); </b>
+     *  <pre>
+     FloatControl control1 = new FloatControlSender(this, "Read", 1.0);
+     FloatTextControl control2 = new FloatTextControl(this, "Read", 1.0){
+        {@literal @}Override
+        public void valueChanged(double new_value){
+            System.out.println("Read "+ new_value);
+        }
+     }
+     // Setting the value of control1 will cause any objects listening to control1 or control2 to receive the action. EG
+     <b>control1.setValue(2.0, HB.getSchedulerTime() + 1000);</b>  // This will also set the value of control2  </pre>
      *
      * @param val the value to set to
      * @param scheduler_time the {@link net.happybrackets.core.scheduling.HBScheduler} time this is supposed to occur at

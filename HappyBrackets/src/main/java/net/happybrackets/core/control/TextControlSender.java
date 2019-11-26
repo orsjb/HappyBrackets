@@ -5,12 +5,18 @@ package net.happybrackets.core.control;
  * <br> All Text controls with the same name and {@link ControlScope} will respond to a message send. For example:
  * For example, consider two TextControls with the same {@link ControlScope} and name
  *
- * <br> <b>TextControl control1 = new TextControlSender(this, "Read", "Hello");</b>
- * <br> <b>TextControl control2 = new TextControl(this, "Read", "Hello")</b>....
+ <pre>
+ TextControl control1 = new <b>TextControlSender(this, "Read", "");</b>
+ TextControl control2 = new TextControl(this, "Read", "") {
+    {@literal @}Override
+    public void valueChanged(String control_val) {
+    System.out.println("Read " + control_val);
+    }
+ };
+
+ control1.setValue("This is text");
+ </pre>
  *
- * Setting the value of control1 will cause any objects listening to control1 or control2 to receive the action. EG
- *
- * <b>control1.setValue("goodbye");</b>  // This will also set the value of control2
  *
  * <br>The functionality is identical to the {@link TextControl} except {@link TextControlSender} does not have the {@link TextControl#valueChanged(String)} handler;
  *
