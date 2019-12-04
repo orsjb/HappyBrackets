@@ -107,45 +107,70 @@ public abstract class SendToDevice {
 		ArrayList<byte[][]> encrypted_all_files_as_bytes = null;
 		ArrayList<byte[][]> unencrypted_all_files_as_bytes = null;
 
+		// first see if we are going to have to do encryption or not
+		for(LocalDeviceRepresentation device : devices){
+			if (device.isEncryptionEnabled()) {
+				// see if we have already packed encrypted
+				if (encrypted_all_files_as_bytes == null) {
+					encrypted_all_files_as_bytes = allFilesAsBytes(package_path, class_name, true);
+				}
+			}
+			else {
+				// see if we have already packed unencrypted
+				if (unencrypted_all_files_as_bytes == null)
+				{
+					unencrypted_all_files_as_bytes = allFilesAsBytes(package_path, class_name, false);
+				}
+			}
+		}
 		//now we have all the files as byte arrays
 		//time to send
 		for(LocalDeviceRepresentation device : devices) {
-			if (device.getIsConnected() || DeviceConnection.getDisabledAdvertise()) {
-				ArrayList<byte[][]> all_files_as_bytes;
-				if (device.isEncryptionEnabled())
-				{
-					// see if we have already packed encrypted
-					if (encrypted_all_files_as_bytes == null)
-					{
-						encrypted_all_files_as_bytes = allFilesAsBytes(package_path, class_name, true);
-					}
-					all_files_as_bytes = encrypted_all_files_as_bytes;
-				}
-				else
-				{
-					// see if we have already packed unencrypted
-					if (unencrypted_all_files_as_bytes == null)
-					{
-						unencrypted_all_files_as_bytes = allFilesAsBytes(package_path, class_name, false);
-					}
-					all_files_as_bytes = unencrypted_all_files_as_bytes;
+			ArrayList<byte[][]> finalEncrypted_all_files_as_bytes = encrypted_all_files_as_bytes;
+			ArrayList<byte[][]> finalUnencrypted_all_files_as_bytes = unencrypted_all_files_as_bytes;
 
-				}
+			Thread thread = new Thread(() -> {
+					try {
+						if (device.getIsConnected() || DeviceConnection.getDisabledAdvertise()) {
+							ArrayList<byte[][]> all_files_as_bytes;
+							if (device.isEncryptionEnabled())
+							{
+								all_files_as_bytes = finalEncrypted_all_files_as_bytes;
+							}
+							else
+							{
+								all_files_as_bytes = finalUnencrypted_all_files_as_bytes;
 
-				try {
-					//send all of the files to this hostname
-					for (byte[][] bytes : all_files_as_bytes) {
-						device.send(bytes);
+							}
+
+							try {
+								//send all of the files to this hostname
+								device.setStatus("Sending " + class_name);
+								for (byte[][] bytes : all_files_as_bytes) {
+									device.send(bytes);
+								}
+
+								device.setStatus("Sent " + class_name);
+								logger.debug("SendToDevice: sent to {}", device);
+							} catch (Exception e) {
+								device.setStatus("Send fail " + class_name);
+							}
+						}
+						else
+						{
+							device.setStatus("Send fail connection" + class_name);
+						}
+
+					} catch (Exception e) {// remove the break below to just resume thread or add your own action
+
 					}
-					logger.debug("SendToDevice: sent to {}", device);
-				} catch (Exception e) {
-					logger.error("SendToDevice: unable to send to {}", device, e);
-				}
-			}
-			else
-			{
-				logger.debug("SendToDevice: device " + device.deviceName + " is not connected");
-			}
+			});
+
+			//  write your code you want to execute before you start the thread below this line
+
+			// write your code you want to execute before you start the thread above this line
+
+			thread.start();// End threadFunction
         }
 	}
 

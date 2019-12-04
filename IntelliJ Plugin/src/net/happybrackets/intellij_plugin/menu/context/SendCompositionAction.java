@@ -49,7 +49,7 @@ public abstract class SendCompositionAction extends AnAction {
     static public final String JAVA_EXTENSION = "java";
     static public final String CLASS_EXTENSION = "class";
 
-    static final String OUTPUT_PATH = "/build/production/";
+    public static final String OUTPUT_PATH = "/build/production/";
     static final String PROJECT_DEVICE_PATH = "/Device/HappyBrackets";
 
     private DeviceConnection deviceConnection = null;

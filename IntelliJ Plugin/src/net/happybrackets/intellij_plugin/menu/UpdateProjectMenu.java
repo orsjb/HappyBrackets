@@ -8,6 +8,8 @@ import net.happybrackets.controller.ControllerEngine;
 import net.happybrackets.controller.gui.DialogDisplay;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.core.BuildVersion;
+import net.happybrackets.device.StartupClasses;
+import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
 import net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject;
 import net.happybrackets.intellij_plugin.templates.project.ProjectUnzip;
 
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -93,7 +96,7 @@ public class UpdateProjectMenu extends AnAction {
         String [] HB_JAR_LOCATION = HappyBracketsProject.HB_JAR_LOCATION;
         String [] ARCHIVE_NO_UPDATE_FILES = HappyBracketsProject.NO_UPDATE_FILES;
 
-        // unzip our archived project
+
         ProjectUnzip unzip = new ProjectUnzip();
 
 
@@ -148,11 +151,34 @@ public class UpdateProjectMenu extends AnAction {
 
         // copy our simulator file
 
+        // remove Build Files
+        eraseProductionFiles(base_path);
         // we are not going top remove their old data files
         DialogDisplay.displayDialog("Updated project to " + BuildVersion.getVersionBuildText() + "  Please close your project and re-open it") ;
 
     }
 
+    private static void eraseProductionFiles(String base_path) {
+        final String path =  base_path + SendCompositionAction.OUTPUT_PATH;
+        // unzip our archived project
+        try{
+
+            File file = new File(path);
+            if (file.exists()){
+                if (file.isDirectory()){
+
+                    System.out.println("Delete " + path);
+                    Files.walk(file.toPath())
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
+            }
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
     public static void checkProjectVersionCompatibility(Project current_project){
         try
         {
