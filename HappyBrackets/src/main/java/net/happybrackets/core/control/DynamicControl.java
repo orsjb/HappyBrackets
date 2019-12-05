@@ -861,9 +861,15 @@ public class DynamicControl implements ScheduledEventListener {
      * @param msg The OSC Message that has device name
      */
     public static void processDeviceNameMessage(InetAddress src_address, OSCMessage msg) {
-        String device_name = (String) msg.getArg(DEVICE_NAME_ARGS.DEVICE_NAME.ordinal());
-        if (!Device.getDeviceName().equalsIgnoreCase(device_name)) {
-            HB.HBInstance.addDeviceAddress(device_name, src_address);
+        // do some error checking here
+        if (src_address != null) {
+            String device_name = (String) msg.getArg(DEVICE_NAME_ARGS.DEVICE_NAME.ordinal());
+            try {
+                if (!Device.getDeviceName().equalsIgnoreCase(device_name)) {
+                    HB.HBInstance.addDeviceAddress(device_name, src_address);
+                }
+            }
+            catch(Exception ex){}
         }
     }
 
