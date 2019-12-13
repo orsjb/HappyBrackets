@@ -1051,6 +1051,16 @@ public class IntelliJPluginGUIManager {
 		FlowPane device_buttons = new FlowPane(defaultElementSpacing, defaultElementSpacing);
 		device_buttons.getChildren().add(probe_button);
 
+		Button reset_button = new Button("Reset all");
+		reset_button.setTooltip(new Tooltip("Reset all devices"));
+
+		reset_button.setOnMouseClicked(event -> {
+			ControllerEngine.getInstance().getDeviceConnection().deviceReset();
+
+		});
+
+		device_buttons.getChildren().add(reset_button);
+
 		device_panel.getChildren().add(device_buttons);
 
 		// we need to display how many devices
