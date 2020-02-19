@@ -4,16 +4,12 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import javafx.application.Platform;
-import net.happybrackets.controller.ControllerEngine;
-import net.happybrackets.controller.gui.DialogDisplay;
-import net.happybrackets.controller.network.DeviceConnection;
+import net.happybrackets.intellij_plugin.gui.DialogDisplay;
 import net.happybrackets.core.BuildVersion;
-import net.happybrackets.device.StartupClasses;
 import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
 import net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject;
 import net.happybrackets.intellij_plugin.templates.project.ProjectUnzip;
 
-import javax.help.TryMap;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +17,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.*;
+
+//import javax.help.TryMap;
 
 public class UpdateProjectMenu extends AnAction {
 

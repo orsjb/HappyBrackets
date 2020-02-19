@@ -16,23 +16,23 @@
 
 package net.happybrackets.intellij_plugin;
 
+
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.fileChooser.*;
-import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
-import com.sun.javafx.css.Style;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.css.Style;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -44,7 +44,10 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -57,7 +60,12 @@ import net.happybrackets.controller.config.ControllerConfig;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.controller.network.SendToDevice;
+import net.happybrackets.core.ErrorListener;
+import net.happybrackets.intellij_plugin.menu.RunSimulatorMenu;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -66,13 +74,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
-
-import net.happybrackets.core.ErrorListener;
-import net.happybrackets.intellij_plugin.menu.RunSimulatorMenu;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.SwingUtilities;
 
 
 /**

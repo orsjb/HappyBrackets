@@ -1,15 +1,13 @@
 package net.happybrackets.core;
 
-import java.net.URL;
-
 /**
  * Displays build information about build
  * When Releasing a version, the values in this class need to be changed
  */
 public final class BuildVersion {
     static final int MAJOR = 4;
-    static final int MINOR = 8;
-    static final int BUILD = 1;
+    static final int MINOR = 9;
+    static final int BUILD = 0;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}

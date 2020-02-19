@@ -16,20 +16,15 @@
 
 package net.happybrackets.core;
 
-import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.controller.config.ControllerConfig;
-import net.happybrackets.core.Device;
+import net.happybrackets.controller.network.ControllerAdvertiser;
 import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.core.BroadcastManager;
 import net.happybrackets.device.config.DeviceController;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
-import java.net.NetworkInterface;
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ControllerDiscoveryTest {
 	protected DeviceConfig 					deviceEnv;
@@ -42,7 +37,7 @@ public class ControllerDiscoveryTest {
 
 	boolean controllerFound = false;
 
-	@Before
+	//@Before
 	public void setUp() throws Exception {
 		deviceEnv = new DeviceConfig();
 		deviceEnv = deviceEnv.load("src/test/config/test-device-config.json", deviceEnv);
@@ -66,12 +61,14 @@ public class ControllerDiscoveryTest {
 
 	}
 
-	@After
+	//@After
 	public void tearDown() throws Exception {
 		advertiser.stop();
 	}
 
-	@Test
+
+
+	//@Test
 	public void testGetControllerHostname() {
         ArrayList<String> controllerHostName = new ArrayList<>();
 

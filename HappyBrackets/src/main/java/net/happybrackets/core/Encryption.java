@@ -15,8 +15,8 @@
  */
 
 package net.happybrackets.core;
-
-import com.sun.crypto.provider.AESKeyGenerator;
+import sun.misc.Unsafe;
+//import com.sun.crypto.provider.AESKeyGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

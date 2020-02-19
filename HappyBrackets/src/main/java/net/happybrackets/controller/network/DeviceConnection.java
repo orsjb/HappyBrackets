@@ -16,6 +16,17 @@
 
 package net.happybrackets.controller.network;
 
+import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
+//import javafx.collections.FXCollections;
+//import javafx.collections.ObservableList;
+import net.happybrackets.controller.config.ControllerConfig;
+import net.happybrackets.core.OSCUDPReceiver;
+import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.core.config.KnownDeviceID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,18 +35,9 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import net.happybrackets.controller.config.ControllerConfig;
-import de.sciss.net.OSCListener;
-import de.sciss.net.OSCMessage;
-
-import net.happybrackets.core.OSCUDPReceiver;
-import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.core.config.KnownDeviceID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import javafx.application.Platform;
+//import javafx.collections.FXCollections;
+//import javafx.collections.ObservableList;
 
 public class DeviceConnection {
 
@@ -51,7 +53,10 @@ public class DeviceConnection {
 
 	//private OSCServer oscServer;
 	private OSCUDPReceiver oscServer;
-	private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
+
+	private List<LocalDeviceRepresentation> theDevices = new ArrayList<LocalDeviceRepresentation>();
+	//private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
+
 	private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
 	private Map<String, KnownDeviceID> knownDevices = new Hashtable<String, KnownDeviceID>();
 	// We will have a selected device based on project
@@ -359,7 +364,7 @@ public class DeviceConnection {
 		return Collections.unmodifiableMap(knownDevices);
 	}
 
-	public ObservableList<LocalDeviceRepresentation> getDevices() {
+	public List<LocalDeviceRepresentation> getDevices() {
 		return theDevices;
 	}
 
@@ -490,6 +495,7 @@ public class DeviceConnection {
 						@Override
 						public void deviceRemoved(LocalDeviceRepresentation device) {
 
+							/*
 							Platform.runLater(new Runnable() {
 								@Override
 								public void run() {
@@ -502,6 +508,8 @@ public class DeviceConnection {
 									}
 								}
 							});
+
+							 */
 						}
 					});
 
@@ -512,6 +520,7 @@ public class DeviceConnection {
 					//logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
 					final LocalDeviceRepresentation device_to_add = this_device;
 					//adding needs to be done in an "app" thread because it affects the GUI.
+					/*
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
@@ -519,6 +528,8 @@ public class DeviceConnection {
 							device_to_add.sendConnectionListeners();
 						}
 					});
+
+					 */
 					//make sure this device knows its ID
 					//since there is a lag in assigning an InetSocketAddress, and since this is the first
 					//message sent to the device, it should be done in a separate thread.

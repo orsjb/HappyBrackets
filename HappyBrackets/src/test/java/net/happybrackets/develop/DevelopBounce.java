@@ -1,19 +1,14 @@
 package net.happybrackets.develop;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.*;
-import net.happybrackets.controller.gui.WaveformVisualiser;
-import net.happybrackets.core.AudioSetup;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.device.HB;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 /**

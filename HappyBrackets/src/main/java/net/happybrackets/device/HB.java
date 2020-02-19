@@ -16,6 +16,34 @@
 
 package net.happybrackets.device;
 
+import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
+import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.Bead;
+import net.beadsproject.beads.core.UGen;
+import net.beadsproject.beads.data.Buffer;
+import net.beadsproject.beads.events.KillTrigger;
+import net.beadsproject.beads.ugens.*;
+import net.happybrackets.core.*;
+import net.happybrackets.core.config.KnownDeviceID;
+import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.ControlScope;
+import net.happybrackets.core.control.ControlType;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.ClockAdjustment;
+import net.happybrackets.core.scheduling.HBScheduler;
+import net.happybrackets.device.config.DeviceConfig;
+import net.happybrackets.device.dynamic.DynamicClassLoader;
+import net.happybrackets.device.network.DeviceConnectedEventListener;
+import net.happybrackets.device.network.NetworkCommunication;
+import net.happybrackets.device.sensors.*;
+import net.happybrackets.device.sensors.gpio.GPIO;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -26,38 +54,10 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.*;
 
-import de.sciss.net.OSCListener;
-import de.sciss.net.OSCMessage;
-import javafx.application.Application;
-import net.beadsproject.beads.core.AudioContext;
-import net.beadsproject.beads.core.Bead;
-import net.beadsproject.beads.core.UGen;
-import net.beadsproject.beads.data.Buffer;
-import net.beadsproject.beads.events.KillTrigger;
-import net.beadsproject.beads.ugens.*;
-import net.happybrackets.controller.gui.DynamicControlScreen;
-import net.happybrackets.core.*;
-import net.happybrackets.core.config.KnownDeviceID;
-import net.happybrackets.core.control.ControlMap;
-import net.happybrackets.core.control.ControlScope;
-import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.DynamicControl;
-import net.happybrackets.core.scheduling.ClockAdjustment;
-import net.happybrackets.core.scheduling.HBScheduler;
-import net.happybrackets.device.dynamic.DynamicClassLoader;
-import net.happybrackets.device.network.DeviceConnectedEventListener;
-import net.happybrackets.device.network.NetworkCommunication;
-import net.happybrackets.device.sensors.*;
-import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.device.sensors.gpio.GPIO;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+//import javafx.application.Application;
+//import net.happybrackets.intellij_plugin.gui.DynamicControlScreen;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
+//import javafx.application.Application;
 
 /**
  * HB is the main controller class for a HappyBrackets program. It is accessed from an {@link HBAction}'s {@link HBAction#action(HB)} method, where users can play sounds, create network listeners, send network messages, and perform other actions.
@@ -538,8 +538,10 @@ public class HB {
 
 						ret = true;
 
+
 						try
 						{
+							/*
 							if (incomingClass.isAssignableFrom(Application.class)) {
 								// now we try and JavaFX calls
 								System.out.println("Incoming class assignable");
@@ -593,6 +595,8 @@ public class HB {
 
 
 							}
+
+							 */
 						}catch (Exception ex)
 						{
 							System.out.println("Unable to display Dynamic Control Screen in NON JavaFX Application");

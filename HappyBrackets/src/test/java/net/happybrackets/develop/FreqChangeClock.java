@@ -1,6 +1,5 @@
 package net.happybrackets.develop;
 
-import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.events.KillTrigger;
@@ -8,7 +7,6 @@ import net.beadsproject.beads.ugens.Clock;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.WavePlayer;
-import net.happybrackets.controller.gui.WaveformVisualiser;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;

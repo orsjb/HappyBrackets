@@ -1,11 +1,13 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 apply plugin: 'idea'
 
+
 // Test for right version of Java in use for running this script
-assert org.gradle.api.JavaVersion.current().isJava8Compatible()
+//assert org.gradle.api.JavaVersion.current().isJava8Compatible()
 
 idea{
     module {
@@ -79,11 +81,11 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 // A helper for checking which jars are loaded
-task listJars << {
+task listJars  {
     configurations.compile.each { File file -> println file.name }
 }
 
-task smile << {
+task smile  {
         println ':)'
         println docsDir
 }
@@ -105,7 +107,7 @@ shadowJar {
 
 task deploy
 
-task deployJarAndJavaDoc << {
+task deployJarAndJavaDoc  {
     copy {
         from 'build/docs/javadoc'
         into '../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc'
@@ -123,7 +125,7 @@ task deployJarAndJavaDoc << {
 }
 
 
-task deployPlugin << {
+task deployPlugin  {
     copy {
         from '../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip'
         into '../Distribution/HappyBrackets Developer Kit'
@@ -230,7 +232,7 @@ task packProjectTemplate (type:Zip) {
 }
 
 // copy the zipped project (minus HB.jar) into plugin resources
-task copyProject << {
+task copyProject  {
     copy {
         from '../HappyBrackets/build/HappyBracketsProject.zip'
         into '../IntelliJ Plugin/resources/projectTemplates'
@@ -238,7 +240,7 @@ task copyProject << {
 }
 
 // Copy HB jar, version and docs into plugin resources
-task copyHBZip << {
+task copyHBZip  {
     copy {
         from '../HappyBrackets/build/HB.zip'
         into '../IntelliJ Plugin/resources/projectTemplates'

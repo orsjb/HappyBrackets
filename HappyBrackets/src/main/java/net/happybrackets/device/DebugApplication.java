@@ -1,18 +1,14 @@
 package net.happybrackets.device;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-import net.happybrackets.controller.gui.DynamicControlScreen;
-import net.happybrackets.controller.gui.WaveformVisualiser;
-import net.happybrackets.core.control.ControlMap;
-import net.happybrackets.core.control.DynamicControl;
-
-import java.util.List;
-
+//import javafx.application.Application;
+//import javafx.stage.Stage;
+//import net.happybrackets.intellij_plugin.gui.DynamicControlScreen;
+//import net.happybrackets.intellij_plugin.gui.WaveformVisualiser;
 /**
  * THis class enables us to Display the Dynamic Controls during Debug of Happy Brackets Program
  */
-public class DebugApplication extends Application {
+
+public class DebugApplication {}/*extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -58,4 +54,6 @@ public class DebugApplication extends Application {
 
         WaveformVisualiser.open(HB.HBInstance.ac);
     }
+
 }
+*/

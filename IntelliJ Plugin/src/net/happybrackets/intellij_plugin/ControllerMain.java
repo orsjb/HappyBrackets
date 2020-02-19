@@ -17,7 +17,7 @@
 package net.happybrackets.intellij_plugin;
 
 import javafx.scene.Scene;
-//import net.happybrackets.controller.gui.GUIManager;
+//import net.happybrackets.intellij_plugin.gui.GUIManager;
 import net.happybrackets.controller.http.FileServer;
 import net.happybrackets.controller.network.DeviceConnection;
 import net.happybrackets.controller.network.ControllerAdvertiser;

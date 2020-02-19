@@ -24,14 +24,12 @@ import java.util.*;
 import de.sciss.net.*;
 import net.happybrackets.controller.config.ControllerConfig;
 
-import net.happybrackets.controller.gui.DynamicControlScreen;
+//import net.happybrackets.intellij_plugin.gui.DynamicControlScreen;
 import net.happybrackets.core.*;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.ClockAdjustment;
 import net.happybrackets.core.scheduling.HBScheduler;
-import net.happybrackets.device.HB;
-import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.network.UDPCachedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
