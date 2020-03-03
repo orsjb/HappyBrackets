@@ -1,4 +1,4 @@
-{
+  {
   "multicastAddr":            "::FFFF:225.3.2.6",
   "broadcastPort":            23220,
   "statusFromDevicePort":     23230,

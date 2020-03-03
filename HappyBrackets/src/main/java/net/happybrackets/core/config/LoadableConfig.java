@@ -16,16 +16,15 @@
 
 package net.happybrackets.core.config;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
-
 import com.google.gson.Gson;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  *
@@ -45,27 +44,27 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 	final static Logger logger = LoggerFactory.getLogger(LoadableConfig.class);
 
 	//use Integer instead of int so we can delegate to the interface default value on null
-	private String 	multicastAddr;
-	private Integer broadcastOSCPort;
-	private Integer statusFromDevicePort;
-	private Integer clockSynchPort;
-	private Integer codeToDevicePort;
-	private Integer controlToDevicePort;
-	private Integer controllerDiscoveryPort;
-  	private Integer controllerHTTPPort;
+	public String 	multicastAddr;
+	public Integer broadcastOSCPort;
+	public Integer statusFromDevicePort;
+	public Integer clockSynchPort;
+	public Integer codeToDevicePort;
+	public Integer controlToDevicePort;
+	public Integer controllerDiscoveryPort;
+	public Integer controllerHTTPPort;
 
 	//how often the PI sends an alive message to the server
-	private Integer aliveInterval;
+	public Integer aliveInterval;
 
 	// Shared key used for encryption of class files sent from controller to device.
-	private String encryptionKey;
+	public String encryptionKey;
 
-	protected static LoadableConfig singletonInstance;
+	public static LoadableConfig singletonInstance;
 
 	//places
-	private String workingDir;
-	private String audioDir;
-	private String knownDevicesFile;
+	public String workingDir;
+	public String audioDir;
+	public String knownDevicesFile;
 
 	public static <T extends LoadableConfig> T load(String fileName, T config) {
 		logger.info("Loading: {}", fileName);
@@ -89,8 +88,11 @@ public abstract class LoadableConfig implements EnvironmentConfig {
 
 		Gson gson = new Gson();
     try {
-        BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
-        config = gson.fromJson(br, (Type) config.getClass());
+    	String json_data = new String (Files.readAllBytes(Paths.get(fileName)));
+
+        //BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
+		Type type = (Type) config.getClass();
+        //config = gson.fromJson(json_data, type);
     } catch (IOException e) {
         logger.error("Unable to open file: {}", fileName, e);
     }

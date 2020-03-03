@@ -16,25 +16,8 @@
 
 package net.happybrackets.intellij_plugin;
 
-import javafx.scene.Scene;
 //import net.happybrackets.intellij_plugin.gui.GUIManager;
-import net.happybrackets.controller.http.FileServer;
-import net.happybrackets.controller.network.DeviceConnection;
-import net.happybrackets.controller.network.ControllerAdvertiser;
-import net.happybrackets.controller.config.ControllerConfig;
-import net.happybrackets.core.BroadcastManager;
-import net.happybrackets.core.config.LoadableConfig;
-import net.happybrackets.core.Synchronizer;
-import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-import java.io.IOException;
-import java.net.DatagramSocket;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * MasterServer keeps contact with all PIs. Can control them etc.

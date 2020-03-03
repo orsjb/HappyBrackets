@@ -4,14 +4,13 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import de.sciss.net.OSCMessage;
-import net.happybrackets.controller.ControllerEngine;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.scheduling.ClockAdjustment;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.network.UDPCachedMessage;
 import net.happybrackets.intellij_plugin.NotificationMessage;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

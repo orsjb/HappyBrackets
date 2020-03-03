@@ -39,7 +39,7 @@ public class BasicSamplePlayerEnvelope implements HBAction, HBReset {
         playback_rate.addSegment(1, 1000);
         playback_rate.addSegment(1, 2000);
         playback_rate.addSegment(2, 2000);
-        playback_rate.addSegment(2, 1000, new KillTrigger(player.getKillTrigger()));
+        playback_rate.addSegment(2, 1000, new KillTrigger(player));
 
         /***** Type your HBAction code above this line ******/
     }

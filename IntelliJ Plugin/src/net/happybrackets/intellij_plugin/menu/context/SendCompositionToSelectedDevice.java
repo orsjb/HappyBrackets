@@ -4,8 +4,8 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import net.happybrackets.controller.network.LocalDeviceRepresentation;
-import net.happybrackets.controller.network.SendToDevice;
+import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.intellij_plugin.controller.network.SendToDevice;
 
 import java.util.ArrayList;
 import java.util.List;

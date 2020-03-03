@@ -4,7 +4,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import javafx.application.Platform;
-import net.happybrackets.intellij_plugin.gui.DialogDisplay;
+import net.happybrackets.intellij_plugin.controller.gui.DialogDisplay;
 import net.happybrackets.core.BuildVersion;
 import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
 import net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject;

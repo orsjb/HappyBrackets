@@ -17,10 +17,9 @@
 package net.happybrackets.intellij_plugin;
 
 
-import net.happybrackets.controller.config.ControllerConfig;
 import net.happybrackets.core.config.LoadableConfig;
-
-import java.io.File;
+import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
+//import net.happybrackets.core.config.LoadableConfig;
 
 /**
  * Created by ollie on 13/05/2016.

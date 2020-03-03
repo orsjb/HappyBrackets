@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <option name="USE_RELEASE_OPTION" value="false" />
     <bytecodeTargetLevel>
-      <module name="HappyBrackets.main" target="13" />
-      <module name="HappyBrackets.test" target="13" />
-      <module name="HappyBrackets_main" target="1.8" />
-      <module name="HappyBrackets_test" target="1.8" />
+      <module name="HappyBrackets.main" target="1.8" />
+      <module name="HappyBrackets.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -31,10 +31,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
-import net.happybrackets.controller.network.DeviceConnection;
-import net.happybrackets.controller.network.LocalDeviceRepresentation;
-import net.happybrackets.controller.network.SendToDevice;
-import net.happybrackets.controller.config.ControllerConfig;
+import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
+import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.intellij_plugin.controller.network.SendToDevice;
+import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
 
 import java.io.File;
 import java.util.ArrayList;

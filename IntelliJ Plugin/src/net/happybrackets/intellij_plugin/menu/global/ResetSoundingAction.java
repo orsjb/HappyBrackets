@@ -2,7 +2,7 @@ package net.happybrackets.intellij_plugin.menu.global;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import net.happybrackets.controller.ControllerEngine;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 
 /**
  * "Reset all devices to their initial state except for audio that is currently playing.

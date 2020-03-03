@@ -38,7 +38,7 @@ public class EnvelopeControl implements HBAction, HBReset {
 
         gainEnvelope.addSegment(0.1f, 1000);
         gainEnvelope.addSegment(0.1f, 2000);
-        gainEnvelope.addSegment(0f, 2000, new KillTrigger(player.getKillTrigger()));
+        gainEnvelope.addSegment(0f, 2000, new KillTrigger(player));
 
         player.connectTo(hb.ac.out);
 

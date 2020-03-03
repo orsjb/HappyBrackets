@@ -9,7 +9,7 @@
         <option name="distributionType" value="WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/../HappyBrackets" />
         <option name="gradleHome" value="/usr/local/Cellar/gradle/6.2/libexec" />
-        <option name="gradleJvm" value="13" />
+        <option name="gradleJvm" value="1.8" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/../HappyBrackets" />

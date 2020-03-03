@@ -26,13 +26,13 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
+import com.sun.javafx.css.Style;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.css.Style;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -55,12 +55,12 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Popup;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import net.happybrackets.controller.ControllerEngine;
-import net.happybrackets.controller.config.ControllerConfig;
-import net.happybrackets.controller.network.DeviceConnection;
-import net.happybrackets.controller.network.LocalDeviceRepresentation;
-import net.happybrackets.controller.network.SendToDevice;
 import net.happybrackets.core.ErrorListener;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
+import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
+import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
+import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.intellij_plugin.controller.network.SendToDevice;
 import net.happybrackets.intellij_plugin.menu.RunSimulatorMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +74,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
+
+//import javafx.css.Style;
 
 
 /**

@@ -2,9 +2,8 @@ package net.happybrackets.intellij_plugin.menu;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import net.happybrackets.controller.ControllerEngine;
-import net.happybrackets.controller.network.ControllerAdvertiser;
-import net.happybrackets.controller.network.DeviceConnection;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
+import net.happybrackets.intellij_plugin.controller.network.ControllerAdvertiser;
 
 public class BroadcastEnableMenu extends AnAction {
 

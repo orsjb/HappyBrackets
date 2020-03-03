@@ -1,17 +1,12 @@
 package net.happybrackets.intellij_plugin;
 
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.roots.ModuleRootManager;
-import javafx.application.Platform;
-import net.happybrackets.controller.ControllerEngine;
-import net.happybrackets.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
+import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.core.ShellExecute;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-
-import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
 
 public class SimulatorShell {
 

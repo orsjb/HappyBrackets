@@ -1,9 +1,3 @@
-net.happybrackets.controller
-net.happybrackets.controller.config
-net.happybrackets.controller.gui
-net.happybrackets.controller.gui.device
-net.happybrackets.controller.http
-net.happybrackets.controller.network
 net.happybrackets.core
 net.happybrackets.core.config
 net.happybrackets.core.control

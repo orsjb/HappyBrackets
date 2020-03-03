@@ -8,9 +8,13 @@
   "controllerDiscoveryPort":  2227,
   "controllerHTTPPort":       2228,
   "aliveInterval":            0, // zero will turn off - default was 1000,
-  "useHostname":              true,
-  
+  //"useHostname":              true,
+
   "encryptionKey":            "CHANGE ME!",
 
-  "polyLimit":                4
+  //"polyLimit":                4
 }
+
+ORDERM5
+
+https://epl.paypal-communication.com/

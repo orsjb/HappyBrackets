@@ -7,7 +7,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 //import com.sun.org.apache.xml.internal.dtm.ref.sax2dtm.SAX2DTM;
-import net.happybrackets.controller.network.SendToDevice;
+import net.happybrackets.intellij_plugin.controller.network.SendToDevice;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

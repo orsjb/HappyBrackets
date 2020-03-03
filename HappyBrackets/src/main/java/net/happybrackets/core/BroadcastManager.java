@@ -16,16 +16,18 @@
 
 package net.happybrackets.core;
 
-import de.sciss.net.*;
+import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCReceiver;
+import de.sciss.net.OSCTransmitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.*;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class manages broadcast communication - i.e., one to all comms. You would mainly use it to send broadcast messages and listen to broadcast messages. However, these functions are wrapped in the {@link net.happybrackets.device.HB} class and should be accessed there.
@@ -39,12 +41,12 @@ public class BroadcastManager {
 
     String                                        address;
     int                                           port;
-    List<NetworkInterfacePair<OSCTransmitter>>    transmitters;
-    List<NetworkInterfacePair<OSCReceiver>>       receivers;
-    List<OSCListener>                             listeners;
-    List<OSCListener>                             peristentListeners = new ArrayList<>();
-    List<OnListener>                              interfaceListeners; //listeners who care what interface the message arrived at.
-    List<NetworkInterface>                        netInterfaces;
+    protected List<NetworkInterfacePair<OSCTransmitter>>    transmitters;
+    protected List<NetworkInterfacePair<OSCReceiver>>       receivers;
+    protected List<OSCListener>                             listeners;
+    protected List<OSCListener>                             peristentListeners = new ArrayList<>();
+    protected List<OnListener>                              interfaceListeners; //listeners who care what interface the message arrived at.
+    protected List<NetworkInterface>                        netInterfaces;
 
 
     // create objects for synchronising addin and removal from lists

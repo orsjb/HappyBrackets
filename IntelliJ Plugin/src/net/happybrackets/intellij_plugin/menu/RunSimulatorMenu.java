@@ -1,18 +1,14 @@
 package net.happybrackets.intellij_plugin.menu;
 
-import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import net.happybrackets.controller.ControllerEngine;
-import net.happybrackets.controller.network.ControllerAdvertiser;
-import net.happybrackets.controller.network.DeviceConnection;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
+import net.happybrackets.intellij_plugin.controller.network.ControllerAdvertiser;
+import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
 import net.happybrackets.intellij_plugin.SimulatorShell;
-
-import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
 
 public class RunSimulatorMenu extends AnAction {
 

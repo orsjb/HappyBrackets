@@ -3,8 +3,8 @@ package net.happybrackets.intellij_plugin.menu.global;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import net.happybrackets.controller.ControllerEngine;
-import net.happybrackets.controller.network.LocalDeviceRepresentation;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
+import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 
 import java.util.List;
 

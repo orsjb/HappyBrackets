@@ -18,25 +18,23 @@ package net.happybrackets.intellij_plugin.templates.project;
 
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.WebProjectTemplate;
-import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.util.IconLoader;
-import com.intellij.openapi.vfs.*;
-import com.intellij.openapi.wm.IdeFrame;
-import com.intellij.openapi.wm.ex.WindowManagerEx;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
-import net.happybrackets.intellij_plugin.NotificationMessage;
 import net.happybrackets.intellij_plugin.menu.HappyBracketsDebugMenu;
 import net.happybrackets.intellij_plugin.templates.factory.HappyBracketsTemplatesFactory;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 
 import javax.swing.*;
 import java.io.File;
@@ -128,7 +126,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
         return "<html>HappyBrackets Project</html>";
     }
 
-    @Override
+    //@Override
     @Nullable
     public Integer getPreferredDescriptionWidth() {
         return 390;
