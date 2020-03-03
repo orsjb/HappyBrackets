@@ -541,7 +541,26 @@ public class HB {
 
 						try
 						{
-							/*
+							/* This was just to prove that we could display a frame from debug
+							JFrame frame = new JFrame("FrameDemo");
+
+//2. Optional: What happens when the frame closes?
+							frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+//3. Create components and put them in the frame.
+//...create emptyLabel...
+
+							JLabel emptyLabel = new JLabel("");
+							frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
+
+//4. Size the frame.
+							frame.pack();
+
+//5. Show it.
+							frame.setVisible(true);
+*/
+
+							/* This code has been removed because we cannot spawn App from every platform
 							if (incomingClass.isAssignableFrom(Application.class)) {
 								// now we try and JavaFX calls
 								System.out.println("Incoming class assignable");
