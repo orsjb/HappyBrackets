@@ -18,6 +18,7 @@ package net.happybrackets.intellij_plugin.controller.network;
 
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.happybrackets.core.OSCUDPReceiver;
@@ -498,7 +499,7 @@ public class DeviceConnection {
 						@Override
 						public void deviceRemoved(LocalDeviceRepresentation device) {
 
-							/*
+
 							Platform.runLater(new Runnable() {
 								@Override
 								public void run() {
@@ -512,7 +513,7 @@ public class DeviceConnection {
 								}
 							});
 
-							 */
+
 						}
 					});
 
@@ -523,7 +524,7 @@ public class DeviceConnection {
 					//logger.debug("Put device in store: name=" + device_name + ", size=" + devicesByHostname.size());
 					final LocalDeviceRepresentation device_to_add = this_device;
 					//adding needs to be done in an "app" thread because it affects the GUI.
-					/*
+
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
@@ -532,7 +533,7 @@ public class DeviceConnection {
 						}
 					});
 
-					 */
+					 
 					//make sure this device knows its ID
 					//since there is a lag in assigning an InetSocketAddress, and since this is the first
 					//message sent to the device, it should be done in a separate thread.
