@@ -32,7 +32,7 @@ public class DeviceSchedules  {
 
     /**
      * See if we are the current leading device on synchroniser network
-     * @return
+     * @return true if this is the device that others are synchronising to
      */
     public boolean isLeadDevice(){
         boolean ret = false;
