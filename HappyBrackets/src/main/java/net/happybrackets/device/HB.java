@@ -547,6 +547,7 @@ public class HB {
 
 						try
 						{
+							WaveformVisualizer.createVisualiser(hb.ac);
 							/* This was just to prove that we could display a frame from debug
 							JFrame frame = new JFrame("FrameDemo");
 
