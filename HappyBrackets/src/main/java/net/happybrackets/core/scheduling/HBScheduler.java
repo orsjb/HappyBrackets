@@ -3,8 +3,6 @@ package net.happybrackets.core.scheduling;
 import de.sciss.net.OSCMessage;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.core.control.ControlScope;
-import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.CustomGlobalEncoder;
 
 import java.time.Duration;
@@ -23,7 +21,7 @@ import java.util.*;
  */
 public class HBScheduler {
 
-    enum MESSAGE_PARAMS{
+    public enum MESSAGE_PARAMS{
         DEVICE_NAME,
         MESSAGE_ID,
         OBJ_VAL
@@ -419,7 +417,7 @@ public class HBScheduler {
      * Get the time JVM has been running
      * @return the time JVM has been running
      */
-    private double getUptime() {
+    public static double getUptime() {
 
         double ret = System.nanoTime();
 
@@ -505,10 +503,10 @@ public class HBScheduler {
     /**
      * Build OSC Message that specifies a Network update
      * @param OSC_MessageName The OSC Message
-     * @param adjustment the ClockAdjustment we are making
+     * @param adjustment the CustomGlobalEncoder adjustment or message we are making
      * @return OSC Message directed to controls with same name, scope, but on different devices
      */
-    static public OSCMessage buildNetworkSendMessage(String OSC_MessageName, ClockAdjustment adjustment) {
+    static public OSCMessage buildNetworkSendMessage(String OSC_MessageName, CustomGlobalEncoder adjustment) {
 
         deviceSendId++;
             /*
@@ -548,6 +546,7 @@ public class HBScheduler {
         int message_id = (int) msg.getArg(MESSAGE_PARAMS.MESSAGE_ID.ordinal());
 
 
+        // We will filter out redundant messages here
         if (enableProcessControlMessage(device_name, message_id)) {
             Object[] values = new Object[msg.getArgCount() - MESSAGE_PARAMS.OBJ_VAL.ordinal()];
 
@@ -555,15 +554,24 @@ public class HBScheduler {
                 values[i] = msg.getArg(MESSAGE_PARAMS.OBJ_VAL.ordinal() + i);
             }
 
-            ClockAdjustment adjustment = new ClockAdjustment().restore(values);
-
-
-            if (OSCVocabulary.match(msg, OSCVocabulary.SchedulerMessage.SET)) {
+            // iterate through or message types
+            if (OSCVocabulary.match(msg, OSCVocabulary.SchedulerMessage.CURRENT)) {
+                DeviceSchedulerValue value = new DeviceSchedulerValue().restore(values);
+                DeviceSchedules.getInstance().processCurrentMessage(device_name, value);
+                ret = true;
+            } else if(OSCVocabulary.match(msg, OSCVocabulary.SchedulerMessage.STRATUM)){
+                DeviceStratumMessage value = new DeviceStratumMessage().restore(values);
+                ret = DeviceSchedules.getInstance().processStratumMessage(value);
+            }
+            else if (OSCVocabulary.match(msg, OSCVocabulary.SchedulerMessage.SET)) {
+                ClockAdjustment adjustment = new ClockAdjustment().restore(values);
                 getGlobalScheduler().setScheduleTime(adjustment.getAdjustmentAmount());
                 ret = true;
             } else if (OSCVocabulary.match(msg, OSCVocabulary.SchedulerMessage.ADJUST)) {
+                ClockAdjustment adjustment = new ClockAdjustment().restore(values);
                 getGlobalScheduler().adjustScheduleTime(adjustment.getAdjustmentAmount(), adjustment.getAdjustmentDuration());
                 ret = true;
+
             }
         }
 

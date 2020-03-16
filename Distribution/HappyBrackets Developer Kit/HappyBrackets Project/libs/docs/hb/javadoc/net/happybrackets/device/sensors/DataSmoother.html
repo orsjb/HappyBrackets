@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -154,9 +154,33 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/device/sensors/DataSmoother.html#dataPrimed--">dataPrimed</a></span>()</code>
+<div class="block">See if our buffer has been fully primed</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/device/sensors/DataSmoother.html#getAverage--">getAverage</a></span>()</code>
 <div class="block">Get the average calculated value</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/device/sensors/DataSmoother.html#getBuffSize--">getBuffSize</a></span>()</code>
+<div class="block">Get the Buffer size</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/device/sensors/DataSmoother.html#isEmpty--">isEmpty</a></span>()</code>
+<div class="block">See if our buffer is empty</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/device/sensors/DataSmoother.html#reset--">reset</a></span>()</code>
+<div class="block">Reset the DataSmoother</div>
 </td>
 </tr>
 </table>
@@ -203,6 +227,58 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="dataPrimed--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>dataPrimed</h4>
+<pre>public&nbsp;boolean&nbsp;dataPrimed()</pre>
+<div class="block">See if our buffer has been fully primed</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if fully primed</dd>
+</dl>
+</li>
+</ul>
+<a name="isEmpty--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isEmpty</h4>
+<pre>public&nbsp;boolean&nbsp;isEmpty()</pre>
+<div class="block">See if our buffer is empty</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if empty</dd>
+</dl>
+</li>
+</ul>
+<a name="reset--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>reset</h4>
+<pre>public&nbsp;void&nbsp;reset()</pre>
+<div class="block">Reset the DataSmoother</div>
+</li>
+</ul>
+<a name="getBuffSize--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getBuffSize</h4>
+<pre>public&nbsp;int&nbsp;getBuffSize()</pre>
+<div class="block">Get the Buffer size</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the bufer size</dd>
+</dl>
+</li>
+</ul>
 <a name="getAverage--">
 <!--   -->
 </a>

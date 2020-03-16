@@ -35,7 +35,7 @@ public class DynamicControl implements ScheduledEventListener {
 
     // flag for testing
     static boolean ignoreName = false;
-    private boolean isSimulatorControl = false;
+    private boolean isPersistentControl = false;
 
     /**
      * Set ignore name for testing
@@ -583,22 +583,22 @@ public class DynamicControl implements ScheduledEventListener {
 
 
     /**
-     * Set this control as a SensorSimulation control so it does not get removed on reset
+     * Set this control as a persistentSimulation control so it does not get removed on reset
      * @return this
      */
-    public DynamicControl setSensorSimulationController(){
-        controlMap.addSensorSimulationControl(this);
-        isSimulatorControl = true;
+    public DynamicControl setPersistentController(){
+        controlMap.addPersistentControl(this);
+        isPersistentControl = true;
         return this;
     }
 
 
     /**
-     * See if control is a simulator control
+     * See if control is a persistent control
      * @return true if a simulator control
      */
-    public boolean isSimulatorControl() {
-        return isSimulatorControl;
+    public boolean isPersistentControl() {
+        return isPersistentControl;
     }
 
     /**

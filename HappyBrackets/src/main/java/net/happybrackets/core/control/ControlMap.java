@@ -42,7 +42,7 @@ public class ControlMap {
     // create a group of listeners for global controls over network
     private List<dynamicControlAdvertiseListener> globalControlListenerList = new ArrayList<>();
 
-    // We will enforce singleton by instatiating it once
+    // We will enforce singleton by instantiating it once
     private static ControlMap singletonInstance = null;
 
     // create a map based on Device name and instance number
@@ -52,8 +52,8 @@ public class ControlMap {
     private LinkedHashMap<String, List<DynamicControl>> controlScopedDevices = new LinkedHashMap<>();
 
 
-    // Define array of Dynamic controls used for simulation. These do not get removed on reset
-    private List<DynamicControl> sensorSimulation = new ArrayList<>();
+    // Define array of Dynamic controls used for simulation or non-resettable controls. These do not get removed on reset
+    private List<DynamicControl> persistentControls = new ArrayList<>();
 
     // When we are in the IDE, we do not want to pass messages about the plugin
     // Just let the device send them
@@ -268,20 +268,20 @@ public class ControlMap {
     }
 
     /**
-     * Add a control to the sensorSimulation list. These do not get removed
+     * Add a control to the persistentControls list. These do not get removed
      * @param control the {@link DynamicControl} object we are adding
      */
-    public void addSensorSimulationControl(DynamicControl control){
-        sensorSimulation.add(control);
+    public void addPersistentControl(DynamicControl control){
+        persistentControls.add(control);
     }
 
     /**
-     * Test if the Dynamic Control is a sensor Simulation
+     * Test if the Dynamic Control is a Persistent control
      * @param control the {@link DynamicControl} object we are adding
-     * @return true if has been previously added through  {@link #addSensorSimulationControl(DynamicControl)} ()}
+     * @return true if has been previously added through  {@link #addPersistentControl(DynamicControl)} ()}
      */
-    public boolean isSensorSimulation(DynamicControl control){
-        return sensorSimulation.contains(control);
+    public boolean isPersistentControl(DynamicControl control){
+        return persistentControls.contains(control);
     }
     /**
      * Notify all listners that control has been removed and then clear list
@@ -300,7 +300,7 @@ public class ControlMap {
     public void clearAllListeners() {
         Collection<DynamicControl> controls = dynamicControls.values();
         for (DynamicControl control : controls) {
-            if (!control.isSimulatorControl()) {
+            if (!control.isPersistentControl()) {
                 control.eraseListeners();
 
                 OSCMessage msg = control.buildRemoveMessage();
@@ -309,9 +309,9 @@ public class ControlMap {
         }
         dynamicControls.clear();
 
-        // now add our simulator controls back
+        // now add our persistent controls back
         for (DynamicControl control :
-                sensorSimulation) {
+                persistentControls) {
             dynamicControls.put(control.getControlMapKey(), control);
         }
 

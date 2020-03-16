@@ -465,8 +465,8 @@ implements <a href="../../../../net/happybrackets/core/scheduling/ScheduledEvent
 </tr>
 <tr id="i32" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/DynamicControl.html#isSimulatorControl--">isSimulatorControl</a></span>()</code>
-<div class="block">See if control is a simulator control</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/DynamicControl.html#isPersistentControl--">isPersistentControl</a></span>()</code>
+<div class="block">See if control is a persistent control</div>
 </td>
 </tr>
 <tr id="i33" class="rowColor">
@@ -590,8 +590,8 @@ implements <a href="../../../../net/happybrackets/core/scheduling/ScheduledEvent
 </tr>
 <tr id="i52" class="altColor">
 <td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control">DynamicControl</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/DynamicControl.html#setSensorSimulationController--">setSensorSimulationController</a></span>()</code>
-<div class="block">Set this control as a SensorSimulation control so it does not get removed on reset</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/DynamicControl.html#setPersistentController--">setPersistentController</a></span>()</code>
+<div class="block">Set this control as a persistentSimulation control so it does not get removed on reset</div>
 </td>
 </tr>
 <tr id="i53" class="rowColor">
@@ -1084,28 +1084,28 @@ implements <a href="../../../../net/happybrackets/core/scheduling/ScheduledEvent
 </dl>
 </li>
 </ul>
-<a name="setSensorSimulationController--">
+<a name="setPersistentController--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setSensorSimulationController</h4>
-<pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control">DynamicControl</a>&nbsp;setSensorSimulationController()</pre>
-<div class="block">Set this control as a SensorSimulation control so it does not get removed on reset</div>
+<h4>setPersistentController</h4>
+<pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control">DynamicControl</a>&nbsp;setPersistentController()</pre>
+<div class="block">Set this control as a persistentSimulation control so it does not get removed on reset</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>this</dd>
 </dl>
 </li>
 </ul>
-<a name="isSimulatorControl--">
+<a name="isPersistentControl--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isSimulatorControl</h4>
-<pre>public&nbsp;boolean&nbsp;isSimulatorControl()</pre>
-<div class="block">See if control is a simulator control</div>
+<h4>isPersistentControl</h4>
+<pre>public&nbsp;boolean&nbsp;isPersistentControl()</pre>
+<div class="block">See if control is a persistent control</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if a simulator control</dd>

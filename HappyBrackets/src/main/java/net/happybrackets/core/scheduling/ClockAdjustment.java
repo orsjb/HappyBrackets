@@ -52,7 +52,9 @@ public class ClockAdjustment implements CustomGlobalEncoder {
 
     /**
      * Constructor using defined Object array as input.
-     * @param args the arguments in object array as x, y and z
+     * @param args the arguments in object array.
+     *             The args[0, 1, 2],  are ints that make up the adjustment amount as a double
+     *             The args [3,4 ] are ints that make up a long as the time in Milliseconds to take to make the adjustment
      */
     private ClockAdjustment(Object... args){
         adjustmentAmount = DynamicControl.integersToScheduleTime((int)args[0], (int)args[1], (int)args[2]);

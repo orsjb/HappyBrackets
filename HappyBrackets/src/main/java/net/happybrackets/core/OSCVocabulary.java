@@ -56,6 +56,9 @@ public final class OSCVocabulary {
         public static final String TIME = "/time";
         public static final String SET = TIME + "/set";
         public static final String ADJUST = TIME + "/adj";
+        public static final String CURRENT = TIME + "/cur";
+        public static final String STRATUM = TIME + "/strat";
+
 
     }
     public final class FileSendMessage

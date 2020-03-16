@@ -3,14 +3,12 @@ package net.happybrackets.intellij_plugin.menu;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import javafx.application.Platform;
-import net.happybrackets.intellij_plugin.controller.gui.DialogDisplay;
 import net.happybrackets.core.BuildVersion;
+import net.happybrackets.intellij_plugin.controller.gui.DialogDisplay;
 import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
 import net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject;
 import net.happybrackets.intellij_plugin.templates.project.ProjectUnzip;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +17,6 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.regex.Pattern;
 
-import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.*;
 
 //import javax.help.TryMap;
@@ -214,18 +211,9 @@ public class UpdateProjectMenu extends AnAction {
                     new Thread(() -> {
                         try {
 
-                            String message = "This project needs to be updated to use this version of the HappyBrackets, otherwise, your compositions may not run properly. Do you want to upgrade this project now?";
-                            int reply = JOptionPane.showConfirmDialog(null,
-                                    message, "Update Project Required", YES_NO_OPTION);
+                            String message = "This project needs to be updated to use this version of the HappyBrackets, otherwise, your compositions may not run properly. Select Update Project from HappyBrackets menu";
+                            DialogDisplay.displayDialog(message) ;
 
-                            if (reply == JOptionPane.YES_OPTION) {
-                                Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateProject(current_project);
-                                    }
-                                });
-                            }
 
                         } catch (Exception ex) {
                         }

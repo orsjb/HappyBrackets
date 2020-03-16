@@ -31,6 +31,7 @@ import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.ClockAdjustment;
+import net.happybrackets.core.scheduling.DeviceSchedules;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.config.DeviceConfig;
 import net.happybrackets.device.dynamic.DynamicClassLoader;
@@ -63,6 +64,11 @@ import java.util.*;
  * HB is the main controller class for a HappyBrackets program. It is accessed from an {@link HBAction}'s {@link HBAction#action(HB)} method, where users can play sounds, create network listeners, send network messages, and perform other actions.
  */
 public class HB {
+
+	// The lead device on our scheduler will send this number of Milliseconds apart as a sync message
+	// Other devices will send this number multiplied by the number devices so we don't get clogged with messages
+	final int DEVICE_SCHEDULE_TIME = 1000;
+	final int DEVICE_SYNCHRONISER_REMOVE_TIME =  10000; // If we don't see a lead device for this time we will remove it
 
     static final int BLINK_INTERVAL = 250;
     static final int NUM_BLINKS = 6;
@@ -705,6 +711,7 @@ public class HB {
 				if (accessMode != AccessMode.CLOSED) {
 					// start listening for code
 					startListeningForCode();
+					startSynchronisation();
 				}
 				System.out.print(".");
 
@@ -1007,6 +1014,47 @@ public class HB {
 		e.addSegment(0, 10, new KillTrigger(g));
 	}
 
+	/**
+	 * Launch a separate thread to start sending Scheduler Time
+	 */
+	private void startSynchronisation(){
+		// Type threadFunction to generate this code
+		Thread thread = new Thread(() -> {
+
+			DeviceSchedules deviceSchedules = DeviceSchedules.getInstance();
+
+			while (true) {// write your code below this line
+
+				// write your code above this line
+				try {
+					deviceSchedules.sendCurrentTime();
+
+					if (deviceSchedules.isLeadDevice()) {
+						Thread.sleep(DEVICE_SCHEDULE_TIME);
+					}
+					else
+					{
+						Thread.sleep(DEVICE_SCHEDULE_TIME * deviceSchedules.numberDevices());
+					}
+
+					if (DeviceSchedules.getInstance().removeExpiredLead(DEVICE_SYNCHRONISER_REMOVE_TIME)){
+						setStatus("Lead Device Removed");
+					}
+
+
+				} catch (InterruptedException e) {// remove the break below to just resume thread or add your own action
+					break;
+
+				}
+			}
+		});
+
+		//  write your code you want to execute before you start the thread below this line
+
+		// write your code you want to execute before you start the thread above this line
+
+		thread.start();// End threadFunction
+	}
 	/**
 	 * Launches a separate thread that listens for incoming data. When anything looks like an instance of {@link HBAction} it gets loaded and run.
 	 */
