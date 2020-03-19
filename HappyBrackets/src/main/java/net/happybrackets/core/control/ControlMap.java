@@ -1,8 +1,12 @@
 package net.happybrackets.core.control;
 
 import de.sciss.net.OSCMessage;
+import net.happybrackets.core.OSCVocabulary;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Control Map is a singleton that will store dynamic controls and allow us to access them via their unique map key string
@@ -10,13 +14,6 @@ import java.util.*;
 public class ControlMap {
 
     static final int MAX_NETWORK_MESSAGE_SEND = 3;
-
-    /**
-     * Create an interface used for sending OSC Messages to various listeners
-     */
-    public interface dynamicControlAdvertiseListener{
-        void dynamicControlEvent(OSCMessage msg,  Collection<String> targets);
-    }
 
     /**
      * Create an Interface where we can look for created Dynamic Controls
@@ -34,13 +31,13 @@ public class ControlMap {
 
     private List<dynamicControlCreatedListener> controlCreatedListenerList =  new ArrayList<>();
 
-    private List<dynamicControlAdvertiseListener> controlListenerList = new ArrayList<>();
+    private List<OSCVocabulary.OSCAdvertiseListener> controlListenerList = new ArrayList<>();
 
     private List<dynamicControlRemovedListener> controlRemovedListenerList = new ArrayList<>();
 
 
     // create a group of listeners for global controls over network
-    private List<dynamicControlAdvertiseListener> globalControlListenerList = new ArrayList<>();
+    private List<OSCVocabulary.OSCAdvertiseListener> globalControlListenerList = new ArrayList<>();
 
     // We will enforce singleton by instantiating it once
     private static ControlMap singletonInstance = null;
@@ -73,7 +70,7 @@ public class ControlMap {
         controlCreatedListenerList.add(listener);
     }
 
-    public void addDynamicControlAdvertiseListener(dynamicControlAdvertiseListener listener) {
+    public void addDynamicControlAdvertiseListener(OSCVocabulary.OSCAdvertiseListener listener) {
         controlListenerList.add(listener);
     }
 
@@ -85,7 +82,7 @@ public class ControlMap {
         controlRemovedListenerList.remove(listener);
     }
 
-    public void addGlobalDynamicControlAdvertiseListener(dynamicControlAdvertiseListener listener) {
+    public void addGlobalDynamicControlAdvertiseListener(OSCVocabulary.OSCAdvertiseListener listener) {
         globalControlListenerList.add(listener);
     }
 
@@ -97,8 +94,8 @@ public class ControlMap {
      * @param addresses set of device names or  that the message needs to be sent to. Can be null
      */
     private synchronized void sendDynamicControlMessage(OSCMessage msg,  Collection<String> addresses) {
-        for (dynamicControlAdvertiseListener listener : controlListenerList) {
-            listener.dynamicControlEvent(msg, addresses);
+        for (OSCVocabulary.OSCAdvertiseListener listener : controlListenerList) {
+            listener.OSCAdvertiseEvent(msg, addresses);
         }
     }
 
@@ -212,8 +209,8 @@ public class ControlMap {
      * @param targetAddresses collection of address to send message to. Can be null, in which case will be broadcast
      */
     synchronized void sendGlobalDynamicControlMessage(OSCMessage msg, Collection<String> targetAddresses) {
-        for (dynamicControlAdvertiseListener listener : globalControlListenerList) {
-            listener.dynamicControlEvent(msg, targetAddresses);
+        for (OSCVocabulary.OSCAdvertiseListener listener : globalControlListenerList) {
+            listener.OSCAdvertiseEvent(msg, targetAddresses);
         }
     }
 

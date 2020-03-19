@@ -17,25 +17,29 @@
 package net.happybrackets.device.network;
 
 //import com.intellij.ide.ui.EditorOptionsTopHitProvider;
-import de.sciss.net.*;
+
+import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCServer;
+import de.sciss.net.OSCTransmitter;
 import net.happybrackets.core.*;
 import net.happybrackets.core.config.DefaultConfig;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.DeviceSchedules;
 import net.happybrackets.core.scheduling.HBScheduler;
+import net.happybrackets.device.HB;
 import net.happybrackets.device.LogSender;
 import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.device.HB;
 import net.happybrackets.device.config.LocalConfigManagement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class takes care of communication between the device and the controller. You would mainly use it to send OSC messages to the controller and listen for incoming OSC messages from the controller. However, these methods are both wrapped in the {@link HB} class.
@@ -69,7 +73,7 @@ public class NetworkCommunication {
 	 * send SC Message to each controller that has registered
 	 * @param msg the Message to send to the controller
 	 */
-	private void sendDynamicControlEventToControllers(OSCMessage msg){
+	private void sendOSCMessageToControllers(OSCMessage msg){
 		try
 		{
 			synchronized (dynamicControlControllerListeners) {
@@ -112,26 +116,33 @@ public class NetworkCommunication {
 		}
 		catch (Exception ex){}
 
-		ControlMap.getInstance().addDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
+		ControlMap.getInstance().addDynamicControlAdvertiseListener(new OSCVocabulary.OSCAdvertiseListener() {
 			@Override
-			public void dynamicControlEvent(OSCMessage msg, Collection<String> target) {
+			public void OSCAdvertiseEvent(OSCMessage msg, Collection<String> target) {
 				// Send all Dynamic Control Messages to the respective controllers
-				sendDynamicControlEventToControllers(msg);
+				sendOSCMessageToControllers(msg);
 			}
 		});
 
 
-		ControlMap.getInstance().addGlobalDynamicControlAdvertiseListener(new ControlMap.dynamicControlAdvertiseListener() {
+		ControlMap.getInstance().addGlobalDynamicControlAdvertiseListener(new OSCVocabulary.OSCAdvertiseListener() {
 			@Override
-			public void dynamicControlEvent(OSCMessage msg, Collection<String> target) {
+			public void OSCAdvertiseEvent(OSCMessage msg, Collection<String> target) {
 				// send message across network but NOT to us
 				sendNetworkOSCMessages(msg, target, true);
 
 				// Now send the message to all controllers
-				sendDynamicControlEventToControllers(msg);
+				sendOSCMessageToControllers(msg);
 			}
 		});
 
+
+		DeviceSchedules.getInstance().addGlobalScheduleAdvertiseListener((msg, targets) -> {
+			// send message across network including us
+			sendNetworkOSCMessages(msg, targets, false);
+			// Now send the message to all controllers
+			sendOSCMessageToControllers(msg);
+		});
 
 		_hb.addStatusChangedListener(new HB.StatusChangedListener() {
 			@Override

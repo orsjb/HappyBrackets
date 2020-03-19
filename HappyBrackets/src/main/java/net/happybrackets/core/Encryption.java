@@ -15,8 +15,7 @@
  */
 
 package net.happybrackets.core;
-import sun.misc.Unsafe;
-//import com.sun.crypto.provider.AESKeyGenerator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +26,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.AlgorithmParameters;
-import java.security.NoSuchAlgorithmException;
 import java.security.spec.KeySpec;
 
 /**

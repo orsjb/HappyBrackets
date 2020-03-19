@@ -2,6 +2,8 @@ package net.happybrackets.core;
 
 import de.sciss.net.OSCMessage;
 
+import java.util.Collection;
+
 /**
  * This module will list the messages sent and received via OSC
  * Using this class will remove possibility of typo mistakes
@@ -10,6 +12,13 @@ import de.sciss.net.OSCMessage;
  * It allows us to use intellij to suggest value
  */
 public final class OSCVocabulary {
+
+    /**
+     * Create an interface used for sending OSC Messages to various listeners
+     */
+    public interface OSCAdvertiseListener {
+        void OSCAdvertiseEvent(OSCMessage msg, Collection<String> targets);
+    }
 
     public final class Device
     {

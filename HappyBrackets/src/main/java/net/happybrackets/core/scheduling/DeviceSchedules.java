@@ -3,7 +3,6 @@ package net.happybrackets.core.scheduling;
 import de.sciss.net.OSCMessage;
 import net.happybrackets.core.Device;
 import net.happybrackets.core.OSCVocabulary;
-import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.DataSmoother;
 
 import java.util.*;
@@ -24,11 +23,30 @@ public class DeviceSchedules  {
     private static final Object creationLock = new Object();
     private static final Object listLock = new Object();
 
-     SortedSet<DeviceSchedulerValue> deviceSchedulerValues = new TreeSet<>();
+    // create a group of listeners for global controls over network
+    private List<OSCVocabulary.OSCAdvertiseListener> globalScheduleListenerList = new ArrayList<>();
+
+
+    SortedSet<DeviceSchedulerValue> deviceSchedulerValues = new TreeSet<>();
      HashMap<String, DeviceSchedulerValue> deviceSchedulerValueHashMap = new HashMap<>();
 
 
     private int stratum = STARTUP_STRATUM;
+
+    public void addGlobalScheduleAdvertiseListener(OSCVocabulary.OSCAdvertiseListener listener) {
+        globalScheduleListenerList.add(listener);
+    }
+
+    /**
+     * Send OSC Message across to global senders - this message is for Global Scope controls
+     * @param msg the Control Message to send
+     * @param targetAddresses collection of address to send message to. Can be null, in which case will be broadcast
+     */
+    synchronized void sendGlobalScheduleAdvertiseMessage(OSCMessage msg, Collection<String> targetAddresses) {
+        for (OSCVocabulary.OSCAdvertiseListener listener : globalScheduleListenerList) {
+            listener.OSCAdvertiseEvent(msg, targetAddresses);
+        }
+    }
 
     /**
      * See if we are the current leading device on synchroniser network
@@ -109,11 +127,22 @@ public class DeviceSchedules  {
      * @return true if able to send
      */
     public boolean sendCurrentTime(){
+        boolean ret =  false;
+
         // encode our message
         localDeviceSchedule = buildLocalDeviceSchedule();
         OSCMessage message = HBScheduler.buildNetworkSendMessage(OSCVocabulary.SchedulerMessage.CURRENT, localDeviceSchedule);
 
-        return NetworkCommunication.sendNetworkOSCMessages(message, null, false);
+        try {
+            sendGlobalScheduleAdvertiseMessage(message, null);
+            ret =  true;
+        }
+        catch (Exception ex){
+            ret = false;
+        }
+
+        return ret;
+        //return NetworkCommunication.sendNetworkOSCMessages(message, null, false);
     }
 
     /**
@@ -307,7 +336,8 @@ public class DeviceSchedules  {
         DeviceStratumMessage adjustment = new DeviceStratumMessage(Device.getDeviceName(), new_stratum);
 
         OSCMessage message = HBScheduler.buildNetworkSendMessage(OSCVocabulary.SchedulerMessage.STRATUM, adjustment);
-        NetworkCommunication.sendNetworkOSCMessages(message, null, false);
+        sendGlobalScheduleAdvertiseMessage (message, null);
+        //NetworkCommunication.sendNetworkOSCMessages(message, null, false);
 
     }
 

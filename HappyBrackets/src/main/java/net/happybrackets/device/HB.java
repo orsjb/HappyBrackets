@@ -455,6 +455,9 @@ public class HB {
 	 */
 	public static boolean runDebug(Class<?> action_class) throws Exception {
 
+		// we need to display Visualiser here and then assign AudioContext at the end of this function
+		// Otherwise, running for IDE crashes on some systems
+		WaveformVisualizer visualizer = WaveformVisualizer.createVisualiser();
 		// Disable Our non simulated sensors to prevent extra System Messages
 		Sensor.setSimulatedOnly(true);
 
@@ -547,25 +550,6 @@ public class HB {
 
 						try
 						{
-							WaveformVisualizer.createVisualiser(hb.ac);
-							/* This was just to prove that we could display a frame from debug
-							JFrame frame = new JFrame("FrameDemo");
-
-//2. Optional: What happens when the frame closes?
-							frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-//3. Create components and put them in the frame.
-//...create emptyLabel...
-
-							JLabel emptyLabel = new JLabel("");
-							frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
-
-//4. Size the frame.
-							frame.pack();
-
-//5. Show it.
-							frame.setVisible(true);
-*/
 
 							/* This code has been removed because we cannot spawn App from every platform
 							if (incomingClass.isAssignableFrom(Application.class)) {
@@ -636,6 +620,7 @@ public class HB {
 
 			}
 		}
+		visualizer.setAudioContext(HB.getAudioOutput().getContext());
 		return ret;
 	}
 
