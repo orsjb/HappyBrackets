@@ -955,6 +955,22 @@ public class DynamicControl implements ScheduledEventListener {
     }
 
 
+    // We will create a single array that we can cache the size of an array of ints for scheduled time
+    // This is used in numberIntsForScheduledTime
+    private static int [] intArrayCache = null;
+
+    /**
+     * Return the array size of Integers that would be required to encode a scheduled time
+     * @return the Array
+     */
+    public static int numberIntsForScheduledTime(){
+        if (intArrayCache == null) {
+            intArrayCache = scheduleTimeToIntegers(0);
+        }
+
+        return intArrayCache.length;
+    }
+
     /**
      * Convert a SchedulerTime into  integers in an array of three integers
      * @param d_val the double values that needs to be encoded

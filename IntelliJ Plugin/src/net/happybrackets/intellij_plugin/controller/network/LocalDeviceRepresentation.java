@@ -854,6 +854,8 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			processSimulatorHomeMessage(msg, sender);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
 			processGainMessage(msg, sender);
+		} else if (OSCVocabulary.startsWith(msg, OSCVocabulary.SchedulerMessage.TIME)){
+			HBScheduler.ProcessSchedulerMessage(msg);
 		}
 
 	}

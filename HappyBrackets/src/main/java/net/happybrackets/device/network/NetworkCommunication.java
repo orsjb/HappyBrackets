@@ -41,6 +41,9 @@ import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
+import static net.happybrackets.core.control.DynamicControl.integersToScheduleTime;
+import static net.happybrackets.core.control.DynamicControl.numberIntsForScheduledTime;
+
 /**
  * This class takes care of communication between the device and the controller. You would mainly use it to send OSC messages to the controller and listen for incoming OSC messages from the controller. However, these methods are both wrapped in the {@link HB} class.
  */
@@ -140,8 +143,16 @@ public class NetworkCommunication {
 		DeviceSchedules.getInstance().addGlobalScheduleAdvertiseListener((msg, targets) -> {
 			// send message across network including us
 			sendNetworkOSCMessages(msg, targets, false);
+
 			// Now send the message to all controllers
-			sendOSCMessageToControllers(msg);
+			UDPCachedMessage message = null;
+			try {
+				message = new UDPCachedMessage(msg);
+				DeviceConfig.getInstance().sendMessageToAllControllers(message.getCachedPacket());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		});
 
 		_hb.addStatusChangedListener(new HB.StatusChangedListener() {
@@ -184,7 +195,7 @@ public class NetworkCommunication {
 						message = new UDPCachedMessage(oscMessage);
 						DeviceConfig.getInstance().sendMessageToAllControllers(message.getCachedPacket());
 					} catch (IOException e) {
-						e.printStackTrace();
+						//e.printStackTrace();
 					}
 
 				}
@@ -313,7 +324,15 @@ public class NetworkCommunication {
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
 							hb.fadeOutClearSound((Float) msg.getArg(0));
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.BLEEP)) {
-							hb.testBleep();
+							if (msg.getArgCount() < numberIntsForScheduledTime()) {
+								hb.testBleep();
+							}
+							else
+							{
+								double scheduled_time =  integersToScheduleTime((int)msg.getArg(0), (int)msg.getArg(1), (int)msg.getArg(2));
+								hb.sychronisedBleep(scheduled_time);
+							}
+
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
 							if (msg.getArgCount() > 0) {
 								target_port = (Integer) msg.getArg(0);
@@ -513,7 +532,14 @@ public class NetworkCommunication {
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FADEOUT_CLEAR_SOUND)) {
 							hb.fadeOutClearSound((Float) msg.getArg(0));
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.BLEEP)) {
-							hb.testBleep();
+							if (msg.getArgCount() < numberIntsForScheduledTime()) {
+								hb.testBleep();
+							}
+							else
+							{
+								double scheduled_time =  integersToScheduleTime((int)msg.getArg(0), (int)msg.getArg(1), (int)msg.getArg(2));
+								hb.sychronisedBleep(scheduled_time);
+							}
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
 
 							send(DeviceStatus.getInstance().getOSCMessage(),

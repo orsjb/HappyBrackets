@@ -31,6 +31,7 @@ import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.ClockAdjustment;
+import net.happybrackets.core.scheduling.Delay;
 import net.happybrackets.core.scheduling.DeviceSchedules;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.config.DeviceConfig;
@@ -871,6 +872,26 @@ public class HB {
 			result = (int)m.getArg(index);
 		}
 		return result;
+	}
+
+	/**
+	 * Perform a bleep at the network scheduled time. After sending message, will send a status message
+	 *
+	 * @param schedule_time the time on the global {@link HBScheduler} to action message
+	 */
+	public void sychronisedBleep(double schedule_time){
+
+		double interval =  schedule_time -  getSchedulerTime();
+
+		// type delayline to create this code
+		Delay delay = new Delay(interval, null, (delay_offset, param) -> {
+			// delay_offset is how far out we were from our exact delay time in ms and is a double
+			// param is the parameter we passed in type your code below this line
+
+			testBleep();
+			setStatus("Bleep " + (long)getSchedulerTime());
+			// type your code above this line
+		});
 	}
 
 	/**

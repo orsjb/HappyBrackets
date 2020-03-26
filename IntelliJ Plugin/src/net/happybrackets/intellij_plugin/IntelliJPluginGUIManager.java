@@ -1064,6 +1064,16 @@ public class IntelliJPluginGUIManager {
 
 		device_buttons.getChildren().add(reset_button);
 
+		Button ping_all_button = new Button("Ping all");
+		ping_all_button.setTooltip(new Tooltip("Synchronised Ping all devices"));
+
+		ping_all_button.setOnMouseClicked(event -> {
+			ControllerEngine.getInstance().getDeviceConnection().synchonisedPingAll(500);
+
+		});
+
+		device_buttons.getChildren().add(ping_all_button);
+
 		device_panel.getChildren().add(device_buttons);
 
 		// we need to display how many devices

@@ -24,6 +24,10 @@ import javafx.collections.ObservableList;
 import net.happybrackets.core.OSCUDPReceiver;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.config.KnownDeviceID;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.DeviceSchedulerValue;
+import net.happybrackets.core.scheduling.DeviceSchedules;
+import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -794,6 +798,24 @@ public class DeviceConnection {
 
 	public void deviceReset() {
 		sendToAllDevices(OSCVocabulary.Device.RESET);
+	}
+
+	/**
+	 * Send a Synchronised Ping message to all devices
+	 * @param delay the number of Milliseconds in the future to perform
+	 */
+	public void synchonisedPingAll ( int delay){
+		DeviceSchedulerValue lead_device = DeviceSchedules.getInstance().getLeadingDevice();
+
+		long estimated_time =  (long)lead_device.estimateSchedulerTime(HBScheduler.getUptime());
+		long ping_time = estimated_time + delay;
+
+		int[] scheduler_vals = DynamicControl.scheduleTimeToIntegers(ping_time);
+		Object [] args =  new Object[scheduler_vals.length];
+		for (int i = 0; i < scheduler_vals.length; i++){
+			args[i] = scheduler_vals[i];
+		}
+		sendToAllDevices(OSCVocabulary.Device.BLEEP, args);
 	}
 
 	public void deviceResetSounding() {
