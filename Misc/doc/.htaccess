@@ -1,0 +1,12 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+RewriteRule ^setup$ http://www.happybrackets.net/downloads/tutorial.php?view=setup
+RewriteRule ^fundamental$ http://www.happybrackets.net/downloads/tutorial.php?view=fundamental
+RewriteRule ^config$ http://www.happybrackets.net/downloads/tutorial.php?view=config
+RewriteRule ^artworks$ http://www.happybrackets.net/downloads/tutorial.php?view=artworks
+RewriteRule ^getting-started$ https://github.com/orsjb/HappyBrackets/wiki/Getting-Started
+RewriteRule ^Getting-Started$ https://github.com/orsjb/HappyBrackets/wiki/Getting-Started
+RewriteRule ^GettingStarted$ https://github.com/orsjb/HappyBrackets/wiki/Getting-Started
+RewriteRule ^gettingstarted$ https://github.com/orsjb/HappyBrackets/wiki/Getting-Started
+
