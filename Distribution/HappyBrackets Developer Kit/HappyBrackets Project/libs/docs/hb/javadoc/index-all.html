@@ -186,7 +186,7 @@
 <dd>
 <div class="block">Add a listener for discoverer.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="net/happybrackets/core/control/ControlMap.html#addDynamicControlAdvertiseListener-net.happybrackets.core.control.ControlMap.dynamicControlAdvertiseListener-">addDynamicControlAdvertiseListener(ControlMap.dynamicControlAdvertiseListener)</a></span> - Method in class net.happybrackets.core.control.<a href="net/happybrackets/core/control/ControlMap.html" title="class in net.happybrackets.core.control">ControlMap</a></dt>
+<dt><span class="memberNameLink"><a href="net/happybrackets/core/control/ControlMap.html#addDynamicControlAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">addDynamicControlAdvertiseListener(OSCVocabulary.OSCAdvertiseListener)</a></span> - Method in class net.happybrackets.core.control.<a href="net/happybrackets/core/control/ControlMap.html" title="class in net.happybrackets.core.control">ControlMap</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/control/ControlMap.html#addDynamicControlCreatedListener-net.happybrackets.core.control.ControlMap.dynamicControlCreatedListener-">addDynamicControlCreatedListener(ControlMap.dynamicControlCreatedListener)</a></span> - Method in class net.happybrackets.core.control.<a href="net/happybrackets/core/control/ControlMap.html" title="class in net.happybrackets.core.control">ControlMap</a></dt>
 <dd>&nbsp;</dd>
@@ -200,7 +200,9 @@
 <dd>
 <div class="block">Register Listener to receive changed values in the control that need to be global type messages</div>
 </dd>
-<dt><span class="memberNameLink"><a href="net/happybrackets/core/control/ControlMap.html#addGlobalDynamicControlAdvertiseListener-net.happybrackets.core.control.ControlMap.dynamicControlAdvertiseListener-">addGlobalDynamicControlAdvertiseListener(ControlMap.dynamicControlAdvertiseListener)</a></span> - Method in class net.happybrackets.core.control.<a href="net/happybrackets/core/control/ControlMap.html" title="class in net.happybrackets.core.control">ControlMap</a></dt>
+<dt><span class="memberNameLink"><a href="net/happybrackets/core/control/ControlMap.html#addGlobalDynamicControlAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">addGlobalDynamicControlAdvertiseListener(OSCVocabulary.OSCAdvertiseListener)</a></span> - Method in class net.happybrackets.core.control.<a href="net/happybrackets/core/control/ControlMap.html" title="class in net.happybrackets.core.control">ControlMap</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/core/scheduling/DeviceSchedules.html#addGlobalScheduleAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">addGlobalScheduleAdvertiseListener(OSCVocabulary.OSCAdvertiseListener)</a></span> - Method in class net.happybrackets.core.scheduling.<a href="net/happybrackets/core/scheduling/DeviceSchedules.html" title="class in net.happybrackets.core.scheduling">DeviceSchedules</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/StaticUDPReceiver.html#addListener-net.happybrackets.core.StaticUDPReceiver.UDPPacketListener-">addListener(StaticUDPReceiver.UDPPacketListener)</a></span> - Method in class net.happybrackets.core.<a href="net/happybrackets/core/StaticUDPReceiver.html" title="class in net.happybrackets.core">StaticUDPReceiver</a></dt>
 <dd>
@@ -674,10 +676,6 @@
 <dd>
 <div class="block">Control Map is a singleton that will store dynamic controls and allow us to access them via their unique map key string</div>
 </dd>
-<dt><a href="net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control"><span class="typeNameLink">ControlMap.dynamicControlAdvertiseListener</span></a> - Interface in <a href="net/happybrackets/core/control/package-summary.html">net.happybrackets.core.control</a></dt>
-<dd>
-<div class="block">Create an interface used for sending OSC Messages to various listeners</div>
-</dd>
 <dt><a href="net/happybrackets/core/control/ControlMap.dynamicControlCreatedListener.html" title="interface in net.happybrackets.core.control"><span class="typeNameLink">ControlMap.dynamicControlCreatedListener</span></a> - Interface in <a href="net/happybrackets/core/control/package-summary.html">net.happybrackets.core.control</a></dt>
 <dd>
 <div class="block">Create an Interface where we can look for created Dynamic Controls</div>
@@ -776,6 +774,11 @@
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/HB.html#createOSCMessage-java.lang.String-java.lang.Object...-">createOSCMessage(String, Object...)</a></span> - Static method in class net.happybrackets.device.<a href="net/happybrackets/device/HB.html" title="class in net.happybrackets.device">HB</a></dt>
 <dd>
 <div class="block">Creates a valid OSC message.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/device/WaveformVisualizer.html#createVisualiser--">createVisualiser()</a></span> - Static method in class net.happybrackets.device.<a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device">WaveformVisualizer</a></dt>
+<dd>
+<div class="block">Create a <a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device"><code>WaveformVisualizer</code></a> that will be used to display audio waveform
+ The initial <code>AudioContext</code> is null so the object can be created without crashing the system</div>
 </dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/HTS221.html#CTRL_REG1">CTRL_REG1</a></span> - Static variable in class net.happybrackets.device.sensors.<a href="net/happybrackets/device/sensors/HTS221.html" title="class in net.happybrackets.device.sensors">HTS221</a></dt>
 <dd>&nbsp;</dd>
@@ -1099,8 +1102,6 @@
 <div class="block">Create an Interface to listen to</div>
 </dd>
 <dt><a href="net/happybrackets/core/control/DynamicControl.NETWORK_TRANSMIT_MESSAGE_ARGS.html" title="enum in net.happybrackets.core.control"><span class="typeNameLink">DynamicControl.NETWORK_TRANSMIT_MESSAGE_ARGS</span></a> - Enum in <a href="net/happybrackets/core/control/package-summary.html">net.happybrackets.core.control</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html#dynamicControlEvent-de.sciss.net.OSCMessage-java.util.Collection-">dynamicControlEvent(OSCMessage, Collection&lt;String&gt;)</a></span> - Method in interface net.happybrackets.core.control.<a href="net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlAdvertiseListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/OSCVocabulary.DynamicControlMessage.html#DynamicControlMessage--">DynamicControlMessage()</a></span> - Constructor for class net.happybrackets.core.<a href="net/happybrackets/core/OSCVocabulary.DynamicControlMessage.html" title="class in net.happybrackets.core">OSCVocabulary.DynamicControlMessage</a></dt>
 <dd>&nbsp;</dd>
@@ -2915,6 +2916,10 @@
 <dd>
 <div class="block">Return the number of devices synchonising on network</div>
 </dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/core/control/DynamicControl.html#numberIntsForScheduledTime--">numberIntsForScheduledTime()</a></span> - Static method in class net.happybrackets.core.control.<a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control">DynamicControl</a></dt>
+<dd>
+<div class="block">Return the array size of Integers that would be required to encode a scheduled time</div>
+</dd>
 </dl>
 <a name="I:O">
 <!--   -->
@@ -2943,6 +2948,8 @@
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/LSM9DS1.html#OFFSET_Z_REG_L_M">OFFSET_Z_REG_L_M</a></span> - Static variable in class net.happybrackets.device.sensors.<a href="net/happybrackets/device/sensors/LSM9DS1.html" title="class in net.happybrackets.device.sensors">LSM9DS1</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/LSM9DS1.html#ORIENT_CFG_G">ORIENT_CFG_G</a></span> - Static variable in class net.happybrackets.device.sensors.<a href="net/happybrackets/device/sensors/LSM9DS1.html" title="class in net.happybrackets.device.sensors">LSM9DS1</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html#OSCAdvertiseEvent-de.sciss.net.OSCMessage-java.util.Collection-">OSCAdvertiseEvent(OSCMessage, Collection&lt;String&gt;)</a></span> - Method in interface net.happybrackets.core.<a href="net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core">OSCVocabulary.OSCAdvertiseListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="net/happybrackets/core/OSCMessageBuilder.html" title="class in net.happybrackets.core"><span class="typeNameLink">OSCMessageBuilder</span></a> - Class in <a href="net/happybrackets/core/package-summary.html">net.happybrackets.core</a></dt>
 <dd>&nbsp;</dd>
@@ -3003,6 +3010,10 @@
 <dd>&nbsp;</dd>
 <dt><a href="net/happybrackets/core/OSCVocabulary.FileSendMessage.html" title="class in net.happybrackets.core"><span class="typeNameLink">OSCVocabulary.FileSendMessage</span></a> - Class in <a href="net/happybrackets/core/package-summary.html">net.happybrackets.core</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core"><span class="typeNameLink">OSCVocabulary.OSCAdvertiseListener</span></a> - Interface in <a href="net/happybrackets/core/package-summary.html">net.happybrackets.core</a></dt>
+<dd>
+<div class="block">Create an interface used for sending OSC Messages to various listeners</div>
+</dd>
 <dt><a href="net/happybrackets/core/OSCVocabulary.SchedulerMessage.html" title="class in net.happybrackets.core"><span class="typeNameLink">OSCVocabulary.SchedulerMessage</span></a> - Class in <a href="net/happybrackets/core/package-summary.html">net.happybrackets.core</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/LSM9DS1.html#OUT_TEMP_H">OUT_TEMP_H</a></span> - Static variable in class net.happybrackets.device.sensors.<a href="net/happybrackets/device/sensors/LSM9DS1.html" title="class in net.happybrackets.device.sensors">LSM9DS1</a></dt>
@@ -3051,6 +3062,8 @@
 </a>
 <h2 class="title">P</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="net/happybrackets/device/WaveformVisualizer.html#paintComponent-java.awt.Graphics-">paintComponent(Graphics)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device">WaveformVisualizer</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/HB.html#pattern-net.beadsproject.beads.core.Bead-">pattern(Bead)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/HB.html" title="class in net.happybrackets.device">HB</a></dt>
 <dd>
 <div class="block">Adds a new pattern <code>Bead</code> object to the <code>Clock</code>.</div>
@@ -3599,6 +3612,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/OSCVocabulary.Device.html#SET_NAME">SET_NAME</a></span> - Static variable in class net.happybrackets.core.<a href="net/happybrackets/core/OSCVocabulary.Device.html" title="class in net.happybrackets.core">OSCVocabulary.Device</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/device/WaveformVisualizer.html#setAudioContext-net.beadsproject.beads.core.AudioContext-">setAudioContext(AudioContext)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device">WaveformVisualizer</a></dt>
+<dd>
+<div class="block">Set the <code>AudioContext</code> that we are displaying audio waveform of</div>
+</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/HTS221.html#setBdu-net.happybrackets.device.sensors.HTS221.HTS221ControlRegistry1-">setBdu(HTS221.HTS221ControlRegistry1)</a></span> - Method in class net.happybrackets.device.sensors.<a href="net/happybrackets/device/sensors/HTS221.html" title="class in net.happybrackets.device.sensors">HTS221</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/gpio/RaspbianGPIO.html#setBroadcomPinNumbering-boolean-">setBroadcomPinNumbering(boolean)</a></span> - Method in class net.happybrackets.device.sensors.gpio.<a href="net/happybrackets/device/sensors/gpio/RaspbianGPIO.html" title="class in net.happybrackets.device.sensors.gpio">RaspbianGPIO</a></dt>
@@ -4229,6 +4246,10 @@
 </dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/OSCVocabulary.SchedulerMessage.html#STRATUM">STRATUM</a></span> - Static variable in class net.happybrackets.core.<a href="net/happybrackets/core/OSCVocabulary.SchedulerMessage.html" title="class in net.happybrackets.core">OSCVocabulary.SchedulerMessage</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/device/HB.html#sychronisedBleep-double-">sychronisedBleep(double)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/HB.html" title="class in net.happybrackets.device">HB</a></dt>
+<dd>
+<div class="block">Perform a bleep at the network scheduled time.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/OSCVocabulary.Device.html#SYNC">SYNC</a></span> - Static variable in class net.happybrackets.core.<a href="net/happybrackets/core/OSCVocabulary.Device.html" title="class in net.happybrackets.core">OSCVocabulary.Device</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/HB.html#syncAudioStart-int-">syncAudioStart(int)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/HB.html" title="class in net.happybrackets.device">HB</a></dt>
@@ -4582,6 +4603,14 @@ the order they are declared.</div>
 </a>
 <h2 class="title">W</h2>
 <dl>
+<dt><a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device"><span class="typeNameLink">WaveformVisualizer</span></a> - Class in <a href="net/happybrackets/device/package-summary.html">net.happybrackets.device</a></dt>
+<dd>
+<div class="block">Displays the waveform on a JPanel based on a <code>AudioContext</code>
+ The class must be created using <a href="net/happybrackets/device/WaveformVisualizer.html#createVisualiser--"><code>createVisualiser()</code></a> first, and then
+ have the <code>AudioContext</code> assigned using the <a href="net/happybrackets/device/WaveformVisualizer.html#setAudioContext-net.beadsproject.beads.core.AudioContext-"><code>setAudioContext(AudioContext)</code></a> function
+ This is required to because the AWT object must be created before an <code>AudioContext</code> due to a quirk
+ in some systems</div>
+</dd>
 <dt><a href="net/happybrackets/core/instruments/WaveModule.html" title="class in net.happybrackets.core.instruments"><span class="typeNameLink">WaveModule</span></a> - Class in <a href="net/happybrackets/core/instruments/package-summary.html">net.happybrackets.core.instruments</a></dt>
 <dd>
 <div class="block">An encapsulated class for generating a basic wave player with functions to set

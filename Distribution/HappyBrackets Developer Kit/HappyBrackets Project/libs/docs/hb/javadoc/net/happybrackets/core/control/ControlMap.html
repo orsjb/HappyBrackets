@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../net/happybrackets/core/control/ClassObjectControlSender.html" title="class in net.happybrackets.core.control"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlCreatedListener.html" title="interface in net.happybrackets.core.control"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?net/happybrackets/core/control/ControlMap.html" target="_top">Frames</a></li>
@@ -130,17 +130,11 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static interface&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlAdvertiseListener</a></span></code>
-<div class="block">Create an interface used for sending OSC Messages to various listeners</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static interface&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlCreatedListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlCreatedListener</a></span></code>
 <div class="block">Create an Interface where we can look for created Dynamic Controls</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static interface&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlRemovedListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlRemovedListener</a></span></code>
 <div class="block">Create an Interface where we can look for created Dynamic Controls</div>
@@ -169,7 +163,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/ControlMap.html#addDynamicControlAdvertiseListener-net.happybrackets.core.control.ControlMap.dynamicControlAdvertiseListener-">addDynamicControlAdvertiseListener</a></span>(<a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlAdvertiseListener</a>&nbsp;listener)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/ControlMap.html#addDynamicControlAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">addDynamicControlAdvertiseListener</a></span>(<a href="../../../../net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core">OSCVocabulary.OSCAdvertiseListener</a>&nbsp;listener)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -181,7 +175,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/ControlMap.html#addGlobalDynamicControlAdvertiseListener-net.happybrackets.core.control.ControlMap.dynamicControlAdvertiseListener-">addGlobalDynamicControlAdvertiseListener</a></span>(<a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlAdvertiseListener</a>&nbsp;listener)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/ControlMap.html#addGlobalDynamicControlAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">addGlobalDynamicControlAdvertiseListener</a></span>(<a href="../../../../net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core">OSCVocabulary.OSCAdvertiseListener</a>&nbsp;listener)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -288,13 +282,13 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;void&nbsp;addDynamicControlCreatedListener(<a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlCreatedListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlCreatedListener</a>&nbsp;listener)</pre>
 </li>
 </ul>
-<a name="addDynamicControlAdvertiseListener-net.happybrackets.core.control.ControlMap.dynamicControlAdvertiseListener-">
+<a name="addDynamicControlAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>addDynamicControlAdvertiseListener</h4>
-<pre>public&nbsp;void&nbsp;addDynamicControlAdvertiseListener(<a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlAdvertiseListener</a>&nbsp;listener)</pre>
+<pre>public&nbsp;void&nbsp;addDynamicControlAdvertiseListener(<a href="../../../../net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core">OSCVocabulary.OSCAdvertiseListener</a>&nbsp;listener)</pre>
 </li>
 </ul>
 <a name="addDynamicControlRemovedListener-net.happybrackets.core.control.ControlMap.dynamicControlRemovedListener-">
@@ -315,13 +309,13 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;void&nbsp;removeDynamicControlRemovedListener(<a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlRemovedListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlRemovedListener</a>&nbsp;listener)</pre>
 </li>
 </ul>
-<a name="addGlobalDynamicControlAdvertiseListener-net.happybrackets.core.control.ControlMap.dynamicControlAdvertiseListener-">
+<a name="addGlobalDynamicControlAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>addGlobalDynamicControlAdvertiseListener</h4>
-<pre>public&nbsp;void&nbsp;addGlobalDynamicControlAdvertiseListener(<a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control">ControlMap.dynamicControlAdvertiseListener</a>&nbsp;listener)</pre>
+<pre>public&nbsp;void&nbsp;addGlobalDynamicControlAdvertiseListener(<a href="../../../../net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core">OSCVocabulary.OSCAdvertiseListener</a>&nbsp;listener)</pre>
 </li>
 </ul>
 <a name="getInstance--">
@@ -481,7 +475,7 @@ extends java.lang.Object</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../net/happybrackets/core/control/ClassObjectControlSender.html" title="class in net.happybrackets.core.control"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlAdvertiseListener.html" title="interface in net.happybrackets.core.control"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../net/happybrackets/core/control/ControlMap.dynamicControlCreatedListener.html" title="interface in net.happybrackets.core.control"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?net/happybrackets/core/control/ControlMap.html" target="_top">Frames</a></li>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var methods = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -129,65 +129,69 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#addGlobalScheduleAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">addGlobalScheduleAdvertiseListener</a></span>(<a href="../../../../net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core">OSCVocabulary.OSCAdvertiseListener</a>&nbsp;listener)</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../net/happybrackets/core/scheduling/DeviceSchedulerValue.html" title="class in net.happybrackets.core.scheduling">DeviceSchedulerValue</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#getDeviceSchedulerValues--">getDeviceSchedulerValues</a></span>()</code>
 <div class="block">Get the list of all scheduled devices we have listed</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html" title="class in net.happybrackets.core.scheduling">DeviceSchedules</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#getInstance--">getInstance</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedulerValue.html" title="class in net.happybrackets.core.scheduling">DeviceSchedulerValue</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#getLeadingDevice--">getLeadingDevice</a></span>()</code>
 <div class="block">Get the device that is listed as the first device in our list</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#isLeadDevice--">isLeadDevice</a></span>()</code>
 <div class="block">See if we are the current leading device on synchroniser network</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#numberDevices--">numberDevices</a></span>()</code>
 <div class="block">Return the number of devices synchonising on network</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#processCurrentMessage-java.lang.String-net.happybrackets.core.scheduling.DeviceSchedulerValue-">processCurrentMessage</a></span>(java.lang.String&nbsp;source,
                      <a href="../../../../net/happybrackets/core/scheduling/DeviceSchedulerValue.html" title="class in net.happybrackets.core.scheduling">DeviceSchedulerValue</a>&nbsp;value)</code>
 <div class="block">Process reception of a DeviceSchedule message</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#processStratumMessage-net.happybrackets.core.scheduling.DeviceStratumMessage-">processStratumMessage</a></span>(<a href="../../../../net/happybrackets/core/scheduling/DeviceStratumMessage.html" title="class in net.happybrackets.core.scheduling">DeviceStratumMessage</a>&nbsp;message)</code>
 <div class="block">Process a stratum message to advise us we should change our stratum</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#removeExpiredLead-long-">removeExpiredLead</a></span>(long&nbsp;expiration_millisecond)</code>
 <div class="block">If the Device marked as the lead device has not been heard for a certain time, we will remove it from our list</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#sendCurrentTime--">sendCurrentTime</a></span>()</code>
 <div class="block">Send the current Scheduler information about this device</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#timeRange--">timeRange</a></span>()</code>
 <div class="block">Return the range of time in milliseconds between the maximum and minimum scheduled times</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>float</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/DeviceSchedules.html#totalDiscardCount--">totalDiscardCount</a></span>()</code>
 <div class="block">Get the total discards for all devices</div>
@@ -215,6 +219,15 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="addGlobalScheduleAdvertiseListener-net.happybrackets.core.OSCVocabulary.OSCAdvertiseListener-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addGlobalScheduleAdvertiseListener</h4>
+<pre>public&nbsp;void&nbsp;addGlobalScheduleAdvertiseListener(<a href="../../../../net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core">OSCVocabulary.OSCAdvertiseListener</a>&nbsp;listener)</pre>
+</li>
+</ul>
 <a name="isLeadDevice--">
 <!--   -->
 </a>
@@ -225,6 +238,7 @@ extends java.lang.Object</pre>
 <div class="block">See if we are the current leading device on synchroniser network</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if this is the device that others are synchronising to</dd>
 </dl>
 </li>
 </ul>
