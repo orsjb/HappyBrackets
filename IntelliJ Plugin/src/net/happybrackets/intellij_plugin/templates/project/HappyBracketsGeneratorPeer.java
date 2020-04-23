@@ -25,7 +25,6 @@ import javax.swing.JTextField;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.google.common.base.Strings;
 import com.intellij.ide.util.projectWizard.SettingsStep;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.platform.WebProjectGenerator;
@@ -79,9 +78,6 @@ SettingsData data = new SettingsData();
         return null;
     }
 
-    private boolean isEmpty(final JTextField field) {
-        return Strings.isNullOrEmpty(field.getText());
-    }
 
     @Override
     public boolean isBackgroundJobRunning() {
