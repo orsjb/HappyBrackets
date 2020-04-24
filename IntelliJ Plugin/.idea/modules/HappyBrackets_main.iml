@@ -63,16 +63,17 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.6.2" level="project" />
     <orderEntry type="library" name="Gradle: org.json:json:20180130" level="project" />
     <orderEntry type="library" name="Gradle: org.nanohttpd:nanohttpd:2.2.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:3.2.0" level="project" />
     <orderEntry type="library" name="Gradle: de.sciss:netutil:1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.1.7" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-core:1.1.7" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.20" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.6.0" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.codehaus.groovy:groovy:2.4.7" level="project" />
+    <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:4.4.0" level="project" />
+    <orderEntry type="library" name="pi4j-core" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy:3.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.squareup.okio:okio:2.4.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.6" level="project" />
   </component>
 </module>
