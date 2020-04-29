@@ -31,8 +31,8 @@ import net.happybrackets.core.scheduling.DeviceSchedules;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.LogSender;
+import net.happybrackets.device.config.ConfigFiles;
 import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.device.config.LocalConfigManagement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,7 @@ public class NetworkCommunication {
 				Iterator<SocketAddress> i = dynamicControlControllerListeners.iterator();
 				while (i.hasNext()) {
 					SocketAddress socket =  i.next();
-					if (!send(msg, socket)){
+					if (!sendTcp(msg, socket)){
 						// this was a fail. Lets remove the socket
 						failed_addresses.add(socket);
 					}
@@ -349,14 +349,12 @@ public class NetworkCommunication {
 							}
 							InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
 
-							send(OSCVocabulary.Device.VERSION,
-									new Object[]{
-											Device.getDeviceName(),
-											BuildVersion.getMajor(),
-											BuildVersion.getMinor(),
-											BuildVersion.getBuild(),
-											BuildVersion.getCompile()
-									},
+							send(HB.createOSCMessage(OSCVocabulary.Device.VERSION,
+									Device.getDeviceName(),
+									BuildVersion.getMajor(),
+									BuildVersion.getMinor(),
+									BuildVersion.getBuild(),
+									BuildVersion.getCompile()),
 									target_address);
 
 							System.out.println("Version sent " + BuildVersion.getVersionText() + " to port " + target_address.toString() + " " + target_port ) ;
@@ -420,15 +418,34 @@ public class NetworkCommunication {
 							DynamicControl.processRequestNameMessage(src_address, msg);
 						}
 
-						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
-							//TODO: add interfaces path to device config
-							boolean status = LocalConfigManagement.updateInterfaces(
-									"/etc/network/interfaces",
-									(String) msg.getArg(0),
-									(String) msg.getArg(1)
-							);
-							if (status) logger.info("Updated interfaces file");
-							else logger.error("Unable to update interfaces file");
+						else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DeviceConfig.CONFIG)) {
+
+							System.out.println("Try Config Message") ;
+							OSCMessage ret = ConfigFiles.processOSCConfigMessage(msg);
+							if (ret != null){
+								if (msg.getArgCount() > 0) {
+									target_port = (Integer) msg.getArg(0);
+								}
+
+								InetSocketAddress target_address  =  new InetSocketAddress(sending_address.getHostAddress(), target_port);
+
+								String display_val = ret.getName();
+								for (int i = 0; i < ret.getArgCount(); i++){
+									// add each arg to display message
+									display_val = display_val + "\r\n" + ret.getArg(i);
+								}
+
+								System.out.println("Send config  to port " + target_address.toString() + " " + target_port ) ;
+
+								System.out.println(display_val);
+
+								send(ret, target_address);
+
+
+
+
+							}
+
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
 							//ignore
 
@@ -511,7 +528,7 @@ public class NetworkCommunication {
 							}
 							else
 							{
-								send(OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.GAIN, hb.getGain()),
+								sendTcp(OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.GAIN, hb.getGain()),
 										src);
 							}
 
@@ -542,19 +559,17 @@ public class NetworkCommunication {
 							}
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
 
-							send(DeviceStatus.getInstance().getOSCMessage(),
+							sendTcp(DeviceStatus.getInstance().getOSCMessage(),
 									src);
 
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
 
-							send(OSCVocabulary.Device.VERSION,
-									new Object[]{
+							sendTcp(HB.createOSCMessage(OSCVocabulary.Device.VERSION,
 											Device.getDeviceName(),
 											BuildVersion.getMajor(),
 											BuildVersion.getMinor(),
 											BuildVersion.getBuild(),
-											BuildVersion.getCompile()
-									},
+											BuildVersion.getCompile()),
 									src);
 
 							InetAddress src_address = ((InetSocketAddress) src).getAddress();
@@ -563,16 +578,14 @@ public class NetworkCommunication {
 
 
 
-							send(createSimulatorHomePathMessage(), src);
+							sendTcp(createSimulatorHomePathMessage(), src);
 
 						}
 						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
 
-							send(OSCVocabulary.Device.FRIENDLY_NAME,
-									new Object[]{
+							sendTcp(HB.createOSCMessage(OSCVocabulary.Device.FRIENDLY_NAME,
 											Device.getDeviceName(),
-											hb.friendlyName()
-									},
+											hb.friendlyName()),
 									src);
 
 							System.out.println("Name sent " + BuildVersion.getVersionText() + " to tcp ") ;
@@ -589,7 +602,7 @@ public class NetworkCommunication {
 							for (DynamicControl control : controls) {
 								if (control != null) {
 									OSCMessage send_msg = control.buildCreateMessage();
-									send(send_msg, src);
+									sendTcp(send_msg, src);
 								}
 							}
 							synchronized (dynamicControlControllerListeners) {
@@ -614,15 +627,12 @@ public class NetworkCommunication {
 							InetAddress src_address = ((InetSocketAddress) src).getAddress();
 							DynamicControl.processRequestNameMessage(src_address, msg);
 						}
-						else if (OSCVocabulary.match(msg, OSCVocabulary.Device.CONFIG_WIFI) && msg.getArgCount() == 2) {
-							//TODO: add interfaces path to device config
-							boolean status = LocalConfigManagement.updateInterfaces(
-									"/etc/network/interfaces",
-									(String) msg.getArg(0),
-									(String) msg.getArg(1)
-							);
-							if (status) logger.info("Updated interfaces file");
-							else logger.error("Unable to update interfaces file");
+						else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DeviceConfig.CONFIG)) {
+							InetAddress src_address = ((InetSocketAddress) src).getAddress();
+							OSCMessage ret = ConfigFiles.processOSCConfigMessage(msg);
+							if (ret != null){
+								sendTcp(ret, src);
+							}
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
 							//ignore
 						}else if (OSCVocabulary.startsWith(msg, OSCVocabulary.SchedulerMessage.TIME)){
@@ -840,7 +850,7 @@ public class NetworkCommunication {
 	 */
 	public void send (String msg, Object[] args, SocketAddress requester)
 	{
-		send(
+		sendTcp(
 				new OSCMessage(msg, args),
 				requester
 		);
@@ -869,7 +879,7 @@ public class NetworkCommunication {
 	 * @param target, where we need to send message
 	 * @return true if able to send and no exception thrown
 	 */
-	public boolean send (OSCMessage msg, SocketAddress target)
+	public boolean sendTcp (OSCMessage msg, SocketAddress target)
 	{
 		boolean ret = true;
 		try {

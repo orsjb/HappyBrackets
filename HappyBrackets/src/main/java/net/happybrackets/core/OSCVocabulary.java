@@ -20,33 +20,57 @@ public final class OSCVocabulary {
         void OSCAdvertiseEvent(OSCMessage msg, Collection<String> targets);
     }
 
+    /**
+     * OSC Name parameters for Device Messages
+     */
     public final class Device
     {
-        public static final String LOG = "/device/log";
-        public static final String SET_ID = "/device/set_id";
-        public static final String SET_NAME = "/device/set_name";
-        public static final String GET_LOGS = "/device/get_logs";
-        public static final String SYNC = "/device/sync";
-        public static final String REBOOT = "/device/reboot";
-        public static final String SHUTDOWN = "/device/shutdown";
-        public static final String GAIN ="/device/gain";
-        public static final String RESET = "/device/reset";
-        public static final String RESET_SOUNDING = "/device/reset_sounding";
-        public static final String CLEAR_SOUND = "/device/clearsound";
-        public static final String FADEOUT_RESET = "/device/fadeout_reset";
-        public static final String FADEOUT_CLEAR_SOUND = "/device/fadeout_clearsound";
-        public static final String BLEEP = "/device/bleep";
-        public static final String CONFIG_WIFI = "/device/config/wifi";
-        public static final String ALIVE = "/device/alive";
-        public static final String STATUS = "/device/status";
-        public static final String VERSION = "/device/version";
-        public static final String FRIENDLY_NAME = "/device/friendly";
-        public static final String SET_ENCRYPTION = "/device/encrypt";
-        public static final String CLASS_LOADED = "/device/classloaded";
-        public static final String SIMULATOR_HOME_PATH = "/device/simulatorpath";
+        public static final String DEVICE = "/device";
+
+        public static final String LOG = DEVICE  + "/log";
+        public static final String SET_ID = DEVICE  + "/set_id";
+        public static final String SET_NAME = DEVICE  + "/set_name";
+        public static final String GET_LOGS = DEVICE  + "/get_logs";
+        public static final String SYNC = DEVICE  + "/sync";
+        public static final String REBOOT = DEVICE  + "/reboot";
+        public static final String SHUTDOWN = DEVICE  + "/shutdown";
+        public static final String GAIN = DEVICE  + "/gain";
+        public static final String RESET = DEVICE  + "/reset";
+        public static final String RESET_SOUNDING = DEVICE  + "/reset_sounding";
+        public static final String CLEAR_SOUND = DEVICE  + "/clearsound";
+        public static final String FADEOUT_RESET = DEVICE  + "/fadeout_reset";
+        public static final String FADEOUT_CLEAR_SOUND = DEVICE  + "/fadeout_clearsound";
+        public static final String BLEEP = DEVICE  + "/bleep";
+        public static final String ALIVE = DEVICE  + "/alive";
+        public static final String STATUS = DEVICE  + "/status";
+        public static final String VERSION = DEVICE  + "/version";
+        public static final String FRIENDLY_NAME = DEVICE  + "/friendly";
+        public static final String SET_ENCRYPTION = DEVICE  + "/encrypt";
+        public static final String CLASS_LOADED = DEVICE  + "/classloaded";
+        public static final String SIMULATOR_HOME_PATH = DEVICE  + "/simulatorpath";
+    }
+
+    /**
+     * OSC names for config messages to device
+     */
+    public final class DeviceConfig{
+        public static final String CONFIG = Device.DEVICE + "/config";
+
+        /**
+         * Print the contents of config files and print to Status
+         */
+        public static final String PRINT_CONFIG =  CONFIG + "/print";
+
+        /**
+         * Delete the config files for this device
+         */
+        public static final String DELETE_CONFIG =  CONFIG + "/delete";
 
     }
 
+    /**
+     * OSC Names for Dynamic control messages
+     */
     public final class DynamicControlMessage
     {
         public static final String CONTROL = "/cont";

@@ -2208,6 +2208,16 @@ public class HB {
 	}
 
 	/**
+	 * Get a scheduler time in the future from {@link #getSchedulerTime()}.
+	 * @param milliseconds the number of milliseconds into the future we want the time for
+	 * @return {@link #getSchedulerTime()} + milliseconds
+	 */
+	static public double getFutureSchedulerTime(double milliseconds){
+		return getScheduler().getSchedulerTime() + milliseconds;
+	}
+
+
+	/**
 	 * Set the global {@link HBScheduler} scheduled time to this time
 	 * @param new_time the new time
 	 */

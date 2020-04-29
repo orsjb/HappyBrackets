@@ -67,6 +67,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
             //MODULES_FILE,
             WORKSPACE_FILE,
             ".idea/gradle.xml",
+            ".idea/vcs.xml",
             DESCRIPTION_FILE,
             ".idea/dictionaries/ollie.xml",
             "config/controller-config.json",
@@ -87,7 +88,10 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
     public static final String HAPPY_BRACKETS_DEVICE_FOLDER = File.separatorChar + "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar;
 
-    public static final String SIMULATOR_CONFIG_FILE = "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar + "config" + File.separatorChar + "simulator.config";
+
+    public static final String DEVICE_CONFIG_PATH = "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar + "config" + File.separatorChar;
+    public static final String SIMULATOR_CONFIG_FILE = DEVICE_CONFIG_PATH + "simulator.config";
+
 
     // This is where we need to extract the HB.jar files to in a new project
     public static final String [] HB_JAR_LOCATION = new String[]{

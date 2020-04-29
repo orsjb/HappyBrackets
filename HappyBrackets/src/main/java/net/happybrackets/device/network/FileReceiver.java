@@ -226,7 +226,7 @@ public class FileReceiver {
                             String path = parent_file.getAbsolutePath();
 
                             System.out.println("Create path " + path);
-                            new File(path).mkdir();
+                            new File(path).mkdirs();
                         }
 
 
@@ -244,7 +244,9 @@ public class FileReceiver {
                                 userPrincipal = Files.getOwner(target_path.toPath(), NOFOLLOW_LINKS);
 
                             }
-                            catch (Exception ex){}
+                            catch (Exception ex){
+                                ex.printStackTrace();
+                            }
 
                         }
 
@@ -258,7 +260,9 @@ public class FileReceiver {
                                 Files.setPosixFilePermissions(target_path.toPath(), permission_set);
                                 Files.setOwner(target_path.toPath(), userPrincipal);
                             }
-                            catch (Exception ex){}
+                            catch (Exception ex){
+                                ex.printStackTrace();
+                            }
 
                         }
 

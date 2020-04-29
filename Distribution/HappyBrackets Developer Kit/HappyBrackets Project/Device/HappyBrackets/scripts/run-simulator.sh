@@ -84,6 +84,12 @@ do
         echo "Set AUTOSTART to "$AUTOSTART
     fi
 
+    if [ "$line" = "USE_BEADS_AUDIO"   ]
+    then
+        AUTOSTART=$val
+        echo "Set USE_BEADS_AUDIO to "$AUTOSTART
+    fi
+
     if [ "$line" = "ACCESSMODE"   ]
     then
         ACCESSMODE=$val

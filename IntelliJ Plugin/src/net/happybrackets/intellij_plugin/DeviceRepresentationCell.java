@@ -74,6 +74,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	Image connectedFavouriteImage = new Image(getClass().getResourceAsStream(GREEN_STAR_NAME));
 
 
+	String projectDir;
+
     // define the username to use for SSH Command
     final String DEF_USERNAME = "pi";
     private String username = DEF_USERNAME;
@@ -82,12 +84,17 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	// anything you add here will need to get reset if item is updated
 	private LocalDeviceRepresentation localDevice = null;
 	private LocalDeviceRepresentation.StatusUpdateListener updateListener = null;
+	private LocalDeviceRepresentation.StatusUpdateListener configListener = null;
 	private LocalDeviceRepresentation.DeviceIdUpdateListener deviceIdUpdateListener = null;
 	private LocalDeviceRepresentation.ConnectedUpdateListener connectedUpdateListener = null;
 	private LocalDeviceRepresentation.StatusUpdateListener friendlyNameListener = null;
 	private LocalDeviceRepresentation.FavouriteChangedListener favouriteChangedListener = null;
 	private LocalDeviceRepresentation.GainChangedListener gainChangedListener = null;
 
+
+	public DeviceRepresentationCell (String project_dir){
+		projectDir = project_dir;
+	}
 
 	/**
 	 * Display a message dialog
@@ -141,6 +148,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 	private void resetCellParameters(){
 		localDevice = null;
 		updateListener = null;
+		configListener = null;
 		deviceIdUpdateListener = null;
 		connectedUpdateListener = null;
 		invalidTextWarning = null;
@@ -158,6 +166,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			// This is where we will clear out all old listeners
 			localDevice.removeStatusUpdateListener(updateListener);
 			localDevice.removeDeviceIdUpdateListener(deviceIdUpdateListener);
+			localDevice.removeConfigUpdateListener(configListener);
 			localDevice.removeConnectedUpdateListener(connectedUpdateListener);
 			localDevice.removeFriendlyNameUpdateListener(friendlyNameListener);
 			localDevice.removeFavouriteListener(favouriteChangedListener);
@@ -280,7 +289,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 				contextMenu.getItems().add(new SeparatorMenuItem());
 
-				PingMenu menus = new PingMenu(item);
+				PingMenu menus = new PingMenu(item, projectDir);
 				contextMenu.getItems().addAll(menus.getMenuItems());
 
 				contextMenu.show(main, event.getScreenX(), event.getScreenY());
@@ -349,7 +358,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 			contextMenu.getItems().add(new SeparatorMenuItem());
 
-			PingMenu menus = new PingMenu(item);
+			PingMenu menus = new PingMenu(item, projectDir);
 			contextMenu.getItems().addAll(menus.getMenuItems());
 
 			contextMenu.show(main, event.getScreenX(), event.getScreenY());
@@ -393,6 +402,14 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		}));
 
 
+		item.addConfigUpdateListener(configListener = config -> Platform.runLater(new Runnable() {
+			public void run() {
+				displayNotification(config, NotificationType.INFORMATION);
+			}
+		}));
+
+
+
 
 		// Display a reset Text
 		Text reset_text = new Text("Reset");
@@ -432,7 +449,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 		ping_text.setOnContextMenuRequested(event -> {
 			ContextMenu contextMenu = new ContextMenu();
-			PingMenu menus = new PingMenu(item);
+			PingMenu menus = new PingMenu(item, projectDir);
 			contextMenu.getItems().addAll(menus.getMenuItems());
 			contextMenu.show(main, event.getScreenX(), event.getScreenY());
 		});
@@ -564,7 +581,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
 			contextMenu.getItems().add(new SeparatorMenuItem());
 
-			PingMenu menus = new PingMenu(item);
+			PingMenu menus = new PingMenu(item, projectDir);
 			contextMenu.getItems().addAll(menus.getMenuItems());
 			contextMenu.show(main, screen_bounds.getMinX(), screen_bounds.getMinY() );
 		});

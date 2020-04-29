@@ -1,12 +1,7 @@
 package examples.midi.scales;
 
-import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
-import net.beadsproject.beads.ugens.Clock;
-import net.beadsproject.beads.ugens.Gain;
-import net.beadsproject.beads.ugens.Glide;
-import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;

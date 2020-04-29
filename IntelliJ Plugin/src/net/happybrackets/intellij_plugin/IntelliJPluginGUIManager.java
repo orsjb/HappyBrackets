@@ -84,6 +84,7 @@ import java.util.stream.Stream;
 public class IntelliJPluginGUIManager {
 	private static final String PROBE_TEXT = "Probe";
 	private String compositionsPath;
+	private String projectDir; // The base directory of project
 	private String locationHash;
 	private String currentCompositionSelection = null;
 	private ControllerConfig config;
@@ -135,6 +136,8 @@ public class IntelliJPluginGUIManager {
 		//this.project = project;
 		locationHash = project.getLocationHash();
 		init();
+		projectDir = project.getBaseDir().getCanonicalPath();
+
 		compositionsPath = project.getBaseDir().getCanonicalPath() + "/" + config.getCompositionsPath() + "/" + project.getName();
 		commandHistory = new ArrayList<>();
 	}
@@ -1122,7 +1125,7 @@ public class IntelliJPluginGUIManager {
 		deviceListView.setCellFactory(new Callback<ListView<LocalDeviceRepresentation>, ListCell<LocalDeviceRepresentation>>() {
 			@Override
 			public ListCell<LocalDeviceRepresentation> call(ListView<LocalDeviceRepresentation> theView) {
-				return new DeviceRepresentationCell();
+				return new DeviceRepresentationCell(projectDir);
 			}
 		});
 		deviceListView.setMinHeight(minTextAreaHeight);

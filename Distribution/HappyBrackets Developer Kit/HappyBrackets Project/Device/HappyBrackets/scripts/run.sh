@@ -17,8 +17,103 @@ sudo chown -R root:root /home/pi/HappyBrackets/ramfs
 sudo mount -t ramfs -o size=512 ramfs /home/pi/HappyBrackets/ramfs
 
 #if we want to set specific parameters for a device, place them in device.config
+
 CONFIG_FILE=config/$HOSTNAME.config
 
+if [ -f "$CONFIG_FILE" ]; then
+    echo "Use custom config"
+else
+
+#there is no specific one.
+    echo $CONFIG_FILE" not found. Use Common"
+    CONFIG_FILE=config/common.config
+fi
+
+
+
+BUF=1024
+SR=44100
+BITS=16
+INS=0
+OUTS=2
+DEVICE=0
+AUTOSTART=true
+ACCESSMODE=local
+ACTION=
+SIMULATE=true
+CONFIG=device-config.json
+
+if [ -f "$CONFIG_FILE" ]; then
+    echo "Load config from "$CONFIG_FILE
+    #let us see if we have any specific values we want to use
+    while IFS="=" read line val
+    do
+        if [ "$line" = "BUF"   ]
+        then
+            BUF=$val
+            echo "Set SR to "$BUF
+        fi
+
+        if [ "$line" = "SR"   ]
+        then
+            SR=$val
+            echo "Set SR to "$SR
+        fi
+
+        if [ "$line" = "BITS"   ]
+        then
+            BITS=$val
+            echo "Set Bits to "$BITS
+        fi
+
+        if [ "$line" = "INS"   ]
+        then
+            INS=$val
+            echo "Set INS to "$INS
+        fi
+
+
+        if [ "$line" = "OUTS"   ]
+        then
+            OUTS=$val
+            echo "Set OUTS to "$OUTS
+        fi
+
+        if [ "$line" = "DEVICE"   ]
+        then
+            DEVICE=$val
+            echo "Set DEVICE to "$DEVICE
+        fi
+
+        if [ "$line" = "AUTOSTART"   ]
+        then
+            AUTOSTART=$val
+            echo "Set AUTOSTART to "$AUTOSTART
+        fi
+
+        if [ "$line" = "USE_BEADS_AUDIO"   ]
+        then
+            AUTOSTART=$val
+            echo "Set USE_BEADS_AUDIO to "$AUTOSTART
+        fi
+
+        if [ "$line" = "ACCESSMODE"   ]
+        then
+            ACCESSMODE=$val
+            echo "Set ACCESSMODE to "$ACCESSMODE
+        fi
+
+        if [ "$line" = "CONFIG"   ]
+        then
+            CONFIG=$val
+            echo "Set CONFIG to "$CONFIG
+        fi
+
+    done <$CONFIG_FILE
+
+else
+    echo "No config. Use program defaults"
+fi
 ### run HappyBrackets
 ### args to HB.jar are: buf (buffer size, default=1024), sr (sample rate, default=44100), bits (sample bit size, default=16), ins (input channels, default=0), outs (output channels, default=1), start (autostart audio, default=true), access (live code access mode, either ‘open’, ‘local’ or ‘closed’, default=open), followed by the full class path to any HBAction you wish to auto run. All args except the last one can be entered in any order.
 
@@ -80,6 +175,12 @@ do
     then
         AUTOSTART=$val
         echo "Set AUTOSTART to "$AUTOSTART
+    fi
+
+    if [ "$line" = "USE_BEADS_AUDIO"   ]
+    then
+        AUTOSTART=$val
+        echo "Set USE_BEADS_AUDIO to "$AUTOSTART
     fi
 
     if [ "$line" = "ACCESSMODE"   ]

@@ -335,7 +335,7 @@ public class DynamicControlScreen {
                     if (localDevice != null)
                     {
                         contextMenu.getItems().add(new SeparatorMenuItem());
-                        PingMenu menus = new PingMenu(localDevice);
+                        PingMenu menus = new PingMenu(localDevice, "");
                         contextMenu.getItems().addAll(menus.getMenuItems());
 
                     }

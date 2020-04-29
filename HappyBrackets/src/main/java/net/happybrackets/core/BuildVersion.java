@@ -6,8 +6,8 @@ package net.happybrackets.core;
  */
 public final class BuildVersion {
     static final int MAJOR = 4;
-    static final int MINOR = 10;
-    static final int BUILD = 7;
+    static final int MINOR = 11;
+    static final int BUILD = 0;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}
@@ -16,7 +16,7 @@ public final class BuildVersion {
     // this stores the number of days between our build verison Major.Min.or.Build and this compile
     public static String BUILD_COMPILE_NUM_FILE = "builddate.txt";
 
-    // THis is the date in seconds when the MAJOR.MINOR.BUILD numbers we last updated
+    // This is the date in seconds when the MAJOR.MINOR.BUILD numbers we last updated
     public static String BUILD_VERSION_DATE = "versionddate.txt";
 
 

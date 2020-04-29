@@ -63,7 +63,7 @@ public class UDPCachedMessage {
 
     /**
      * Get the cached packet
-     * @return a cached verion of the packet
+     * @return a cached version of the packet
      */
     public DatagramPacket getCachedPacket() {
         return cachedPacket;

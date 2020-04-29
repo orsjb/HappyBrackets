@@ -167,6 +167,20 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 
 	/**
+	 * Cause device to print config to log file
+	 */
+	public boolean sendPrintConfig(){
+
+		boolean ret =  false;
+		if (openControlPort()) {
+			send(OSCVocabulary.DeviceConfig.PRINT_CONFIG);
+			ret = true;
+		}
+
+		return ret;
+
+	}
+	/**
 	 * Send the selected file to the the device
 	 * @param source_file the file we are sending
 	 * @param target_path the target path on device
@@ -493,8 +507,12 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		return ret;
 	}
 
+	public void sendResetConfiguration() {
+		send(OSCVocabulary.DeviceConfig.DELETE_CONFIG, replyPortObject);
+	}
 
-    public interface StatusUpdateListener {
+
+	public interface StatusUpdateListener {
 		void update(String state);
 	}
 
@@ -528,6 +546,8 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 	private List<StatusUpdateListener> statusUpdateListenerList = new ArrayList<>();
 	private List<StatusUpdateListener> friendlyNameListenerList = new ArrayList<>();
+	private List<StatusUpdateListener> printConfigListenerList = new ArrayList<>();
+
 	private List<GainChangedListener> gainChangedListenerList = new ArrayList<>();
 
 	private List<ConnectedUpdateListener> connectedUpdateListenerList = new ArrayList<>();
@@ -549,6 +569,8 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	private final Object favouriteChangedListenersLock = new Object();
 	private final Object deviceIdUpdateListenerListLock = new Object();
 	private final Object statusUpdateListenerListLock = new Object();
+	private final Object printConfigListenerListLock = new Object();
+
 	private final Object gainChangedListenerListLock = new Object();
 	private final Object connectedUpdateListenerListLock = new Object();
 	private final Object friendlyNameListenerListLock = new Object();
@@ -840,7 +862,10 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	public synchronized void incomingMessage(OSCMessage msg, SocketAddress sender) {
 		if (OSCVocabulary.match(msg, OSCVocabulary.Device.STATUS)) {
 			processStatusMessage(msg, sender);
-		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
+		} else if (OSCVocabulary.startsWith(msg, OSCVocabulary.SchedulerMessage.TIME)){
+			HBScheduler.ProcessSchedulerMessage(msg);
+		}
+		else if (OSCVocabulary.match(msg, OSCVocabulary.Device.VERSION)) {
 			processVersionMessage(msg, sender);
 
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
@@ -854,8 +879,8 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			processSimulatorHomeMessage(msg, sender);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.GAIN)) {
 			processGainMessage(msg, sender);
-		} else if (OSCVocabulary.startsWith(msg, OSCVocabulary.SchedulerMessage.TIME)){
-			HBScheduler.ProcessSchedulerMessage(msg);
+		} else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DeviceConfig.CONFIG)){
+			processDeviceConfigMessage(msg);
 		}
 
 	}
@@ -1000,6 +1025,27 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 	}
 
+	/**
+	 * Process Messages for device config
+	 * @param msg OSC Message
+	 *
+	 */
+	private void processDeviceConfigMessage(OSCMessage msg) {
+		if (OSCVocabulary.match(msg, OSCVocabulary.DeviceConfig.PRINT_CONFIG)) {
+			for (int i = 0; i < msg.getArgCount(); i++)
+			{
+				String config = (String) msg.getArg(i);
+				displayConfig(config);
+			}
+		}
+		else if (OSCVocabulary.match(msg, OSCVocabulary.DeviceConfig.DELETE_CONFIG)) {
+			for (int i = 0; i < msg.getArgCount(); i++) {
+				String config = "Deleted " + (String) msg.getArg(i);
+				displayConfig(config);
+			}
+		}
+	}
+
 
 	/**
 	 * We will recieve this message and send the dynamic control message back to the device
@@ -1080,6 +1126,10 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 		synchronized (statusUpdateListenerListLock) {
 			statusUpdateListenerList.clear();
+		}
+
+		synchronized (printConfigListenerListLock) {
+			printConfigListenerList.clear();
 		}
 
 		synchronized (gainChangedListenerListLock){
@@ -1264,6 +1314,19 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		}
 	}
 
+	public void addConfigUpdateListener(StatusUpdateListener listener) {
+		synchronized (printConfigListenerListLock) {
+			printConfigListenerList.add(listener);
+		}
+	}
+
+	public void removeConfigUpdateListener(StatusUpdateListener listener) {
+
+		synchronized (printConfigListenerListLock) {
+			printConfigListenerList.remove(listener);
+		}
+	}
+
 	public void addGainChangedListener(GainChangedListener listener) {
 		synchronized (gainChangedListenerListLock) {
 			gainChangedListenerList.add(listener);
@@ -1378,6 +1441,19 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			}
 		}
 	}
+
+	/**
+	 * Display a returned config list from device
+	 * @param config_display the new status to write
+	 */
+	public void displayConfig(String config_display) {
+		synchronized (printConfigListenerListLock) {
+			for (StatusUpdateListener statusUpdateListener : printConfigListenerList) {
+				statusUpdateListener.update(config_display);
+			}
+		}
+	}
+
 
     public void setIsConnected(boolean connected) {
 

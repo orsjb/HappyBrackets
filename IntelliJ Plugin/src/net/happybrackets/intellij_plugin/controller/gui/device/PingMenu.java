@@ -1,5 +1,8 @@
 package net.happybrackets.intellij_plugin.controller.gui.device;
 
+import com.intellij.notification.NotificationType;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.jgoodies.common.base.Strings;
 import javafx.application.Platform;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.MenuItem;
@@ -9,6 +12,12 @@ import javafx.scene.input.ClipboardContent;
 import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 
 import javax.swing.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
+import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject.DEVICE_CONFIG_PATH;
 
 /**
  * Creates popup menus for Network Menus
@@ -18,6 +27,7 @@ public class PingMenu extends DeviceMenu {
     // define the username to use for SSH Command
     final String DEF_USERNAME = "pi";
     private String username = DEF_USERNAME;
+    private String projectDir; // the project directory
 
     //in case the user is not using pi as the default username for ssh
     public void setUsername(String val)
@@ -32,9 +42,11 @@ public class PingMenu extends DeviceMenu {
     /**
      * Constructor
      * @param item the localDevice we want to send message to
+     * @param project_dir the project directory
      */
-    public PingMenu(LocalDeviceRepresentation item){
+    public PingMenu(LocalDeviceRepresentation item, String project_dir){
         super(item);
+        projectDir = project_dir;
     }
 
 
@@ -149,6 +161,64 @@ public class PingMenu extends DeviceMenu {
             }
         }).start());
 
+        // we are going to create a config file
+        String config_filename = localDeviceRepresentation.deviceName + ".config";
+
+        MenuItem write_config_item = new MenuItem("Create " + config_filename);
+
+        if (Strings.isEmpty(projectDir)){
+            write_config_item.setDisable (true);
+        }
+        else {
+            String filename = projectDir + File.separatorChar + DEVICE_CONFIG_PATH + config_filename;
+            File f = new File(filename);
+
+            write_config_item.setDisable(f.exists());
+
+        }
+
+        write_config_item.setOnAction(event -> new Thread(() -> {
+            try {
+                String filename = projectDir + File.separatorChar + DEVICE_CONFIG_PATH + config_filename;
+
+                Files.write(Paths.get(filename), DefaultConfig.getDefaultConfigString().getBytes());
+                LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(filename));
+                displayNotification("Wrote " + filename, NotificationType.INFORMATION);
+            } catch (Exception ex) {
+            }
+        }).start());
+
+        // Create Menu for displaying config on device
+        MenuItem get_config_item = new MenuItem("Show Device Config ");
+        get_config_item.setOnAction(event -> new Thread(() -> {
+            try {
+                if (localDeviceRepresentation.sendPrintConfig()) {
+                    displayNotification("Request config  from " + localDeviceRepresentation.deviceName, NotificationType.INFORMATION);
+                }
+                else {
+                    displayNotification("Unable to connect to " + localDeviceRepresentation.deviceName, NotificationType.ERROR);
+                }
+
+            } catch (Exception ex) {
+            }
+        }).start());
+
+        MenuItem clear_config_menu = new MenuItem("Remove Config from Device");
+        clear_config_menu.setDisable(localDeviceRepresentation.isIgnoringDevice());
+        clear_config_menu.setOnAction(event -> new Thread(() -> {
+            try {
+
+                int dialog_button = JOptionPane.YES_NO_OPTION;
+                int dialog_result = JOptionPane.showConfirmDialog(null,
+                         "This will remove all files from data/classes data/jars and config folders on " + localDeviceRepresentation.getFriendlyName() + ". Do you really want to do this?", "Reset Device Configuration" + localDeviceRepresentation.getFriendlyName(), dialog_button);
+
+                if (dialog_result == JOptionPane.YES_OPTION) {
+                    localDeviceRepresentation.sendResetConfiguration();
+                }
+            } catch (Exception ex) {
+            }
+        }).start());
+
         MenuItem shutdown_menu = new MenuItem("Shutdown Device");
         shutdown_menu.setDisable(localDeviceRepresentation.isIgnoringDevice());
         shutdown_menu.setOnAction(event -> new Thread(() -> {
@@ -169,6 +239,10 @@ public class PingMenu extends DeviceMenu {
         return new MenuItem[]{copy_ip_address_menu, copy_ssh_command_menu,
                 copy_host_command_menu, new SeparatorMenuItem(),
                 request_status_menu, cancel_send_menu, request_version_menu,
+                new SeparatorMenuItem(),
+                get_config_item,
+                write_config_item,
+                clear_config_menu,
                 new SeparatorMenuItem(),
                 remove_item_menu, ignore_controls_item_menu, favourite_item_menu,
                 new SeparatorMenuItem(), encrypt_item_menu,
