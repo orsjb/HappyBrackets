@@ -859,7 +859,7 @@ public class NetworkCommunication {
 	/**
 	 * Send a Built OSC Message to server
 	 * @param msg OSC Message
-	 * @param target, where we need to send message
+	 * @param target where we need to send message
 	 */
 	public void send (OSCMessage msg, InetSocketAddress target)
 	{
@@ -876,7 +876,7 @@ public class NetworkCommunication {
 	/**
 	 * Send a Built OSC Message to server
 	 * @param msg OSC Message
-	 * @param target, where we need to send message
+	 * @param target where we need to send message
 	 * @return true if able to send and no exception thrown
 	 */
 	public boolean sendTcp (OSCMessage msg, SocketAddress target)
