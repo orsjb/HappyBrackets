@@ -69,6 +69,13 @@ public class MonitorGyroscope implements HBAction {
 
                 displayRoll.setValue(roll);
                 displayYaw.setValue(yaw);
+
+                // We will display our status as two decimal places
+                String status_display = "\tp:"+ String.format("%.1g", pitch)
+                        + "\tr:" + String.format("%.1g", roll)
+                        + "\ty:" + String.format("%.1g", yaw);
+
+                hb.setStatus(status_display);
                 /******** Write your code above this line ********/
             }
         };

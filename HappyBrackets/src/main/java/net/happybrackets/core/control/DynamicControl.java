@@ -1036,6 +1036,7 @@ public class DynamicControl implements ScheduledEventListener {
 
                 double execution_time = integersToScheduleTime((int) ms_max, (int) ms_min, (int) nano);
 
+                boolean data_converted = false; // we only want to do data conversion once
 
                 synchronized (controlMapLock) {
                     List<DynamicControl> named_controls = controlMap.getControlsByName(control_name);
@@ -1044,25 +1045,30 @@ public class DynamicControl implements ScheduledEventListener {
                             // we must NOT call setVal as this will generate a global series again.
                             // Just notifyListeners specific to this control but not globally
 
-                            // we need to see if this is a boolean Object as OSC does not support that
-                            if (control_type == ControlType.BOOLEAN) {
-                                int osc_val = (int) obj_val;
-                                Boolean bool_val = osc_val != 0;
-                                obj_val = bool_val;
-                            } else if (control_type == ControlType.OBJECT) {
-                                if (!(obj_val instanceof String)) {
-                                    // This is not a Json Message
-                                    // We will need to get all the remaining OSC arguments after the schedule time and store that as ObjVal
-                                    int num_args = msg.getArgCount() - OSC_TRANSMIT_ARRAY_ARG;
-                                    Object[] restore_args = new Object[num_args];
-                                    for (int i = 0; i < num_args; i++) {
-                                        restore_args[i] = msg.getArg(OSC_TRANSMIT_ARRAY_ARG + i);
+                            if (!data_converted) {
+                                // we need to see if this is a boolean Object as OSC does not support that
+                                if (control_type == ControlType.BOOLEAN) {
+
+                                    int osc_val = (int) obj_val;
+                                    Boolean bool_val = osc_val != 0;
+                                    obj_val = bool_val;
+                                    data_converted = true;
+                                } else if (control_type == ControlType.OBJECT) {
+                                    if (!(obj_val instanceof String)) {
+                                        // This is not a Json Message
+                                        // We will need to get all the remaining OSC arguments after the schedule time and store that as ObjVal
+                                        int num_args = msg.getArgCount() - OSC_TRANSMIT_ARRAY_ARG;
+                                        Object[] restore_args = new Object[num_args];
+                                        for (int i = 0; i < num_args; i++) {
+                                            restore_args[i] = msg.getArg(OSC_TRANSMIT_ARRAY_ARG + i);
+                                        }
+
+                                        obj_val = restore_args;
+                                        data_converted = true;
                                     }
-
-                                    obj_val = restore_args;
                                 }
-                            }
 
+                            }
                             // We need to schedule this value
                             named_control.scheduleValue(device_name, obj_val, execution_time);
                         }

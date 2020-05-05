@@ -9,11 +9,13 @@ import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.AccelerometerListener;
 
 import java.lang.invoke.MethodHandles;
+import java.text.DecimalFormat;
 
 /**
  * This sketch displays the values returning from accelerometer
  */
 public class MonitorAccelerometer implements HBAction {
+
     @Override
     public void action(HB hb) {
         /***** Type your HBAction code below this line ******/
@@ -64,6 +66,14 @@ public class MonitorAccelerometer implements HBAction {
                 displayX.setValue(x_val);
                 displayY.setValue(y_val);
                 displayZ.setValue(z_val);
+
+
+                // We will display our status as two decimal places
+                String status_display = "\tx:"+ String.format("%.1g", x_val)
+                        + "\ty:" + String.format("%.1g", y_val)
+                        + "\tz:" + String.format("%.1g", z_val);
+
+                hb.setStatus(status_display);
                 /******** Write your code above this line ********/
 
             }
