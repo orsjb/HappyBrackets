@@ -3,6 +3,7 @@ package net.happybrackets.tutorial.session1;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Noise;
+import net.happybrackets.controller.gui.WaveformVisualiser;
 
 /**
  * Created by ollie on 10/05/2016.
@@ -25,5 +26,6 @@ public class CodeTask1_2 {
         ac.out.addInput(g);
         //say something to the console output
         System.out.println("Hello World! We are running Beads.");
+        WaveformVisualiser.open(ac);
     }
 }

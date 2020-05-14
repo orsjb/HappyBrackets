@@ -787,9 +787,9 @@
 <dd>
 <div class="block">Creates a valid OSC message.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="net/happybrackets/device/WaveformVisualizer.html#createVisualiser--">createVisualiser()</a></span> - Static method in class net.happybrackets.device.<a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device">WaveformVisualizer</a></dt>
+<dt><span class="memberNameLink"><a href="net/happybrackets/device/DebuggerWaveformVisualizer.html#createVisualiser--">createVisualiser()</a></span> - Static method in class net.happybrackets.device.<a href="net/happybrackets/device/DebuggerWaveformVisualizer.html" title="class in net.happybrackets.device">DebuggerWaveformVisualizer</a></dt>
 <dd>
-<div class="block">Create a <a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device"><code>WaveformVisualizer</code></a> that will be used to display audio waveform
+<div class="block">Create a <a href="net/happybrackets/device/DebuggerWaveformVisualizer.html" title="class in net.happybrackets.device"><code>DebuggerWaveformVisualizer</code></a> that will be used to display audio waveform
  The initial <code>AudioContext</code> is null so the object can be created without crashing the system</div>
 </dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/HTS221.html#CTRL_REG1">CTRL_REG1</a></span> - Static variable in class net.happybrackets.device.sensors.<a href="net/happybrackets/device/sensors/HTS221.html" title="class in net.happybrackets.device.sensors">HTS221</a></dt>
@@ -868,6 +868,14 @@
 </dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/DebugApplication.html#DebugApplication--">DebugApplication()</a></span> - Constructor for class net.happybrackets.device.<a href="net/happybrackets/device/DebugApplication.html" title="class in net.happybrackets.device">DebugApplication</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="net/happybrackets/device/DebuggerWaveformVisualizer.html" title="class in net.happybrackets.device"><span class="typeNameLink">DebuggerWaveformVisualizer</span></a> - Class in <a href="net/happybrackets/device/package-summary.html">net.happybrackets.device</a></dt>
+<dd>
+<div class="block">Displays the waveform on a JPanel based on a <code>AudioContext</code>
+ The class must be created using <a href="net/happybrackets/device/DebuggerWaveformVisualizer.html#createVisualiser--"><code>DebuggerWaveformVisualizer.createVisualiser()</code></a> first, and then
+ have the <code>AudioContext</code> assigned using the <a href="net/happybrackets/device/DebuggerWaveformVisualizer.html#setAudioContext-net.beadsproject.beads.core.AudioContext-"><code>DebuggerWaveformVisualizer.setAudioContext(AudioContext)</code></a> function
+ This is required to because the AWT object must be created before an <code>AudioContext</code> due to a quirk
+ in some systems</div>
+</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/GZIPCompression.html#decompress-byte:A-">decompress(byte[])</a></span> - Static method in class net.happybrackets.core.<a href="net/happybrackets/core/GZIPCompression.html" title="class in net.happybrackets.core">GZIPCompression</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/Encryption.html#decrypt-java.lang.String-byte:A-int-int-">decrypt(String, byte[], int, int)</a></span> - Static method in class net.happybrackets.core.<a href="net/happybrackets/core/Encryption.html" title="class in net.happybrackets.core">Encryption</a></dt>
@@ -2876,6 +2884,8 @@
 </a>
 <h2 class="title">N</h2>
 <dl>
+<dt><a href="net/happybrackets/controller/gui/package-summary.html">net.happybrackets.controller.gui</a> - package net.happybrackets.controller.gui</dt>
+<dd>&nbsp;</dd>
 <dt><a href="net/happybrackets/core/package-summary.html">net.happybrackets.core</a> - package net.happybrackets.core</dt>
 <dd>&nbsp;</dd>
 <dt><a href="net/happybrackets/core/config/package-summary.html">net.happybrackets.core.config</a> - package net.happybrackets.core.config</dt>
@@ -2985,6 +2995,15 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/LSM9DS1.html#OFFSET_Z_REG_L_M">OFFSET_Z_REG_L_M</a></span> - Static variable in class net.happybrackets.device.sensors.<a href="net/happybrackets/device/sensors/LSM9DS1.html" title="class in net.happybrackets.device.sensors">LSM9DS1</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/controller/gui/WaveformVisualiser.html#open-net.beadsproject.beads.core.AudioContext-">open(AudioContext)</a></span> - Static method in class net.happybrackets.controller.gui.<a href="net/happybrackets/controller/gui/WaveformVisualiser.html" title="class in net.happybrackets.controller.gui">WaveformVisualiser</a></dt>
+<dd>
+<div class="block">Displays the waveform in a Panel
+ This is a lagacy feature for Kadenze course</div>
+</dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/controller/gui/WaveformVisualiser.html#open-net.beadsproject.beads.core.AudioContext-boolean-">open(AudioContext, boolean)</a></span> - Static method in class net.happybrackets.controller.gui.<a href="net/happybrackets/controller/gui/WaveformVisualiser.html" title="class in net.happybrackets.controller.gui">WaveformVisualiser</a></dt>
+<dd>
+<div class="block">Legacy function For kendeza course</div>
+</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/sensors/LSM9DS1.html#ORIENT_CFG_G">ORIENT_CFG_G</a></span> - Static variable in class net.happybrackets.device.sensors.<a href="net/happybrackets/device/sensors/LSM9DS1.html" title="class in net.happybrackets.device.sensors">LSM9DS1</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html#OSCAdvertiseEvent-de.sciss.net.OSCMessage-java.util.Collection-">OSCAdvertiseEvent(OSCMessage, Collection&lt;String&gt;)</a></span> - Method in interface net.happybrackets.core.<a href="net/happybrackets/core/OSCVocabulary.OSCAdvertiseListener.html" title="interface in net.happybrackets.core">OSCVocabulary.OSCAdvertiseListener</a></dt>
@@ -3108,7 +3127,7 @@
 </a>
 <h2 class="title">P</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="net/happybrackets/device/WaveformVisualizer.html#paintComponent-java.awt.Graphics-">paintComponent(Graphics)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device">WaveformVisualizer</a></dt>
+<dt><span class="memberNameLink"><a href="net/happybrackets/device/DebuggerWaveformVisualizer.html#paintComponent-java.awt.Graphics-">paintComponent(Graphics)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/DebuggerWaveformVisualizer.html" title="class in net.happybrackets.device">DebuggerWaveformVisualizer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/device/HB.html#pattern-net.beadsproject.beads.core.Bead-">pattern(Bead)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/HB.html" title="class in net.happybrackets.device">HB</a></dt>
 <dd>
@@ -3666,7 +3685,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="net/happybrackets/core/OSCVocabulary.Device.html#SET_NAME">SET_NAME</a></span> - Static variable in class net.happybrackets.core.<a href="net/happybrackets/core/OSCVocabulary.Device.html" title="class in net.happybrackets.core">OSCVocabulary.Device</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="net/happybrackets/device/WaveformVisualizer.html#setAudioContext-net.beadsproject.beads.core.AudioContext-">setAudioContext(AudioContext)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device">WaveformVisualizer</a></dt>
+<dt><span class="memberNameLink"><a href="net/happybrackets/device/DebuggerWaveformVisualizer.html#setAudioContext-net.beadsproject.beads.core.AudioContext-">setAudioContext(AudioContext)</a></span> - Method in class net.happybrackets.device.<a href="net/happybrackets/device/DebuggerWaveformVisualizer.html" title="class in net.happybrackets.device">DebuggerWaveformVisualizer</a></dt>
 <dd>
 <div class="block">Set the <code>AudioContext</code> that we are displaying audio waveform of</div>
 </dd>
@@ -4657,14 +4676,14 @@ the order they are declared.</div>
 </a>
 <h2 class="title">W</h2>
 <dl>
-<dt><a href="net/happybrackets/device/WaveformVisualizer.html" title="class in net.happybrackets.device"><span class="typeNameLink">WaveformVisualizer</span></a> - Class in <a href="net/happybrackets/device/package-summary.html">net.happybrackets.device</a></dt>
+<dt><a href="net/happybrackets/controller/gui/WaveformVisualiser.html" title="class in net.happybrackets.controller.gui"><span class="typeNameLink">WaveformVisualiser</span></a> - Class in <a href="net/happybrackets/controller/gui/package-summary.html">net.happybrackets.controller.gui</a></dt>
 <dd>
 <div class="block">Displays the waveform on a JPanel based on a <code>AudioContext</code>
- The class must be created using <a href="net/happybrackets/device/WaveformVisualizer.html#createVisualiser--"><code>createVisualiser()</code></a> first, and then
- have the <code>AudioContext</code> assigned using the <a href="net/happybrackets/device/WaveformVisualizer.html#setAudioContext-net.beadsproject.beads.core.AudioContext-"><code>setAudioContext(AudioContext)</code></a> function
- This is required to because the AWT object must be created before an <code>AudioContext</code> due to a quirk
- in some systems</div>
+
+ This is a legacy Class for Kadenze course</div>
 </dd>
+<dt><span class="memberNameLink"><a href="net/happybrackets/controller/gui/WaveformVisualiser.html#WaveformVisualiser--">WaveformVisualiser()</a></span> - Constructor for class net.happybrackets.controller.gui.<a href="net/happybrackets/controller/gui/WaveformVisualiser.html" title="class in net.happybrackets.controller.gui">WaveformVisualiser</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="net/happybrackets/core/instruments/WaveModule.html" title="class in net.happybrackets.core.instruments"><span class="typeNameLink">WaveModule</span></a> - Class in <a href="net/happybrackets/core/instruments/package-summary.html">net.happybrackets.core.instruments</a></dt>
 <dd>
 <div class="block">An encapsulated class for generating a basic wave player with functions to set

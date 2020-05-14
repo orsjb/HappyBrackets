@@ -458,7 +458,7 @@ public class HB {
 
 		// we need to display Visualiser here and then assign AudioContext at the end of this function
 		// Otherwise, running for IDE crashes on some systems
-		WaveformVisualizer visualizer = WaveformVisualizer.createVisualiser();
+		DebuggerWaveformVisualizer visualizer = DebuggerWaveformVisualizer.createVisualiser();
 		// Disable Our non simulated sensors to prevent extra System Messages
 		Sensor.setSimulatedOnly(true);
 
