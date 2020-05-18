@@ -17,9 +17,16 @@
 package net.happybrackets.intellij_plugin;
 
 
+import com.intellij.ide.DataManager;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileChooser.*;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -62,6 +69,7 @@ import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
 import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.intellij_plugin.controller.network.SendToDevice;
 import net.happybrackets.intellij_plugin.menu.RunSimulatorMenu;
+import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +82,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
+
+import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
 
 //import javafx.css.Style;
 
@@ -217,6 +227,8 @@ public class IntelliJPluginGUIManager {
 		main_container.setFillWidth(true);
 		//main_container.getChildren().addAll(config_pane, known_devices_pane, global_pane, composition_pane,  device_pane);
 		main_container.getChildren().addAll(commands_pane,  probe_pane, device_pane);
+
+		commands_pane.setExpanded(false);
 
 		ScrollPane main_scroll = new ScrollPane();
 		main_scroll.setFitToWidth(true);
@@ -1055,7 +1067,7 @@ public class IntelliJPluginGUIManager {
 		});
 
 		FlowPane device_buttons = new FlowPane(defaultElementSpacing, defaultElementSpacing);
-		device_buttons.getChildren().add(probe_button);
+		//device_buttons.getChildren().add(probe_button);
 
 		Button reset_button = new Button("Reset all");
 		reset_button.setTooltip(new Tooltip("Reset all devices"));
@@ -1075,7 +1087,58 @@ public class IntelliJPluginGUIManager {
 
 		});
 
+		Button send_all_button = new Button("Send all");
+		send_all_button.setTooltip(new Tooltip("Send sketch to all devices all devices"));
+
+		send_all_button.setOnMouseClicked(event -> {
+			try {
+				try {
+					//Project project = projects[i];
+					ApplicationManager.getApplication().invokeLater(() -> {
+						try {
+
+							DataContext dataContext = DataManager.getInstance().getDataContext();
+
+							Project project = DataKeys.PROJECT.getData(dataContext);
+							Document current_doc = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument();
+							VirtualFile current_java_file = FileDocumentManager.getInstance().getFile(current_doc);
+
+							VirtualFile class_file = SendCompositionAction.getClassFileFromJava(project, current_java_file);
+
+							if (class_file != null) {
+								String full_class_name = SendCompositionAction.getFullClassName(class_file.getCanonicalPath());
+
+								try {
+									SendToDevice.send(full_class_name, ControllerEngine.getInstance().getDeviceConnection().getDevices());
+									displayNotification("Sent " + class_file.getNameWithoutExtension() + " to all devices", NotificationType.INFORMATION);
+								} catch (Exception e) {
+									displayNotification(e.getMessage(), NotificationType.ERROR);
+									displayNotification(class_file.getName() + " may not have finished compiling or you may have an error in your code.", NotificationType.ERROR);
+								}
+							}
+							else
+							{
+								displayNotification("Unable to find class. The class may not have finished compiling or you may have an error in your code.", NotificationType.ERROR);
+							}
+						} catch (Exception ex2) {
+
+						}
+					});
+				} catch (Exception ex) {
+					displayNotification("Unable to find class. The class may not have finished compiling or you may have an error in your code.",  NotificationType.ERROR);
+
+				}
+
+			}catch (Exception ex){
+				System.out.println(ex.getMessage());
+				displayNotification("Unable to find class. The class may not have finished compiling or you may have an error in your code.", NotificationType.ERROR);
+			}
+		});
+
+
 		device_buttons.getChildren().add(ping_all_button);
+
+		device_buttons.getChildren().add(send_all_button);
 
 		device_panel.getChildren().add(device_buttons);
 

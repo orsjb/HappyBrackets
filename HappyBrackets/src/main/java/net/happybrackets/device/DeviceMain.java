@@ -17,9 +17,9 @@
 package net.happybrackets.device;
 
 
+import net.happybrackets.core.AudioSetup;
 import net.happybrackets.core.Device;
 import net.happybrackets.device.config.DeviceConfig;
-import net.happybrackets.core.AudioSetup;
 import net.happybrackets.device.sensors.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 
