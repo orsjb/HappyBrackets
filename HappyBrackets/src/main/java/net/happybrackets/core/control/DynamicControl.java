@@ -521,6 +521,47 @@ public class DynamicControl implements ScheduledEventListener {
 
     }
 
+
+    /**
+     * Ascertain the Control Type based on the Value
+     * @param value the value we are obtaing a control value from
+     * @return a control type
+     */
+    public static ControlType getControlType(Object value){
+        ControlType ret =  ControlType.OBJECT;
+        if (value == null){
+            ret = ControlType.TRIGGER;
+        }
+        else if (value instanceof Float || value instanceof Double){
+            ret =  ControlType.FLOAT;
+        }
+        else if (value instanceof Boolean){
+            ret =  ControlType.BOOLEAN;
+        }
+        else if (value instanceof String){
+            ret =  ControlType.TEXT;
+        }
+        else if (value instanceof Integer || value instanceof Long){
+            ret =  ControlType.INT;
+        }
+        return ret;
+
+    }
+
+    /**
+     * A dynamic control that can be accessed from outside this sketch
+     * it is created with the sketch object that contains it along with the type
+     *
+     * @param name          The name we will give to associate it with other DynamicControls with identical ControlScope and type.
+     * @param initial_value The initial value of the control
+     */
+    public DynamicControl(String name, Object initial_value) {
+        this(new Object(), getControlType(initial_value), name, initial_value, DISPLAY_TYPE.DISPLAY_DEFAULT);
+        synchronized (controlMapLock) {
+            controlMap.addControl(this);
+        }
+    }
+
     /**
      * A dynamic control that can be accessed from outside this sketch
      * it is created with the sketch object that contains it along with the type
