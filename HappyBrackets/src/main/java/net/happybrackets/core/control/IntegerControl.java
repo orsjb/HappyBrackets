@@ -51,6 +51,17 @@ public abstract class IntegerControl extends DynamicControlParent {
         super(new DynamicControl(parent_sketch, ControlType.INT, name, initial_value, min_val, max_val, display_type));
     }
 
+    /**
+     * Constructor for abstract IntegerControl. This allows creation without a display
+     * @param parent_sketch The parent object for control
+     * @param name The name to Display
+     * @param initial_value Initial value of the object
+     */
+    public IntegerControl(Object parent_sketch, String name, int initial_value) {
+        super(new DynamicControl(parent_sketch, ControlType.INT, name, initial_value, 0, 0, DynamicControl.DISPLAY_TYPE.DISPLAY_HIDDEN));
+    }
+
+
 
     @Override
     void notifyListener(Object val) {

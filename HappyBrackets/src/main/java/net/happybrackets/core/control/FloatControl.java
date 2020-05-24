@@ -1,7 +1,5 @@
 package net.happybrackets.core.control;
 
-import java.math.BigDecimal;
-
 /**
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#FLOAT} in a simple API
  * <br> This class is the parent type of {@link FloatTextControl}, {@link FloatSliderControl},  {@link FloatBuddyControl} and  {@link FloatControlSender} and all intercommunicate with each other
@@ -45,6 +43,17 @@ public abstract class FloatControl extends DynamicControlParent {
         super(new DynamicControl(parent_sketch, ControlType.FLOAT, name, initial_value, min_val, max_val, display_type));
     }
 
+
+    /**
+     * Constructor for abstract FloatControl. Slider, Text and Buddy Control will
+     * derive from this class
+     * @param parent_sketch The parent object for control
+     * @param name The name to Display
+     * @param initial_value Initial value of the object
+     */
+    public FloatControl(Object parent_sketch, String name, double initial_value) {
+        super(new DynamicControl(parent_sketch, ControlType.FLOAT, name, initial_value, 0, 0, DynamicControl.DISPLAY_TYPE.DISPLAY_HIDDEN));
+    }
 
     @Override
     void notifyListener(Object val) {
