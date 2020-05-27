@@ -34,7 +34,7 @@ public class SampleTextControl implements HBAction, HBReset {
 
         /* type basicSamplePLayer to generate this code */
         // define our sample name
-        final String s = "data/audio/Roje/i-write.wav";
+        final String s = "data/audio/long/1979.wav";
         SampleModule samplePlayer = new SampleModule();
         if (samplePlayer.setSample(s)) {/* Write your code below this line */
             samplePlayer.connectTo(HB.getAudioOutput());

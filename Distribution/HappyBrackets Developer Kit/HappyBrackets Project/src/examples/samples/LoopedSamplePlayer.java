@@ -26,7 +26,7 @@ public class LoopedSamplePlayer implements HBAction {
 
         /* type basicSamplePLayer to generate this code */
         // define our sample name
-        final String sample_name = "data/audio/Roje/i-write.wav";
+        final String sample_name = "data/audio/long/1979.wav";
         SampleModule samplePlayer = new SampleModule();
         if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
             samplePlayer.connectTo(HB.getAudioOutput());

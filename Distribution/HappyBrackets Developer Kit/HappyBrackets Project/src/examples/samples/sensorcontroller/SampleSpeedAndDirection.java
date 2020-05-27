@@ -32,7 +32,7 @@ public class SampleSpeedAndDirection implements HBAction {
         Glide audioVolume = new Glide(INITIAL_VOLUME);
 
         // Define our sample name
-        final String SAMPLE_NAME = "data/audio/Roje/i-write.wav";
+        final String SAMPLE_NAME = "data/audio/long/1979.wav";
 
         // create our actual sample
         Sample sample = SampleManager.sample(SAMPLE_NAME);

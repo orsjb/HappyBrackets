@@ -25,7 +25,7 @@ public class SimpleSamplePlayer implements HBAction
 
         /* type basicSamplePLayer to generate this code */
         // define our sample name
-        final String sample_name = "data/audio/Roje/i-write.wav";
+        final String sample_name = "data/audio/long/1979.wav";
         SampleModule player = new SampleModule();
         if (player.setSample(sample_name)) {/* Write your code below this line */
             player.connectTo(HB.getAudioOutput());
