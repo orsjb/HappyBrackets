@@ -314,7 +314,7 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="booleanControlSender" value="// Type booleanControlSender to generate this code &#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControlSender(this, &quot;$NAME$&quot;, $INIT_VALUE$);" description="Creates a send only  Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
+  <template name="booleanControlSender" value="// Type booleanControlSender to generate this code &#10;net.happybrackets.core.control.BooleanControl $CONTROL_NAME$ = new net.happybrackets.core.control.BooleanControl(this, &quot;$NAME$&quot;, $INIT_VALUE$);" description="Creates a send only  Boolean type DynamicControl that displays as a check box" toReformat="true" toShortenFQNames="true">
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;booleanControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="capitalizeAndUnderscore(String)" defaultValue="&quot;control name&quot;" alwaysStopAt="true" />
     <variable name="INIT_VALUE" expression="variableOfType(Boolean)" defaultValue="&quot;false&quot;" alwaysStopAt="true" />
@@ -393,7 +393,7 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="classObjectControlSender" value="$COMMENT$&#10;        net.happybrackets.core.control.ClassObjectControl $CONTROL_NAME$ = new net.happybrackets.core.control.ClassObjectControlSender(this, &quot;$NAME$&quot;, $CLASS$.class);" description="Creates a class specific type DynamicControl object sender" toReformat="true" toShortenFQNames="true">
+  <template name="classObjectControlSender" value="$COMMENT$&#10;        net.happybrackets.core.control.ClassObjectControl $CONTROL_NAME$ = new net.happybrackets.core.control.ClassObjectControl(this, &quot;$NAME$&quot;, $CLASS$.class);" description="Creates a class specific type DynamicControl object sender" toReformat="true" toShortenFQNames="true">
     <variable name="COMMENT" expression="" defaultValue="&quot;// Type classObjectControlSender to generate this code&quot;" alwaysStopAt="true" />
     <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;classObjectControl&quot;" alwaysStopAt="true" />
     <variable name="NAME" expression="variableOfType(String)" defaultValue="&quot;controlName&quot;" alwaysStopAt="true" />
