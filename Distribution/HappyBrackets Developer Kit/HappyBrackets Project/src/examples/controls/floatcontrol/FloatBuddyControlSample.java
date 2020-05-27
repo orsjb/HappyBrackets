@@ -6,7 +6,8 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.FloatBuddyControl;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.FloatControl;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
@@ -38,28 +39,28 @@ public class FloatBuddyControlSample implements HBAction {
          // Now add a dynamicControl to set the frequency
 
         /* Type floatBuddyControl to generate this code */
-        FloatBuddyControl floatBuddyControl = new FloatBuddyControl(this, "Frequency", CENTRE_FREQUENCY, CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION) {
+        FloatControl floatBuddyControl = new FloatControl(this, "Frequency", CENTRE_FREQUENCY) {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line ***/
                 // set our frequency to the control value
                 player.setFrequency(control_val);
                 /* Write your DynamicControl code above this line */
             }
-        };/*** End DynamicControl floatBuddyControl code ***/
+        }.setDisplayRange( CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);/*** End DynamicControl floatBuddyControl code ***/
 
 
 
         // Now add a dynamicControl to set the gain
 
         /* Type floatBuddyControl to generate this code */
-        FloatBuddyControl buddyControl = new FloatBuddyControl(this, "Gain", MAX_VOLUME, 0, MAX_VOLUME) {
+        FloatControl buddyControl = new FloatControl(this, "Gain", MAX_VOLUME) {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
                 // change our gain according to control value
                 player.setGain(control_val);
                 /*** Write your DynamicControl code above this line ***/
             }
-        };/*** End DynamicControl buddyControl code ***/
+        }.setDisplayRange(0, MAX_VOLUME, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);/*** End DynamicControl buddyControl code ***/
 
     }
 

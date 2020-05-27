@@ -17,12 +17,12 @@ public class GlobalReceiveAccelerometer implements HBAction {
         hb.reset(); //Clears any running code on the device
         //Write your sketch below
 
-        FloatControl x_value = new FloatControlSender(this, "X value", 0);
+        FloatControl x_value = new FloatControl(this, "X value", 0);
 
-        FloatControl y_value = new FloatControlSender(this, "Y value", 0);
+        FloatControl y_value = new FloatControl(this, "Y value", 0);
 
 
-        FloatControl z_value = new FloatControlSender(this, "Z Value", 0);
+        FloatControl z_value = new FloatControl(this, "Z Value", 0);
 
         // Type classObjectControl to generate this code
         ClassObjectControl objectControlReceiver = new ClassObjectControl(this, TRIPLE_AXIS_NAME, TripleAxisMessage.class) {

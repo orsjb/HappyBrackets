@@ -3,6 +3,7 @@ package net.happybrackets.core.control;
 import static net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY;
 
 /**
+ * @deprecated use {@link IntegerControl} instead with {@link DynamicControl.DISPLAY_TYPE#DISPLAY_ENABLED_BUDDY}
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#INT} in a simple API
  * <br>The {@link IntegerBuddyControl} is a hybrid between the {@link IntegerSliderControl} and the {@link IntegerTextControl} in that the value can be changed in the HappyBrackets IDE with both text and a slider
  * <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via {@link IntegerBuddyControl#IntegerBuddyControl(Object, String, int, int, int)}
@@ -21,6 +22,7 @@ public abstract class IntegerBuddyControl extends IntegerControl {
      * @param initial_value Initial value of the object
      * @param min_val Minimum value to display on Slider
      * @param max_val Maximum value to display on Slider
+     * @deprecated use {@link IntegerControl} instead with {@link DynamicControl.DISPLAY_TYPE#DISPLAY_ENABLED_BUDDY}
      */
     public IntegerBuddyControl(Object parent_sketch, String name, int initial_value, int min_val, int max_val) {
         /*************************************************************

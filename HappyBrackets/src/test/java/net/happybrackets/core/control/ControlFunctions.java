@@ -11,7 +11,7 @@ public class ControlFunctions {
     public void testFunctions() {
 
         // Type globalFloatControl to generate this code
-        FloatControl floatBuddyControl = new FloatBuddyControl(this, "global control name", 0, -1, 1) {
+        FloatControl floatBuddyControl = new FloatControl(this, "global control name", 0, -1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line
                 String sender =  getSendingDevice();
@@ -50,13 +50,13 @@ public class ControlFunctions {
         }.setControlScope(ControlScope.GLOBAL);// End DynamicControl textControl code
 
         // Type globalIntControl to generate this code
-        IntegerControl integerBuddyControl = new IntegerBuddyControl(this, "global control name", 0, -1, 1) {
+        IntegerControl integerBuddyControl = new IntegerControl(this, "global control name", 0) {
             @Override
             public void valueChanged(int control_val) {// Write your DynamicControl code below this line
                 String sender =  getSendingDevice();
                 // Write your DynamicControl code above this line
             }
-        }.setControlScope(ControlScope.GLOBAL);// End DynamicControl integerBuddyControl code
+        }.setDisplayRange( -1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY).setControlScope(ControlScope.GLOBAL);// End DynamicControl integerBuddyControl code
 
 
     }

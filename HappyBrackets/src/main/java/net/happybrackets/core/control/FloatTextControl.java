@@ -1,6 +1,7 @@
 package net.happybrackets.core.control;
 
 /**
+ * @deprecated use {@link FloatControl}
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#FLOAT} in a simple API
  * <br> The difference between {@link FloatControlSender} and other {@link FloatControl} objects  is that @link FloatControlSender} does not have a handler, however, you can still retrieve the current value using the {@link FloatControl#getValue()}
  * <br> All  {@link FloatControl} objects with the same name and {@link ControlScope} will respond to a message send. For example:
@@ -19,6 +20,7 @@ public abstract class FloatTextControl extends FloatControl {
      * @param parent_sketch The parent object for control
      * @param name The name to Display
      * @param initial_value Initial value of the object
+     * @deprecated use {@link FloatControl}
      */
     public FloatTextControl(Object parent_sketch, String name, double initial_value) {
         super(parent_sketch, name, initial_value, 0, 0, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);

@@ -32,9 +32,9 @@ public class GlobalCustomExample implements HBAction {
         //Write your sketch below
 
         // Cretae some controls to display the received values
-        TextControl s_val = new TextControlSender(this, "S Val", "");
-        IntegerControl i_val = new IntegerControlSender(this, "I Val", 0);
-        FloatControl d_val = new FloatControlSender(this, "D Val", 0);
+        TextControl s_val = new TextControl(this, "S Val", "");
+        IntegerControl i_val = new IntegerControl(this, "I Val", 0);
+        FloatControl d_val = new FloatControl(this, "D Val", 0);
 
 
         // Create our Dynamic Control to send the class across network

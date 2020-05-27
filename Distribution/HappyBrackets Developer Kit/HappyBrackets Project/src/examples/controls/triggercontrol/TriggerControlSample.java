@@ -7,7 +7,6 @@ import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.FloatControl;
-import net.happybrackets.core.control.FloatControlSender;
 import net.happybrackets.core.control.TriggerControl;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
@@ -47,7 +46,7 @@ public class TriggerControlSample implements HBAction {
 
 
         /* Simply type floatControlSender to generate this code */
-        FloatControl frequencyDisplay = new FloatControlSender(this, "Current Frequency", frequencyList[0]);
+        FloatControl frequencyDisplay = new FloatControl(this, "Current Frequency", frequencyList[0]);
 
 
         // Now add a dynamicControl to switch the frequency

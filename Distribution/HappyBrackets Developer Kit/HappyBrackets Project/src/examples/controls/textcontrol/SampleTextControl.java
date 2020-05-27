@@ -4,7 +4,6 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.HBReset;
 import net.happybrackets.core.control.TextControl;
-import net.happybrackets.core.control.TextControlSender;
 import net.happybrackets.core.instruments.SampleModule;
 import net.happybrackets.device.HB;
 
@@ -83,7 +82,7 @@ public class SampleTextControl implements HBAction, HBReset {
         // now make our instructions display in a text box
 
         /* Type textControlSender to generate this code */
-        TextControl instructionDisplay = new TextControlSender(this, "Command List", "");
+        TextControl instructionDisplay = new TextControl(this, "Command List", "");
 
         // Now let us just display the commands in a thread
         /* Type threadFunction to generate this code */

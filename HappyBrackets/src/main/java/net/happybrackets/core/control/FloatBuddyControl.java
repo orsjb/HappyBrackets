@@ -1,6 +1,7 @@
 package net.happybrackets.core.control;
 
 /**
+ * @deprecated use  {@link FloatControl#FloatControl(Object, String, double, double, double, DynamicControl.DISPLAY_TYPE)}
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#FLOAT} in a simple API
  * <br>The {@link FloatBuddyControl} is a hybrid between the {@link FloatSliderControl} and the {@link FloatTextControl} in that the value can be changed in the HappyBrackets IDE with both text and a slider
  * <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via {@link FloatBuddyControl#FloatBuddyControl(Object, String, double, double, double)}
@@ -19,6 +20,7 @@ public abstract class FloatBuddyControl extends FloatControl {
      * @param initial_value Initial value of the object
      * @param min_val Minimum value to display on Slider
      * @param max_val Maximum value to display on Slider
+     * @deprecated use  {@link FloatControl#FloatControl(Object, String, double, double, double, DynamicControl.DISPLAY_TYPE)} with {@link DynamicControl.DISPLAY_TYPE#DISPLAY_ENABLED_BUDDY}
      */
     public FloatBuddyControl(Object parent_sketch, String name, double initial_value, double min_val, double max_val) {
         /*************************************************************

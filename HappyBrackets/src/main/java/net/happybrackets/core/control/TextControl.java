@@ -9,7 +9,7 @@ package net.happybrackets.core.control;
  * <br>When the control receives the value, it will be passed through to the {@link TextControl#valueChanged(String)} listener that is implemented when the class is created.
  * <br>For example
  <pre>
- TextControl control1 = new TextControlSender(this, "Read", "");
+ TextControl control1 = new TextControl(this, "Read", "");
  TextControl control2 = new TextControl(this, "Read", "") {
     {@literal @}Override
     public void valueChanged(String control_val) {
@@ -26,9 +26,9 @@ package net.happybrackets.core.control;
 
  <br>Setting the value within the HappyBrackets control display is effected by typing a new value in and pressing ENTER or RETURN
 
- * If you do not require a handler on the class, use the {@link TextControlSender} class
+ * If you do not require a handler on the class, override the {@link TextControl#valueChanged(String)} function
  */
-public abstract class TextControl extends DynamicControlParent {
+public class TextControl extends DynamicControlParent {
 
     /**
      * Constructor for abstract FloatControl. Slider, Text and Buddy Control will
@@ -37,7 +37,7 @@ public abstract class TextControl extends DynamicControlParent {
      * @param name The name to Display
      * @param initial_value Initial value of the object
      */
-    protected TextControl(Object parent_sketch, String name, String initial_value) {
+    public TextControl(Object parent_sketch, String name, String initial_value) {
         super(new DynamicControl(parent_sketch, ControlType.TEXT, name, initial_value));
     }
 
@@ -50,7 +50,7 @@ public abstract class TextControl extends DynamicControlParent {
     /**
      * Get the value for the control. For example
      <pre>
-    TextControl control1 = new TextControlSender(this, "Read", "");
+    TextControl control1 = new TextControl(this, "Read", "");
 
     String val =  control1.getValue(); // val = ""
     control1.setValue("This is text");
@@ -62,12 +62,12 @@ public abstract class TextControl extends DynamicControlParent {
         return (String) getDynamicControl().getValue();
     }
 
-    public abstract void valueChanged(String control_val);
+    public void valueChanged(String control_val){};
 
     /**
      * Set the value for the control. This will pass the message on to all other {@link DynamicControl} with matching name, type and {@link ControlScope} and call {@link #valueChanged(String)}.
  <pre>
- TextControl control1 = new TextControlSender(this, "Read", "");
+ TextControl control1 = new TextControl(this, "Read", "");
  TextControl control2 = new TextControl(this, "Read", "") {
     {@literal @}Override
     public void valueChanged(String control_val) {

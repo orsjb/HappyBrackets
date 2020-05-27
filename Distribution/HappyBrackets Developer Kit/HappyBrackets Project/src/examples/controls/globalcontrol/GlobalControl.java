@@ -46,7 +46,7 @@ public class GlobalControl implements HBAction {
         player.connectTo(HB.getAudioOutput());
 
         // This will display the sending device
-        TextControl sendingDevice = new TextControlSender(this, "Sending Device", "");
+        TextControl sendingDevice = new TextControl(this, "Sending Device", "");
 
 
         // Make an array of frequencies to switch between
@@ -54,7 +54,7 @@ public class GlobalControl implements HBAction {
 
 
         /* Type globalFloatControl to generate this code */
-        FloatBuddyControl globalFrequencyControl = new FloatBuddyControl(this, "global frequency control", INITIAL_FREQUENCY, 0, INITIAL_FREQUENCY * 3) {
+        FloatControl globalFrequencyControl = new FloatControl(this, "global frequency control", INITIAL_FREQUENCY) {
             @Override
             public void valueChanged(double control_val) { /* Write your DynamicControl code below this line */
                 // this value has been received either from the trigger below
@@ -65,7 +65,7 @@ public class GlobalControl implements HBAction {
                 sendingDevice.setValue(getSendingDevice());
                 /* Write your DynamicControl code above this line */
             }
-        };
+        }.setDisplayRange(0, INITIAL_FREQUENCY * 3, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
         globalFrequencyControl.setControlScope(ControlScope.GLOBAL);
         /* End DynamicControl globalFrequencyControl code */
 

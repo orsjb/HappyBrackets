@@ -2,7 +2,6 @@ package examples.controls.classobjectcontrols;
 
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ClassObjectControl;
-import net.happybrackets.core.control.ClassObjectControlSender;
 import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.TripleAxisMessage;
 import net.happybrackets.device.HB;
@@ -25,7 +24,7 @@ public class GlobalSendAccelerometer implements HBAction {
         //Write your sketch below
 
         // Type classObjectControlSender to generate this code
-        ClassObjectControlSender tripLeAxisSender = new ClassObjectControlSender(this, TRIPLE_AXIS_NAME, TripleAxisMessage.class).setControlScope(ControlScope.GLOBAL);
+        ClassObjectControl tripLeAxisSender = new ClassObjectControl(this, TRIPLE_AXIS_NAME, TripleAxisMessage.class).setControlScope(ControlScope.GLOBAL);
 
         // type accelerometerSensor to create this. Values typically range from -1 to + 1
         new AccelerometerListener(hb) {

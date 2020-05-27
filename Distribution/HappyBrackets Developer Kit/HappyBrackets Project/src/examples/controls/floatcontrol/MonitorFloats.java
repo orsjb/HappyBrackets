@@ -3,10 +3,8 @@ package examples.controls.floatcontrol;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.FloatBuddyControl;
 import net.happybrackets.core.control.FloatControl;
-import net.happybrackets.core.control.FloatControlSender;
-import net.happybrackets.core.control.FloatTextControl;
+
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -24,11 +22,11 @@ public class MonitorFloats implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         /* Simply type floatControlSender to generate this code */
-        FloatControl clock_beats = new FloatControlSender(this, "Beat Count", 0);
+        FloatControl clock_beats = new FloatControl(this, "Beat Count", 0);
 
 
         /* Simply type floatControlSender to generate this code */
-        FloatControl clock_value = new FloatControlSender(this, "Clock Count", 0);
+        FloatControl clock_value = new FloatControl(this, "Clock Count", 0);
 
 
         /************************************************************

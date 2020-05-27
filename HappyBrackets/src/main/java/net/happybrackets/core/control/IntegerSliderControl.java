@@ -1,6 +1,7 @@
 package net.happybrackets.core.control;
 
 /**
+ * @deprecated use {@link IntegerControl} instead with {@link DynamicControl.DISPLAY_TYPE#DISPLAY_DEFAULT}
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#INT} in a simple API
  * <br>The {@link IntegerSliderControl} can have its value set inside the HappyBrackets IDE using a standard slider control controller by the mouse. trackpad or arrow keys
  * <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via {@link IntegerSliderControl#IntegerSliderControl(Object, String, int, int, int)}
@@ -19,6 +20,7 @@ public abstract class IntegerSliderControl extends IntegerControl {
      * @param initial_value Initial value of the object
      * @param min_val Minimum value to display on Slider
      * @param max_val Maximum value to display on Slider
+     * @deprecated use {@link IntegerControl} instead with {@link DynamicControl.DISPLAY_TYPE#DISPLAY_DEFAULT}
      */
     public IntegerSliderControl(Object parent_sketch, String name, int initial_value, int min_val, int max_val) {
         super(parent_sketch, name, initial_value, min_val, max_val, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);

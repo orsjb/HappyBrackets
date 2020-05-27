@@ -94,13 +94,13 @@ public class ControlledThread implements HBAction, HBReset {
 
         // Create a control pair to set the sleep time of the thread
         // Type intBuddyControl to generate this code
-        IntegerControl threadSleepControl = new IntegerBuddyControl(this, "Thread Sleep", DEFAULT_SLEEP_TIME, MINIMUM_SLEEP_TIME, MAXIMUM_SLEEP_TIME) {
+        IntegerControl threadSleepControl = new IntegerControl(this, "Thread Sleep", DEFAULT_SLEEP_TIME) {
             @Override
             public void valueChanged(int control_val) {// Write your DynamicControl code below this line
                 threadSleepTime = control_val;
                 // Write your DynamicControl code above this line
             }
-        };// End DynamicControl threadSleepControl code
+        }.setDisplayRange(MINIMUM_SLEEP_TIME, MAXIMUM_SLEEP_TIME, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl threadSleepControl code
 
 
         /***** Type your HBAction code below this line ******/

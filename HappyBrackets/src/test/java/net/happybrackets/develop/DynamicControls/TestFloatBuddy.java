@@ -1,9 +1,8 @@
 package net.happybrackets.develop.DynamicControls;
 
-import net.beadsproject.beads.core.Bead;
-import net.beadsproject.beads.ugens.Clock;
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.*;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.FloatControl;
 import net.happybrackets.device.HB;
 
 import java.lang.invoke.MethodHandles;
@@ -24,7 +23,7 @@ public class TestFloatBuddy implements HBAction {
          * Create a Float type Dynamic Control pair that displays as a slider and text box
          * Simply type floatBuddyControl to generate this code
          *************************************************************/
-        FloatBuddyControl floatBuddyControl = new FloatBuddyControl(this, "Buddy Name", 0, -1, 1) {
+        FloatControl floatBuddyControl = new FloatControl(this, "Buddy Name", 0) {
             @Override
             public void valueChanged(double control_val) {
                 /*** Write your DynamicControl code below this line ***/
@@ -32,7 +31,7 @@ public class TestFloatBuddy implements HBAction {
                 System.out.println(control_val);
                 /*** Write your DynamicControl code above this line ***/
             }
-        };/*** End DynamicControl floatBuddyControl code ***/
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);/*** End DynamicControl floatBuddyControl code ***/
 
 
 

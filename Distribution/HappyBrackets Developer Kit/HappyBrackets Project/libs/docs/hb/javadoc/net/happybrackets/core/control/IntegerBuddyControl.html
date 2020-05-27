@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -116,17 +116,20 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<br>
-<pre>public abstract class <span class="typeNameLabel">IntegerBuddyControl</span>
-extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></pre>
-<div class="block">This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_ENABLED_BUDDY"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY</code></a>
+ This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
  <br>The <a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control"><code>IntegerBuddyControl</code></a> is a hybrid between the <a href="../../../../net/happybrackets/core/control/IntegerSliderControl.html" title="class in net.happybrackets.core.control"><code>IntegerSliderControl</code></a> and the <a href="../../../../net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a> in that the value can be changed in the HappyBrackets IDE with both text and a slider
  <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via <a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html#IntegerBuddyControl-java.lang.Object-java.lang.String-int-int-int-"><code>IntegerBuddyControl(Object, String, int, int, int)</code></a>
  <br>The upper and lower limits, however, are only limitations on the display and the actual control can be set to any value available to other <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects
  <br> All  <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects with the same name and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a value change.
 
 
- <br> <br> See <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> for general information about <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> classes and how to set the value within your code</div>
+ <br> <br> See <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> for general information about <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> classes and how to set the value within your code</span></div>
+</div>
+<br>
+<pre>public abstract class <span class="typeNameLabel">IntegerBuddyControl</span>
+extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></pre>
 </li>
 </ul>
 </div>
@@ -150,7 +153,9 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html"
                    int&nbsp;initial_value,
                    int&nbsp;min_val,
                    int&nbsp;max_val)</code>
-<div class="block">Constructor</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_ENABLED_BUDDY"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY</code></a></span></div>
+</div>
 </td>
 </tr>
 </table>
@@ -163,7 +168,7 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html"
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -171,12 +176,14 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html"
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control">IntegerBuddyControl</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a></span>(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Changed the scope that the control has.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control">IntegerBuddyControl</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html#setDisabled-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">setDisabled</a></span>(<a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Change how to display object
  We must do this in subclass</div>
 </td>
@@ -187,7 +194,7 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html"
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;net.happybrackets.core.control.<a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></h3>
-<code><a href="../../../../net/happybrackets/core/control/IntegerControl.html#getValue--">getValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-">setValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-double-">setValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-">valueChanged</a></code></li>
+<code><a href="../../../../net/happybrackets/core/control/IntegerControl.html#getValue--">getValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setDisplayRange-int-int-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">setDisplayRange</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setDisplayType-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">setDisplayType</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-">setValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-double-">setValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-">valueChanged</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.net.happybrackets.core.control.DynamicControlParent">
@@ -228,6 +235,7 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html"
                            int&nbsp;initial_value,
                            int&nbsp;min_val,
                            int&nbsp;max_val)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_ENABLED_BUDDY"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY</code></a></span></div>
 <div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -254,11 +262,12 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html"
 <li class="blockList">
 <h4>setControlScope</h4>
 <pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control">IntegerBuddyControl</a>&nbsp;setControlScope(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
  We must do this in subclass</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a></code>&nbsp;in class&nbsp;<code><a href="../../../../net/happybrackets/core/control/DynamicControlParent.html" title="class in net.happybrackets.core.control">DynamicControlParent</a></code></dd>
+<dd><code><a href="../../../../net/happybrackets/core/control/IntegerControl.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a></code>&nbsp;in class&nbsp;<code><a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>new_scope</code> - The new Control Scope</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -273,6 +282,7 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerControl.html"
 <li class="blockList">
 <h4>setDisabled</h4>
 <pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control">IntegerBuddyControl</a>&nbsp;setDisabled(<a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Change how to display object
  We must do this in subclass</div>
 <dl>

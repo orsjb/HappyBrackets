@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -116,14 +116,14 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public abstract class <span class="typeNameLabel">TriggerControl</span>
+<pre>public class <span class="typeNameLabel">TriggerControl</span>
 extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html" title="class in net.happybrackets.core.control">DynamicControlParent</a></pre>
 <div class="block">This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#TRIGGER"><code>ControlType.TRIGGER</code></a> in a simple API.
  Trigger controls do not have an internal value.
  <br><br> All <a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> controls with the same name and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message <a href="../../../../net/happybrackets/core/control/TriggerControl.html#send--"><code>send()</code></a>.
  For example, consider two <a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> objects with the same <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and name.
 <pre>
-    TriggerControl control1 = new TriggerControlSender(this, "Send");
+    TriggerControl control1 = new TriggerControl(this, "Send");
 
     TriggerControl control2 = new TriggerControl(this, "Send") {
          @Override
@@ -143,7 +143,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 
  <br><br>Triggering an event within the HappyBrackets control display is effected by clicking the button associated with the control
 
- If you do not require a handler on the class, use the <a href="../../../../net/happybrackets/core/control/TriggerControlSender.html" title="class in net.happybrackets.core.control"><code>TriggerControlSender</code></a> class</div>
+ If you  require a handler on the class, override the <a href="../../../../net/happybrackets/core/control/TriggerControl.html#triggerEvent--"><code>triggerEvent()</code></a> function</div>
 </li>
 </ul>
 </div>
@@ -177,7 +177,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -208,7 +208,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>abstract void</code></td>
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/TriggerControl.html#triggerEvent--">triggerEvent</a></span>()</code>
 <div class="block">Triggered events are received through this function after calling <a href="../../../../net/happybrackets/core/control/TriggerControl.html#send--"><code>send()</code></a> on the object.</div>
 </td>
@@ -275,7 +275,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <pre>public&nbsp;void&nbsp;send()</pre>
 <div class="block">Send a trigger event. This will pass the message on to all other <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> with matching name, type and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and call <a href="../../../../net/happybrackets/core/control/TriggerControl.html#triggerEvent--"><code>triggerEvent()</code></a>.
      <pre>
-     TriggerControl control1 = new TriggerControlSender(this, "Send");
+     TriggerControl control1 = new TriggerControl(this, "Send");
 
      TriggerControl control2 = new TriggerControl(this, "Send") {
          @Override
@@ -299,7 +299,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <div class="block">Send a trigger event at a specific time. Identical to the <a href="../../../../net/happybrackets/core/control/TriggerControl.html#send--"><code>send()</code></a> with the exception that the <a href="../../../../net/happybrackets/core/control/TriggerControl.html#triggerEvent--"><code>triggerEvent()</code></a>  event will be caused at the <a href="../../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling"><code>HBScheduler</code></a> scheduled time passed in.
  For example:
      <pre>
-     TriggerControl control1 = new TriggerControlSender(this, "Send");
+     TriggerControl control1 = new TriggerControl(this, "Send");
 
      TriggerControl control2 = new TriggerControl(this, "Send") {
          @Override
@@ -321,10 +321,10 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <ul class="blockList">
 <li class="blockList">
 <h4>triggerEvent</h4>
-<pre>public abstract&nbsp;void&nbsp;triggerEvent()</pre>
+<pre>public&nbsp;void&nbsp;triggerEvent()</pre>
 <div class="block">Triggered events are received through this function after calling <a href="../../../../net/happybrackets/core/control/TriggerControl.html#send--"><code>send()</code></a> on the object. For example:
      <pre>
-    TriggerControl control1 = new TriggerControlSender(this, "Send");
+    TriggerControl control1 = new TriggerControl(this, "Send");
 
     TriggerControl control2 = new TriggerControl(this, "Send") {
          @Override

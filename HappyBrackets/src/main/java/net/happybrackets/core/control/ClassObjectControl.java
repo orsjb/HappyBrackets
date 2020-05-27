@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
  consider two {@link ClassObjectControl} with the same {@link ControlScope} and name:
 
  <pre>
-    ClassObjectControlSender control1 = new ClassObjectControlSender(this, "Accel", TripleAxisMessage.class);
+    ClassObjectControl control1 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class);
 
     ClassObjectControl control2 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class) {
         {@literal @}Override
@@ -37,11 +37,11 @@ import java.lang.reflect.InvocationTargetException;
  * The {@link Class} type must be defined within the control
  *
  <br><br>Values cannot be set within HappyBrackets control displays
- * If you do not require a handler on the class, use the {@link ClassObjectControlSender} class
+ * If you do require a handler on the class, use the {@link ClassObjectControl#valueChanged(Object)} class
  *
  *
  */
-public abstract class ClassObjectControl  extends DynamicControlParent {
+public class ClassObjectControl  extends DynamicControlParent {
 
     static Gson gson = new Gson();
     private Class<?> classType;
@@ -53,7 +53,7 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
      * @param name The name to Display
      * @param class_type Initial value of the object. The value in the return function  {@link ClassObjectControl#valueChanged(Object)}  will be cast
      */
-    protected ClassObjectControl(Object parent_sketch, String name, Class<?> class_type) {
+    public ClassObjectControl(Object parent_sketch, String name, Class<?> class_type) {
         super(new DynamicControl(parent_sketch, ControlType.OBJECT, name, createDefaultObject(class_type)));
         classType = class_type;
     }
@@ -140,7 +140,7 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
      * Fired event that occurs when the value for the control has been set. For example:
 
      <pre>
-     ClassObjectControlSender control1 = new ClassObjectControlSender(this, "Accel", TripleAxisMessage.class);
+     ClassObjectControl control1 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class);
 
      ClassObjectControl control2 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class) {
         {@literal @}Override
@@ -157,12 +157,12 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
      <br>This will cause the <b>control2</b> to fire the {@link ClassObjectControl#valueChanged(Object)} function with the new value, causing <b>x:0.1 y:0.2 z:0.3</b> to be printed to standard output
      * @param control_val The class object that has been received. If the value could not be cast, the function will not be called
      */
-    public abstract void valueChanged(Object control_val);
+    public void valueChanged(Object control_val){};
 
     /**
      * set the value for the control. This will notify all the listeners with same name and {@link ControlScope}. For example:
      <pre>
-     ClassObjectControlSender control1 = new ClassObjectControlSender(this, "Accel", TripleAxisMessage.class);
+     ClassObjectControl control1 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class);
 
      ClassObjectControl control2 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class) {
         {@literal @}Override
@@ -187,7 +187,8 @@ public abstract class ClassObjectControl  extends DynamicControlParent {
      Identical to the {@link #setValue(Object)} with the exception that the {@link #valueChanged(Object)} event will be caused at the {@link net.happybrackets.core.scheduling.HBScheduler} scheduled time passed in. For example, the
      following code will cause the {@link #valueChanged(Object)} to be fired 1 second in the future:
      <pre>
-     ClassObjectControlSender control1 = new ClassObjectControlSender(this, "Accel", TripleAxisMessage.class);
+     ClassObjectControl control1 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class);
+     ClassObjectControl control1 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class);
 
      ClassObjectControl control2 = new ClassObjectControl(this, "Accel", TripleAxisMessage.class) {
         {@literal @}Override

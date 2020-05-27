@@ -28,15 +28,15 @@ public class FollowInts implements HBAction {
 
 
         // Type intBuddyControl to generate this code 
-        IntegerControl globalBuddy = new IntegerBuddyControl(this, "Global Buddy", 0, 0, 100) {
+        IntegerControl globalBuddy = new IntegerControl(this, "Global Buddy", 0) {
             @Override
             public void valueChanged(int control_val) {// Write your DynamicControl code below this line 
                 hb.setStatus("" + control_val);
                 // Write your DynamicControl code above this line 
             }
-        }.setControlScope(ControlScope.GLOBAL);// End DynamicControl globalBuddy code
+        }.setDisplayRange(0, 100, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY).setControlScope(ControlScope.GLOBAL);// End DynamicControl globalBuddy code
 
-        IntegerControl leadControl = new IntegerBuddyControl(this, "Lead Control", 0, 0, 100) {
+        IntegerControl leadControl = new IntegerControl(this, "Lead Control", 0) {
             @Override
             public void valueChanged(int control_val) {// Write your DynamicControl code below this line
 
@@ -46,7 +46,7 @@ public class FollowInts implements HBAction {
                 globalBuddy.setValue(control_val, scheduled_time);
                 // Write your DynamicControl code above this line
             }
-        };// End DynamicControl leadControl code
+        }.setDisplayRange(0, 100, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl leadControl code
         // write your code above this line
     }
 

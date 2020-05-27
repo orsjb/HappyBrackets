@@ -1451,6 +1451,22 @@ public class DynamicControl implements ScheduledEventListener {
     }
 
     /**
+     * Set the minimum display range for display
+     * @param min minimum display value
+     *
+     * @return this
+     */
+    public DynamicControl setMinimumValue(Object min) {minimumDisplayValue = min; return  this;}
+
+    /**
+     * Set the maximum display range for display
+     * @param max maximum display value
+     * @return this
+     */
+    public DynamicControl setMaximumDisplayValue(Object max) {maximumDisplayValue = max; return  this;}
+
+
+    /**
      * The minimum value that we want as a display, for example, in a slider control. Does not limit values in the messages
      * @return The minimum value we want a graphical display to be set to
      */

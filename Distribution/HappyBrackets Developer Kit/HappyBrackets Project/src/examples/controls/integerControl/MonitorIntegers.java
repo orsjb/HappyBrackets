@@ -21,11 +21,11 @@ public class MonitorIntegers implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         /* Type intControlSender to generate this code */
-        IntegerControl clock_beats = new IntegerControlSender(this, "Beat Count", 0);
+        IntegerControl clock_beats = new IntegerControl(this, "Beat Count", 0);
 
 
         /* Type intControlSender to generate this code */
-        IntegerControl clock_value = new IntegerControlSender(this, "Clock Value", 0);
+        IntegerControl clock_value = new IntegerControl(this, "Clock Value", 0);
 
 
 

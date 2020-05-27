@@ -6,7 +6,8 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.IntegerSliderControl;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.IntegerControl;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
@@ -35,7 +36,7 @@ public class IntegerSliderControlSample implements HBAction {
         // Now add a dynamicControl to set the frequency
 
         /* Type intSliderControl to generate this code*/
-        IntegerSliderControl frequency = new IntegerSliderControl(this, "Frequency", CENTRE_FREQUENCY, CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION) {
+        IntegerControl frequency = new IntegerControl(this, "Frequency", CENTRE_FREQUENCY) {
 
             @Override
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
@@ -43,7 +44,7 @@ public class IntegerSliderControlSample implements HBAction {
                 player.setFrequency(control_val);
                 /* Write your DynamicControl code above this line */
             }
-        };/* End DynamicControl frequency code */
+        }.setDisplayRange(CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);/* End DynamicControl frequency code */
 
     }
 

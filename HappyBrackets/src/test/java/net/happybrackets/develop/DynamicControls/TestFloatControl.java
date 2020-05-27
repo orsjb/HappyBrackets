@@ -24,21 +24,21 @@ public class TestFloatControl implements HBAction {
          * Create a Float type Dynamic Control pair that displays as a slider and text box
          * Simply type floatBuddyControl to generate this code
          *************************************************************/
-        FloatBuddyControl floatBuddyControl = new FloatBuddyControl(this, "globalFloat2 name", 0, -1, 1) {
+        FloatControl floatBuddyControl = new FloatControl(this, "globalFloat2 name", 0) {
             @Override
             public void valueChanged(double control_val) {
                 /*** Write your DynamicControl code below this line ***/
 
                 /*** Write your DynamicControl code above this line ***/
             }
-        };/*** End DynamicControl floatBuddyControl code ***/
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);/*** End DynamicControl floatBuddyControl code ***/
 
 
         /*************************************************************
          * Create a Float type Dynamic Control that displays as a slider
          * Simply type floatSliderControl to generate this code
          *************************************************************/
-        FloatSliderControl floatSliderControl = new FloatSliderControl(this, "globalFloat2 name", 0, -1, 1) {
+        FloatControl floatSliderControl = new FloatControl(this, "globalFloat2 name", 0) {
             @Override
             public void valueChanged(double control_val) {
                 /*** Write your DynamicControl code below this line ***/
@@ -46,10 +46,10 @@ public class TestFloatControl implements HBAction {
                 floatBuddyControl.setValue(control_val);
                 /*** Write your DynamicControl code above this line ***/
             }
-        };/*** End DynamicControl floatSliderControl code ***/
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);/*** End DynamicControl floatSliderControl code ***/
 
 
-        FloatTextControl floatTextControl1 = new FloatTextControl(this, "Text", 0) {
+        FloatControl floatTextControl1 = new FloatControl(this, "Text", 0) {
             @Override
             public void valueChanged(double control_val) {
                 /*** Write your DynamicControl code below this line ***/
@@ -63,14 +63,14 @@ public class TestFloatControl implements HBAction {
          * Create a Float type Dynamic Control pair
          * Simply type globalFloatControl to generate this code
          *************************************************************/
-        FloatBuddyControl globalFloat = new FloatBuddyControl(this, "global globalFloat2 name", 0, -1, 1) {
+        FloatControl globalFloat = new FloatControl(this, "global globalFloat2 name", 0) {
             @Override
             public void valueChanged(double control_val) {
                 /*** Write your DynamicControl code below this line ***/
 
                 /*** Write your DynamicControl code above this line ***/
             }
-        };
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
         globalFloat.setControlScope(ControlScope.GLOBAL);
         /*** End DynamicControl globalFloat code ***/
 
@@ -78,14 +78,14 @@ public class TestFloatControl implements HBAction {
          * Create a Float type Dynamic Control pair
          * Simply type globalFloatControl to generate this code
          *************************************************************/
-        FloatBuddyControl globalFloat2 = new FloatBuddyControl(this, "global globalFloat2 name", 0, -1, 1) {
+        FloatControl globalFloat2 = new FloatControl(this, "global globalFloat2 name", 0) {
             @Override
             public void valueChanged(double control_val) {
                 /*** Write your DynamicControl code below this line ***/
 
                 /*** Write your DynamicControl code above this line ***/
             }
-        };
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
         globalFloat2.setControlScope(ControlScope.GLOBAL);
         /*** End DynamicControl globalFloat2 code ***/
 
@@ -93,7 +93,7 @@ public class TestFloatControl implements HBAction {
          * Create a send only Float type Dynamic Control that displays as a text box
          * Simply type floatControlSender to generate this code
          *************************************************************/
-        FloatControl floatControl = new FloatControlSender(this, "control name", 0);
+        FloatControl floatControl = new FloatControl(this, "control name", 0);
 
 
         /************************************************************

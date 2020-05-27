@@ -39,13 +39,13 @@ public class ScheduleEvent implements HBAction {
 
 
         // This buddy control s just to define how long to wait for message
-        IntegerControl delaySchedule = new IntegerBuddyControl(this, "Delay MS", 100, 0, 10000) {
+        IntegerControl delaySchedule = new IntegerControl(this, "Delay MS", 100) {
             @Override
             public void valueChanged(int control_val) {// Write your DynamicControl code below this line 
 
                 // Write your DynamicControl code above this line 
             }
-        };// End DynamicControl delaySchedule code 
+        }.setDisplayRange(0, 10000, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl delaySchedule code
 
         // This control will cause device to play a beep and display it's time
         TriggerControl globalTrigger = new TriggerControl(this, "Play Now") {

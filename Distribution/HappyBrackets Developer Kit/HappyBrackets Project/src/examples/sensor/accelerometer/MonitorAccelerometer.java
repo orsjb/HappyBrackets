@@ -3,7 +3,6 @@ package examples.sensor.accelerometer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
-import net.happybrackets.core.control.FloatBuddyControl;
 import net.happybrackets.core.control.FloatControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.AccelerometerListener;
@@ -25,33 +24,33 @@ public class MonitorAccelerometer implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         // Simply type floatBuddyControl to generate this code
-        FloatControl displayX = new FloatBuddyControl(this, "Accel X Monitor", 0, -1, 1) {
+        FloatControl displayX = new FloatControl(this, "Accel X Monitor", 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line
 
                 // Write your DynamicControl code above this line
             }
-        };// End DynamicControl displayX code
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl displayX code
 
 
         // Simply type floatBuddyControl to generate this code
-        FloatControl displayY = new FloatBuddyControl(this, "Accel Y Monitor", 0, -1, 1) {
+        FloatControl displayY = new FloatControl(this, "Accel Y Monitor", 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line
 
                 // Write your DynamicControl code above this line
             }
-        };// End DynamicControl displayY code
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl displayY code
 
 
         // Simply type floatBuddyControl to generate this code
-        FloatControl displayZ = new FloatBuddyControl(this, "Accel Z Monitor", 0, -1, 1) {
+        FloatControl displayZ = new FloatControl(this, "Accel Z Monitor", 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line
 
                 // Write your DynamicControl code above this line
             }
-        };// End DynamicControl displayZ code
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl displayZ code
 
         /*****************************************************
          * Find an accelerometer sensor. If no sensor is found

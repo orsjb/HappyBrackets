@@ -24,7 +24,7 @@ public class TestIntControl implements HBAction {
          * Create an integer type Dynamic Control pair that displays as a slider and text box
          * Simply type intBuddyControl to generate this code
          *************************************************************/
-        IntegerBuddyControl integerBuddyControl = new IntegerBuddyControl(this, "Buddy", 0, -100, 100) {
+        IntegerControl integerBuddyControl = new IntegerControl(this, "Buddy", 0, -100, 100, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY) {
 
             @Override
             public void valueChanged(int new_value) {
@@ -39,7 +39,7 @@ public class TestIntControl implements HBAction {
          * Create an integer type Dynamic Control that displays as a slider
          * Simply type intSliderControl to generate this code
          *************************************************************/
-        IntegerSliderControl integerSliderControl = new IntegerSliderControl(this, "int control", 0, -100, 100) {
+        IntegerControl integerSliderControl = new IntegerControl(this, "int control", 0 ) {
 
             @Override
             public void valueChanged(int new_value) {
@@ -48,14 +48,14 @@ public class TestIntControl implements HBAction {
                 integerBuddyControl.setValue(new_value);
                 /*** Write your DynamicControl code above this line ***/
             }
-        };/*** End DynamicControl integerSliderControl code ***/
+        }.setDisplayRange(-100, 100, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);/*** End DynamicControl integerSliderControl code ***/
 
 
         /*************************************************************
          * Create an integer type Dynamic Control that displays as a text box
          * Simply type intTextControl to generate this code
          *************************************************************/
-        IntegerTextControl integerTextControl = new IntegerTextControl(this, "Global", 0) {
+        IntegerControl integerTextControl = new IntegerControl(this, "Global", 0) {
             @Override
             public void valueChanged(int new_value) {
                 /*** Write your DynamicControl code below this line ***/
@@ -72,7 +72,7 @@ public class TestIntControl implements HBAction {
          * Create an integer type Dynamic Control that displays as a text box
          * Simply type intTextControl to generate this code
          *************************************************************/
-        IntegerTextControl textControl = new IntegerTextControl(this, "Global", 0) {
+        IntegerControl textControl = new IntegerControl(this, "Global", 0) {
             @Override
             public void valueChanged(int new_value) {
                 /*** Write your DynamicControl code below this line ***/
@@ -89,7 +89,7 @@ public class TestIntControl implements HBAction {
          *
          * Simply type globalIntControl to generate this code
          *************************************************************/
-        IntegerBuddyControl global1 = new IntegerBuddyControl(this, "global control name", 0, -1, 1) {
+        IntegerControl global1 = new IntegerControl(this, "global control name", 0) {
 
             @Override
             public void valueChanged(int new_value) {
@@ -97,7 +97,7 @@ public class TestIntControl implements HBAction {
 
                 /*** Write your DynamicControl code above this line ***/
             }
-        };
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
         global1.setControlScope(ControlScope.GLOBAL);
         /*** End DynamicControl global1 code ***/
 
@@ -106,7 +106,7 @@ public class TestIntControl implements HBAction {
          *
          * Simply type globalIntControl to generate this code
          *************************************************************/
-        IntegerBuddyControl global2 = new IntegerBuddyControl(this, "global control name", 0, -1, 1) {
+        IntegerControl global2 = new IntegerControl(this, "global control name", 0) {
 
             @Override
             public void valueChanged(int new_value) {
@@ -114,7 +114,7 @@ public class TestIntControl implements HBAction {
 
                 /*** Write your DynamicControl code above this line ***/
             }
-        };
+        }.setDisplayRange( -1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);
         global2.setControlScope(ControlScope.GLOBAL);
         /*** End DynamicControl global2 code ***/
 

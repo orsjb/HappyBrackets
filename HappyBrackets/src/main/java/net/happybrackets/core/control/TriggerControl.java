@@ -6,7 +6,7 @@ package net.happybrackets.core.control;
  * <br><br> All {@link TriggerControl} controls with the same name and {@link ControlScope} will respond to a message {@link TriggerControl#send()}.
  * For example, consider two {@link TriggerControl} objects with the same {@link ControlScope} and name.
 <pre>
-    TriggerControl control1 = new TriggerControlSender(this, "Send");
+    TriggerControl control1 = new TriggerControl(this, "Send");
 
     TriggerControl control2 = new TriggerControl(this, "Send") {
         {@literal @}Override
@@ -26,9 +26,9 @@ package net.happybrackets.core.control;
  *
  <br><br>Triggering an event within the HappyBrackets control display is effected by clicking the button associated with the control
 
- * If you do not require a handler on the class, use the {@link TriggerControlSender} class
+ * If you  require a handler on the class, override the {@link #triggerEvent()} function
  */
-abstract public class TriggerControl extends DynamicControlParent{
+ public class TriggerControl extends DynamicControlParent{
 
 
     /**
@@ -52,7 +52,7 @@ abstract public class TriggerControl extends DynamicControlParent{
     /**
      * Send a trigger event. This will pass the message on to all other {@link DynamicControl} with matching name, type and {@link ControlScope} and call {@link #triggerEvent()}.
      <pre>
-     TriggerControl control1 = new TriggerControlSender(this, "Send");
+     TriggerControl control1 = new TriggerControl(this, "Send");
 
      TriggerControl control2 = new TriggerControl(this, "Send") {
         {@literal @}Override
@@ -74,7 +74,7 @@ abstract public class TriggerControl extends DynamicControlParent{
      * Send a trigger event at a specific time. Identical to the {@link #send()} with the exception that the {@link #triggerEvent()}  event will be caused at the {@link net.happybrackets.core.scheduling.HBScheduler} scheduled time passed in.
      * For example:
      <pre>
-     TriggerControl control1 = new TriggerControlSender(this, "Send");
+     TriggerControl control1 = new TriggerControl(this, "Send");
 
      TriggerControl control2 = new TriggerControl(this, "Send") {
         {@literal @}Override
@@ -94,7 +94,7 @@ abstract public class TriggerControl extends DynamicControlParent{
     /**
      * Triggered events are received through this function after calling {@link #send()} on the object. For example:
      <pre>
-    TriggerControl control1 = new TriggerControlSender(this, "Send");
+    TriggerControl control1 = new TriggerControl(this, "Send");
 
     TriggerControl control2 = new TriggerControl(this, "Send") {
         {@literal @}Override
@@ -105,7 +105,7 @@ abstract public class TriggerControl extends DynamicControlParent{
      control1.send();
      </pre>
      */
-    public abstract void triggerEvent();
+    public void triggerEvent(){};
 
     /**
      * Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope

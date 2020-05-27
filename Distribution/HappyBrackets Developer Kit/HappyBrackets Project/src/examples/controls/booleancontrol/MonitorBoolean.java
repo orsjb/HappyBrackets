@@ -24,10 +24,10 @@ public class MonitorBoolean implements HBAction {
 
 
         // Type intControlSender to generate this code 
-        IntegerControl clock_beats = new IntegerControlSender(this, "Beat Count", 0);
+        IntegerControl clock_beats = new IntegerControl(this, "Beat Count", 0);
 
         // Type booleanControlSender to generate this code 
-        BooleanControl beatToggleDisplay = new BooleanControlSender(this, "Beat Toggle", false);
+        BooleanControl beatToggleDisplay = new BooleanControl(this, "Beat Toggle", false);
 
 
         /************************************************************

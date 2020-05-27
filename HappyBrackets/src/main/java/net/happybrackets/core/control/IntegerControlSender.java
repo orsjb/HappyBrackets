@@ -1,6 +1,8 @@
 package net.happybrackets.core.control;
 
 /**
+ * @deprecated use {@link IntegerControl} instead with {@link DynamicControl.DISPLAY_TYPE#DISPLAY_DEFAULT}
+ * This class has been deprecated. Use {@link IntegerControl} instead
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#INT} in a simple API
  * <br> The difference between {@link IntegerControlSender} and other {@link IntegerControl} objects  is that {@link IntegerControlSender} does not have a handler, however, you can still retrieve the current value using the {@link IntegerControl#getValue()}
  * <br><br> All  {@link IntegerControl} objects with the same name and {@link ControlScope} will respond to a message send.
@@ -19,6 +21,7 @@ public class IntegerControlSender extends IntegerTextControl {
      * @param parent_sketch The parent object for control
      * @param name          The name to Display
      * @param initial_value Initial value of the object
+     * @deprecated use {@link IntegerControl} instead
      */
     public IntegerControlSender(Object parent_sketch, String name, int initial_value) {
         super(parent_sketch, name, initial_value);

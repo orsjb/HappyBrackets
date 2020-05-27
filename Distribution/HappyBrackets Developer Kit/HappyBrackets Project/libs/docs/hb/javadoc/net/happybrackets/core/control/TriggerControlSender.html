@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -116,11 +116,14 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> instead
+ <a href="../../../../net/happybrackets/core/control/TriggerControlSender.html" title="class in net.happybrackets.core.control"><code>TriggerControlSender</code></a> is identical to the <a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> object except is does not have a <a href="../../../../net/happybrackets/core/control/TriggerControl.html#triggerEvent--"><code>TriggerControl.triggerEvent()</code></a> handler.
+ <br>See <a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> for full details</span></div>
+</div>
 <br>
 <pre>public class <span class="typeNameLabel">TriggerControlSender</span>
 extends <a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control">TriggerControl</a></pre>
-<div class="block"><a href="../../../../net/happybrackets/core/control/TriggerControlSender.html" title="class in net.happybrackets.core.control"><code>TriggerControlSender</code></a> is identical to the <a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> object except is does not have a <a href="../../../../net/happybrackets/core/control/TriggerControl.html#triggerEvent--"><code>TriggerControl.triggerEvent()</code></a> handler.
- <br>See <a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> for full details</div>
 </li>
 </ul>
 </div>
@@ -141,7 +144,9 @@ extends <a href="../../../../net/happybrackets/core/control/TriggerControl.html"
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/TriggerControlSender.html#TriggerControlSender-java.lang.Object-java.lang.String-">TriggerControlSender</a></span>(java.lang.Object&nbsp;parent_sketch,
                     java.lang.String&nbsp;name)</code>
-<div class="block">Create a Trigger Dynamic Control</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use @link TriggerControl} instead</span></div>
+</div>
 </td>
 </tr>
 </table>
@@ -154,7 +159,7 @@ extends <a href="../../../../net/happybrackets/core/control/TriggerControl.html"
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -162,12 +167,14 @@ extends <a href="../../../../net/happybrackets/core/control/TriggerControl.html"
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/TriggerControlSender.html" title="class in net.happybrackets.core.control">TriggerControlSender</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/TriggerControlSender.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a></span>(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Changed the scope that the control has.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/TriggerControlSender.html#triggerEvent--">triggerEvent</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Triggered events are received through this function after calling <a href="../../../../net/happybrackets/core/control/TriggerControl.html#send--"><code>TriggerControl.send()</code></a> on the object.</div>
 </td>
 </tr>
@@ -215,6 +222,7 @@ extends <a href="../../../../net/happybrackets/core/control/TriggerControl.html"
 <h4>TriggerControlSender</h4>
 <pre>public&nbsp;TriggerControlSender(java.lang.Object&nbsp;parent_sketch,
                             java.lang.String&nbsp;name)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use @link TriggerControl} instead</span></div>
 <div class="block">Create a Trigger Dynamic Control</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -238,10 +246,11 @@ extends <a href="../../../../net/happybrackets/core/control/TriggerControl.html"
 <li class="blockList">
 <h4>triggerEvent</h4>
 <pre>public&nbsp;void&nbsp;triggerEvent()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../net/happybrackets/core/control/TriggerControl.html#triggerEvent--">TriggerControl</a></code></span></div>
 <div class="block">Triggered events are received through this function after calling <a href="../../../../net/happybrackets/core/control/TriggerControl.html#send--"><code>TriggerControl.send()</code></a> on the object. For example:
      <pre>
-    TriggerControl control1 = new TriggerControlSender(this, "Send");
+    TriggerControl control1 = new TriggerControl(this, "Send");
 
     TriggerControl control2 = new TriggerControl(this, "Send") {
          @Override
@@ -252,7 +261,7 @@ extends <a href="../../../../net/happybrackets/core/control/TriggerControl.html"
      control1.send();
      </pre></div>
 <dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../../../../net/happybrackets/core/control/TriggerControl.html#triggerEvent--">triggerEvent</a></code>&nbsp;in class&nbsp;<code><a href="../../../../net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control">TriggerControl</a></code></dd>
 </dl>
 </li>
@@ -264,6 +273,7 @@ extends <a href="../../../../net/happybrackets/core/control/TriggerControl.html"
 <li class="blockList">
 <h4>setControlScope</h4>
 <pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/TriggerControlSender.html" title="class in net.happybrackets.core.control">TriggerControlSender</a>&nbsp;setControlScope(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
  We must do this in subclass</div>
 <dl>

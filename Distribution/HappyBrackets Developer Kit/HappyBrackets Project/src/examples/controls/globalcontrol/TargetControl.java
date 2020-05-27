@@ -47,20 +47,20 @@ public class TargetControl implements HBAction, DeviceConnectedEventListener {
 
 
         // Create a control for displaying the name of the device that sent us the message
-        TextControl sendingDevice = new TextControlSender(this, "Sending Device", "");
+        TextControl sendingDevice = new TextControl(this, "Sending Device", "");
 
 
         // Type intBuddyControl to generate this code. This is set to Target Scope
-        sendingControl = new IntegerBuddyControl(this, "Target Control", 0, -100, 100) {
+        sendingControl = new IntegerControl(this, "Target Control", 0) {
             @Override
             public void valueChanged(int control_val) {// Write your DynamicControl code below this line
                 // Write your DynamicControl code above this line 
             }
-        }.setControlScope(ControlScope.TARGET);// End DynamicControl targetControl code
+        }.setDisplayRange(-100, 100, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY).setControlScope(ControlScope.TARGET);// End DynamicControl targetControl code
 
 
         // THis is the control that will receive messages targetted to this device
-        IntegerTextControl receivingControl = new IntegerTextControl(this, "Target Control", 0) {
+        IntegerControl receivingControl = new IntegerControl(this, "Target Control", 0) {
             @Override
             public void valueChanged(int control_val) {// Write your DynamicControl code below this line 
                 sendingDevice.setValue(getSendingDevice() + " sent " + control_val);
@@ -95,7 +95,7 @@ public class TargetControl implements HBAction, DeviceConnectedEventListener {
      */
     void addDeviceControls(String device_name, InetAddress device_address){
         String display_name = device_name + " - " + device_address.getHostAddress();
-        TextControl deviceNameDisplay = new TextControlSender(this, "Device Name", display_name);
+        TextControl deviceNameDisplay = new TextControl(this, "Device Name", display_name);
 
         // create controls for adding and removing devices
         TriggerControl addControl = new TriggerControl(this, "Add Target " + device_name) {

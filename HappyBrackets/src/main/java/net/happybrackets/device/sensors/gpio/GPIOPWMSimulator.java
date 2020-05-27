@@ -1,13 +1,12 @@
 package net.happybrackets.device.sensors.gpio;
 
-import net.happybrackets.core.control.BooleanControl;
 import net.happybrackets.core.control.ControlMap;
 import net.happybrackets.core.control.DynamicControl;
-import net.happybrackets.core.control.IntegerSliderControl;
+import net.happybrackets.core.control.IntegerControl;
 
 public class GPIOPWMSimulator extends GPIOPWMOutput {
 
-    IntegerSliderControl integerSliderControl;
+    IntegerControl integerSliderControl;
     /**
      * Constructor
      * @param gpio_number the GPIO pin number
@@ -18,7 +17,7 @@ public class GPIOPWMSimulator extends GPIOPWMOutput {
          * Create an integer type Dynamic Control that displays as a slider
          * Simply type intSliderControl to generate this code
          *************************************************************/
-        integerSliderControl = new IntegerSliderControl(this, "GPIO PWM " + gpio_number, 0, 0, getPwmRange()) {
+        integerSliderControl = new IntegerControl(this, "GPIO PWM " + gpio_number, 0, 0, getPwmRange(), DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT) {
 
             @Override
             public void valueChanged(int control_val) {

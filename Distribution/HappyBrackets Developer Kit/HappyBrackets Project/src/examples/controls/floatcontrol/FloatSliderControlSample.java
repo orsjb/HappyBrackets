@@ -6,7 +6,8 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.FloatSliderControl;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.control.FloatControl;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
@@ -41,7 +42,7 @@ public class FloatSliderControlSample implements HBAction {
         // Now add a dynamicControl to set the frequency
 
         /* Type floatSliderControl to generate this code */
-        FloatSliderControl frequencyControl = new FloatSliderControl(this, "Frequency", CENTRE_FREQUENCY, CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION) {
+        FloatControl frequencyControl = new FloatControl(this, "Frequency", CENTRE_FREQUENCY) {
             @Override
             public void valueChanged(double control_val) { /* Write your DynamicControl code below this line */
 
@@ -49,19 +50,19 @@ public class FloatSliderControlSample implements HBAction {
                 player.setFrequency(control_val);
                 /* Write your DynamicControl code above this line */
             }
-        };/* End DynamicControl floatSliderControl code */
+        }.setDisplayRange(CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);/* End DynamicControl floatSliderControl code */
 
 
         // Now add a dynamicControl to set the gain
         /* Type floatSliderControl to generate this code */
-        FloatSliderControl gainControl = new FloatSliderControl(this, "Gain", MAX_VOLUME, 0, MAX_VOLUME) {
+        FloatControl gainControl = new FloatControl(this, "Gain", MAX_VOLUME) {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
 
                 player.setGain(control_val);
                 /* Write your DynamicControl code above this line */
             }
-        };/* End DynamicControl sliderControl code */
+        }.setDisplayRange(0, MAX_VOLUME, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);/* End DynamicControl sliderControl code */
 
 
     }

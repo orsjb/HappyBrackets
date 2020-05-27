@@ -6,7 +6,7 @@ import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
-import net.happybrackets.core.control.FloatTextControl;
+import net.happybrackets.core.control.FloatControl;
 import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 
@@ -39,7 +39,7 @@ public class FloatTextControlSample implements HBAction {
         // Now add a dynamicControl to set the frequency
 
         /* Type floatTextControl to generate this code */
-        FloatTextControl frequencyControl = new FloatTextControl(this, "Frequency", INITIAL_FREQUENCY) {
+        FloatControl frequencyControl = new FloatControl(this, "Frequency", INITIAL_FREQUENCY) {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
 
@@ -53,7 +53,7 @@ public class FloatTextControlSample implements HBAction {
         // Now add a dynamicControl to set the gain
 
         /* Type floatTextControl to generate this code */
-        FloatTextControl gainControl = new FloatTextControl(this, "Gain", MAX_VOLUME) {
+        FloatControl gainControl = new FloatControl(this, "Gain", MAX_VOLUME) {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
                 // change our gain according to control value

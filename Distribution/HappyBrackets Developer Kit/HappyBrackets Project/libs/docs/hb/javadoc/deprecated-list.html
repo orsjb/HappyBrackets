@@ -70,6 +70,257 @@
 <div class="header">
 <h1 title="Deprecated API" class="title">Deprecated API</h1>
 <h2 title="Contents">Contents</h2>
+<ul>
+<li><a href="#class">Deprecated Classes</a></li>
+<li><a href="#constructor">Deprecated Constructors</a></li>
+</ul>
+</div>
+<div class="contentContainer"><a name="class">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary" border="0" cellpadding="3" cellspacing="0" summary="Deprecated Classes table, listing deprecated classes, and an explanation">
+<caption><span>Deprecated Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.BooleanControlSender</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> instead
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#BOOLEAN"><code>ControlType.BOOLEAN</code></a> in a simple API.
+ <br> The difference between <a href="net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control"><code>BooleanControlSender</code></a> and <a href="net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> is that <a href="net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control"><code>BooleanControlSender</code></a> does not have a <a href="net/happybrackets/core/control/BooleanControl.html#valueChanged-java.lang.Boolean-"><code>BooleanControl.valueChanged(Boolean)</code></a> handler, however, you can still retrieve the current value using the <a href="net/happybrackets/core/control/BooleanControl.html#getValue--"><code>BooleanControl.getValue()</code></a>
+ <br><br> See <a href="net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> for more detail.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/ClassObjectControlSender.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.ClassObjectControlSender</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/ClassObjectControlSender.html" title="class in net.happybrackets.core.control"><code>ClassObjectControlSender</code></a> instead
+ The <a href="net/happybrackets/core/control/ClassObjectControlSender.html" title="class in net.happybrackets.core.control"><code>ClassObjectControlSender</code></a> class is identical to the <a href="net/happybrackets/core/control/ClassObjectControl.html" title="class in net.happybrackets.core.control"><code>ClassObjectControl</code></a> class except it does not provide the <a href="net/happybrackets/core/control/ClassObjectControl.html#valueChanged-java.lang.Object-"><code>ClassObjectControl.valueChanged(Object)</code></a> event handler.
+ <br> See <a href="net/happybrackets/core/control/ClassObjectControl.html" title="class in net.happybrackets.core.control"><code>ClassObjectControl</code></a> for full details</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/FloatBuddyControl.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.FloatBuddyControl</a>
+<div class="block"><span class="deprecationComment">use  <a href="net/happybrackets/core/control/FloatControl.html#FloatControl-java.lang.Object-java.lang.String-double-double-double-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-"><code>FloatControl.FloatControl(Object, String, double, double, double, DynamicControl.DISPLAY_TYPE)</code></a>
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#FLOAT"><code>ControlType.FLOAT</code></a> in a simple API
+ <br>The <a href="net/happybrackets/core/control/FloatBuddyControl.html" title="class in net.happybrackets.core.control"><code>FloatBuddyControl</code></a> is a hybrid between the <a href="net/happybrackets/core/control/FloatSliderControl.html" title="class in net.happybrackets.core.control"><code>FloatSliderControl</code></a> and the <a href="net/happybrackets/core/control/FloatTextControl.html" title="class in net.happybrackets.core.control"><code>FloatTextControl</code></a> in that the value can be changed in the HappyBrackets IDE with both text and a slider
+ <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via <a href="net/happybrackets/core/control/FloatBuddyControl.html#FloatBuddyControl-java.lang.Object-java.lang.String-double-double-double-"><code>FloatBuddyControl.FloatBuddyControl(Object, String, double, double, double)</code></a>
+ <br>The upper and lower limits, however, are only limitations on the display and the actual control can be set to any value available to other <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> objects
+ <br> All  <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> objects with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a value change.
+
+
+ <br> <br> See <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> for general information about <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> classes and how to set the value within your code</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.FloatControlSender</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a>
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#FLOAT"><code>ControlType.FLOAT</code></a> in a simple API
+ <br> The difference between <a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control"><code>FloatControlSender</code></a> and other <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> objects  is that @link FloatControlSender} does not have a handler, however, you can still retrieve the current value using the <a href="net/happybrackets/core/control/FloatControl.html#getValue--"><code>FloatControl.getValue()</code></a>
+ <br> All  <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> objects with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message send.
+
+  * <br> Both <a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control"><code>FloatControlSender</code></a> and <a href="net/happybrackets/core/control/FloatTextControl.html" title="class in net.happybrackets.core.control"><code>FloatTextControl</code></a> display the approximate value of the control in the HappyBrackets IDE.
+  * Within the IDE, the value of the value of the control can be changed by typing a new value in and pressing the ENTER or RETURN key.
+
+ <br>The <a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control"><code>FloatControlSender</code></a> is identical to the  <a href="net/happybrackets/core/control/FloatTextControl.html" title="class in net.happybrackets.core.control"><code>FloatTextControl</code></a> except that <a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control"><code>FloatControlSender</code></a> does not have a <a href="net/happybrackets/core/control/FloatControl.html#valueChanged-double-"><code>FloatControl.valueChanged(double)</code></a>) handler
+
+ <br> <br> See <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> for general information about <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> classes and how to set the value within your code</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/FloatSliderControl.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.FloatSliderControl</a>
+<div class="block"><span class="deprecationComment">use  <a href="net/happybrackets/core/control/FloatControl.html#FloatControl-java.lang.Object-java.lang.String-double-double-double-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-"><code>FloatControl.FloatControl(Object, String, double, double, double, DynamicControl.DISPLAY_TYPE)</code></a>
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#FLOAT"><code>ControlType.FLOAT</code></a> in a simple API
+ <br>The <a href="net/happybrackets/core/control/FloatSliderControl.html" title="class in net.happybrackets.core.control"><code>FloatSliderControl</code></a> can have its value set inside the HappyBrackets IDE using a standard slider control controller by the mouse. trackpad or arrow keys
+ <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via <a href="net/happybrackets/core/control/FloatSliderControl.html#FloatSliderControl-java.lang.Object-java.lang.String-double-double-double-"><code>FloatSliderControl.FloatSliderControl(Object, String, double, double, double)</code></a>
+ <br>The upper and lower limits, however, are only limitations on the display and the actual control can be set to any value available to other <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> objects
+ <br> All  <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> objects with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a value change.
+
+
+ <br> <br> See <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> for general information about <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> classes and how to set the value within your code</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/FloatTextControl.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.FloatTextControl</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a>
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#FLOAT"><code>ControlType.FLOAT</code></a> in a simple API
+ <br> The difference between <a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control"><code>FloatControlSender</code></a> and other <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> objects  is that @link FloatControlSender} does not have a handler, however, you can still retrieve the current value using the <a href="net/happybrackets/core/control/FloatControl.html#getValue--"><code>FloatControl.getValue()</code></a>
+ <br> All  <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> objects with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message send. For example:
+ <br> Both <a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control"><code>FloatControlSender</code></a> and <a href="net/happybrackets/core/control/FloatTextControl.html" title="class in net.happybrackets.core.control"><code>FloatTextControl</code></a> display the approximate value of the control in the HappyBrackets IDE.
+ Within the IDE, the value of the value of the control can be changed by typing a new value in and pressing the ENTER or RETURN key.
+ <br>
+
+ <br>The <a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control"><code>FloatControlSender</code></a> is identical to the  <a href="net/happybrackets/core/control/FloatTextControl.html" title="class in net.happybrackets.core.control"><code>FloatTextControl</code></a> except that <a href="net/happybrackets/core/control/FloatControlSender.html" title="class in net.happybrackets.core.control"><code>FloatControlSender</code></a> does not have a <a href="net/happybrackets/core/control/FloatControl.html#valueChanged-double-"><code>FloatControl.valueChanged(double)</code></a>) handler
+
+ <br> See <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> for general information about <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a> classes and how to set the value within your code</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.IntegerBuddyControl</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_ENABLED_BUDDY"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY</code></a>
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
+ <br>The <a href="net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control"><code>IntegerBuddyControl</code></a> is a hybrid between the <a href="net/happybrackets/core/control/IntegerSliderControl.html" title="class in net.happybrackets.core.control"><code>IntegerSliderControl</code></a> and the <a href="net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a> in that the value can be changed in the HappyBrackets IDE with both text and a slider
+ <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via <a href="net/happybrackets/core/control/IntegerBuddyControl.html#IntegerBuddyControl-java.lang.Object-java.lang.String-int-int-int-"><code>IntegerBuddyControl.IntegerBuddyControl(Object, String, int, int, int)</code></a>
+ <br>The upper and lower limits, however, are only limitations on the display and the actual control can be set to any value available to other <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects
+ <br> All  <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a value change.
+
+
+ <br> <br> See <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> for general information about <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> classes and how to set the value within your code</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.IntegerControlSender</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_DEFAULT"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT</code></a>
+ This class has been deprecated. Use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
+ <br> The difference between <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> and other <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects  is that <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> does not have a handler, however, you can still retrieve the current value using the <a href="net/happybrackets/core/control/IntegerControl.html#getValue--"><code>IntegerControl.getValue()</code></a>
+ <br><br> All  <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message send.
+
+ <br><br> Both <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> and <a href="net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a> display the value of the control in the HappyBrackets IDE as a written number.
+  Within the IDE, the value of the value of the control can be changed by typing a new value in and pressing the ENTER or RETURN key.
+
+ <br><br>The <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> is identical to the  <a href="net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a> except that <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> does not have a <a href="net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>IntegerControl.valueChanged(int)</code></a>) handler
+
+ <br> <br> See <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> for general information about <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> classes and how to set the value within your code</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/IntegerSliderControl.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.IntegerSliderControl</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_DEFAULT"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT</code></a>
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
+ <br>The <a href="net/happybrackets/core/control/IntegerSliderControl.html" title="class in net.happybrackets.core.control"><code>IntegerSliderControl</code></a> can have its value set inside the HappyBrackets IDE using a standard slider control controller by the mouse. trackpad or arrow keys
+ <br>The maxmimum and minimum values that the control can be set to using the slider are defined when creating the control via <a href="net/happybrackets/core/control/IntegerSliderControl.html#IntegerSliderControl-java.lang.Object-java.lang.String-int-int-int-"><code>IntegerSliderControl.IntegerSliderControl(Object, String, int, int, int)</code></a>
+ <br>The upper and lower limits, however, are only limitations on the display and the actual control can be set to any value available to other <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects
+ <br> All  <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a value change.
+
+
+ <br> <br> See <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> for general information about <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> classes and how to set the value within your code</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.IntegerTextControl</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead
+ This class has been deprecated. Use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
+ <br> The difference between <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> and other <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects  is that @link IntegerControlSender} does not have a handler, however, you can still retrieve the current value using the <a href="net/happybrackets/core/control/IntegerControl.html#getValue--"><code>IntegerControl.getValue()</code></a>
+ <br> All  <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message send. For example:
+ <br> Both <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> and <a href="net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a> display the approximate value of the control in the HappyBrackets IDE.
+ Within the IDE, the value of the value of the control can be changed by typing a new value in and pressing the ENTER or RETURN key.
+ <br>
+
+ <br>The <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> is identical to the  <a href="net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a> except that <a href="net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> does not have a <a href="net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>IntegerControl.valueChanged(int)</code></a>) handler
+
+ <br> See <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> for general information about <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> classes and how to set the value within your code</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/TextControlSender.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.TextControlSender</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/TextControl.html" title="class in net.happybrackets.core.control"><code>TextControl</code></a> instead
+ This class encapsulates the functionality of <a href="net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="net/happybrackets/core/control/ControlType.html#TEXT"><code>ControlType.TEXT</code></a> in a simple API
+ <br> All Text controls with the same name and <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message send. For example:
+ For example, consider two TextControls with the same <a href="net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and name
+
+ <pre>
+ TextControl control1 = new <b>TextControlSender(this, "Read", "");</b>
+ TextControl control2 = new TextControl(this, "Read", "") {
+     @Override
+    public void valueChanged(String control_val) {
+    System.out.println("Read " + control_val);
+    }
+ };
+
+ control1.setValue("This is text");
+ </pre>
+
+
+ <br>The functionality is identical to the <a href="net/happybrackets/core/control/TextControl.html" title="class in net.happybrackets.core.control"><code>TextControl</code></a> except <a href="net/happybrackets/core/control/TextControlSender.html" title="class in net.happybrackets.core.control"><code>TextControlSender</code></a> does not have the <a href="net/happybrackets/core/control/TextControl.html#valueChanged-java.lang.String-"><code>TextControl.valueChanged(String)</code></a> handler;
+
+ <br>Setting the value within the HappyBrackets control display is effected by typing a new value in and pressing ENTER or RETURN</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/TriggerControlSender.html" title="class in net.happybrackets.core.control">net.happybrackets.core.control.TriggerControlSender</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> instead
+ <a href="net/happybrackets/core/control/TriggerControlSender.html" title="class in net.happybrackets.core.control"><code>TriggerControlSender</code></a> is identical to the <a href="net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> object except is does not have a <a href="net/happybrackets/core/control/TriggerControl.html#triggerEvent--"><code>TriggerControl.triggerEvent()</code></a> handler.
+ <br>See <a href="net/happybrackets/core/control/TriggerControl.html" title="class in net.happybrackets.core.control"><code>TriggerControl</code></a> for full details</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a name="constructor">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary" border="0" cellpadding="3" cellspacing="0" summary="Deprecated Constructors table, listing deprecated constructors, and an explanation">
+<caption><span>Deprecated Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/BooleanControlSender.html#BooleanControlSender-java.lang.Object-java.lang.String-java.lang.Boolean-">net.happybrackets.core.control.BooleanControlSender(Object, String, Boolean)</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> instead</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/FloatBuddyControl.html#FloatBuddyControl-java.lang.Object-java.lang.String-double-double-double-">net.happybrackets.core.control.FloatBuddyControl(Object, String, double, double, double)</a>
+<div class="block"><span class="deprecationComment">use  <a href="net/happybrackets/core/control/FloatControl.html#FloatControl-java.lang.Object-java.lang.String-double-double-double-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-"><code>FloatControl.FloatControl(Object, String, double, double, double, DynamicControl.DISPLAY_TYPE)</code></a> with <a href="net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_ENABLED_BUDDY"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/FloatControlSender.html#FloatControlSender-java.lang.Object-java.lang.String-double-">net.happybrackets.core.control.FloatControlSender(Object, String, double)</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/FloatSliderControl.html#FloatSliderControl-java.lang.Object-java.lang.String-double-double-double-">net.happybrackets.core.control.FloatSliderControl(Object, String, double, double, double)</a>
+<div class="block"><span class="deprecationComment">use  <a href="net/happybrackets/core/control/FloatControl.html#FloatControl-java.lang.Object-java.lang.String-double-double-double-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-"><code>FloatControl.FloatControl(Object, String, double, double, double, DynamicControl.DISPLAY_TYPE)</code></a> with <a href="net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_DEFAULT"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/FloatTextControl.html#FloatTextControl-java.lang.Object-java.lang.String-double-">net.happybrackets.core.control.FloatTextControl(Object, String, double)</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/FloatControl.html" title="class in net.happybrackets.core.control"><code>FloatControl</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/IntegerBuddyControl.html#IntegerBuddyControl-java.lang.Object-java.lang.String-int-int-int-">net.happybrackets.core.control.IntegerBuddyControl(Object, String, int, int, int)</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_ENABLED_BUDDY"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/IntegerControlSender.html#IntegerControlSender-java.lang.Object-java.lang.String-int-">net.happybrackets.core.control.IntegerControlSender(Object, String, int)</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/IntegerSliderControl.html#IntegerSliderControl-java.lang.Object-java.lang.String-int-int-int-">net.happybrackets.core.control.IntegerSliderControl(Object, String, int, int, int)</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_DEFAULT"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/IntegerTextControl.html#IntegerTextControl-java.lang.Object-java.lang.String-int-">net.happybrackets.core.control.IntegerTextControl(Object, String, int)</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="net/happybrackets/core/control/TextControlSender.html#TextControlSender-java.lang.Object-java.lang.String-java.lang.String-">net.happybrackets.core.control.TextControlSender(Object, String, String)</a>
+<div class="block"><span class="deprecationComment">use <a href="net/happybrackets/core/control/TextControl.html" title="class in net.happybrackets.core.control"><code>TextControl</code></a> instead</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="net/happybrackets/core/control/TriggerControlSender.html#TriggerControlSender-java.lang.Object-java.lang.String-">net.happybrackets.core.control.TriggerControlSender(Object, String)</a>
+<div class="block"><span class="deprecationComment">use @link TriggerControl} instead</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
 </div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">

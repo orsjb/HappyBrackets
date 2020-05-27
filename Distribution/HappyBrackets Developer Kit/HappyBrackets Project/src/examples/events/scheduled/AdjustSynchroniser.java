@@ -34,8 +34,8 @@ public class AdjustSynchroniser implements HBAction, HBReset {
 
 
         // This control will dictate how long it will take for the adjustment to occur
-        FloatControl adjustmentAmount = new FloatControlSender(this, "AdjustmentAmount", ADJUSTMENT_AMOUNT).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);
-        IntegerControl adjustmentTime = new IntegerControlSender(this, "AdjustmentTime", ADJUSTMENT_TIME).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);
+        FloatControl adjustmentAmount = new FloatControl(this, "AdjustmentAmount", ADJUSTMENT_AMOUNT).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);
+        IntegerControl adjustmentTime = new IntegerControl(this, "AdjustmentTime", ADJUSTMENT_TIME).setDisplayType(DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);
 
 
         // Type triggerControl to generate this code 

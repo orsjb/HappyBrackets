@@ -6,7 +6,6 @@ import net.happybrackets.core.HBReset;
 import net.happybrackets.core.OSCUDPListener;
 import net.happybrackets.core.OSCUDPReceiver;
 import net.happybrackets.core.control.TextControl;
-import net.happybrackets.core.control.TextControlSender;
 import net.happybrackets.device.HB;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class OSCReceiveValues implements HBAction, HBReset {
         HB.HBInstance.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         // This is where we will display out Message
-        TextControl receivedMessageControl = new TextControlSender(this, "Received Message", "");
+        TextControl receivedMessageControl = new TextControl(this, "Received Message", "");
 
         /* type osclistener to create this code */
         OSCUDPListener oscudpListener = new OSCUDPListener(9000) {

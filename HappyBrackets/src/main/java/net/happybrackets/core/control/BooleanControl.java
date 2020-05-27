@@ -7,7 +7,7 @@ package net.happybrackets.core.control;
  * For example, consider two BooleanControls with the same {@link ControlScope} and name
  *
 <pre>
- BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+ BooleanControl control1 = new BooleanControl(this, "Read", false);
  BooleanControl control2 = new BooleanControl(this, "Read", false) {
     {@literal @}Override
     public void valueChanged(Boolean control_val) {
@@ -27,9 +27,10 @@ package net.happybrackets.core.control;
  <br><br>Setting the value within the HappyBrackets controls display is effected using a checkbox, where a checked value is true.
  <br> It is possible to get current value using the {@link #getValue()}
 
- * If you do not require a handler on the class, use the {@link BooleanControlSender} class
+ * If you  require a handler on the class, override {@link BooleanControl#valueChanged(Boolean)} function
+ *
  */
-public abstract class BooleanControl extends DynamicControlParent {
+public class BooleanControl extends DynamicControlParent {
 
     /**
      * Constructor for abstract FloatControl. Slider, Text and Buddy Control will
@@ -38,7 +39,7 @@ public abstract class BooleanControl extends DynamicControlParent {
      * @param name The name to Display
      * @param initial_value Initial value of the object
      */
-    protected BooleanControl(Object parent_sketch, String name, Boolean initial_value) {
+    public BooleanControl(Object parent_sketch, String name, Boolean initial_value) {
         super(new DynamicControl(parent_sketch, ControlType.BOOLEAN, name, initial_value));
     }
 
@@ -51,7 +52,7 @@ public abstract class BooleanControl extends DynamicControlParent {
     /**
      * Get the value for the control
      <pre>
-     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+     BooleanControl control1 = new BooleanControl(this, "Read", false);
 
      boolean val = <b>control1.getValue();</b> // val will be false
      control1.setValue(true);
@@ -67,7 +68,7 @@ public abstract class BooleanControl extends DynamicControlParent {
      * Fired event that occurs when the value for the control has been set. This will pass the message on to all other {@link DynamicControl} with matching name, type and {@link ControlScope} and call {@link #valueChanged(Boolean)}.
      * The function must be implemented when creating objects
      <pre>
-     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+     BooleanControl control1 = new BooleanControl(this, "Read", false);
      BooleanControl control2 = new BooleanControl(this, "Read", false) {
        {@literal @}Override
         <b>public void valueChanged(Boolean control_val) {
@@ -82,13 +83,13 @@ public abstract class BooleanControl extends DynamicControlParent {
      *
      * @param control_val The new value of the control
      */
-    public abstract void valueChanged(Boolean control_val);
+    public void valueChanged(Boolean control_val){};
 
     /**
      * set the value for the control. This will notify all the listeners with same name and {@link ControlScope}. For example
      *
      <pre>
-     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+     BooleanControl control1 = new BooleanControl(this, "Read", false);
      BooleanControl control2 = new BooleanControl(this, "Read", false) {
         {@literal @}Override
         public void valueChanged(Boolean control_val) {
@@ -114,7 +115,7 @@ public abstract class BooleanControl extends DynamicControlParent {
      * <br>For example, the following code will cause matching {@link DynamicControl} objects to respond 1 second in the future
      * <br>
      <pre>
-     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+     BooleanControl control1 = new BooleanControl(this, "Read", false);
      BooleanControl control2 = new BooleanControl(this, "Read", false) {
         {@literal @}Override
             public void valueChanged(Boolean control_val) {

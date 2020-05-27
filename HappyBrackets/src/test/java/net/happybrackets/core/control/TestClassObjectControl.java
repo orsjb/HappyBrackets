@@ -1,7 +1,5 @@
 package net.happybrackets.core.control;
 
-import com.google.gson.Gson;
-import de.sciss.net.OSCMessage;
 import org.junit.Test;
 
 /**
@@ -34,7 +32,7 @@ public class TestClassObjectControl {
         }.setControlScope(ControlScope.SKETCH);
 
 
-        ClassObjectControlSender objectSender = new ClassObjectControlSender(this, CONTROL_NAME, GenericTestMessageObject.class).setControlScope(ControlScope.SKETCH);
+        ClassObjectControl objectSender = new ClassObjectControl(this, CONTROL_NAME, GenericTestMessageObject.class).setControlScope(ControlScope.SKETCH);
 
         objectSender.setValue(secondGlobalMessage);
 

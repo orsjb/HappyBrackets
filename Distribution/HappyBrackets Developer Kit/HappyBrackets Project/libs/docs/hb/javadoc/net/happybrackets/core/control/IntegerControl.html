@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -116,21 +116,20 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public abstract class <span class="typeNameLabel">IntegerControl</span>
+<pre>public class <span class="typeNameLabel">IntegerControl</span>
 extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html" title="class in net.happybrackets.core.control">DynamicControlParent</a></pre>
 <div class="block">This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
- <br> This class is the parent type of <a href="../../../../net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a>, <a href="../../../../net/happybrackets/core/control/IntegerSliderControl.html" title="class in net.happybrackets.core.control"><code>IntegerSliderControl</code></a>,  <a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control"><code>IntegerBuddyControl</code></a> and  <a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> and all intercommunicate with each other
  <br><br> All <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> controls with the same name and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message send. For example:
- For example, consider two BooleanControls with the same <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and name
+ For example, consider two IntegerControls with the same <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and name
 
  Setting the value of control1 will cause any objects listening to control1 or control2 to receive the action. EG
 
  <br><br>When the control receives the value, it will be passed through to the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>valueChanged(int)</code></a> )} listener that is implemented when the class is created.
  <br>For example:
 <pre>
- IntegerControl control1 = new IntegerControlSender(this, "Read", 0);
+ IntegerControl control1 = new IntegerControl(this, "Read", 0);
 
- IntegerTextControl control2 = new IntegerTextControl(this, "Read", 0) {
+ IntegerControl control2 = new IntegerControl(this, "Read", 0) {
      @Override
     public void valueChanged(int control_val) {
         System.out.println("Read " + control_val);
@@ -146,11 +145,10 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
  <br> <b>control1.setValue (2, HB.getSchedulerTime() + 1000);</b> // this will set control1 value, as well as all other IntegerControl with same <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and name, to true 1 second in the future
 
  <br>
- You can also set the value from within the HappyBrackets plugin IDE. See <a href="../../../../net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a>, <a href="../../../../net/happybrackets/core/control/IntegerSliderControl.html" title="class in net.happybrackets.core.control"><code>IntegerSliderControl</code></a>,  <a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control"><code>IntegerBuddyControl</code></a> and  <a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> for the specifics of each type
+ You can also set the value from within the HappyBrackets plugin IDE.
 
  <br>Additionally, you can get current value by calling the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#getValue--"><code>getValue()</code></a> function.
- If you do not require a handler on the class, use the <a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> class
- <br> See <a href="../../../../net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a>, <a href="../../../../net/happybrackets/core/control/IntegerSliderControl.html" title="class in net.happybrackets.core.control"><code>IntegerSliderControl</code></a>,  <a href="../../../../net/happybrackets/core/control/IntegerBuddyControl.html" title="class in net.happybrackets.core.control"><code>IntegerBuddyControl</code></a> and  <a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> for specifics of each specialisation of</div>
+ If you  require a handler on the class, override the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>valueChanged(int)</code></a> function</div>
 </li>
 </ul>
 </div>
@@ -166,26 +164,23 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
 <caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
+<th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#IntegerControl-java.lang.Object-java.lang.String-int-">IntegerControl</a></span>(java.lang.Object&nbsp;parent_sketch,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#IntegerControl-java.lang.Object-java.lang.String-int-">IntegerControl</a></span>(java.lang.Object&nbsp;parent_sketch,
               java.lang.String&nbsp;name,
               int&nbsp;initial_value)</code>
 <div class="block">Constructor for abstract IntegerControl.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#IntegerControl-java.lang.Object-java.lang.String-int-int-int-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">IntegerControl</a></span>(java.lang.Object&nbsp;parent_sketch,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#IntegerControl-java.lang.Object-java.lang.String-int-int-int-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">IntegerControl</a></span>(java.lang.Object&nbsp;parent_sketch,
               java.lang.String&nbsp;name,
               int&nbsp;initial_value,
               int&nbsp;min_val,
               int&nbsp;max_val,
               <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</code>
-<div class="block">Constructor for abstract IntegerControl.</div>
+<div class="block">Constructor for IntegerControl if you want it displayed other than text control.</div>
 </td>
 </tr>
 </table>
@@ -198,7 +193,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -210,20 +205,41 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a></span>(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</code>
+<div class="block">Changed the <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> the object has has.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#setDisplayRange-int-int-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">setDisplayRange</a></span>(int&nbsp;minimum,
+               int&nbsp;maximum,
+               <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</code>
+<div class="block">Set how we want this control displayed</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#setDisplayType-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">setDisplayType</a></span>(<a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</code>
+<div class="block">Change how to display object
+ We must do this in subclass</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-">setValue</a></span>(int&nbsp;val)</code>
 <div class="block">set the value for the control.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-double-">setValue</a></span>(int&nbsp;val,
         double&nbsp;scheduler_time)</code>
 <div class="block">set the value for the control at a specific time.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>abstract void</code></td>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-">valueChanged</a></span>(int&nbsp;control_val)</code>
 <div class="block"><br>When the control receives the value, it will be passed through to the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>valueChanged(int)</code></a> listener that is implemented when the class is created.</div>
 </td>
@@ -234,7 +250,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;net.happybrackets.core.control.<a href="../../../../net/happybrackets/core/control/DynamicControlParent.html" title="class in net.happybrackets.core.control">DynamicControlParent</a></h3>
-<code><a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#addControlListener-net.happybrackets.core.control.DynamicControl.DynamicControlListener-">addControlListener</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#addControlScopeListener-net.happybrackets.core.control.DynamicControl.ControlScopeChangedListener-">addControlScopeListener</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#addControlTarget-java.net.InetAddress...-">addControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#addControlTarget-java.lang.String...-">addControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#clearControlTargets--">clearControlTargets</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#getDynamicControl--">getDynamicControl</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#getSendingDevice--">getSendingDevice</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeControlListener-net.happybrackets.core.control.DynamicControl.DynamicControlListener-">removeControlListener</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeControlScopeChangedListener-net.happybrackets.core.control.DynamicControl.ControlScopeChangedListener-">removeControlScopeChangedListener</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeControlTarget-java.net.InetAddress...-">removeControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeControlTarget-java.lang.String...-">removeControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeListeners--">removeListeners</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#setControlTarget-java.net.InetAddress...-">setControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#setControlTarget-java.lang.String...-">setControlTarget</a></code></li>
+<code><a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#addControlListener-net.happybrackets.core.control.DynamicControl.DynamicControlListener-">addControlListener</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#addControlScopeListener-net.happybrackets.core.control.DynamicControl.ControlScopeChangedListener-">addControlScopeListener</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#addControlTarget-java.net.InetAddress...-">addControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#addControlTarget-java.lang.String...-">addControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#clearControlTargets--">clearControlTargets</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#getDynamicControl--">getDynamicControl</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#getSendingDevice--">getSendingDevice</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeControlListener-net.happybrackets.core.control.DynamicControl.DynamicControlListener-">removeControlListener</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeControlScopeChangedListener-net.happybrackets.core.control.DynamicControl.ControlScopeChangedListener-">removeControlScopeChangedListener</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeControlTarget-java.net.InetAddress...-">removeControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeControlTarget-java.lang.String...-">removeControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#removeListeners--">removeListeners</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#setControlTarget-java.net.InetAddress...-">setControlTarget</a>, <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#setControlTarget-java.lang.String...-">setControlTarget</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -263,14 +279,13 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <ul class="blockList">
 <li class="blockList">
 <h4>IntegerControl</h4>
-<pre>protected&nbsp;IntegerControl(java.lang.Object&nbsp;parent_sketch,
-                         java.lang.String&nbsp;name,
-                         int&nbsp;initial_value,
-                         int&nbsp;min_val,
-                         int&nbsp;max_val,
-                         <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</pre>
-<div class="block">Constructor for abstract IntegerControl. Slider, Text and Buddy Control will
- derive from this class</div>
+<pre>public&nbsp;IntegerControl(java.lang.Object&nbsp;parent_sketch,
+                      java.lang.String&nbsp;name,
+                      int&nbsp;initial_value,
+                      int&nbsp;min_val,
+                      int&nbsp;max_val,
+                      <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</pre>
+<div class="block">Constructor for IntegerControl if you want it displayed other than text control.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>parent_sketch</code> - The parent object for control</dd>
@@ -317,9 +332,9 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <pre>public&nbsp;int&nbsp;getValue()</pre>
 <div class="block">Get the value for the control.
      <pre>
-IntegerControl control1 = new IntegerControlSender(this, "Read", 0);
+IntegerControl control1 = new IntegerControl(this, "Read", 0);
 
-IntegerTextControl control2 = new IntegerTextControl(this, "Read", 0) {
+IntegerControl control2 = new IntegerControl(this, "Read", 0) {
       @Override
     public void valueChanged(int control_val) {
         System.out.println("Read " + control_val);
@@ -342,14 +357,14 @@ val = <b>control1.getValue();</b>// val = 1
 <ul class="blockList">
 <li class="blockList">
 <h4>valueChanged</h4>
-<pre>public abstract&nbsp;void&nbsp;valueChanged(int&nbsp;control_val)</pre>
+<pre>public&nbsp;void&nbsp;valueChanged(int&nbsp;control_val)</pre>
 <div class="block"><br>When the control receives the value, it will be passed through to the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>valueChanged(int)</code></a> listener that is implemented when the class is created.
  <br>For example
 
 <pre>
-IntegerControl control1 = new IntegerControlSender(this, "Read", 0);
+IntegerControl control1 = new IntegerControl(this, "Read", 0);
 
-IntegerTextControl control2 = new IntegerTextControl(this, "Read", 0) {
+IntegerControl control2 = new IntegerControl(this, "Read", 0) {
      @Override
     <b>public void valueChanged(int control_val) {
         System.out.println("Read " + control_val);
@@ -375,9 +390,9 @@ control1.setValue(2); // this will also set the value of control2
 <pre>public&nbsp;void&nbsp;setValue(int&nbsp;val)</pre>
 <div class="block">set the value for the control. This will pass the message on to all other <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> with matching name, type and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and call <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>valueChanged(int)</code></a>.
  <pre>
- IntegerControl control1 = new IntegerControlSender(this, "Read", 0);
+ IntegerControl control1 = new IntegerControl(this, "Read", 0);
 
- IntegerTextControl control2 = new IntegerTextControl(this, "Read", 0) {
+ IntegerControl control2 = new IntegerControl(this, "Read", 0) {
      @Override
     public void valueChanged(int control_val) {
         System.out.println("Read " + control_val);
@@ -396,7 +411,7 @@ control1.setValue(2); // this will also set the value of control2
 <a name="setValue-int-double-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setValue</h4>
 <pre>public&nbsp;void&nbsp;setValue(int&nbsp;val,
@@ -405,9 +420,9 @@ control1.setValue(2); // this will also set the value of control2
  Identical to the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-"><code>setValue(int)</code></a> with the exception that the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>valueChanged(int)</code></a> event will be caused at the <a href="../../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling"><code>HBScheduler</code></a> scheduled time passed in.
  <br>For example, the following code will cause matching <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> objects to respond 1 second in the future
      <pre>
-     IntegerControl control1 = new IntegerControlSender(this, "Read", 0);
+     IntegerControl control1 = new IntegerControl(this, "Read", 0);
 
-     IntegerTextControl control2 = new IntegerTextControl(this, "Read", 0) {
+     IntegerControl control2 = new IntegerControl(this, "Read", 0) {
          @Override
         public void valueChanged(int control_val) {
         System.out.println("Read " + control_val);
@@ -420,6 +435,61 @@ control1.setValue(2); // this will also set the value of control2
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>val</code> - the value to set to</dd>
 <dd><code>scheduler_time</code> - the scheduler time this is supposed to occur at</dd>
+</dl>
+</li>
+</ul>
+<a name="setDisplayType-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setDisplayType</h4>
+<pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a>&nbsp;setDisplayType(<a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</pre>
+<div class="block">Change how to display object
+ We must do this in subclass</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>display_type</code> - The new Control Scope</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this object</dd>
+</dl>
+</li>
+</ul>
+<a name="setControlScope-net.happybrackets.core.control.ControlScope-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setControlScope</h4>
+<pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a>&nbsp;setControlScope(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</pre>
+<div class="block">Changed the <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> the object has has. It will update control map so the correct events will be generated based on its scope</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../../../../net/happybrackets/core/control/DynamicControlParent.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a></code>&nbsp;in class&nbsp;<code><a href="../../../../net/happybrackets/core/control/DynamicControlParent.html" title="class in net.happybrackets.core.control">DynamicControlParent</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>new_scope</code> - The new Control Scope</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this object</dd>
+</dl>
+</li>
+</ul>
+<a name="setDisplayRange-int-int-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setDisplayRange</h4>
+<pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a>&nbsp;setDisplayRange(int&nbsp;minimum,
+                                      int&nbsp;maximum,
+                                      <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html" title="enum in net.happybrackets.core.control">DynamicControl.DISPLAY_TYPE</a>&nbsp;display_type)</pre>
+<div class="block">Set how we want this control displayed</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>minimum</code> - minimum display value on slider</dd>
+<dd><code>maximum</code> - maximum display value on slider</dd>
+<dd><code>display_type</code> - the type of display</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this</dd>
 </dl>
 </li>
 </ul>

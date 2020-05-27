@@ -27,7 +27,7 @@ public class RunCommandline implements HBAction {
         final String SCRIPT_NAME = "data/scripts/hellopython.py";
 
         // Type textControlSender to generate this code
-        TextControl text_display = new TextControlSender(this, "Program State", "");
+        TextControl text_display = new TextControl(this, "Program State", "");
 
 
 

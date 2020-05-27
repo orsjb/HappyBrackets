@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -121,10 +121,10 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<br>
-<pre>public class <span class="typeNameLabel">IntegerControlSender</span>
-extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control">IntegerTextControl</a></pre>
-<div class="block">This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead with <a href="../../../../net/happybrackets/core/control/DynamicControl.DISPLAY_TYPE.html#DISPLAY_DEFAULT"><code>DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT</code></a>
+ This class has been deprecated. Use <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead
+ This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#INT"><code>ControlType.INT</code></a> in a simple API
  <br> The difference between <a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> and other <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects  is that <a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> does not have a handler, however, you can still retrieve the current value using the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#getValue--"><code>IntegerControl.getValue()</code></a>
  <br><br> All  <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> objects with the same name and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message send.
 
@@ -133,7 +133,11 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.h
 
  <br><br>The <a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> is identical to the  <a href="../../../../net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control"><code>IntegerTextControl</code></a> except that <a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control"><code>IntegerControlSender</code></a> does not have a <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>IntegerControl.valueChanged(int)</code></a>) handler
 
- <br> <br> See <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> for general information about <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> classes and how to set the value within your code</div>
+ <br> <br> See <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> for general information about <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> classes and how to set the value within your code</span></div>
+</div>
+<br>
+<pre>public class <span class="typeNameLabel">IntegerControlSender</span>
+extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.html" title="class in net.happybrackets.core.control">IntegerTextControl</a></pre>
 </li>
 </ul>
 </div>
@@ -155,7 +159,9 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.h
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControlSender.html#IntegerControlSender-java.lang.Object-java.lang.String-int-">IntegerControlSender</a></span>(java.lang.Object&nbsp;parent_sketch,
                     java.lang.String&nbsp;name,
                     int&nbsp;initial_value)</code>
-<div class="block">Constructor</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead</span></div>
+</div>
 </td>
 </tr>
 </table>
@@ -168,7 +174,7 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.h
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -176,12 +182,14 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.h
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control">IntegerControlSender</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControlSender.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a></span>(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Changed the scope that the control has.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/IntegerControlSender.html#valueChanged-int-">valueChanged</a></span>(int&nbsp;control_val)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><br>When the control receives the value, it will be passed through to the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>IntegerControl.valueChanged(int)</code></a> listener that is implemented when the class is created.</div>
 </td>
 </tr>
@@ -198,7 +206,7 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.h
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;net.happybrackets.core.control.<a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></h3>
-<code><a href="../../../../net/happybrackets/core/control/IntegerControl.html#getValue--">getValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-">setValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-double-">setValue</a></code></li>
+<code><a href="../../../../net/happybrackets/core/control/IntegerControl.html#getValue--">getValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setDisplayRange-int-int-net.happybrackets.core.control.DynamicControl.DISPLAY_TYPE-">setDisplayRange</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-">setValue</a>, <a href="../../../../net/happybrackets/core/control/IntegerControl.html#setValue-int-double-">setValue</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.net.happybrackets.core.control.DynamicControlParent">
@@ -237,6 +245,7 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.h
 <pre>public&nbsp;IntegerControlSender(java.lang.Object&nbsp;parent_sketch,
                             java.lang.String&nbsp;name,
                             int&nbsp;initial_value)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control"><code>IntegerControl</code></a> instead</span></div>
 <div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -261,14 +270,15 @@ extends <a href="../../../../net/happybrackets/core/control/IntegerTextControl.h
 <li class="blockList">
 <h4>valueChanged</h4>
 <pre>public&nbsp;void&nbsp;valueChanged(int&nbsp;control_val)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-">IntegerControl</a></code></span></div>
 <div class="block"><br>When the control receives the value, it will be passed through to the <a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>IntegerControl.valueChanged(int)</code></a> listener that is implemented when the class is created.
  <br>For example
 
 <pre>
-IntegerControl control1 = new IntegerControlSender(this, "Read", 0);
+IntegerControl control1 = new IntegerControl(this, "Read", 0);
 
-IntegerTextControl control2 = new IntegerTextControl(this, "Read", 0) {
+IntegerControl control2 = new IntegerControl(this, "Read", 0) {
      @Override
     <b>public void valueChanged(int control_val) {
         System.out.println("Read " + control_val);
@@ -280,7 +290,7 @@ control1.setValue(2); // this will also set the value of control2
 </pre>
      <br>Will cause the <b><a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-"><code>IntegerControl.valueChanged(int)</code></a></b> function to be called with the new value, causing <b>Read 2</b> to be printed to standard output</div>
 <dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../../../../net/happybrackets/core/control/IntegerControl.html#valueChanged-int-">valueChanged</a></code>&nbsp;in class&nbsp;<code><a href="../../../../net/happybrackets/core/control/IntegerControl.html" title="class in net.happybrackets.core.control">IntegerControl</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>control_val</code> - the value received</dd>
@@ -294,6 +304,7 @@ control1.setValue(2); // this will also set the value of control2
 <li class="blockList">
 <h4>setControlScope</h4>
 <pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/IntegerControlSender.html" title="class in net.happybrackets.core.control">IntegerControlSender</a>&nbsp;setControlScope(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Changed the scope that the control has. It will update control map so the correct events will be generated based on its scope
  If the object is ControlScope Sketch or Unique, it will be displayType in the gui</div>
 <dl>

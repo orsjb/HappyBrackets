@@ -16,7 +16,7 @@ public class TestFloatControl {
         double randomVal = Math.random();
 
         // Type floatTextControl to generate this code
-        FloatTextControl floatTextControl = new FloatTextControl(this, CONTROL_NAME, 0) {
+        FloatControl floatTextControl = new FloatControl(this, CONTROL_NAME, 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line
                 System.out.println(control_val + "");

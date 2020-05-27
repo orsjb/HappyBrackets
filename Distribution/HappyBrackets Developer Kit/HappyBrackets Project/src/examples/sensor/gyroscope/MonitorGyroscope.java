@@ -3,7 +3,6 @@ package examples.sensor.gyroscope;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
-import net.happybrackets.core.control.FloatBuddyControl;
 import net.happybrackets.core.control.FloatControl;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.sensors.GyroscopeListener;
@@ -26,33 +25,33 @@ public class MonitorGyroscope implements HBAction {
 
 
         // Simply type floatBuddyControl to generate this code
-        FloatControl displayYaw = new FloatBuddyControl(this, "Yaw Monitor", 0, -1, 1) {
+        FloatControl displayYaw = new FloatControl(this, "Yaw Monitor", 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line
 
                 // Write your DynamicControl code above this line
             }
-        };// End DynamicControl displayX code
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl displayX code
 
 
         // Simply type floatBuddyControl to generate this code
-        FloatControl displayPitch = new FloatBuddyControl(this, "Pitch Monitor", 0, -1, 1) {
+        FloatControl displayPitch = new FloatControl(this, "Pitch Monitor", 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line
 
                 // Write your DynamicControl code above this line
             }
-        };// End DynamicControl displayY code
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);;// End DynamicControl displayY code
 
 
         // Simply type floatBuddyControl to generate this code
-        FloatControl displayRoll = new FloatBuddyControl(this, "Roll Monitor", 0, -1, 1) {
+        FloatControl displayRoll = new FloatControl(this, "Roll Monitor", 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line
 
                 // Write your DynamicControl code above this line
             }
-        };// End DynamicControl displayZ code
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);;// End DynamicControl displayZ code
 
 
 

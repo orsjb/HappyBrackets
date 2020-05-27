@@ -1,6 +1,7 @@
 package net.happybrackets.core.control;
 
 /**
+ * @deprecated use {@link ClassObjectControlSender} instead
  * The {@link ClassObjectControlSender} class is identical to the {@link ClassObjectControl} class except it does not provide the {@link ClassObjectControl#valueChanged(Object)} event handler.
  * <br> See {@link ClassObjectControl} for full details
  */
@@ -11,6 +12,7 @@ public class ClassObjectControlSender extends ClassObjectControl {
      * @param parent_sketch The parent object for control
      * @param name The name to Display
      * @param class_type Initial value of the object
+     * {@link ClassObjectControlSender}
      */
     public ClassObjectControlSender(Object parent_sketch, String name, Class<?> class_type) {
         super(parent_sketch, name, class_type);

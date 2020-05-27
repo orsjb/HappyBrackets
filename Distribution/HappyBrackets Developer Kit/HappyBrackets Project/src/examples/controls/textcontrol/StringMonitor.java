@@ -3,7 +3,6 @@ package examples.controls.textcontrol;
 
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.TextControl;
-import net.happybrackets.core.control.TextControlSender;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
@@ -23,7 +22,7 @@ public class StringMonitor implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         /* Type textControlSender to generate this code */
-        TextControl clockMonitor = new TextControlSender(this, "Clock Count", "");
+        TextControl clockMonitor = new TextControl(this, "Clock Count", "");
 
 
         /* To create this, just type clockTimer */

@@ -1,6 +1,7 @@
 package net.happybrackets.core.control;
 
 /**
+ * @deprecated use {@link TextControl} instead
  * This class encapsulates the functionality of {@link DynamicControl} classes of type {@link ControlType#TEXT} in a simple API
  * <br> All Text controls with the same name and {@link ControlScope} will respond to a message send. For example:
  * For example, consider two TextControls with the same {@link ControlScope} and name
@@ -30,6 +31,7 @@ public class TextControlSender extends TextControl {
      * @param parent_sketch The parent object for control
      * @param name          The name to Display
      * @param initial_value Initial value of the object
+     * @deprecated use {@link TextControl} instead
      */
     public TextControlSender(Object parent_sketch, String name, String initial_value) {
         super(parent_sketch, name, initial_value);

@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -116,7 +116,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public abstract class <span class="typeNameLabel">TextControl</span>
+<pre>public class <span class="typeNameLabel">TextControl</span>
 extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent.html" title="class in net.happybrackets.core.control">DynamicControlParent</a></pre>
 <div class="block">This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#TEXT"><code>ControlType.TEXT</code></a> in a simple API
  <br> All Text controls with the same name and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> will respond to a message send. For example:
@@ -126,7 +126,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
  <br>When the control receives the value, it will be passed through to the <a href="../../../../net/happybrackets/core/control/TextControl.html#valueChanged-java.lang.String-"><code>valueChanged(String)</code></a> listener that is implemented when the class is created.
  <br>For example
  <pre>
- TextControl control1 = new TextControlSender(this, "Read", "");
+ TextControl control1 = new TextControl(this, "Read", "");
  TextControl control2 = new TextControl(this, "Read", "") {
      @Override
     public void valueChanged(String control_val) {
@@ -143,7 +143,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 
  <br>Setting the value within the HappyBrackets control display is effected by typing a new value in and pressing ENTER or RETURN
 
- If you do not require a handler on the class, use the <a href="../../../../net/happybrackets/core/control/TextControlSender.html" title="class in net.happybrackets.core.control"><code>TextControlSender</code></a> class</div>
+ If you do not require a handler on the class, override the <a href="../../../../net/happybrackets/core/control/TextControl.html#valueChanged-java.lang.String-"><code>valueChanged(String)</code></a> function</div>
 </li>
 </ul>
 </div>
@@ -159,12 +159,10 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
 <caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
+<th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/TextControl.html#TextControl-java.lang.Object-java.lang.String-java.lang.String-">TextControl</a></span>(java.lang.Object&nbsp;parent_sketch,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/TextControl.html#TextControl-java.lang.Object-java.lang.String-java.lang.String-">TextControl</a></span>(java.lang.Object&nbsp;parent_sketch,
            java.lang.String&nbsp;name,
            java.lang.String&nbsp;initial_value)</code>
 <div class="block">Constructor for abstract FloatControl.</div>
@@ -180,7 +178,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -218,7 +216,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>abstract void</code></td>
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/TextControl.html#valueChanged-java.lang.String-">valueChanged</a></span>(java.lang.String&nbsp;control_val)</code>&nbsp;</td>
 </tr>
 </table>
@@ -256,9 +254,9 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <ul class="blockListLast">
 <li class="blockList">
 <h4>TextControl</h4>
-<pre>protected&nbsp;TextControl(java.lang.Object&nbsp;parent_sketch,
-                      java.lang.String&nbsp;name,
-                      java.lang.String&nbsp;initial_value)</pre>
+<pre>public&nbsp;TextControl(java.lang.Object&nbsp;parent_sketch,
+                   java.lang.String&nbsp;name,
+                   java.lang.String&nbsp;initial_value)</pre>
 <div class="block">Constructor for abstract FloatControl. Slider, Text and Buddy Control will
  derive from this class</div>
 <dl>
@@ -286,7 +284,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <pre>public&nbsp;java.lang.String&nbsp;getValue()</pre>
 <div class="block">Get the value for the control. For example
      <pre>
-    TextControl control1 = new TextControlSender(this, "Read", "");
+    TextControl control1 = new TextControl(this, "Read", "");
 
     String val =  control1.getValue(); // val = ""
     control1.setValue("This is text");
@@ -304,7 +302,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <ul class="blockList">
 <li class="blockList">
 <h4>valueChanged</h4>
-<pre>public abstract&nbsp;void&nbsp;valueChanged(java.lang.String&nbsp;control_val)</pre>
+<pre>public&nbsp;void&nbsp;valueChanged(java.lang.String&nbsp;control_val)</pre>
 </li>
 </ul>
 <a name="setValue-java.lang.String-">
@@ -316,7 +314,7 @@ extends <a href="../../../../net/happybrackets/core/control/DynamicControlParent
 <pre>public&nbsp;void&nbsp;setValue(java.lang.String&nbsp;val)</pre>
 <div class="block">Set the value for the control. This will pass the message on to all other <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> with matching name, type and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and call <a href="../../../../net/happybrackets/core/control/TextControl.html#valueChanged-java.lang.String-"><code>valueChanged(String)</code></a>.
  <pre>
- TextControl control1 = new TextControlSender(this, "Read", "");
+ TextControl control1 = new TextControl(this, "Read", "");
  TextControl control2 = new TextControl(this, "Read", "") {
      @Override
     public void valueChanged(String control_val) {

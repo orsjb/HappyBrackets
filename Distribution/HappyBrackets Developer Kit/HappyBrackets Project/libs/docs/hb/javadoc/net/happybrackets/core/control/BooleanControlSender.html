@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -116,12 +116,15 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> instead
+ This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#BOOLEAN"><code>ControlType.BOOLEAN</code></a> in a simple API.
+ <br> The difference between <a href="../../../../net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control"><code>BooleanControlSender</code></a> and <a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> is that <a href="../../../../net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control"><code>BooleanControlSender</code></a> does not have a <a href="../../../../net/happybrackets/core/control/BooleanControl.html#valueChanged-java.lang.Boolean-"><code>BooleanControl.valueChanged(Boolean)</code></a> handler, however, you can still retrieve the current value using the <a href="../../../../net/happybrackets/core/control/BooleanControl.html#getValue--"><code>BooleanControl.getValue()</code></a>
+ <br><br> See <a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> for more detail.</span></div>
+</div>
 <br>
 <pre>public class <span class="typeNameLabel">BooleanControlSender</span>
 extends <a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control">BooleanControl</a></pre>
-<div class="block">This class encapsulates the functionality of <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> classes of type <a href="../../../../net/happybrackets/core/control/ControlType.html#BOOLEAN"><code>ControlType.BOOLEAN</code></a> in a simple API.
- <br> The difference between <a href="../../../../net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control"><code>BooleanControlSender</code></a> and <a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> is that <a href="../../../../net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control"><code>BooleanControlSender</code></a> does not have a <a href="../../../../net/happybrackets/core/control/BooleanControl.html#valueChanged-java.lang.Boolean-"><code>BooleanControl.valueChanged(Boolean)</code></a> handler, however, you can still retrieve the current value using the <a href="../../../../net/happybrackets/core/control/BooleanControl.html#getValue--"><code>BooleanControl.getValue()</code></a>
- <br><br> See <a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> for more detail.</div>
 </li>
 </ul>
 </div>
@@ -143,7 +146,9 @@ extends <a href="../../../../net/happybrackets/core/control/BooleanControl.html"
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/BooleanControlSender.html#BooleanControlSender-java.lang.Object-java.lang.String-java.lang.Boolean-">BooleanControlSender</a></span>(java.lang.Object&nbsp;parent_sketch,
                     java.lang.String&nbsp;name,
                     java.lang.Boolean&nbsp;initial_value)</code>
-<div class="block">Constructor for abstract FloatControl.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> instead</span></div>
+</div>
 </td>
 </tr>
 </table>
@@ -156,7 +161,7 @@ extends <a href="../../../../net/happybrackets/core/control/BooleanControl.html"
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -164,12 +169,14 @@ extends <a href="../../../../net/happybrackets/core/control/BooleanControl.html"
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control">BooleanControlSender</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/BooleanControlSender.html#setControlScope-net.happybrackets.core.control.ControlScope-">setControlScope</a></span>(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Changed the  <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> that the control has.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/control/BooleanControlSender.html#valueChanged-java.lang.Boolean-">valueChanged</a></span>(java.lang.Boolean&nbsp;control_val)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Fired event that occurs when the value for the control has been set.</div>
 </td>
 </tr>
@@ -218,6 +225,7 @@ extends <a href="../../../../net/happybrackets/core/control/BooleanControl.html"
 <pre>public&nbsp;BooleanControlSender(java.lang.Object&nbsp;parent_sketch,
                             java.lang.String&nbsp;name,
                             java.lang.Boolean&nbsp;initial_value)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control"><code>BooleanControl</code></a> instead</span></div>
 <div class="block">Constructor for abstract FloatControl. Slider, Text and Buddy Control will
  derive from this class</div>
 <dl>
@@ -243,11 +251,12 @@ extends <a href="../../../../net/happybrackets/core/control/BooleanControl.html"
 <li class="blockList">
 <h4>valueChanged</h4>
 <pre>public&nbsp;void&nbsp;valueChanged(java.lang.Boolean&nbsp;control_val)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../net/happybrackets/core/control/BooleanControl.html#valueChanged-java.lang.Boolean-">BooleanControl</a></code></span></div>
 <div class="block">Fired event that occurs when the value for the control has been set. This will pass the message on to all other <a href="../../../../net/happybrackets/core/control/DynamicControl.html" title="class in net.happybrackets.core.control"><code>DynamicControl</code></a> with matching name, type and <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> and call <a href="../../../../net/happybrackets/core/control/BooleanControl.html#valueChanged-java.lang.Boolean-"><code>BooleanControl.valueChanged(Boolean)</code></a>.
  The function must be implemented when creating objects
      <pre>
-     BooleanControl control1 = new BooleanControlSender(this, "Read", false);
+     BooleanControl control1 = new BooleanControl(this, "Read", false);
      BooleanControl control2 = new BooleanControl(this, "Read", false) {
         @Override
         <b>public void valueChanged(Boolean control_val) {
@@ -259,7 +268,7 @@ extends <a href="../../../../net/happybrackets/core/control/BooleanControl.html"
      </pre>
      <br>Will cause the <a href="../../../../net/happybrackets/core/control/BooleanControl.html#valueChanged-java.lang.Boolean-"><code>BooleanControl.valueChanged(Boolean)</code></a> function to be called with the new value, causing <b>Read true</b> to be printed to standard output</div>
 <dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../../../../net/happybrackets/core/control/BooleanControl.html#valueChanged-java.lang.Boolean-">valueChanged</a></code>&nbsp;in class&nbsp;<code><a href="../../../../net/happybrackets/core/control/BooleanControl.html" title="class in net.happybrackets.core.control">BooleanControl</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>control_val</code> - The new value of the control</dd>
@@ -273,6 +282,7 @@ extends <a href="../../../../net/happybrackets/core/control/BooleanControl.html"
 <li class="blockList">
 <h4>setControlScope</h4>
 <pre>public&nbsp;<a href="../../../../net/happybrackets/core/control/BooleanControlSender.html" title="class in net.happybrackets.core.control">BooleanControlSender</a>&nbsp;setControlScope(<a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control">ControlScope</a>&nbsp;new_scope)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Changed the  <a href="../../../../net/happybrackets/core/control/ControlScope.html" title="enum in net.happybrackets.core.control"><code>ControlScope</code></a> that the control has. It will update control map so the correct events will be generated based on its scope</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>

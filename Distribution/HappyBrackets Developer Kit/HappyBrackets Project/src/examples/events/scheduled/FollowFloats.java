@@ -33,17 +33,17 @@ public class FollowFloats implements HBAction {
 
         // Simply type floatBuddyControl to generate this code
         // This one will make values change immediately
-        FloatControl globalBuddy = new FloatBuddyControl(this, "Global Buddy", 0, -1, 1) {
+        FloatControl globalBuddy = new FloatControl(this, "Global Buddy", 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
 
                 hb.setStatus("" + control_val);
                 // Write your DynamicControl code above this line 
             }
-        }.setControlScope(ControlScope.GLOBAL);// End DynamicControl globalBuddy code
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY).setControlScope(ControlScope.GLOBAL);// End DynamicControl globalBuddy code
 
 
-        FloatControl leadControl = new FloatBuddyControl(this, "Lead Control", 0, -1, 1) {
+        FloatControl leadControl = new FloatControl(this, "Lead Control", 0) {
             @Override
             public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
 
@@ -53,7 +53,7 @@ public class FollowFloats implements HBAction {
                 globalBuddy.setValue(control_val, scheduled_time);
                 // Write your DynamicControl code above this line 
             }
-        };// End DynamicControl leadControl code 
+        }.setDisplayRange(-1, 1, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl leadControl code
 
         // write your code above this line
     }

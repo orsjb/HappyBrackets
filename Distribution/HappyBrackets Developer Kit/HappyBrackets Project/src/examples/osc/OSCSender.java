@@ -37,8 +37,8 @@ public class OSCSender implements HBAction, HBReset {
         HB.HBInstance.setStatus(this.getClass().getSimpleName() + " Loaded");
 
         // We will make a display to see
-        target_display = new TextControlSender(this, "Final Target", "");
-        resultDisplay = new TextControlSender(this, "Send result", "");
+        target_display = new TextControl(this, "Final Target", "");
+        resultDisplay = new TextControl(this, "Send result", "");
 
 
 
@@ -55,7 +55,7 @@ public class OSCSender implements HBAction, HBReset {
 
 
         // make a place to enter your oscPort
-        new IntegerTextControl(this, "Set Port", oscPort) {
+        new IntegerControl(this, "Set Port", oscPort) {
             @Override
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 oscPort = control_val;
@@ -74,7 +74,7 @@ public class OSCSender implements HBAction, HBReset {
 
 
         // Only one of these messages will send
-        new IntegerTextControl(this, "Set Int Arg", 0) {
+        new IntegerControl(this, "Set Int Arg", 0) {
             @Override
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 oscArgument = control_val;
@@ -111,7 +111,7 @@ public class OSCSender implements HBAction, HBReset {
         };/* End DynamicControl booleanControl code */
 
         // Lets send a float
-        new FloatTextControl(this, "Set float", 0) {
+        new FloatControl(this, "Set float", 0) {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
                 oscArgument = control_val;

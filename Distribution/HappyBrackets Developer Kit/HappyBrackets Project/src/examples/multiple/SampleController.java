@@ -157,13 +157,13 @@ public class SampleController implements HBAction {
 
             // Use a Buddy control to change the PlaybackRate
             // Simply type floatBuddyControl to generate this code
-            FloatControl playbackRateControl = new FloatBuddyControl(this, "Playback Rate", START_PLAY_RATE, 0, MAX_PLAYBACK_RATE) {
+            FloatControl playbackRateControl = new FloatControl(this, "Playback Rate", START_PLAY_RATE) {
                 @Override
                 public void valueChanged(double control_val) {// Write your DynamicControl code below this line
                     playbackRate.setValue((float)control_val);
                     // Write your DynamicControl code above this line
                 }
-            };// End DynamicControl playbackRateControl code
+            }.setDisplayRange(0, MAX_PLAYBACK_RATE, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl playbackRateControl code
 
 
             // create a checkbox to make it play forward or reverse
@@ -185,14 +185,14 @@ public class SampleController implements HBAction {
 
             // display a slider for position
             // Type floatSliderControl to generate this code 
-            FloatControl audioPosition = new FloatSliderControl(this, "Audio Position", 0, 0, sampleDuration) {
+            FloatControl audioPosition = new FloatControl(this, "Audio Position", 0) {
                 @Override
                 public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
                     samplePlayer.setPosition(control_val);
                     setAudioTextPosition(control_val);
                     // Write your DynamicControl code above this line 
                 }
-            };// End DynamicControl audioPosition code 
+            }.setDisplayRange(0, sampleDuration, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);// End DynamicControl audioPosition code
 
 
             // set our newly created control to the class reference
@@ -241,7 +241,7 @@ public class SampleController implements HBAction {
             samplePlayer.setLoopEnd(loop_end);
 
             // Simply type floatBuddyControl to generate this code 
-            FloatControl loopStartControl = new FloatBuddyControl(this, "Loop start", 0, 0, sampleDuration) {
+            FloatControl loopStartControl = new FloatControl(this, "Loop start", 0) {
                 @Override
                 public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
                     float current_audio_position = (float)samplePlayer.getPosition();
@@ -252,18 +252,18 @@ public class SampleController implements HBAction {
                     loop_start.setValue((float)control_val);
                     // Write your DynamicControl code above this line 
                 }
-            };// End DynamicControl loopStartControl code 
+            }.setDisplayRange(0, sampleDuration, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl loopStartControl code
 
 
 
             // Simply type floatBuddyControl to generate this code 
-            FloatControl loopEndControl = new FloatBuddyControl(this, "Loop End", sampleDuration, 0, sampleDuration) {
+            FloatControl loopEndControl = new FloatControl(this, "Loop End", sampleDuration) {
                 @Override
                 public void valueChanged(double control_val) {// Write your DynamicControl code below this line 
                     loop_end.setValue((float)control_val);
                     // Write your DynamicControl code above this line 
                 }
-            };// End DynamicControl loopEndControl code 
+            }.setDisplayRange(0, sampleDuration, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);// End DynamicControl loopEndControl code
 
 
             // Add a control to make sample player start at loop start position
