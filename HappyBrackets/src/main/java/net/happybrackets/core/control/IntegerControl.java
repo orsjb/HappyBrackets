@@ -55,7 +55,7 @@ public class IntegerControl extends DynamicControlParent {
      * @param initial_value Initial value of the object
      */
     public IntegerControl(Object parent_sketch, String name, int initial_value) {
-        super(new DynamicControl(parent_sketch, ControlType.INT, name, initial_value, 0, 0, DynamicControl.DISPLAY_TYPE.DISPLAY_HIDDEN));
+        super(new DynamicControl(parent_sketch, ControlType.INT, name, initial_value, 0, 0, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT));
     }
 
 
