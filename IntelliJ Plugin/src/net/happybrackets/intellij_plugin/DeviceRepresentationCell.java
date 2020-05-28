@@ -319,7 +319,9 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
             }
         }));
 
-		Text name = new Text(item.getFriendlyName());
+		String display_name = formatName(item.getFriendlyName());
+		Text name = new Text(display_name);
+
 		name.setOnMouseClicked(event -> {
 			// we do not want to show controls if it is a context menu
 			if (mouseModifiersClear(event)) {
@@ -657,5 +659,24 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		setGraphic(main);
 		item.sendVersionRequest();
 
+	}
+
+	/**
+	 * Format the name so it is no longer than the maximum allowed.
+	 * Put three dots after
+	 * @param friendlyName the original name
+	 * @return the name as we want to display it
+	 */
+	private String formatName(String friendlyName) {
+		final int MAX_NAME_LEN = 20;
+		final String CONT_TEXT = " ..."; // we display this to show name is not complete
+
+		String ret  = friendlyName;
+
+		if (friendlyName.length() > MAX_NAME_LEN){
+			ret =  friendlyName.substring(0, MAX_NAME_LEN - CONT_TEXT.length() - 1) + CONT_TEXT;
+		}
+
+		return ret;
 	}
 }
