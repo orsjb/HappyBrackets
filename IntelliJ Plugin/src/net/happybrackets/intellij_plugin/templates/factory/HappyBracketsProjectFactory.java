@@ -2,6 +2,7 @@ package net.happybrackets.intellij_plugin.templates.factory;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.ex.WindowManagerEx;
 import com.intellij.platform.ProjectTemplate;
@@ -23,6 +24,11 @@ public class HappyBracketsProjectFactory extends ProjectTemplatesFactory {
     @Override
     public String[] getGroups() {
         return HB_GROUP;
+    }
+
+    @Override
+    public Icon getGroupIcon(String s) {
+         return IconLoader.getIcon("/icons/hb.png");
     }
 
     @NotNull

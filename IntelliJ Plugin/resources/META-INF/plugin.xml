@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>4.12.1.0</version>
+  <version>4.12.2.0</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -35,7 +35,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/hb.png"/>
+    <toolWindow id="HappyBrackets" anchor="right" factoryClass="net.happybrackets.intellij_plugin.HappyBracketsToolWindow" icon="/icons/hb.png"/>
 
     <defaultLiveTemplatesProvider implementation="net.happybrackets.intellij_plugin.templates.HappyBracketsTemplateProvider"/>
     <projectTemplatesFactory implementation="net.happybrackets.intellij_plugin.templates.factory.HappyBracketsProjectFactory"/>
@@ -49,27 +49,24 @@
     <group id="HappyBracketsIntellijPlugin.MainMenu"  text="HappyBrackets" description="HappyBrackets Settings">
       <add-to-group group-id="MainMenu" anchor="after" relative-to-action="WindowMenu"/>
 
-      <action id="HappyBrackets.Simulator" class="net.happybrackets.intellij_plugin.menu.RunSimulatorMenu"
-              text="Run Simulator"
-              description="Runs the device simulator on your computer">
-      </action>
-
       <action id="HappyBrackets.capture" class="net.happybrackets.intellij_plugin.menu.CaptureMenu" text="Capture Project"
               description="HappyBrackets Capture Project State">
 
       </action>
-      <action id="HappyBrackets.settings" class="net.happybrackets.intellij_plugin.menu.SettingsMenu" text="Settings"
+      <action id="HappyBrackets.update" class="net.happybrackets.intellij_plugin.menu.UpdateProjectMenu" text="Update Project"
+              description="Update HappyBrackets project">
+      </action>
+      <action id="HappyBrackets.settings" class="net.happybrackets.intellij_plugin.menu.SettingsMenu" text="Settings..."
               description="HappyBrackets Plugin Settings">
 
       </action>
 
-      <action id="HappyBrackets.update" class="net.happybrackets.intellij_plugin.menu.UpdateProjectMenu" text="Update Project"
-              description="Update HappyBrackets project">
+      <separator/>
 
-      </action>
-
-      <action id="HappyBracketsFavouriteMenu" class="net.happybrackets.intellij_plugin.menu.FavouritesMenu"
-              text="Favourites" description="Displays only devices that are marked as favourites">
+      <action id="HappyBrackets.Simulator" class="net.happybrackets.intellij_plugin.menu.RunSimulatorMenu"
+              text="Run Simulator"
+              description="Runs the device simulator on your computer"
+              icon="/icons/play.png">
       </action>
 
       <action id="HappyBrackets.Refresh" class="net.happybrackets.intellij_plugin.menu.RefreshDevicesMenu"
@@ -77,91 +74,87 @@
               description="Refreshes the devices list by displaying only devices that are connected">
       </action>
 
+      <action id="HappyBracketsFavouriteMenu" class="net.happybrackets.intellij_plugin.menu.FavouritesMenu"
+              text="Favourites" description="Displays only devices that are marked as favourites">
+      </action>
+
+      <separator/>
+
+      <action id="HappyBrackets.Probe" class="net.happybrackets.intellij_plugin.menu.ProbeDevicesMenu"
+              text="Probe Devices"
+              description="Probes network for devices"
+              icon="/icons/debug.png">
+      </action>
+
+      <action id="HappyBrackets.Broadcast" class="net.happybrackets.intellij_plugin.menu.BroadcastEnableMenu"
+              text="Enable Broadcast"
+              description="Enables Broadcast in addition to multicast">
+      </action>
+
+      <action id="HappyBracketsAdvertise" class="net.happybrackets.intellij_plugin.menu.AdvertiseMenu"
+              text="Disable Advertise" description="Stops Communication between devices and controller">
+      </action>
+
+      <action id="HappyBracketsGetDevicesAddressMenu" class="net.happybrackets.intellij_plugin.menu.global.GetDeviceAddressesAction"
+              text="Display All Device Addresses" description="Display all device addresses to a event window so they can be used as input to the update script">
+      </action>
+
+      <separator/>
+
+      <action id="HappyBracketsShutdownMenu" class="net.happybrackets.intellij_plugin.menu.global.ShutdownAction"
+              text="Shutdown All Devices" description="Shutdown all devices"
+              icon="/icons/shutdown.png">
+      </action>
+
+      <action id="HappyBracketsRebootMenu" class="net.happybrackets.intellij_plugin.menu.global.RebootAction"
+              text="Reboot All Devices" description="Reboot all devices"
+              icon="/icons/reboot.png">
+      </action>
+
+      <action id="HappyBracketsResetMenu" class="net.happybrackets.intellij_plugin.menu.global.ResetAction"
+              text="Reset All Devices"
+              description="Reset all devices to their initial state (same as Reset Sounding + Clear Sound)"
+              icon="/icons/resetMenu.png">
+      </action>
+
+      <action id="HappyBracketsResetSoundingMenu" class="net.happybrackets.intellij_plugin.menu.global.ResetSoundingAction"
+              text="Reset All Devices (Keep Sound)" description="Reset all devices to their initial state except for audio that is currently playing"
+              icon="/icons/resetMenu.png">
+      </action>
+
+      <action id="HappyBracketsResyncgMenu" class="net.happybrackets.intellij_plugin.menu.global.SynchroniseDevicesAction"
+              text="Resync All Devices" description="Resync all devices">
+      </action>
+
+      <action id="HappyBracketsCommonConfigMenu" class="net.happybrackets.intellij_plugin.menu.global.CommonConfigAction"
+              text="Create Common Configuration" description="Creates a common configuration file that can be sent to each device">
+      </action>
+
+      <separator/>
+
 
     </group>
-
-
-
-    <group id="HappyBracketsDebugGroup" class="net.happybrackets.intellij_plugin.menu.HappyBracketsDebugMenu" popup="true"
-           text="Debug" description="Happy Brackets Debug Options">
-      <add-to-group group-id="HappyBracketsIntellijPlugin.MainMenu" anchor="last"/>
-    </group>
-
-    <action id="HappyBrackets.Probe" class="net.happybrackets.intellij_plugin.menu.ProbeDevicesMenu"
-            text="Probe Devices"
-            description="Probes network for devices">
-      <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
-    </action>
-
-
-    <action id="HappyBrackets.Broadcast" class="net.happybrackets.intellij_plugin.menu.BroadcastEnableMenu"
-            text="Enable Broadcast"
-            description="Enables Broadcast in addition to multicast">
-      <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
-    </action>
-
-
-    <action id="HappyBracketsAdvertise" class="net.happybrackets.intellij_plugin.menu.AdvertiseMenu"
-            text="Disable Advertise" description="Stops Communication between devices and controller">
-      <add-to-group group-id="HappyBracketsDebugGroup" anchor="first"/>
-    </action>
-
-    <group id="HappyBracketsGlobalGroup" popup="true"
-           text="Global" description="Happy Brackets Global Device Controls">
-      <add-to-group group-id="HappyBracketsIntellijPlugin.MainMenu" anchor="last"/>
-    </group>
-
-    <action id="HappyBracketsResyncgMenu" class="net.happybrackets.intellij_plugin.menu.global.SynchroniseDevicesAction"
-            text="Resync All Devices" description="Resync all devices">
-      <add-to-group group-id="HappyBracketsGlobalGroup"/>
-    </action>
-
-
-    <action id="HappyBracketsShutdownMenu" class="net.happybrackets.intellij_plugin.menu.global.ShutdownAction"
-            text="Shutdown All Devices" description="Shutdown all devices">
-      <add-to-group group-id="HappyBracketsGlobalGroup"/>
-    </action>
-
-    <action id="HappyBracketsRebootMenu" class="net.happybrackets.intellij_plugin.menu.global.RebootAction"
-            text="Reboot All Devices" description="Reboot all devices">
-      <add-to-group group-id="HappyBracketsGlobalGroup"/>
-    </action>
-
-    <action id="HappyBracketsResetMenu" class="net.happybrackets.intellij_plugin.menu.global.ResetAction"
-            text="Reset All Devices" description="Reset all devices to their initial state (same as Reset Sounding + Clear Sound)">
-      <add-to-group group-id="HappyBracketsGlobalGroup"/>
-    </action>
-
-    <action id="HappyBracketsResetSoundingMenu" class="net.happybrackets.intellij_plugin.menu.global.ResetSoundingAction"
-            text="Reset Sounding All Devices" description="Reset all devices to their initial state except for audio that is currently playing">
-      <add-to-group group-id="HappyBracketsGlobalGroup" />
-    </action>
-
-    <action id="HappyBracketsGetDevicesAddressMenu" class="net.happybrackets.intellij_plugin.menu.global.GetDeviceAddressesAction"
-            text="Display All Device Addresses" description="Display all device addresses to a event window so they can be used as input to the update script">
-      <add-to-group group-id="HappyBracketsGlobalGroup" />
-    </action>
-
-    <action id="HappyBracketsCommonConfigMenu" class="net.happybrackets.intellij_plugin.menu.global.CommonConfigAction"
-            text="Create Common Configuration" description="Creates a common configuration file that can be sent to each device">
-      <add-to-group group-id="HappyBracketsGlobalGroup" />
-    </action>
 
 
     <action id="SendCompositionToSelectedDeviceRunContext"
             class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToSelectedDevice"
-            text="Send Composition To Selected Device">
+            text="Send Composition To Selected Device"
+            icon="/icons/sendMenu.png">
       <add-to-group group-id="RunContextGroupInner" anchor="last"/>
     </action>
     <action id="SendCompositionToAllDevicesRunContext"
             class="net.happybrackets.intellij_plugin.menu.context.SendCompositionToAllDevicesAction"
-            text="Send composition to all devices" description="Sends the selected composition to all devices">
+            text="Send composition to all devices"
+            description="Sends the selected composition to all devices"
+            icon="/icons/sendAll.png">
       <add-to-group group-id="RunContextGroupInner" anchor="last"/>
     </action>
 
     <action id="CopyCompositionToStartupRunContext"
             class="net.happybrackets.intellij_plugin.menu.context.CopyCompositionToStartupAction"
-            text="Copy class to startup" description="Copie the selected composition class to startup">
+            text="Copy class to startup"
+            description="Copie the selected composition class to startup"
+            icon="/icons/copy.png">
       <add-to-group group-id="RunContextGroupInner" anchor="last"/>
     </action>
 

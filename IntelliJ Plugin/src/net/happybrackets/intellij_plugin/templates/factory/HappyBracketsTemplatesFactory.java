@@ -53,7 +53,7 @@ public class HappyBracketsTemplatesFactory implements FileTemplateGroupDescripto
     @Override
     public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
         String title = "HappyBrackets templates";
-        final Icon icon = IconLoader.getIcon("/icons/logo.png");
+        final Icon icon = IconLoader.getIcon("/icons/hb.png");
         final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(title, icon);
         for (HappyBracketsTemplate template : HappyBracketsTemplate.values()) {
             group.addTemplate(new FileTemplateDescriptor(template.getName(), icon));

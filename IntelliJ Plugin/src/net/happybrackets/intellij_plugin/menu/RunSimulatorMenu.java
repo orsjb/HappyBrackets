@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.util.IconLoader;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 import net.happybrackets.intellij_plugin.controller.network.ControllerAdvertiser;
 import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
@@ -72,6 +73,7 @@ public class RunSimulatorMenu extends AnAction {
     public void update(AnActionEvent event) {
         try {
             String menu_text = "Run Simulator";
+            String menu_icon = "/icons/play.png";
 
             Project current_project = event.getProject();
 
@@ -87,6 +89,7 @@ public class RunSimulatorMenu extends AnAction {
 
             if (SimulatorShell.isRunning()) {
                 menu_text = "Stop Simulator";
+                menu_icon = "/icons/stop.png";
                 event.getPresentation().setEnabled(true);
             }
             else{
@@ -94,6 +97,7 @@ public class RunSimulatorMenu extends AnAction {
             }
 
             event.getPresentation().setText(menu_text);
+            event.getPresentation().setIcon(IconLoader.getIcon(menu_icon));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

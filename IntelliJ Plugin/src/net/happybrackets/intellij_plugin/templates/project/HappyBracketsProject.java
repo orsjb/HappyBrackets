@@ -48,7 +48,7 @@ import java.util.Collections;
 /**
  * @version "$Id$"
  */
-public class HappyBracketsProject extends WebProjectTemplate {
+    public class HappyBracketsProject extends WebProjectTemplate {
 
     private static final Logger log = Logger.getInstance(HappyBracketsProject.class);
 
@@ -105,7 +105,7 @@ public class HappyBracketsProject extends WebProjectTemplate {
 
     @Override
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/logo.png");
+        return IconLoader.getIcon("/icons/hb.png");
     }
 
     @NotNull

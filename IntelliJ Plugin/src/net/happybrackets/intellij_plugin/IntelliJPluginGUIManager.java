@@ -41,13 +41,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
+import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -205,6 +204,22 @@ public class IntelliJPluginGUIManager {
 	public Scene setupGUI() {
 		//core elements
 		TitledPane device_pane = new TitledPane("Devices", makeDevicePane());
+		ControllerEngine.getInstance().getDeviceConnection().
+				addFavouritesChangedListener(enabled -> {
+					if(enabled) {
+						Platform.runLater(new Runnable() {
+							@Override public void run() {
+								device_pane.textProperty().setValue("Devices (favourites only)");
+							}
+						});
+					} else {
+						Platform.runLater(new Runnable() {
+							@Override public void run() {
+								device_pane.textProperty().setValue("Devices");
+							}
+						});
+					}
+				});
 		//TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
 		//TitledPane known_devices_pane = new TitledPane("Known Devices", makeConfigurationPane(1));
 		//TitledPane global_pane = new TitledPane("Global Management", makeGlobalPane());
@@ -859,6 +874,20 @@ public class IntelliJPluginGUIManager {
 
 		Button runSimulatorButton =  new Button("Run Simulator");
 
+		Image playImage = new Image(getClass().getResourceAsStream("/icons/play.png"));
+		ImageView playIV =new ImageView(playImage);
+		playIV.setFitHeight(12);
+		playIV.setFitWidth(12);
+		playIV.setSmooth(true);
+
+		Image stopImage = new Image(getClass().getResourceAsStream("/icons/stop.png"));
+		ImageView stopIV =new ImageView(stopImage);
+		stopIV.setFitHeight(12);
+		stopIV.setFitWidth(12);
+		stopIV.setSmooth(true);
+
+		runSimulatorButton.setGraphic(playIV);
+
 		runSimulatorButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -868,6 +897,7 @@ public class IntelliJPluginGUIManager {
 						@Override
 						public void run() {
 							runSimulatorButton.setText("Run Simulator");
+							runSimulatorButton.setGraphic(playIV);
 						}
 					});
 				}
@@ -879,6 +909,7 @@ public class IntelliJPluginGUIManager {
 						@Override
 						public void run() {
 							runSimulatorButton.setText("Stop Simulator");
+							runSimulatorButton.setGraphic(stopIV);
 						}
 					});
 				}
@@ -1072,6 +1103,13 @@ public class IntelliJPluginGUIManager {
 		Button reset_button = new Button("Reset all");
 		reset_button.setTooltip(new Tooltip("Reset all devices"));
 
+		Image resetImage = new Image(getClass().getResourceAsStream("/icons/reset.png"));
+		ImageView resetIV =new ImageView(resetImage);
+		resetIV.setFitHeight(12);
+		resetIV.setFitWidth(12);
+		resetIV.setSmooth(true);
+		reset_button.setGraphic(resetIV);
+
 		reset_button.setOnMouseClicked(event -> {
 			ControllerEngine.getInstance().getDeviceConnection().deviceReset();
 
@@ -1082,6 +1120,13 @@ public class IntelliJPluginGUIManager {
 		Button ping_all_button = new Button("Ping all");
 		ping_all_button.setTooltip(new Tooltip("Synchronised Ping all devices"));
 
+		Image pingImage = new Image(getClass().getResourceAsStream("/icons/ping.png"));
+		ImageView pingIV =new ImageView(pingImage);
+		pingIV.setFitHeight(13);
+		pingIV.setFitWidth(13);
+		pingIV.setSmooth(true);
+		ping_all_button.setGraphic(pingIV);
+
 		ping_all_button.setOnMouseClicked(event -> {
 			ControllerEngine.getInstance().getDeviceConnection().synchonisedPingAll(500);
 
@@ -1089,6 +1134,13 @@ public class IntelliJPluginGUIManager {
 
 		Button send_all_button = new Button("Send all");
 		send_all_button.setTooltip(new Tooltip("Send sketch to all devices all devices"));
+
+		Image sendImage = new Image(getClass().getResourceAsStream("/icons/send.png"));
+		ImageView sendIV =new ImageView(sendImage);
+		sendIV.setFitHeight(14);
+		sendIV.setFitWidth(14);
+		sendIV.setSmooth(true);
+		send_all_button.setGraphic(sendIV);
 
 		send_all_button.setOnMouseClicked(event -> {
 			try {
@@ -1196,9 +1248,6 @@ public class IntelliJPluginGUIManager {
 
 		return deviceListView;
 	}
-
-
-
 
 	private void showPopup(String message, Node element, int timeout, MouseEvent event) {
 		showPopup(message, element, timeout, event.getScreenX(), event.getScreenY());

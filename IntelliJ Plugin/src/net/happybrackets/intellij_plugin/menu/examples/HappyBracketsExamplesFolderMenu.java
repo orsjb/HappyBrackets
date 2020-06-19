@@ -31,7 +31,9 @@ public class HappyBracketsExamplesFolderMenu extends DefaultActionGroup {
     @Override
     public void update(AnActionEvent e) {
         try {
-            e.getPresentation().setText(virtualFolder.getName());
+            String menu_name = virtualFolder.getName();
+            menu_name = menu_name.substring(0, 1).toUpperCase() + menu_name.substring(1);
+            e.getPresentation().setText(menu_name);
             e.getPresentation().setDescription("HappyBrackets example compositions");
 
             if (!menuLoaded) {
