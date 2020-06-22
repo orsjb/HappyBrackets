@@ -203,22 +203,18 @@ public class IntelliJPluginGUIManager {
 
 	public Scene setupGUI() {
 		//core elements
-		TitledPane device_pane = new TitledPane("Devices", makeDevicePane());
+		final String DEVICES_TEXT = "Devices";
+		final String DEVICE_FAVOURITES = DEVICES_TEXT + " (favourites only)";
+		DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+
+		TitledPane device_pane = new TitledPane(connection.isShowOnlyFavourites()? DEVICE_FAVOURITES: DEVICES_TEXT, makeDevicePane());
 		ControllerEngine.getInstance().getDeviceConnection().
 				addFavouritesChangedListener(enabled -> {
-					if(enabled) {
-						Platform.runLater(new Runnable() {
-							@Override public void run() {
-								device_pane.textProperty().setValue("Devices (favourites only)");
-							}
-						});
-					} else {
-						Platform.runLater(new Runnable() {
-							@Override public void run() {
-								device_pane.textProperty().setValue("Devices");
-							}
-						});
-					}
+					Platform.runLater(new Runnable() {
+						@Override public void run() {
+							device_pane.textProperty().setValue(enabled? DEVICE_FAVOURITES: DEVICES_TEXT);
+						}
+					});
 				});
 		//TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
 		//TitledPane known_devices_pane = new TitledPane("Known Devices", makeConfigurationPane(1));
