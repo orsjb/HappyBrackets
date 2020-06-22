@@ -1172,7 +1172,7 @@ public class HB {
 								action = incomingClass.newInstance();
 								muteAudio(false);
 
-								// Makwe sure we call befor action so we can use it in our action
+								// Make sure we call before action so we can use it in our action
 								classSenders.put(action, incomingAddress);
 
 								action.action(HB.this);
@@ -1183,6 +1183,8 @@ public class HB {
 								synchronized (loadedHBClasses) {
 									loadedHBClasses.add(action);
 								}
+
+
 
 							} catch (Exception e) {
 								logger.error("Error instantiating received HBAction!", e);
@@ -1735,7 +1737,7 @@ public class HB {
 				listener.classLoadedMessage(incomingClass);
 			}
 		}
-
+		
 	}
 	/**
 	 * Returns the current status @{@link String} of the device.
