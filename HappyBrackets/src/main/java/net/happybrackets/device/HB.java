@@ -1737,7 +1737,7 @@ public class HB {
 				listener.classLoadedMessage(incomingClass);
 			}
 		}
-		
+
 	}
 	/**
 	 * Returns the current status @{@link String} of the device.
