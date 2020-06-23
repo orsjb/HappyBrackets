@@ -373,9 +373,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="delayline" value="$COMMENT$ &#10;            net.happybrackets.core.scheduling.Delay $CONTROL_NAME$ = new net.happybrackets.core.scheduling.Delay($HOLD_TIME$, $PARAM$, (delay_offset, param) -&gt; {&#10;                // delay_offset is how far out we were from our exact delay time in ms and is a double&#10;                // param is the parameter we passed in type your code below this line&#10;                $END$&#10;                // type your code above this line&#10;            });" description="" toReformat="true" toShortenFQNames="true">
+  <template name="delayline" value="$COMMENT$ &#10;             new net.happybrackets.core.scheduling.Delay($HOLD_TIME$, $PARAM$, (delay_offset, param) -&gt; {&#10;                // delay_offset is how far out we were from our exact delay time in ms and is a double&#10;                // param is the parameter we passed in type your code below this line&#10;                $END$&#10;                // type your code above this line&#10;            });" description="" toReformat="true" toShortenFQNames="true">
     <variable name="COMMENT" expression="" defaultValue="&quot;// type delayline to create this code&quot;" alwaysStopAt="true" />
-    <variable name="CONTROL_NAME" expression="suggestVariableName()" defaultValue="&quot;delay&quot;" alwaysStopAt="true" />
     <variable name="HOLD_TIME" expression="variableOfType(Type)" defaultValue="&quot;500.0&quot;" alwaysStopAt="true" />
     <variable name="PARAM" expression="variableOfType(Type)" defaultValue="&quot;null&quot;" alwaysStopAt="true" />
     <context>

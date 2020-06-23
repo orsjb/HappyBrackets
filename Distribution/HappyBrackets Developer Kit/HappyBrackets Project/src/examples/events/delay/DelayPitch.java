@@ -44,7 +44,7 @@ public class DelayPitch implements HBAction, HBReset {
 
 
             // type delayline to create this code 
-            Delay delay = new Delay(HOLD_TIME, waveModule, (delay_offset, param) -> {
+            new Delay(HOLD_TIME, waveModule, (delay_offset, param) -> {
                 // delay_offset is how far out we were from our exact delay time in ms and is a double
                 // param is the parameter we passed in type your code below this line
                 System.out.println("Delay offset by " + delay_offset + " ms");
