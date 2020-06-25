@@ -1165,6 +1165,10 @@ public class DynamicControl implements ScheduledEventListener {
 
             boolean control_scope_changed = false;
 
+            if (control.displayType != display_type)
+            {
+                changed = true;
+            }
             control.displayType = display_type;
 
             obj_val = convertValue(control.controlType, obj_val);
