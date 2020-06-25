@@ -2,94 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8ac14a86-6248-4999-beb1-94c7835de615" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/examples/controls/floatcontrol/ChangeControlTypes.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/examples/controls/integerControl/ChangeControlTypes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Device/HappyBrackets/HB.jar" beforeDir="false" afterPath="$PROJECT_DIR$/Device/HappyBrackets/HB.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/deprecated-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/deprecated-list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/index-all.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/BooleanControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/BooleanControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/BooleanControlSender.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/BooleanControlSender.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/ClassObjectControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/ClassObjectControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/ClassObjectControlSender.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/ClassObjectControlSender.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/DynamicControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/DynamicControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatBuddyControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatBuddyControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatControlSender.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatControlSender.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatSliderControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatSliderControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatTextControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/FloatTextControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerBuddyControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerBuddyControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerControlSender.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerControlSender.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerSliderControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerSliderControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerTextControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/IntegerTextControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/TextControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/TextControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/TextControlSender.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/TextControlSender.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/TriggerControl.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/TriggerControl.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/TriggerControlSender.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/TriggerControlSender.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/package-summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/sensors/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/sensors/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalCustomExample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalCustomExample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalReceiveAccelerometer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalReceiveAccelerometer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalSendAccelerometer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalSendAccelerometer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControlSample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/events/scheduled/AdjustSynchroniser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/scheduled/AdjustSynchroniser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/events/scheduled/FollowFloats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/scheduled/FollowFloats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/events/scheduled/FollowInts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/scheduled/FollowInts.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/multiple/SampleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/multiple/SampleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/osc/OSCReceiveValues.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/osc/OSCReceiveValues.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/osc/OSCSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/osc/OSCSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/pythonscript/RunProcessAndArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/pythonscript/RunProcessAndArguments.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/sensor/gyroscope/MonitorGyroscope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/sensor/gyroscope/MonitorGyroscope.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/threads/CreatedThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/threads/CreatedThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HappyBrackets_IntelliJ_Plugin.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../HappyBrackets_IntelliJ_Plugin.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/BooleanControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/BooleanControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/BooleanControlSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/BooleanControlSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/ClassObjectControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/ClassObjectControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/ClassObjectControlSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/ClassObjectControlSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/DynamicControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/DynamicControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatBuddyControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatBuddyControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatControlSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatControlSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatSliderControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatSliderControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatTextControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/FloatTextControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerBuddyControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerBuddyControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerControlSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerControlSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerSliderControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerSliderControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerTextControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/IntegerTextControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/TextControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/TextControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/TextControlSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/TextControlSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/TriggerControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/TriggerControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/TriggerControlSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/control/TriggerControlSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/device/sensors/gpio/GPIOPWMSimulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/device/sensors/gpio/GPIOPWMSimulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/core/control/ControlFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/core/control/ControlFunctions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/core/control/TestClassObjectControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/core/control/TestClassObjectControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/core/control/TestFloatControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/core/control/TestFloatControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/develop/DynamicControls/TestFloatBuddy.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/develop/DynamicControls/TestFloatBuddy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/develop/DynamicControls/TestFloatControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/develop/DynamicControls/TestFloatControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/develop/DynamicControls/TestIntControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/develop/DynamicControls/TestIntControl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/documentation/ControlScopeExample.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/documentation/ControlScopeExample.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HB.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HB.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HappyBracketsProject.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HappyBracketsProject.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/JavaDocs.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/JavaDocs.zip" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/build/production/HappyBrackets Project/" />
     <ignored path="$PROJECT_DIR$/build/test/HappyBrackets Project/" />
@@ -111,37 +26,40 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/AdjustSynchroniser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-100">
-              <caret line="37" column="58" lean-forward="true" selection-start-line="37" selection-start-column="58" selection-end-line="37" selection-end-column="58" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-340">
-              <caret line="67" column="101" selection-start-line="67" selection-start-column="101" selection-end-line="67" selection-end-column="101" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-9">
+            <state relative-caret-position="15">
               <caret line="27" column="55" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java">
+        <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/ChangeControlTypes.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="97" column="40" selection-start-line="97" selection-start-column="40" selection-end-line="97" selection-end-column="40" />
+            <state relative-caret-position="240">
+              <caret line="24" column="48" selection-start-line="24" selection-start-column="48" selection-end-line="24" selection-end-column="48" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/ChangeControlTypes.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="22" column="21" lean-forward="true" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="385">
+              <caret line="42" selection-start-line="42" selection-end-line="47" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -149,7 +67,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-70">
+            <state relative-caret-position="645">
               <caret line="47" column="85" selection-start-line="47" selection-start-column="85" selection-end-line="47" selection-end-column="85" />
             </state>
           </provider>
@@ -158,7 +76,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-255">
+            <state relative-caret-position="345">
               <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
             </state>
           </provider>
@@ -197,7 +115,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
+            <state relative-caret-position="435">
               <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -271,8 +189,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/basic/GainEnvelope.java" />
-        <option value="$PROJECT_DIR$/src/examples/samples/SampleChangeSpeed.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/LoopedSamplePlayer.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java" />
         <option value="$PROJECT_DIR$/src/examples/samples/CirclePitchShift.java" />
@@ -322,6 +238,8 @@
         <option value="$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/ChangeControlTypes.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/ChangeControlTypes.java" />
       </list>
     </option>
   </component>
@@ -412,7 +330,15 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="examples" type="462c0819:PsiDirectoryNode" />
               <item name="controls" type="462c0819:PsiDirectoryNode" />
-              <item name="booleancontrol" type="462c0819:PsiDirectoryNode" />
+              <item name="floatcontrol" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+              <item name="integerControl" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
@@ -471,7 +397,7 @@
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="happybrackets_project" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1588197917029" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1593066008450" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
@@ -480,21 +406,21 @@
     <property name="settings.editor.selected.configurable" value="editing.templates" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/examples" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="examples.controls.globalcontrol" />
-      <recent name="examples.pihat" />
-      <recent name="examples.gpio" />
-      <recent name="examples.midi.scales" />
-      <recent name="examples.pythonscript" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/examples/midi/synth" />
       <recent name="$PROJECT_DIR$/src/examples/pihat" />
       <recent name="$PROJECT_DIR$/Device/HappyBrackets/scripts" />
       <recent name="$PROJECT_DIR$/data" />
+      <recent name="$PROJECT_DIR$/src/examples" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="examples.controls.integerControl" />
+      <recent name="examples.controls.globalcontrol" />
+      <recent name="examples.pihat" />
+      <recent name="examples.gpio" />
+      <recent name="examples.midi.scales" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/examples" />
     </key>
   </component>
@@ -645,9 +571,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="838" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3104435" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3190272" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -673,7 +598,7 @@
       <window_info anchor="right" id="Palette&#9;" order="4" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
       <window_info anchor="right" id="Maven Projects" order="6" weight="0.24878837" />
-      <window_info anchor="right" id="HappyBrackets" order="7" sideWeight="0.49678457" visible="true" weight="0.31330472" />
+      <window_info active="true" anchor="right" id="HappyBrackets" order="7" sideWeight="0.49678457" visible="true" weight="0.3118741" />
       <window_info anchor="right" id="Theme Preview" order="8" />
       <window_info anchor="right" id="Coverage" order="9" sideWeight="0.503937" side_tool="true" weight="0.20553781" />
       <window_info anchor="right" x="0" y="0" width="310" height="637" id="Documentation" order="10" sideWeight="0.50321543" side_tool="true" visible="true" weight="0.14583333" />
@@ -769,20 +694,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="30" column="59" selection-start-line="30" selection-start-column="59" selection-end-line="30" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="664">
-          <caret line="60" column="95" selection-start-line="60" selection-start-column="95" selection-end-line="60" selection-end-column="95" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -964,30 +875,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="51" selection-start-line="28" selection-start-column="51" selection-end-line="28" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCReceiveValues.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
           <caret line="27" column="52" selection-start-line="27" selection-start-column="52" selection-end-line="27" selection-end-column="52" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="930">
-          <caret line="62" column="90" selection-start-line="62" selection-start-column="90" selection-end-line="62" selection-end-column="90" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1052,6 +943,51 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/AdjustSynchroniser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="37" column="58" selection-start-line="37" selection-start-column="58" selection-end-line="37" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="28" column="51" selection-start-line="28" selection-start-column="51" selection-end-line="28" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="151">
+          <caret line="97" column="40" selection-start-line="97" selection-start-column="40" selection-end-line="97" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="870">
+          <caret line="67" column="101" selection-start-line="67" selection-start-column="101" selection-end-line="67" selection-end-column="101" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="47" column="85" selection-start-line="47" selection-start-column="85" selection-end-line="47" selection-end-column="85" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowInts.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="660">
@@ -1078,7 +1014,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
+        <state relative-caret-position="435">
           <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1086,45 +1022,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-70">
-          <caret line="47" column="85" selection-start-line="47" selection-start-column="85" selection-end-line="47" selection-end-column="85" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-255">
-          <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/AdjustSynchroniser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-100">
-          <caret line="37" column="58" lean-forward="true" selection-start-line="37" selection-start-column="58" selection-end-line="37" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-340">
-          <caret line="67" column="101" selection-start-line="67" selection-start-column="101" selection-end-line="67" selection-end-column="101" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9">
+        <state relative-caret-position="15">
           <caret line="27" column="55" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="97" column="40" selection-start-line="97" selection-start-column="40" selection-end-line="97" selection-end-column="40" />
+        <state relative-caret-position="385">
+          <caret line="42" selection-start-line="42" selection-end-line="47" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/ChangeControlTypes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="22" column="21" lean-forward="true" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/ChangeControlTypes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="24" column="48" selection-start-line="24" selection-start-column="48" selection-end-line="24" selection-end-column="48" />
         </state>
       </provider>
     </entry>
