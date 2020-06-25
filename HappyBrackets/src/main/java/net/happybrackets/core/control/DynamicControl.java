@@ -247,7 +247,10 @@ public class DynamicControl implements ScheduledEventListener {
         MAP_KEY,
         OBJ_VAL,
         CONTROL_SCOPE,
-        DISPLAY_TYPE_VAL
+        DISPLAY_TYPE_VAL,
+        MIN_VALUE,
+        MAX_VALUE
+
     }
 
 
@@ -1134,16 +1137,29 @@ public class DynamicControl implements ScheduledEventListener {
 
         DISPLAY_TYPE display_type = DISPLAY_TYPE.DISPLAY_DEFAULT;
 
-        if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal())
-        {
-            int osc_val = (int) msg.getArg(UPDATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal());
-            display_type = DISPLAY_TYPE.values ()[osc_val];
-        }
-
-
         DynamicControl control = getControl(map_key);
+
+
         if (control != null)
         {
+            Object display_min = control.getMinimumDisplayValue();
+            Object display_max = control.getMaximumDisplayValue();
+
+            if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal())
+            {
+                int osc_val = (int) msg.getArg(UPDATE_MESSAGE_ARGS.DISPLAY_TYPE_VAL.ordinal());
+                display_type = DISPLAY_TYPE.values ()[osc_val];
+            }
+
+            if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.MAX_VALUE.ordinal()){
+                display_max =  msg.getArg(UPDATE_MESSAGE_ARGS.MAX_VALUE.ordinal());
+            }
+
+            if (msg.getArgCount() > UPDATE_MESSAGE_ARGS.MIN_VALUE.ordinal()){
+                display_min =  msg.getArg(UPDATE_MESSAGE_ARGS.MIN_VALUE.ordinal());
+            }
+
+
             // do not use setters as we only want to generate one notifyLocalListeners
             boolean changed = false;
 
@@ -1153,7 +1169,14 @@ public class DynamicControl implements ScheduledEventListener {
 
             obj_val = convertValue(control.controlType, obj_val);
 
-            if (!obj_val.equals(control.objVal)) {
+            display_max = convertValue(control.controlType, display_max);
+
+            display_min = convertValue(control.controlType, display_min);
+
+            if (!obj_val.equals(control.objVal) ||
+                    !display_max.equals(control.maximumDisplayValue) ||
+                    !display_min.equals(control.minimumDisplayValue)
+            ) {
                 changed = true;
             }
 
@@ -1165,6 +1188,9 @@ public class DynamicControl implements ScheduledEventListener {
             }
 
             if (changed) {
+                control.maximumDisplayValue = display_max;
+                control.minimumDisplayValue = display_min;
+
                 control.scheduleValue(null, obj_val, 0, true);
 
                 if (control.getControlScope() != ControlScope.UNIQUE){
@@ -1172,6 +1198,7 @@ public class DynamicControl implements ScheduledEventListener {
                     control.objVal = obj_val;
                     control.notifyGlobalListeners();
                 }
+
 
             }
             if (control_scope_changed)
@@ -1235,7 +1262,9 @@ public class DynamicControl implements ScheduledEventListener {
                         controlMapKey,
                         OSCArgumentObject(sendObjType),
                         controlScope.ordinal(),
-                        displayType.ordinal()
+                        displayType.ordinal(),
+                        OSCArgumentObject(minimumDisplayValue),
+                        OSCArgumentObject(maximumDisplayValue),
                 });
 
     }

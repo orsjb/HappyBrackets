@@ -10,15 +10,15 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import net.happybrackets.intellij_plugin.controller.gui.device.PingMenu;
-import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.core.control.ControlMap;
-import net.happybrackets.core.control.ControlScope;
 import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.intellij_plugin.controller.gui.device.PingMenu;
+import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 
 import java.util.*;
 
@@ -387,6 +387,503 @@ public class DynamicControlScreen {
         });
     }
 
+
+    /**
+     * Add a Trigger control to control Group
+     * @param control
+     * @return A encapsulated control group with Label, Control, and buddy if required
+     */
+    private ControlCellGroup addTriggerControl(DynamicControl control){
+        Button button = new Button();
+        Label control_label = new Label(control.getControlName());
+        boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+        control.setTooltipPrefix("Press button to generate a trigger event for this control");
+        button.setTooltip(new Tooltip(control.getTooltipText()));
+        button.setText("Send");
+        button.setDisable(disable);
+
+        ControlCellGroup control_group = new ControlCellGroup(control_label, button);
+
+        dynamicControlGridPane.add(control_group.labelNode, 0, nextControlRow);
+        dynamicControlGridPane.add(control_group.controlNode, 1, nextControlRow++);
+
+        button.setOnAction(e -> {
+            // This is a number so we have a stop condition
+            control.setValue(System.currentTimeMillis());
+        });
+
+        control_group.scopeChangedListener = new_scope -> Platform.runLater(() -> button.setTooltip(new Tooltip(control.getTooltipText())));
+
+        control_group.listener = control1 -> Platform.runLater(() -> button.setDisable(control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED));
+
+        return control_group;
+    }
+
+
+    /**
+     * Add a addBooleanControl control to control Group
+     * @param control the DynamicControl
+     * @return A encapsulated control group with Label, Control, and buddy if required
+     */
+    private ControlCellGroup addBooleanControl(DynamicControl control){
+        CheckBox checkBox = new CheckBox();
+        Label control_label = new Label(control.getControlName());
+        boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+
+        control.setTooltipPrefix("Change the check state to generate an event for this control");
+        checkBox.setTooltip(new Tooltip(control.getTooltipText()));
+        boolean b_val = (boolean) control.getValue();
+        checkBox.setSelected(b_val);
+        checkBox.setDisable(disable);
+
+        ControlCellGroup control_group = new ControlCellGroup(control_label, checkBox);
+
+        dynamicControlGridPane.add(control_group.labelNode, 0, nextControlRow);
+        dynamicControlGridPane.add(control_group.controlNode, 1, nextControlRow++);
+
+        checkBox.selectedProperty().addListener((ov, oldval, newval) -> {
+            if (oldval != newval) {
+                control.setValue(newval);
+                //localDevice.sendDynamicControl(control);
+            }
+        });
+
+        control_group.listener = control1 -> Platform.runLater(new Runnable() {
+            public void run() {
+                if (!checkBox.isFocused()) {
+                    boolean b_val1 = (boolean) control1.getValue();
+                    checkBox.setSelected(b_val1);
+                }
+                boolean disable1 = control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                        || control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+                checkBox.setDisable(disable1);
+            }
+        });
+
+        control_group.scopeChangedListener = new_scope -> Platform.runLater(new Runnable() {
+            public void run() {
+                checkBox.setTooltip(new Tooltip(control.getTooltipText()));
+            }
+        });
+
+        return control_group;
+    }
+
+    /**
+     * Add an Object Control control to control Group
+     * @param control the DynamicControl
+     * @return A encapsulated control group with Label, Control, and buddy if required
+     */
+    private ControlCellGroup addObjectControl(DynamicControl control){
+        TextField textField = new TextField();
+        Label control_label = new Label(control.getControlName());
+
+        control.setTooltipPrefix("Object Message. Read only");
+        textField.setTooltip(new Tooltip(control.getTooltipText()));
+        textField.setDisable(true);
+        textField.setText(control.getValue().toString());
+
+        ControlCellGroup control_group = new ControlCellGroup(control_label, textField);
+
+        dynamicControlGridPane.add(control_group.labelNode, 0, nextControlRow);
+        dynamicControlGridPane.add(control_group.controlNode, 1, nextControlRow++);
+
+        control_group.listener = control1 -> Platform.runLater(new Runnable() {
+            public void run() {
+                textField.setText(control1.getValue().toString());
+            }
+        });
+
+        control_group.scopeChangedListener = new_scope -> Platform.runLater(new Runnable() {
+            public void run() {
+                textField.setTooltip(new Tooltip(control.getTooltipText()));
+            }
+        });
+
+
+        return control_group;
+    }
+
+    /**
+     * Add an Text Control control to control Group
+     * @param control the DynamicControl
+     * @return A encapsulated control group with Label, Control, and buddy if required
+     */
+    private ControlCellGroup addTextControl(DynamicControl control){
+        TextField textField = new TextField();
+        Label control_label = new Label(control.getControlName());
+        boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+        control.setTooltipPrefix("Type in text and press enter to generate an event for this control");
+        textField.setTooltip(new Tooltip(control.getTooltipText()));
+        textField.setDisable(disable);
+        textField.setText((String) control.getValue());
+
+        ControlCellGroup control_group = new ControlCellGroup(control_label, textField);
+        dynamicControlGridPane.add(control_group.labelNode, 0, nextControlRow);
+        dynamicControlGridPane.add(control_group.controlNode, 1, nextControlRow++);
+
+        textField.setOnKeyTyped(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                String text_val = textField.getText();
+                control.setValue(text_val);
+                ///localDevice.sendDynamicControl(control);
+            }
+        });
+
+        // set handlers
+        textField.setOnAction(actionEvent -> {
+            String text_val = textField.getText();
+            control.setValue(text_val);
+            //localDevice.sendDynamicControl(control);
+        });
+
+        control_group.listener = control1 -> Platform.runLater(new Runnable() {
+            public void run() {
+                textField.setText((String) control1.getValue());
+                boolean disable1 = control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                        || control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+                textField.setDisable(disable1);
+            }
+        });
+
+        control_group.scopeChangedListener = new_scope -> Platform.runLater(new Runnable() {
+            public void run() {
+                textField.setTooltip(new Tooltip(control.getTooltipText()));
+            }
+        });
+
+        return control_group;
+    }
+
+
+    /**
+     * Add a Integer control to control Group
+     * @param control
+     * @return A encapsulated control group with Label, Control, and buddy if required
+     */
+    private ControlCellGroup addIntegerControl(DynamicControl control){
+        ControlCellGroup control_group = null;
+
+        int control_value = (int) control.getValue();
+        boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+        boolean display_buddy = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY ||
+                control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+        TextField buddyTextControl = null; // this will operate as a text buddy control
+
+        // If we have no difference between Maximum and Minimum, we will make a textbox
+        boolean show_text = display_buddy || control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue());
+        boolean show_slider = display_buddy || !show_text;
+
+        Label control_label = new Label(control.getControlName());
+
+        dynamicControlGridPane.add(control_label, 0, nextControlRow);
+
+        if (show_text) {
+            TextField textField = new TextField();
+            buddyTextControl = textField;
+
+            control.setTooltipPrefix("Type in an integer value and press enter to generate an event for this control");
+
+            textField.setTooltip(new Tooltip(control.getTooltipText()));
+
+            textField.setText(Integer.toString(control_value));
+            textField.setDisable(disable);
+
+            control_group = new ControlCellGroup(control_label, textField);
+
+
+            dynamicControlGridPane.add(control_group.controlNode, 1, nextControlRow++);
+
+
+            textField.setOnKeyTyped(event -> {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    String text_val = textField.getText();
+                    try {
+                        int control_value1 = Integer.valueOf(text_val);
+
+                        control.setValue(control_value1);
+                    }
+                    catch (Exception ex){
+                        // we might want to put an exception here
+                    }
+                }
+            });
+
+            // set handlers
+            textField.setOnAction(actionEvent -> {
+                String text_val = textField.getText();
+                try {
+                    int control_value12 = Integer.valueOf(text_val);
+
+                    control.setValue(control_value12);
+                }
+                catch (Exception ex){
+                    // we might want to put an exception here
+                }
+            });
+
+            control_group.listener = control1 -> Platform.runLater(() -> {
+                boolean disable1 = control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                        || control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+                textField.setText(Integer.toString((int) control1.getValue()));
+                textField.setDisable(disable1);
+
+            });
+
+            control_group.scopeChangedListener = new_scope -> Platform.runLater(new Runnable() {
+                public void run() {
+                    textField.setTooltip(new Tooltip(control.getTooltipText()));
+                }
+            });
+
+        }
+
+        if (show_slider) {
+            // we need to make a copy so we can add to events
+            final TextField finalBuddyTextControl = buddyTextControl;
+
+            Slider slider = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
+            control.setTooltipPrefix("Change the slider value to generate an event for this control");
+            slider.setTooltip(new Tooltip(control.getTooltipText()));
+            slider.setDisable(disable);
+            slider.setOrientation(Orientation.HORIZONTAL);
+
+
+            if (control_group == null) { // it may not be null if we created out text
+                control_group = new ControlCellGroup(control_label, slider);
+            }
+            else {
+                control_group.setBuddyNode(slider);
+                slider.valueProperty().addListener((obs, oldval, newval) -> {
+                    if (slider.isFocused()) {
+                        if (oldval != newval) {
+                            if (finalBuddyTextControl != null) {
+                                finalBuddyTextControl.setText(Integer.toString(newval.intValue()));
+                            }
+                        }
+                    }
+                });
+            }
+            dynamicControlGridPane.add(slider, 1, nextControlRow++);
+
+
+            slider.valueProperty().addListener((obs, oldval, newval) -> {
+                if (slider.isFocused()) {
+                    if (oldval != newval) {
+                        control.setValue(newval.intValue());
+                        if (finalBuddyTextControl != null) {
+                            finalBuddyTextControl.setText(Integer.toString(newval.intValue()));
+                        }
+                    }
+                }
+            });
+
+            control_group.listener = control12 -> Platform.runLater(() -> {
+
+                if (!slider.isFocused()) {
+                    slider.setValue((int) control12.getValue());
+                    if (finalBuddyTextControl != null) {
+                        finalBuddyTextControl.setText(Integer.toString((int) control12.getValue()));
+                    }
+                }
+                boolean disable12 = control12.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                        || control12.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+                slider.setDisable(disable12);
+                if (finalBuddyTextControl != null) {
+                    finalBuddyTextControl.setDisable(disable12);
+                }
+            });
+
+            control_group.scopeChangedListener = new_scope -> Platform.runLater(() -> {
+                slider.setTooltip(new Tooltip(control.getTooltipText()));
+                if (finalBuddyTextControl != null) {
+                    finalBuddyTextControl.setTooltip(new Tooltip(control.getTooltipText()));
+                }
+            });
+        }
+
+        return control_group;
+
+    }
+
+    /**
+     * Add an Float Control control to control Group
+     * @param control the DynamicControl
+     * @return A encapsulated control group with Label, Control, and buddy if required
+     */
+    private ControlCellGroup addFloatControl(DynamicControl control){
+        double f_control_value = (double) control.getValue();
+        ControlCellGroup control_group = null;
+
+        boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+        boolean display_buddy = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY ||
+                control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+        // If we have no difference between Maximum and Minimum, we will make a textboox
+        boolean show_float_text = display_buddy || control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue());
+        boolean show_float_slider = display_buddy || !show_float_text;
+        Label control_label = new Label(control.getControlName());
+
+        dynamicControlGridPane.add(control_label, 0, nextControlRow);
+
+        TextField buddyTextControl = null; // this will operate as a text buddy control
+
+        // If we have no difference between Maximum and Minimum, we will make a textbox
+        if (show_float_text) {
+            TextField textField = new TextField();
+            buddyTextControl = textField;
+            control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
+            textField.setTooltip(new Tooltip(control.getTooltipText()));
+            textField.setDisable(disable);
+            textField.setText(Double.toString(f_control_value));
+
+            control_group = new ControlCellGroup(control_label, textField);
+            dynamicControlGridPane.add(control_group.controlNode, 1, nextControlRow++);
+
+            textField.setOnKeyTyped(event -> {
+                KeyCode keyEvent = event.getCode();
+                String char_val = event.getCharacter();
+                if (event.getCode().equals(KeyCode.ENTER) || char_val.equalsIgnoreCase("\r")) {
+                    String text_val = textField.getText();
+                    try {
+                        double control_value = Double.valueOf(text_val);
+
+                        control.setValue(control_value);
+                    }
+                    catch (Exception ex){
+                        // we might want to put an exception here
+                    }
+                }
+            });
+
+            // set handlers
+            textField.setOnAction(actionEvent -> {
+                String text_val = textField.getText();
+                try {
+                    double control_value = Double.valueOf(text_val);
+
+                    control.setValue(control_value);
+                    //localDevice.sendDynamicControl(control);
+                }
+                catch (Exception ex){
+                    // we might want to put an exception here
+                }
+            });
+
+            control_group.listener = control1 -> Platform.runLater(new Runnable() {
+                public void run() {
+                    boolean disable1 = control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                            || control1.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+
+                    textField.setText(Double.toString((double) control1.getValue()));
+                    textField.setDisable(disable1);
+                }
+            });
+
+
+            control_group.scopeChangedListener = new_scope -> Platform.runLater(new Runnable() {
+                public void run() {
+                    textField.setTooltip(new Tooltip(control.getTooltipText()));
+
+                }
+            });
+        }
+
+        if (show_float_slider) {
+            // we have this one as a buddy. We will check for null throughout
+            final TextField finalBuddyTextControl = buddyTextControl;
+
+            Slider slider = new Slider((double) control.getMinimumDisplayValue(), (double) control.getMaximumDisplayValue(), (double) control.getValue());
+            //f.setMaxWidth(100);
+            control.setTooltipPrefix("Change the slider value to generate an event for this control");
+            slider.setTooltip(new Tooltip(control.getTooltipText()));
+            slider.setOrientation(Orientation.HORIZONTAL);
+            slider.setDisable(disable);
+
+
+            // we need to see if we are adding a buddy or not
+            if (control_group == null) {
+                control_group = new ControlCellGroup(control_label, slider);
+            }
+            else
+            {
+                control_group.setBuddyNode(slider);
+                // we need to add a listener to update text box
+                slider.valueProperty().addListener((obs, oldval, newval) -> {
+                    if (slider.isFocused()) {
+                        if (oldval != newval) {
+                            if (finalBuddyTextControl != null) {
+                                finalBuddyTextControl.setText(Double.toString(newval.doubleValue()));
+                            }
+                        }
+                    }
+                });
+            }
+            dynamicControlGridPane.add(slider, 1, nextControlRow++);
+
+            // we need to create this final one for events blow
+
+
+            slider.valueProperty().addListener((obs, oldval, newval) -> {
+
+                if (slider.isFocused()) {
+                    if (oldval != newval) {
+                        control.setValue(newval.doubleValue());
+                        //localDevice.sendDynamicControl(control);
+                    }
+                }
+                boolean disable12 = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
+                        || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
+                slider.setDisable(disable12);
+                if (finalBuddyTextControl != null){
+                    finalBuddyTextControl.setDisable(disable12);
+                }
+            });
+
+
+            control_group.listener = control12 -> Platform.runLater(new Runnable() {
+                public void run() {
+
+                    if (!slider.isFocused()) {
+
+                        slider.setValue((double) control12.getValue());
+
+                        // We also need to set value of buddy if we have one
+                        if (finalBuddyTextControl != null){
+                            finalBuddyTextControl.setText(Double.toString((double) control12.getValue()));
+                        }
+                    }
+                }
+            });
+
+            control_group.scopeChangedListener = new_scope -> Platform.runLater(new Runnable() {
+                public void run() {
+                    slider.setTooltip(new Tooltip(control.getTooltipText()));
+                    // We also need to set value of buddy if we have one
+                    if (finalBuddyTextControl != null){
+                        finalBuddyTextControl.setTooltip(new Tooltip(control.getTooltipText()));
+                    }
+                }
+            });
+        }
+
+        return control_group;
+    }
+
     /**
      * Adds a control to the display window. Must be called in context of main thread
      * @param control the control to add
@@ -397,76 +894,18 @@ public class DynamicControlScreen {
         if (control_group == null) {
 
             // fist add a listeners to notify us of when this control gets removed
-            ControlMap.getInstance().addDynamicControlRemovedListener(new ControlMap.dynamicControlRemovedListener() {
-                @Override
-                public void controlRemoved(DynamicControl control) {
-                    removeDynamicControl(control);
-                }
-            });
-
-            Label control_label = new Label(control.getControlName());
-
-            dynamicControlGridPane.add(control_label, 0, nextControlRow);
-
+            ControlMap.getInstance().addDynamicControlRemovedListener(control1 -> removeDynamicControl(control1));
 
             ControlType control_type = control.getControlType();
-            boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
-                    || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
 
             boolean hidden = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_HIDDEN;
-
-            boolean display_buddy = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY ||
-                    control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
-
-            TextField buddyTextControl = null; // this will operate as a text buddy control
 
             switch (control_type) {
                 case TRIGGER:
                     if (hidden){
                         break;
                     }
-                    Button b = new Button();
-
-                    control.setTooltipPrefix("Press button to generate a trigger event for this control");
-                    b.setTooltip(new Tooltip(control.getTooltipText()));
-                    b.setText("Send");
-                    b.setDisable(disable);
-                    dynamicControlGridPane.add(b, 1, nextControlRow++);
-                    control_group = new ControlCellGroup(control_label, b);
-                    dynamicControlsList.put(control.getControlMapKey(), control_group);
-                    b.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent e) {
-                            // This is a number so we have a stop condition
-                            control.setValue(System.currentTimeMillis());
-                        }
-                    });
-
-
-                    control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                        @Override
-                        public void controlScopeChanged(ControlScope new_scope) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    b.setTooltip(new Tooltip(control.getTooltipText()));
-                                }
-                            });
-
-                        }
-                    };
-
-                    control_group.listener = new DynamicControl.DynamicControlListener() {
-                        @Override
-                        public void update(DynamicControl control) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    b.setDisable(control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED);
-
-                                }
-                            });
-                        }
-                    };
-
+                    control_group = addTriggerControl(control);
                     break;
 
                 case INT:
@@ -474,232 +913,14 @@ public class DynamicControlScreen {
                         break;
                     }
 
-                    int control_value = (int) control.getValue();
-                    // If we have no difference between Maximum and Minimum, we will make a textboox
-                    boolean show_text = display_buddy || control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue());
-                    boolean show_slider = display_buddy || !show_text;
-
-
-
-                    if (show_text) {
-                        TextField t = new TextField();
-                        buddyTextControl = t;
-                        control.setTooltipPrefix("Type in an integer value and press enter to generate an event for this control");
-                        t.setTooltip(new Tooltip(control.getTooltipText()));
-                        //t.setMaxWidth(100);
-                        t.setText(Integer.toString(control_value));
-                        t.setDisable(disable);
-                        dynamicControlGridPane.add(t, 1, nextControlRow++);
-
-                        // we know that control goup is null. We need to check that if we are making a buddy in slider
-                        control_group = new ControlCellGroup(control_label, t);
-                        dynamicControlsList.put(control.getControlMapKey(), control_group);
-                        t.setOnKeyTyped(new EventHandler<KeyEvent>() {
-                            @Override
-                            public void handle(KeyEvent event) {
-                                if (event.getCode().equals(KeyCode.ENTER)) {
-                                    String text_val = t.getText();
-                                    try {
-                                        int control_value = Integer.valueOf(text_val);
-
-                                        control.setValue(control_value);
-                                    }
-                                    catch (Exception ex){
-                                        // we might want to put an exception here
-                                    }
-                                }
-                            }
-                        });
-
-                        // set handlers
-                        t.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent actionEvent) {
-                                String text_val = t.getText();
-                                try {
-                                    int control_value = Integer.valueOf(text_val);
-
-                                    control.setValue(control_value);
-                                }
-                                catch (Exception ex){
-                                    // we might want to put an exception here
-                                }
-                            }
-                        });
-
-                        control_group.listener = new DynamicControl.DynamicControlListener() {
-                            @Override
-                            public void update(DynamicControl control) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-                                        boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
-                                                || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
-
-                                        t.setText(Integer.toString((int) control.getValue()));
-                                        t.setDisable(disable);
-
-                                    }
-                                });
-                            }
-                        };
-
-                        control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                            @Override
-                            public void controlScopeChanged(ControlScope new_scope) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-                                        t.setTooltip(new Tooltip(control.getTooltipText()));
-                                    }
-                                });
-
-                            }
-                        };
-
-                    }
-
-                    if (show_slider) {
-                        // we need to make a copy so we can add to events
-                        final TextField finalBuddyTextControl = buddyTextControl;
-
-                        Slider s = new Slider((int) control.getMinimumDisplayValue(), (int) control.getMaximumDisplayValue(), (int) control.getValue());
-                        control.setTooltipPrefix("Change the slider value to generate an event for this control");
-                        s.setTooltip(new Tooltip(control.getTooltipText()));
-                        s.setDisable(disable);
-                        s.setOrientation(Orientation.HORIZONTAL);
-
-
-                        if (control_group == null) {
-                            control_group = new ControlCellGroup(control_label, s);
-                            dynamicControlsList.put(control.getControlMapKey(), control_group);
-                        }
-                        else {
-                            control_group.setBuddyNode(s);
-                            s.valueProperty().addListener(new ChangeListener<Number>() {
-                                @Override
-                                public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                    if (s.isFocused()) {
-                                        if (oldval != newval) {
-                                            if (finalBuddyTextControl != null) {
-                                                finalBuddyTextControl.setText(Integer.toString(newval.intValue()));
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                        dynamicControlGridPane.add(s, 1, nextControlRow++);
-
-
-
-                        s.valueProperty().addListener(new ChangeListener<Number>() {
-                            @Override
-                            public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                if (s.isFocused()) {
-                                    if (oldval != newval) {
-                                        control.setValue(newval.intValue());
-                                        if (finalBuddyTextControl != null) {
-                                            finalBuddyTextControl.setText(Integer.toString(newval.intValue()));
-                                        }
-                                    }
-                                }
-                            }
-                        });
-
-                        control_group.listener = new DynamicControl.DynamicControlListener() {
-                            @Override
-                            public void update(DynamicControl control) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-
-                                        if (!s.isFocused()) {
-                                            s.setValue((int) control.getValue());
-                                            if (finalBuddyTextControl != null) {
-                                                finalBuddyTextControl.setText(Integer.toString((int)control.getValue()));
-                                            }
-                                        }
-                                        boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
-                                                || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
-
-                                        s.setDisable(disable);
-                                        if (finalBuddyTextControl != null) {
-                                            finalBuddyTextControl.setDisable(disable);
-                                        }
-                                    }
-                                });
-                            }
-                        };
-
-                        control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                            @Override
-                            public void controlScopeChanged(ControlScope new_scope) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-                                        s.setTooltip(new Tooltip(control.getTooltipText()));
-                                        if (finalBuddyTextControl != null) {
-                                            finalBuddyTextControl.setTooltip(new Tooltip(control.getTooltipText()));
-                                        }
-                                    }
-                                });
-
-                            }
-                        };
-                    }
+                    control_group = addIntegerControl(control);
                     break;
 
                 case BOOLEAN:
                     if (hidden){
                         break;
                     }
-                    CheckBox c = new CheckBox();
-                    control.setTooltipPrefix("Change the check state to generate an event for this control");
-                    c.setTooltip(new Tooltip(control.getTooltipText()));
-                    boolean b_val = (boolean) control.getValue();
-                    c.setSelected(b_val);
-                    c.setDisable(disable);
-                    dynamicControlGridPane.add(c, 1, nextControlRow++);
-
-                    control_group = new ControlCellGroup(control_label, c);
-                    dynamicControlsList.put(control.getControlMapKey(), control_group);
-
-                    c.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                        public void changed(ObservableValue<? extends Boolean> ov,
-                                            Boolean oldval, Boolean newval) {
-                            if (oldval != newval) {
-                                control.setValue(newval);
-                                //localDevice.sendDynamicControl(control);
-                            }
-                        }
-                    });
-
-                    control_group.listener = new DynamicControl.DynamicControlListener() {
-                        @Override
-                        public void update(DynamicControl control) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    if (!c.isFocused()) {
-                                        boolean b_val = (boolean) control.getValue();
-                                        c.setSelected(b_val);
-                                    }
-                                    boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
-                                            || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
-
-                                    c.setDisable(disable);
-                                }
-                            });
-                        }
-                    };
-
-                    control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                        @Override
-                        public void controlScopeChanged(ControlScope new_scope) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    c.setTooltip(new Tooltip(control.getTooltipText()));
-                                }
-                            });
-
-                        }
-                    };
+                    control_group = addBooleanControl(control);
                     break;
 
                 case FLOAT:
@@ -707,280 +928,18 @@ public class DynamicControlScreen {
                         break;
                     }
 
-                    double f_control_value = (double) control.getValue();
-                    // If we have no difference between Maximum and Minimum, we will make a textboox
-                    boolean show_float_text = display_buddy || control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue());
-                    boolean show_float_slider = display_buddy || !show_float_text;
-
-
-                    // If we have no difference between Maximum and Minimum, we will make a textbox
-                    if (show_float_text) {
-                        TextField t = new TextField();
-                        buddyTextControl = t;
-                        control.setTooltipPrefix("Type in a float value and press enter to generate an event for this control");
-                        t.setTooltip(new Tooltip(control.getTooltipText()));
-                        t.setDisable(disable);
-                        t.setText(Double.toString(f_control_value));
-                        dynamicControlGridPane.add(t, 1, nextControlRow++);
-                        control_group = new ControlCellGroup(control_label, t);
-                        dynamicControlsList.put(control.getControlMapKey(), control_group);
-                        t.setOnKeyTyped(new EventHandler<KeyEvent>() {
-                            @Override
-                            public void handle(KeyEvent event) {
-                                KeyCode keyEvent = event.getCode();
-                                String char_val = event.getCharacter();
-                                if (event.getCode().equals(KeyCode.ENTER) || char_val.equalsIgnoreCase("\r")) {
-                                    String text_val = t.getText();
-                                    try {
-                                        double control_value = Double.valueOf(text_val);
-
-                                        control.setValue(control_value);
-                                        //localDevice.sendDynamicControl(control);
-                                    }
-                                    catch (Exception ex){
-                                        // we might want to put an exception here
-                                    }
-                                }
-                            }
-                        });
-
-                        // set handlers
-                        t.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent actionEvent) {
-                                String text_val = t.getText();
-                                try {
-                                    double control_value = Double.valueOf(text_val);
-
-                                    control.setValue(control_value);
-                                    //localDevice.sendDynamicControl(control);
-                                }
-                                catch (Exception ex){
-                                    // we might want to put an exception here
-                                }
-                            }
-                        });
-
-                        control_group.listener = new DynamicControl.DynamicControlListener() {
-                            @Override
-                            public void update(DynamicControl control) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-                                        boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
-                                                || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
-
-                                        t.setText(Double.toString((double) control.getValue()));
-                                        t.setDisable(disable);
-                                    }
-                                });
-                            }
-                        };
-
-
-                        control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                            @Override
-                            public void controlScopeChanged(ControlScope new_scope) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-                                        t.setTooltip(new Tooltip(control.getTooltipText()));
-
-                                    }
-                                });
-
-                            }
-                        };
-                    }
-
-                    if (show_float_slider) {
-                        // we have this one as a buddy. We will check for null throughout
-                        final TextField finalBuddyTextControl = buddyTextControl;
-
-                        Slider f = new Slider((double) control.getMinimumDisplayValue(), (double) control.getMaximumDisplayValue(), (double) control.getValue());
-                        //f.setMaxWidth(100);
-                        control.setTooltipPrefix("Change the slider value to generate an event for this control");
-                        f.setTooltip(new Tooltip(control.getTooltipText()));
-                        f.setOrientation(Orientation.HORIZONTAL);
-                        f.setDisable(disable);
-
-
-                        // we need to see if we are adding a buddy or not
-                        if (control_group == null) {
-                            control_group = new ControlCellGroup(control_label, f);
-                            dynamicControlsList.put(control.getControlMapKey(), control_group);
-                        }
-                        else
-                        {
-                            control_group.setBuddyNode(f);
-                            // we need to add a listener to update text box
-                            f.valueProperty().addListener(new ChangeListener<Number>() {
-                                @Override
-                                public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-                                    if (f.isFocused()) {
-                                        if (oldval != newval) {
-                                            if (finalBuddyTextControl != null) {
-                                                finalBuddyTextControl.setText(Double.toString(newval.doubleValue()));
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                        dynamicControlGridPane.add(f, 1, nextControlRow++);
-
-                        // we need to create this final one for events blow
-
-
-                        f.valueProperty().addListener(new ChangeListener<Number>() {
-                            @Override
-                            public void changed(ObservableValue<? extends Number> obs, Number oldval, Number newval) {
-
-                                if (f.isFocused()) {
-                                    if (oldval != newval) {
-                                        control.setValue(newval.doubleValue());
-                                        //localDevice.sendDynamicControl(control);
-                                    }
-                                }
-                                boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
-                                        || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
-                                f.setDisable(disable);
-                                if (finalBuddyTextControl != null){
-                                    finalBuddyTextControl.setDisable(disable);
-                                }
-                            }
-                        });
-
-
-                        control_group.listener = new DynamicControl.DynamicControlListener() {
-                            @Override
-                            public void update(DynamicControl control) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-
-                                        if (!f.isFocused()) {
-
-                                            f.setValue((double) control.getValue());
-
-                                            // We also need to set value of buddy if we have one
-                                            if (finalBuddyTextControl != null){
-                                                finalBuddyTextControl.setText(Double.toString((double) control.getValue()));
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        };
-
-                        control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                            @Override
-                            public void controlScopeChanged(ControlScope new_scope) {
-                                Platform.runLater(new Runnable() {
-                                    public void run() {
-                                        f.setTooltip(new Tooltip(control.getTooltipText()));
-                                        // We also need to set value of buddy if we have one
-                                        if (finalBuddyTextControl != null){
-                                            finalBuddyTextControl.setTooltip(new Tooltip(control.getTooltipText()));
-                                        }
-                                    }
-                                });
-
-                            }
-                        };
-                    }
+                    control_group = addFloatControl(control);
                     break;
 
                 case OBJECT:
-                    TextField ob = new TextField();
-                    control.setTooltipPrefix("Object Message. You cannot change this");
-                    ob.setTooltip(new Tooltip(control.getTooltipText()));
-                    ob.setDisable(true);
-                    ob.setText(control.getValue().toString());
-                    dynamicControlGridPane.add(ob, 1, nextControlRow++);
-                    control_group = new ControlCellGroup(control_label, ob);
-                    dynamicControlsList.put(control.getControlMapKey(), control_group);
-
-                    control_group.listener = new DynamicControl.DynamicControlListener() {
-                        @Override
-                        public void update(DynamicControl control) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    ob.setText(control.getValue().toString());
-                                }
-                            });
-                        }
-                    };
-
-                    control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                        @Override
-                        public void controlScopeChanged(ControlScope new_scope) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    ob.setTooltip(new Tooltip(control.getTooltipText()));
-                                }
-                            });
-
-                        }
-                    };
-
+                    control_group = addObjectControl(control);
 
                     break;
                 case TEXT:
                     if (hidden){
                         break;
                     }
-                    TextField t = new TextField();
-                    control.setTooltipPrefix("Type in text and press enter to generate an event for this control");
-                    t.setTooltip(new Tooltip(control.getTooltipText()));
-                    t.setDisable(disable);
-                    t.setText((String) control.getValue());
-                    dynamicControlGridPane.add(t, 1, nextControlRow++);
-                    control_group = new ControlCellGroup(control_label, t);
-                    dynamicControlsList.put(control.getControlMapKey(), control_group);
-                    t.setOnKeyTyped(new EventHandler<KeyEvent>() {
-                        @Override
-                        public void handle(KeyEvent event) {
-                            if (event.getCode().equals(KeyCode.ENTER)) {
-                                String text_val = t.getText();
-                                control.setValue(text_val);
-                                ///localDevice.sendDynamicControl(control);
-                            }
-                        }
-                    });
-
-                    // set handlers
-                    t.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent actionEvent) {
-                            String text_val = t.getText();
-                            control.setValue(text_val);
-                            //localDevice.sendDynamicControl(control);
-                        }
-                    });
-
-                    control_group.listener = new DynamicControl.DynamicControlListener() {
-                        @Override
-                        public void update(DynamicControl control) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    t.setText((String) control.getValue());
-                                    boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
-                                            || control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY;
-                                    t.setDisable(disable);
-                                }
-                            });
-                        }
-                    };
-
-                    control_group.scopeChangedListener = new DynamicControl.ControlScopeChangedListener() {
-                        @Override
-                        public void controlScopeChanged(ControlScope new_scope) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    t.setTooltip(new Tooltip(control.getTooltipText()));
-                                }
-                            });
-
-                        }
-                    };
+                    control_group = addTextControl(control);
                     break;
 
                 default:
@@ -988,6 +947,8 @@ public class DynamicControlScreen {
             }
 
             if (control_group != null) {
+                dynamicControlsList.put(control.getControlMapKey(), control_group);
+
                 if (control_group.listener != null) {
                     control.addControlListener(control_group.listener);
                 }
