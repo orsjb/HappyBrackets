@@ -29,7 +29,9 @@ public class RunAtTime implements HBAction {
 
         // Use no parameter
         hb.doAtTime(hb.getSynchTime() + 1000, (v, o) -> {
-            hb.setStatus("Set Freq 500");
+            double variation =  v; // This is how far off the scheduled time we are
+
+            hb.setStatus("Variation of " + variation);
             waveModule.setFrequency(500);
         });
 
@@ -37,7 +39,8 @@ public class RunAtTime implements HBAction {
         // Second will pass The WaveModule as a value to the do at time
         hb.doAtTime(hb.getSynchTime() + 2000, waveModule, (v, o) ->
         {
-            hb.setStatus("Set Freq 1000");
+            double variation =  v; // This is how far off the scheduled time we are
+            hb.setStatus("Variation of " + variation);
             ((WaveModule) o).setFrequency(1000);
         });
 

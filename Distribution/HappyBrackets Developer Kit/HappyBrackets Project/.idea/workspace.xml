@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8ac14a86-6248-4999-beb1-94c7835de615" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Device/HappyBrackets/HB.jar" beforeDir="false" afterPath="$PROJECT_DIR$/Device/HappyBrackets/HB.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/deprecated-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/deprecated-list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/index-all.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/HB.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/HB.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/sensors/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/sensors/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HappyBrackets_IntelliJ_Plugin.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../HappyBrackets_IntelliJ_Plugin.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/device/HB.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/device/HB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HB.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HB.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/build/production/HappyBrackets Project/" />
     <ignored path="$PROJECT_DIR$/build/test/HappyBrackets Project/" />
@@ -54,7 +44,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
+            <state relative-caret-position="465">
               <caret line="42" selection-start-line="42" selection-end-line="47" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -66,7 +56,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="705">
+            <state relative-caret-position="645">
               <caret line="47" column="85" selection-start-line="47" selection-start-column="85" selection-end-line="47" selection-end-column="85" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -78,8 +68,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="36" column="42" selection-start-line="36" selection-start-column="42" selection-end-line="36" selection-end-column="42" />
+            <state relative-caret-position="375">
+              <caret line="31" column="83" selection-start-line="31" selection-start-column="83" selection-end-line="31" selection-end-column="83" />
             </state>
           </provider>
         </entry>
@@ -105,7 +95,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/threads/ControlledThread.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1530">
+            <state relative-caret-position="1380">
               <caret line="102" column="115" selection-start-line="102" selection-start-column="115" selection-end-line="102" selection-end-column="115" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -126,7 +116,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
+            <state relative-caret-position="345">
               <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -271,7 +261,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -384,6 +373,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -392,7 +382,7 @@
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="happybrackets_project" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1593142995769" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1593143685992" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
@@ -565,10 +555,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="837" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="837" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.32761088" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3319027" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -594,7 +584,7 @@
       <window_info anchor="right" id="Palette&#9;" order="4" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
       <window_info anchor="right" id="Maven Projects" order="6" weight="0.24878837" />
-      <window_info active="true" anchor="right" id="HappyBrackets" order="7" sideWeight="0.49678457" visible="true" weight="0.21101573" />
+      <window_info active="true" anchor="right" id="HappyBrackets" order="7" sideWeight="0.49678457" visible="true" weight="0.21030043" />
       <window_info anchor="right" id="Theme Preview" order="8" />
       <window_info anchor="right" id="Coverage" order="9" sideWeight="0.503937" side_tool="true" weight="0.20553781" />
       <window_info anchor="right" x="0" y="0" width="310" height="637" id="Documentation" order="10" sideWeight="0.50321543" side_tool="true" visible="true" weight="0.14583333" />
@@ -986,8 +976,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
+        <state relative-caret-position="465">
           <caret line="42" selection-start-line="42" selection-end-line="47" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="47" column="85" selection-start-line="47" selection-start-column="85" selection-end-line="47" selection-end-column="85" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1010,7 +1010,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/threads/ControlledThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1530">
+        <state relative-caret-position="1380">
           <caret line="102" column="115" selection-start-line="102" selection-start-column="115" selection-end-line="102" selection-end-column="115" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1027,18 +1027,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
+        <state relative-caret-position="345">
           <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" column="85" selection-start-line="47" selection-start-column="85" selection-end-line="47" selection-end-column="85" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1047,8 +1037,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="36" column="42" selection-start-line="36" selection-start-column="42" selection-end-line="36" selection-end-column="42" />
+        <state relative-caret-position="375">
+          <caret line="31" column="83" selection-start-line="31" selection-start-column="83" selection-end-line="31" selection-end-column="83" />
         </state>
       </provider>
     </entry>
