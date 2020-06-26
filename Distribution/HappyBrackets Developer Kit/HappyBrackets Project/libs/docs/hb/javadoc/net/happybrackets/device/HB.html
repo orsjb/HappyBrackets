@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":9,"i6":10,"i7":10,"i8":10,"i9":10,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":10,"i21":10,"i22":10,"i23":10,"i24":9,"i25":10,"i26":10,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9,"i32":9,"i33":9,"i34":10,"i35":10,"i36":9,"i37":10,"i38":10,"i39":9,"i40":10,"i41":9,"i42":9,"i43":9,"i44":10,"i45":10,"i46":10,"i47":9,"i48":10,"i49":9,"i50":9,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":9,"i59":9,"i60":10,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":9,"i69":10,"i70":10,"i71":10,"i72":9,"i73":9,"i74":9,"i75":9,"i76":10,"i77":9,"i78":9,"i79":10,"i80":10,"i81":10,"i82":9,"i83":10,"i84":10,"i85":10,"i86":9,"i87":10,"i88":10,"i89":10,"i90":10,"i91":9,"i92":9,"i93":10,"i94":10,"i95":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":9,"i6":10,"i7":10,"i8":10,"i9":10,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":10,"i21":10,"i22":42,"i23":10,"i24":10,"i25":10,"i26":9,"i27":10,"i28":10,"i29":9,"i30":9,"i31":9,"i32":9,"i33":9,"i34":9,"i35":9,"i36":10,"i37":10,"i38":9,"i39":10,"i40":10,"i41":9,"i42":10,"i43":9,"i44":9,"i45":9,"i46":10,"i47":10,"i48":10,"i49":9,"i50":10,"i51":9,"i52":9,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":9,"i61":9,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10,"i69":10,"i70":9,"i71":10,"i72":10,"i73":10,"i74":9,"i75":9,"i76":9,"i77":9,"i78":10,"i79":9,"i80":9,"i81":10,"i82":10,"i83":10,"i84":9,"i85":10,"i86":10,"i87":10,"i88":9,"i89":10,"i90":10,"i91":10,"i92":42,"i93":9,"i94":9,"i95":10,"i96":10,"i97":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -269,7 +269,7 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -431,331 +431,342 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#doAtTime-java.lang.Runnable-long-">doAtTime</a></span>(java.lang.Runnable&nbsp;runnable,
-        long&nbsp;time)</code>
-<div class="block">Causes an action to be implemented at the given, synchronized time.</div>
-</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#doAtTime-double-net.happybrackets.core.scheduling.Delay.DelayListener-">doAtTime</a></span>(double&nbsp;time,
+        <a href="../../../net/happybrackets/core/scheduling/Delay.DelayListener.html" title="interface in net.happybrackets.core.scheduling">Delay.DelayListener</a>&nbsp;listener)</code>&nbsp;</td>
 </tr>
 <tr id="i21" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#doAtTime-double-java.lang.Object-net.happybrackets.core.scheduling.Delay.DelayListener-">doAtTime</a></span>(double&nbsp;time,
+        java.lang.Object&nbsp;param,
+        <a href="../../../net/happybrackets/core/scheduling/Delay.DelayListener.html" title="interface in net.happybrackets.core.scheduling">Delay.DelayListener</a>&nbsp;listener)</code>&nbsp;</td>
+</tr>
+<tr id="i22" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#doAtTime-java.lang.Runnable-long-">doAtTime</a></span>(java.lang.Runnable&nbsp;runnable,
+        long&nbsp;time)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;&nbsp;</div>
+</td>
+</tr>
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#fadeOutClearSound-float-">fadeOutClearSound</a></span>(float&nbsp;fadeTime)</code>
 <div class="block">Like <a href="../../../net/happybrackets/device/HB.html#clearSound--"><code>clearSound()</code></a> but with a fade out of the specified duration before clearing.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#fadeOutReset-float-">fadeOutReset</a></span>(float&nbsp;fadeTime)</code>
 <div class="block">Like <a href="../../../net/happybrackets/device/HB.html#reset--"><code>reset()</code></a> but with a fade out of the specified duration before clearing.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="../../../net/happybrackets/device/sensors/Sensor.html" title="class in net.happybrackets.device.sensors">Sensor</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#findSensor-java.lang.Class-">findSensor</a></span>(java.lang.Class&nbsp;sensorClass)</code>&nbsp;</td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#flashLed-int-int-">flashLed</a></span>(int&nbsp;num_blinks,
         int&nbsp;interval)</code>
 <div class="block">FLash the onboard LED</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#friendlyName--">friendlyName</a></span>()</code>
 <div class="block">Returns a freindly name for the device.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#get-java.lang.String-">get</a></span>(java.lang.String&nbsp;s)</code>
 <div class="block">Gets an @<code>Object</code> with the given name from the global memory store.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getAccelerometer_X--">getAccelerometer_X</a></span>()</code>
 <div class="block">Return a UGen that is mapped to Accelerometer X value</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getAccelerometer_X-double-double-">getAccelerometer_X</a></span>(double&nbsp;scale_min,
                   double&nbsp;scale_max)</code>
 <div class="block">Return a UGen that is mapped to Accelerometer X value</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getAccelerometer_Y--">getAccelerometer_Y</a></span>()</code>
 <div class="block">Return a UGen that is mapped to Accelerometer Y value</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getAccelerometer_Y-double-double-">getAccelerometer_Y</a></span>(double&nbsp;scale_min,
                   double&nbsp;scale_max)</code>
 <div class="block">Return a UGen that is mapped to Accelerometer Y value</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getAccelerometer_Z--">getAccelerometer_Z</a></span>()</code>
 <div class="block">Return a UGen that is mapped to Accelerometer Z value</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getAccelerometer_Z-double-double-">getAccelerometer_Z</a></span>(double&nbsp;scale_min,
                   double&nbsp;scale_max)</code>
 <div class="block">Return a UGen that is mapped to Accelerometer Z value</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getAudioOutput--">getAudioOutput</a></span>()</code>
 <div class="block">Get the default  HappyBrackets audio output as a UGen</div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code>net.beadsproject.beads.core.Bead</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getBead-java.lang.String-">getBead</a></span>(java.lang.String&nbsp;s)</code>
 <div class="block">Gets an object of type @<code>Bead</code> from the global memory store.</div>
 </td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code>java.net.InetAddress</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getDeviceAddress-java.lang.String-">getDeviceAddress</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">Return the <code>InetAddress</code> associated with this device name that we can address that device with
  If the device is this, then it will return the loopback address</div>
 </td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code>static <a href="../../../net/happybrackets/device/HB.DeviceType.html" title="enum in net.happybrackets.device">HB.DeviceType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getDeviceType--">getDeviceType</a></span>()</code>
 <div class="block">The Type of Device this instance of HappyBrackets is running on</div>
 </td>
 </tr>
-<tr id="i37" class="rowColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code>float</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getFloat-java.lang.String-">getFloat</a></span>(java.lang.String&nbsp;s)</code>
 <div class="block">Gets an object of type float from the global memory store.</div>
 </td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code>float</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getFloatArg-de.sciss.net.OSCMessage-int-">getFloatArg</a></span>(de.sciss.net.OSCMessage&nbsp;m,
            int&nbsp;index)</code>
 <div class="block">Gets a float arg from an <code>OSCMessage</code>.</div>
 </td>
 </tr>
-<tr id="i39" class="rowColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getFutureSchedulerTime-double-">getFutureSchedulerTime</a></span>(double&nbsp;milliseconds)</code>
 <div class="block">Get a scheduler time in the future from <a href="../../../net/happybrackets/device/HB.html#getSchedulerTime--"><code>getSchedulerTime()</code></a>.</div>
 </td>
 </tr>
-<tr id="i40" class="altColor">
+<tr id="i42" class="altColor">
 <td class="colFirst"><code>float</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getGain--">getGain</a></span>()</code>
 <div class="block">Get the current gain of the device</div>
 </td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i43" class="rowColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getGyroscopePitch--">getGyroscopePitch</a></span>()</code>
 <div class="block">Return a UGen that is mapped to Gyroscope Pitch value</div>
 </td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getGyroscopeRoll--">getGyroscopeRoll</a></span>()</code>
 <div class="block">Return a UGen that is mapped to Gyroscope Roll value</div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code>static net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getGyroscopeYaw--">getGyroscopeYaw</a></span>()</code>
 <div class="block">Return a UGen that is mapped to Gyroscope Yaw value</div>
 </td>
 </tr>
-<tr id="i44" class="altColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getInt-java.lang.String-">getInt</a></span>(java.lang.String&nbsp;s)</code>
 <div class="block">Gets an object of type int from the global memory store.</div>
 </td>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><code>java.util.Collection&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getKnownDeviceNames--">getKnownDeviceNames</a></span>()</code>
 <div class="block">Get the names of the devices that we know are on the network.</div>
 </td>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><code><a href="../../../net/happybrackets/device/MuteControl.html" title="class in net.happybrackets.device">MuteControl</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getMuteControl--">getMuteControl</a></span>()</code>
 <div class="block">Return the Mute Control</div>
 </td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getNumOutChannels--">getNumOutChannels</a></span>()</code>
 <div class="block">Get the number of audio channels on the default HappyBrackets audio output <br>
  This parameter is dependant upon the configuration of the device</div>
 </td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i50" class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getRegisteredVariable-java.lang.String-">getRegisteredVariable</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">Gets an @<code>Object</code> with the given name from the registered memory store.</div>
 </td>
 </tr>
-<tr id="i49" class="rowColor">
+<tr id="i51" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling">HBScheduler</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getScheduler--">getScheduler</a></span>()</code>
 <div class="block">Get the global <a href="../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling"><code>HBScheduler</code></a></div>
 </td>
 </tr>
-<tr id="i50" class="altColor">
+<tr id="i52" class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getSchedulerTime--">getSchedulerTime</a></span>()</code>
 <div class="block">Get the amount of time elapsed since we set reference time in <a href="../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling"><code>HBScheduler</code></a></div>
 </td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i53" class="rowColor">
 <td class="colFirst"><code>java.net.InetAddress</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getSendingController-java.lang.Object-">getSendingController</a></span>(java.lang.Object&nbsp;classObject)</code>
 <div class="block">Get the <code>InetAddress</code> of the controller that sent the class
  If the class was loaded on startup it will be null</div>
 </td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i54" class="altColor">
 <td class="colFirst"><code><a href="../../../net/happybrackets/device/sensors/Sensor.html" title="class in net.happybrackets.device.sensors">Sensor</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getSensor-java.lang.Class-">getSensor</a></span>(java.lang.Class&nbsp;sensorClass)</code>
 <div class="block">Gets the sensor with the given sensor ID.</div>
 </td>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i55" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getStatus--">getStatus</a></span>()</code>
 <div class="block">Returns the current status @<code>String</code> of the device.</div>
 </td>
 </tr>
-<tr id="i54" class="altColor">
+<tr id="i56" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getString-java.lang.String-">getString</a></span>(java.lang.String&nbsp;s)</code>
 <div class="block">Gets an object of type @<code>String</code> from the global memory store.</div>
 </td>
 </tr>
-<tr id="i55" class="rowColor">
-<td class="colFirst"><code>long</code></td>
+<tr id="i57" class="rowColor">
+<td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getSynchTime--">getSynchTime</a></span>()</code>
 <div class="block">Returns the system time adjusted according to the result of any device synch attempts.</div>
 </td>
 </tr>
-<tr id="i56" class="altColor">
+<tr id="i58" class="altColor">
 <td class="colFirst"><code>net.beadsproject.beads.core.UGen</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#getUGen-java.lang.String-">getUGen</a></span>(java.lang.String&nbsp;s)</code>
 <div class="block">Gets an object of type @<code>UGen</code> from the global memory store.</div>
 </td>
 </tr>
-<tr id="i57" class="rowColor">
+<tr id="i59" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#hasClassesLoaded--">hasClassesLoaded</a></span>()</code>
 <div class="block">Determine if we have any classes Loaded</div>
 </td>
 </tr>
-<tr id="i58" class="altColor">
+<tr id="i60" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#isEnableSimulators--">isEnableSimulators</a></span>()</code>
 <div class="block">Return whether we will displaysimulator sensors if no hardware sensor is found</div>
 </td>
 </tr>
-<tr id="i59" class="rowColor">
+<tr id="i61" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#isOurAddress-java.net.InetAddress-">isOurAddress</a></span>(java.net.InetAddress&nbsp;address)</code>
 <div class="block">Detect whether this <code>InetAddress</code> is actually this device</div>
 </td>
 </tr>
-<tr id="i60" class="altColor">
+<tr id="i62" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#messageIs-de.sciss.net.OSCMessage-java.lang.String-">messageIs</a></span>(de.sciss.net.OSCMessage&nbsp;m,
          java.lang.String&nbsp;match)</code>
 <div class="block">Checks for an exact match to a string.</div>
 </td>
 </tr>
-<tr id="i61" class="rowColor">
+<tr id="i63" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#muteAudio-boolean-">muteAudio</a></span>(boolean&nbsp;mute)</code>
 <div class="block">Perform a mute or Unmute of Output</div>
 </td>
 </tr>
-<tr id="i62" class="altColor">
+<tr id="i64" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#myConnectPort--">myConnectPort</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i63" class="rowColor">
+<tr id="i65" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#myIndex--">myIndex</a></span>()</code>
 <div class="block">Returns the assigned ID of the current device.</div>
 </td>
 </tr>
-<tr id="i64" class="altColor">
+<tr id="i66" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#pattern-net.beadsproject.beads.core.Bead-">pattern</a></span>(net.beadsproject.beads.core.Bead&nbsp;pattern)</code>
 <div class="block">Adds a new pattern <code>Bead</code> object to the <code>Clock</code>.</div>
 </td>
 </tr>
-<tr id="i65" class="rowColor">
+<tr id="i67" class="rowColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#perm-java.lang.String-java.lang.Object-">perm</a></span>(java.lang.String&nbsp;id,
     java.lang.Object&nbsp;o)</code>
 <div class="block">Stores an object in the global memory store.</div>
 </td>
 </tr>
-<tr id="i66" class="altColor">
+<tr id="i68" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#pullConfigFileFromController--">pullConfigFileFromController</a></span>()</code>
 <div class="block">Notifies the device that it should try to pull the device config file from the controller.</div>
 </td>
 </tr>
-<tr id="i67" class="rowColor">
+<tr id="i69" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#put-java.lang.String-java.lang.Object-">put</a></span>(java.lang.String&nbsp;s,
    java.lang.Object&nbsp;o)</code>
 <div class="block">Puts an <code>Object</code> into the global memory store with a given name.</div>
 </td>
 </tr>
-<tr id="i68" class="altColor">
+<tr id="i70" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#rebootDevice--">rebootDevice</a></span>()</code>
 <div class="block">Reboots the device immediately.</div>
 </td>
 </tr>
-<tr id="i69" class="rowColor">
+<tr id="i71" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#registerVariable-java.lang.String-java.lang.Object-">registerVariable</a></span>(java.lang.String&nbsp;name,
                 java.lang.Object&nbsp;value)</code>
 <div class="block">Puts an <code>Object</code> into the global memory store with a given name.</div>
 </td>
 </tr>
-<tr id="i70" class="altColor">
+<tr id="i72" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#reset--">reset</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i71" class="rowColor">
+<tr id="i73" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#resetLeaveSounding--">resetLeaveSounding</a></span>()</code>
 <div class="block">Like <a href="../../../net/happybrackets/device/HB.html#reset--"><code>reset()</code></a> except that any sounds currently playing are kept.</div>
 </td>
 </tr>
-<tr id="i72" class="altColor">
+<tr id="i74" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#runDebug-java.lang.Class-">runDebug</a></span>(java.lang.Class&lt;?&gt;&nbsp;action_class)</code>
 <div class="block">Run HB in a debug mode so we can debug sample code in INtelliJ
  run the command like this: HB.runDebug(MethodHandles.lookup().lookupClass());</div>
 </td>
 </tr>
-<tr id="i73" class="rowColor">
+<tr id="i75" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#sendScheduleChange-double-long-java.util.Collection-">sendScheduleChange</a></span>(double&nbsp;amount,
                   long&nbsp;duration,
@@ -763,135 +774,137 @@ extends java.lang.Object</pre>
 <div class="block">Send a schedule adjustment message to one or more devices.</div>
 </td>
 </tr>
-<tr id="i74" class="altColor">
+<tr id="i76" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#sendScheduleSetTime-double-java.util.Collection-">sendScheduleSetTime</a></span>(double&nbsp;new_time,
                    java.util.Collection&lt;java.lang.String&gt;&nbsp;targets)</code>
 <div class="block">Send a Schedule Set time to one or more targets</div>
 </td>
 </tr>
-<tr id="i75" class="rowColor">
+<tr id="i77" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#sendStatus-java.lang.String-">sendStatus</a></span>(java.lang.String&nbsp;status)</code>
 <div class="block">Static version of <a href="../../../net/happybrackets/device/HB.html#sendStatus-java.lang.String-"><code>sendStatus(String)</code></a>.</div>
 </td>
 </tr>
-<tr id="i76" class="altColor">
+<tr id="i78" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#sendToController-java.lang.String-java.lang.Object...-">sendToController</a></span>(java.lang.String&nbsp;string,
                 java.lang.Object...&nbsp;args)</code>
 <div class="block">Send an <code>OSCMessage</code> to the controller.</div>
 </td>
 </tr>
-<tr id="i77" class="rowColor">
+<tr id="i79" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setDeviceLedValue-boolean-">setDeviceLedValue</a></span>(boolean&nbsp;on)</code>
 <div class="block">Return the Integer value required to turn the onboard LED on or off based on stored <a href="../../../net/happybrackets/device/HB.DeviceType.html" title="enum in net.happybrackets.device"><code>HB.DeviceType</code></a></div>
 </td>
 </tr>
-<tr id="i78" class="altColor">
+<tr id="i80" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setEnableSimulators-boolean-">setEnableSimulators</a></span>(boolean&nbsp;enableSimulators)</code>
 <div class="block">Set  whether we will displaysimulator sensors if no hardware sensor is found</div>
 </td>
 </tr>
-<tr id="i79" class="rowColor">
+<tr id="i81" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setFriendlyName-java.lang.String-">setFriendlyName</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">We will set the friendly of the device here.</div>
 </td>
 </tr>
-<tr id="i80" class="altColor">
+<tr id="i82" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setGain-float-float-">setGain</a></span>(float&nbsp;new_gain,
        float&nbsp;millseconds)</code>
 <div class="block">Set the output gain of the device in an envelope.</div>
 </td>
 </tr>
-<tr id="i81" class="rowColor">
+<tr id="i83" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setMyIndex-int-">setMyIndex</a></span>(int&nbsp;val)</code>
 <div class="block">We will set the index of the device here.</div>
 </td>
 </tr>
-<tr id="i82" class="altColor">
+<tr id="i84" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setScheduleTime-double-">setScheduleTime</a></span>(double&nbsp;new_time)</code>
 <div class="block">Set the global <a href="../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling"><code>HBScheduler</code></a> scheduled time to this time</div>
 </td>
 </tr>
-<tr id="i83" class="rowColor">
+<tr id="i85" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setStatus-java.lang.String-">setStatus</a></span>(java.lang.String&nbsp;s)</code>
 <div class="block">Sets the status @<code>String</code> of this device.</div>
 </td>
 </tr>
-<tr id="i84" class="altColor">
+<tr id="i86" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setTCPServerPort-int-">setTCPServerPort</a></span>(int&nbsp;tcpServerPort)</code>
 <div class="block">Set the TCP Osc Port given to us by operating system
  We will pass it to the controller so it knows how to connect to us</div>
 </td>
 </tr>
-<tr id="i85" class="rowColor">
+<tr id="i87" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#setUseEncryption-boolean-">setUseEncryption</a></span>(boolean&nbsp;enable)</code>
 <div class="block">Whether we will use encryption in transferring class data</div>
 </td>
 </tr>
-<tr id="i86" class="altColor">
+<tr id="i88" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#shutdownDevice--">shutdownDevice</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i87" class="rowColor">
+<tr id="i89" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#sound-net.beadsproject.beads.core.UGen-">sound</a></span>(net.beadsproject.beads.core.UGen&nbsp;snd)</code>
 <div class="block">Adds a sound to the audio output.</div>
 </td>
 </tr>
-<tr id="i88" class="altColor">
+<tr id="i90" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#startAudio--">startAudio</a></span>()</code>
 <div class="block">Causes audio processing to start.</div>
 </td>
 </tr>
-<tr id="i89" class="rowColor">
+<tr id="i91" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#sychronisedBleep-double-">sychronisedBleep</a></span>(double&nbsp;schedule_time)</code>
 <div class="block">Perform a bleep at the network scheduled time.</div>
 </td>
 </tr>
-<tr id="i90" class="altColor">
+<tr id="i92" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#syncAudioStart-int-">syncAudioStart</a></span>(int&nbsp;intervalForSyncAction)</code>
-<div class="block">Causes the audio to start at a given synchronised time on all devices.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Syn functions removed</span></div>
+</div>
 </td>
 </tr>
-<tr id="i91" class="rowColor">
+<tr id="i93" class="rowColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#synchroniseClocks--">synchroniseClocks</a></span>()</code>
 <div class="block">Synchronise <a href="../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling"><code>HBScheduler</code></a> timer with the system time on next tick</div>
 </td>
 </tr>
-<tr id="i92" class="altColor">
+<tr id="i94" class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#synchroniseClocks-long-">synchroniseClocks</a></span>(long&nbsp;slew_time)</code>
 <div class="block">Synchronise global <a href="../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling"><code>HBScheduler</code></a> timer with the system time</div>
 </td>
 </tr>
-<tr id="i93" class="rowColor">
+<tr id="i95" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#testBleep--">testBleep</a></span>()</code>
 <div class="block">Produces a single short test bleep on the device.</div>
 </td>
 </tr>
-<tr id="i94" class="altColor">
+<tr id="i96" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#testBleep3--">testBleep3</a></span>()</code>
 <div class="block">Produces a short series of 3 bleeps on the device.</div>
 </td>
 </tr>
-<tr id="i95" class="rowColor">
+<tr id="i97" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/device/HB.html#testBleep6--">testBleep6</a></span>()</code>
 <div class="block">Produces a short series of 6 bleeps on the device to indicate an error.</div>
@@ -1395,6 +1408,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>syncAudioStart</h4>
 <pre>public&nbsp;void&nbsp;syncAudioStart(int&nbsp;intervalForSyncAction)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Syn functions removed</span></div>
 <div class="block">Causes the audio to start at a given synchronised time on all devices.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1408,11 +1422,11 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getSynchTime</h4>
-<pre>public&nbsp;long&nbsp;getSynchTime()</pre>
+<pre>public&nbsp;double&nbsp;getSynchTime()</pre>
 <div class="block">Returns the system time adjusted according to the result of any device synch attempts.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>corrected time as long, in millseconds since 1st Jan 1970.</dd>
+<dd>Scheduled time</dd>
 </dl>
 </li>
 </ul>
@@ -1424,11 +1438,46 @@ extends java.lang.Object</pre>
 <h4>doAtTime</h4>
 <pre>public&nbsp;void&nbsp;doAtTime(java.lang.Runnable&nbsp;runnable,
                      long&nbsp;time)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Causes an action to be implemented at the given, synchronized time.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>runnable</code> - the action to perform.</dd>
 <dd><code>time</code> - the time at which to perform the action, in millseconds since 1st Jan 1970.</dd>
+</dl>
+</li>
+</ul>
+<a name="doAtTime-double-net.happybrackets.core.scheduling.Delay.DelayListener-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>doAtTime</h4>
+<pre>public&nbsp;void&nbsp;doAtTime(double&nbsp;time,
+                     <a href="../../../net/happybrackets/core/scheduling/Delay.DelayListener.html" title="interface in net.happybrackets.core.scheduling">Delay.DelayListener</a>&nbsp;listener)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the Scheduler</dd>
+<dd><code>listener</code> - The listener to receive call
+
+ The param returned in the listener will be null</dd>
+</dl>
+</li>
+</ul>
+<a name="doAtTime-double-java.lang.Object-net.happybrackets.core.scheduling.Delay.DelayListener-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>doAtTime</h4>
+<pre>public&nbsp;void&nbsp;doAtTime(double&nbsp;time,
+                     java.lang.Object&nbsp;param,
+                     <a href="../../../net/happybrackets/core/scheduling/Delay.DelayListener.html" title="interface in net.happybrackets.core.scheduling">Delay.DelayListener</a>&nbsp;listener)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - the Scheduler</dd>
+<dd><code>param</code> - the parameter to pass to listener</dd>
+<dd><code>listener</code> - The listener to receive call</dd>
 </dl>
 </li>
 </ul>

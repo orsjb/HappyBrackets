@@ -789,6 +789,7 @@ public class HB {
 	 * Causes the audio to start at a given synchronised time on all devices.
 	 *
 	 * @param intervalForSyncAction time at which to sync, according to the agreed clock time
+	 * @deprecated Syn functions removed
      */
 	public void syncAudioStart(int intervalForSyncAction) {
 		long timeToAct = (synch.correctedTimeNow() / intervalForSyncAction + 1)  * intervalForSyncAction;
@@ -803,20 +804,46 @@ public class HB {
 	/**
 	 * Returns the system time adjusted according to the result of any device synch attempts.
 	 *
-	 * @return corrected time as long, in millseconds since 1st Jan 1970.
+	 * @return Scheduled time
      */
-	public long getSynchTime() {
-		return synch.correctedTimeNow();
+	public double getSynchTime() {
+		return HB.getSchedulerTime();
 	}
 
 	/**
 	 * Causes an action to be implemented at the given, synchronized time.
 	 * @param runnable the action to perform.
 	 * @param time the time at which to perform the action, in millseconds since 1st Jan 1970.
+	 * @deprecated
      */
 	public void doAtTime(Runnable runnable, long time) {
 		synch.doAtTime(runnable, time);
 	}
+
+	/**
+	 *
+	 * @param time the Scheduler
+	 * @param listener The listener to receive call
+	 *
+	 * The param returned in the listener will be null
+	 */
+	public void doAtTime(double time, Delay.DelayListener listener){
+
+		new Delay(time - getSynchTime(), null, listener);
+	}
+
+	/**
+	 *
+	 * @param time the Scheduler
+	 * @param param the parameter to pass to listener
+	 * @param listener The listener to receive call
+	 */
+	public void doAtTime(double time, Object param, Delay.DelayListener listener){
+
+		new Delay(time - getSynchTime(), param, listener);
+	}
+
+
 
 	/**
 	 * Causes audio processing to start. By default, audio runs on startup. This is a commandline flag to {@link DeviceMain}.
