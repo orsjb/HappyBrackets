@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -279,14 +279,20 @@ implements <a href="../../../../net/happybrackets/core/scheduling/ScheduledEvent
 <tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../../net/happybrackets/core/scheduling/Clock.html" title="class in net.happybrackets.core.scheduling">Clock</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/Clock.html#start--">start</a></span>()</code>
-<div class="block">Start the clock</div>
+<div class="block">Start the clock at current time</div>
 </td>
 </tr>
 <tr id="i13" class="rowColor">
+<td class="colFirst"><code><a href="../../../../net/happybrackets/core/scheduling/Clock.html" title="class in net.happybrackets.core.scheduling">Clock</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/Clock.html#start-double-">start</a></span>(double&nbsp;start_time)</code>
+<div class="block">Start the clock at specified time</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/Clock.html#stop--">stop</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../net/happybrackets/core/scheduling/Clock.html#synchronizeClock-net.happybrackets.core.scheduling.Clock-">synchronizeClock</a></span>(<a href="../../../../net/happybrackets/core/scheduling/Clock.html" title="class in net.happybrackets.core.scheduling">Clock</a>&nbsp;master)</code>
 <div class="block">Synchronise this clock to another one</div>
@@ -434,8 +440,24 @@ implements <a href="../../../../net/happybrackets/core/scheduling/ScheduledEvent
 <li class="blockList">
 <h4>start</h4>
 <pre>public&nbsp;<a href="../../../../net/happybrackets/core/scheduling/Clock.html" title="class in net.happybrackets.core.scheduling">Clock</a>&nbsp;start()</pre>
-<div class="block">Start the clock</div>
+<div class="block">Start the clock at current time</div>
 <dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this</dd>
+</dl>
+</li>
+</ul>
+<a name="start-double-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>start</h4>
+<pre>public&nbsp;<a href="../../../../net/happybrackets/core/scheduling/Clock.html" title="class in net.happybrackets.core.scheduling">Clock</a>&nbsp;start(double&nbsp;start_time)</pre>
+<div class="block">Start the clock at specified time</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>start_time</code> - the <a href="../../../../net/happybrackets/core/scheduling/HBScheduler.html" title="class in net.happybrackets.core.scheduling"><code>HBScheduler</code></a> time to start the clock</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>this</dd>
 </dl>

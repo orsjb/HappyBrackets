@@ -1,7 +1,6 @@
 package net.happybrackets.core.scheduling;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -210,13 +209,23 @@ public class Clock implements ScheduledEventListener {
         }
     }
     /**
-     * Start the clock
+     * Start the clock at current time
      * @return this
      */
     public synchronized Clock start(){
+        start(clockScheduler.getSchedulerTime());
+        return this;
+    }
+
+    /**
+     * Start the clock at specified time
+     * @param start_time the {@link HBScheduler} time to start the clock
+     * @return this
+     */
+    public synchronized Clock start(double start_time){
         if (pendingSchedule == null) {
             numberTicks = 0;
-            startTime = clockScheduler.getSchedulerTime();
+            startTime = start_time;
             double next_time =  startTime + clockInterval;
 
             doCancel = false;
@@ -225,7 +234,6 @@ public class Clock implements ScheduledEventListener {
         }
         return this;
     }
-
     /**
      * Add a {@link ClockTickListener} for this clock. More than one listener can be attached to a {@link Clock} and they
      * can be added after the clock is already started. For example:
