@@ -175,4 +175,8 @@ public abstract class SynchronisedModel {
 
     public abstract double getDiadIntensity();
 
+    public abstract JSONObject exportModelState();
+
+    public abstract void importModelState(JSONObject modelState);
+
 }

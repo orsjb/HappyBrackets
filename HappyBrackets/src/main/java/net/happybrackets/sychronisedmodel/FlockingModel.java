@@ -2,6 +2,10 @@ package net.happybrackets.sychronisedmodel;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
+import org.json.JSONObject;
+import sun.tools.jstat.Jstat;
+
+import java.util.Iterator;
 
 public class FlockingModel extends SynchronisedModel {
     public Flock flock;
@@ -75,6 +79,32 @@ public class FlockingModel extends SynchronisedModel {
         if(frameState <= frameCount) return;
         for (int i = 0; i < updateTimes; i++) {
             update();
+        }
+    }
+
+    public JSONObject exportModelState() {
+        JSONObject modelState = new JSONObject();
+        int count = 0;
+        for (Boid b : flock.boids) {
+            modelState.put("" + count++,b.toJSON());
+        }
+        return modelState;
+    }
+
+    public void importModelState(JSONObject modelState) {
+        Iterator<String> keys = modelState.keys();
+        int numBoids = flock.boids.size();
+        if(numBoids != modelState.length()) {
+            System.out.println("number of Boids different from JSON Boids");
+            return;
+        }
+
+        for (Boid b : flock.boids) {
+            if(keys.hasNext()) {
+                String key = keys.next();
+                JSONObject jo = (JSONObject) modelState.get(key);
+                b.loadJSON(jo);
+            }
         }
     }
 

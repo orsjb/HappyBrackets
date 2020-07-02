@@ -1,5 +1,7 @@
 package net.happybrackets.sychronisedmodel;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Random;
 import static java.lang.Math.*;
@@ -180,6 +182,34 @@ public class Boid {
         flock(boids);
         update();
         borders();
+    }
+
+    public JSONObject toJSON() {
+
+        JSONObject jo = new JSONObject();
+        jo.put("location", location.x + "," + location.y);
+        jo.put("velocity", velocity.x + "," + velocity.y);
+        jo.put("acceleration", acceleration.x + "," + acceleration.y);
+
+        return jo;
+    }
+
+    public void loadJSON(JSONObject jo) {
+
+        String strLocation = jo.getString("location");
+        String[] xyLocation = strLocation.split(",");
+        location.x = Double.parseDouble(xyLocation[0]);
+        location.y = Double.parseDouble(xyLocation[1]);
+
+        String strVelocity = jo.getString("velocity");
+        String[] xyVelocity = strVelocity.split(",");
+        velocity.x = Double.parseDouble(xyVelocity[0]);
+        velocity.x = Double.parseDouble(xyVelocity[1]);
+
+        String strAcceleration = jo.getString("acceleration");
+        String[] xyAcceleration = strAcceleration.split(",");
+        acceleration.x = Double.parseDouble(xyAcceleration[0]);
+        acceleration.y = Double.parseDouble(xyAcceleration[1]);
     }
 }
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Flock {
-    List<Boid> boids;
+    public List<Boid> boids;
 
     List<Diad2d> diad2ds;
 
