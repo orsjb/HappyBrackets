@@ -1,4 +1,4 @@
-package net.happybrackets.sychronisedmodels;
+package net.happybrackets.sychronisedmodel;
 
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.*;
@@ -17,7 +17,7 @@ public abstract class SynchronisedModel {
     protected int myPosition;
     HB hb = null;
 
-    protected List<Diad2dNoGraphic> diad2ds;
+    protected List<Diad2d> diad2ds;
     protected boolean isRunning;
     protected int frameCount;
     protected int width, height;
@@ -167,7 +167,7 @@ public abstract class SynchronisedModel {
         frameCount = frameState;
     }
 
-    public void addDiad(Diad2dNoGraphic d) {
+    public void addDiad(Diad2d d) {
         diad2ds.add(d);
     }
 

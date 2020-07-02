@@ -1,4 +1,4 @@
-package net.happybrackets.sychronisedmodels;
+package net.happybrackets.sychronisedmodel;
 
 import java.util.List;
 

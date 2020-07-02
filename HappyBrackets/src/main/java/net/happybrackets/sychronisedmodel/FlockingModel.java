@@ -1,10 +1,10 @@
-package net.happybrackets.sychronisedmodels;
+package net.happybrackets.sychronisedmodel;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 
 public class FlockingModel extends SynchronisedModel {
-    public FlockNoGraphic flock;
+    public Flock flock;
     int numBoids = 10;
     int randomSeed = 0;
 
@@ -16,8 +16,8 @@ public class FlockingModel extends SynchronisedModel {
 
     public void start() {
         super.start();
-        flock = FlockNoGraphic.spawn(0, height * 0.5, width,height, numBoids, randomSeed);
-        for (Diad2dNoGraphic d : diad2ds) {
+        flock = Flock.spawn(0, height * 0.5, width,height, numBoids, randomSeed);
+        for (Diad2d d : diad2ds) {
             flock.addDiad(d);
         }
     }
@@ -29,7 +29,7 @@ public class FlockingModel extends SynchronisedModel {
 
     public double getDiadIntensity() {
         if(modelField != null) {
-            Diad2dNoGraphic d = diad2ds.get(myPosition);
+            Diad2d d = diad2ds.get(myPosition);
             return super.getFieldInsensityAtXY(d.x, d.y, d.size);
         } else {
             return flock.getDiadGaussianIntensity(myPosition);
@@ -45,7 +45,7 @@ public class FlockingModel extends SynchronisedModel {
         double[] to = {0,0};
         double distance;
         double sumDensity = 0;
-        for (BoidNoGraphic b : flock.boids) {
+        for (Boid b : flock.boids) {
             to[0] = b.location.x;
             to[1] = b.location.y;
             distance = e.compute(from, to);
