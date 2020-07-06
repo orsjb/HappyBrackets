@@ -30,12 +30,12 @@ public class SampleChangeSpeed implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /* type basicSamplePLayer to generate this code */
+        /* type basicSampleModule to generate this code */
         // define our sample name
         final String sample_name = "data/audio/long/1979.wav";
-        SampleModule samplePlayer = new SampleModule();
-        if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
-            samplePlayer.connectTo(HB.getAudioOutput());
+        SampleModule sampleModule = new SampleModule();
+        if (sampleModule.setSample(sample_name)) {/* Write your code below this line */
+            sampleModule.connectTo(HB.getAudioOutput());
 
             /* Write your code above this line */
         } else {
@@ -55,7 +55,7 @@ public class SampleChangeSpeed implements HBAction {
         Envelope speedEnvelope = new Envelope(NORMAL_SPEED);
 
         // set our sample player to use this envelope as its playback speed
-        samplePlayer.setRate(speedEnvelope);
+        sampleModule.setRate(speedEnvelope);
 
         // add a segment for each speed we want to play at
 
@@ -85,7 +85,7 @@ public class SampleChangeSpeed implements HBAction {
         // Change speed
         speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION);
         // hold speed. Then kill our playback at the end
-        speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION, new KillTrigger(samplePlayer));
+        speedEnvelope.addSegment(REVERSE, SEGMENT_DURATION, new KillTrigger(sampleModule));
 
 
 

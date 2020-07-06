@@ -1,9 +1,7 @@
 package examples.controls.globalcontrol;
 
-import net.beadsproject.beads.data.Buffer;
 import net.happybrackets.core.HBAction;
 import net.happybrackets.core.control.*;
-import net.happybrackets.core.instruments.WaveModule;
 import net.happybrackets.device.HB;
 import net.happybrackets.device.network.DeviceConnectedEventListener;
 

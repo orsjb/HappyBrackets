@@ -27,8 +27,8 @@ public class FloatTextControlSample implements HBAction {
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final double MAX_VOLUME = 0.1; // define how loud we want the sound
 
-        WaveModule player = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
         /*************************************************************
          * Create Float type Dynamic Controls that displays as a text box
@@ -44,7 +44,7 @@ public class FloatTextControlSample implements HBAction {
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
 
                 // set our frequency to the control value
-                player.setFrequency(control_val);
+                waveModule.setFrequency(control_val);
 
                 /* Write your DynamicControl code above this line */
             }
@@ -57,7 +57,7 @@ public class FloatTextControlSample implements HBAction {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
                 // change our gain according to control value
-                player.setGain(control_val);
+                waveModule.setGain(control_val);
 
                 /* Write your DynamicControl code above this line */
             }

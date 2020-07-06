@@ -31,8 +31,8 @@ public class SimpleThread implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        WaveModule player = new WaveModule(START_FREQUENCY, 0.1f, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(START_FREQUENCY, 0.1f, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
         /* Type threadFunction to generate this code */
         Thread thread = new Thread(() -> {
@@ -44,7 +44,7 @@ public class SimpleThread implements HBAction, HBReset {
                     currentFrequency = START_FREQUENCY;
                 }
 
-                player.setFrequency(currentFrequency);
+                waveModule.setFrequency(currentFrequency);
 
                 /* write your code above this line */
                 try {

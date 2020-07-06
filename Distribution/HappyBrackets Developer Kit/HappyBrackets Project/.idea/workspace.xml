@@ -2,7 +2,63 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8ac14a86-6248-4999-beb1-94c7835de615" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/examples/basic/PolyLimitedOutput.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Device/HappyBrackets/HB.jar" beforeDir="false" afterPath="$PROJECT_DIR$/Device/HappyBrackets/HB.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Device/HappyBrackets/HBVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Device/HappyBrackets/HBVersion.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/index-all.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/core/control/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/HB.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/HB.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/sensors/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/libs/docs/hb/javadoc/net/happybrackets/device/sensors/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/basic/GainEnvelope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/basic/GainEnvelope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControlSample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledBeadsClock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledBeadsClock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/midi/basic/SimpleMIDI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/midi/basic/SimpleMIDI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/midi/scales/MajorScale.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/midi/scales/MajorScale.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/samples/AlternatingLoopedSamplePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/samples/AlternatingLoopedSamplePlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/samples/LoopedSamplePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/samples/LoopedSamplePlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/samples/SampleChangeSpeed.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/samples/SampleChangeSpeed.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/samples/SimpleSamplePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/samples/SimpleSamplePlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleDirectionGyroscope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleDirectionGyroscope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleSpeedAndDirection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleSpeedAndDirection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/sensor/accelerometer/SimpleAccelerometer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/sensor/accelerometer/SimpleAccelerometer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/sensor/accelerometer/TripleAxisAccelerometer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/sensor/accelerometer/TripleAxisAccelerometer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/sensor/gyroscope/SimpleGyroscope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/sensor/gyroscope/SimpleGyroscope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/sensor/gyroscope/TripleAxisGyroscope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/sensor/gyroscope/TripleAxisGyroscope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/examples/threads/SimpleThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/threads/SimpleThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HappyBrackets_IntelliJ_Plugin.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../HappyBrackets_IntelliJ_Plugin.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/out/production/classes/versionddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/out/production/classes/versionddate.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/BuildVersion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/core/BuildVersion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/device/HB.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/java/net/happybrackets/device/HB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/resources/builddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/resources/builddate.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../HappyBrackets/src/main/resources/versionddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HappyBrackets/src/main/resources/versionddate.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/META-INF/plugin.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/META-INF/plugin.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/builddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/builddate.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/liveTemplates/HappyBrackets.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/liveTemplates/HappyBrackets.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HB.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HB.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HappyBracketsProject.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/HappyBracketsProject.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/JavaDocs.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../../IntelliJ Plugin/resources/projectTemplates/JavaDocs.zip" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/build/production/HappyBrackets Project/" />
     <ignored path="$PROJECT_DIR$/build/test/HappyBrackets Project/" />
@@ -24,70 +80,19 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/ChangeControlTypes.java">
+        <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="24" column="48" selection-start-line="24" selection-start-column="48" selection-end-line="24" selection-end-column="48" />
+            <state relative-caret-position="105">
+              <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/ChangeControlTypes.java">
+        <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/SimpleAccelerometer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="22" column="21" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="42" selection-start-line="42" selection-end-line="47" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="645">
-              <caret line="47" column="85" selection-start-line="47" selection-start-column="85" selection-end-line="47" selection-end-column="85" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="31" column="83" selection-start-line="31" selection-start-column="83" selection-end-line="31" selection-end-column="83" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowInts.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="48" column="83" selection-start-line="48" selection-start-column="83" selection-end-line="48" selection-end-column="83" />
+            <state relative-caret-position="255">
+              <caret line="27" column="29" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -95,32 +100,71 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/examples/threads/ControlledThread.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1380">
-              <caret line="102" column="115" selection-start-line="102" selection-start-column="115" selection-end-line="102" selection-end-column="115" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="600">
+              <caret line="50" column="29" selection-start-line="50" selection-start-column="29" selection-end-line="50" selection-end-column="29" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowFloats.java">
+        <entry file="file://$PROJECT_DIR$/src/examples/threads/CreatedThread.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
-              <caret line="55" column="82" selection-start-line="55" selection-start-column="82" selection-end-line="55" selection-end-column="82" />
+            <state relative-caret-position="120">
+              <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java">
+        <entry file="file://$PROJECT_DIR$/src/examples/threads/SimpleThread.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="23" column="45" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/examples/basic/PolyLimitedOutput.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="22" column="36" lean-forward="true" selection-start-line="22" selection-start-column="36" selection-end-line="22" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/TripleAxisAccelerometer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="32" column="27" selection-start-line="32" selection-start-column="27" selection-end-line="32" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/sensor/gyroscope/MonitorGyroscope.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/sensor/gyroscope/SimpleGyroscope.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="345">
-              <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/examples/sensor/gyroscope/TripleAxisGyroscope.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="450">
+              <caret line="37" column="30" selection-start-line="37" selection-start-column="30" selection-end-line="37" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -138,15 +182,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>(hb.ac,</find>
-      <find>addDe</find>
-      <find>nameaddress</find>
-      <find>name</find>
-      <find>Nam</find>
-      <find>Name</find>
-      <find>new Clock(CLOCK_INTERVAL)</find>
-      <find>next_frequency</find>
-      <find>FILE_PATH</find>
       <find>Device</find>
       <find>setFequency</find>
       <find>setMidiFequency</find>
@@ -168,6 +203,15 @@
       <find>offse</find>
       <find>// v is how far</find>
       <find>re</find>
+      <find>basicSamplePLayer</find>
+      <find>sample</find>
+      <find>Sample</find>
+      <find>sampleModule</find>
+      <find>new WaveModule</find>
+      <find>basicWave</find>
+      <find>basicWavePlayer</find>
+      <find>wave</find>
+      <find>WaveModule</find>
     </findStrings>
     <replaceStrings>
       <replace>Create a Trigger type Dynamic Control</replace>
@@ -178,6 +222,7 @@
       <replace>HB.getAudioOutput()</replace>
       <replace>HB.HBInstance.setStatus</replace>
       <replace>HB.getNumOutChannels()</replace>
+      <replace>basicSampleModule</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/libs/HB.jar!/net/happybrackets/device/sensors</dir>
@@ -190,57 +235,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java" />
-        <option value="$PROJECT_DIR$/src/examples/samples/CirclePitchShift.java" />
-        <option value="$PROJECT_DIR$/../../../HappyBrackets/src/test/java/net/happybrackets/examples/CirclePitchShift.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/basic/MinorChord.java" />
-        <option value="$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java" />
-        <option value="$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java" />
-        <option value="$PROJECT_DIR$/src/examples/events/delay/DelayPitch.java" />
-        <option value="$PROJECT_DIR$/src/examples/gpio/PulseDigitalOutGPIO.java" />
-        <option value="$PROJECT_DIR$/Device/HappyBrackets/scripts/run-local.sh" />
-        <option value="$PROJECT_DIR$/Device/HappyBrackets/scripts/run.sh" />
-        <option value="$PROJECT_DIR$/Device/HappyBrackets/scripts/run-virtual.sh" />
-        <option value="$PROJECT_DIR$/src/examples/midi/basic/SimpleMIDI.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/abeads/basic/SimpleMIDI.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/beads/basic/SimpleMIDI.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/synth/scales/MajorScaleModulo.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/beads/basic/MajorChord.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/basic/MajorChord.java" />
-        <option value="$PROJECT_DIR$/src/examples/midi/synth/basic/SimpleMIDI.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/sensor/gyroscope/MonitorGyroscope.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalSendAccelerometer.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java" />
-        <option value="$PROJECT_DIR$/src/examples/osc/OSCReceiveValues.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalReceiveAccelerometer.java" />
-        <option value="$PROJECT_DIR$/src/examples/osc/OSCSender.java" />
         <option value="$PROJECT_DIR$/src/examples/threads/CreatedThread.java" />
         <option value="$PROJECT_DIR$/src/examples/pythonscript/RunProcessAndArguments.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalCustomExample.java" />
         <option value="$PROJECT_DIR$/src/examples/multiple/SampleController.java" />
         <option value="$PROJECT_DIR$/src/examples/events/scheduled/FollowInts.java" />
-        <option value="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" />
         <option value="$PROJECT_DIR$/src/examples/events/scheduled/FollowFloats.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java" />
         <option value="$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java" />
         <option value="$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java" />
         <option value="$PROJECT_DIR$/src/examples/events/scheduled/AdjustSynchroniser.java" />
-        <option value="$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/ChangeControlTypes.java" />
         <option value="$PROJECT_DIR$/src/examples/controls/integerControl/ChangeControlTypes.java" />
         <option value="$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleDirectionGyroscope.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleRateAccelerometer.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/sensorcontroller/SampleSpeedAndDirection.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/AlternatingLoopedSamplePlayer.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/LoopedSamplePlayer.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/SampleChangeSpeed.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/SamplePitchShift.java" />
+        <option value="$PROJECT_DIR$/src/examples/samples/SimpleSamplePlayer.java" />
+        <option value="$PROJECT_DIR$/src/examples/basic/HelloWorld.java" />
+        <option value="$PROJECT_DIR$/src/examples/basic/FrequencyEnvelope.java" />
+        <option value="$PROJECT_DIR$/src/examples/basic/GainEnvelope.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControlSample.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java" />
+        <option value="$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java" />
+        <option value="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledBeadsClock.java" />
+        <option value="$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java" />
+        <option value="$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java" />
+        <option value="$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java" />
+        <option value="$PROJECT_DIR$/src/examples/midi/basic/SimpleMIDI.java" />
+        <option value="$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java" />
+        <option value="$PROJECT_DIR$/src/examples/midi/scales/MajorScale.java" />
+        <option value="$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java" />
+        <option value="$PROJECT_DIR$/src/examples/sensor/accelerometer/SimpleAccelerometer.java" />
+        <option value="$PROJECT_DIR$/src/examples/sensor/gyroscope/SimpleGyroscope.java" />
+        <option value="$PROJECT_DIR$/src/examples/sensor/accelerometer/TripleAxisAccelerometer.java" />
+        <option value="$PROJECT_DIR$/src/examples/sensor/gyroscope/TripleAxisGyroscope.java" />
+        <option value="$PROJECT_DIR$/src/examples/threads/ControlledThread.java" />
+        <option value="$PROJECT_DIR$/src/examples/threads/SimpleThread.java" />
+        <option value="$PROJECT_DIR$/src/examples/basic/PolyLimtedOutput.java" />
+        <option value="$PROJECT_DIR$/src/examples/basic/PolyLimitedOutput.java" />
       </list>
     </option>
   </component>
@@ -322,6 +367,13 @@
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="basic" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
               <item name="controls" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -329,7 +381,87 @@
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+              <item name="booleancontrol" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+              <item name="classobjectcontrols" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+              <item name="floatcontrol" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+              <item name="globalcontrol" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+              <item name="integerControl" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+              <item name="textcontrol" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="controls" type="462c0819:PsiDirectoryNode" />
+              <item name="triggercontrol" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
               <item name="events" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="events" type="462c0819:PsiDirectoryNode" />
+              <item name="clocks" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="events" type="462c0819:PsiDirectoryNode" />
+              <item name="delay" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="events" type="462c0819:PsiDirectoryNode" />
+              <item name="envelope" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
@@ -344,7 +476,80 @@
               <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="fmsynthesis" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="gpio" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
               <item name="midi" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="midi" type="462c0819:PsiDirectoryNode" />
+              <item name="basic" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="midi" type="462c0819:PsiDirectoryNode" />
+              <item name="scales" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="multiple" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="osc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="pihat" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="pythonscript" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="samples" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="samples" type="462c0819:PsiDirectoryNode" />
+              <item name="sensorcontroller" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
@@ -369,12 +574,19 @@
               <item name="sensor" type="462c0819:PsiDirectoryNode" />
               <item name="gyroscope" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="HappyBrackets Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="HappyBrackets Project" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
+              <item name="threads" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -382,7 +594,7 @@
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="happybrackets_project" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1593143685992" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1593997373306" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
@@ -556,9 +768,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="837" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3319027" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.35622317" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24959612" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -584,7 +795,7 @@
       <window_info anchor="right" id="Palette&#9;" order="4" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
       <window_info anchor="right" id="Maven Projects" order="6" weight="0.24878837" />
-      <window_info active="true" anchor="right" id="HappyBrackets" order="7" sideWeight="0.49678457" visible="true" weight="0.21030043" />
+      <window_info active="true" anchor="right" id="HappyBrackets" order="7" sideWeight="0.49678457" visible="true" weight="0.2067239" />
       <window_info anchor="right" id="Theme Preview" order="8" />
       <window_info anchor="right" id="Coverage" order="9" sideWeight="0.503937" side_tool="true" weight="0.20553781" />
       <window_info anchor="right" x="0" y="0" width="310" height="637" id="Documentation" order="10" sideWeight="0.50321543" side_tool="true" visible="true" weight="0.14583333" />
@@ -680,97 +891,48 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run-simulator.bat">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run-simulator.sh">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1017" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/config/simulator.config">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run-local.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1420">
-          <caret line="109" lean-forward="true" selection-start-line="38" selection-end-line="109" />
+        <state relative-caret-position="286">
+          <caret line="28" column="51" selection-start-line="28" selection-start-column="51" selection-end-line="28" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Device/HappyBrackets/scripts/run-virtual.sh">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="107" lean-forward="true" selection-start-line="107" selection-end-line="107" />
+        <state relative-caret-position="-179">
+          <caret line="44" column="29" selection-start-line="44" selection-start-column="29" selection-end-line="44" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/Device/HappyBrackets/HB.jar!/net/happybrackets/device/HB.class">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="318" column="56" lean-forward="true" selection-start-line="318" selection-start-column="56" selection-end-line="318" selection-end-column="56" />
+        <state relative-caret-position="45">
+          <caret line="3" column="40" lean-forward="true" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/SimpleMIDI.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/ChangeControlTypes.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="13" column="45" selection-start-line="13" selection-start-column="45" selection-end-line="13" selection-end-column="45" />
+        <state relative-caret-position="196">
+          <caret line="22" column="21" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/synth/scales/CustomScale.java" />
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/synth/basic/MajorChord.java" />
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/synth/scales/MajorScale.java" />
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/synth/basic/MinorChord.java" />
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/synth/scales/MajorScaleModulo.java" />
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-304">
-          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+        <state relative-caret-position="33">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-34">
-          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/synth/basic/SimpleMIDI.java" />
-    <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/MajorChord.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowBoolean.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-40">
-          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/BooleanControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatSliderControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="50" selection-start-line="7" selection-start-column="50" selection-end-line="7" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/sensor/gyroscope/MonitorGyroscope.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="795">
-          <caret line="53" column="84" selection-start-line="53" selection-start-column="84" selection-end-line="53" selection-end-column="84" />
+        <state relative-caret-position="447">
+          <caret line="31" column="29" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -779,65 +941,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerTextControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="49" column="48" selection-start-line="49" selection-start-column="48" selection-end-line="49" selection-end-column="48" />
+        <state relative-caret-position="256">
+          <caret line="29" column="29" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerBuddyControlSample.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" column="155" selection-start-line="47" selection-start-column="155" selection-end-line="47" selection-end-column="155" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="286">
+          <caret line="27" column="55" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalSendAccelerometer.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="446">
-          <caret line="47" column="60" selection-start-line="47" selection-start-column="60" selection-end-line="47" selection-end-column="60" />
+        <state relative-caret-position="658">
+          <caret line="84" column="56" selection-start-line="84" selection-start-column="56" selection-end-line="84" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatTextControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="825">
-          <caret line="55" column="44" selection-start-line="55" selection-start-column="44" selection-end-line="55" selection-end-column="44" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/IntegerSliderControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="53" selection-start-line="9" selection-start-column="53" selection-end-line="9" selection-end-column="53" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/textcontrol/StringMonitor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
+        <state relative-caret-position="275">
           <caret line="24" column="50" selection-start-line="24" selection-start-column="50" selection-end-line="24" selection-end-column="50" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="52" column="82" selection-start-line="52" selection-start-column="82" selection-end-line="52" selection-end-column="82" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -846,147 +978,94 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/controls/triggercontrol/TriggerControlSample.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="48" column="56" selection-start-line="48" selection-start-column="56" selection-end-line="48" selection-end-column="56" />
+        <state relative-caret-position="421">
+          <caret line="41" column="29" selection-start-line="41" selection-start-column="29" selection-end-line="41" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCReceiveValues.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledBeadsClock.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="52" selection-start-line="27" selection-start-column="52" selection-end-line="27" selection-end-column="52" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="-170">
+          <caret line="34" column="29" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/textcontrol/SampleTextControl.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SensorControlledClock.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="84" column="56" selection-start-line="84" selection-start-column="56" selection-end-line="84" selection-end-column="56" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="-35">
+          <caret line="37" column="29" selection-start-line="37" selection-start-column="29" selection-end-line="37" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalReceiveAccelerometer.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/SimpleClock.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
-          <caret line="24" column="47" lean-forward="true" selection-start-line="24" selection-start-column="47" selection-end-line="24" selection-end-column="47" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <caret line="34" column="29" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCSender.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/clocks/VariableClock.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1695">
-          <caret line="113" column="48" selection-start-line="113" selection-start-column="48" selection-end-line="113" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="435">
+          <caret line="37" column="29" selection-start-line="37" selection-start-column="29" selection-end-line="37" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/threads/CreatedThread.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/delay/DelayPitch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1905">
-          <caret line="135" column="115" selection-start-line="135" selection-start-column="115" selection-end-line="135" selection-end-column="115" />
+        <state relative-caret-position="360">
+          <caret line="32" column="24" lean-forward="true" selection-start-line="32" selection-start-column="24" selection-end-line="32" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunProcessAndArguments.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/envelope/EnvelopeTrigger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/classobjectcontrols/GlobalCustomExample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/multiple/SampleController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3795">
-          <caret line="265" column="98" selection-start-line="265" selection-start-column="98" selection-end-line="265" selection-end-column="98" />
+        <state relative-caret-position="181">
+          <caret line="22" column="19" lean-forward="true" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/AdjustSynchroniser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
+        <state relative-caret-position="436">
           <caret line="37" column="58" selection-start-line="37" selection-start-column="58" selection-end-line="37" selection-end-column="58" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/MonitorFloats.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowBoolean.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="28" column="51" selection-start-line="28" selection-start-column="51" selection-end-line="28" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="105">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/TargetControl.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowFloats.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="97" column="40" selection-start-line="97" selection-start-column="40" selection-end-line="97" selection-end-column="40" />
+        <state relative-caret-position="658">
+          <caret line="55" column="82" selection-start-line="55" selection-start-column="82" selection-end-line="55" selection-end-column="82" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/globalcontrol/GlobalControl.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowInts.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="67" column="101" selection-start-line="67" selection-start-column="101" selection-end-line="67" selection-end-column="101" />
+        <state relative-caret-position="631">
+          <caret line="48" column="83" selection-start-line="48" selection-start-column="83" selection-end-line="48" selection-end-column="83" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/MonitorIntegers.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="27" column="55" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/ChangeControlTypes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="24" column="48" selection-start-line="24" selection-start-column="48" selection-end-line="24" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/integerControl/ChangeControlTypes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="22" column="21" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/floatcontrol/FloatBuddyControlSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="42" selection-start-line="42" selection-end-line="47" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="346">
+          <caret line="31" column="83" selection-start-line="31" selection-start-column="83" selection-end-line="31" selection-end-column="83" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ScheduleEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
+        <state relative-caret-position="616">
           <caret line="47" column="85" selection-start-line="47" selection-start-column="85" selection-end-line="47" selection-end-column="85" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -994,51 +1073,199 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/pythonscript/RunCommandline.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/ShowTime.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
+        <state relative-caret-position="91">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowInts.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/BasicFM.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="48" column="83" selection-start-line="48" selection-start-column="83" selection-end-line="48" selection-end-column="83" />
+        <state relative-caret-position="106">
+          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/fmsynthesis/RatioDepthFM.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalInGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/DigitalOutGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/PulseDigitalOutGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/gpio/PWMOutGPIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/MajorChord.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/MinorChord.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-74">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/midi/basic/SimpleMIDI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="24" column="29" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/CustomScale.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="496">
+          <caret line="41" column="29" selection-start-line="41" selection-start-column="29" selection-end-line="41" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/MajorScale.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="436">
+          <caret line="37" column="29" selection-start-line="37" selection-start-column="29" selection-end-line="37" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/midi/scales/MajorScaleModulo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="43" column="29" selection-start-line="43" selection-start-column="29" selection-end-line="43" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/multiple/SampleController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="41" column="13" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/osc/GetControllerAddress.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCReceiveValues.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCSendAccelerometer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/osc/OSCSender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/MonitorAccelerometer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/SimpleAccelerometer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="27" column="29" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/examples/threads/ControlledThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1380">
-          <caret line="102" column="115" selection-start-line="102" selection-start-column="115" selection-end-line="102" selection-end-column="115" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="600">
+          <caret line="50" column="29" selection-start-line="50" selection-start-column="29" selection-end-line="50" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/FollowFloats.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/threads/CreatedThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="55" column="82" selection-start-line="55" selection-start-column="82" selection-end-line="55" selection-end-column="82" />
+        <state relative-caret-position="120">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/controls/booleancontrol/MonitorBoolean.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/threads/SimpleThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="210">
+          <caret line="23" column="45" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/examples/events/scheduled/RunAtTime.java">
+    <entry file="file://$PROJECT_DIR$/src/examples/sensor/accelerometer/TripleAxisAccelerometer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
-          <caret line="31" column="83" selection-start-line="31" selection-start-column="83" selection-end-line="31" selection-end-column="83" />
+          <caret line="32" column="27" selection-start-line="32" selection-start-column="27" selection-end-line="32" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/sensor/gyroscope/MonitorGyroscope.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/sensor/gyroscope/SimpleGyroscope.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/sensor/gyroscope/TripleAxisGyroscope.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="37" column="30" selection-start-line="37" selection-start-column="30" selection-end-line="37" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/examples/basic/PolyLimitedOutput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="22" column="36" lean-forward="true" selection-start-line="22" selection-start-column="36" selection-end-line="22" selection-end-column="36" />
         </state>
       </provider>
     </entry>

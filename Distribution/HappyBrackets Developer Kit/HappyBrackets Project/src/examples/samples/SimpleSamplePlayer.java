@@ -23,12 +23,12 @@ public class SimpleSamplePlayer implements HBAction
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /* type basicSamplePLayer to generate this code */
+        /* type basicSampleModule to generate this code */
         // define our sample name
         final String sample_name = "data/audio/long/1979.wav";
-        SampleModule player = new SampleModule();
-        if (player.setSample(sample_name)) {/* Write your code below this line */
-            player.connectTo(HB.getAudioOutput());
+        SampleModule sampleModule = new SampleModule();
+        if (sampleModule.setSample(sample_name)) {/* Write your code below this line */
+            sampleModule.connectTo(HB.getAudioOutput());
 
             /* Write your code above this line */
         } else {

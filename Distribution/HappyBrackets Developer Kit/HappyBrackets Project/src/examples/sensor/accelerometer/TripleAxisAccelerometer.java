@@ -24,14 +24,14 @@ public class TripleAxisAccelerometer implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        WaveModule x_player = new WaveModule(1000, 0.1f, Buffer.SINE);
-        x_player.connectTo(HB.getAudioOutput());
+        WaveModule x_module = new WaveModule(1000, 0.1f, Buffer.SINE);
+        x_module.connectTo(HB.getAudioOutput());
 
-        WaveModule y_player = new WaveModule(1000, 0.1f, Buffer.SQUARE);
-        y_player.connectTo(HB.getAudioOutput());
+        WaveModule y_module = new WaveModule(1000, 0.1f, Buffer.SQUARE);
+        y_module.connectTo(HB.getAudioOutput());
 
-        WaveModule z_player = new WaveModule(1000, 0.1f, Buffer.SAW);
-        z_player.connectTo(HB.getAudioOutput());
+        WaveModule z_module = new WaveModule(1000, 0.1f, Buffer.SAW);
+        z_module.connectTo(HB.getAudioOutput());
 
 
         /** type accelerometerSensor to create this. Values typically range from -1 to + 1 **/
@@ -39,9 +39,9 @@ public class TripleAxisAccelerometer implements HBAction, HBReset {
             @Override
             public void sensorUpdated(float x_val, float y_val, float z_val) { /*     Write your code below this line     */
 
-                x_player.setFrequency(scaleValue(x_val, 0, 1000));
-                y_player.setFrequency(scaleValue(y_val, 0, 1000));
-                z_player.setFrequency(scaleValue(z_val, 0, 1000));
+                x_module.setFrequency(scaleValue(x_val, 0, 1000));
+                y_module.setFrequency(scaleValue(y_val, 0, 1000));
+                z_module.setFrequency(scaleValue(z_val, 0, 1000));
 
                 /*  Write your code above this line        */
             }

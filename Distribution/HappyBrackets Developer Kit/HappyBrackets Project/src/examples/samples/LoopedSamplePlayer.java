@@ -24,20 +24,20 @@ public class LoopedSamplePlayer implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /* type basicSamplePLayer to generate this code */
+        /* type basicSampleModule to generate this code */
         // define our sample name
         final String sample_name = "data/audio/long/1979.wav";
-        SampleModule samplePlayer = new SampleModule();
-        if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
-            samplePlayer.connectTo(HB.getAudioOutput());
+        SampleModule sampleModule = new SampleModule();
+        if (sampleModule.setSample(sample_name)) {/* Write your code below this line */
+            sampleModule.connectTo(HB.getAudioOutput());
 
             // define our loop type. we will loop forwards
-            samplePlayer.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+            sampleModule.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
 
 
             // now set the loop start and end in the actual sample player
-            samplePlayer.setLoopStart(LOOP_START);
-            samplePlayer.setLoopEnd(LOOP_END);
+            sampleModule.setLoopStart(LOOP_START);
+            sampleModule.setLoopEnd(LOOP_END);
             /* Write your code above this line */
         } else {
             HB.sendStatus("Failed sample " + sample_name);

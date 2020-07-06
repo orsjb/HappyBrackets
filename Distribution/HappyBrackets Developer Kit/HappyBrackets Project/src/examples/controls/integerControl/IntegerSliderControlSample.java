@@ -29,8 +29,8 @@ public class IntegerSliderControlSample implements HBAction {
         final int FREQUENCY_VARIATION = 500; // This is how much we will vary frequency around centre frequency
         final float  MAX_VOLUME = 0.1f; // define how loud we want the sound
 
-        WaveModule player = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
 
         // Now add a dynamicControl to set the frequency
@@ -41,7 +41,7 @@ public class IntegerSliderControlSample implements HBAction {
             @Override
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 // set our frequency to the control value
-                player.setFrequency(control_val);
+                waveModule.setFrequency(control_val);
                 /* Write your DynamicControl code above this line */
             }
         }.setDisplayRange(CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);/* End DynamicControl frequency code */

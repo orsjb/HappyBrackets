@@ -29,8 +29,8 @@ public class FloatSliderControlSample implements HBAction {
         final float FREQUENCY_VARIATION = 500; // This is how much we will vary frequency around centre frequency
         final double MAX_VOLUME = 0.1; // define how loud we want the sound
 
-        WaveModule player = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
 
 
@@ -47,7 +47,7 @@ public class FloatSliderControlSample implements HBAction {
             public void valueChanged(double control_val) { /* Write your DynamicControl code below this line */
 
                 // set our frequency to the control value
-                player.setFrequency(control_val);
+                waveModule.setFrequency(control_val);
                 /* Write your DynamicControl code above this line */
             }
         }.setDisplayRange(CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);/* End DynamicControl floatSliderControl code */
@@ -59,7 +59,7 @@ public class FloatSliderControlSample implements HBAction {
             @Override
             public void valueChanged(double control_val) {/* Write your DynamicControl code below this line */
 
-                player.setGain(control_val);
+                waveModule.setGain(control_val);
                 /* Write your DynamicControl code above this line */
             }
         }.setDisplayRange(0, MAX_VOLUME, DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT);/* End DynamicControl sliderControl code */

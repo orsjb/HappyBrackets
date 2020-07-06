@@ -1461,7 +1461,8 @@ public class HB {
 	}
 
 	/**
-	 * Adds a sound to the audio output. The sound, in the form of any @{@link UGen}, is played immediately. It can be killed by calling {@link #reset()}, or by manually destroying the sound with a {@link Bead#kill()} message. Note that the system automatically limits the number of sounds added using a @{@link PolyLimit} object.
+	 * Adds a UGen to {@link PolyLimit} connected to the audio output. The sound, in the form of any @{@link UGen}, is played immediately. It can be killed by calling {@link #reset()}, or by manually destroying the sound with a {@link Bead#kill()} message.
+	 * Note that the system automatically limits the number of sounds added using a @{@link PolyLimit} object.
 	 *
 	 * @param snd the sound to play.
 	 * @return returns a string of the form "sndX" that can be used to store the pattern in global memory.
@@ -1564,6 +1565,22 @@ public class HB {
 		}
 		return ret;
 	}
+
+
+	/**
+	 * Get the {@link PolyLimit} that is connected to the  HappyBrackets  audio output as a UGen
+	 * @return the  HappyBrackets PolyLimit connected to the default output
+	 */
+	public static PolyLimit getPolyLimitedOutput(){
+		PolyLimit ret = null;
+		if (HB.HBInstance != null){
+			if (HB.HBInstance.ac != null){
+				ret = HB.HBInstance.pl;
+			}
+		}
+		return ret;
+	}
+
 
 	/**
 	 * Get the number of audio channels on the default HappyBrackets audio output <br>

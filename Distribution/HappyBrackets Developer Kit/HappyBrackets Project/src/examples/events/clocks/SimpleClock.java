@@ -32,12 +32,12 @@ public class SimpleClock implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        WaveModule player = new WaveModule();
+        WaveModule waveModule = new WaveModule();
 
-        player.setBuffer(Buffer.SQUARE);
-        player.setMidiFrequency(currentNote);
+        waveModule.setBuffer(Buffer.SQUARE);
+        waveModule.setMidiFrequency(currentNote);
 
-        player.connectTo(HB.getAudioOutput());
+        waveModule.connectTo(HB.getAudioOutput());
 
 
 
@@ -50,12 +50,12 @@ public class SimpleClock implements HBAction {
                 // move to the next chromatic note
                 currentNote++;
 
-                player.setMidiFrequency(currentNote);
+                waveModule.setMidiFrequency(currentNote);
             }
             else
             {
                 // Kill our player and stop the clock
-                player.kill();
+                waveModule.kill();
                 this_clock.stop();
             }
 
