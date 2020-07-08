@@ -1,5 +1,7 @@
 package net.happybrackets.sychronisedmodel;
 
+import org.json.JSONObject;
+
 public class IncrementalModel extends SynchronisedModel {
 
     public double getIntensityAtXY(int x, int y) {
@@ -12,6 +14,18 @@ public class IncrementalModel extends SynchronisedModel {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public JSONObject exportModelState() {
+        JSONObject jo = new JSONObject();
+        jo.put("framecount", frameCount);
+        return jo;
+    }
+
+    @Override
+    public void importModelState(JSONObject modelState) {
+        frameCount = modelState.getInt("framecount");
     }
 
 }

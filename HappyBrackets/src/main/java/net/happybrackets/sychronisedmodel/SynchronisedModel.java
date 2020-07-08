@@ -167,6 +167,16 @@ public abstract class SynchronisedModel {
         frameCount = frameState;
     }
 
+    public JSONObject exportModelState() {
+        JSONObject jo = new JSONObject();
+        jo.put("framecount", frameCount);
+        return jo;
+    }
+
+    public void importModelState(JSONObject modelState) {
+        frameCount = modelState.getInt("framecount");
+    }
+
     public void addDiad(Diad2d d) {
         diad2ds.add(d);
     }
@@ -174,9 +184,5 @@ public abstract class SynchronisedModel {
     public abstract double getIntensityAtXY(int x, int y);
 
     public abstract double getDiadIntensity();
-
-    public abstract JSONObject exportModelState();
-
-    public abstract void importModelState(JSONObject modelState);
 
 }

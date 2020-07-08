@@ -1,5 +1,7 @@
 package net.happybrackets.sychronisedmodel;
 
+import org.json.JSONObject;
+
 import static org.apache.commons.math3.util.MathUtils.TWO_PI;
 
 public class SineWaveModel extends SynchronisedModel {
@@ -12,6 +14,5 @@ public class SineWaveModel extends SynchronisedModel {
         Diad2d d = diad2ds.get(myPosition);
         return getIntensityAtXY(d.x, d.y);
     }
-
 }
 

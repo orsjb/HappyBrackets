@@ -204,7 +204,7 @@ public class Boid {
         String strVelocity = jo.getString("velocity");
         String[] xyVelocity = strVelocity.split(",");
         velocity.x = Double.parseDouble(xyVelocity[0]);
-        velocity.x = Double.parseDouble(xyVelocity[1]);
+        velocity.y = Double.parseDouble(xyVelocity[1]);
 
         String strAcceleration = jo.getString("acceleration");
         String[] xyAcceleration = strAcceleration.split(",");

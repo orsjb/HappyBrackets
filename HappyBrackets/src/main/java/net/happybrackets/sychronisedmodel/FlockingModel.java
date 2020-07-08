@@ -3,7 +3,6 @@ package net.happybrackets.sychronisedmodel;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.json.JSONObject;
-import sun.tools.jstat.Jstat;
 
 import java.util.Iterator;
 

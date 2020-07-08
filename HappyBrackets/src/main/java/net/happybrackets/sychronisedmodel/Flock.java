@@ -6,10 +6,11 @@ import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import java.util.ArrayList;
 import java.util.List;
 
-class Flock {
+public class Flock {
     public List<Boid> boids;
 
     List<Diad2d> diad2ds;
+    static Flock flock;
 
     int width, height;
 
@@ -90,11 +91,18 @@ class Flock {
     }
 
     static Flock spawn(double wStart, double hStart, int width, int height, int numBoids, int randomSeed) {
-        Flock flock = new Flock();
+        flock = new Flock();
         flock.width = width;
         flock.height = height;
         for (int i = 0; i < numBoids; i++)
             flock.addBoid(new Boid(wStart, hStart, i + randomSeed, width, height));
         return flock;
+    }
+
+    public void resetBoids(int randomSeed) {
+        int numBoids = boids.size();
+        boids = new ArrayList<>();
+        for (int i = 0; i < numBoids; i++)
+            flock.addBoid(new Boid(0, 0, i + randomSeed, width, height));
     }
 }
