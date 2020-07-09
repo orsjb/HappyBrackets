@@ -46,8 +46,8 @@ apt-get install zulu-embedded-8
 apt-get -y --force-yes install amsynth
 
 #install timidity for soft sysnth through OS
-apt-get -y --force-yes install timidity
-apt-get -y --force-yes install timidity-daemon
+#apt-get -y --force-yes install timidity
+#apt-get -y --force-yes install timidity-daemon
 
 # Enable I2C on raspi, to connect to sensors. 
 # Counter-intuitively 'do_i2c 0' means 'enable'. 
