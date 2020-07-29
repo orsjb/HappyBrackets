@@ -1026,6 +1026,13 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	}
 
 	/**
+	 * Set the device to send alive signals back for the period defined by milliseconds
+	 * @param milliseconds the number of milliseconds to send alive messages back
+	 */
+	public void setAliveInterval(int milliseconds){
+		sendOscMsg(OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.ALIVE, milliseconds));
+	}
+	/**
 	 * Process Messages for device config
 	 * @param msg OSC Message
 	 *

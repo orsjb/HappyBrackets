@@ -398,6 +398,23 @@ public class HB {
 	}
 
 
+	/**
+	 * Sets how often in milliseconds this device will send an alive message to all
+	 * controllers. Does not take effect until next send.
+	 * If this interval is less than previous one then will cause a send immediatly
+	 * You can force by sending immediately with {@link #sendAliveMessage}
+	 * @param milliseconds number of milliseconds between
+	 */
+	public void setAliveTimeInterval(int milliseconds){
+		controller.setAlivetimeInterval(milliseconds);
+	}
+
+	/**
+	 * Force device to send alive message to all controllers
+	 */
+	public void sendAliveMessage(){
+		controller.sendAlive();
+	}
 
 	/**
 	 * Detect the type of device we are running by reading specific files through filesystem
