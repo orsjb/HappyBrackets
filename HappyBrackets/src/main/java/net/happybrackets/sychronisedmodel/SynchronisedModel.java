@@ -98,6 +98,7 @@ public abstract class SynchronisedModel {
 
     public void stop() {
         isRunning = false;
+        frameCount = 0;
     }
 
     public double getAverageRangeIntensityAtXY(int x, int y, int range) {
