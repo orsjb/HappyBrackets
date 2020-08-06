@@ -23,12 +23,6 @@ public class SampleRateAccelerometer implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /**************************************************************
-         * Load a sample and play it
-         *
-         * simply type samplePLayer-basic to generate this code and press <ENTER> for each parameter
-         **************************************************************/
-        
         final float INITIAL_VOLUME = 1f; // define how loud we want the sound
         Glide audioVolume = new Glide(INITIAL_VOLUME);
 

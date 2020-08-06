@@ -42,8 +42,8 @@ public class GlobalControl implements HBAction {
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
 
-        WaveModule player = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
         // This will display the sending device
         TextControl sendingDevice = new TextControl(this, "Sending Device", "");
@@ -59,7 +59,7 @@ public class GlobalControl implements HBAction {
             public void valueChanged(double control_val) { /* Write your DynamicControl code below this line */
                 // this value has been received either from the trigger below
                 // or over the network
-                player.setFrequency(control_val);
+                waveModule.setFrequency(control_val);
 
                 // now display the sending device
                 sendingDevice.setValue(getSendingDevice());
@@ -75,10 +75,10 @@ public class GlobalControl implements HBAction {
             @Override
             public void valueChanged(Boolean control_val) { /* Write your DynamicControl code below this line */
                 if (control_val){
-                    player.setGain(MAX_VOLUME);
+                    waveModule.setGain(MAX_VOLUME);
                 }
                 else {
-                    player.setGain(0);
+                    waveModule.setGain(0);
                 }
                 // now display the sending device
                 sendingDevice.setValue(getSendingDevice());

@@ -14,8 +14,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="basicWavePlayer" value="$COMMENT$&#10;        net.happybrackets.core.instruments.WaveModule $waveModule$ = new net.happybrackets.core.instruments.WaveModule();&#10;$waveModule$.setFrequency($FREQUENCY$);&#10;$waveModule$.setGain($VOLUME$);&#10;$waveModule$.setBuffer(net.beadsproject.beads.data.Buffer.SINE);&#10;$waveModule$.connectTo(net.happybrackets.device.HB.getAudioOutput());&#10;&#10;$END$" description="Creates minimal entries to make audio with a WavePlayer" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;// type basicWavePlayer to generate this code &quot;" alwaysStopAt="true" />
+  <template name="basicWaveModule" value="$COMMENT$&#10;        net.happybrackets.core.instruments.WaveModule $waveModule$ = new net.happybrackets.core.instruments.WaveModule();&#10;$waveModule$.setFrequency($FREQUENCY$);&#10;$waveModule$.setGain($VOLUME$);&#10;$waveModule$.setBuffer(net.beadsproject.beads.data.Buffer.SINE);&#10;$waveModule$.connectTo(net.happybrackets.device.HB.getAudioOutput());&#10;&#10;$END$" description="Creates minimal entries to make audio with a WavePlayer" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// type basicWaveModule to generate this code &quot;" alwaysStopAt="true" />
     <variable name="waveModule" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="FREQUENCY" expression="variableOfType(Float)" defaultValue="&quot;1000&quot;" alwaysStopAt="true" />
     <variable name="VOLUME" expression="variableOfType(Float)" defaultValue="&quot;0.1f&quot;" alwaysStopAt="true" />
@@ -24,8 +24,8 @@
       <option name="JAVA_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="basicSamplePlayer" value="$COMMENT$&#10;        // define our sample name&#10;        final java.lang.String $SAMPLE_NAME_VAR$ = &quot;$SAMPLE_NAME$&quot;;&#10;net.happybrackets.core.instruments.SampleModule $sampleModule$ = new net.happybrackets.core.instruments.SampleModule();&#10;if ($sampleModule$.setSample($SAMPLE_NAME_VAR$)) {$COMMENT_LINE_1$&#10;    $sampleModule$.connectTo(net.happybrackets.device.HB.getAudioOutput());&#10;    $END$&#10;$COMMENT_LINE_2$&#10;}else {&#10;    net.happybrackets.device.HB.HBInstance.setStatus(&quot;Failed sample &quot; + $SAMPLE_NAME_VAR$);&#10;}// End samplePlayer code " description="creates a Simple SamplePlayer" toReformat="true" toShortenFQNames="true">
-    <variable name="COMMENT" expression="" defaultValue="&quot;// type basicSamplePLayer to generate this code &quot;" alwaysStopAt="true" />
+  <template name="basicSampleModule" value="$COMMENT$&#10;        // define our sample name&#10;        final java.lang.String $SAMPLE_NAME_VAR$ = &quot;$SAMPLE_NAME$&quot;;&#10;net.happybrackets.core.instruments.SampleModule $sampleModule$ = new net.happybrackets.core.instruments.SampleModule();&#10;if ($sampleModule$.setSample($SAMPLE_NAME_VAR$)) {$COMMENT_LINE_1$&#10;    $sampleModule$.connectTo(net.happybrackets.device.HB.getAudioOutput());&#10;    $END$&#10;$COMMENT_LINE_2$&#10;}else {&#10;    net.happybrackets.device.HB.HBInstance.setStatus(&quot;Failed sample &quot; + $SAMPLE_NAME_VAR$);&#10;}// End samplePlayer code " description="creates a Simple SamplePlayer" toReformat="true" toShortenFQNames="true">
+    <variable name="COMMENT" expression="" defaultValue="&quot;// type basicSampleModule to generate this code &quot;" alwaysStopAt="true" />
     <variable name="SAMPLE_NAME_VAR" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
     <variable name="SAMPLE_NAME" expression="variableOfType(Type)" defaultValue="&quot;data/audio/long/1979.wav&quot;" alwaysStopAt="true" />
     <variable name="sampleModule" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />

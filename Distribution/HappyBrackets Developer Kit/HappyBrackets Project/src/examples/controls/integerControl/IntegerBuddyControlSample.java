@@ -1,11 +1,8 @@
 package examples.controls.integerControl;
 
 import net.beadsproject.beads.data.Buffer;
-import net.beadsproject.beads.ugens.Gain;
-import net.beadsproject.beads.ugens.Glide;
-import net.beadsproject.beads.ugens.WavePlayer;
+
 import net.happybrackets.core.HBAction;
-import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.control.IntegerControl;
 import net.happybrackets.core.instruments.WaveModule;
@@ -30,8 +27,8 @@ public class IntegerBuddyControlSample implements HBAction {
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
 
 
-        WaveModule player = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(CENTRE_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
 
         // Now add a dynamicControl to set the frequency
@@ -42,7 +39,7 @@ public class IntegerBuddyControlSample implements HBAction {
             @Override
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 // set our frequency to the control value
-                player.setFrequency(control_val);
+                waveModule.setFrequency(control_val);
                 /* Write your DynamicControl code above this line */
             }
         }.setDisplayRange(CENTRE_FREQUENCY - FREQUENCY_VARIATION, CENTRE_FREQUENCY + FREQUENCY_VARIATION, DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY);/*** End DynamicControl frequency code ***/

@@ -27,8 +27,8 @@ public class IntegerTextControlSample implements HBAction {
         final int INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final int MAX_VOLUME = 1; // define how loud we want the sound
 
-        WaveModule player = new WaveModule();
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule();
+        waveModule.connectTo(HB.getAudioOutput());
 
 
         // Now add a dynamicControl to set the frequency
@@ -38,7 +38,7 @@ public class IntegerTextControlSample implements HBAction {
             @Override
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 // set our frequency to the control value
-                player.setFrequency(INITIAL_FREQUENCY);
+                waveModule.setFrequency(INITIAL_FREQUENCY);
                 /* Write your DynamicControl code above this line */
             }
         };/* End DynamicControl frequency code */
@@ -51,7 +51,7 @@ public class IntegerTextControlSample implements HBAction {
             @Override
             public void valueChanged(int control_val) {/* Write your DynamicControl code below this line */
                 // change our gain according to control value
-                player.setGain(control_val);
+                waveModule.setGain(control_val);
                 /* Write your DynamicControl code above this line */
             }
         };/* End DynamicControl gainControl code */

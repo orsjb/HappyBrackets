@@ -31,7 +31,7 @@ public class SampleTextControl implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        /* type basicSamplePLayer to generate this code */
+        /* type basicSampleModule to generate this code */
         // define our sample name
         final String s = "data/audio/long/1979.wav";
         SampleModule samplePlayer = new SampleModule();

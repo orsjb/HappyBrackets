@@ -32,10 +32,10 @@ public class SensorControlledBeadsClock implements HBAction {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        WaveModule player = new WaveModule();
-        player.setBuffer(Buffer.SQUARE);
-        player.setMidiFrequency(currentNote);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule();
+        waveModule.setBuffer(Buffer.SQUARE);
+        waveModule.setMidiFrequency(currentNote);
+        waveModule.connectTo(HB.getAudioOutput());
 
         final double CLOCK_INTERVAL = 500;
 
@@ -65,7 +65,7 @@ public class SensorControlledBeadsClock implements HBAction {
                         currentNote = START_NOTE;
                     }
 
-                    player.setMidiFrequency(currentNote);
+                    waveModule.setMidiFrequency(currentNote);
 
                     /*** Write your code to perform functions on the beat above this line ****/
                 } else {

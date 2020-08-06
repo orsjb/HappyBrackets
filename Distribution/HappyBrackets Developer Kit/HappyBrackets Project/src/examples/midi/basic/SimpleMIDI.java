@@ -22,11 +22,11 @@ public class SimpleMIDI implements HBAction {
 
         final int MIDI_NOTE =  60; // This is MIDI C3
 
-        WaveModule player = new WaveModule();
+        WaveModule waveModule = new WaveModule();
 
-        player.setMidiFrequency(MIDI_NOTE);
-        player.setBuffer(Buffer.SQUARE);
-        player.connectTo(HB.getAudioOutput());
+        waveModule.setMidiFrequency(MIDI_NOTE);
+        waveModule.setBuffer(Buffer.SQUARE);
+        waveModule.connectTo(HB.getAudioOutput());
 
 
 

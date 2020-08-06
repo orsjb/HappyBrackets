@@ -104,6 +104,8 @@ do
 
 done <$CONFIG_FILE
 
+mkdir -p ramfs;
+
 ($JAVA_EXE -cp "data/classes:HB.jar:data/jars/*" -Xmx512m net.happybrackets.device.DeviceMain buf=$BUF sr=$SR bits=$BITS ins=$INS outs=$OUTS start=$AUTOSTART access=$ACCESSMODE $ACTION simulate=$SIMULATE config=$CONFIG  > ramfs/stdout 2>&1) &
 
 echo $!

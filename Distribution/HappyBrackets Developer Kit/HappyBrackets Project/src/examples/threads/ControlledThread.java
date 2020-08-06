@@ -48,8 +48,8 @@ public class ControlledThread implements HBAction, HBReset {
         hb.reset();
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
-        WaveModule player = new WaveModule(START_FREQUENCY, 0.1f, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(START_FREQUENCY, 0.1f, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
         /* Type threadFunction to generate this code */
         Thread thread = new Thread(() -> {
@@ -61,7 +61,7 @@ public class ControlledThread implements HBAction, HBReset {
                     currentFrequency = START_FREQUENCY;
                 }
 
-                player.setFrequency(currentFrequency);
+                waveModule.setFrequency(currentFrequency);
                 // we will override the sleep time in the beginning of theis thread
                 SLEEP_TIME = threadSleepTime;
                 /* write your code above this line */
@@ -69,7 +69,7 @@ public class ControlledThread implements HBAction, HBReset {
                     Thread.sleep(SLEEP_TIME);
                 } catch (InterruptedException e) {/* remove the break below to just resume thread or add your own action */
 
-                    player.kill();
+                    waveModule.kill();
                     break;
 
                 }

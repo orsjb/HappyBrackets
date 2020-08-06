@@ -33,8 +33,8 @@ public class SimpleGyroscope implements HBAction{
         // define the amount we will change the waveformFrequency by based on gyroscope value
         final float MULTIPLIER_FREQUENCY = 500;
 
-        WaveModule player = new WaveModule();
-        player.setFrequency(new Function(hb.getGyroscopeYaw()) {
+        WaveModule waveModule = new WaveModule();
+        waveModule.setFrequency(new Function(hb.getGyroscopeYaw()) {
             @Override
             public float calculate() {
                 float yaw = x[0];
@@ -43,7 +43,7 @@ public class SimpleGyroscope implements HBAction{
             }
         });
 
-        player.connectTo(HB.getAudioOutput());
+        waveModule.connectTo(HB.getAudioOutput());
     }
 
 

@@ -41,8 +41,8 @@ public class MajorScaleModulo implements HBAction {
         hb.setStatus(this.getClass().getSimpleName() + " Loaded");
 
 
-        WaveModule player = new WaveModule(Pitch.mtof(BASE_TONIC), 0.1f, Buffer.SQUARE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(Pitch.mtof(BASE_TONIC), 0.1f, Buffer.SQUARE);
+        waveModule.connectTo(HB.getAudioOutput());
 
 
 
@@ -80,7 +80,7 @@ public class MajorScaleModulo implements HBAction {
                 nextScaleIndex = 0;
             }
             // convert our MIDI pitch to a frequency
-            player.setMidiFrequency(key_note);
+            waveModule.setMidiFrequency(key_note);
 
             /*** Write your Clock tick event code above this line ***/
         });

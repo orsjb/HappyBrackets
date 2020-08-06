@@ -26,8 +26,8 @@ public class BooleanControlSample implements HBAction {
         final float INITIAL_FREQUENCY = 1000; // this is the frequency of the waveform we will make
         final float MAX_VOLUME = 0.1f; // define how loud we want the sound
 
-        WaveModule player = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(INITIAL_FREQUENCY, MAX_VOLUME, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
 
         // Now add a dynamicControl to pause
@@ -37,7 +37,7 @@ public class BooleanControlSample implements HBAction {
             @Override
             public void valueChanged(Boolean control_val) {/* Write your DynamicControl code below this line */
                 // We will pause if checkbox is off
-                player.pause(!control_val);
+                waveModule.pause(!control_val);
 
                 /* Write your DynamicControl code above this line */
             }

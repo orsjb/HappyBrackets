@@ -46,12 +46,12 @@ public class SamplePitchShift implements HBAction {
         final float INITIAL_VOLUME = 0; // define how loud we want the sound
         Envelope audioVolume = new Envelope(INITIAL_VOLUME);
 
-        /* type basicSamplePLayer to generate this code */
+        /* type basicSampleModule to generate this code */
         // define our sample name
         final String sample_name = "data/audio/Nylon_Guitar/Clean_A_harm.wav";
-        SampleModule samplePlayer = new SampleModule();
-        if (samplePlayer.setSample(sample_name)) {/* Write your code below this line */
-            samplePlayer.connectTo(HB.getAudioOutput());
+        SampleModule sampleModule = new SampleModule();
+        if (sampleModule.setSample(sample_name)) {/* Write your code below this line */
+            sampleModule.connectTo(HB.getAudioOutput());
 
             /* Write your code above this line */
         } else {
@@ -87,8 +87,8 @@ public class SamplePitchShift implements HBAction {
 
             double sample_multiplier = Pitch.shiftPitch(1, nextScaleIndex);
 
-            samplePlayer.setRate(sample_multiplier);
-            samplePlayer.setPosition(0);
+            sampleModule.setRate(sample_multiplier);
+            sampleModule.setPosition(0);
 
             /*** Write your Clock tick event code above this line ***/
         });

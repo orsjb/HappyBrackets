@@ -42,8 +42,8 @@ public class FrequencyEnvelope implements HBAction {
         // Create our envelope using LOW_FREQUENCY as the starting value
         Envelope frequencyEnvelope = new Envelope(LOW_FREQUENCY);
 
-        WaveModule player = new WaveModule(frequencyEnvelope, INITIAL_VOLUME, Buffer.SINE);
-        player.connectTo(HB.getAudioOutput());
+        WaveModule waveModule = new WaveModule(frequencyEnvelope, INITIAL_VOLUME, Buffer.SINE);
+        waveModule.connectTo(HB.getAudioOutput());
 
 
         // Now start changing the frequency of frequencyEnvelope
@@ -58,7 +58,7 @@ public class FrequencyEnvelope implements HBAction {
         frequencyEnvelope.addSegment(LOW_FREQUENCY, RAMP_DOWN_FREQUENCY_TIME);
 
         //Now make our frequency hold to the lower frequency, and after holding, kill our gainAmplifier
-        frequencyEnvelope.addSegment(LOW_FREQUENCY, HOLD_FREQUENCY_TIME, new KillTrigger(player));
+        frequencyEnvelope.addSegment(LOW_FREQUENCY, HOLD_FREQUENCY_TIME, new KillTrigger(waveModule));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

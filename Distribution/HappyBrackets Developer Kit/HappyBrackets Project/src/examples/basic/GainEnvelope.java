@@ -42,13 +42,13 @@ public class GainEnvelope implements HBAction {
 
 
         // create a wave player to generate a waveform using the FREQUENCY and a Square wave
-        WaveModule player = new WaveModule();
-        player.setFrequency(INITIAL_FREQUENCY);
-        player.setGain(gainEnvelope);
-        player.setBuffer(Buffer.SQUARE);
+        WaveModule waveModule = new WaveModule();
+        waveModule.setFrequency(INITIAL_FREQUENCY);
+        waveModule.setGain(gainEnvelope);
+        waveModule.setBuffer(Buffer.SQUARE);
 
         // Now plug the gain object into the audio output
-        player.connectTo(HB.getAudioOutput());
+        waveModule.connectTo(HB.getAudioOutput());
 
 
         // Now start changing the level of gainEnvelope
@@ -60,7 +60,7 @@ public class GainEnvelope implements HBAction {
         gainEnvelope.addSegment(MAX_VOLUME, HOLD_VOLUME_TIME);
 
         //Now make our gain fade out to MIN_VOLUME and then kill it
-        gainEnvelope.addSegment(MIN_VOLUME, FADEOUT_TIME, new KillTrigger(player));
+        gainEnvelope.addSegment(MIN_VOLUME, FADEOUT_TIME, new KillTrigger(waveModule));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Debug Start">

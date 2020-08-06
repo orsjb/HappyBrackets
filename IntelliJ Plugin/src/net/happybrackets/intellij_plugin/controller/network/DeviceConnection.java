@@ -544,6 +544,9 @@ public class DeviceConnection {
 					this_device.setSocketAddress(sending_address);
 					sendIdToDevice(this_device);
 
+					// Force device to send updates here
+					this_device.setAliveInterval(config.getAliveInterval());
+
 					// we can't do this here as the loading and unloading of the DeviceRepresentation cell
 					//sendControlRequestToDevice(this_device);
 				}
@@ -619,35 +622,32 @@ public class DeviceConnection {
 	 */
 	private synchronized void incomingMessage(OSCMessage msg, SocketAddress sender) {
 
-		if (!disableAdvertising) {
-			if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
-				processAliveMessage(msg, sender);
+		if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
+			processAliveMessage(msg, sender);
 
-				synchronized (deviceAliveListenerListLock){
-					for (DeviceAliveListener listener:deviceAliveListenerList) {
-						listener.deviceAlive(sender);
-					}
+			synchronized (deviceAliveListenerListLock) {
+				for (DeviceAliveListener listener : deviceAliveListenerList) {
+					listener.deviceAlive(sender);
 				}
-			} else {
-				final int DEVICE_NAME = 0;
-				try {
-					String device_name = (String) msg.getArg(DEVICE_NAME);
-					synchronized (devicesByHostnameLock) {
-						LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
+			}
+		} else {
+			final int DEVICE_NAME = 0;
+			try {
+				String device_name = (String) msg.getArg(DEVICE_NAME);
+				synchronized (devicesByHostnameLock) {
+					LocalDeviceRepresentation this_device = devicesByHostname.get(device_name);
 
-						if (this_device != null) {
+					if (this_device != null) {
 
-							if (!this_device.isIgnoringDevice()) {
-								this_device.incomingMessage(msg, sender);
-							}
+						if (!this_device.isIgnoringDevice()) {
+							this_device.incomingMessage(msg, sender);
 						}
 					}
 				}
-				catch (Exception ex){}
+			} catch (Exception ex) {
 			}
-
 		}
-//		logger.debug("Updated device list. Number of devices = " + devicesByHostname.size());
+
 	}
 
 

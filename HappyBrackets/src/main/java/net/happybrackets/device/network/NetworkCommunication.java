@@ -57,6 +57,36 @@ public class NetworkCommunication {
 	static private InetAddress broadcastAddress;		//Global Broadcast address
 	private Set<OSCListener> listeners = Collections.synchronizedSet(new HashSet<OSCListener>());
 
+	final Object aliveSyncObject = new Object(); // we will create an object we can wait on and send alive message with
+	volatile int alivetimeInterval = DefaultConfig.ALIVE_INTERVAL;
+
+	/**
+	 * Set the alive time interval for polling
+	 * This is how long the alive will send AFTER the next notify.
+	 * If this interval is less than existing interval then it will force a send
+	 * Force this with {@link #sendAlive}
+	 * @param milliseconds the number of milliseconds to wait between polls
+	 */
+	public void setAlivetimeInterval(int milliseconds){
+		synchronized (aliveSyncObject){
+
+			boolean force_send = milliseconds < alivetimeInterval;
+			alivetimeInterval = milliseconds;
+			if (force_send){
+				aliveSyncObject.notify();
+			}
+		}
+	}
+
+	/**
+	 * Cause the alive thread to trigger event and send the alive message
+	 */
+	public void sendAlive(){
+		synchronized (aliveSyncObject){
+			aliveSyncObject.notify();
+		}
+	}
+
 	/**
 	 * Class for receiving non java files from network
 	 */
@@ -447,7 +477,11 @@ public class NetworkCommunication {
 							}
 
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
-							//ignore
+							// if we have a parameter then set the alive time
+							if (msg.getArgCount() > 0){
+								int milliseconds = (int)msg.getArg(0);
+								hb.setAliveTimeInterval(milliseconds);
+							}
 
 						}
 						else if (OSCVocabulary.startsWith(msg, OSCVocabulary.SchedulerMessage.TIME)){
@@ -634,7 +668,11 @@ public class NetworkCommunication {
 								sendTcp(ret, src);
 							}
 						} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.ALIVE)) {
-							//ignore
+							if (msg.getArgCount() > 0){
+								int milliseconds = (int)msg.getArg(0);
+								hb.setAliveTimeInterval(milliseconds);
+							}
+
 						}else if (OSCVocabulary.startsWith(msg, OSCVocabulary.SchedulerMessage.TIME)){
 							HBScheduler.ProcessSchedulerMessage(msg);
 						}
@@ -674,9 +712,9 @@ public class NetworkCommunication {
 		//set up an indefinite thread to ping the controller
         new Thread() {
             public void run() {
-            BroadcastManager.OnTransmitter keepAlive = new BroadcastManager.OnTransmitter() {
-                @Override
-                public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
+				BroadcastManager.OnTransmitter keepAlive = new BroadcastManager.OnTransmitter() {
+					@Override
+					public void cb(NetworkInterface ni, OSCTransmitter transmitter) throws IOException {
                 	/*
 					int ni_hash = ni.hashCode();
 					CachedMessage cached_message = cachedNetworkMessage.get(ni_hash);
@@ -746,31 +784,28 @@ public class NetworkCommunication {
 						cachedNetworkMessage.remove(ni_hash);
 					}
 */
-				}
-            };
+					}
+				};
 
-            while(true) {
+				setAlivetimeInterval(DeviceConfig.getInstance().getAliveInterval());
 
-            	int default_alive_time = DefaultConfig.ALIVE_INTERVAL;
+				while (true) {
 
-            	if (DeviceConfig.getInstance() != null) {
-					//hb.broadcast.forAllTransmitters(keepAlive);
-					// we should send to all registered controllers
-					DeviceConfig.getInstance().notifyAllControllers();
-					default_alive_time = DeviceConfig.getInstance().getAliveInterval();
+					if (DeviceConfig.getInstance() != null) {
+						//hb.broadcast.forAllTransmitters(keepAlive);
+						// we should send to all registered controllers
+						DeviceConfig.getInstance().notifyAllControllers();
 
-					// if we set our alive time to zero, we will not send alive messages back but will act dumb
-					if (default_alive_time == 0){
-						System.out.println("Disable Keep Alive poll back to controller");
-						break;
+						synchronized (aliveSyncObject) {
+							try {
+								aliveSyncObject.wait(alivetimeInterval); // we can trigger this at any time
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+
 					}
 				}
-                try {
-                    Thread.sleep(default_alive_time);
-                } catch (InterruptedException e) {
-                    logger.error(OSCVocabulary.Device.ALIVE + " message send interval interupted!", e);
-                }
-            }
 			}
 		}.start();
 	}

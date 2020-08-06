@@ -29,22 +29,22 @@ public class TripleAxisGyroscope implements HBAction, HBReset {
         // define the amount we will change the waveformFrequency by based on gyroscope value
         final float MULTIPLIER_FREQUENCY = 500;
 
-        WaveModule yaw_player = new WaveModule(CENTRE_FREQUENCY, 0.1f, Buffer.SINE);
-        yaw_player.connectTo(HB.getAudioOutput());
+        WaveModule yaw_module = new WaveModule(CENTRE_FREQUENCY, 0.1f, Buffer.SINE);
+        yaw_module.connectTo(HB.getAudioOutput());
 
-        WaveModule pitch_player = new WaveModule(CENTRE_FREQUENCY, 0.1f, Buffer.SQUARE);
-        pitch_player.connectTo(HB.getAudioOutput());
+        WaveModule pitch_module = new WaveModule(CENTRE_FREQUENCY, 0.1f, Buffer.SQUARE);
+        pitch_module.connectTo(HB.getAudioOutput());
 
-        WaveModule roll_player = new WaveModule(CENTRE_FREQUENCY, 0.1f, Buffer.SAW);
-        roll_player.connectTo(HB.getAudioOutput());
+        WaveModule roll_module = new WaveModule(CENTRE_FREQUENCY, 0.1f, Buffer.SAW);
+        roll_module.connectTo(HB.getAudioOutput());
 
         /** type gyroscopeSensor to create this. Values typically range from -1 to + 1 **/
         new GyroscopeListener(hb) {
             @Override
             public void sensorUpdated(float pitch, float roll, float yaw) {/* Write your code below this line */
-                yaw_player.setFrequency(yaw * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
-                pitch_player.setFrequency(pitch * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
-                roll_player.setFrequency(roll * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
+                yaw_module.setFrequency(yaw * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
+                pitch_module.setFrequency(pitch * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
+                roll_module.setFrequency(roll * MULTIPLIER_FREQUENCY + CENTRE_FREQUENCY);
 
 
                 /* Write your code above this line */
