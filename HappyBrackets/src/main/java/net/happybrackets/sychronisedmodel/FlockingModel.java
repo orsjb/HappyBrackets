@@ -27,7 +27,6 @@ public class FlockingModel extends SynchronisedModel {
 
     public void stop() {
         super.stop();
-        flock = null;
     }
 
     public double getDiadIntensity() {

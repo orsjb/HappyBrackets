@@ -14,7 +14,7 @@ public class Renderer {
     private List<Light> lights = new ArrayList<Light>();
     private List<Speaker> speakers = new ArrayList<Speaker>();
     private final Serial serial = SerialFactory.createInstance();
-    public Map<String, Device> positions = new HashMap<>();
+    public ArrayList<Device> structure = new ArrayList<>();
     private boolean isSerialEnabled = false;
 
     public Renderer() {
@@ -44,8 +44,15 @@ public class Renderer {
         positions.put("hb-b827eb8221a3", new float[] {10.5f,8});
         */
 
-        positions.put("hb-b827ebaac945", new Light(9,6, "Light-1", 1));
-        positions.put("hb-b827eb302afa", new Speaker(10.5f,8, "Speaker-Left", 1));
+        structure.add(new Light("hb-b827ebaac945",9,6, 0,"Light-1", 1));
+        structure.add(new Speaker("hb-b827eb302afa",10.5f,8, 0,"Speaker-Left", 1));
+
+        structure.add(new Speaker("hb-b827eb999a03",10.5f,8, 0,"Speaker-Left", 1));
+        structure.add(new Speaker("hb-b827eb999a03",10.5f,8, 0,"Speaker-Right", 2));
+        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-1", 1));
+        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-2", 2));
+        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-3", 3));
+        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-4", 4));
 
         enableDevices();
 
@@ -67,17 +74,13 @@ public class Renderer {
     }
 
     public void enableDevices() {
-        Iterator it = positions.entrySet().iterator();
         InetAddress currentIPAddress;
-
         try {
             currentIPAddress = InetAddress.getLocalHost(); //getLocalHost() method returns the Local Hostname and IP Address
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                if(currentIPAddress.getHostName().equals(pair.getKey())) {
-                    addDevice((Device)pair.getValue());
+            for(Device d: structure) {
+                if(currentIPAddress.getHostName().equals(d.hostname)) {
+                    addDevice(d);
                 }
-                it.remove(); // avoids a ConcurrentModificationException
             }
         }
         catch (UnknownHostException ex) {
@@ -161,19 +164,21 @@ public class Renderer {
     }
 
     public void DisplayColor(int whichLED, int stripSize, int red, int green, int blue) {
-        int ledAddress = 10;
+        int ledAddress;
         switch (whichLED) {
-            case 1: ledAddress = 10;
+            case 1: ledAddress = 16;
                     break;
-            case 2: ledAddress = 14;
+            case 2: ledAddress = 20;
                     break;
-            case 3: ledAddress = 18;
+            case 3: ledAddress = 24;
                     break;
-            default: ledAddress = 10;
+            case 4: ledAddress = 28;
+                break;
+            default: ledAddress = 16;
                     break;
         }
         try {
-            serial.write("["+ ledAddress + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]sG");
+            serial.write("["+ String.format("%02x",ledAddress) + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]sG");
         }
         catch(IOException ex){
             ex.printStackTrace();
@@ -181,9 +186,17 @@ public class Renderer {
         }
     }
 
+    public void turnOffLEDs() {
+        for (int i = 1; i <= 4; i++) {
+            DisplayColor(i, 0, 0, 0, 0);
+        }
+    }
+
     public static abstract class Device {
+        public String hostname;
         public float x;
         public float y;
+        public float z;
         public String name;
         public int id;
 
@@ -191,23 +204,25 @@ public class Renderer {
         public Device() {
         }
 
-        public Device(float x, float y, String name, int id) {
+        public Device(String hostname, float x, float y, float z, String name, int id) {
+            this.hostname = hostname;
             this.x = x;
             this.y = y;
+            this.z = z;
             this.name = name;
             this.id = id;
         }
     }
 
     public static class Speaker extends Device {
-        public Speaker(float x, float y, String name, int id) {
-            super(x, y, name, id);
+        public Speaker(String hostname, float x, float y, float z, String name, int id) {
+            super(hostname, x, y, z, name, id);
         }
     }
 
     public static class Light extends Device {
-        public Light(float x, float y, String name, int id) {
-            super(x, y, name, id);
+        public Light(String hostname, float x, float y, float z, String name, int id) {
+            super(hostname, x, y, z, name, id);
         }
     }
 }
