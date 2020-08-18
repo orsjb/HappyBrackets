@@ -1,6 +1,9 @@
 package net.happybrackets.sychronisedmodel;
 
 import com.pi4j.io.serial.*;
+import net.beadsproject.beads.core.UGen;
+import net.beadsproject.beads.ugens.Gain;
+import net.happybrackets.device.HB;
 import net.happybrackets.device.config.DeviceConfig;
 
 import java.io.IOException;
@@ -17,7 +20,7 @@ public class Renderer {
     public ArrayList<Device> structure = new ArrayList<>();
     private boolean isSerialEnabled = false;
 
-    public Renderer() {
+    public Renderer(HB hb) {
         /*
         positions.put("hb-b827ebe529a6", new float[] {9,10});
         positions.put("hb-b827ebe6f198", new float[] {11,4.5f});
@@ -44,15 +47,15 @@ public class Renderer {
         positions.put("hb-b827eb8221a3", new float[] {10.5f,8});
         */
 
-        structure.add(new Light("hb-b827ebaac945",9,6, 0,"Light-1", 1));
-        structure.add(new Speaker("hb-b827eb302afa",10.5f,8, 0,"Speaker-Left", 1));
+        structure.add(new Light("hb-b827ebaac945",9,6, 0,"Light-1", 0));
+        structure.add(new Speaker(hb, "hb-b827eb302afa",10.5f,8, 0,"Speaker-Left", 0));
 
-        structure.add(new Speaker("hb-b827eb999a03",10.5f,8, 0,"Speaker-Left", 1));
-        structure.add(new Speaker("hb-b827eb999a03",10.5f,8, 0,"Speaker-Right", 2));
-        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-1", 1));
-        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-2", 2));
-        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-3", 3));
-        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-4", 4));
+        structure.add(new Speaker(hb, "hb-b827eb999a03",10.5f,8, 0,"Speaker-Left", 0));
+        structure.add(new Speaker(hb, "hb-b827eb999a03",10.5f,8, 0,"Speaker-Right", 1));
+        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-1", 0));
+        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-2", 1));
+        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-3", 2));
+        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-4", 3));
 
         enableDevices();
 
@@ -166,13 +169,13 @@ public class Renderer {
     public void DisplayColor(int whichLED, int stripSize, int red, int green, int blue) {
         int ledAddress;
         switch (whichLED) {
-            case 1: ledAddress = 16;
+            case 0: ledAddress = 16;
                     break;
-            case 2: ledAddress = 20;
+            case 1: ledAddress = 20;
                     break;
-            case 3: ledAddress = 24;
+            case 2: ledAddress = 24;
                     break;
-            case 4: ledAddress = 28;
+            case 3: ledAddress = 28;
                 break;
             default: ledAddress = 16;
                     break;
@@ -187,7 +190,7 @@ public class Renderer {
     }
 
     public void turnOffLEDs() {
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 0; i < 4; i++) {
             DisplayColor(i, 0, 0, 0, 0);
         }
     }
@@ -215,8 +218,11 @@ public class Renderer {
     }
 
     public static class Speaker extends Device {
-        public Speaker(String hostname, float x, float y, float z, String name, int id) {
+        public UGen out;
+        public Speaker(HB hb, String hostname, float x, float y, float z, String name, int id) {
             super(hostname, x, y, z, name, id);
+            out = new Gain(1, 1);
+            hb.getAudioOutput().addInput(id, out, 0);
         }
     }
 
