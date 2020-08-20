@@ -12,13 +12,16 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 
+
 public class Renderer {
 
     private List<Light> lights = new ArrayList<Light>();
-    private List<Speaker> speakers = new ArrayList<Speaker>();
+    public List<Speaker> speakers = new ArrayList<Speaker>();
     private final Serial serial = SerialFactory.createInstance();
     public ArrayList<Device> structure = new ArrayList<>();
     private boolean isSerialEnabled = false;
+    public int LEDStripSize = 18;
+    private String serialString;
 
     public Renderer(HB hb) {
         /*
@@ -60,6 +63,7 @@ public class Renderer {
         enableDevices();
 
         // create and register the serial data listener
+        /*
         serial.addListener(new SerialDataEventListener() {
             @Override
             public void dataReceived(SerialDataEvent event) {
@@ -74,6 +78,11 @@ public class Renderer {
                 }
             }
         });
+        */
+        setup();
+    }
+
+    public void setup() {
     }
 
     public void enableDevices() {
@@ -157,9 +166,11 @@ public class Renderer {
         for (Speaker s : speakers) {
             RenderSpeaker(s);
         }
+        serialString = "";
         for (Light l : lights) {
             RenderLight(l);
         }
+        sendGcommand();
     }
 
     public void DisplayColor(Light light, int stripSize, int red, int green, int blue) {
@@ -180,8 +191,23 @@ public class Renderer {
             default: ledAddress = 16;
                     break;
         }
+        //try {
+            serialString += "["+ String.format("%02x",ledAddress) + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]s";
+            //serial.write("["+ String.format("%02x",ledAddress) + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]s");
+            //serial.discardInput();
+        //}
+        /*
+        catch(IOException ex){
+            ex.printStackTrace();
+            System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
+        }
+        */
+    }
+
+    private void sendGcommand() {
         try {
-            serial.write("["+ String.format("%02x",ledAddress) + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]sG");
+            serial.write(serialString + "G");
+            serial.discardInput();
         }
         catch(IOException ex){
             ex.printStackTrace();
@@ -193,6 +219,7 @@ public class Renderer {
         for (int i = 0; i < 4; i++) {
             DisplayColor(i, 0, 0, 0, 0);
         }
+        sendGcommand();
     }
 
     public static abstract class Device {
