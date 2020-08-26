@@ -192,7 +192,7 @@ public class Renderer {
                     break;
         }
         //try {
-            serialString += "["+ String.format("%02x",ledAddress) + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]s";
+            serialString += ""+ String.format("%02x",ledAddress) + "@" + String.format("%02x",stripSize) + " sn" + String.format("%02x",red) + "sn" + String.format("%02x",green) + "sn" + String.format("%02x",blue) + "s";
             //serial.write("["+ String.format("%02x",ledAddress) + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]s");
             //serial.discardInput();
         //}
