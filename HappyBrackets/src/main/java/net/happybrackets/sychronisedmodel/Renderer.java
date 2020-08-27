@@ -22,6 +22,12 @@ public class Renderer {
     private boolean isSerialEnabled = false;
     public int LEDStripSize = 18;
     private String serialString;
+    public SynchronisedModel model;
+
+    public Renderer(HB hb, SynchronisedModel model) {
+        this(hb);
+        this.model = model;
+    }
 
     public Renderer(HB hb) {
         /*
