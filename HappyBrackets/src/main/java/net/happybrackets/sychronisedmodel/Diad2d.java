@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Diad2d {
     public int x,y,size;
-    String name;
+    public String name;
 
     public Diad2d(String name, int x, int y) {
         this.name = name;

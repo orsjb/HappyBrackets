@@ -182,6 +182,10 @@ public abstract class SynchronisedModel {
         diad2ds.add(d);
     }
 
+    public Diad2d getDiad2d(int position) {
+        return diad2ds.get(position);
+    }
+
     public abstract double getIntensityAtXY(int x, int y);
 
     public abstract double getDiadIntensity();
