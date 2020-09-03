@@ -23,6 +23,9 @@ public class Renderer {
     public int LEDStripSize = 18;
     private String serialString;
     public SynchronisedModel model;
+    private HB hb;
+    String[] stringArray = new String[256];
+    private boolean hasSerial = false;
 
     public Renderer(HB hb, SynchronisedModel model) {
         this(hb);
@@ -30,6 +33,7 @@ public class Renderer {
     }
 
     public Renderer(HB hb) {
+        this.hb = hb;
         /*
         positions.put("hb-b827ebe529a6", new float[] {9,10});
         positions.put("hb-b827ebe6f198", new float[] {11,4.5f});
@@ -57,10 +61,10 @@ public class Renderer {
         */
 
         structure.add(new Light("hb-b827ebaac945",9,6, 0,"Light-1", 0));
-        structure.add(new Speaker(hb, "hb-b827eb302afa",10.5f,8, 0,"Speaker-Left", 0));
+        structure.add(new Speaker( "hb-b827eb302afa",10.5f,8, 0,"Speaker-Left", 0));
 
-        structure.add(new Speaker(hb, "hb-b827eb999a03",10.5f,8, 0,"Speaker-Left", 0));
-        structure.add(new Speaker(hb, "hb-b827eb999a03",10.5f,8, 0,"Speaker-Right", 1));
+        structure.add(new Speaker("hb-b827eb999a03",10.5f,8, 0,"Speaker-Left", 0));
+        structure.add(new Speaker("hb-b827eb999a03",10.5f,8, 0,"Speaker-Right", 1));
         structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-1", 0));
         structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-2", 1));
         structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-3", 2));
@@ -86,6 +90,7 @@ public class Renderer {
         });
         */
         setup();
+        initialiseArray();
     }
 
     public void setup() {
@@ -120,24 +125,27 @@ public class Renderer {
 
             String args[] = new String[]{};
             serial.open(config);
+            hasSerial = true;
         }
         catch(IOException ex) {
             System.out.println(" ==>> SERIAL SETUP FAILED : " + ex.getMessage());
+            hasSerial = false;
             return;
         }
 
-        try {
-            serial.write("[04]@[03]s");
+        if(hasSerial) {
+            try {
+                serial.write("[04]@[03]s");
+            } catch (IOException ex) {
+                System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
+                return;
+            }
+            isSerialEnabled = true;
         }
-        catch(IOException ex){
-            System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
-            return;
-        }
-        isSerialEnabled = true;
     }
 
     public void disableSerial() {
-        if(!isSerialEnabled  || lights.size() == 0) return;
+        if(!isSerialEnabled  || lights.size() == 0 || !hasSerial) return;
         try {
             serial.close();
         }
@@ -150,13 +158,22 @@ public class Renderer {
 
     public void addDevice(Device d) {
         if(d instanceof Speaker) {
-            if(!speakers.contains(d))
+            if(!speakers.contains(d)) {
                 speakers.add((Speaker) d);
+                ((Speaker) d).out = new Gain(1, 1);
+                hb.getAudioOutput().addInput(d.id, ((Speaker) d).out, 0);
+            }
         }
         if(d instanceof Light) {
             if(!lights.contains(d))
                 lights.add((Light)d);
             enableSerial();
+        }
+    }
+
+    void initialiseArray() {
+        for (int i = 0; i < 256; i++) {
+            stringArray[i] = String.format("%02x",i);
         }
     }
 
@@ -198,7 +215,8 @@ public class Renderer {
                     break;
         }
         //try {
-            serialString += ""+ String.format("%02x",ledAddress) + "@" + String.format("%02x",stripSize) + " sn" + String.format("%02x",red) + "sn" + String.format("%02x",green) + "sn" + String.format("%02x",blue) + "s";
+            serialString += stringArray[ledAddress] + "@" + stringArray[stripSize] + "sn" + stringArray[red] + "sn" + stringArray[green] + "sn" + stringArray[blue] + "s";
+            // serialString += ""+ String.format("%02x",ledAddress) + "@" + String.format("%02x",stripSize) + " sn" + String.format("%02x",red) + "sn" + String.format("%02x",green) + "sn" + String.format("%02x",blue) + "s";
             //serial.write("["+ String.format("%02x",ledAddress) + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]s");
             //serial.discardInput();
         //}
@@ -211,13 +229,14 @@ public class Renderer {
     }
 
     private void sendGcommand() {
-        try {
-            serial.write(serialString + "G");
-            serial.discardInput();
-        }
-        catch(IOException ex){
-            ex.printStackTrace();
-            System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
+        if(isSerialEnabled && hasSerial) {
+            try {
+                serial.write(serialString + "G");
+                serial.discardInput();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
+            }
         }
     }
 
@@ -252,10 +271,8 @@ public class Renderer {
 
     public static class Speaker extends Device {
         public UGen out;
-        public Speaker(HB hb, String hostname, float x, float y, float z, String name, int id) {
+        public Speaker(String hostname, float x, float y, float z, String name, int id) {
             super(hostname, x, y, z, name, id);
-            out = new Gain(1, 1);
-            hb.getAudioOutput().addInput(id, out, 0);
         }
     }
 
