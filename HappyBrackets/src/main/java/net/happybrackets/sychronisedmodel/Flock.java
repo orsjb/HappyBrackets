@@ -43,6 +43,7 @@ public class Flock {
     }
 
     public int getDiadActivation(int i) {
+        if(i > diad2ds.size()) return 0;
         Diad2d d = diad2ds.get(i);
         return d.checkBoidsAround(boids);
     }
@@ -66,6 +67,7 @@ public class Flock {
 
 
     public double getDiadGaussianIntensity(int i) {
+        if(i > diad2ds.size()) return 0;
         Diad2d d = diad2ds.get(i);
         return getGaussianIntensityAtXY(d.x, d.y);
     }

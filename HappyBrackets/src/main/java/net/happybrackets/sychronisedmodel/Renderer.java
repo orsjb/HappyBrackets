@@ -60,16 +60,6 @@ public class Renderer {
         positions.put("hb-b827eb8221a3", new float[] {10.5f,8});
         */
 
-        structure.add(new Light("hb-b827ebaac945",9,6, 0,"Light-1", 0));
-        structure.add(new Speaker( "hb-b827eb302afa",10.5f,8, 0,"Speaker-Left", 0));
-
-        structure.add(new Speaker("hb-b827eb999a03",10.5f,8, 0,"Speaker-Left", 0));
-        structure.add(new Speaker("hb-b827eb999a03",10.5f,8, 0,"Speaker-Right", 1));
-        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-1", 0));
-        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-2", 1));
-        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-3", 2));
-        structure.add(new Light("hb-b827eb999a03",10.5f,8, 0,"Light-4", 3));
-
         enableDevices();
 
         // create and register the serial data listener
