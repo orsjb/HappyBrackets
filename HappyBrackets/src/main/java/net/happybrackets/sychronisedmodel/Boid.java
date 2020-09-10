@@ -11,15 +11,17 @@ public class Boid {
     static final Vec migrate = new Vec(0.02, 0);
     static final int size = 3;
     int width, height;
+    public int id;
 
     final double maxForce, maxSpeed;
 
     Vec location, velocity, acceleration;
     private boolean included = true;
 
-    Boid(double x, double y, int seed, int width, int height) {
+    Boid(int id, double x, double y, int seed, int width, int height) {
         this.width = width;
         this.height = height;
+        this.id = id;
         margin = new Random(seed);
         acceleration = new Vec();
         velocity = new Vec(margin.nextInt(3) + 1, margin.nextInt(3) - 1);
@@ -187,6 +189,7 @@ public class Boid {
     public JSONObject toJSON() {
 
         JSONObject jo = new JSONObject();
+        jo.put("id", id);
         jo.put("location", location.x + "," + location.y);
         jo.put("velocity", velocity.x + "," + velocity.y);
         jo.put("acceleration", acceleration.x + "," + acceleration.y);
@@ -195,6 +198,8 @@ public class Boid {
     }
 
     public void loadJSON(JSONObject jo) {
+
+        id = jo.getInt("id");
 
         String strLocation = jo.getString("location");
         String[] xyLocation = strLocation.split(",");

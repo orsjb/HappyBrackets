@@ -4,7 +4,9 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class FlockingModel extends SynchronisedModel {
     public Flock flock;
@@ -71,6 +73,23 @@ public class FlockingModel extends SynchronisedModel {
         return flock.getDiadGaussianIntensity(myPosition);
     }
 
+    public List<Integer> getBoidsIdAroundXY(int x, int y, int range) {
+        List<Integer> returnList = new ArrayList<>();
+        EuclideanDistance e = new EuclideanDistance();
+        double[] from = {x,y};
+        double[] to = {0,0};
+        double distance;
+        for (Boid b : flock.boids) {
+            to[0] = b.location.x;
+            to[1] = b.location.y;
+            distance = e.compute(from, to);
+            if(distance <= range) {
+                returnList.add(b.id);
+            }
+        }
+        return returnList;
+    }
+
     @Override
     public void setFrameState(int frameState) {
         int updateTimes = (frameState - frameCount);
@@ -82,9 +101,8 @@ public class FlockingModel extends SynchronisedModel {
 
     public JSONObject exportModelState() {
         JSONObject modelState = new JSONObject();
-        int count = 0;
         for (Boid b : flock.boids) {
-            modelState.put("" + count++,b.toJSON());
+            modelState.put("" + b.id,b.toJSON());
         }
         return modelState;
     }

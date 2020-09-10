@@ -97,7 +97,7 @@ public class Flock {
         flock.width = width;
         flock.height = height;
         for (int i = 0; i < numBoids; i++)
-            flock.addBoid(new Boid(wStart, hStart, i + randomSeed, width, height));
+            flock.addBoid(new Boid(i, wStart, hStart, i + randomSeed, width, height));
         return flock;
     }
 
@@ -105,6 +105,6 @@ public class Flock {
         int numBoids = boids.size();
         boids = new ArrayList<>();
         for (int i = 0; i < numBoids; i++)
-            flock.addBoid(new Boid(0, 0, i + randomSeed, width, height));
+            flock.addBoid(new Boid(i, 0, 0, i + randomSeed, width, height));
     }
 }
