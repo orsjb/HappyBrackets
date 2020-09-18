@@ -1,11 +1,15 @@
 package net.happybrackets.sychronisedmodel;
 
+import de.sciss.net.OSCMessage;
 import net.happybrackets.core.HBAction;
+import net.happybrackets.core.OSCUDPListener;
+import net.happybrackets.core.OSCUDPSender;
 import net.happybrackets.core.control.*;
 import net.happybrackets.device.HB;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.json.JSONObject;
 
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -26,9 +30,29 @@ public abstract class SynchronisedModel {
 
     IntegerControl textControl2 = null;
 
+    ExecutionMode executionMode;
+
+    public enum ExecutionMode {
+        LOCAL,
+        REMOTE,
+        SERVER_FRAME,
+        SERVER_STATE,
+        SERVER_FIELD
+    }
+
+    static final int PORT = 9001;   // this is silence
+    OSCUDPSender oscSender;
+    String targetAddress;
+
     public SynchronisedModel() {
+        executionMode = ExecutionMode.LOCAL;
         diad2ds = new ArrayList<>();
         defineMe();
+    }
+
+    public void setup(HBAction parentSketch, HB hb, ExecutionMode pExecutionMode) {
+        this.executionMode = pExecutionMode;
+        this.setup(parentSketch, hb);
     }
 
     public void setup(HBAction parentSketch, HB hb) {
@@ -47,6 +71,16 @@ public abstract class SynchronisedModel {
         // End DynamicControl textControl code
 
         broadcastMe();
+
+        if(executionMode == ExecutionMode.REMOTE) {
+            openOSCListner();
+        }
+
+        if(executionMode == ExecutionMode.SERVER_FIELD
+            || executionMode == ExecutionMode.SERVER_STATE
+            || executionMode == ExecutionMode.SERVER_FRAME){
+            openOSCServer();
+        }
 
     }
 
@@ -89,16 +123,35 @@ public abstract class SynchronisedModel {
 
     public void update() {
         frameCount++;
+        if(executionMode == ExecutionMode.SERVER_FIELD) {
+            sendOSCModelField();
+        }
+        if(executionMode == ExecutionMode.SERVER_STATE) {
+            sendOSCModelState();
+        }
+        if(executionMode == ExecutionMode.SERVER_FRAME) {
+            sendOSCModelFrame();
+        }
     }
 
     public void start() {
         isRunning = true;
         frameCount = 0;
+        if(executionMode == ExecutionMode.SERVER_FIELD
+                || executionMode == ExecutionMode.SERVER_STATE
+                || executionMode == ExecutionMode.SERVER_FRAME){
+            sendOSCStart();
+        }
     }
 
     public void stop() {
         isRunning = false;
         frameCount = 0;
+        if(executionMode == ExecutionMode.SERVER_FIELD
+                || executionMode == ExecutionMode.SERVER_STATE
+                || executionMode == ExecutionMode.SERVER_FRAME){
+            sendOSCStop();
+        }
     }
 
     public double getAverageRangeIntensityAtXY(int x, int y, int range) {
@@ -172,6 +225,90 @@ public abstract class SynchronisedModel {
         JSONObject jo = new JSONObject();
         jo.put("framecount", frameCount);
         return jo;
+    }
+
+    private void openOSCServer() {
+        targetAddress = "192.168.1.255";
+        oscSender = new OSCUDPSender();
+    }
+
+    private void sendOSCStart() {
+        OSCMessage message = HB.createOSCMessage("/start", 1);
+        oscSender.send(message, targetAddress, PORT);
+    }
+
+    private void sendOSCStop() {
+        OSCMessage message = HB.createOSCMessage("/start", 0);
+        oscSender.send(message, targetAddress, PORT);
+    }
+
+    private void sendOSCModelState() {
+        OSCMessage message = HB.createOSCMessage("/frameState", frameCount);
+        oscSender.send(message, targetAddress, PORT);
+    }
+
+    private void sendOSCModelField() {
+        JSONObject modelFieldJson = exportModelField(10);
+        OSCMessage message = HB.createOSCMessage("/fieldState", modelFieldJson.toString());
+        oscSender.send(message, targetAddress, PORT);
+    }
+
+    private void sendOSCModelFrame() {
+        JSONObject modelStateJson = exportModelState();
+        OSCMessage message = HB.createOSCMessage("/modelState", modelStateJson.toString());
+        oscSender.send(message, targetAddress, PORT);
+    }
+
+    private void openOSCListner() {
+        /* type osclistener to create this code */
+        OSCUDPListener oscudpListener = new OSCUDPListener(PORT) {
+            @Override
+            public void OSCReceived(OSCMessage oscMessage, SocketAddress socketAddress, long l) {
+                /* type your code below this line */
+                // first display the source of message and message name
+                String display_val = socketAddress.toString() + ": " + oscMessage.getName();
+                String just_val = "";
+
+                for (int i = 0; i < oscMessage.getArgCount(); i++){
+                    // add each arg to display message
+                    display_val = display_val + " " + oscMessage.getArg(i);
+                    just_val = just_val + " " + oscMessage.getArg(i);
+                }
+
+                if(oscMessage.getName().equals("/start")) {
+                    int value = (int) oscMessage.getArg(0);
+                    if(value == 0) {
+                        stop();
+                    } else {
+                        start();
+                    }
+                }
+
+                if(oscMessage.getName().equals("/frameState")) {
+                    int value = (int) oscMessage.getArg(0);
+                    setFrameState(value);
+                }
+
+                if(oscMessage.getName().equals("/fieldState")) {
+                    JSONObject fieldState = new JSONObject(just_val);
+                    importModelField(fieldState);
+                }
+
+                if(oscMessage.getName().equals("/modelState")) {
+                    JSONObject modelState = new JSONObject(just_val);
+                    importModelState(modelState);
+                }
+
+                /* type your code above this line */
+            }
+        };
+        if (oscudpListener.getPort() < 0){ //port less than zero is an error
+            String error_message =  oscudpListener.getLastError();
+            System.out.println(getMe() + "says: Error opening port " + PORT + " " + error_message);
+        } else {
+            System.out.println(getMe() + "says: Success opening port " + PORT);
+        }
+        /** end oscListener code */
     }
 
     public void importModelState(JSONObject modelState) {

@@ -15,8 +15,8 @@ public class FlockingModel extends SynchronisedModel {
 
     @Override
     public void update() {
-        super.update();
         flock.run();
+        super.update();
     }
 
     public void start() {
