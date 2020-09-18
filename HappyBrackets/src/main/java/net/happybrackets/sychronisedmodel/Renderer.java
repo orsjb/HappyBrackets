@@ -4,13 +4,13 @@ import com.pi4j.io.serial.*;
 import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.ugens.Gain;
 import net.happybrackets.device.HB;
-import net.happybrackets.device.config.DeviceConfig;
 
 import java.io.IOException;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.List;
 
 
 public class Renderer {
@@ -34,51 +34,6 @@ public class Renderer {
 
     public Renderer(HB hb) {
         this.hb = hb;
-        /*
-        positions.put("hb-b827ebe529a6", new float[] {9,10});
-        positions.put("hb-b827ebe6f198", new float[] {11,4.5f});
-        positions.put("hb-b827ebc11b4a", new float[] {7.5f,5});
-        positions.put("hb-b827ebc165c5", new float[] {4,5.5f});
-        positions.put("hb-b827eb15dc82", new float[] {7,3});
-        positions.put("hb-b827eb1a0c8d", new float[] {11,6.5f});
-        positions.put("hb-b827eb01d68a", new float[] {1,2});
-        positions.put("hb-b827eb24587c", new float[] {2.5f,4});
-        positions.put("hb-b827ebc7d478", new float[] {10.5f,3});
-        positions.put("hb-b827eb118819", new float[] {10.5f,3});
-        positions.put("hb-b827eb24fc91", new float[] {2,6});
-        positions.put("hb-b827ebb507fd", new float[] {1,4});
-        positions.put("hb-b827eb824c81", new float[] {11,11});
-        positions.put("hb-b827eb4635ff", new float[] {8.5f,3});
-        positions.put("hb-b827eb6cb1f8", new float[] {10,5});
-        positions.put("hb-b827eb9089ee", new float[] {8,8});
-        positions.put("hb-b827ebf55d4d", new float[] {8,10});
-        positions.put("hb-b827eb3d046a", new float[] {9,4});
-        positions.put("hb-b827eb945f3f", new float[] {9,9.5f});
-        positions.put("hb-b827ebbf17a8", new float[] {11,4.5f});
-        positions.put("hb-b827ebeccfab", new float[] {8.5f,6});
-        positions.put("hb-b827eb7561a0", new float[] {9,6});
-        positions.put("hb-b827eb8221a3", new float[] {10.5f,8});
-        */
-
-        enableDevices();
-
-        // create and register the serial data listener
-        /*
-        serial.addListener(new SerialDataEventListener() {
-            @Override
-            public void dataReceived(SerialDataEvent event) {
-                // NOTE! - It is extremely important to read the data received from the
-                // serial port.  If it does not get read from the receive buffer, the
-                // buffer will continue to grow and consume memory.
-                try {
-                    //System.out.println("[HEX DATA]   " + event.getHexByteString());
-                    String empty = "[ASCII DATA] " + event.getAsciiString();
-                } catch (IOException e) {
-                    System.out.println(" ==>> SERIAL READ FAILED : " + e.getMessage());
-                }
-            }
-        });
-        */
         setup();
         initialiseArray();
     }
@@ -186,7 +141,14 @@ public class Renderer {
         sendGcommand();
     }
 
+    public void PushLightColor(Light light, int stripSize) {
+        DisplayColor(light.id, stripSize, light.red, light.green, light.blue);
+    }
+
     public void DisplayColor(Light light, int stripSize, int red, int green, int blue) {
+        light.red = red;
+        light.green = green;
+        light.blue = blue;
         DisplayColor(light.id, stripSize, red, green, blue);
     }
 
@@ -204,18 +166,7 @@ public class Renderer {
             default: ledAddress = 16;
                     break;
         }
-        //try {
-            serialString += stringArray[ledAddress] + "@" + stringArray[stripSize] + "sn" + stringArray[red] + "sn" + stringArray[green] + "sn" + stringArray[blue] + "s";
-            // serialString += ""+ String.format("%02x",ledAddress) + "@" + String.format("%02x",stripSize) + " sn" + String.format("%02x",red) + "sn" + String.format("%02x",green) + "sn" + String.format("%02x",blue) + "s";
-            //serial.write("["+ String.format("%02x",ledAddress) + "]@[" + String.format("%02x",stripSize) + "] sn[" + String.format("%02x",red) + "]sn[" + String.format("%02x",green) + "]sn[" + String.format("%02x",blue) + "]s");
-            //serial.discardInput();
-        //}
-        /*
-        catch(IOException ex){
-            ex.printStackTrace();
-            System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
-        }
-        */
+        serialString += stringArray[ledAddress] + "@" + stringArray[stripSize] + "sn" + stringArray[red] + "sn" + stringArray[green] + "sn" + stringArray[blue] + "s";
     }
 
     private void sendGcommand() {
@@ -267,8 +218,135 @@ public class Renderer {
     }
 
     public static class Light extends Device {
+        public int red,green,blue;
+        double[] hsbValues;
         public Light(String hostname, float x, float y, float z, String name, int id) {
             super(hostname, x, y, z, name, id);
+            red = green = blue = 0;
+            hsbValues = new double[3];
         }
+
+        public void changeBrigthness(int amount) {
+            rgbToHsv();
+            hsbValues[2] = hsbValues[2] + amount;
+            hsvToRgb();
+        }
+
+        public void changeSaturation(int amount) {
+            rgbToHsv();
+            hsbValues[1] = hsbValues[1] + amount;
+            hsvToRgb();
+        }
+
+        public void changeHue(int amount) {
+            rgbToHsv();
+            hsbValues[0] = hsbValues[0] + amount;
+            hsvToRgb();
+        }
+
+        public void changeRed(int amount) {
+            red = red + amount;
+        }
+
+        public void changeBlue(int amount) {
+            blue = blue + amount;
+        }
+
+        public void changeGreen(int amount) {
+            green = green + amount;
+        }
+
+        /*
+        * Based on https://stackoverflow.com/a/7898685
+        * */
+        public void hsvToRgb() {
+
+            int h = (int)(hsbValues[0] * 6);
+            double f = hsbValues[0] * 6 - h;
+            double p = hsbValues[2] * (1 - hsbValues[1]);
+            double q = hsbValues[2] * (1 - f * hsbValues[1]);
+            double t = hsbValues[2] * (1 - (1 - f) * hsbValues[1]);
+
+            switch (h) {
+                case 0:
+                    red = (int)hsbValues[2];
+                    green = (int)t;
+                    blue = (int)p;
+                    break;
+                case 1:
+                    red = (int)q;
+                    green = (int)hsbValues[2];
+                    blue = (int)p;
+                    break;
+                case 2:
+                    red = (int)p;
+                    green = (int)hsbValues[2];
+                    blue = (int)t;
+                    break;
+                case 3:
+                    red = (int)p;
+                    green = (int)q;
+                    blue = (int)hsbValues[2];
+                    break;
+                case 4:
+                    red = (int)t;
+                    green = (int)p;
+                    blue = (int)hsbValues[2];
+                    break;
+                case 5:
+                    red = (int)hsbValues[2];
+                    green = (int)p;
+                    blue = (int)q;
+                    break;
+                default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hsbValues[0] + ", " + hsbValues[1] + ", " + hsbValues[2]);
+            }
+        }
+
+
+        /*
+        * Based on https://stackoverflow.com/questions/2399150/convert-rgb-value-to-hsv
+        * */
+        public void rgbToHsv(){
+
+            double R = red / 255.0;
+            double G = green / 255.0;
+            double B = blue / 255.0;
+
+            double min = Math.min(Math.min(R, G), B);
+            double max = Math.max(Math.max(R, G), B);
+            double delta = max - min;
+
+            double H = max;
+            double S = max;
+            double V = max;
+
+            if(delta == 0){
+                H = 0;
+                S = 0;
+            }else{
+
+                S = delta / max;
+
+                double delR = ( ( ( max - R ) / 6.0 ) + ( delta / 2.0 ) ) / delta;
+                double delG = ( ( ( max - G ) / 6.0 ) + ( delta / 2.0 ) ) / delta;
+                double delB = ( ( ( max - B ) / 6.0 ) + ( delta / 2.0 ) ) / delta;
+
+                if(R == max){
+                    H = delB - delG;
+                }else if(G == max){
+                    H = (1.0/3.0) + delR - delB;
+                }else if(B == max){
+                    H = (2.0/3.0) + delG - delR;
+                }
+
+                if(H < 0) H += 1;
+                if(H > 1) H -= 1;
+            }
+
+            hsbValues[0] = H;
+            hsbValues[1] = S;
+            hsbValues[2] = V;
+        }
+
     }
 }
