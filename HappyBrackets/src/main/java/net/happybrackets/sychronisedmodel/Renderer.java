@@ -12,13 +12,17 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
 
+/**
+ * TODO: remove all objects and clock when replacing the renderer.
+ * How it interact with Reset?
+ * Separate RendererController and Renderer class in different files.
+ */
+public class RendererController {
 
-public class Renderer {
-
-    private List<Light> lights = new ArrayList<Light>();
+    public List<Light> lights = new ArrayList<Light>();
     public List<Speaker> speakers = new ArrayList<Speaker>();
     private final Serial serial = SerialFactory.createInstance();
-    public ArrayList<Device> structure = new ArrayList<>();
+    public ArrayList<Renderer> structure = new ArrayList<>();
     private boolean isSerialEnabled = false;
     public int LEDStripSize = 18;
     private String serialString;
@@ -26,26 +30,35 @@ public class Renderer {
     private HB hb;
     String[] stringArray = new String[256];
     private boolean hasSerial = false;
+    Class rendererClass;
 
-    public Renderer(HB hb, SynchronisedModel model) {
+    public RendererController(HB hb, SynchronisedModel model) {
         this(hb);
         this.model = model;
     }
 
-    public Renderer(HB hb) {
+    public RendererController(HB hb) {
         this.hb = hb;
-        setup();
         initialiseArray();
     }
 
-    public void setup() {
+    public RendererController() {
+    }
+
+    /**
+     * Allows the user to set the clock interval
+     */
+    public void addClockTickListener() {}
+
+    void setRenderer(Class<? extends Renderer> rendererClass) {
+        this.rendererClass = rendererClass;
     }
 
     public void enableDevices() {
         InetAddress currentIPAddress;
         try {
             currentIPAddress = InetAddress.getLocalHost(); //getLocalHost() method returns the Local Hostname and IP Address
-            for(Device d: structure) {
+            for(Renderer d: structure) {
                 if(currentIPAddress.getHostName().equals(d.hostname)) {
                     addDevice(d);
                 }
@@ -101,7 +114,7 @@ public class Renderer {
         isSerialEnabled = false;
     }
 
-    public void addDevice(Device d) {
+    public void addDevice(Renderer d) {
         if(d instanceof Speaker) {
             if(!speakers.contains(d)) {
                 speakers.add((Speaker) d);
@@ -122,37 +135,37 @@ public class Renderer {
         }
     }
 
-    public void RenderLight(Light light) {
+    public void renderLight(Light light) {
 
     }
 
-    public void RenderSpeaker(Speaker speaker) {
+    public void renderSpeaker(Speaker speaker) {
 
     }
 
     public void executeRender() {
         for (Speaker s : speakers) {
-            RenderSpeaker(s);
+            renderSpeaker(s);
         }
         serialString = "";
         for (Light l : lights) {
-            RenderLight(l);
+            renderLight(l);
         }
         sendGcommand();
     }
 
-    public void PushLightColor(Light light, int stripSize) {
-        DisplayColor(light.id, stripSize, light.red, light.green, light.blue);
+    public void pushLightColor(Light light, int stripSize) {
+        displayColor(light.id, stripSize, light.rgb[0], light.rgb[1], light.rgb[2]);
     }
 
-    public void DisplayColor(Light light, int stripSize, int red, int green, int blue) {
-        light.red = red;
-        light.green = green;
-        light.blue = blue;
-        DisplayColor(light.id, stripSize, red, green, blue);
+    public void displayColor(Light light, int stripSize, int red, int green, int blue) {
+        light.rgb[0] = red;
+        light.rgb[1] = green;
+        light.rgb[2] = blue;
+        displayColor(light.id, stripSize, red, green, blue);
     }
 
-    public void DisplayColor(int whichLED, int stripSize, int red, int green, int blue) {
+    public void displayColor(int whichLED, int stripSize, int red, int green, int blue) {
         int ledAddress;
         switch (whichLED) {
             case 0: ledAddress = 16;
@@ -166,6 +179,12 @@ public class Renderer {
             default: ledAddress = 16;
                     break;
         }
+        if(red > 255) red = 255;
+        if(green > 255) green = 255;
+        if(blue > 255) red = 255;
+        if(red < 0) red = 0;
+        if(green < 0) green = 0;
+        if(blue < 0) blue = 0;
         serialString += stringArray[ledAddress] + "@" + stringArray[stripSize] + "sn" + stringArray[red] + "sn" + stringArray[green] + "sn" + stringArray[blue] + "s";
     }
 
@@ -183,12 +202,12 @@ public class Renderer {
 
     public void turnOffLEDs() {
         for (int i = 0; i < 4; i++) {
-            DisplayColor(i, 0, 0, 0, 0);
+            displayColor(i, 0, 0, 0, 0);
         }
         sendGcommand();
     }
 
-    public static abstract class Device {
+    public static abstract class Renderer {
         public String hostname;
         public float x;
         public float y;
@@ -196,11 +215,16 @@ public class Renderer {
         public String name;
         public int id;
 
+        public Gain out;
 
-        public Device() {
+
+        public Renderer() {
         }
 
-        public Device(String hostname, float x, float y, float z, String name, int id) {
+        public void setupAudio() {}
+        public void setupLight() {}
+
+        public Renderer(String hostname, float x, float y, float z, String name, int id) {
             this.hostname = hostname;
             this.x = x;
             this.y = y;
@@ -210,95 +234,110 @@ public class Renderer {
         }
     }
 
-    public static class Speaker extends Device {
+    public static class Speaker extends Renderer {
         public UGen out;
         public Speaker(String hostname, float x, float y, float z, String name, int id) {
             super(hostname, x, y, z, name, id);
         }
     }
 
-    public static class Light extends Device {
-        public int red,green,blue;
-        double[] hsbValues;
+    public static class Light extends Renderer {
+        protected int[] rgb;
+        protected double[] hsb;
         public Light(String hostname, float x, float y, float z, String name, int id) {
             super(hostname, x, y, z, name, id);
-            red = green = blue = 0;
-            hsbValues = new double[3];
+            rgb[0] = rgb[1] = rgb[2] = 0;
+            hsb = new double[3];
         }
 
-        public void changeBrigthness(int amount) {
+        public void changeBrigthness(float amount) {
             rgbToHsv();
-            hsbValues[2] = hsbValues[2] + amount;
+            hsb[2] = hsb[2] + amount;
             hsvToRgb();
         }
 
-        public void changeSaturation(int amount) {
+        public void changeSaturation(float amount) {
             rgbToHsv();
-            hsbValues[1] = hsbValues[1] + amount;
+            hsb[1] = hsb[1] + amount;
             hsvToRgb();
         }
 
-        public void changeHue(int amount) {
+        public void changeHue(float amount) {
             rgbToHsv();
-            hsbValues[0] = hsbValues[0] + amount;
+            hsb[0] = hsb[0] + amount;
             hsvToRgb();
         }
 
         public void changeRed(int amount) {
-            red = red + amount;
-        }
-
-        public void changeBlue(int amount) {
-            blue = blue + amount;
+            rgb[0] = rgb[0] + amount;
         }
 
         public void changeGreen(int amount) {
-            green = green + amount;
+            rgb[1] = rgb[1] + amount;
+        }
+
+        public void changeBlue(int amount) {
+            rgb[2] = rgb[2] + amount;
         }
 
         /*
         * Based on https://stackoverflow.com/a/7898685
         * */
-        public void hsvToRgb() {
+        protected void hsvToRgb() {
 
-            int h = (int)(hsbValues[0] * 6);
-            double f = hsbValues[0] * 6 - h;
-            double p = hsbValues[2] * (1 - hsbValues[1]);
-            double q = hsbValues[2] * (1 - f * hsbValues[1]);
-            double t = hsbValues[2] * (1 - (1 - f) * hsbValues[1]);
+            double brightness = hsb[2];
+            double saturation = hsb[1];
+            double hue = hsb[0];
 
-            switch (h) {
-                case 0:
-                    red = (int)hsbValues[2];
-                    green = (int)t;
-                    blue = (int)p;
-                    break;
-                case 1:
-                    red = (int)q;
-                    green = (int)hsbValues[2];
-                    blue = (int)p;
-                    break;
-                case 2:
-                    red = (int)p;
-                    green = (int)hsbValues[2];
-                    blue = (int)t;
-                    break;
-                case 3:
-                    red = (int)p;
-                    green = (int)q;
-                    blue = (int)hsbValues[2];
-                    break;
-                case 4:
-                    red = (int)t;
-                    green = (int)p;
-                    blue = (int)hsbValues[2];
-                    break;
-                case 5:
-                    red = (int)hsbValues[2];
-                    green = (int)p;
-                    blue = (int)q;
-                    break;
-                default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hsbValues[0] + ", " + hsbValues[1] + ", " + hsbValues[2]);
+            if (saturation == 0) {
+                rgb[0] = rgb[1] = rgb[2] = (int) (brightness * 255.0f + 0.5f);
+            } else {
+                double h = (hue - (float) Math.floor(hue)) * 6.0f;
+                double f = h - (float) java.lang.Math.floor(h);
+                double p = brightness * (1.0f - saturation);
+                double q = brightness * (1.0f - saturation * f);
+                double t = brightness * (1.0f - (saturation * (1.0f - f)));
+
+                switch ((int)h) {
+                    case 0:
+                        rgb[0] = (int) (brightness * 255.0f + 0.5f);
+                        rgb[1] = (int) (t * 255.0f + 0.5f);
+                        rgb[2] = (int) (p * 255.0f + 0.5f);
+                        break;
+                    case 1:
+                        rgb[0] = (int) (q * 255.0f + 0.5f);
+                        rgb[1] = (int) (brightness * 255.0f + 0.5f);
+                        rgb[2] = (int) (p * 255.0f + 0.5f);
+                        break;
+                    case 2:
+                        rgb[0] = (int) (p * 255.0f + 0.5f);
+                        rgb[1] = (int) (brightness * 255.0f + 0.5f);
+                        rgb[2] = (int) (t * 255.0f + 0.5f);
+                        break;
+                    case 3:
+                        rgb[0] = (int) (p * 255.0f + 0.5f);
+                        rgb[1] = (int) (q * 255.0f + 0.5f);
+                        rgb[2] = (int) (brightness * 255.0f + 0.5f);
+                        break;
+                    case 4:
+                        rgb[0] = (int) (t * 255.0f + 0.5f);
+                        rgb[1] = (int) (p * 255.0f + 0.5f);
+                        rgb[2] = (int) (brightness * 255.0f + 0.5f);
+                        break;
+                    case 5:
+                        rgb[0] = (int) (brightness * 255.0f + 0.5f);
+                        rgb[1] = (int) (p * 255.0f + 0.5f);
+                        rgb[2] = (int) (q * 255.0f + 0.5f);
+                        break;
+                    default:
+                        throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hsb[0] + ", " + hsb[1] + ", " + hsb[2]);
+                }
+                if(rgb[0] > 255) rgb[0] = 255;
+                if(rgb[1] > 255) rgb[1] = 255;
+                if(rgb[2] > 255) rgb[2] = 255;
+                if(rgb[0] < 0) rgb[0] = 0;
+                if(rgb[1] < 0) rgb[1] = 0;
+                if(rgb[2] < 0) rgb[2] = 0;
             }
         }
 
@@ -308,9 +347,9 @@ public class Renderer {
         * */
         public void rgbToHsv(){
 
-            double R = red / 255.0;
-            double G = green / 255.0;
-            double B = blue / 255.0;
+            double R = rgb[0] / 255.0;
+            double G = rgb[1] / 255.0;
+            double B = rgb[2] / 255.0;
 
             double min = Math.min(Math.min(R, G), B);
             double max = Math.max(Math.max(R, G), B);
@@ -343,9 +382,9 @@ public class Renderer {
                 if(H > 1) H -= 1;
             }
 
-            hsbValues[0] = H;
-            hsbValues[1] = S;
-            hsbValues[2] = V;
+            hsb[0] = H;
+            hsb[1] = S;
+            hsb[2] = V;
         }
 
     }
