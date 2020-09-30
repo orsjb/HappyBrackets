@@ -2,6 +2,7 @@ package net.happybrackets.sychronisedmodel;
 
 import com.pi4j.io.serial.*;
 import net.beadsproject.beads.ugens.Gain;
+import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
 import java.io.IOException;
@@ -20,57 +21,58 @@ import java.util.List;
  */
 public class RendererController {
 
-    public static List<Renderer> renderers = new ArrayList<Renderer>();
+    public List<Renderer> renderers = new ArrayList<Renderer>();
 
-    private static final Serial serial = SerialFactory.createInstance();
-    private static boolean isSerialEnabled = false;
-    private static boolean hasSpeaker = false;
-    private static boolean hasLight = false;
-    private static String serialString;
-    private static HB hb;
-    private static String[] stringArray = new String[256];
-    private static boolean hasSerial = false;
-    private static Class<Renderer> rendererClass;
+    private final Serial serial = SerialFactory.createInstance();
+    private boolean isSerialEnabled = false;
+    private boolean hasSpeaker = false;
+    private boolean hasLight = false;
+    private String serialString = "";
+    private HB hb;
+    private String[] stringArray = new String[256];
+    private boolean hasSerial = false;
+    private Class<? extends Renderer> rendererClass;
 
+    /**
+     * Singleton Design Pattern
+     */
     private static RendererController rendererController = new RendererController();
-
     private RendererController() {
         initialiseArray();
     }
-
     public static RendererController getInstance( ) {
         return rendererController;
     }
+    // Finish Singleton
 
-    public static void setHB(HB hb) {
-        RendererController.hb = hb;
+    public void setHB(HB hb) {
+        this.hb = hb;
     }
 
-    public static void reset() {
+    public void reset() {
         disableSerial();
         renderers.clear();
         hb.getAudioOutput().clearInputConnections();
         hasLight = hasSpeaker = hasSerial = false;
     }
 
-    /**
-     * Allows the user to set the clock interval
-     */
-    public static void addClockTickListener() {}
-
-    @SuppressWarnings("unchecked")
-    public static void setRendererClass(Class<? extends Renderer> rendererClass) {
-        RendererController.rendererClass = (Class<Renderer>) rendererClass;
+    public Clock addClockTickListener(Clock.ClockTickListener listener) {
+        return hb.createClock(50).addClockTickListener(listener);
     }
 
-    public static void addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id) {
+    public void setRendererClass(Class<? extends Renderer> rendererClass) {
+        this.rendererClass = rendererClass;
+    }
+
+    public void addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id) {
         InetAddress currentIPAddress;
-        Constructor<Renderer> constructor = null;
+        Constructor<? extends Renderer> constructor = null;
         try {
             currentIPAddress = InetAddress.getLocalHost(); //getLocalHost() method returns the Local Hostname and IP Address
             if(currentIPAddress.getHostName().equals(hostname)) {
-                constructor = rendererClass.getConstructor();
-                Renderer r = constructor.newInstance();
+                Renderer r = rendererClass.newInstance();
+                // constructor = rendererClass.getConstructor();
+                // Renderer r = constructor.newInstance();
                 r.initialize(hostname, type, x, y, z, name, id);
                 renderers.add(r);
                 if(type == Renderer.Type.SPEAKER) {
@@ -86,13 +88,12 @@ public class RendererController {
                 }
             }
         }
-        catch (UnknownHostException | NoSuchMethodException | IllegalAccessException |
-                InstantiationException | InvocationTargetException ex) {
+        catch (UnknownHostException | IllegalAccessException | InstantiationException ex) {
             ex.printStackTrace();
         }
     }
 
-    private static void enableSerial() {
+    private void enableSerial() {
         if(isSerialEnabled || !hasLight) return;
         try {
             // create serial config object
@@ -107,7 +108,7 @@ public class RendererController {
             serial.open(config);
             hasSerial = true;
         }
-        catch(IOException ex) {
+        catch(UnsatisfiedLinkError | IOException ex) {
             System.out.println(" ==>> SERIAL SETUP FAILED : " + ex.getMessage());
             hasSerial = false;
             return;
@@ -123,7 +124,7 @@ public class RendererController {
         isSerialEnabled = true;
     }
 
-    public static void disableSerial() {
+    public void disableSerial() {
         if(!isSerialEnabled  || !hasLight || !hasSerial) return;
         try {
             serial.close();
@@ -135,24 +136,28 @@ public class RendererController {
         isSerialEnabled = false;
     }
 
-    private static void initialiseArray() {
+    private void initialiseArray() {
         for (int i = 0; i < 256; i++) {
             stringArray[i] = String.format("%02x",i);
         }
     }
 
-    public static void pushLightColor(Renderer light, int stripSize) {
-        displayColor(light.id, stripSize, light.rgb[0], light.rgb[1], light.rgb[2]);
+    public void pushLightColor(Renderer light, int stripSize) {
+        if(light.type == Renderer.Type.LIGHT) {
+            displayColor(light.id, stripSize, light.rgb[0], light.rgb[1], light.rgb[2]);
+        }
     }
 
-    public static void displayColor(Renderer light, int stripSize, int red, int green, int blue) {
-        light.rgb[0] = red;
-        light.rgb[1] = green;
-        light.rgb[2] = blue;
-        displayColor(light.id, stripSize, red, green, blue);
+    public void displayColor(Renderer light, int stripSize, int red, int green, int blue) {
+        if(light.type == Renderer.Type.LIGHT) {
+            light.rgb[0] = red;
+            light.rgb[1] = green;
+            light.rgb[2] = blue;
+            displayColor(light.id, stripSize, red, green, blue);
+        }
     }
 
-    public static void displayColor(int whichLED, int stripSize, int red, int green, int blue) {
+    public void displayColor(int whichLED, int stripSize, int red, int green, int blue) {
         int ledAddress;
         switch (whichLED) {
             case 0: ledAddress = 16;
@@ -175,11 +180,12 @@ public class RendererController {
         serialString += stringArray[ledAddress] + "@" + stringArray[stripSize] + "sn" + stringArray[red] + "sn" + stringArray[green] + "sn" + stringArray[blue] + "s";
     }
 
-    private static void sendSerialcommand() {
+    public void sendSerialcommand() {
         if(isSerialEnabled && hasSerial && hasLight) {
             try {
                 serial.write(serialString + "G");
                 serial.discardInput();
+                serialString = "";
             } catch (IOException ex) {
                 ex.printStackTrace();
                 System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
@@ -187,7 +193,8 @@ public class RendererController {
         }
     }
 
-    public static void turnOffLEDs() {
+    public void turnOffLEDs() {
+        serialString = "";
         for (int i = 0; i < 4; i++) {
             displayColor(i, 0, 0, 0, 0);
         }

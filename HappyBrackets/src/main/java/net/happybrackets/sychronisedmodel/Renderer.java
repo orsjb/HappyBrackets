@@ -2,7 +2,7 @@ package net.happybrackets.sychronisedmodel;
 
 import net.beadsproject.beads.core.UGen;
 
-public abstract class Renderer {
+public class Renderer {
     public String hostname;
     public float x;
     public float y;
@@ -19,11 +19,11 @@ public abstract class Renderer {
         HSB
     }
 
-    private Type type;
+    public Type type;
     public UGen out;
-    protected int[] rgb;
-    protected int[] hsb;
-    protected ColorMode colorMode = ColorMode.RGB;
+    public int[] rgb;
+    public int[] hsb;
+    public ColorMode colorMode = ColorMode.RGB;
 
 
     /**
@@ -56,6 +56,8 @@ public abstract class Renderer {
         this.z = z;
         this.name = name;
         this.id = id;
+        rgb = new int[3];
+        hsb = new int[3];
         rgb[0] = rgb[1] = rgb[2] = 0;
         hsb = new int[3];
         rgbToHsb();
