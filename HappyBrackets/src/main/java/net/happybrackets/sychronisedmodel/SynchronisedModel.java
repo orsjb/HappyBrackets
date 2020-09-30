@@ -30,7 +30,7 @@ public abstract class SynchronisedModel {
 
     IntegerControl textControl2 = null;
 
-    ExecutionMode executionMode;
+    ExecutionMode executionMode = null;
 
     public enum ExecutionMode {
         LOCAL,
@@ -56,6 +56,9 @@ public abstract class SynchronisedModel {
     }
 
     public void setup(HBAction parentSketch, HB hb) {
+        if(executionMode == null) {
+            executionMode = ExecutionMode.LOCAL;
+        }
         this.hb = hb;
 
         // Type textControl to generate this code
