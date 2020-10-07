@@ -125,6 +125,12 @@ public abstract class SynchronisedModel {
     }
 
     public void update() {
+        if(executionMode != ExecutionMode.REMOTE) {
+            doUpdate();
+        }
+    }
+
+    private void doUpdate() {
         frameCount++;
         if(executionMode == ExecutionMode.SERVER_FIELD) {
             sendOSCModelField();

@@ -40,7 +40,7 @@ public class RendererController {
      */
     private static RendererController rendererController = new RendererController();
     private RendererController() {
-        internalClock = hb.createClock(50);
+        internalClock = new Clock(50);
         internalClock.start();
         initialiseArray();
     }
@@ -54,11 +54,14 @@ public class RendererController {
     }
 
     public void reset() {
+        serialString = "";
+        turnOffLEDs();
         disableSerial();
         renderers.clear();
         hb.getAudioOutput().clearInputConnections();
         hasLight = hasSpeaker = hasSerial = false;
         internalClock.clearClockTickListener();
+        internalClock.start();
     }
 
     public Clock getInternalClock(){
