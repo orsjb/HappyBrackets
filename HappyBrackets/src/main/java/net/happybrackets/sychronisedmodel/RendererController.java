@@ -33,12 +33,15 @@ public class RendererController {
     private String[] stringArray = new String[256];
     private boolean hasSerial = false;
     private Class<? extends Renderer> rendererClass;
+    private Clock internalClock;
 
     /**
      * Singleton Design Pattern
      */
     private static RendererController rendererController = new RendererController();
     private RendererController() {
+        internalClock = hb.createClock(50);
+        internalClock.start();
         initialiseArray();
     }
     public static RendererController getInstance( ) {
@@ -55,10 +58,15 @@ public class RendererController {
         renderers.clear();
         hb.getAudioOutput().clearInputConnections();
         hasLight = hasSpeaker = hasSerial = false;
+        internalClock.clearClockTickListener();
     }
 
-    public Clock addClockTickListener(Clock.ClockTickListener listener) {
-        return hb.createClock(50).addClockTickListener(listener);
+    public Clock getInternalClock(){
+        return internalClock;
+    }
+
+    public void addClockTickListener(Clock.ClockTickListener listener) {
+        internalClock.addClockTickListener(listener);
     }
 
     public void setRendererClass(Class<? extends Renderer> rendererClass) {
