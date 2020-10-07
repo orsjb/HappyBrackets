@@ -40,7 +40,7 @@ public abstract class SynchronisedModel {
         SERVER_FIELD
     }
 
-    static final int PORT = 9001;   // this is silence
+    static final int PORT = 4000;   // this is silence
     OSCUDPSender oscSender;
     String targetAddress;
 

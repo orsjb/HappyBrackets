@@ -22,6 +22,7 @@ import java.util.List;
 public class RendererController {
 
     public List<Renderer> renderers = new ArrayList<Renderer>();
+    public int stripSize = 16;
 
     private final Serial serial = SerialFactory.createInstance();
     private boolean isSerialEnabled = false;
@@ -142,22 +143,22 @@ public class RendererController {
         }
     }
 
-    public void pushLightColor(Renderer light, int stripSize) {
+    public void pushLightColor(Renderer light) {
         if(light.type == Renderer.Type.LIGHT) {
-            displayColor(light.id, stripSize, light.rgb[0], light.rgb[1], light.rgb[2]);
+            displayColor(light.id, light.rgb[0], light.rgb[1], light.rgb[2]);
         }
     }
 
-    public void displayColor(Renderer light, int stripSize, int red, int green, int blue) {
+    public void displayColor(Renderer light, int red, int green, int blue) {
         if(light.type == Renderer.Type.LIGHT) {
             light.rgb[0] = red;
             light.rgb[1] = green;
             light.rgb[2] = blue;
-            displayColor(light.id, stripSize, red, green, blue);
+            displayColor(light.id, red, green, blue);
         }
     }
 
-    public void displayColor(int whichLED, int stripSize, int red, int green, int blue) {
+    public void displayColor(int whichLED, int red, int green, int blue) {
         int ledAddress;
         switch (whichLED) {
             case 0: ledAddress = 16;
@@ -196,7 +197,7 @@ public class RendererController {
     public void turnOffLEDs() {
         serialString = "";
         for (int i = 0; i < 4; i++) {
-            displayColor(i, 0, 0, 0, 0);
+            displayColor(i, 0, 0, 0);
         }
         sendSerialcommand();
     }
