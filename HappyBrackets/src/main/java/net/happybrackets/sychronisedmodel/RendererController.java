@@ -1,9 +1,12 @@
 package net.happybrackets.sychronisedmodel;
 
 import com.pi4j.io.serial.*;
+import de.sciss.net.OSCMessage;
 import net.beadsproject.beads.ugens.Gain;
+import net.happybrackets.core.OSCUDPSender;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -28,12 +31,18 @@ public class RendererController {
     private boolean isSerialEnabled = false;
     private boolean hasSpeaker = false;
     private boolean hasLight = false;
+    private boolean isUnity = false;
     private String serialString = "";
     private HB hb;
     private String[] stringArray = new String[256];
     private boolean hasSerial = false;
     private Class<? extends Renderer> rendererClass;
     private Clock internalClock;
+    private String currentHostname = "";
+
+    private final String targetAddress = "192.168.1.255";
+    private final int oscPort =  9001;
+    private OSCUDPSender oscSender;
 
     /**
      * Singleton Design Pattern
@@ -43,6 +52,11 @@ public class RendererController {
         internalClock = new Clock(50);
         internalClock.start();
         initialiseArray();
+        try {
+            currentHostname = InetAddress.getLocalHost().getHostName(); //getLocalHost() method returns the Local Hostname and IP Address
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
     public static RendererController getInstance( ) {
         return rendererController;
@@ -77,14 +91,26 @@ public class RendererController {
     }
 
     public void addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id) {
-        InetAddress currentIPAddress;
-        Constructor<? extends Renderer> constructor = null;
+        if(!currentHostname.contains("hb-") && hostname == "Unity" && type == Renderer.Type.LIGHT) {
+            Renderer r = null;
+            try {
+                r = rendererClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            r.initialize(hostname, type, x, y, z, name, id);
+            renderers.add(r);
+            r.setupLight();
+            if(isUnity == false) {
+                oscSender = new OSCUDPSender();
+            }
+            isUnity = true;
+            return;
+        }
+
         try {
-            currentIPAddress = InetAddress.getLocalHost(); //getLocalHost() method returns the Local Hostname and IP Address
-            if(currentIPAddress.getHostName().equals(hostname)) {
+            if(currentHostname.equals(hostname)) {
                 Renderer r = rendererClass.newInstance();
-                // constructor = rendererClass.getConstructor();
-                // Renderer r = constructor.newInstance();
                 r.initialize(hostname, type, x, y, z, name, id);
                 renderers.add(r);
                 if(type == Renderer.Type.SPEAKER) {
@@ -100,7 +126,7 @@ public class RendererController {
                 }
             }
         }
-        catch (UnknownHostException | IllegalAccessException | InstantiationException ex) {
+        catch (IllegalAccessException | InstantiationException ex) {
             ex.printStackTrace();
         }
     }
@@ -170,6 +196,9 @@ public class RendererController {
     }
 
     public void displayColor(int whichLED, int red, int green, int blue) {
+        if(!isSerialEnabled || !hasSerial || !hasLight) {
+            return;
+        }
         int ledAddress;
         switch (whichLED) {
             case 0: ledAddress = 16;
@@ -201,6 +230,31 @@ public class RendererController {
             } catch (IOException ex) {
                 ex.printStackTrace();
                 System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
+            }
+        }
+        if(isUnity) {
+            JSONObject renderersColors = new JSONObject();
+            int count = 0;
+            for(Renderer r: renderers) {
+
+                JSONObject jo = new JSONObject();
+                jo.put("name", r.name);
+                jo.put("rgb", r.rgb[0] + "," + r.rgb[1] + "," + r.rgb[2]);
+
+                renderersColors.put("" + count++, jo);
+
+                if(renderersColors.length() > 20) {
+                    OSCMessage message = HB.createOSCMessage("/colors", renderersColors.toString());
+                    oscSender.send(message, targetAddress, oscPort);
+
+                    // clear Json object
+                    renderersColors = new JSONObject();
+                    count = 0;
+                }
+            }
+            if(renderersColors.length() > 0) {
+                OSCMessage message = HB.createOSCMessage("/colors", renderersColors.toString());
+                oscSender.send(message, targetAddress, oscPort);
             }
         }
     }
