@@ -39,7 +39,7 @@ public class RendererController {
     private Clock internalClock;
     private String currentHostname = "";
 
-    private final String targetAddress = "192.168.1.255";
+    private final String targetAddress = "127.0.0.1";
     private final int oscPort =  9001;
     private OSCUDPSender oscSender;
 
@@ -49,7 +49,7 @@ public class RendererController {
     private static RendererController rendererController = new RendererController();
     private RendererController() {
         internalClock = new Clock(50);
-        internalClock.start();
+        internalClock.stop();
         initialiseArray();
         try {
             currentHostname = InetAddress.getLocalHost().getHostName(); //getLocalHost() method returns the Local Hostname and IP Address
@@ -70,7 +70,7 @@ public class RendererController {
         HB.getAudioOutput().clearInputConnections();
         hasLight = hasSpeaker = hasSerial = false;
         internalClock.clearClockTickListener();
-        internalClock.start();
+        internalClock.stop();
     }
 
     public Clock getInternalClock(){
@@ -257,8 +257,10 @@ public class RendererController {
 
     public void turnOffLEDs() {
         serialString = "";
-        for (int i = 0; i < 4; i++) {
-            displayColor(i, 0, 0, 0);
+        for(Renderer r: renderers) {
+            if(r.type == Renderer.Type.LIGHT) {
+                displayColor(r, 0, 0, 0);
+            }
         }
         sendSerialcommand();
     }
