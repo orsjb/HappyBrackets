@@ -33,7 +33,6 @@ public class RendererController {
     private boolean hasLight = false;
     private boolean isUnity = false;
     private String serialString = "";
-    private HB hb;
     private String[] stringArray = new String[256];
     private boolean hasSerial = false;
     private Class<? extends Renderer> rendererClass;
@@ -63,16 +62,12 @@ public class RendererController {
     }
     // Finish Singleton
 
-    public void setHB(HB hb) {
-        this.hb = hb;
-    }
-
     public void reset() {
         serialString = "";
         turnOffLEDs();
         disableSerial();
         renderers.clear();
-        hb.getAudioOutput().clearInputConnections();
+        HB.getAudioOutput().clearInputConnections();
         hasLight = hasSpeaker = hasSerial = false;
         internalClock.clearClockTickListener();
         internalClock.start();
@@ -116,7 +111,7 @@ public class RendererController {
                 if(type == Renderer.Type.SPEAKER) {
                     hasSpeaker = true;
                     r.out = new Gain(1, 1);
-                    hb.getAudioOutput().addInput(id, r.out, 0);
+                    HB.getAudioOutput().addInput(id, r.out, 0);
                     r.setupAudio();
                 }
                 if(type == Renderer.Type.LIGHT) {
@@ -236,20 +231,21 @@ public class RendererController {
             JSONObject renderersColors = new JSONObject();
             int count = 0;
             for(Renderer r: renderers) {
+                if(r.type == Renderer.Type.LIGHT && r.hostname.equals("Unity")) {
+                    JSONObject jo = new JSONObject();
+                    jo.put("name", r.name);
+                    jo.put("rgb", r.rgb[0] + "," + r.rgb[1] + "," + r.rgb[2]);
 
-                JSONObject jo = new JSONObject();
-                jo.put("name", r.name);
-                jo.put("rgb", r.rgb[0] + "," + r.rgb[1] + "," + r.rgb[2]);
+                    renderersColors.put("" + count++, jo);
 
-                renderersColors.put("" + count++, jo);
+                    if(renderersColors.length() > 20) {
+                        OSCMessage message = HB.createOSCMessage("/colors", renderersColors.toString());
+                        oscSender.send(message, targetAddress, oscPort);
 
-                if(renderersColors.length() > 20) {
-                    OSCMessage message = HB.createOSCMessage("/colors", renderersColors.toString());
-                    oscSender.send(message, targetAddress, oscPort);
-
-                    // clear Json object
-                    renderersColors = new JSONObject();
-                    count = 0;
+                        // clear Json object
+                        renderersColors = new JSONObject();
+                        count = 0;
+                    }
                 }
             }
             if(renderersColors.length() > 0) {
