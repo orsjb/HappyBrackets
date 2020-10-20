@@ -1,9 +1,12 @@
 package net.happybrackets.sychronisedmodel;
 
 import com.pi4j.io.serial.*;
+import de.sciss.net.OSCMessage;
 import net.beadsproject.beads.ugens.Gain;
+import net.happybrackets.core.OSCUDPSender;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -22,42 +25,60 @@ import java.util.List;
 public class RendererController {
 
     public List<Renderer> renderers = new ArrayList<Renderer>();
+    public int stripSize = 16;
 
     private final Serial serial = SerialFactory.createInstance();
     private boolean isSerialEnabled = false;
     private boolean hasSpeaker = false;
     private boolean hasLight = false;
+    private boolean isUnity = false;
     private String serialString = "";
-    private HB hb;
     private String[] stringArray = new String[256];
     private boolean hasSerial = false;
     private Class<? extends Renderer> rendererClass;
+    private Clock internalClock;
+    private String currentHostname = "";
+
+    private final String targetAddress = "127.0.0.1";
+    private final int oscPort =  9001;
+    private OSCUDPSender oscSender;
 
     /**
      * Singleton Design Pattern
      */
     private static RendererController rendererController = new RendererController();
     private RendererController() {
+        internalClock = new Clock(50);
+        internalClock.stop();
         initialiseArray();
+        try {
+            currentHostname = InetAddress.getLocalHost().getHostName(); //getLocalHost() method returns the Local Hostname and IP Address
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
     public static RendererController getInstance( ) {
         return rendererController;
     }
     // Finish Singleton
 
-    public void setHB(HB hb) {
-        this.hb = hb;
-    }
-
     public void reset() {
+        serialString = "";
+        turnOffLEDs();
         disableSerial();
         renderers.clear();
-        hb.getAudioOutput().clearInputConnections();
+        HB.getAudioOutput().clearInputConnections();
         hasLight = hasSpeaker = hasSerial = false;
+        internalClock.clearClockTickListener();
+        internalClock.stop();
     }
 
-    public Clock addClockTickListener(Clock.ClockTickListener listener) {
-        return hb.createClock(50).addClockTickListener(listener);
+    public Clock getInternalClock(){
+        return internalClock;
+    }
+
+    public void addClockTickListener(Clock.ClockTickListener listener) {
+        internalClock.addClockTickListener(listener);
     }
 
     public void setRendererClass(Class<? extends Renderer> rendererClass) {
@@ -65,20 +86,32 @@ public class RendererController {
     }
 
     public void addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id) {
-        InetAddress currentIPAddress;
-        Constructor<? extends Renderer> constructor = null;
+        if(!currentHostname.contains("hb-") && hostname == "Unity" && type == Renderer.Type.LIGHT) {
+            Renderer r = null;
+            try {
+                r = rendererClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            r.initialize(hostname, type, x, y, z, name, id);
+            renderers.add(r);
+            r.setupLight();
+            if(isUnity == false) {
+                oscSender = new OSCUDPSender();
+            }
+            isUnity = true;
+            return;
+        }
+
         try {
-            currentIPAddress = InetAddress.getLocalHost(); //getLocalHost() method returns the Local Hostname and IP Address
-            if(currentIPAddress.getHostName().equals(hostname)) {
+            if(currentHostname.equals(hostname)) {
                 Renderer r = rendererClass.newInstance();
-                // constructor = rendererClass.getConstructor();
-                // Renderer r = constructor.newInstance();
                 r.initialize(hostname, type, x, y, z, name, id);
                 renderers.add(r);
                 if(type == Renderer.Type.SPEAKER) {
                     hasSpeaker = true;
                     r.out = new Gain(1, 1);
-                    hb.getAudioOutput().addInput(id, r.out, 0);
+                    HB.getAudioOutput().addInput(id, r.out, 0);
                     r.setupAudio();
                 }
                 if(type == Renderer.Type.LIGHT) {
@@ -88,7 +121,7 @@ public class RendererController {
                 }
             }
         }
-        catch (UnknownHostException | IllegalAccessException | InstantiationException ex) {
+        catch (IllegalAccessException | InstantiationException ex) {
             ex.printStackTrace();
         }
     }
@@ -142,22 +175,25 @@ public class RendererController {
         }
     }
 
-    public void pushLightColor(Renderer light, int stripSize) {
+    public void pushLightColor(Renderer light) {
         if(light.type == Renderer.Type.LIGHT) {
-            displayColor(light.id, stripSize, light.rgb[0], light.rgb[1], light.rgb[2]);
+            displayColor(light.id, light.rgb[0], light.rgb[1], light.rgb[2]);
         }
     }
 
-    public void displayColor(Renderer light, int stripSize, int red, int green, int blue) {
+    public void displayColor(Renderer light, int red, int green, int blue) {
         if(light.type == Renderer.Type.LIGHT) {
             light.rgb[0] = red;
             light.rgb[1] = green;
             light.rgb[2] = blue;
-            displayColor(light.id, stripSize, red, green, blue);
+            displayColor(light.id, red, green, blue);
         }
     }
 
-    public void displayColor(int whichLED, int stripSize, int red, int green, int blue) {
+    public void displayColor(int whichLED, int red, int green, int blue) {
+        if(!isSerialEnabled || !hasSerial || !hasLight) {
+            return;
+        }
         int ledAddress;
         switch (whichLED) {
             case 0: ledAddress = 16;
@@ -191,12 +227,40 @@ public class RendererController {
                 System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
             }
         }
+        if(isUnity) {
+            JSONObject renderersColors = new JSONObject();
+            int count = 0;
+            for(Renderer r: renderers) {
+                if(r.type == Renderer.Type.LIGHT && r.hostname.equals("Unity")) {
+                    JSONObject jo = new JSONObject();
+                    jo.put("name", r.name);
+                    jo.put("rgb", r.rgb[0] + "," + r.rgb[1] + "," + r.rgb[2]);
+
+                    renderersColors.put("" + count++, jo);
+
+                    if(renderersColors.length() > 20) {
+                        OSCMessage message = HB.createOSCMessage("/colors", renderersColors.toString());
+                        oscSender.send(message, targetAddress, oscPort);
+
+                        // clear Json object
+                        renderersColors = new JSONObject();
+                        count = 0;
+                    }
+                }
+            }
+            if(renderersColors.length() > 0) {
+                OSCMessage message = HB.createOSCMessage("/colors", renderersColors.toString());
+                oscSender.send(message, targetAddress, oscPort);
+            }
+        }
     }
 
     public void turnOffLEDs() {
         serialString = "";
-        for (int i = 0; i < 4; i++) {
-            displayColor(i, 0, 0, 0, 0);
+        for(Renderer r: renderers) {
+            if(r.type == Renderer.Type.LIGHT) {
+                displayColor(r, 0, 0, 0);
+            }
         }
         sendSerialcommand();
     }
