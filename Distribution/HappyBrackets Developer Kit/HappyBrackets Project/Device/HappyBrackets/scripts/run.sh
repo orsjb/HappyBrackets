@@ -38,10 +38,11 @@ INS=0
 OUTS=2
 DEVICE=0
 AUTOSTART=true
-ACCESSMODE=local
+ACCESSMODE=open
 ACTION=
-SIMULATE=true
+SIMULATE=false
 CONFIG=device-config.json
+MUTE=27
 
 if [ -f "$CONFIG_FILE" ]; then
     echo "Load config from "$CONFIG_FILE
@@ -109,98 +110,17 @@ if [ -f "$CONFIG_FILE" ]; then
             echo "Set CONFIG to "$CONFIG
         fi
 
+        if [ "$line" = "MUTE"   ]
+        then
+            MUTE=$val
+            echo "Set MUTE to "$MUTE
+        fi
+
     done <$CONFIG_FILE
 
 else
     echo "No config. Use program defaults"
 fi
-### run HappyBrackets
-### args to HB.jar are: buf (buffer size, default=1024), sr (sample rate, default=44100), bits (sample bit size, default=16), ins (input channels, default=0), outs (output channels, default=1), start (autostart audio, default=true), access (live code access mode, either ‘open’, ‘local’ or ‘closed’, default=open), followed by the full class path to any HBAction you wish to auto run. All args except the last one can be entered in any order.
-
-#define default values
-
-BUF=1024
-SR=44100
-BITS=16
-INS=0
-OUTS=2
-DEVICE=0
-AUTOSTART=true 
-ACCESSMODE=open
-ACTION=
-CONFIG=device-config.json
-MUTE=27
-
-#let us see if we have any specific values we want to use
-while IFS="=" read line val
-do
-    if [ "$line" = "BUF"   ]
-    then
-        BUF=$val
-        echo "Set BUF to "$BUF
-    fi
-
-    if [ "$line" = "SR"   ]
-    then
-        SR=$val
-        echo "Set SR to "$SR
-    fi
-
-    if [ "$line" = "BITS"   ]
-    then
-        BITS=$val
-        echo "Set Bits to "$BITS
-    fi
-
-    if [ "$line" = "INS"   ]
-    then
-        INS=$val
-        echo "Set INS to "$INS
-    fi
-
-
-    if [ "$line" = "OUTS"   ]
-    then
-        OUTS=$val
-        echo "Set OUTS to "$OUTS
-    fi
-
-    if [ "$line" = "DEVICE"   ]
-    then
-        DEVICE=$val
-        echo "Set DEVICE to "$DEVICE
-    fi
-
-    if [ "$line" = "AUTOSTART"   ]
-    then
-        AUTOSTART=$val
-        echo "Set AUTOSTART to "$AUTOSTART
-    fi
-
-    if [ "$line" = "USE_BEADS_AUDIO"   ]
-    then
-        AUTOSTART=$val
-        echo "Set USE_BEADS_AUDIO to "$AUTOSTART
-    fi
-
-    if [ "$line" = "ACCESSMODE"   ]
-    then
-        ACCESSMODE=$val
-        echo "Set ACCESSMODE to "$ACCESSMODE
-    fi
-
-    if [ "$line" = "CONFIG"   ]
-    then
-        CONFIG=$val
-        echo "Set CONFIG to "$CONFIG
-    fi
-    if [ "$line" = "MUTE"   ]
-    then
-        MUTE=$val
-        echo "Set MUTE to "$MUTE
-    fi
-done <$CONFIG_FILE
-
 
 ### run the auto-rename script
 if [ -f scripts/auto-rename.sh ]
