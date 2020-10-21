@@ -7,7 +7,7 @@ package net.happybrackets.core;
 public final class BuildVersion {
     static final int MAJOR = 4;
     static final int MINOR = 13;
-    static final int BUILD = 9;
+    static final int BUILD = 10;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}

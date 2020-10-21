@@ -8,6 +8,8 @@ import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 import java.lang.reflect.Constructor;
@@ -24,8 +26,8 @@ import java.util.List;
  */
 public class RendererController {
 
-    public List<Renderer> renderers = new ArrayList<Renderer>();
-    public int stripSize = 16;
+    public List<Renderer> renderers = new ArrayList<>();
+    public HashMap<String, Renderer> rendererHashMap = new HashMap<>();
 
     private final Serial serial = SerialFactory.createInstance();
     private boolean isSerialEnabled = false;
@@ -86,7 +88,11 @@ public class RendererController {
     }
 
     public void addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id) {
-        if(!currentHostname.contains("hb-") && hostname == "Unity" && type == Renderer.Type.LIGHT) {
+        addRenderer(type, hostname,x,y,z,name,id,16);
+    }
+
+    public void addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id, int stripSize) {
+        if(!currentHostname.contains("hb-") && hostname.equals("Unity") && type == Renderer.Type.LIGHT) {
             Renderer r = null;
             try {
                 r = rendererClass.newInstance();
@@ -108,6 +114,7 @@ public class RendererController {
                 Renderer r = rendererClass.newInstance();
                 r.initialize(hostname, type, x, y, z, name, id);
                 renderers.add(r);
+                rendererHashMap.put(name, r);
                 if(type == Renderer.Type.SPEAKER) {
                     hasSpeaker = true;
                     r.out = new Gain(1, 1);
@@ -118,6 +125,7 @@ public class RendererController {
                     hasLight = true;
                     enableSerial();
                     r.setupLight();
+                    r.stripSize = stripSize;
                 }
             }
         }
@@ -177,7 +185,7 @@ public class RendererController {
 
     public void pushLightColor(Renderer light) {
         if(light.type == Renderer.Type.LIGHT) {
-            displayColor(light.id, light.rgb[0], light.rgb[1], light.rgb[2]);
+            displayColor(light.id, light.rgb[0], light.rgb[1], light.rgb[2], light.stripSize);
         }
     }
 
@@ -186,11 +194,15 @@ public class RendererController {
             light.rgb[0] = red;
             light.rgb[1] = green;
             light.rgb[2] = blue;
-            displayColor(light.id, red, green, blue);
+            displayColor(light.id, red, green, blue, light.stripSize);
         }
     }
 
     public void displayColor(int whichLED, int red, int green, int blue) {
+        displayColor(whichLED,red,green,blue,16);
+    }
+
+    public void displayColor(int whichLED, int red, int green, int blue, int stripSize) {
         if(!isSerialEnabled || !hasSerial || !hasLight) {
             return;
         }
@@ -263,6 +275,56 @@ public class RendererController {
             }
         }
         sendSerialcommand();
+    }
+
+    public void loadHardwareConfigurationforUnity() {
+        loadHardwareConfiguration("Unity");
+    }
+
+    public void loadHardwareConfiguration() {
+        loadHardwareConfiguration("");
+    }
+
+    public void loadHardwareConfiguration(String deviceName) {
+        //List<List<String>> records = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("data/hardware_setup_xyz.csv"))) {
+            String line, deviceID;
+            Renderer.Type rType;
+            br.readLine(); // skip header line
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("," );
+                if(deviceName.isEmpty()) {
+                    deviceID = values[2];
+                } else {
+                    deviceID = deviceName;
+                }
+                String objectName = values[0] + "-" + values[1] + "-" + values[3];
+                int objectId = Integer.parseInt(values[3].substring(values[3].length() - 1));
+                float x = Float.parseFloat(values[4]);
+                float y = Float.parseFloat(values[5]);
+                float z = Float.parseFloat(values[6]);
+                int LEDstripSize = Integer.parseInt(values[7]);
+
+                /* Debug
+                System.out.println(Arrays.toString(values));
+                System.out.println(rType.toString() + " " + deviceID + " " + objectName + " " + objectId);
+                */
+
+                if(values[3].contains("LED")) {
+                    rType = Renderer.Type.LIGHT;
+                    addRenderer(rType,deviceID,x,y,z,objectName,objectId,LEDstripSize);
+                } else {
+                    rType = Renderer.Type.SPEAKER;
+                    addRenderer(rType,deviceID,x,y,z,objectName,objectId);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Renderer getRendererByName(String name) {
+        return rendererHashMap.get(name);
     }
 
 }

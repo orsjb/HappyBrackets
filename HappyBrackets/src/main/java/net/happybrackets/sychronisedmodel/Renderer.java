@@ -23,6 +23,7 @@ public class Renderer {
     public UGen out;
     public int[] rgb;
     public int[] hsb;
+    public int stripSize;
     public ColorMode colorMode = ColorMode.RGB;
 
 
