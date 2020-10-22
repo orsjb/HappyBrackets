@@ -73,6 +73,7 @@ public class RendererController {
         hasLight = hasSpeaker = hasSerial = false;
         internalClock.clearClockTickListener();
         internalClock.stop();
+        internalClock.reset();
     }
 
     public Clock getInternalClock(){
