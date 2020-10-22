@@ -277,17 +277,17 @@ public class RendererController {
         sendSerialcommand();
     }
 
-    public void loadHardwareConfigurationforUnity() {
+    public void loadHardwareConfigurationforUnity(String filepath) {
         loadHardwareConfiguration("Unity");
     }
 
-    public void loadHardwareConfiguration() {
+    public void loadHardwareConfiguration(String filepath) {
         loadHardwareConfiguration("");
     }
 
-    public void loadHardwareConfiguration(String deviceName) {
+    private void loadHardwareConfiguration(String deviceName,String filepath) {
         //List<List<String>> records = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("data/hardware_setup_xyz.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line, deviceID;
             Renderer.Type rType;
             br.readLine(); // skip header line
