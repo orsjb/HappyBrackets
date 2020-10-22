@@ -279,11 +279,11 @@ public class RendererController {
     }
 
     public void loadHardwareConfigurationforUnity(String filepath) {
-        loadHardwareConfiguration("Unity");
+        loadHardwareConfiguration("Unity", filepath);
     }
 
     public void loadHardwareConfiguration(String filepath) {
-        loadHardwareConfiguration("");
+        loadHardwareConfiguration("", filepath);
     }
 
     private void loadHardwareConfiguration(String deviceName,String filepath) {
