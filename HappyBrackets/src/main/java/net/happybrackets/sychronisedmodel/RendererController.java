@@ -300,7 +300,7 @@ public class RendererController {
                     deviceID = deviceName;
                 }
                 String objectName = values[0] + "-" + values[1] + "-" + values[3];
-                int objectId = Integer.parseInt(values[3].substring(values[3].length() - 1));
+                int objectId = Integer.parseInt(values[3].substring(values[3].length() - 1)) - 1 ;
                 float x = Float.parseFloat(values[4]);
                 float y = Float.parseFloat(values[5]);
                 float z = Float.parseFloat(values[6]);
