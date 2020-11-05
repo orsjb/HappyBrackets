@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="true" />
     </content>
-    <orderEntry type="jdk" jdkName="IntelliJ IDEA Community Edition IC-183.6156.11" jdkType="IDEA JDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="HappyBrackets_main" />
     <orderEntry type="library" name="Gradle: de.sciss:netutil:1.0.0" level="project" />
@@ -17,17 +17,25 @@
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.20" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.1.7" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-core:1.1.7" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../HappyBrackets/libs/beads.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy:3.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:2.4.3" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:4.4.0" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../HappyBrackets/libs" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="file://$MODULE_DIR$/../HappyBrackets/libs/docs" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../HappyBrackets/libs" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/../HappyBrackets/libs" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../HappyBrackets/libs" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="commons-math3-3.6.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.beadsproject:beads:3.2" level="project" />
   </component>
 </module>

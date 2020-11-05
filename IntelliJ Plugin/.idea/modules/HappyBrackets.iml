@@ -9,8 +9,5 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.6" level="project" />
-    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy:3.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.okio:okio:2.4.3" level="project" />
   </component>
 </module>

@@ -14,3 +14,4 @@ net.happybrackets.device.sensors
 net.happybrackets.device.sensors.gpio
 net.happybrackets.device.sensors.sensor_types
 net.happybrackets.extras.assignment_autograding
+net.happybrackets.sychronisedmodel

@@ -322,14 +322,13 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		String display_name = formatName(item.getFriendlyName());
 		Text name = new Text(display_name);
 
+
 		name.setOnMouseClicked(event -> {
 			// we do not want to show controls if it is a context menu
-			if (mouseModifiersClear(event)) {
+			if (mouseModifiersClear(event) && event.getClickCount() > 1) {
 				localDevice.showControlScreen();
-
 			}
 		});
-
 
 		name.setOnContextMenuRequested(event -> {
 			ContextMenu contextMenu = new ContextMenu();

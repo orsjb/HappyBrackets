@@ -122,7 +122,7 @@ public class Renderer {
     /*
      * Based on https://stackoverflow.com/a/7898685
      * */
-    protected void hsbToRgb() {
+    public void hsbToRgb() {
 
         double brightness = hsb[2] / 255.0;
         double saturation = hsb[1] / 255.0;

@@ -12,15 +12,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/beads.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../HappyBrackets/libs/pi4j-core.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -71,9 +62,10 @@
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.20" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.0" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:4.4.0" level="project" />
-    <orderEntry type="library" name="pi4j-core" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy:3.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:2.4.3" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.6" level="project" />
+    <orderEntry type="library" name="commons-math3-3.6.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.beadsproject:beads:3.2" level="project" />
   </component>
 </module>
