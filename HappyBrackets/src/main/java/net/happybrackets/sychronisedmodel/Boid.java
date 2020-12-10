@@ -190,9 +190,12 @@ public class Boid {
 
         JSONObject jo = new JSONObject();
         jo.put("id", id);
-        jo.put("location", location.x + "," + location.y);
-        jo.put("velocity", velocity.x + "," + velocity.y);
-        jo.put("acceleration", acceleration.x + "," + acceleration.y);
+
+        jo.put("lx", location.x);
+        jo.put("ly", location.y);
+
+        jo.put("vx", velocity.x);
+        jo.put("vy", velocity.y);
 
         return jo;
     }
@@ -201,20 +204,12 @@ public class Boid {
 
         id = jo.getInt("id");
 
-        String strLocation = jo.getString("location");
-        String[] xyLocation = strLocation.split(",");
-        location.x = Double.parseDouble(xyLocation[0]);
-        location.y = Double.parseDouble(xyLocation[1]);
+        location.x = jo.getDouble("lx");
+        location.y = jo.getDouble("ly");
 
-        String strVelocity = jo.getString("velocity");
-        String[] xyVelocity = strVelocity.split(",");
-        velocity.x = Double.parseDouble(xyVelocity[0]);
-        velocity.y = Double.parseDouble(xyVelocity[1]);
+        velocity.x = jo.getDouble("vx");
+        velocity.y = jo.getDouble("vy");
 
-        String strAcceleration = jo.getString("acceleration");
-        String[] xyAcceleration = strAcceleration.split(",");
-        acceleration.x = Double.parseDouble(xyAcceleration[0]);
-        acceleration.y = Double.parseDouble(xyAcceleration[1]);
     }
 }
 

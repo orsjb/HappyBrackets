@@ -42,19 +42,19 @@ public class TestFlockingModel {
         assert(myModel.getFrameCount() == 633);
 
         JSONObject joBoid = (JSONObject) jo.get("5");
-        String buffer;
 
-        String strLocation = joBoid.getString("location");
-        buffer = "482.6318900962165,355.0863414835118";
-        assert (strLocation.equals(buffer));
+        double lx = joBoid.getDouble("lx");
+        double ly = joBoid.getDouble("ly");
 
-        String strVelocity = joBoid.getString("velocity");
-        buffer = "2.973183192608333,-0.13836703488023905";
-        assert (strVelocity.equals(buffer));
+        double vx = joBoid.getDouble("vx");
+        double vy = joBoid.getDouble("vy");
 
-        String strAcceleration = joBoid.getString("acceleration");
-        buffer = "-0.0,0.0";
-        assert (strAcceleration.equals(buffer));
+        assert (lx == 482.6318900962165d);
+        assert (ly == 355.0863414835118d);
+
+        assert (vx == 2.973183192608333d);
+        assert (vy == -0.13836703488023905d);
+
 
         double value = myModel.getDiadIntensity();
         assert(value == 4.839886197253851E-31);
