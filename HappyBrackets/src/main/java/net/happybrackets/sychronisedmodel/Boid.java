@@ -201,15 +201,10 @@ public class Boid {
     }
 
     public void loadJSON(JSONObject jo) {
-
-        id = jo.getInt("id");
-
         location.x = jo.getDouble("lx");
         location.y = jo.getDouble("ly");
-
         velocity.x = jo.getDouble("vx");
         velocity.y = jo.getDouble("vy");
-
     }
 }
 
