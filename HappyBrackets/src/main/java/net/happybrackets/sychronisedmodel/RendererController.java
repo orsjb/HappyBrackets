@@ -88,11 +88,11 @@ public class RendererController {
         this.rendererClass = rendererClass;
     }
 
-    public void addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id) {
-        addRenderer(type, hostname,x,y,z,name,id,16);
+    public Renderer addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id) {
+        return addRenderer(type, hostname,x,y,z,name,id,16);
     }
 
-    public void addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id, int stripSize) {
+    public Renderer addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id, int stripSize) {
         if(!currentHostname.contains("hb-") && hostname.equals("Unity") && type == Renderer.Type.LIGHT) {
             Renderer r = null;
             try {
@@ -107,7 +107,7 @@ public class RendererController {
                 oscSender = new OSCUDPSender();
             }
             isUnity = true;
-            return;
+            return r;
         }
 
         try {
@@ -128,11 +128,13 @@ public class RendererController {
                     r.setupLight();
                     r.stripSize = stripSize;
                 }
+                return r;
             }
         }
         catch (IllegalAccessException | InstantiationException ex) {
             ex.printStackTrace();
         }
+        return null;
     }
 
     private void enableSerial() {
@@ -291,7 +293,8 @@ public class RendererController {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line, deviceID;
             Renderer.Type rType;
-            br.readLine(); // skip header line
+            line = br.readLine(); // skip header line
+            String[] header = line.split("," );
             while ((line = br.readLine()) != null) {
                 String[] values = line.split("," );
                 if(deviceName.isEmpty()) {
@@ -311,13 +314,27 @@ public class RendererController {
                 System.out.println(rType.toString() + " " + deviceID + " " + objectName + " " + objectId);
                 */
 
+                Renderer r = null;
                 if(values[3].contains("LED")) {
                     rType = Renderer.Type.LIGHT;
-                    addRenderer(rType,deviceID,x,y,z,objectName,objectId,LEDstripSize);
+                    r = addRenderer(rType,deviceID,x,y,z,objectName,objectId,LEDstripSize);
                 } else {
                     rType = Renderer.Type.SPEAKER;
-                    addRenderer(rType,deviceID,x,y,z,objectName,objectId);
+                    r = addRenderer(rType,deviceID,x,y,z,objectName,objectId);
                 }
+
+                if(r != null && header.length > 8 && values.length > 8) {
+                    HashMap<String, String> csvData = new HashMap<>();
+                    for (int i = 8; i < values.length; i++) {
+                        if(header[i] != null && values[i] != null) {
+                            csvData.put(header[i], values[i]);
+                        }
+                    }
+                    if(!csvData.isEmpty()) {
+                        r.csvData = csvData;
+                    }
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();

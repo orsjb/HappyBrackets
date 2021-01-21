@@ -2,6 +2,8 @@ package net.happybrackets.sychronisedmodel;
 
 import net.beadsproject.beads.core.UGen;
 
+import java.util.HashMap;
+
 public class Renderer {
     public String hostname;
     public float x;
@@ -25,6 +27,7 @@ public class Renderer {
     public int[] hsb;
     public int stripSize;
     public ColorMode colorMode = ColorMode.RGB;
+    public HashMap<String, String> csvData  = new HashMap<>();
 
 
     /**
