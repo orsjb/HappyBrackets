@@ -40,6 +40,14 @@ public class StaticUDPReceiver {
         receiver.setReuseAddress(true);
     }
 
+    public void close() throws IOException {
+        if(doListen) {
+            doListen = false;
+            serverSocket.close();
+            receiver.close();
+        }
+    }
+
     /**
      * Create a OSC Receiver finding own port
      * @throws SocketException Exception if unable to open
@@ -108,6 +116,9 @@ public class StaticUDPReceiver {
 
         }
 
+        serverSocket.close();
+        receiver.close();
+
     }
 
 
@@ -125,7 +136,14 @@ public class StaticUDPReceiver {
 
                 try {
                     doReceive();
-                } catch (IOException e) {
+                } catch (SocketException e){
+                    if(e.getMessage().equals("Socket closed")) {
+                        // When the connection is closed, do nothing
+                    } else {
+                        e.printStackTrace();
+                    }
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             });

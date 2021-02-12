@@ -19,6 +19,9 @@ package net.happybrackets.core;
 import net.happybrackets.device.HB;
 
 import java.io.Serializable;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * PI Playback Object.
@@ -26,6 +29,14 @@ import java.io.Serializable;
  *
  */
 public interface HBAction extends Serializable {
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Inherited
+	@interface HBParam { }
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Inherited
+	@interface HBCommand { }
 
 	void action(final HB hb);
 
