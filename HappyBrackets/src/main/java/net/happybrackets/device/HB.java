@@ -484,10 +484,12 @@ public class HB {
 			Class type = field.getType();
 			String name = field.getName();
 			Annotation[] annotations = field.getAnnotations();
+			boolean isExposed = false;
 
 			for(Annotation ann: annotations) {
 				if(ann.annotationType() == HBAction.HBParam.class) {
 					exposedVariables.put(name,type);
+					isExposed = true;
 				}
 			}
 
@@ -497,7 +499,8 @@ public class HB {
 					oscPort = (int)value;
 				}
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				if(isExposed || name.equals("oscPort"))
+					System.out.println("Not possible to read field: " + name + ". Must be non static and public");
 			}
 
 		}
