@@ -40,6 +40,8 @@ import net.happybrackets.device.network.DeviceConnectedEventListener;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.sensors.gpio.GPIO;
+import net.happybrackets.sychronisedmodel.Renderer;
+import net.happybrackets.sychronisedmodel.RendererController;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -684,6 +686,16 @@ public class HB {
 					throw new Exception("Class does not have HBAction");
 				}
 
+				boolean isRendererClass = false;
+				Class superclass = action_class.getSuperclass();
+				if(superclass.equals(Renderer.class)) {
+					isRendererClass = true;
+					RendererController rc = RendererController.getInstance();
+					Class<? extends Renderer> rendererClass = (Class<? extends Renderer>) action_class;
+					rc.setRendererClass(rendererClass);
+					rc.setup();
+				}
+
 				if (incomingClass != null) {
 					HBAction action = null;
 					try {
@@ -1275,6 +1287,7 @@ public class HB {
 
 						setStatus("Received class load request");
 						Class<? extends HBAction> incomingClass = null;
+						boolean isRendererClass = false;
 						try {
 							InputStream input = s.getInputStream();
 							ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -1341,6 +1354,17 @@ public class HB {
 								} else {
 									logger.debug("new object (not HBAction) >> " + c.getName());
 								}
+
+
+								Class superclass = c.getSuperclass();
+								if(superclass.equals(Renderer.class)) {
+									isRendererClass = true;
+									RendererController rc = RendererController.getInstance();
+									Class<? extends Renderer> rendererClass = (Class<? extends Renderer>) c;
+									rc.setRendererClass(rendererClass);
+									rc.setup();
+								}
+
 							}
 							catch (ClassFormatError e)
 							{

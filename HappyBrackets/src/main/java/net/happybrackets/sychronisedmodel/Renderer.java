@@ -1,6 +1,7 @@
 package net.happybrackets.sychronisedmodel;
 
 import net.beadsproject.beads.core.UGen;
+import net.happybrackets.core.scheduling.Clock;
 
 import java.util.HashMap;
 
@@ -50,6 +51,9 @@ public class Renderer {
     }
 
     public void setupLight() {
+    }
+
+    public void tick(Clock clock) {
     }
 
     public void initialize(String hostname, Type type, float x, float y, float z, String name, int id) {

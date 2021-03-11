@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,6 +26,10 @@ import java.util.List;
  * Separate RendererController and Renderer class in different files.
  */
 public class RendererController {
+
+    public static enum RenderMode {
+        UNITY, REAL
+    }
 
     public List<Renderer> renderers = new ArrayList<>();
     public HashMap<String, Renderer> rendererHashMap = new HashMap<>();
@@ -288,6 +293,13 @@ public class RendererController {
         loadHardwareConfiguration("", filepath);
     }
 
+    public void loadHardwareConfiguration(String filepath, RenderMode renderMode) {
+        if(renderMode == RenderMode.UNITY)
+            loadHardwareConfiguration("Unity", filepath);
+        else
+            loadHardwareConfiguration("", filepath);
+    }
+
     private void loadHardwareConfiguration(String deviceName,String filepath) {
         //List<List<String>> records = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
@@ -339,6 +351,35 @@ public class RendererController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setup() {
+        String installationConfigFile;
+
+        try {
+            Field f = rendererClass.getField("installationConfig");
+            installationConfigFile = (String)f.get(null);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+           installationConfigFile =  "config/hardware_setup_casula.csv";
+        }
+
+        RenderMode renderMode = RenderMode.REAL;
+
+        try {
+            Field f = rendererClass.getField("renderMode");
+            renderMode = (RenderMode)f.get(null);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+        }
+
+        loadHardwareConfiguration(installationConfigFile, renderMode);
+
+        internalClock.addClockTickListener((v, clock) -> {
+                    renderers.forEach(r -> {
+                        r.tick(clock);
+                    });
+                    sendSerialcommand();
+                }
+        );
     }
 
     public Renderer getRendererByName(String name) {
