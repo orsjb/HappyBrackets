@@ -471,138 +471,6 @@ public class HB {
 		return ret;
 	}
 
-	/**
-	 * Process Annotations @HBParam and @HBCommand and create an OSCListener if any of those exists.
-	 * @param newinstance Instance of HBAction
-	 */
-	private static void processAnnotations(HBAction newinstance) {
-		Map<String, Class> exposedVariables = new HashMap<>();
-		Map<String, Class[]> exposedMethods = new HashMap<>();
-
-		int oscPort =  9001;
-
-		for(Field field : newinstance.getClass().getDeclaredFields()){
-
-			Class type = field.getType();
-			String name = field.getName();
-			Annotation[] annotations = field.getAnnotations();
-			boolean isExposed = false;
-
-			for(Annotation ann: annotations) {
-				if(ann.annotationType() == HBAction.HBParam.class) {
-					exposedVariables.put(name,type);
-					isExposed = true;
-				}
-			}
-
-			try {
-				Object value = field.get(newinstance);
-				if(name.equals("oscPort")) {
-					oscPort = (int)value;
-				}
-			} catch (IllegalAccessException e) {
-				if(isExposed || name.equals("oscPort"))
-					System.out.println("Not possible to read field: " + name + ". Must be non static and public");
-			}
-
-		}
-
-		for(Method method : newinstance.getClass().getDeclaredMethods()){
-			String name = method.getName();
-			Annotation[] annotations = method.getAnnotations();
-
-			for(Annotation ann: annotations) {
-				if(ann.annotationType() == HBAction.HBCommand.class) {
-					if(exposedMethods.containsKey(name)) {
-						System.out.println("ERROR - Multiple methods with the same name: " + name);
-						continue;
-					}
-					exposedMethods.put(name,method.getParameterTypes());
-				}
-			}
-
-		}
-
-		if(exposedMethods.isEmpty() && exposedVariables.isEmpty()) return;
-
-		HBAction finalNewinstance = newinstance;
-
-		OSCListener = new OSCUDPListener(oscPort) {
-			@Override
-			public void OSCReceived(OSCMessage oscMessage, SocketAddress socketAddress, long l) {
-				try {
-					String messageName = oscMessage.getName().substring(1);
-					if(exposedVariables.containsKey(messageName)) {
-						Class type = exposedVariables.get(messageName);
-						Field field = newinstance.getClass().getField(messageName);
-						switch (type.toString()) {
-							case "java.lang.String" :
-								field.set(finalNewinstance, String.valueOf(oscMessage.getArg(0)));
-								break;
-							case "class de.sciss.net.OSCMessage":
-								field.set(finalNewinstance, oscMessage);
-								break;
-							case "float":
-								try {
-									field.setFloat(finalNewinstance, (float) oscMessage.getArg(0));
-								} catch( ClassCastException e) {
-									field.setFloat(finalNewinstance, (int)oscMessage.getArg(0));
-								}
-								break;
-							case "int":
-								field.setInt(finalNewinstance, (int) oscMessage.getArg(0));
-								break;
-							case "boolean":
-								field.setBoolean(finalNewinstance, (boolean)oscMessage.getArg(0));
-								break;
-							default:
-								System.out.println("ERROR Data Type not expected: " + type + ". Expected values: f i b s");
-						}
-					}
-					if(exposedMethods.containsKey(messageName)) {
-						Class types[] = exposedMethods.get(messageName);
-						Method m = newinstance.getClass().getMethod(messageName, types);
-						Object[] ObjectArray = new Object[types.length];
-                        /*
-                        For each arguments in the OSC message, cast this argument to the expected type according to the method signature
-                        Matching the osc parameter position with the method parameter position
-                         */
-						int arg = 0;
-						for(Class argType: types) {
-							switch (argType.toString()) {
-								case "java.lang.String" :
-									ObjectArray[arg] = String.valueOf(oscMessage.getArg(arg));
-									break;
-								case "class de.sciss.net.OSCMessage":
-									ObjectArray[arg] =  oscMessage;
-									break;
-								case "float":
-									try {
-										ObjectArray[arg] = (float)oscMessage.getArg(arg);
-									} catch( ClassCastException e) {
-										ObjectArray[arg] = (int)oscMessage.getArg(arg);
-									}
-									break;
-								case "int":
-									ObjectArray[arg] =  (int)oscMessage.getArg(arg);
-									break;
-								case "boolean":
-									ObjectArray[arg] = (boolean)oscMessage.getArg(arg);
-									break;
-								default:
-									System.out.println("ERROR Data Type not expected: " + argType.toString() + ". Expected values: f i b s");
-							}
-							arg++;
-						}
-						m.invoke(finalNewinstance, ObjectArray);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-		};
-	}
 
 	/**
   	 * Run HB in a debug mode so we can debug sample code in INtelliJ
@@ -705,9 +573,8 @@ public class HB {
 
 						// add our controller address before we call action
 						hb.classSenders.put(action, InetAddress.getLocalHost());
-						action.action(hb);
 
-						HB.processAnnotations(action);
+						action.action(hb);
 
 						// we will add to our list here.
 						// It is important we do this after the action in case this is the class that called reset
@@ -1385,8 +1252,6 @@ public class HB {
 								classSenders.put(action, incomingAddress);
 
 								action.action(HB.this);
-
-								HB.processAnnotations(action);
 
 								sendClassLoaded(incomingClass);
 								// we will add to our list here.

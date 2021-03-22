@@ -2,7 +2,10 @@ package net.happybrackets.sychronisedmodel;
 
 import com.pi4j.io.serial.*;
 import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCListener;
 import net.beadsproject.beads.ugens.Gain;
+import net.happybrackets.core.HBAction;
+import net.happybrackets.core.OSCUDPListener;
 import net.happybrackets.core.OSCUDPSender;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
@@ -12,10 +15,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
@@ -98,21 +104,38 @@ public class RendererController {
     }
 
     public Renderer addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id, int stripSize) {
-        if(!currentHostname.contains("hb-") && hostname.equals("Unity") && type == Renderer.Type.LIGHT) {
-            Renderer r = null;
-            try {
-                r = rendererClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+        if(!currentHostname.contains("hb-") && hostname.equals("Unity")) {
+            if(type == Renderer.Type.LIGHT) {
+                Renderer r = null;
+                try {
+                    r = rendererClass.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                r.initialize(hostname, type, x, y, z, name, 0);
+                renderers.add(r);
+                r.setupLight();
+                if (isUnity == false) {
+                    oscSender = new OSCUDPSender();
+                }
+                isUnity = true;
+                return r;
             }
-            r.initialize(hostname, type, x, y, z, name, id);
-            renderers.add(r);
-            r.setupLight();
-            if(isUnity == false) {
-                oscSender = new OSCUDPSender();
+            if(type == Renderer.Type.SPEAKER) {
+                Renderer r = null;
+                try {
+                    r = rendererClass.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                r.initialize(hostname, type, x, y, z, name, 0);
+                renderers.add(r);
+                hasSpeaker = true;
+                r.out = new Gain(1, 1);
+                HB.getAudioOutput().addInput(0, r.out, 0);
+                r.setupAudio();
+                return r;
             }
-            isUnity = true;
-            return r;
         }
 
         try {
@@ -354,14 +377,6 @@ public class RendererController {
     }
 
     public void setup() {
-        String installationConfigFile;
-
-        try {
-            Field f = rendererClass.getField("installationConfig");
-            installationConfigFile = (String)f.get(null);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-           installationConfigFile =  "config/hardware_setup_casula.csv";
-        }
 
         RenderMode renderMode = RenderMode.REAL;
 
@@ -369,9 +384,18 @@ public class RendererController {
             Field f = rendererClass.getField("renderMode");
             renderMode = (RenderMode)f.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
+            System.out.println("Problem loading renderMode field: " + e.getMessage());
         }
 
-        loadHardwareConfiguration(installationConfigFile, renderMode);
+
+
+        try {
+            Field f = rendererClass.getField("installationConfig");
+            String installationConfigFile = (String)f.get(null);
+            loadHardwareConfiguration(installationConfigFile, renderMode);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            System.out.println("Problem loading installationConfig field: " + e.getMessage());
+        }
 
         internalClock.addClockTickListener((v, clock) -> {
                     renderers.forEach(r -> {
@@ -380,10 +404,147 @@ public class RendererController {
                     sendSerialcommand();
                 }
         );
+
+//        internalClock.setInterval(50);
+//        internalClock.start();
     }
 
     public Renderer getRendererByName(String name) {
         return rendererHashMap.get(name);
+    }
+
+
+    /**
+     * Process Annotations @HBParam and @HBCommand and create an OSCListener if any of those exists.
+     * @param newinstance Instance of HBAction
+     */
+    private static void processAnnotations(HBAction newinstance) {
+        Map<String, Class> exposedVariables = new HashMap<>();
+        Map<String, Class[]> exposedMethods = new HashMap<>();
+
+        int oscPort =  9001;
+
+        for(Field field : newinstance.getClass().getDeclaredFields()){
+
+            Class type = field.getType();
+            String name = field.getName();
+            Annotation[] annotations = field.getAnnotations();
+            boolean isExposed = false;
+
+            for(Annotation ann: annotations) {
+                if(ann.annotationType() == HBAction.HBParam.class) {
+                    exposedVariables.put(name,type);
+                    isExposed = true;
+                }
+            }
+
+            try {
+                Object value = field.get(newinstance);
+                if(name.equals("oscPort")) {
+                    oscPort = (int)value;
+                }
+            } catch (IllegalAccessException e) {
+                if(isExposed || name.equals("oscPort"))
+                    System.out.println("Not possible to read field: " + name + ". Must be non static and public");
+            }
+
+        }
+
+        for(Method method : newinstance.getClass().getDeclaredMethods()){
+            String name = method.getName();
+            Annotation[] annotations = method.getAnnotations();
+
+            for(Annotation ann: annotations) {
+                if(ann.annotationType() == HBAction.HBCommand.class) {
+                    if(exposedMethods.containsKey(name)) {
+                        System.out.println("ERROR - Multiple methods with the same name: " + name);
+                        continue;
+                    }
+                    exposedMethods.put(name,method.getParameterTypes());
+                }
+            }
+
+        }
+
+        if(exposedMethods.isEmpty() && exposedVariables.isEmpty()) return;
+
+        HBAction finalNewinstance = newinstance;
+
+        OSCUDPListener SCListener = new OSCUDPListener(oscPort) {
+            @Override
+            public void OSCReceived(OSCMessage oscMessage, SocketAddress socketAddress, long l) {
+                try {
+                    String messageName = oscMessage.getName().substring(1);
+                    if(exposedVariables.containsKey(messageName)) {
+                        Class type = exposedVariables.get(messageName);
+                        Field field = newinstance.getClass().getField(messageName);
+                        switch (type.toString()) {
+                            case "java.lang.String" :
+                                field.set(finalNewinstance, String.valueOf(oscMessage.getArg(0)));
+                                break;
+                            case "class de.sciss.net.OSCMessage":
+                                field.set(finalNewinstance, oscMessage);
+                                break;
+                            case "float":
+                                try {
+                                    field.setFloat(finalNewinstance, (float) oscMessage.getArg(0));
+                                } catch( ClassCastException e) {
+                                    field.setFloat(finalNewinstance, (int)oscMessage.getArg(0));
+                                }
+                                break;
+                            case "int":
+                                field.setInt(finalNewinstance, (int) oscMessage.getArg(0));
+                                break;
+                            case "boolean":
+                                field.setBoolean(finalNewinstance, (boolean)oscMessage.getArg(0));
+                                break;
+                            default:
+                                System.out.println("ERROR Data Type not expected: " + type + ". Expected values: f i b s");
+                        }
+                    }
+                    if(exposedMethods.containsKey(messageName)) {
+                        Class types[] = exposedMethods.get(messageName);
+                        Method m = newinstance.getClass().getMethod(messageName, types);
+                        Object[] ObjectArray = new Object[types.length];
+                        /*
+                        For each arguments in the OSC message, cast this argument to the expected type according to the method signature
+                        Matching the osc parameter position with the method parameter position
+                         */
+                        int arg = 0;
+                        for(Class argType: types) {
+                            switch (argType.toString()) {
+                                case "java.lang.String" :
+                                    ObjectArray[arg] = String.valueOf(oscMessage.getArg(arg));
+                                    break;
+                                case "class de.sciss.net.OSCMessage":
+                                    ObjectArray[arg] =  oscMessage;
+                                    break;
+                                case "float":
+                                    try {
+                                        ObjectArray[arg] = (float)oscMessage.getArg(arg);
+                                    } catch( ClassCastException e) {
+                                        ObjectArray[arg] = (int)oscMessage.getArg(arg);
+                                    }
+                                    break;
+                                case "int":
+                                    ObjectArray[arg] =  (int)oscMessage.getArg(arg);
+                                    break;
+                                case "boolean":
+                                    ObjectArray[arg] = (boolean)oscMessage.getArg(arg);
+                                    break;
+                                default:
+                                    System.out.println("ERROR Data Type not expected: " + argType.toString() + ". Expected values: f i b s");
+                            }
+                            arg++;
+                        }
+                        m.invoke(finalNewinstance, ObjectArray);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
     }
 
 }
