@@ -539,32 +539,43 @@ public class HB {
 				Class<? extends HBAction> incomingClass = null;
 				DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
 
-				Class<?>[] interfaces = action_class.getInterfaces();
 				boolean isHBActionClass = false;
-				for (Class<?> cc : interfaces) {
-					if (cc.equals(HBAction.class)) {
-						isHBActionClass = true;
-						break;
+				boolean isRendererClass = false;
+
+				Class C = action_class;
+				while (C != null) {
+					if(C.equals(Renderer.class)) {
+						isRendererClass = true;
 					}
+
+					Class<?>[] interfaces = C.getInterfaces();
+					for (Class<?> cc : interfaces) {
+						if (cc.equals(HBAction.class)) {
+							isHBActionClass = true;
+							break;
+						}
+					}
+
+					C = C.getSuperclass();
 				}
+
 				if (isHBActionClass) {
 					incomingClass = (Class<? extends HBAction>) action_class;
 
-				} else {
-					throw new Exception("Class does not have HBAction");
 				}
 
-				boolean isRendererClass = false;
-				Class superclass = action_class.getSuperclass();
-				if(superclass.equals(Renderer.class)) {
-					isRendererClass = true;
+				if(!isHBActionClass && !isRendererClass){
+					throw new Exception("Class does not have HBAction or extends Renderer");
+				}
+
+				if(isRendererClass) {
 					RendererController rc = RendererController.getInstance();
 					Class<? extends Renderer> rendererClass = (Class<? extends Renderer>) action_class;
 					rc.setRendererClass(rendererClass);
 					rc.setup();
 				}
 
-				if (incomingClass != null) {
+				if (isHBActionClass && incomingClass != null) {
 					HBAction action = null;
 					try {
 						// If we have a mute control, disable muting
@@ -1154,7 +1165,7 @@ public class HB {
 
 						setStatus("Received class load request");
 						Class<? extends HBAction> incomingClass = null;
-						boolean isRendererClass = false;
+                        boolean isHBActionClass = false;
 						try {
 							InputStream input = s.getInputStream();
 							ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -1201,14 +1212,26 @@ public class HB {
 							try {
 								//at this stage we have the class data in a byte array
 								Class<?> c = loader.createNewClass(classData);
-								Class<?>[] interfaces = c.getInterfaces();
-								boolean isHBActionClass = false;
-								for (Class<?> cc : interfaces) {
-									if (cc.equals(HBAction.class)) {
-										isHBActionClass = true;
-										break;
+
+								boolean isRendererClass = false;
+
+								Class C = c;
+								while (C != null) {
+									if(C.equals(Renderer.class)) {
+										isRendererClass = true;
 									}
+
+									Class<?>[] interfaces = C.getInterfaces();
+									for (Class<?> cc : interfaces) {
+										if (cc.equals(HBAction.class)) {
+											isHBActionClass = true;
+											break;
+										}
+									}
+
+									C = C.getSuperclass();
 								}
+
 								if (isHBActionClass) {
 									incomingClass = (Class<? extends HBAction>) c;
 									String class_name = incomingClass.getSimpleName();
@@ -1222,10 +1245,7 @@ public class HB {
 									logger.debug("new object (not HBAction) >> " + c.getName());
 								}
 
-
-								Class superclass = c.getSuperclass();
-								if(superclass.equals(Renderer.class)) {
-									isRendererClass = true;
+								if(isRendererClass) {
 									RendererController rc = RendererController.getInstance();
 									Class<? extends Renderer> rendererClass = (Class<? extends Renderer>) c;
 									rc.setRendererClass(rendererClass);
@@ -1241,7 +1261,7 @@ public class HB {
 						} catch (Exception e) {
 							logger.error("An error occurred while trying to read object from socket.", e);
 						}
-						if (incomingClass != null) {
+						if (isHBActionClass && incomingClass != null) {
 							HBAction action = null;
 							try {
 								action = incomingClass.newInstance();

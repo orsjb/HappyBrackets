@@ -16,9 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.SocketAddress;
@@ -378,6 +376,8 @@ public class RendererController {
 
     public void setup() {
 
+        processAnnotations();
+
         RenderMode renderMode = RenderMode.REAL;
 
         try {
@@ -405,8 +405,7 @@ public class RendererController {
                 }
         );
 
-//        internalClock.setInterval(50);
-//        internalClock.start();
+        internalClock.start();
     }
 
     public Renderer getRendererByName(String name) {
@@ -418,11 +417,33 @@ public class RendererController {
      * Process Annotations @HBParam and @HBCommand and create an OSCListener if any of those exists.
      * @param newinstance Instance of HBAction
      */
-    private static void processAnnotations(HBAction newinstance) {
-        Map<String, Class> exposedVariables = new HashMap<>();
+    private void processAnnotations() {
+
+        class HBParamAnnotations {
+            Class type;
+            Double min = null;
+            Double max = null;
+            public HBParamAnnotations(Class type, double min, double max) {
+                this.type = type;
+                this.min = min;
+                this.max = max;
+            }
+            public HBParamAnnotations(Class type) {
+                this.type = type;
+            }
+        }
+
+        Renderer newinstance = null;
+        try {
+            newinstance = rendererClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, HBParamAnnotations> exposedVariables = new HashMap<>();
         Map<String, Class[]> exposedMethods = new HashMap<>();
 
-        int oscPort =  9001;
+        int oscPort =  9002;
 
         for(Field field : newinstance.getClass().getDeclaredFields()){
 
@@ -432,10 +453,29 @@ public class RendererController {
             boolean isExposed = false;
 
             for(Annotation ann: annotations) {
-                if(ann.annotationType() == HBAction.HBParam.class) {
-                    exposedVariables.put(name,type);
+                System.out.println("annotation at field: " + name);
+                if(ann.annotationType() == HBNumberRange.class) {
+                    HBNumberRange annotation = field.getAnnotation(HBNumberRange.class);
+                    double min = annotation.min();
+                    double max = annotation.max();
+                    exposedVariables.put(name,new HBParamAnnotations(type, min, max));
                     isExposed = true;
                 }
+
+                if(ann.annotationType() == HBParam.class) {
+                    exposedVariables.put(name,new HBParamAnnotations(type));
+                    isExposed = true;
+                }
+            }
+
+            try {
+                Object value = field.get(newinstance);
+                if(name.equals("clockInterval")) {
+                    internalClock.setInterval((int)value);
+                }
+            } catch (IllegalAccessException e) {
+                if(isExposed || name.equals("clockInterval"))
+                    System.out.println("Not possible to read field: " + name + ". Must be non static and public");
             }
 
             try {
@@ -455,7 +495,7 @@ public class RendererController {
             Annotation[] annotations = method.getAnnotations();
 
             for(Annotation ann: annotations) {
-                if(ann.annotationType() == HBAction.HBCommand.class) {
+                if(ann.annotationType() == HBCommand.class) {
                     if(exposedMethods.containsKey(name)) {
                         System.out.println("ERROR - Multiple methods with the same name: " + name);
                         continue;
@@ -468,7 +508,7 @@ public class RendererController {
 
         if(exposedMethods.isEmpty() && exposedVariables.isEmpty()) return;
 
-        HBAction finalNewinstance = newinstance;
+        final Renderer finalNewinstance = newinstance;
 
         OSCUDPListener SCListener = new OSCUDPListener(oscPort) {
             @Override
@@ -476,9 +516,9 @@ public class RendererController {
                 try {
                     String messageName = oscMessage.getName().substring(1);
                     if(exposedVariables.containsKey(messageName)) {
-                        Class type = exposedVariables.get(messageName);
-                        Field field = newinstance.getClass().getField(messageName);
-                        switch (type.toString()) {
+                        HBParamAnnotations annotation = exposedVariables.get(messageName);
+                        Field field = finalNewinstance.getClass().getField(messageName);
+                        switch (annotation.type.toString()) {
                             case "java.lang.String" :
                                 field.set(finalNewinstance, String.valueOf(oscMessage.getArg(0)));
                                 break;
@@ -487,24 +527,34 @@ public class RendererController {
                                 break;
                             case "float":
                                 try {
-                                    field.setFloat(finalNewinstance, (float) oscMessage.getArg(0));
+                                    float value = (float) oscMessage.getArg(0);
+                                    if(annotation.min != null
+                                            && value >= annotation.min
+                                            && value <= annotation.max) {
+                                        field.setFloat(finalNewinstance, value);
+                                    }
                                 } catch( ClassCastException e) {
                                     field.setFloat(finalNewinstance, (int)oscMessage.getArg(0));
                                 }
                                 break;
                             case "int":
-                                field.setInt(finalNewinstance, (int) oscMessage.getArg(0));
+                                int value = (int) oscMessage.getArg(0);
+                                if(annotation.min != null
+                                        && value >= annotation.min
+                                        && value <= annotation.max) {
+                                    field.setInt(finalNewinstance, value);
+                                }
                                 break;
                             case "boolean":
                                 field.setBoolean(finalNewinstance, (boolean)oscMessage.getArg(0));
                                 break;
                             default:
-                                System.out.println("ERROR Data Type not expected: " + type + ". Expected values: f i b s");
+                                System.out.println("ERROR Data Type not expected: " + annotation.type + ". Expected values: f i b s");
                         }
                     }
                     if(exposedMethods.containsKey(messageName)) {
                         Class types[] = exposedMethods.get(messageName);
-                        Method m = newinstance.getClass().getMethod(messageName, types);
+                        Method m = finalNewinstance.getClass().getMethod(messageName, types);
                         Object[] ObjectArray = new Object[types.length];
                         /*
                         For each arguments in the OSC message, cast this argument to the expected type according to the method signature

@@ -5,7 +5,9 @@ import net.happybrackets.core.scheduling.Clock;
 
 import java.util.HashMap;
 
+
 public class Renderer {
+
     public String hostname;
     public float x;
     public float y;
