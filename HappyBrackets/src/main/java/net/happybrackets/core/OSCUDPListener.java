@@ -44,6 +44,16 @@ abstract public class OSCUDPListener {
         return ret;
     }
 
+    public void close() {
+        try {
+            if (oscSource != null) {
+                oscSource.close();
+            }
+        } catch (IOException e) {
+            lastError = e.getMessage();
+        }
+    }
+
     /**
      * Constructor
      * @param port the port to open. Using zero will open first available port

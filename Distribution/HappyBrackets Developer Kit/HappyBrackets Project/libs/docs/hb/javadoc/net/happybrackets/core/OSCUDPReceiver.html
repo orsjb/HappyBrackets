@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":9};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":9,"i5":10,"i6":10,"i7":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -172,33 +172,37 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/core/OSCUDPReceiver.html#close--">close</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/core/OSCUDPReceiver.html#eraseListeners--">eraseListeners</a></span>()</code>
 <div class="block">Erases listener list</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/core/OSCUDPReceiver.html#getPort--">getPort</a></span>()</code>
 <div class="block">Return the port for this server</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/core/OSCUDPReceiver.html#main-java.lang.String:A-">main</a></span>(java.lang.String[]&nbsp;args)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/core/OSCUDPReceiver.html#messageReceived-java.net.DatagramPacket-java.net.SocketAddress-">messageReceived</a></span>(java.net.DatagramPacket&nbsp;packet,
                java.net.SocketAddress&nbsp;sender)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/core/OSCUDPReceiver.html#removeOSCListener-de.sciss.net.OSCListener-">removeOSCListener</a></span>(de.sciss.net.OSCListener&nbsp;listener)</code>
 <div class="block">Unregisters a listener that gets informed
   about incoming messages</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../net/happybrackets/core/OSCUDPReceiver.html#resetListeners--">resetListeners</a></span>()</code>
 <div class="block">Resets all listeners</div>
@@ -314,6 +318,20 @@ extends java.lang.Object</pre>
 <h4>resetListeners</h4>
 <pre>public static&nbsp;void&nbsp;resetListeners()</pre>
 <div class="block">Resets all listeners</div>
+</li>
+</ul>
+<a name="close--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>close</h4>
+<pre>public&nbsp;void&nbsp;close()
+           throws java.io.IOException</pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd>
+</dl>
 </li>
 </ul>
 <a name="addOSCListener-de.sciss.net.OSCListener-">

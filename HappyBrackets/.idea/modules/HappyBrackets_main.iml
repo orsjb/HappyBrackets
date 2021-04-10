@@ -12,22 +12,74 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../libs/beads.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../libs/pi4j-gpio-extension.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.6.2" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/pi4j-core.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/pi4j-core-javadoc.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/pi4j-device-sources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/pi4j-device.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.json:json:20180130" level="project" />
     <orderEntry type="library" name="Gradle: org.nanohttpd:nanohttpd:2.2.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:3.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:4.4.0" level="project" />
     <orderEntry type="library" name="Gradle: de.sciss:netutil:1.0.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.pi4j:pi4j-core:1.0" level="project" />
-    <orderEntry type="library" name="Gradle: ch.qos.logback:logback-core:1.1.7" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.1.7" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.6.0" level="project" />
+    <orderEntry type="library" name="Gradle: ch.qos.logback:logback-core:1.1.7" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.20" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.codehaus.groovy:groovy:2.4.7" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.beadsproject:beads:3.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.squareup.okio:okio:2.4.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.3.61" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.codehaus.groovy:groovy:3.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.3.61" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: javazoom:jlayer:1.0.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.googlecode.soundlibs:mp3spi:1.9.5.4" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.clojars.automata:tritonus-aos:1.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.clojars.automata:tritonus-share:1.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.jaudiolibs:audioservers-javasound:2.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.jaudiolibs:audioservers-jack:2.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.jaudiolibs:jnajack:1.4.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.googlecode.soundlibs:jlayer:1.0.1.4" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.googlecode.soundlibs:tritonus-share:0.3.7.4" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.jaudiolibs:audioservers-api:2.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: net.java.dev.jna:jna:5.8.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: junit:junit:3.8.2" level="project" />
   </component>
 </module>

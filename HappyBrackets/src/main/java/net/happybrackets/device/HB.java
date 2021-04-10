@@ -40,6 +40,8 @@ import net.happybrackets.device.network.DeviceConnectedEventListener;
 import net.happybrackets.device.network.NetworkCommunication;
 import net.happybrackets.device.sensors.*;
 import net.happybrackets.device.sensors.gpio.GPIO;
+import net.happybrackets.rendererengine.Renderer;
+import net.happybrackets.rendererengine.RendererController;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -47,10 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -85,6 +84,8 @@ public class HB {
 
 	// create a lock to synchronise getting default sensor
 	private final static Object sensorLock = new Object();
+
+	private static OSCUDPListener OSCListener = null;
 
 	/**
 	 * Return the Mute Control
@@ -464,6 +465,8 @@ public class HB {
 		}
 		return ret;
 	}
+
+
 	/**
   	 * Run HB in a debug mode so we can debug sample code in INtelliJ
 	 * run the command like this: HB.runDebug(MethodHandles.lookup().lookupClass());
@@ -531,22 +534,43 @@ public class HB {
 				Class<? extends HBAction> incomingClass = null;
 				DynamicClassLoader loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
 
-				Class<?>[] interfaces = action_class.getInterfaces();
 				boolean isHBActionClass = false;
-				for (Class<?> cc : interfaces) {
-					if (cc.equals(HBAction.class)) {
-						isHBActionClass = true;
-						break;
+				boolean isRendererClass = false;
+
+				Class C = action_class;
+				while (C != null) {
+					if(C.equals(Renderer.class)) {
+						isRendererClass = true;
 					}
+
+					Class<?>[] interfaces = C.getInterfaces();
+					for (Class<?> cc : interfaces) {
+						if (cc.equals(HBAction.class)) {
+							isHBActionClass = true;
+							break;
+						}
+					}
+
+					C = C.getSuperclass();
 				}
+
 				if (isHBActionClass) {
 					incomingClass = (Class<? extends HBAction>) action_class;
 
-				} else {
-					throw new Exception("Class does not have HBAction");
 				}
 
-				if (incomingClass != null) {
+				if(!isHBActionClass && !isRendererClass){
+					throw new Exception("Class does not have HBAction or extends Renderer");
+				}
+
+				if(isRendererClass) {
+					RendererController rc = RendererController.getInstance();
+					Class<? extends Renderer> rendererClass = (Class<? extends Renderer>) action_class;
+					rc.setRendererClass(rendererClass);
+					rc.setup();
+				}
+
+				if (isHBActionClass && incomingClass != null) {
 					HBAction action = null;
 					try {
 						// If we have a mute control, disable muting
@@ -555,6 +579,7 @@ public class HB {
 
 						// add our controller address before we call action
 						hb.classSenders.put(action, InetAddress.getLocalHost());
+
 						action.action(hb);
 
 						// we will add to our list here.
@@ -1135,6 +1160,7 @@ public class HB {
 
 						setStatus("Received class load request");
 						Class<? extends HBAction> incomingClass = null;
+                        boolean isHBActionClass = false;
 						try {
 							InputStream input = s.getInputStream();
 							ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -1181,14 +1207,26 @@ public class HB {
 							try {
 								//at this stage we have the class data in a byte array
 								Class<?> c = loader.createNewClass(classData);
-								Class<?>[] interfaces = c.getInterfaces();
-								boolean isHBActionClass = false;
-								for (Class<?> cc : interfaces) {
-									if (cc.equals(HBAction.class)) {
-										isHBActionClass = true;
-										break;
+
+								boolean isRendererClass = false;
+
+								Class C = c;
+								while (C != null) {
+									if(C.equals(Renderer.class)) {
+										isRendererClass = true;
 									}
+
+									Class<?>[] interfaces = C.getInterfaces();
+									for (Class<?> cc : interfaces) {
+										if (cc.equals(HBAction.class)) {
+											isHBActionClass = true;
+											break;
+										}
+									}
+
+									C = C.getSuperclass();
 								}
+
 								if (isHBActionClass) {
 									incomingClass = (Class<? extends HBAction>) c;
 									String class_name = incomingClass.getSimpleName();
@@ -1201,6 +1239,14 @@ public class HB {
 								} else {
 									logger.debug("new object (not HBAction) >> " + c.getName());
 								}
+
+								if(isRendererClass) {
+									RendererController rc = RendererController.getInstance();
+									Class<? extends Renderer> rendererClass = (Class<? extends Renderer>) c;
+									rc.setRendererClass(rendererClass);
+									rc.setup();
+								}
+
 							}
 							catch (ClassFormatError e)
 							{
@@ -1210,10 +1256,11 @@ public class HB {
 						} catch (Exception e) {
 							logger.error("An error occurred while trying to read object from socket.", e);
 						}
-						if (incomingClass != null) {
+						if (isHBActionClass && incomingClass != null) {
 							HBAction action = null;
 							try {
 								action = incomingClass.newInstance();
+
 								muteAudio(false);
 
 								// Make sure we call before action so we can use it in our action
@@ -1510,6 +1557,11 @@ public class HB {
 		deviceConnectedEventsListeners.clear();
 		// clear all scheduled events
 		HBScheduler.getGlobalScheduler().reset();
+		if(OSCListener != null) {
+			OSCUDPReceiver.resetListeners();
+			OSCListener.close();
+			OSCListener = null;
+		}
 
 		synchronized (loadedHBClasses) {
 			for (Object loaded_class : loadedHBClasses) {

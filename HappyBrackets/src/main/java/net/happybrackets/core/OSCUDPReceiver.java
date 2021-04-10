@@ -40,6 +40,12 @@ public class OSCUDPReceiver implements StaticUDPReceiver.UDPPacketListener{
         resetableReceivers.clear();
     }
 
+    public void close()  throws IOException {
+        if(udpReceiver != null)
+            udpReceiver.close();
+        activeSockets.clear();
+    }
+
     volatile boolean doListen = false;
     /**
      * Create a Receiver port
