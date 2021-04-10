@@ -6,8 +6,8 @@ package net.happybrackets.core;
  */
 public final class BuildVersion {
     static final int MAJOR = 4;
-    static final int MINOR = 13;
-    static final int BUILD = 3;
+    static final int MINOR = 14;
+    static final int BUILD = 1;
 
     public static int getMajor(){return MAJOR;}
     public static int getMinor() {return MINOR;}
