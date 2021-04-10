@@ -2,6 +2,7 @@ package net.happybrackets.rendererengine;
 
 import net.beadsproject.beads.core.UGen;
 import net.happybrackets.core.scheduling.Clock;
+import net.happybrackets.device.HB;
 
 import java.util.HashMap;
 
@@ -32,6 +33,7 @@ public class Renderer {
     public ColorMode colorMode = ColorMode.RGB;
     public HashMap<String, String> csvData  = new HashMap<>();
     public RendererController rc = RendererController.getInstance();
+    public HB hb = HB.HBInstance;
 
 
     /**
