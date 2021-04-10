@@ -1,10 +1,8 @@
-package net.happybrackets.sychronisedmodel;
+package net.happybrackets.rendererengine;
 
 import com.pi4j.io.serial.*;
 import de.sciss.net.OSCMessage;
-import de.sciss.net.OSCListener;
 import net.beadsproject.beads.ugens.Gain;
-import net.happybrackets.core.HBAction;
 import net.happybrackets.core.OSCUDPListener;
 import net.happybrackets.core.OSCUDPSender;
 import net.happybrackets.core.scheduling.Clock;

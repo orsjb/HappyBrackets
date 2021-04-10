@@ -1,4 +1,4 @@
-package net.happybrackets.sychronisedmodel;
+package net.happybrackets.rendererengine;
 
 import net.beadsproject.beads.core.UGen;
 import net.happybrackets.core.scheduling.Clock;
@@ -31,6 +31,7 @@ public class Renderer {
     public int stripSize;
     public ColorMode colorMode = ColorMode.RGB;
     public HashMap<String, String> csvData  = new HashMap<>();
+    public RendererController rc = RendererController.getInstance();
 
 
     /**
@@ -56,6 +57,10 @@ public class Renderer {
     }
 
     public void tick(Clock clock) {
+    }
+
+    public void displayColor(int red, int green, int blue) {
+        rc.displayColor(this, red, green, blue);
     }
 
     public void initialize(String hostname, Type type, float x, float y, float z, String name, int id) {
