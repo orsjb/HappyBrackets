@@ -476,7 +476,6 @@ public class RendererController {
             boolean isExposed = false;
 
             for(Annotation ann: annotations) {
-                System.out.println("annotation at field: " + name);
                 if(ann.annotationType() == HBNumberRange.class) {
                     HBNumberRange annotation = field.getAnnotation(HBNumberRange.class);
                     double min = annotation.min();

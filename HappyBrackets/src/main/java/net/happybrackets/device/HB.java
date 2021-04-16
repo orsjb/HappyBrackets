@@ -1232,10 +1232,6 @@ public class HB {
 									String class_name = incomingClass.getSimpleName();
 									logger.debug("new HBAction >> " + class_name);
 									setStatus("Loading " + class_name);
-									// this means we're done with the sequence, time to recreate
-									// the classloader to avoid duplicate errors
-									loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
-
 								} else {
 									logger.debug("new object (not HBAction) >> " + c.getName());
 								}
@@ -1246,6 +1242,9 @@ public class HB {
 									rc.setRendererClass(rendererClass);
 									rc.setup();
 								}
+								// this means we're done with the sequence, time to recreate
+								// the classloader to avoid duplicate errors
+								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
 
 							}
 							catch (ClassFormatError e)
