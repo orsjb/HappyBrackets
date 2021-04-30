@@ -1562,6 +1562,9 @@ public class HB {
 			OSCListener = null;
 		}
 
+		RendererController.getInstance().reset();
+
+
 		synchronized (loadedHBClasses) {
 			for (Object loaded_class : loadedHBClasses) {
 

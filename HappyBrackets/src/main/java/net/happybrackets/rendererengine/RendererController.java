@@ -6,6 +6,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.happybrackets.core.OSCUDPListener;
 import net.happybrackets.core.OSCUDPSender;
 import net.happybrackets.core.scheduling.Clock;
+import net.happybrackets.core.HBReset;
 import net.happybrackets.device.HB;
 import org.json.JSONObject;
 
@@ -79,12 +80,23 @@ public class RendererController {
         serialString = "";
         turnOffLEDs();
         disableSerial();
-        renderers.clear();
         HB.getAudioOutput().clearInputConnections();
         hasLight = hasSpeaker = hasSerial = false;
         internalClock.clearClockTickListener();
         internalClock.stop();
         internalClock.reset();
+
+        for (Object loaded_class : renderers) {
+            try {
+                Class<?>[] interfaces = loaded_class.getClass().getInterfaces();
+                for (Class<?> cc : interfaces) {
+                    if (cc.equals(HBReset.class)) {
+                        ((HBReset)loaded_class).doReset();
+                    }
+                }
+            } catch (Exception ex){}
+        }
+        renderers.clear();
     }
 
     public Clock getInternalClock(){
