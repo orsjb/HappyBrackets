@@ -1242,9 +1242,11 @@ public class HB {
 									rc.setRendererClass(rendererClass);
 									rc.setup();
 								}
-								// this means we're done with the sequence, time to recreate
-								// the classloader to avoid duplicate errors
-								loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+								if(isHBActionClass || isRendererClass) {
+									// this means we're done with the sequence, time to recreate
+									// the classloader to avoid duplicate errors
+									loader = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
+								}
 
 							}
 							catch (ClassFormatError e)
