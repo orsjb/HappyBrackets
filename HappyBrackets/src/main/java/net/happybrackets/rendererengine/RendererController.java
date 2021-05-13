@@ -555,7 +555,7 @@ public class RendererController {
                             try {
                                 field = r.getClass().getField(messageName);
                                 switch (annotation.type.toString()) {
-                                    case "java.lang.String" :
+                                    case "class java.lang.String" :
                                         field.set(r, String.valueOf(oscMessage.getArg(0)));
                                         break;
                                     case "class de.sciss.net.OSCMessage":
@@ -564,20 +564,25 @@ public class RendererController {
                                     case "float":
                                         try {
                                             float value = (float) oscMessage.getArg(0);
-                                            if(annotation.min != null
+                                            if(annotation.min == null || (annotation.min != null
                                                     && value >= annotation.min
-                                                    && value <= annotation.max) {
+                                                    && value <= annotation.max)) {
                                                 field.setFloat(r, value);
                                             }
                                         } catch( ClassCastException e) {
-                                            field.setFloat(r, (int)oscMessage.getArg(0));
+                                            int value = (int) oscMessage.getArg(0);
+                                            if(annotation.min == null || (annotation.min != null
+                                                    && value >= annotation.min
+                                                    && value <= annotation.max)) {
+                                                field.setFloat(r, value);
+                                            }
                                         }
                                         break;
                                     case "int":
                                         int value = (int) oscMessage.getArg(0);
-                                        if(annotation.min != null
+                                        if(annotation.min == null || (annotation.min != null
                                                 && value >= annotation.min
-                                                && value <= annotation.max) {
+                                                && value <= annotation.max)) {
                                             field.setInt(r, value);
                                         }
                                         break;
@@ -607,7 +612,7 @@ public class RendererController {
                                 int arg = 0;
                                 for(Class argType: types) {
                                     switch (argType.toString()) {
-                                        case "java.lang.String" :
+                                        case "class java.lang.String" :
                                             ObjectArray[arg] = String.valueOf(oscMessage.getArg(arg));
                                             break;
                                         case "class de.sciss.net.OSCMessage":
