@@ -146,6 +146,14 @@ public class Renderer {
     }
 
     /**
+     * Wrapper method that trigger the {@link RendererController#displayColor(Renderer, int, int, int)} for this Renderer object
+     * @param RGB array of 3  int composing RGB
+     */
+    public void displayColor(int[] RGB) {
+        rc.displayColor(this, RGB[0], RGB[1], RGB[2]);
+    }
+
+    /**
      * This method will be called by the {@link RendererController}. No need to be used.
      * Use {@link RendererController#addRenderer} instead.
      * @param hostname device hostname

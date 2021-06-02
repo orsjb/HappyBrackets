@@ -34,8 +34,12 @@ import java.util.List;
  */
 public class RendererController {
 
-    public static enum RenderMode {
+    public enum RenderMode {
         UNITY, REAL
+    }
+
+    public enum EightLEDsMode {
+        SIMULTANEOUSLY, ALTERNATE, SIMULTANEOUSLY_WITH_WAIT, ALTERNATE_WITH_WAIT, ONE_COMMAND_FOR_8_LEDS
     }
 
     public List<Renderer> renderers = new ArrayList<>();
@@ -47,11 +51,14 @@ public class RendererController {
     private boolean hasLight = false;
     private boolean isUnity = false;
     private String serialString = "";
+    private String serialStringGrove = "";
     private String[] stringArray = new String[256];
     private boolean hasSerial = false;
     private Class<? extends Renderer> rendererClass;
     private Clock internalClock;
     private String currentHostname = "";
+    public EightLEDsMode LEDsRefreshMode = EightLEDsMode.SIMULTANEOUSLY;
+    public boolean isLEDFirstBlockRenderTime = true;
 
     private final String targetAddress = "127.0.0.1";
     private final int oscPort =  9001;
@@ -77,14 +84,16 @@ public class RendererController {
     // Finish Singleton
 
     public void reset() {
-        serialString = "";
-        turnOffLEDs();
-        disableSerial();
         HB.getAudioOutput().clearInputConnections();
-        hasLight = hasSpeaker = hasSerial = false;
         internalClock.clearClockTickListener();
         internalClock.stop();
         internalClock.reset();
+        if(isSerialEnabled) {
+            serialString = serialStringGrove = "";
+            turnOffLEDs();
+            disableSerial();
+        }
+        hasLight = hasSpeaker = hasSerial = false;
 
         for (Object loaded_class : renderers) {
             try {
@@ -202,8 +211,10 @@ public class RendererController {
                     .stopBits(StopBits._1)
                     .flowControl(FlowControl.NONE);
 
+            // create an instance of the serial communications class
             serial.open(config);
             hasSerial = true;
+            //System.out.println(" ==>> SERIAL SETUP SUCCESSFUL ");
         }
         catch(UnsatisfiedLinkError | IOException ex) {
             System.out.println(" ==>> SERIAL SETUP FAILED : " + ex.getMessage());
@@ -221,10 +232,11 @@ public class RendererController {
         isSerialEnabled = true;
     }
 
-    public void disableSerial() {
+    private void disableSerial() {
         if(!isSerialEnabled  || !hasLight || !hasSerial) return;
         try {
             serial.close();
+            //System.out.println(" ==>> SERIAL CLOSE SUCCESSFUL");
         }
         catch(IOException ex){
             System.out.println(" ==>> SERIAL CLOSE FAILED : " + ex.getMessage());
@@ -263,6 +275,12 @@ public class RendererController {
             return;
         }
         int ledAddress;
+        if(red > 255) red = 255;
+        if(green > 255) green = 255;
+        if(blue > 255) red = 255;
+        if(red < 0) red = 0;
+        if(green < 0) green = 0;
+        if(blue < 0) blue = 0;
         switch (whichLED) {
             case 0: ledAddress = 16;
                 break;
@@ -272,25 +290,84 @@ public class RendererController {
                 break;
             case 3: ledAddress = 28;
                 break;
+            case 4: ledAddress = 32;
+                break;
+            case 5: ledAddress = 36;
+                break;
+            case 6: ledAddress = 40;
+                break;
+            case 7: ledAddress = 44;
+                break;
             default: ledAddress = 16;
                 break;
         }
-        if(red > 255) red = 255;
-        if(green > 255) green = 255;
-        if(blue > 255) red = 255;
-        if(red < 0) red = 0;
-        if(green < 0) green = 0;
-        if(blue < 0) blue = 0;
-        serialString += stringArray[ledAddress] + "@" + stringArray[stripSize] + "sn" + stringArray[red] + "sn" + stringArray[green] + "sn" + stringArray[blue] + "s";
+        switch (whichLED) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                serialString += stringArray[ledAddress] + "@" + stringArray[stripSize] + "sn" + stringArray[red] + "sn" + stringArray[green] + "sn" + stringArray[blue] + "s";
+                break;
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                serialStringGrove += stringArray[ledAddress] + "@" + stringArray[stripSize] + "sn" + stringArray[red] + "sn" + stringArray[green] + "sn" + stringArray[blue] + "s";
+                break;
+            default:
+                serialString = "";
+                serialStringGrove = "";
+                break;
+        }
     }
 
     public void sendSerialcommand() {
         if(isSerialEnabled && hasSerial && hasLight) {
             try {
-                serial.write(serialString + "G");
-                serial.discardInput();
-                serialString = "";
-            } catch (IOException ex) {
+                if(LEDsRefreshMode == EightLEDsMode.SIMULTANEOUSLY || LEDsRefreshMode == EightLEDsMode.SIMULTANEOUSLY_WITH_WAIT) {
+                    if (!serialString.isEmpty()) {
+                        serial.write("[04]@[03]s" + serialString + "G");
+                        if (LEDsRefreshMode == EightLEDsMode.SIMULTANEOUSLY_WITH_WAIT)
+                            Thread.sleep((long)this.internalClock.getClockInterval()/3);
+                        serial.discardInput();
+                        serialString = "";
+                    }
+                    if (!serialStringGrove.isEmpty()) {
+                        serial.write("[04]@[04]s" + serialStringGrove + "G");
+                        if(LEDsRefreshMode == EightLEDsMode.SIMULTANEOUSLY_WITH_WAIT)
+                            Thread.sleep((long)this.internalClock.getClockInterval()/3);
+                        serial.discardInput();
+                        serialStringGrove = "";
+                    }
+                }
+                if(LEDsRefreshMode == EightLEDsMode.ALTERNATE || LEDsRefreshMode == EightLEDsMode.ALTERNATE_WITH_WAIT) {
+                    if(isLEDFirstBlockRenderTime) {
+                        if (!serialString.isEmpty()) {
+                            serial.write("[04]@[03]s" + serialString + "G");
+                            if (LEDsRefreshMode == EightLEDsMode.ALTERNATE_WITH_WAIT)
+                                Thread.sleep((long)this.internalClock.getClockInterval()/3);
+                            serial.discardInput();
+                            serialString = "";
+                        }
+                        isLEDFirstBlockRenderTime = false;
+                    } else {
+                        if (!serialStringGrove.isEmpty()) {
+                            serial.write("[04]@[04]s" + serialStringGrove + "G");
+                            if (LEDsRefreshMode == EightLEDsMode.ALTERNATE_WITH_WAIT)
+                                Thread.sleep((long)this.internalClock.getClockInterval()/3);
+                            serial.discardInput();
+                            serialStringGrove = "";
+                        }
+                        isLEDFirstBlockRenderTime = true;
+                    }
+                }
+                if(LEDsRefreshMode == EightLEDsMode.ONE_COMMAND_FOR_8_LEDS) {
+                    serial.write("[04]@[05]s" + serialString + serialStringGrove + "G");
+                }
+            } catch (IOException  ex) {
+                ex.printStackTrace();
+                System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
+            } catch ( InterruptedException ex) {
                 ex.printStackTrace();
                 System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
             }
@@ -330,7 +407,15 @@ public class RendererController {
                 displayColor(r, 0, 0, 0);
             }
         }
-        sendSerialcommand();
+
+        if(LEDsRefreshMode == EightLEDsMode.ONE_COMMAND_FOR_8_LEDS) {
+            sendSerialcommand();
+        } else {
+            RendererController.EightLEDsMode temp = this.LEDsRefreshMode;
+            this.LEDsRefreshMode = EightLEDsMode.SIMULTANEOUSLY_WITH_WAIT;
+            sendSerialcommand();
+            this.LEDsRefreshMode = temp;
+        }
     }
 
     public void loadHardwareConfigurationforUnity(String filepath) {
