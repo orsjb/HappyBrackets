@@ -38,8 +38,17 @@ public class RendererController {
         UNITY, REAL
     }
 
+    /**
+     * In the RendererController you can choose the mode of operation to work with the Biotica Media Pixel Firmware.
+     * SIMULTANEOUSLY - Send the two serial commands one after the other without sleep in between
+     * ALTERNATE - Send one serial command at each tick, first to hat, then to grove, and so on.
+     * SIMULTANEOUSLY_WITH_WAIT - Send the two serial commands one after the other sleeping for a few msec after each command. sleep time = clock interval / 3
+     * ALTERNATE_WITH_WAIT - Send one serial command at a time with sleep after each send.
+     * ONE_COMMAND_FOR_8_LEDS - Send one command only to update the 8 LEDs. (Not supported by the firmware at the moment)
+     */
     public enum EightLEDsMode {
-        SIMULTANEOUSLY, ALTERNATE, SIMULTANEOUSLY_WITH_WAIT, ALTERNATE_WITH_WAIT, ONE_COMMAND_FOR_8_LEDS
+        ALTERNATE, ALTERNATE_WITH_WAIT, ONE_COMMAND_FOR_8_LEDS, SIMULTANEOUSLY, SIMULTANEOUSLY_WITH_WAIT
+
     }
 
     public List<Renderer> renderers = new ArrayList<>();
