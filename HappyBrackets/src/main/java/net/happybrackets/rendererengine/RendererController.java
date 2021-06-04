@@ -338,15 +338,11 @@ public class RendererController {
                         serial.write("[04]@[03]s" + serialString + "G");
                         if (LEDsRefreshMode == EightLEDsMode.SIMULTANEOUSLY_WITH_WAIT)
                             Thread.sleep((long)this.internalClock.getClockInterval()/3);
-                        serial.discardInput();
-                        serialString = "";
                     }
                     if (!serialStringGrove.isEmpty()) {
                         serial.write("[04]@[04]s" + serialStringGrove + "G");
                         if(LEDsRefreshMode == EightLEDsMode.SIMULTANEOUSLY_WITH_WAIT)
                             Thread.sleep((long)this.internalClock.getClockInterval()/3);
-                        serial.discardInput();
-                        serialStringGrove = "";
                     }
                 }
                 if(LEDsRefreshMode == EightLEDsMode.ALTERNATE || LEDsRefreshMode == EightLEDsMode.ALTERNATE_WITH_WAIT) {
@@ -355,8 +351,6 @@ public class RendererController {
                             serial.write("[04]@[03]s" + serialString + "G");
                             if (LEDsRefreshMode == EightLEDsMode.ALTERNATE_WITH_WAIT)
                                 Thread.sleep((long)this.internalClock.getClockInterval()/3);
-                            serial.discardInput();
-                            serialString = "";
                         }
                         isLEDFirstBlockRenderTime = false;
                     } else {
@@ -364,8 +358,6 @@ public class RendererController {
                             serial.write("[04]@[04]s" + serialStringGrove + "G");
                             if (LEDsRefreshMode == EightLEDsMode.ALTERNATE_WITH_WAIT)
                                 Thread.sleep((long)this.internalClock.getClockInterval()/3);
-                            serial.discardInput();
-                            serialStringGrove = "";
                         }
                         isLEDFirstBlockRenderTime = true;
                     }
@@ -373,6 +365,9 @@ public class RendererController {
                 if(LEDsRefreshMode == EightLEDsMode.ONE_COMMAND_FOR_8_LEDS) {
                     serial.write("[04]@[05]s" + serialString + serialStringGrove + "G");
                 }
+                serialString = "";
+                serialStringGrove = "";
+                serial.discardInput();
             } catch (IOException  ex) {
                 ex.printStackTrace();
                 System.out.println(" ==>> SERIAL COMMAND FAILED : " + ex.getMessage());
