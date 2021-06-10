@@ -458,11 +458,11 @@ public class RendererController {
                     deviceID = deviceName;
                 }
                 String objectName = values[0] + "-" + values[1] + "-" + values[3];
-                int objectId = Integer.parseInt(values[3].substring(values[3].length() - 1)) - 1 ;
-                float x = Float.parseFloat(values[4]);
-                float y = Float.parseFloat(values[5]);
-                float z = Float.parseFloat(values[6]);
-                int LEDstripSize = Integer.parseInt(values[7]);
+                int objectId = Integer.parseInt(values[4]);
+                float x = Float.parseFloat(values[5]);
+                float y = Float.parseFloat(values[6]);
+                float z = Float.parseFloat(values[7]);
+                int LEDstripSize = Integer.parseInt(values[8]);
 
                 /* Debug
                 System.out.println(Arrays.toString(values));
@@ -478,9 +478,9 @@ public class RendererController {
                     r = addRenderer(rType,deviceID,x,y,z,objectName,objectId);
                 }
 
-                if(r != null && header.length > 8 && values.length > 8) {
+                if(r != null && header.length > 9 && values.length > 8) {
                     HashMap<String, String> csvData = new HashMap<>();
-                    for (int i = 8; i < values.length; i++) {
+                    for (int i = 9; i < values.length; i++) {
                         if(header[i] != null && values[i] != null) {
                             csvData.put(header[i], values[i]);
                         }
