@@ -147,6 +147,10 @@ public class RendererController {
     }
 
     public Renderer addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id, int stripSize) {
+        return addRenderer(type, hostname,x,y,z,name,id,stripSize, null);
+    }
+
+    public Renderer addRenderer(Renderer.Type type, String hostname, float x, float y, float z, String name, int id, int stripSize, HashMap<String, String> csvData) {
         if(!currentHostname.contains("hb-") && hostname.equals("Unity")) {
             if(type == Renderer.Type.LIGHT) {
                 Renderer r = null;
@@ -156,6 +160,7 @@ public class RendererController {
                     e.printStackTrace();
                 }
                 r.initialize(hostname, type, x, y, z, name, 0);
+                if(csvData != null) r.csvData = csvData;
                 renderers.add(r);
                 r.setupLight();
                 if (isUnity == false) {
@@ -172,6 +177,7 @@ public class RendererController {
                     e.printStackTrace();
                 }
                 r.initialize(hostname, type, x, y, z, name, 0);
+                if(csvData != null) r.csvData = csvData;
                 renderers.add(r);
                 hasSpeaker = true;
                 r.out = new Gain(1, 1);
@@ -185,6 +191,7 @@ public class RendererController {
             if(currentHostname.equals(hostname)) {
                 Renderer r = rendererClass.newInstance();
                 r.initialize(hostname, type, x, y, z, name, id);
+                if(csvData != null) r.csvData = csvData;
                 renderers.add(r);
                 rendererHashMap.put(name, r);
                 if(type == Renderer.Type.SPEAKER) {
@@ -469,25 +476,27 @@ public class RendererController {
                 System.out.println(rType.toString() + " " + deviceID + " " + objectName + " " + objectId);
                 */
 
-                Renderer r = null;
-                if(values[3].contains("LED")) {
-                    rType = Renderer.Type.LIGHT;
-                    r = addRenderer(rType,deviceID,x,y,z,objectName,objectId,LEDstripSize);
-                } else {
-                    rType = Renderer.Type.SPEAKER;
-                    r = addRenderer(rType,deviceID,x,y,z,objectName,objectId);
-                }
-
-                if(r != null && header.length > 9 && values.length > 8) {
-                    HashMap<String, String> csvData = new HashMap<>();
+                HashMap<String, String> csvData = new HashMap<>();
+                if(header.length > 9 && values.length > 9) {
                     for (int i = 9; i < values.length; i++) {
                         if(header[i] != null && values[i] != null) {
                             csvData.put(header[i], values[i]);
                         }
                     }
-                    if(!csvData.isEmpty()) {
-                        r.csvData = csvData;
-                    }
+                }
+
+                Renderer r = null;
+                if(values[3].contains("LED")) {
+                    rType = Renderer.Type.LIGHT;
+                } else {
+                    rType = Renderer.Type.SPEAKER;
+                    LEDstripSize = 0;
+                }
+
+                if(!csvData.isEmpty()) {
+                    r = addRenderer(rType,deviceID,x,y,z,objectName,objectId,LEDstripSize,csvData);
+                } else {
+                    r = addRenderer(rType, deviceID, x, y, z, objectName, objectId, LEDstripSize);
                 }
 
             }
