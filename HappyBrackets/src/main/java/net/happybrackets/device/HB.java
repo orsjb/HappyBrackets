@@ -1301,15 +1301,53 @@ public class HB {
 	 */
 	public void attemptHBActionFromClassName(String class_name) {
 		try {
-			Class<HBAction> hbActionClass = (Class<HBAction>)Class.forName(class_name);
-			HBAction action = hbActionClass.newInstance();
-			muteAudio(false);
-			action.action(this);
-			sendClassLoaded(hbActionClass);
-			// we will add to our list here.
-			// It is important we do this after the action in case this is the class that called reset
-			synchronized (loadedHBClasses) {
-				loadedHBClasses.add(action);
+			boolean isHBActionClass = false;
+			boolean isRendererClass = false;
+			Class<? extends HBAction> incomingClass = null;
+
+			Class<?> c = Class.forName(class_name);
+
+			Class C = c;
+			while (C != null) {
+				if(C.equals(Renderer.class)) {
+					isRendererClass = true;
+				}
+
+				Class<?>[] interfaces = C.getInterfaces();
+				for (Class<?> cc : interfaces) {
+					if (cc.equals(HBAction.class)) {
+						isHBActionClass = true;
+						break;
+					}
+				}
+
+				C = C.getSuperclass();
+			}
+
+			if (isHBActionClass) {
+				incomingClass = (Class<? extends HBAction>) c;
+				logger.debug("new HBAction >> " + class_name);
+				setStatus("Loading " + class_name);
+
+				HBAction action = incomingClass.newInstance();
+				muteAudio(false);
+				action.action(this);
+				sendClassLoaded(incomingClass);
+				// we will add to our list here.
+				// It is important we do this after the action in case this is the class that called reset
+				synchronized (loadedHBClasses) {
+					loadedHBClasses.add(action);
+				}
+
+			} else {
+				logger.debug("new object (not HBAction) >> " + c.getName());
+			}
+
+			if(isRendererClass) {
+				RendererController rc = RendererController.getInstance();
+				Class<? extends Renderer> rendererClass = (Class<? extends Renderer>) c;
+				rc.setRendererClass(rendererClass);
+				rc.setup();
 			}
 
 		} catch (Exception e) {
