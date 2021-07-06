@@ -509,6 +509,7 @@ public class RendererController {
      * This method is called by {@link HB} when loading a sketch class that extends {@link Renderer}
      */
     public void setup() {
+        reset();
 
         processAnnotations();
 
