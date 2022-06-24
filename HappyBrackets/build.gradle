@@ -9,7 +9,7 @@ apply plugin: 'idea'
 // Test for right version of Java in use for running this script
 assert org.gradle.api.JavaVersion.current().isJava8Compatible()
 
-idea{
+idea {
     module {
         downloadJavadoc = true // defaults to false
         downloadSources = true
@@ -27,29 +27,29 @@ repositories {
 
 dependencies {
     //Add any libs directory jars, for example beads
-    compile   fileTree(dir: "$rootProject.projectDir/libs", include: '*.jar')
+    compileOnly   fileTree(dir: "$rootProject.projectDir/libs", include: '*.jar')
 
     // config dependencies
-    compile     group: 'com.google.code.gson',  name: 'gson',               version: '2.8.6'
+    implementation      group: 'com.google.code.gson',  name: 'gson',               version: '2.8.6'
 
-    compile     group: 'org.json',              name: 'json',               version: '20180130'
-    compile     group: 'org.nanohttpd',         name: 'nanohttpd',          version: '2.2.0'
-    compile     group: 'com.squareup.okhttp3',  name: 'okhttp',             version: '4.4.0'
+    implementation      group: 'org.json',              name: 'json',               version: '20180130'
+    implementation      group: 'org.nanohttpd',         name: 'nanohttpd',          version: '2.2.0'
+    implementation      group: 'com.squareup.okhttp3',  name: 'okhttp',             version: '4.4.0'
     // osc
-    compile     group: 'de.sciss',              name: 'netutil',            version: '1.0.0'
+    implementation      group: 'de.sciss',              name: 'netutil',            version: '1.0.0'
     // pi stuff
-    //compile     group: 'com.pi4j',              name: 'pi4j-core',          version: '1.1'
+    implementation      group: 'com.pi4j',              name: 'pi4j-core',          version: '1.1'
     // logging
-    compile     group: 'ch.qos.logback',        name: 'logback-core',       version: '1.1.7'
-    compile     group: 'ch.qos.logback',        name: 'logback-classic',    version: '1.1.7'
-    runtime     group: 'org.codehaus.groovy',   name: 'groovy',             version: '3.0.1'
-    compile     group: 'org.slf4j',             name: 'slf4j-api',          version: '1.7.7'
+    implementation      group: 'ch.qos.logback',        name: 'logback-core',       version: '1.1.7'
+    implementation      group: 'ch.qos.logback',        name: 'logback-classic',    version: '1.1.7'
+    runtimeOnly         group: 'org.codehaus.groovy',   name: 'groovy',             version: '3.0.1'
+    implementation      group: 'org.slf4j',             name: 'slf4j-api',          version: '1.7.7'
 
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    implementation      group: 'org.apache.commons',    name: 'commons-lang3',      version: '3.0'
     
-    implementation 'net.beadsproject:beads:3.2'
+    implementation      group: 'net.beadsproject',      name: 'beads',              version: '3.2'
 
-    testCompile group: 'junit',                 name: 'junit',              version: '4.+'
+    testImplementation  group: 'junit',                 name: 'junit',              version: '4.+'
 }
 
 //don't add tutorial files to source set, they don't need to be in the final jar.
@@ -86,7 +86,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 
 // A helper for checking which jars are loaded
 task listJars  {
-    configurations.compile.each { File file -> println file.name }
+    configurations.compileClasspath.each { File file -> println file.name }
 }
 
 task smile  {
@@ -102,7 +102,7 @@ jar {
 }
 
 shadowJar {
-    baseName = 'HB'
+    archiveBaseName = 'HB'
     classifier = ''
     manifest {
         attributes 'Main-Class': 'net.happybrackets.device.DeviceMain'
@@ -138,8 +138,9 @@ task deployPlugin  {
 
 // Pack our Build Jar file and the version text into a zip file so we can add it to plugin resources
 task packJar (type:Zip) {
-    destinationDir buildDir //set our output directory
-    archiveName 'HB.zip'  //set the name of our archive
+
+    destinationDirectory = buildDir //set our output directory
+    archiveFileName = 'HB.zip'  //set the name of our archive
 
     //config
     from("build/libs/HB.jar") {
@@ -156,8 +157,8 @@ task packJar (type:Zip) {
 
 // Packs our Javadocs
 task packJavadocs (type:Zip) {
-    destinationDir buildDir //set our output directory
-    archiveName 'JavaDocs.zip'  //set the name of our archive
+    destinationDirectory = buildDir //set our output directory
+    archiveFileName = 'JavaDocs.zip'  //set the name of our archive
 
     //config
     from("build/docs") {
@@ -166,7 +167,6 @@ task packJavadocs (type:Zip) {
 
     println "Creating device package: $buildDir/$archiveName"
 }
-
 
 
 // Packs the device runtime into a zip file
@@ -179,10 +179,10 @@ task packDeviceRuntime (type:Zip) {
         version_text =  "-" + file.text
     }
 
-    def filename ="HappyBracketsDeviceRuntime" + version_text + ".zip";
+    def filename ="HappyBracketsDeviceRuntime" + version_text + ".zip"
 
-    destinationDir buildDir //set our output directory
-    archiveName filename //'HappyBracketsDeviceRuntime.zip'  //set the name of our archive
+    destinationDirectory = buildDir //set our output directory
+    archiveFileName = filename //'HappyBracketsDeviceRuntime.zip'  //set the name of our archive
 
     //config
     from("../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device") {
@@ -193,7 +193,7 @@ task packDeviceRuntime (type:Zip) {
 }
 
 // this task will write the HBVersion.text complete version created in the tests into plugin resource
-task versionPlugin(type:Exec){
+task versionPlugin(type:Exec) {
     // write the version details into the plugin.xml  file
     def VERSION_FILENAME = 'build/libs/HBVersion.txt'
     def VERSION_RENAME_PROGRAM = '../IntelliJ Plugin/versionPlugin'
@@ -215,7 +215,7 @@ task versionPlugin(type:Exec){
 }
 
 task copyCompileVersionToPlugin {
-    copy{
+    copy {
         from 'src/main/resources/builddate.txt'
         into '../IntelliJ Plugin/resources'
     }
@@ -223,8 +223,8 @@ task copyCompileVersionToPlugin {
 
 // Packs the HB Project minus files we do not want in our project template
 task packProjectTemplate (type:Zip) {
-    destinationDir buildDir //set our output directory
-    archiveName 'HappyBracketsProject.zip'  //set the name of our archive
+    destinationDirectory = buildDir //set our output directory
+    archiveFileName = 'HappyBracketsProject.zip'  //set the name of our archive
     excludes = ['**/HB.jar', '**/ollie.xml', '**/HBVersion.txt', "**/libs/docs/hb/javadoc/**", '**/Device/HappyBrackets/data/classes/examples']
 
     //config
@@ -268,10 +268,10 @@ task packDevKit (type:Zip) {
         version_text = "-" + file.text
     }
 
-    def filename ="HappyBracketsDeveloperKit" + version_text + ".zip";
+    def filename ="HappyBracketsDeveloperKit" + version_text + ".zip"
 
-    destinationDir buildDir //set our output directory
-    archiveName filename //'HappyBracketsDeveloperKit.zip'  //set the name of our archive
+    destinationDirectory = buildDir //set our output directory
+    archiveFileName = filename //'HappyBracketsDeveloperKit.zip'  //set the name of our archive
 
     //config
     from("../Distribution") {
