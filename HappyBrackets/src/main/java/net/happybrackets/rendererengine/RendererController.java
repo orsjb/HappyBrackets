@@ -66,11 +66,12 @@ public class RendererController {
     private Class<? extends Renderer> rendererClass;
     private Clock internalClock;
     private String currentHostname = "";
-    public EightLEDsMode LEDsRefreshMode = EightLEDsMode.SIMULTANEOUSLY;
+    public EightLEDsMode LEDsRefreshMode = EightLEDsMode.ONE_COMMAND_FOR_8_LEDS; //works with grove ports on biotica
     public boolean isLEDFirstBlockRenderTime = true;
 
     private final String targetAddress = "127.0.0.1";
     private final int oscPort =  9001;
+    public int MAX_BRIGHTNESS = 127;
     private OSCUDPSender oscSender;
 
     /**
@@ -248,6 +249,12 @@ public class RendererController {
         isSerialEnabled = true;
     }
 
+    public void printHere(){
+        System.out.println(":]");
+
+    }
+
+
     private void disableSerial() {
         if(!isSerialEnabled  || !hasLight || !hasSerial) return;
         try {
@@ -291,9 +298,9 @@ public class RendererController {
             return;
         }
         int ledAddress;
-        if(red > 255) red = 255;
-        if(green > 255) green = 255;
-        if(blue > 255) red = 255;
+        if(red > MAX_BRIGHTNESS) red = MAX_BRIGHTNESS;
+        if(green > MAX_BRIGHTNESS) green = MAX_BRIGHTNESS;
+        if(blue > MAX_BRIGHTNESS) red = MAX_BRIGHTNESS;
         if(red < 0) red = 0;
         if(green < 0) green = 0;
         if(blue < 0) blue = 0;

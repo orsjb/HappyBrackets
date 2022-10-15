@@ -4,6 +4,7 @@ import net.beadsproject.beads.core.UGen;
 import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
+import java.awt.*;
 import java.util.HashMap;
 
 /**
@@ -341,5 +342,31 @@ public class Renderer {
         hsb[2] = (int)(V * 255);
     }
 
+    public int[] RGBFromHSB(float hue, float saturation, float brightness) {
+        int[] RGB = new int[3];
+        int c = Color.HSBtoRGB(hue, saturation, brightness);
+        RGB[0] = (c >> 16) & 0xFF;
+        RGB[1] = (c >> 8) & 0xFF;
+        RGB[2] = c & 0xFF;
+        return RGB;
+    }
 
+    public float[] HSBFromRGB(int[] rgb) {
+        float[] HSB = Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], null);
+        return HSB;
+    }
+
+    public float[] HSBFromRGB(int red, int green, int blue) {
+        float[] HSB = Color.RGBtoHSB(red, green, blue, null);
+        return HSB;
+    }
+
+    public int[] RGBFromHSB(float[] hsb) {
+        int[] RGB = new int[3];
+        int c = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+        RGB[0] = (c >> 16) & 0xFF;
+        RGB[1] = (c >> 8) & 0xFF;
+        RGB[2] = c & 0xFF;
+        return RGB;
+    }
 }
