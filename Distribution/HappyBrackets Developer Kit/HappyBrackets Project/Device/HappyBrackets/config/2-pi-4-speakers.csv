@@ -1,0 +1,5 @@
+PParent,Parent,Device ID,ObjectName,Object ID,x,y,z,stripSize
+Group 1,Device 1,hb-b827eb999999,Speaker 1,0,0.0,0,0,16
+Group 1,Device 1,hb-b827eb999999,Speaker 2,1,0.333,0,0,16
+Group 1,Device 2,hb-b827eb888888,Speaker 1,0,0.666,0,0,16
+Group 1,Device 2,hb-b827eb888888,Speaker 2,1,1.0,0,0,16

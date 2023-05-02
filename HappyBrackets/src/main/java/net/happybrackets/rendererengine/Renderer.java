@@ -5,6 +5,7 @@ import net.happybrackets.core.scheduling.Clock;
 import net.happybrackets.device.HB;
 
 import java.util.HashMap;
+import java.awt.*;
 
 /**
  * Renderer is the base class to be used when developing a sketch that runs a synchronized composition using Sound and Lights
@@ -176,8 +177,43 @@ public class Renderer {
         hsb = new int[3];
         rgb[0] = rgb[1] = rgb[2] = 0;
         hsb = new int[3];
-        rgbToHsb();
+//        rgbToHsb();
     }
+
+    /**awt library to convert colour values.
+     * @param hue 0-1 hue
+     * @param saturation 0-1 saturation
+     * @param brightness 0-1 brightness
+     * @return
+     */
+    public static int[] RGBFromHSB(float hue, float saturation, float brightness) {
+        int[] RGB = new int[3];
+        int c = Color.HSBtoRGB(hue, saturation, brightness);
+        RGB[0] = (c >> 16) & 0xFF;
+        RGB[1] = (c >> 8) & 0xFF;
+        RGB[2] = c & 0xFF;
+        return RGB;
+    }
+
+    public static float[] HSBFromRGB(int[] rgb) {
+        float[] HSB = Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], null);
+        return HSB;
+    }
+
+    public static float[] HSBFromRGB(int red, int green, int blue) {
+        float[] HSB = Color.RGBtoHSB(red, green, blue, null);
+        return HSB;
+    }
+
+    public static int[] RGBFromHSB(float[] hsb) {
+        int[] RGB = new int[3];
+        int c = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+        RGB[0] = (c >> 16) & 0xFF;
+        RGB[1] = (c >> 8) & 0xFF;
+        RGB[2] = c & 0xFF;
+        return RGB;
+    }
+
 
     public void colorMode(ColorMode colorMode, float max) {
         colorMode(colorMode, max, max, max);
@@ -234,9 +270,10 @@ public class Renderer {
         rgb[2] = rgb[2] + (int)((amount/colorModeZ)*255);
     }
 
+
     /*
-     * Based on https://stackoverflow.com/a/7898685
-     * */
+    * Based on https://stackoverflow.com/a/7898685
+    */
     public void hsbToRgb() {
 
         double brightness = hsb[2] / 255.0;
@@ -298,7 +335,7 @@ public class Renderer {
 
     /*
      * Based on https://stackoverflow.com/questions/2399150/convert-rgb-value-to-hsv
-     * */
+     */
     public void rgbToHsb() {
 
         double R = rgb[0] / 255.0;
@@ -340,6 +377,4 @@ public class Renderer {
         hsb[1] = (int)(S * 255);
         hsb[2] = (int)(V * 255);
     }
-
-
 }
