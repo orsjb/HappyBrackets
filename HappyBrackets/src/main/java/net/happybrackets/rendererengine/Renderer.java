@@ -180,7 +180,8 @@ public class Renderer {
 //        rgbToHsb();
     }
 
-    /**awt library to convert colour values.
+    /**awt library to convert colour values. The logic is you get an rgb by
+     * putting in parameters for (from) hue saturation and brightness values.
      * @param hue 0-1 hue
      * @param saturation 0-1 saturation
      * @param brightness 0-1 brightness
@@ -195,15 +196,35 @@ public class Renderer {
         return RGB;
     }
 
+    /**
+     *
+     * @param rgb int[3], 0-255 each. gives 0.0-1.0 each for hsb
+     * @return
+     */
+
     public static float[] HSBFromRGB(int[] rgb) {
         float[] HSB = Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], null);
         return HSB;
     }
 
+    /**
+     *
+     * @param red (0-255)
+     * @param green (0-255)
+     * @param blue (0-255)
+     * @return
+     */
+
     public static float[] HSBFromRGB(int red, int green, int blue) {
         float[] HSB = Color.RGBtoHSB(red, green, blue, null);
         return HSB;
     }
+
+    /**
+     *
+     * @param hsb float[] each 0.1, gives int[3] each 0-255
+     * @return
+     */
 
     public static int[] RGBFromHSB(float[] hsb) {
         int[] RGB = new int[3];
