@@ -1,6 +1,5 @@
 package net.happybrackets.intellij_plugin;
 
-
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.WindowManager;
 import javafx.scene.control.TitledPane;
@@ -45,7 +44,6 @@ public class ConfigurationScreen {
 
     private Button[] configApplyButton = new Button[2]; // 0 = overall config, 1 = known devices.
     private Stage displayStage = new Stage();
-    //private Project currentProject;
     private String locationHash;
 
     final static Logger logger = LoggerFactory.getLogger(ConfigurationScreen.class);
@@ -69,9 +67,9 @@ public class ConfigurationScreen {
         }
         return ret;
     }
+
     public ConfigurationScreen(Project project)
     {
-        //currentProject = project;
         locationHash = project.getLocationHash();
         displayStage.setTitle("HappyBrackets Settings");
         TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
@@ -91,7 +89,6 @@ public class ConfigurationScreen {
     }
 
     public void show(){
-        //displayStage.setAlwaysOnTop(true);
         displayStage.show();
     }
     /**
@@ -105,7 +102,6 @@ public class ConfigurationScreen {
         final String label = file_type == 0 ? "Configuration" : "Known Devices";
         final String setting = file_type == 0 ? "controllerConfigPath" : "knownDevicesPath";
 
-        //configField.setPrefSize(400, 250);
         config_field.setMinHeight(MIN_TEXT_AREA_HEIGHT);
         // Load initial config into text field.
         if (file_type == 0) {
@@ -136,7 +132,6 @@ public class ConfigurationScreen {
             //needs to run in Swing event dispatch thread, and then back again to JFX thread!!
             SwingUtilities.invokeLater(() -> {
 
-
                 VirtualFile[] virtual_file = FileChooser.chooseFiles(descriptor, null, vfile);
                 if (virtual_file != null && virtual_file.length > 0 && virtual_file[0] != null) {
                     Platform.runLater(() -> {
@@ -150,11 +145,7 @@ public class ConfigurationScreen {
                         displayStage.show();
                     });
                 }
-
-
             });
-
-
         });
 
         Button save_button = new Button("Save");
@@ -191,12 +182,6 @@ public class ConfigurationScreen {
                     Platform.runLater(() -> {
                         File config_file = wrapper.getFile();
 
-                        // Check for overwrite of default config files (this doesn't apply to deployed plugin so disabling for now.)
-                        //if ((new File(HappyBracketsToolWindow.getDefaultControllerConfigPath())).getAbsolutePath().equals(configFile.getAbsolutePath()) ||
-                        //		(new File(HappyBracketsToolWindow.getDefaultKnownDevicesPath())).getAbsolutePath().equals(configFile.getAbsolutePath())) {
-                        //	showPopup("Error saving " + label.toLowerCase() + ": cannot overwrite default configuration files.", saveButton, 5, event);
-                        //}
-
                         try (PrintWriter out = new PrintWriter(config_file.getAbsolutePath())) {
                             out.print(config_field.getText());
 
@@ -215,25 +200,6 @@ public class ConfigurationScreen {
                 }
             });
         });
-
-        /*
-        //remove this as it does not work
-        Button reset_button = new Button("Reset");
-        reset_button.setTooltip(new Tooltip("Reset these " + label.toLowerCase() + " settings to their defaults."));
-        reset_button.setOnMouseClicked(event -> {
-            control_engine.getSettings().clear(setting);
-
-            if (file_type == 0) {
-                loadConfigFile(HappyBracketsToolWindow.getDefaultControllerConfigPath(), label, config_field, setting, reset_button, event);
-
-                applyConfig(config_field.getText());
-            }
-            else {
-                loadConfigFile(HappyBracketsToolWindow.getDefaultKnownDevicesPath(), label, config_field, setting, reset_button, event);
-                applyKnownDevices(config_field.getText());
-            }
-        });
-*/
 
         configApplyButton[file_type] = new Button("Apply");
         configApplyButton[file_type].setTooltip(new Tooltip("Apply these " + label.toLowerCase() + " settings."));
