@@ -13,21 +13,21 @@ import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotif
 /**
  * Menu action to reboot all devices
  */
-public class GetDeviceAddressesAction extends AnAction
-{
+public class GetDeviceAddressesAction extends AnAction {
     final String TEXT_EXTENSION = "txt";
+
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
         try {
-            List<LocalDeviceRepresentation> devicesByHostname =  ControllerEngine.getInstance().getDeviceConnection().getAllActiveDevices();
+            List<LocalDeviceRepresentation> devicesByHostname = ControllerEngine.getInstance().getDeviceConnection().getAllActiveDevices();
 
-            String display =  "Device IP Addresses";
+            String display = "Device IP Addresses";
             if (devicesByHostname.size() > 0) {
 
                 for (LocalDeviceRepresentation device : devicesByHostname) {
                     if (device.getIsConnected()) {
                         String address = device.getAddress();
-                        String hostname =  device.hostName;
+                        String hostname = device.hostName;
                         display += "\n" + address + "\t" + hostname;
 
                     }
@@ -38,14 +38,15 @@ public class GetDeviceAddressesAction extends AnAction
 
 
             }
-        } catch (Exception ex){}
+        } catch (Exception ex) {
+        }
 
     }
 
     @Override
     public void update(AnActionEvent event) {
         try {
-            List<LocalDeviceRepresentation> device_address =  ControllerEngine.getInstance().getDeviceConnection().getAllActiveDevices();
+            List<LocalDeviceRepresentation> device_address = ControllerEngine.getInstance().getDeviceConnection().getAllActiveDevices();
 
             event.getPresentation().setEnabled(device_address.size() > 0);
 

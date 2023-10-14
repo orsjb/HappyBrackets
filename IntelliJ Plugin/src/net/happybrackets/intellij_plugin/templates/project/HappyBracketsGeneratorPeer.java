@@ -16,30 +16,24 @@
 
 package net.happybrackets.intellij_plugin.templates.project;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import com.intellij.ide.util.projectWizard.SettingsStep;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.platform.WebProjectGenerator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 
 /**
  * @version "$Id$"
  */
 public class HappyBracketsGeneratorPeer implements WebProjectGenerator.GeneratorPeer<SettingsData> {
-SettingsData data = new SettingsData();
+    SettingsData data = new SettingsData();
 
     private JPanel myMainPanel;
 
     private JTextField vendorName;
-
 
 
     public HappyBracketsGeneratorPeer() {
@@ -113,7 +107,6 @@ SettingsData data = new SettingsData();
 
         return false;
     }
-
 
 
 }

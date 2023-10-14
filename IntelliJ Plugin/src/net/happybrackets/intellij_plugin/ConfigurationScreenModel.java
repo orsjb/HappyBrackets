@@ -17,25 +17,15 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class ConfigurationScreenModel {
-    /// The configuration editor sections that are available.
-    enum ConfigurationEditorType {
-        /// The "Configuration" editor section
-        config,
-
-        // The "Known devices" configuration editor section.
-        devices
-    }
-
     private ControllerEngine controllerEngine;
     private String locationHash;
-
     public ConfigurationScreenModel(ControllerEngine controllerEngine, Project project) {
         this.controllerEngine = controllerEngine;
         locationHash = project.getLocationHash();
     }
 
     public String getInitialConfig(ConfigurationEditorType configurationEditorType) {
-        switch(configurationEditorType) {
+        switch (configurationEditorType) {
             case config:
                 return controllerEngine.getCurrentConfigString();
             case devices:
@@ -49,7 +39,7 @@ public class ConfigurationScreenModel {
 
     /// Saves a configuration to disk, prompting the user where to save it.
     public void save(String textToSave, PopupPresenter popupPresenter, ConfigurationEditorType configurationEditorType) {
-        switch(configurationEditorType) {
+        switch (configurationEditorType) {
             case config:
                 saveFile("Configuration",
                         "controllerConfigPath",
@@ -69,7 +59,7 @@ public class ConfigurationScreenModel {
 
     /// Apply the configuration to the running HappyBrackets system.
     public void apply(String textToSave, ConfigurationEditorType configurationEditorType) {
-        switch(configurationEditorType) {
+        switch (configurationEditorType) {
             case config:
                 HappyBracketsToolWindow.setConfig(textToSave, null);
                 return;
@@ -81,7 +71,7 @@ public class ConfigurationScreenModel {
 
     /// Loads the configuration from a files, prompting the user to choose which file to load from.
     public String load(ConfigurationEditorType configurationEditorType, PopupPresenter popupPresenter) {
-        switch(configurationEditorType) {
+        switch (configurationEditorType) {
             case config:
                 return load(popupPresenter, "Configuration", "controllerConfigPath");
             case devices:
@@ -134,8 +124,7 @@ public class ConfigurationScreenModel {
             if (currentFile != null && currentFile.exists()) {
                 base_dir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
                 current_name = currentFile.getName();
-            }
-            else {
+            } else {
                 base_dir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
                 current_name = defaultFileName;
             }
@@ -161,15 +150,16 @@ public class ConfigurationScreenModel {
 
     /**
      * Get the current project based by comparing location hash
+     *
      * @return The current ptoject, otherwise, null
      */
-    Project getThisProject(){
+    Project getThisProject() {
         Project ret = null;
 
         for (IdeFrame frame : WindowManager.getInstance().getAllProjectFrames()) {
             if (frame.getProject() != null) {
                 Project p = frame.getProject();
-                if (p.getLocationHash().equalsIgnoreCase(locationHash)){
+                if (p.getLocationHash().equalsIgnoreCase(locationHash)) {
                     ret = p;
                     break;
                 }
@@ -177,6 +167,15 @@ public class ConfigurationScreenModel {
 
         }
         return ret;
+    }
+
+    /// The configuration editor sections that are available.
+    enum ConfigurationEditorType {
+        /// The "Configuration" editor section
+        config,
+
+        // The "Known devices" configuration editor section.
+        devices
     }
 
     public interface PopupPresenter {

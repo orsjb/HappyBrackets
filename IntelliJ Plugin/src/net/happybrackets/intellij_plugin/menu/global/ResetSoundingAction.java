@@ -7,12 +7,12 @@ import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 /**
  * "Reset all devices to their initial state except for audio that is currently playing.
  */
-public class ResetSoundingAction extends AnAction
-{
+public class ResetSoundingAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
         try {
             ControllerEngine.getInstance().getDeviceConnection().deviceResetSounding();
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
     }
 }

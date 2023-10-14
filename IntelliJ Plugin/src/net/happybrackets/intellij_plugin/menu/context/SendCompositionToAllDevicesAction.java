@@ -26,7 +26,7 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
                     SendDataType sendDataType = getSendDataType(vfile, e);
                     String fileName;
 
-                    switch (sendDataType){
+                    switch (sendDataType) {
                         case SEND_CLASS:
                             fileName = vfile.getNameWithoutExtension();
                             e.getPresentation().setText("Send " + fileName + " to all devices");
@@ -37,13 +37,13 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
                             fileName = vfile.getName();
                             e.getPresentation().setText("Send folder " + fileName + " to all devices");
 
-                            enable = fileInDeviceFolder(current_project, vfile)  && getDevices().size() > 0;
+                            enable = fileInDeviceFolder(current_project, vfile) && getDevices().size() > 0;
                             break;
 
                         case SEND_FILE:
                             fileName = vfile.getName();
                             e.getPresentation().setText("Send file " + fileName + " to all devices");
-                            enable = fileInDeviceFolder(current_project, vfile)  && getDevices().size() > 0;
+                            enable = fileInDeviceFolder(current_project, vfile) && getDevices().size() > 0;
                             break;
 
                         default:
@@ -56,13 +56,12 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
 
                 e.getPresentation().setEnabled(enable);
             }
-        }
-        catch (Exception ex){
-            if (e != null){
+        } catch (Exception ex) {
+            if (e != null) {
                 try {
                     e.getPresentation().setEnabled(false);
+                } catch (Exception ex2) {
                 }
-                catch (Exception ex2){}
             }
         }
 
@@ -77,7 +76,7 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
 
             SendDataType sendDataType = getSendDataType(vfile, e);
 
-            switch (sendDataType){
+            switch (sendDataType) {
                 case SEND_CLASS:
                     VirtualFile classFile = getClassFile(e);
                     String full_class_name = getFullClassName(classFile.getCanonicalPath());
@@ -94,9 +93,9 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
                 case SEND_FOLDER:
                     ArrayList<VirtualFile> files = getFilesInFolder(vfile);
 
-                    for (LocalDeviceRepresentation device:
+                    for (LocalDeviceRepresentation device :
                             getDevices()) {
-                        for (VirtualFile child:
+                        for (VirtualFile child :
                                 files) {
                             if (!device.sendFileToDevice(child.getCanonicalPath(), getTargetFolder(e.getProject(), child))) {
                                 displayNotification("Unable to send file", NotificationType.ERROR);
@@ -108,7 +107,7 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
                     break;
 
                 case SEND_FILE:
-                    for (LocalDeviceRepresentation device:
+                    for (LocalDeviceRepresentation device :
                             getDevices()) {
                         if (!device.sendFileToDevice(vfile.getCanonicalPath(), getTargetFolder(e.getProject(), vfile))) {
                             displayNotification("Unable to send file", NotificationType.ERROR);
@@ -121,8 +120,7 @@ public class SendCompositionToAllDevicesAction extends SendCompositionAction {
 
             }
 
-        }
-        else{
+        } else {
             displayNotification("Unable to find file", NotificationType.ERROR);
         }
 

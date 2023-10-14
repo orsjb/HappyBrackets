@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-//import com.sun.org.apache.xml.internal.dtm.ref.sax2dtm.SAX2DTM;
 import net.happybrackets.intellij_plugin.controller.network.SendToDevice;
 import org.apache.commons.io.FileUtils;
 
@@ -14,6 +13,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
+
+//import com.sun.org.apache.xml.internal.dtm.ref.sax2dtm.SAX2DTM;
 
 public class CopyCompositionToStartupAction extends SendCompositionAction {
 
@@ -39,13 +40,12 @@ public class CopyCompositionToStartupAction extends SendCompositionAction {
 
                 e.getPresentation().setEnabled(enable);
             }
-        }
-        catch (Exception ex){
-            if (e != null){
+        } catch (Exception ex) {
+            if (e != null) {
                 try {
                     e.getPresentation().setEnabled(false);
+                } catch (Exception ex2) {
                 }
-                catch (Exception ex2){}
             }
         }
 
@@ -65,7 +65,7 @@ public class CopyCompositionToStartupAction extends SendCompositionAction {
                 boolean success = false;
 
                 String parent_path = folder.getParent();
-                ArrayList<String> filenames =  SendToDevice.allFilenames(parent_path, class_name);
+                ArrayList<String> filenames = SendToDevice.allFilenames(parent_path, class_name);
 
                 Project current_project = e.getProject();
                 // we have a list of class names without paths. We now need to copy to our startup in the project
@@ -75,56 +75,55 @@ public class CopyCompositionToStartupAction extends SendCompositionAction {
 
 
                 // look fort data folder
-                for (VirtualFile file : roots){
+                for (VirtualFile file : roots) {
 
                     String root_path = file.getCanonicalPath();
                     String data_path = root_path + "/" + DATA_FOLDER;
                     File data_folder = new File(data_path);
-                     if (data_folder.isDirectory()){
+                    if (data_folder.isDirectory()) {
 
-                         String class_path =  data_path + "/" + CLASSES_FOLDER;
-                         File class_folder = new File(class_path);
+                        String class_path = data_path + "/" + CLASSES_FOLDER;
+                        File class_folder = new File(class_path);
 
-                         if (!class_folder.exists()){
-                             class_folder.mkdir();
-                         }
-                         // now see if our classes is a valid directory. If so, we can copy our files here
-                         if (class_folder.isDirectory()) {
-                             // First get rot of our classes output
-                             String build_folder = getOutputPath(current_project);
-                             // sanity check
-                             if (build_folder != null) {
-                                 String relative_path = parent_path.replace(build_folder, "");
-                                 String absolute_class_target_path =  class_folder.getCanonicalPath() + relative_path;
+                        if (!class_folder.exists()) {
+                            class_folder.mkdir();
+                        }
+                        // now see if our classes is a valid directory. If so, we can copy our files here
+                        if (class_folder.isDirectory()) {
+                            // First get rot of our classes output
+                            String build_folder = getOutputPath(current_project);
+                            // sanity check
+                            if (build_folder != null) {
+                                String relative_path = parent_path.replace(build_folder, "");
+                                String absolute_class_target_path = class_folder.getCanonicalPath() + relative_path;
 
-                                 File target_dir = new File(absolute_class_target_path);
-                                 if (!target_dir.exists()){
-                                     target_dir.mkdirs();
-                                 }
-
-
-                                 // now copy each of the files in there
-                                 if (target_dir.isDirectory()){
-                                     for(String filename: filenames){
-                                         File src = new File(parent_path + "/" + filename);
-                                         FileUtils.copyFileToDirectory(src, target_dir);
-                                         success = true;
-                                         LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(target_dir + "/" + filename));
-                                     }
-                                 }
+                                File target_dir = new File(absolute_class_target_path);
+                                if (!target_dir.exists()) {
+                                    target_dir.mkdirs();
+                                }
 
 
-                             }
+                                // now copy each of the files in there
+                                if (target_dir.isDirectory()) {
+                                    for (String filename : filenames) {
+                                        File src = new File(parent_path + "/" + filename);
+                                        FileUtils.copyFileToDirectory(src, target_dir);
+                                        success = true;
+                                        LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(target_dir + "/" + filename));
+                                    }
+                                }
 
 
-                         }
+                            }
 
 
-                     }
-                    if (success){
-                        displayNotification("Copied " + class_name + " to " + DATA_FOLDER + "/" + CLASSES_FOLDER, NotificationType.INFORMATION);
+                        }
+
+
                     }
-                    else{
+                    if (success) {
+                        displayNotification("Copied " + class_name + " to " + DATA_FOLDER + "/" + CLASSES_FOLDER, NotificationType.INFORMATION);
+                    } else {
                         displayNotification("Unable to copy " + class_name + " to class startuo ", NotificationType.ERROR);
                         //displayDialog("Unable to copy " + class_name + " to class startuo ");
                     }
@@ -133,8 +132,7 @@ public class CopyCompositionToStartupAction extends SendCompositionAction {
             } catch (Exception e1) {
                 displayNotification(e1.getMessage(), NotificationType.ERROR);
             }
-        }
-        else{
+        } else {
             displayNotification("Unable to find class", NotificationType.ERROR);
         }
 

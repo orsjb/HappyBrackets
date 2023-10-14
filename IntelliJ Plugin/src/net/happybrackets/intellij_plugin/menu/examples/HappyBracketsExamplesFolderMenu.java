@@ -20,9 +20,10 @@ public class HappyBracketsExamplesFolderMenu extends DefaultActionGroup {
 
     /**
      * Creates and Menu Group and populates it with files and subfolders below it
+     *
      * @param folder the Virtual folder to load
      */
-    public HappyBracketsExamplesFolderMenu(VirtualFile folder){
+    public HappyBracketsExamplesFolderMenu(VirtualFile folder) {
         virtualFolder = folder;
 
     }
@@ -47,6 +48,7 @@ public class HappyBracketsExamplesFolderMenu extends DefaultActionGroup {
 
     /**
      * Load the Subfolders and java files as menus and menu groups
+     *
      * @return
      */
     private boolean loadFolder() {
@@ -54,26 +56,21 @@ public class HappyBracketsExamplesFolderMenu extends DefaultActionGroup {
         ArrayList<VirtualFile> files = new ArrayList<>();
         ArrayList<VirtualFile> folders = new ArrayList<>();
 
-        for (VirtualFile root_child :  virtualFolder.getChildren())
-        {
-            if (root_child.isDirectory())
-            {
+        for (VirtualFile root_child : virtualFolder.getChildren()) {
+            if (root_child.isDirectory()) {
                 folders.add(root_child);
-            }
-            else
-            {
+            } else {
                 files.add(root_child);
             }
         }
 
         // Now for each file, add menu item
 
-        for (VirtualFile file: files) {
+        for (VirtualFile file : files) {
             this.add(new ExampleAction(file));
         }
 
-        for (VirtualFile folder : folders)
-        {
+        for (VirtualFile folder : folders) {
             HappyBracketsExamplesFolderMenu folder_group = new HappyBracketsExamplesFolderMenu(folder);
             folder_group.setPopup(true);
             // we need to set its folder so it can iterate and create it's sub menus

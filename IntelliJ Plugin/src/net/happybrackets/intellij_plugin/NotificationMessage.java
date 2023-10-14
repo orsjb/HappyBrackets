@@ -11,7 +11,7 @@ public class NotificationMessage {
             new NotificationGroup("My notification group",
                     NotificationDisplayType.BALLOON, true);
 
-    public static void displayNotification(String message, NotificationType notificationType){
+    public static void displayNotification(String message, NotificationType notificationType) {
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {

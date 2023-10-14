@@ -19,19 +19,19 @@ import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsP
 /**
  * Menu action to reboot all devices
  */
-public class CommonConfigAction extends AnAction
-{
+public class CommonConfigAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
         try {
             Project current_project = anActionEvent.getProject();
-            String root_path =  current_project.getBasePath();
+            String root_path = current_project.getBasePath();
             String common_config = root_path + HAPPY_BRACKETS_DEVICE_FOLDER + CONFIG_PATH + COMMON_CONFIG;
             Files.write(Paths.get(common_config), DefaultConfig.getDefaultConfigString().getBytes());
             LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(common_config));
             displayNotification("Wrote " + common_config, NotificationType.INFORMATION);
-        } catch (Exception ex){}
+        } catch (Exception ex) {
+        }
 
     }
 
@@ -44,7 +44,7 @@ public class CommonConfigAction extends AnAction
 
                 Project current_project = anActionEvent.getProject();
 
-                String root_path =  current_project.getBasePath();
+                String root_path = current_project.getBasePath();
 
                 String common_config = root_path + HAPPY_BRACKETS_DEVICE_FOLDER + CONFIG_PATH + COMMON_CONFIG;
 
@@ -54,13 +54,12 @@ public class CommonConfigAction extends AnAction
 
                 anActionEvent.getPresentation().setEnabled(enable);
             }
-        }
-        catch (Exception ex){
-            if (anActionEvent != null){
+        } catch (Exception ex) {
+            if (anActionEvent != null) {
                 try {
                     anActionEvent.getPresentation().setEnabled(false);
+                } catch (Exception ex2) {
                 }
-                catch (Exception ex2){}
             }
         }
 

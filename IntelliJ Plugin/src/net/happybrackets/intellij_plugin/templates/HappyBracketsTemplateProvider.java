@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 public class HappyBracketsTemplateProvider implements DefaultLiveTemplatesProvider {
     @Override
     public String[] getDefaultLiveTemplateFiles() {
-        return new String[] {"liveTemplates/HappyBrackets"};
+        return new String[]{"liveTemplates/HappyBrackets"};
     }
 
     @Nullable

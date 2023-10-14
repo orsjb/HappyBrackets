@@ -1,13 +1,13 @@
 package net.happybrackets.intellij_plugin.controller;
 
+import net.happybrackets.core.control.ControlMap;
+import net.happybrackets.core.control.DynamicControl;
+import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
 import net.happybrackets.intellij_plugin.controller.config.ControllerSettings;
 import net.happybrackets.intellij_plugin.controller.http.FileServer;
 import net.happybrackets.intellij_plugin.controller.network.ControllerAdvertiser;
 import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
-import net.happybrackets.core.control.ControlMap;
-import net.happybrackets.core.control.DynamicControl;
-import net.happybrackets.core.scheduling.HBScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,56 +15,33 @@ import java.io.IOException;
 
 public class ControllerEngine {
 
-    private boolean controllerStarted = false;
-    private static ControllerEngine ourInstance = new ControllerEngine();
-
-    public static ControllerEngine getInstance() {
-        return ourInstance;
-    }
     final static Logger logger = LoggerFactory.getLogger(ControllerEngine.class);
+    private static ControllerEngine ourInstance = new ControllerEngine();
+    protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
+    DeviceConnection deviceConnection = null;
+    ControllerConfig controllerConfig;
+    ControllerSettings settings;
+    String currentConfigString;
+
+    //protected BroadcastManager broadcastManager;
+    private boolean controllerStarted = false;
+    private FileServer httpServer;
 
     private ControllerEngine() {
         DynamicControl.setDisableScheduler(true);
     }
 
-
-    DeviceConnection deviceConnection = null;
-    private FileServer httpServer;
-
-    //protected BroadcastManager broadcastManager;
-
-
-    protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
+    public static ControllerEngine getInstance() {
+        return ourInstance;
+    }
 
     /**
      * Get the Controller Config
+     *
      * @return the Controller config
      */
     public ControllerConfig getControllerConfig() {
         return controllerConfig;
-    }
-
-    ControllerConfig controllerConfig;
-    ControllerSettings settings;
-    String currentConfigString;
-
-    public String getCurrentConfigString() {
-        return currentConfigString;
-    }
-
-    public void setCurrentConfigString(String current_config_string) {
-        currentConfigString = current_config_string;
-    }
-
-
-
-
-    public DeviceConnection getDeviceConnection() {
-        return deviceConnection;
-    }
-
-    public ControllerAdvertiser getControllerAdvertiser() {
-        return controllerAdvertiser;
     }
 
     /**
@@ -101,13 +78,11 @@ public class ControllerEngine {
         logger.debug("Compositions path: {}", controllerConfig.getCompositionsPath());
 
 
-
         logger.info("Starting ControllerAdvertiser");
         //broadcastManager = new BroadcastManager(controllerConfig.getMulticastAddr(), listen_port);
 
         //set up device connection
         deviceConnection = new DeviceConnection(controllerConfig);
-
 
         // Do Not start until we are at the end of initialisation
         //controllerAdvertiser.start();
@@ -120,14 +95,29 @@ public class ControllerEngine {
         }
     }
 
+    public String getCurrentConfigString() {
+        return currentConfigString;
+    }
 
+    public void setCurrentConfigString(String current_config_string) {
+        currentConfigString = current_config_string;
+    }
+
+    public DeviceConnection getDeviceConnection() {
+        return deviceConnection;
+    }
+
+    public ControllerAdvertiser getControllerAdvertiser() {
+        return controllerAdvertiser;
+    }
 
     /**
      * Load the Controller Settings from the path specified
+     *
      * @param path the path to load settings from
      * @return the Settings instance
      */
-    public synchronized ControllerSettings loadSettings(String path){
+    public synchronized ControllerSettings loadSettings(String path) {
         ControllerSettings.setDefaultSettingsFolder(path);
         settings = ControllerSettings.load();
         return settings;
@@ -143,10 +133,11 @@ public class ControllerEngine {
     }
 
 */
+
     /**
      * Make or controller start it network Communication
      */
-    public synchronized void startDeviceCommunication(){
+    public synchronized void startDeviceCommunication() {
 
         ControlMap.disableControlMimic(true);
 
@@ -166,22 +157,19 @@ public class ControllerEngine {
 
         }
 
-
-        if (controllerAdvertiser != null && !controllerStarted)
-        {
+        if (controllerAdvertiser != null && !controllerStarted) {
             controllerStarted = true;
             controllerAdvertiser.start();
 
             // Tell Our Scheduler we are conrtroller
             HBScheduler.setDeviceController();
         }
-
     }
 
     /**
      * Do a probe of devices. If advertiser has not started, do the start
      */
-    public void doProbe(){
+    public void doProbe() {
         DeviceConnection connection = this.getDeviceConnection();
         startDeviceCommunication();
         // we will make sure we do not have advertising disabled
@@ -191,7 +179,7 @@ public class ControllerEngine {
         ControllerAdvertiser advertiser = getControllerAdvertiser();
 
         boolean multicast_only = advertiser.isOnlyMulticastMessages();
-        if (multicast_only){
+        if (multicast_only) {
             advertiser.doBroadcastProbe();
 
         }

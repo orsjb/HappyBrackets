@@ -9,14 +9,16 @@ public abstract class DeviceMenu {
 
     /**
      * Constructor that assigns the LocalDeviceRepresentation
+     *
      * @param item the localDevice we want to send message to
      */
-    public DeviceMenu(LocalDeviceRepresentation item){
+    public DeviceMenu(LocalDeviceRepresentation item) {
         localDeviceRepresentation = item;
     }
 
     /**
      * Get all the MenuItems we want displayed for this Item contex
+     *
      * @return Array of menu Items
      */
     public abstract MenuItem[] getMenuItems();

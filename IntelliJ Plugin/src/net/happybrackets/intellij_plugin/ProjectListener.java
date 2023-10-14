@@ -1,7 +1,6 @@
 package net.happybrackets.intellij_plugin;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.project.VetoableProjectManagerListener;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.openapi.wm.ex.WindowManagerEx;
@@ -32,7 +31,8 @@ public class ProjectListener implements VetoableProjectManagerListener {
                     public void windowGainedFocus(WindowEvent e) {
                         try {
                             HappyBracketsDebugMenu.loadExamplesMenu(project);
-                        }catch (Exception ex){}
+                        } catch (Exception ex) {
+                        }
 
                     }
 
@@ -56,7 +56,8 @@ public class ProjectListener implements VetoableProjectManagerListener {
             String project_path = project.getBaseDir().getCanonicalPath();
             SimulatorShell.projectClosing(project_path);
 
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
     }
 
     @Override

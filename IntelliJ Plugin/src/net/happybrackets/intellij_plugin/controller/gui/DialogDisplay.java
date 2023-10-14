@@ -8,10 +8,10 @@ import javax.swing.*;
 public class DialogDisplay {
     /**
      * Display a message dialog
+     *
      * @param text the text to display
      */
-    static public void displayDialog(String text)
-    {
+    static public void displayDialog(String text) {
         new Thread(() -> {
             try {
 

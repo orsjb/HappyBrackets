@@ -25,11 +25,11 @@ import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
  */
 public class IntelliJControllerConfig extends ControllerConfig {
     public static IntelliJControllerConfig getInstance() {
-        return (IntelliJControllerConfig)(LoadableConfig.getInstance());
+        return (IntelliJControllerConfig) (LoadableConfig.getInstance());
     }
 
     public static IntelliJControllerConfig load(String configFile) {
-        return (IntelliJControllerConfig)(LoadableConfig.load(configFile, new IntelliJControllerConfig()));
+        return (IntelliJControllerConfig) (LoadableConfig.load(configFile, new IntelliJControllerConfig()));
     }
 
     public static IntelliJControllerConfig loadFromString(String configJSON) {

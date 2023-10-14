@@ -19,10 +19,7 @@ package net.happybrackets.intellij_plugin.templates.factory;
 import com.intellij.ide.fileTemplates.*;
 import com.intellij.openapi.util.IconLoader;
 
-
-
 import javax.swing.*;
-import java.io.File;
 import java.util.Properties;
 
 /**
@@ -31,6 +28,30 @@ import java.util.Properties;
 public class HappyBracketsTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 
     public static final String ESSENTIALS_VERSION = "1.01.02-SNAPSHOT";
+
+    public static String getTemplateText(HappyBracketsTemplate template) {
+        String ret = "";
+        final FileTemplate fileTemplate = FileTemplateManager.getInstance().getInternalTemplate(template.getName());
+        final Properties properties = new Properties(FileTemplateManager.getInstance().getDefaultProperties());
+
+        try {
+            ret = fileTemplate.getText(properties);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to load template for " + template.getName(), e);
+        }
+        return ret;
+    }
+
+    @Override
+    public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
+        String title = "HappyBrackets templates";
+        final Icon icon = IconLoader.getIcon("/icons/hb.png");
+        final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(title, icon);
+        for (HappyBracketsTemplate template : HappyBracketsTemplate.values()) {
+            group.addTemplate(new FileTemplateDescriptor(template.getName(), icon));
+        }
+        return group;
+    }
 
     public enum HappyBracketsTemplate {
         HAPPY_BRACKETS_TEMPLATE("HappyBracketsProject"),
@@ -48,30 +69,6 @@ public class HappyBracketsTemplatesFactory implements FileTemplateGroupDescripto
         public String getName() {
             return name;
         }
-    }
-
-    @Override
-    public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-        String title = "HappyBrackets templates";
-        final Icon icon = IconLoader.getIcon("/icons/hb.png");
-        final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(title, icon);
-        for (HappyBracketsTemplate template : HappyBracketsTemplate.values()) {
-            group.addTemplate(new FileTemplateDescriptor(template.getName(), icon));
-        }
-        return group;
-    }
-
-    public static String getTemplateText(HappyBracketsTemplate template){
-        String ret = "";
-        final FileTemplate fileTemplate = FileTemplateManager.getInstance().getInternalTemplate(template.getName());
-        final Properties properties = new Properties(FileTemplateManager.getInstance().getDefaultProperties());
-
-        try {
-            ret = fileTemplate.getText(properties);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to load template for " + template.getName(), e);
-        }
-        return ret;
     }
 
 

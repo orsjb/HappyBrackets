@@ -16,14 +16,14 @@
 
 package net.happybrackets.intellij_plugin.controller.http;
 
-import java.util.HashMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+
 /**
  * A basic class for connecting url paths to response implementing objects.
- *
+ * <p>
  * Created by Samg on 19/05/2016.
  */
 public class PathMapper {
@@ -39,7 +39,7 @@ public class PathMapper {
     }
 
     public boolean addPath(String path, PathResponse response) {
-        if ( pathMap.containsKey(path) ) {
+        if (pathMap.containsKey(path)) {
             logger.error("Unable to add path to PathMapper, path already exists! Path: {}", path);
             return false;
         }

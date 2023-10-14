@@ -9,8 +9,7 @@ import javax.swing.*;
 /**
  * Menu item to shutdown all devices
  */
-public class ShutdownAction extends AnAction
-{
+public class ShutdownAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
         try {
@@ -21,6 +20,7 @@ public class ShutdownAction extends AnAction
             if (dialog_result == JOptionPane.YES_OPTION) {
                 ControllerEngine.getInstance().getDeviceConnection().deviceShutdown();
             }
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
     }
 }

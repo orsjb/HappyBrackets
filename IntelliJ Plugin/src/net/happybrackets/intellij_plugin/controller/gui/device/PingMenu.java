@@ -29,35 +29,34 @@ public class PingMenu extends DeviceMenu {
     private String username = DEF_USERNAME;
     private String projectDir; // the project directory
 
-    //in case the user is not using pi as the default username for ssh
-    public void setUsername(String val)
-    {
-        this.username = val;
-    }
-    private String buildSSHCommand(String device_name)
-    {
-        return "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no " + username + "@" + device_name;
-    }
-
     /**
      * Constructor
-     * @param item the localDevice we want to send message to
+     *
+     * @param item        the localDevice we want to send message to
      * @param project_dir the project directory
      */
-    public PingMenu(LocalDeviceRepresentation item, String project_dir){
+    public PingMenu(LocalDeviceRepresentation item, String project_dir) {
         super(item);
         projectDir = project_dir;
     }
 
+    //in case the user is not using pi as the default username for ssh
+    public void setUsername(String val) {
+        this.username = val;
+    }
 
+    private String buildSSHCommand(String device_name) {
+        return "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no " + username + "@" + device_name;
+    }
 
     /**
      * Return an array of MenuItems to Display the Sound menus.
      * These can be used to populate a menu later
+     *
      * @return an Array Of MenuItems with actions already attached
      */
     @Override
-    public MenuItem[] getMenuItems(){
+    public MenuItem[] getMenuItems() {
 
         // Get IP Address
         MenuItem copy_ip_address_menu = new MenuItem("Copy " + localDeviceRepresentation.getAddress() + " to clipboard");
@@ -92,7 +91,6 @@ public class PingMenu extends DeviceMenu {
         MenuItem cancel_send_menu = new MenuItem("Cancel Send");
         cancel_send_menu.setDisable(!localDeviceRepresentation.getFileIsSending());
         cancel_send_menu.setOnAction(event -> localDeviceRepresentation.cancelSendFile());
-
 
 
         MenuItem request_version_menu = new MenuItem("Request Version");
@@ -166,10 +164,9 @@ public class PingMenu extends DeviceMenu {
 
         MenuItem write_config_item = new MenuItem("Create " + config_filename);
 
-        if (Strings.isEmpty(projectDir)){
-            write_config_item.setDisable (true);
-        }
-        else {
+        if (Strings.isEmpty(projectDir)) {
+            write_config_item.setDisable(true);
+        } else {
             String filename = projectDir + File.separatorChar + DEVICE_CONFIG_PATH + config_filename;
             File f = new File(filename);
 
@@ -194,8 +191,7 @@ public class PingMenu extends DeviceMenu {
             try {
                 if (localDeviceRepresentation.sendPrintConfig()) {
                     displayNotification("Request config  from " + localDeviceRepresentation.deviceName, NotificationType.INFORMATION);
-                }
-                else {
+                } else {
                     displayNotification("Unable to connect to " + localDeviceRepresentation.deviceName, NotificationType.ERROR);
                 }
 
@@ -210,7 +206,7 @@ public class PingMenu extends DeviceMenu {
 
                 int dialog_button = JOptionPane.YES_NO_OPTION;
                 int dialog_result = JOptionPane.showConfirmDialog(null,
-                         "This will remove all files from data/classes data/jars and config folders on " + localDeviceRepresentation.getFriendlyName() + ". Do you really want to do this?", "Reset Device Configuration" + localDeviceRepresentation.getFriendlyName(), dialog_button);
+                        "This will remove all files from data/classes data/jars and config folders on " + localDeviceRepresentation.getFriendlyName() + ". Do you really want to do this?", "Reset Device Configuration" + localDeviceRepresentation.getFriendlyName(), dialog_button);
 
                 if (dialog_result == JOptionPane.YES_OPTION) {
                     localDeviceRepresentation.sendResetConfiguration();

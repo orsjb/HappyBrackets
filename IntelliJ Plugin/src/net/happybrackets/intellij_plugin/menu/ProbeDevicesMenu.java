@@ -12,11 +12,9 @@ public class ProbeDevicesMenu extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         try {
-                ControllerEngine.getInstance().doProbe();
-                NotificationMessage.displayNotification("Probed Network for devices", NotificationType.INFORMATION);
-            }
-
-          catch (Exception ex) {
+            ControllerEngine.getInstance().doProbe();
+            NotificationMessage.displayNotification("Probed Network for devices", NotificationType.INFORMATION);
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 

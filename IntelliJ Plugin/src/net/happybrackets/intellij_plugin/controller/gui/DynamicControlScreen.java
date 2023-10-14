@@ -24,21 +24,21 @@ import java.util.*;
 
 /**
  * The stage looks like this
- *
+ * <p>
  * dynamicControlStage
  * dynamicControlScene
- *
+ * <p>
  * BorderPane main_container
  * ** scrollPane
  * ** ** dynamicControlGridPane - GridPane
- *
+ * <p>
  * *********
- *      for each Control
- *       ControlCellGroup
- *          ** Label
- *          ** Control
+ * for each Control
+ * ControlCellGroup
+ * ** Label
+ * ** Control
  * *********
- *
+ * <p>
  * ** debugPane
  */
 
@@ -49,156 +49,47 @@ public class DynamicControlScreen {
 
     private static final int MIN_TEXT_AREA_HEIGHT = 200;
     private final int DEFAULT_ELEMENT_SPACING = 10;
-
-    private int currentLogPage = 0;
-
+    private final LocalDeviceRepresentation localDevice;
+    private final ScrollBar scrollBar = new ScrollBar();
     Button previousLogPageButton = new Button("<");
     Button nextLogPageButton = new Button(">");
     TextField logPageNumber = new TextField("1");
-
-    ColumnConstraints column1 = new ColumnConstraints(100,100, Double.MAX_VALUE);
-    ColumnConstraints column2 = new ColumnConstraints(200,300,Double.MAX_VALUE);
+    ColumnConstraints column1 = new ColumnConstraints(100, 100, Double.MAX_VALUE);
+    ColumnConstraints column2 = new ColumnConstraints(200, 300, Double.MAX_VALUE);
+    TitledPane debugPane = null;
+    private int currentLogPage = 0;
     private boolean isShowing = false;
-
-    /**
-     * See if the Screen has been shown before
-     * @return true if it has been shown
-     */
-    public boolean getIsShowing(){
-        return isShowing;
-    }
-
-    public interface DynamicControlScreenLoaded{
-        void loadComplete(DynamicControlScreen screen, boolean loaded);
-    }
-
-    private class ControlCellGroup {
-
-        public ControlCellGroup(Node label, Node control){
-            labelNode = label;
-            controlNode = control;
-        }
-        Node labelNode;
-        Node controlNode;
-
-        DynamicControl.DynamicControlListener listener = null;
-        DynamicControl.ControlScopeChangedListener scopeChangedListener = null;
-
-        DynamicControl.DISPLAY_TYPE currentDisplayType =  DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT;
-    }
-
-    /**
-     * Store the Buddy as its own control
-     */
-    private class BuddyControl extends VBox{
-
-        DynamicControl.DISPLAY_TYPE lastDisplayType = DynamicControl.DISPLAY_TYPE.DISPLAY_HIDDEN;
-
-        Object last_max = 0;
-        Object last_min = 0;
-
-        TextField textField;
-        Slider slider;
-        public BuddyControl(TextField text_display, Slider slider_display){
-            textField = text_display;
-            slider = slider_display;
-        }
-
-        /**
-         * Update Display of this control
-         * @param control the Dynamic Control
-         */
-        public void updateDisplay(DynamicControl control) {
-            DynamicControl.DISPLAY_TYPE display_type = control.getDisplayType();
-
-            boolean change = !control.getMinimumDisplayValue().equals(last_min) ||
-                    !control.getMaximumDisplayValue().equals(last_max) ||
-                    lastDisplayType != display_type;
-
-            if (change) {
-
-                if (display_type == DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY ||
-                        display_type == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY) {
-
-                    setSliderSize(control);
-                    showBuddy();
-                } else if (setSliderSize(control)) {
-                    showSlider();
-                } else {
-                    showText();
-                }
-
-                lastDisplayType = display_type;
-                last_min = control.getMinimumDisplayValue();
-                last_max = control.getMaximumDisplayValue();
-            }
-        }
-
-        /**
-         * Make sure we set slider size for control
-         * @param control the {@link DynamicControl}
-         * @return true if we are able to set it
-         */
-        boolean setSliderSize(DynamicControl control){
-            boolean ret = false;
-
-            if (!control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
-                if (control.getControlType() == ControlType.INT) {
-                    int min = (int) control.getMinimumDisplayValue();
-                    int max = (int) control.getMaximumDisplayValue();
-
-                    slider.setMin(min);
-                    slider.setMax(max);
-                    ret = true;
-                }
-                else if (control.getControlType() == ControlType.FLOAT) {
-                    double min = (double) control.getMinimumDisplayValue();
-                    double max = (double) control.getMaximumDisplayValue();
-
-                    slider.setMin(min);
-                    slider.setMax(max);
-                    ret = true;
-                }
-
-            }
-            return ret;
-        }
-
-        void showBuddy(){
-            this.getChildren().clear();
-            this.getChildren().add(textField);
-            this.getChildren().add(slider);
-        }
-
-        void showSlider(){
-            this.getChildren().clear();
-            this.getChildren().add(slider);
-        }
-
-        void showText(){
-            this.getChildren().clear();
-            this.getChildren().add(textField);
-        }
-
-    }
-
     private Map<String, ControlCellGroup> dynamicControlsList = new Hashtable<String, ControlCellGroup>();
-
-    private final LocalDeviceRepresentation localDevice;
     private Stage dynamicControlStage = null;
     private GridPane dynamicControlGridPane = new GridPane();
     private Scene dynamicControlScene = null;
     private int nextControlRow = 0;
     private Object controlCreateLock = new Object();
-    private final ScrollBar scrollBar = new ScrollBar();
     private BorderPane main_container = new BorderPane();
     private ScrollPane scrollPane;
-
     private String screenTitle;
-
-    TitledPane debugPane = null;
-
     private List<DynamicControlScreenLoaded> dynamicControlScreenLoadedList = new ArrayList<>();
+    private boolean alwaysOnTop = false;
+
+    /**
+     * Create a screen to display controls for a LocalDevice
+     *
+     * @param local_device the local device we are displaying controls for
+     */
+    public DynamicControlScreen(LocalDeviceRepresentation local_device) {
+        localDevice = local_device;
+        screenTitle = localDevice.getFriendlyName();
+        setGridColumnAttributes();
+    }
+
+    /**
+     * See if the Screen has been shown before
+     *
+     * @return true if it has been shown
+     */
+    public boolean getIsShowing() {
+        return isShowing;
+    }
 
     public void setAlwaysOnTop(boolean always_on_top) {
         try {
@@ -206,20 +97,8 @@ public class DynamicControlScreen {
                 dynamicControlStage.setAlwaysOnTop(always_on_top);
                 alwaysOnTop = always_on_top;
             }
+        } catch (Exception ex) {
         }
-        catch (Exception ex){}
-    }
-
-    private boolean alwaysOnTop = false;
-
-    /**
-     * Create a screen to display controls for a LocalDevice
-     * @param local_device the local device we are displaying controls for
-     */
-    public DynamicControlScreen(LocalDeviceRepresentation local_device) {
-        localDevice = local_device;
-        screenTitle = localDevice.getFriendlyName();
-        setGridColumnAttributes();
     }
 
     private void setGridColumnAttributes() {
@@ -231,15 +110,16 @@ public class DynamicControlScreen {
 
     /**
      * Set the title of Our Display Screen
+     *
      * @param title the title to display on the screen
      */
     public void setTitle(String title) {
         Platform.runLater(() -> {
-            try {
-                screenTitle = title;
-                dynamicControlStage.setTitle(screenTitle);
-            } catch (Exception ex) {
-            }
+                    try {
+                        screenTitle = title;
+                        dynamicControlStage.setTitle(screenTitle);
+                    } catch (Exception ex) {
+                    }
                 }
         );
     }
@@ -247,8 +127,7 @@ public class DynamicControlScreen {
     /**
      * Erase the dynamic controls on this screen
      */
-    public void eraseDynamicControls()
-    {
+    public void eraseDynamicControls() {
         DynamicControlScreen this_screen = this;
 
         Platform.runLater(new Runnable() {
@@ -260,7 +139,7 @@ public class DynamicControlScreen {
                     }
                     nextControlRow = 0;
                     for (DynamicControlScreenLoaded dynamicControlScreenLoaded : dynamicControlScreenLoadedList) {
-                        dynamicControlScreenLoaded.loadComplete (this_screen, false);
+                        dynamicControlScreenLoaded.loadComplete(this_screen, false);
                     }
 
                 }
@@ -268,8 +147,7 @@ public class DynamicControlScreen {
         });
     }
 
-    public void removeDynamicControlScene()
-    {
+    public void removeDynamicControlScene() {
         DynamicControlScreen this_screen = this;
 
         Platform.runLater(new Runnable() {
@@ -282,7 +160,7 @@ public class DynamicControlScreen {
                     }
                     nextControlRow = 0;
                     for (DynamicControlScreenLoaded dynamicControlScreenLoaded : dynamicControlScreenLoadedList) {
-                        dynamicControlScreenLoaded.loadComplete (this_screen, false);
+                        dynamicControlScreenLoaded.loadComplete(this_screen, false);
                     }
 
                 }
@@ -290,11 +168,10 @@ public class DynamicControlScreen {
         });
     }
 
-    void rebuildGridList()
-    {
+    void rebuildGridList() {
         dynamicControlGridPane.getChildren().clear();
         nextControlRow = 0;
-        Collection<ControlCellGroup> control_groupds =  dynamicControlsList.values();
+        Collection<ControlCellGroup> control_groupds = dynamicControlsList.values();
         for (ControlCellGroup control_group : control_groupds) {
             dynamicControlGridPane.add(control_group.labelNode, 0, nextControlRow);
             dynamicControlGridPane.add(control_group.controlNode, 1, nextControlRow);
@@ -304,10 +181,10 @@ public class DynamicControlScreen {
 
     /**
      * Remove a dynamic control from this window
+     *
      * @param control The control to remove. Will defer itself to main thread
      */
-    public void  removeDynamicControl(DynamicControl control)
-    {
+    public void removeDynamicControl(DynamicControl control) {
         Platform.runLater(() -> {
             // find the control based on its hash from control table
             ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
@@ -321,7 +198,7 @@ public class DynamicControlScreen {
                     control.removeControlListener(control_group.listener);
                 }
 
-                if (control_group.scopeChangedListener != null){
+                if (control_group.scopeChangedListener != null) {
                     control.removeControlScopeChangedListener(control_group.scopeChangedListener);
                 }
                 rebuildGridList();
@@ -329,7 +206,7 @@ public class DynamicControlScreen {
         });
     }
 
-    public void createDynamicControlStage(){
+    public void createDynamicControlStage() {
 
         DynamicControlScreen this_screen = this;
 
@@ -391,9 +268,7 @@ public class DynamicControlScreen {
                     contextMenu.getItems().add(rebuild_controls_menu);
 
 
-
-                    if (localDevice != null)
-                    {
+                    if (localDevice != null) {
                         contextMenu.getItems().add(new SeparatorMenuItem());
                         PingMenu menus = new PingMenu(localDevice, "");
                         contextMenu.getItems().addAll(menus.getMenuItems());
@@ -419,7 +294,7 @@ public class DynamicControlScreen {
                 }
 
                 for (DynamicControlScreenLoaded dynamicControlScreenLoaded : dynamicControlScreenLoadedList) {
-                    dynamicControlScreenLoaded.loadComplete (this_screen, true);
+                    dynamicControlScreenLoaded.loadComplete(this_screen, true);
                 }
             }
         });
@@ -427,9 +302,10 @@ public class DynamicControlScreen {
 
     /**
      * Read the devices from Local device and load them in order
+     *
      * @param localDevice the device to read them from
      */
-    public void loadDynamicControls (LocalDeviceRepresentation localDevice){
+    public void loadDynamicControls(LocalDeviceRepresentation localDevice) {
 
 
         Platform.runLater(new Runnable() {
@@ -449,10 +325,11 @@ public class DynamicControlScreen {
 
     /**
      * Add a Trigger control to control Group
+     *
      * @param control
      * @return A encapsulated control group with Label, Control, and buddy if required
      */
-    private ControlCellGroup addTriggerControl(DynamicControl control){
+    private ControlCellGroup addTriggerControl(DynamicControl control) {
         Button button = new Button();
         Label control_label = new Label(control.getControlName());
         boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
@@ -479,10 +356,11 @@ public class DynamicControlScreen {
 
     /**
      * Add a addBooleanControl control to control Group
+     *
      * @param control the DynamicControl
      * @return A encapsulated control group with Label, Control, and buddy if required
      */
-    private ControlCellGroup addBooleanControl(DynamicControl control){
+    private ControlCellGroup addBooleanControl(DynamicControl control) {
         CheckBox checkBox = new CheckBox();
         Label control_label = new Label(control.getControlName());
         boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
@@ -528,10 +406,11 @@ public class DynamicControlScreen {
 
     /**
      * Add an Object Control control to control Group
+     *
      * @param control the DynamicControl
      * @return A encapsulated control group with Label, Control, and buddy if required
      */
-    private ControlCellGroup addObjectControl(DynamicControl control){
+    private ControlCellGroup addObjectControl(DynamicControl control) {
         TextField textField = new TextField();
         Label control_label = new Label(control.getControlName());
 
@@ -560,10 +439,11 @@ public class DynamicControlScreen {
 
     /**
      * Add an Text Control control to control Group
+     *
      * @param control the DynamicControl
      * @return A encapsulated control group with Label, Control, and buddy if required
      */
-    private ControlCellGroup addTextControl(DynamicControl control){
+    private ControlCellGroup addTextControl(DynamicControl control) {
         TextField textField = new TextField();
         Label control_label = new Label(control.getControlName());
         boolean disable = control.getDisplayType() == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED
@@ -609,6 +489,7 @@ public class DynamicControlScreen {
 
     /**
      * Add a Integer control to control Group
+     *
      * @param control
      * @return A encapsulated control group with Label, Control, and buddy if required
      */
@@ -752,6 +633,7 @@ public class DynamicControlScreen {
 
     /**
      * Add an Float Control control to control Group
+     *
      * @param control the DynamicControl
      * @return A encapsulated control group with Label, Control, and buddy if required
      */
@@ -900,9 +782,10 @@ public class DynamicControlScreen {
 
     /**
      * Adds a control to the display window. Must be called in context of main thread
+     *
      * @param control the control to add
      */
-    private void addDisplayDynamicControl (DynamicControl control){
+    private void addDisplayDynamicControl(DynamicControl control) {
         ControlCellGroup control_group = dynamicControlsList.get(control.getControlMapKey());
 
         if (control_group == null) {
@@ -916,14 +799,14 @@ public class DynamicControlScreen {
 
             switch (control_type) {
                 case TRIGGER:
-                    if (hidden){
+                    if (hidden) {
                         break;
                     }
                     control_group = addTriggerControl(control);
                     break;
 
                 case INT:
-                    if (hidden){
+                    if (hidden) {
                         break;
                     }
 
@@ -931,14 +814,14 @@ public class DynamicControlScreen {
                     break;
 
                 case BOOLEAN:
-                    if (hidden){
+                    if (hidden) {
                         break;
                     }
                     control_group = addBooleanControl(control);
                     break;
 
                 case FLOAT:
-                    if (hidden){
+                    if (hidden) {
                         break;
                     }
 
@@ -950,7 +833,7 @@ public class DynamicControlScreen {
 
                     break;
                 case TEXT:
-                    if (hidden){
+                    if (hidden) {
                         break;
                     }
                     control_group = addTextControl(control);
@@ -981,7 +864,7 @@ public class DynamicControlScreen {
 
     }
 
-    public void show(){
+    public void show() {
         dynamicControlStage.show();
         dynamicControlStage.toFront();
         isShowing = true;
@@ -990,15 +873,16 @@ public class DynamicControlScreen {
     /**
      * Set the next and previous log page button states
      */
-    private void setLogPageButtons(){
+    private void setLogPageButtons() {
         previousLogPageButton.setDisable(currentLogPage < 1 || localDevice.numberLogPages() < 2);
-        nextLogPageButton.setDisable(currentLogPage >= localDevice.numberLogPages() -1 || localDevice.numberLogPages() < 2);
+        nextLogPageButton.setDisable(currentLogPage >= localDevice.numberLogPages() - 1 || localDevice.numberLogPages() < 2);
         int page_display_num = currentLogPage + 1;
         logPageNumber.setText("Page " + page_display_num + " of " + localDevice.numberLogPages());
     }
 
     /**
      * Add a debug pane
+     *
      * @return
      */
     private Node makeDebugPane() {
@@ -1055,7 +939,7 @@ public class DynamicControlScreen {
         log_output_text_area.setMinHeight(MIN_TEXT_AREA_HEIGHT);
 
         localDevice.addLogListener((message, page) -> {
-            Platform.runLater(()-> {
+            Platform.runLater(() -> {
                 try {
                     // let us see if the text is too big for us
                     if (currentLogPage == page) {
@@ -1089,11 +973,126 @@ public class DynamicControlScreen {
         });
 
         logPageNumber.setDisable(true);
-        HBox hBox  = new HBox(DEFAULT_ELEMENT_SPACING);
+        HBox hBox = new HBox(DEFAULT_ELEMENT_SPACING);
         hBox.getChildren().addAll(enable_button, previousLogPageButton, logPageNumber, nextLogPageButton);
         VBox pane = new VBox(DEFAULT_ELEMENT_SPACING);
         pane.getChildren().addAll(hBox, log_output_text_area, rebuild_button);
         setLogPageButtons();
         return pane;
+    }
+
+    public interface DynamicControlScreenLoaded {
+        void loadComplete(DynamicControlScreen screen, boolean loaded);
+    }
+
+    private class ControlCellGroup {
+
+        Node labelNode;
+        Node controlNode;
+        DynamicControl.DynamicControlListener listener = null;
+        DynamicControl.ControlScopeChangedListener scopeChangedListener = null;
+        DynamicControl.DISPLAY_TYPE currentDisplayType = DynamicControl.DISPLAY_TYPE.DISPLAY_DEFAULT;
+
+        public ControlCellGroup(Node label, Node control) {
+            labelNode = label;
+            controlNode = control;
+        }
+    }
+
+    /**
+     * Store the Buddy as its own control
+     */
+    private class BuddyControl extends VBox {
+
+        DynamicControl.DISPLAY_TYPE lastDisplayType = DynamicControl.DISPLAY_TYPE.DISPLAY_HIDDEN;
+
+        Object last_max = 0;
+        Object last_min = 0;
+
+        TextField textField;
+        Slider slider;
+
+        public BuddyControl(TextField text_display, Slider slider_display) {
+            textField = text_display;
+            slider = slider_display;
+        }
+
+        /**
+         * Update Display of this control
+         *
+         * @param control the Dynamic Control
+         */
+        public void updateDisplay(DynamicControl control) {
+            DynamicControl.DISPLAY_TYPE display_type = control.getDisplayType();
+
+            boolean change = !control.getMinimumDisplayValue().equals(last_min) ||
+                    !control.getMaximumDisplayValue().equals(last_max) ||
+                    lastDisplayType != display_type;
+
+            if (change) {
+
+                if (display_type == DynamicControl.DISPLAY_TYPE.DISPLAY_ENABLED_BUDDY ||
+                        display_type == DynamicControl.DISPLAY_TYPE.DISPLAY_DISABLED_BUDDY) {
+
+                    setSliderSize(control);
+                    showBuddy();
+                } else if (setSliderSize(control)) {
+                    showSlider();
+                } else {
+                    showText();
+                }
+
+                lastDisplayType = display_type;
+                last_min = control.getMinimumDisplayValue();
+                last_max = control.getMaximumDisplayValue();
+            }
+        }
+
+        /**
+         * Make sure we set slider size for control
+         *
+         * @param control the {@link DynamicControl}
+         * @return true if we are able to set it
+         */
+        boolean setSliderSize(DynamicControl control) {
+            boolean ret = false;
+
+            if (!control.getMinimumDisplayValue().equals(control.getMaximumDisplayValue())) {
+                if (control.getControlType() == ControlType.INT) {
+                    int min = (int) control.getMinimumDisplayValue();
+                    int max = (int) control.getMaximumDisplayValue();
+
+                    slider.setMin(min);
+                    slider.setMax(max);
+                    ret = true;
+                } else if (control.getControlType() == ControlType.FLOAT) {
+                    double min = (double) control.getMinimumDisplayValue();
+                    double max = (double) control.getMaximumDisplayValue();
+
+                    slider.setMin(min);
+                    slider.setMax(max);
+                    ret = true;
+                }
+
+            }
+            return ret;
+        }
+
+        void showBuddy() {
+            this.getChildren().clear();
+            this.getChildren().add(textField);
+            this.getChildren().add(slider);
+        }
+
+        void showSlider() {
+            this.getChildren().clear();
+            this.getChildren().add(slider);
+        }
+
+        void showText() {
+            this.getChildren().clear();
+            this.getChildren().add(textField);
+        }
+
     }
 }

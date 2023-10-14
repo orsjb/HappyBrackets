@@ -14,33 +14,32 @@ public class DeviceNameMenu extends DeviceMenu {
     final String DEF_USERNAME = "pi";
     private String username = DEF_USERNAME;
 
+    /**
+     * Constructor
+     *
+     * @param item the localDevice we want to send message to
+     */
+    public DeviceNameMenu(LocalDeviceRepresentation item) {
+        super(item);
+    }
+
     //in case the user is not using pi as the default username for ssh
-    public void setUsername(String val)
-    {
+    public void setUsername(String val) {
         this.username = val;
     }
-    private String buildSSHCommand(String device_name)
-    {
+
+    private String buildSSHCommand(String device_name) {
         return "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no " + username + "@" + device_name;
     }
 
     /**
-     * Constructor
-     * @param item the localDevice we want to send message to
-     */
-    public DeviceNameMenu(LocalDeviceRepresentation item){
-        super(item);
-    }
-
-
-
-    /**
      * Return an array of MenuItems to Display the Sound menus.
      * These can be used to populate a menu later
+     *
      * @return an Array Of MenuItems with actions already attached
      */
     @Override
-    public MenuItem[] getMenuItems(){
+    public MenuItem[] getMenuItems() {
 
         // Get IP Address
         MenuItem copy_ip_address_menu = new MenuItem("Copy " + localDeviceRepresentation.getAddress() + " to clipboard");

@@ -1,18 +1,16 @@
 package net.happybrackets.intellij_plugin;
 
 import com.intellij.notification.NotificationType;
+import net.happybrackets.core.ShellExecute;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
-import net.happybrackets.core.ShellExecute;
 
 import java.io.File;
 import java.io.IOException;
 
 public class SimulatorShell {
+    static final String DEVICE_SCRIPT_PATH = "/Device/HappyBrackets/scripts/";
     static String projectPath = "";
-
-    static final String DEVICE_SCRIPT_PATH =  "/Device/HappyBrackets/scripts/";
-
     private static String MAC_SIMULATOR = "run-simulator.sh";
     private static String WIN_SIMULATOR = "run-simulator.bat";
 
@@ -20,11 +18,12 @@ public class SimulatorShell {
 
     /**
      * Run the simulator from the specified project path
-     * @param sdk_path the path that the SDK is. We need this to run correct JDK
+     *
+     * @param sdk_path     the path that the SDK is. We need this to run correct JDK
      * @param project_path the path to load from
      * @return true on success
      */
-    public static boolean runSimulator(String sdk_path, String project_path){
+    public static boolean runSimulator(String sdk_path, String project_path) {
         boolean ret = false;
 
         String script_path = project_path + DEVICE_SCRIPT_PATH;
@@ -39,11 +38,11 @@ public class SimulatorShell {
                     NotificationMessage.displayNotification("Simulator Started", NotificationType.INFORMATION);
                     // store our project path
 
-                }
-                else {
+                } else {
                     NotificationMessage.displayNotification("Unable to determine process ID of simulator", NotificationType.WARNING);
                 }
-            }catch (Exception ex){}
+            } catch (Exception ex) {
+            }
 
         });
 
@@ -75,16 +74,17 @@ public class SimulatorShell {
 
     /**
      * See if we have a local simulator riunning on localhost
+     *
      * @return true if we have one on a loopback address
      */
-    public static boolean isRunning(){
+    public static boolean isRunning() {
 
         boolean ret = false;
-        for (LocalDeviceRepresentation device:
+        for (LocalDeviceRepresentation device :
                 ControllerEngine.getInstance().getDeviceConnection().getDevices()) {
 
             // se if the device is a local simulator
-            if (device.isLocalSimulator()){
+            if (device.isLocalSimulator()) {
                 ret = device.getIsConnected();
                 break;
             }
@@ -96,9 +96,10 @@ public class SimulatorShell {
     /**
      * If the closing project is the one that started simulator, then kill simulator
      * If this is not the path that the simulator was loaded at, we will ask if we want to shut simulator
+     *
      * @param project_path the path of project
      */
-    public static void projectClosing(String project_path){
+    public static void projectClosing(String project_path) {
         try {
 
             if (!project_path.trim().isEmpty()) {
@@ -107,8 +108,7 @@ public class SimulatorShell {
                     projectPath = "";
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -116,11 +116,11 @@ public class SimulatorShell {
     /**
      * Kill the simulator based on process ID
      */
-    public static void killSimulator(){
-        
+    public static void killSimulator() {
+
         // Also see if we have one running on localhost that we did not start
         LocalDeviceRepresentation local_device = null;
-        for (LocalDeviceRepresentation device:
+        for (LocalDeviceRepresentation device :
                 ControllerEngine.getInstance().getDeviceConnection().getDevices()) {
 
             // se if the device is a local simulator
@@ -129,26 +129,28 @@ public class SimulatorShell {
                 break;
             }
         }
-        if (local_device != null){
+        if (local_device != null) {
             try {
                 local_device.shutdownDevice();
                 NotificationMessage.displayNotification("Shutdown sent to simulator", NotificationType.INFORMATION);
                 local_device.removeDevice();
-            }catch (Exception ex){}
+            } catch (Exception ex) {
+            }
         }
     }
 
     /**
      * Test if the simulator exists in this project
+     *
      * @param project_path the project path
      * @return true if s simulator exists
      */
-    public static boolean simulatorExists(String project_path){
+    public static boolean simulatorExists(String project_path) {
         boolean ret = false;
 
         String script_path = project_path + DEVICE_SCRIPT_PATH;
         File simulator_file = new File(script_path + MAC_SIMULATOR);
-        if (simulator_file.exists()){
+        if (simulator_file.exists()) {
             ret = true;
         }
 

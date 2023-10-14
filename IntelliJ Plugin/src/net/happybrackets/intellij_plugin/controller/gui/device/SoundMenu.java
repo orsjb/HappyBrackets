@@ -1,33 +1,33 @@
 package net.happybrackets.intellij_plugin.controller.gui.device;
 
 import javafx.scene.control.MenuItem;
-import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.core.OSCVocabulary;
+import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 
 /**
  * Creates popup menus for Reset, ResetSounding, ClearSound
  */
-public class SoundMenu extends DeviceMenu{
+public class SoundMenu extends DeviceMenu {
 
     /**
      * Constructor
+     *
      * @param item the localDevice we want to send message to
      */
-    public SoundMenu(LocalDeviceRepresentation item){
+    public SoundMenu(LocalDeviceRepresentation item) {
         super(item);
 
     }
 
 
-
     /**
      * Return an array of MenuItems to Display the Sound menus.
      * These can be used to populate a menu later
-
+     *
      * @return an Array Of MenuItems with actions already attached
      */
     @Override
-    public MenuItem[] getMenuItems(){
+    public MenuItem[] getMenuItems() {
 
         // Create our reset menu localDeviceRepresentation
         MenuItem reset_menu_item = new MenuItem("Reset");

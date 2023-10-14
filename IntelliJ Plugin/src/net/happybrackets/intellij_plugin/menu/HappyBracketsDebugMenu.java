@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.device.DeviceMain;
@@ -25,12 +24,13 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
     static volatile boolean forceReload = true;
 
     // create a Map of Example folder menu items so we can display the appropriate one based on project
-    static private Map<String, HappyBracketsExamplesFolderMenu> examplesFolderMenuHashtable = new Hashtable<String, HappyBracketsExamplesFolderMenu>();;
+    static private Map<String, HappyBracketsExamplesFolderMenu> examplesFolderMenuHashtable = new Hashtable<String, HappyBracketsExamplesFolderMenu>();
+    ;
 
     /**
      * Clear the stored hash to force a reload of menus
      */
-    static public void forceRelaodMenus(){
+    static public void forceRelaodMenus() {
         forceReload = true;
     }
 
@@ -40,6 +40,7 @@ public class HappyBracketsDebugMenu extends DefaultActionGroup {
      * Adds it to our happy brackets menu if required
      * If there is already a menu item there, it will remove old one
      * Also sets the Active Project
+     *
      * @param activating_project the project that is being activated at the time
      */
     public synchronized static void loadExamplesMenu(Project activating_project) {

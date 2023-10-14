@@ -1,18 +1,12 @@
 package net.happybrackets.intellij_plugin;
 
-import com.intellij.openapi.wm.IdeFrame;
-import com.intellij.openapi.wm.WindowManager;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.intellij.openapi.fileChooser.*;
-import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
+import com.intellij.openapi.wm.IdeFrame;
+import com.intellij.openapi.wm.WindowManager;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -22,54 +16,35 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.*;
-
-import javax.swing.SwingUtilities;
+import java.util.Scanner;
 
 public class ConfigurationScreen {
 
+    final static Logger logger = LoggerFactory.getLogger(ConfigurationScreen.class);
     private static final int DEFAULT_ELEMENT_SPACING = 10;
     private static final int MIN_TEXT_AREA_HEIGHT = 200;
-
     private Button[] configApplyButton = new Button[2]; // 0 = overall config, 1 = known devices.
     private Stage displayStage = new Stage();
     private String locationHash;
 
-    final static Logger logger = LoggerFactory.getLogger(ConfigurationScreen.class);
-
-    /**
-     * Get the current project based by comparing location hash
-     * @return The current ptoject, otherwise, null
-     */
-    Project getThisProject(){
-        Project ret = null;
-
-        for (IdeFrame frame : WindowManager.getInstance().getAllProjectFrames()) {
-            if (frame.getProject() != null) {
-                Project p = frame.getProject();
-                if (p.getLocationHash().equalsIgnoreCase(locationHash)){
-                    ret = p;
-                    break;
-                }
-            }
-
-        }
-        return ret;
-    }
-
-    public ConfigurationScreen(Project project)
-    {
+    public ConfigurationScreen(Project project) {
         locationHash = project.getLocationHash();
         displayStage.setTitle("HappyBrackets Settings");
         TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
@@ -88,11 +63,34 @@ public class ConfigurationScreen {
         displayStage.setScene(new Scene(main_scroll));
     }
 
-    public void show(){
+    /**
+     * Get the current project based by comparing location hash
+     *
+     * @return The current ptoject, otherwise, null
+     */
+    Project getThisProject() {
+        Project ret = null;
+
+        for (IdeFrame frame : WindowManager.getInstance().getAllProjectFrames()) {
+            if (frame.getProject() != null) {
+                Project p = frame.getProject();
+                if (p.getLocationHash().equalsIgnoreCase(locationHash)) {
+                    ret = p;
+                    break;
+                }
+            }
+
+        }
+        return ret;
+    }
+
+    public void show() {
         displayStage.show();
     }
+
     /**
      * Make Configuration/Known devices pane.
+     *
      * @param file_type 0 == configuration, 1 == known devices.
      */
     private Pane makeConfigurationPane(final int file_type) {
@@ -106,8 +104,7 @@ public class ConfigurationScreen {
         // Load initial config into text field.
         if (file_type == 0) {
             config_field.setText(control_engine.getCurrentConfigString());
-        }
-        else {
+        } else {
             StringBuilder map = new StringBuilder();
             control_engine.getDeviceConnection().getKnownDevices().forEach((hostname, id) -> map.append(id.getSaveLine() + "\n"));
 
@@ -138,9 +135,7 @@ public class ConfigurationScreen {
                         loadConfigFile(virtual_file[0].getCanonicalPath(), label, config_field, setting, load_button, event);
                         displayStage.show();
                     });
-                }
-                else
-                {
+                } else {
                     Platform.runLater(() -> {
                         displayStage.show();
                     });
@@ -168,8 +163,7 @@ public class ConfigurationScreen {
                 if (currentFile != null && currentFile.exists()) {
                     base_dir = LocalFileSystem.getInstance().findFileByPath(currentFile.getParentFile().getAbsolutePath().replace(File.separatorChar, '/'));
                     current_name = currentFile.getName();
-                }
-                else {
+                } else {
                     base_dir = LocalFileSystem.getInstance().findFileByPath(HappyBracketsToolWindow.getPluginLocation());
                     current_name = file_type == 0 ? "controller-config.json" : "known_devices";
                 }
@@ -192,8 +186,7 @@ public class ConfigurationScreen {
 
                         displayStage.show();
                     });
-                }
-                else{
+                } else {
                     Platform.runLater(() -> {
                         displayStage.show();
                     });
@@ -265,7 +258,7 @@ public class ConfigurationScreen {
         ControllerEngine.getInstance().getDeviceConnection().setKnownDevices(kd.split("\\r?\\n"));
     }
 
-    private void applyConfig(String config){
+    private void applyConfig(String config) {
         HappyBracketsToolWindow.setConfig(config, null);
     }
 

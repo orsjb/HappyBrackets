@@ -48,21 +48,33 @@ import java.util.Collections;
 /**
  * @version "$Id$"
  */
-    public class HappyBracketsProject extends WebProjectTemplate {
+public class HappyBracketsProject extends WebProjectTemplate {
 
-    private static final Logger log = Logger.getInstance(HappyBracketsProject.class);
-
-    public static final String HAPPY_BRACKETS_PROJECT_NAME =  "HappyBrackets Project";
-
-
-    public static final  String WORKSPACE_FILE = ".idea/workspace.xml";
-    public static final  String MODULES_FILE = ".idea/modules.xml";
-    static final  String DESCRIPTION_FILE = ".idea/description.html";
-
+    public static final String HAPPY_BRACKETS_PROJECT_NAME = "HappyBrackets Project";
+    public static final String WORKSPACE_FILE = ".idea/workspace.xml";
+    public static final String MODULES_FILE = ".idea/modules.xml";
+    public static final String HAPPY_BRACKETS_PROJECT_IML = HAPPY_BRACKETS_PROJECT_NAME + ".iml";
+    public static final String HAPPY_BRACKETS_PROJECT_ZIP = "/projectTemplates/HappyBracketsProject.zip";
+    public static final String HAPPY_BRACKETS_JAR_ZIP = "/projectTemplates/HB.zip";
+    public static final String HAPPY_BRACKETS_JAVDOCS_ZIP = "/projectTemplates/JavaDocs.zip";
+    public static final String HB_JAVADOCS_FOLDER = File.separatorChar + "libs" + File.separatorChar + "docs" + File.separatorChar + "hb";
+    public static final String HB_LIBS_FOLDER = File.separatorChar + "libs" + File.separatorChar;
+    public static final String HAPPY_BRACKETS_DEVICE_FOLDER = File.separatorChar + "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar;
+    public static final String DEVICE_CONFIG_PATH = "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar + "config" + File.separatorChar;
+    public static final String SIMULATOR_CONFIG_FILE = DEVICE_CONFIG_PATH + "simulator.config";
+    // This is where we need to extract the HB.jar files to in a new project
+    public static final String[] HB_JAR_LOCATION = new String[]{
+            HAPPY_BRACKETS_DEVICE_FOLDER
+    };
+    // This is where we need to extract the HB.jar files to in a new project
+    public static final String[] NO_UPDATE_FILES = new String[]{
+            SIMULATOR_CONFIG_FILE
+    };
+    static final String DESCRIPTION_FILE = ".idea/description.html";
     /**
      * Add The files from the project archive we want to skip
      */
-    public static final String [] ARCHIVE_SKIP_FILES = new String[]{
+    public static final String[] ARCHIVE_SKIP_FILES = new String[]{
             HAPPY_BRACKETS_PROJECT_NAME + ".iml",
             //MODULES_FILE,
             WORKSPACE_FILE,
@@ -76,32 +88,7 @@ import java.util.Collections;
 
 
     };
-
-    public static final String HAPPY_BRACKETS_PROJECT_IML = HAPPY_BRACKETS_PROJECT_NAME + ".iml";
-
-    public static final String HAPPY_BRACKETS_PROJECT_ZIP = "/projectTemplates/HappyBracketsProject.zip";
-    public static final String HAPPY_BRACKETS_JAR_ZIP = "/projectTemplates/HB.zip";
-    public static final String HAPPY_BRACKETS_JAVDOCS_ZIP = "/projectTemplates/JavaDocs.zip";
-
-    public static final String HB_JAVADOCS_FOLDER = File.separatorChar + "libs" + File.separatorChar +  "docs" + File.separatorChar + "hb" ;
-    public static final String HB_LIBS_FOLDER = File.separatorChar + "libs" + File.separatorChar;
-
-    public static final String HAPPY_BRACKETS_DEVICE_FOLDER = File.separatorChar + "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar;
-
-
-    public static final String DEVICE_CONFIG_PATH = "Device" + File.separatorChar + "HappyBrackets" + File.separatorChar + "config" + File.separatorChar;
-    public static final String SIMULATOR_CONFIG_FILE = DEVICE_CONFIG_PATH + "simulator.config";
-
-
-    // This is where we need to extract the HB.jar files to in a new project
-    public static final String [] HB_JAR_LOCATION = new String[]{
-            HAPPY_BRACKETS_DEVICE_FOLDER
-    };
-
-    // This is where we need to extract the HB.jar files to in a new project
-    public static final String [] NO_UPDATE_FILES = new String[]{
-            SIMULATOR_CONFIG_FILE
-    };
+    private static final Logger log = Logger.getInstance(HappyBracketsProject.class);
 
     @Override
     public Icon getIcon() {
@@ -152,14 +139,14 @@ import java.util.Collections;
         ProjectUnzip unzip = new ProjectUnzip();
 
         // do not add the files we are going to overwrite
-        for (int i= 0; i < ARCHIVE_SKIP_FILES.length; i++) {
+        for (int i = 0; i < ARCHIVE_SKIP_FILES.length; i++) {
             unzip.addSkipFile(ARCHIVE_SKIP_FILES[i]);
         }
 
         String base_path = baseDirectory.getCanonicalPath();
 
         try {
-            unzip.unzipReseourceProject( HAPPY_BRACKETS_PROJECT_ZIP, base_path);
+            unzip.unzipReseourceProject(HAPPY_BRACKETS_PROJECT_ZIP, base_path);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -181,9 +168,11 @@ import java.util.Collections;
             e.printStackTrace();
         }
 
-        String project_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_TEMPLATE).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());;
+        String project_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_TEMPLATE).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());
+        ;
 
-        String workspace_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_WORKSPACE).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());;
+        String workspace_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_WORKSPACE).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());
+        ;
 
         String modules_text = HappyBracketsTemplatesFactory.getTemplateText(HappyBracketsTemplatesFactory.HappyBracketsTemplate.HAPPY_BRACKETS_MODULES).replace(HAPPY_BRACKETS_PROJECT_NAME, module.getName());
 
@@ -192,7 +181,7 @@ import java.util.Collections;
         String modules_filename = baseDirectory.getCanonicalPath() + File.separatorChar + MODULES_FILE;
 
 
-        Path file = Paths.get(project_filename );
+        Path file = Paths.get(project_filename);
         try {
             Files.write(file, Collections.singleton(project_text), Charset.forName("UTF-8"));
 
@@ -273,9 +262,7 @@ import java.util.Collections;
                             HappyBracketsDebugMenu.forceRelaodMenus();
                             HappyBracketsDebugMenu.loadExamplesMenu(project);
 
-                        }
-
-                        catch (Exception ex){
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }

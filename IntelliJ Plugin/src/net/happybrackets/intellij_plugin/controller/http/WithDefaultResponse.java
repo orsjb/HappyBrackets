@@ -19,7 +19,7 @@ package net.happybrackets.intellij_plugin.controller.http;
 /**
  * A response object which wraps up the FileServer.readFile method and supplies a default suffix.
  * This method is designed for serving config files which fall back to a (file_name).suffix convention when (file_name) cannot be found.
- *
+ * <p>
  * Created by Samg on 19/05/2016.
  */
 public class WithDefaultResponse implements PathResponse {

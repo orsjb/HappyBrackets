@@ -17,70 +17,51 @@
 package net.happybrackets.intellij_plugin.controller.http;
 
 /**
- *  FileServer implements a simple http server daemon to allow attached PIs to request files from the controller.
- *
- *  TODO: Create an interface for adding files to our file server
- *
+ * FileServer implements a simple http server daemon to allow attached PIs to request files from the controller.
+ * <p>
+ * TODO: Create an interface for adding files to our file server
+ * <p>
  * Created by Sam on 26/04/2016.
  */
+
+import fi.iki.elonen.NanoHTTPD;
+import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
-import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
-import fi.iki.elonen.NanoHTTPD;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class FileServer extends NanoHTTPD {
 
-   final static Logger logger = LoggerFactory.getLogger(FileServer.class);
-
-    public static String readFile(String path, String encoding) {
-        Scanner scanner = null;
-        String text = null;
-        try {
-            scanner = new Scanner( new File(path), encoding );
-            text = scanner.useDelimiter("\\A").next();
-        }
-        catch (FileNotFoundException e) {
-            logger.error("Unable to access: {}", path, e);
-        }
-
-        if (scanner != null) {
-            scanner.close();
-        }
-
-        return text;
-    }
-    protected static String readFile(String path, String encoding, String defaultSuffix) {
-        String text = readFile(path, encoding);
-        if (text == null) {
-            logger.debug("Trying default: {}{}", path, defaultSuffix);
-            text = readFile(path + defaultSuffix, encoding);
-        }
-
-        return text;
-    }
-
-    private ControllerConfig config;
-    private PathMapper pathMap;
-
+    final static Logger logger = LoggerFactory.getLogger(FileServer.class);
     //server status:
     private static Response.IStatus statusOK = new Response.IStatus() {
         @Override
-        public String getDescription() { return "200 OK\n"; }
+        public String getDescription() {
+            return "200 OK\n";
+        }
+
         @Override
-        public int getRequestStatus() {  return 200; }
+        public int getRequestStatus() {
+            return 200;
+        }
     };
     private static Response.IStatus statusError = new Response.IStatus() {
         @Override
-        public String getDescription() { return "500 Error\n"; }
+        public String getDescription() {
+            return "500 Error\n";
+        }
+
         @Override
-        public int getRequestStatus() {  return 500; }
+        public int getRequestStatus() {
+            return 500;
+        }
     };
+    private ControllerConfig config;
+    private PathMapper pathMap;
 
     public FileServer(ControllerConfig config) throws IOException {
         super(config.getControllerHTTPPort());
@@ -92,6 +73,33 @@ public class FileServer extends NanoHTTPD {
 
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         logger.info("Running! Point your browser to http://localhost:{}/", config.getControllerHTTPPort());
+    }
+
+    public static String readFile(String path, String encoding) {
+        Scanner scanner = null;
+        String text = null;
+        try {
+            scanner = new Scanner(new File(path), encoding);
+            text = scanner.useDelimiter("\\A").next();
+        } catch (FileNotFoundException e) {
+            logger.error("Unable to access: {}", path, e);
+        }
+
+        if (scanner != null) {
+            scanner.close();
+        }
+
+        return text;
+    }
+
+    protected static String readFile(String path, String encoding, String defaultSuffix) {
+        String text = readFile(path, encoding);
+        if (text == null) {
+            logger.debug("Trying default: {}{}", path, defaultSuffix);
+            text = readFile(path + defaultSuffix, encoding);
+        }
+
+        return text;
     }
 
     public static void main(String[] args) {
@@ -118,8 +126,7 @@ public class FileServer extends NanoHTTPD {
 
         if (response != null) {
             return newFixedLengthResponse(statusOK, "text/json", response);
-        }
-        else {
+        } else {
             logger.debug("Serving 500 error");
             return newFixedLengthResponse(statusError, "text/plain; charset=UTF-8", "Unable to resolve path: " + session.getUri() + "\n");
         }

@@ -6,12 +6,18 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.IconLoader;
+import net.happybrackets.intellij_plugin.SimulatorShell;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 import net.happybrackets.intellij_plugin.controller.network.ControllerAdvertiser;
 import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
-import net.happybrackets.intellij_plugin.SimulatorShell;
 
 public class RunSimulatorMenu extends AnAction {
+
+    // Add these global variables so we can run this while debugging the plugin
+    static String lastSdkPath = "";
+    static String lastProjectPath = "";
+    // Flag to store if they had multicast on when they ran simulator
+    boolean multicastOnly = false;
 
     public static String getLastSdkPath() {
         return lastSdkPath;
@@ -21,14 +27,6 @@ public class RunSimulatorMenu extends AnAction {
         return lastProjectPath;
     }
 
-    // Add these global variables so we can run this while debugging the plugin
-    static String lastSdkPath = "";
-    static String lastProjectPath = "";
-
-
-    // Flag to store if they had multicast on when they ran simulator
-    boolean multicastOnly = false;
-
     @Override
     public void actionPerformed(AnActionEvent e) {
         try {
@@ -37,7 +35,7 @@ public class RunSimulatorMenu extends AnAction {
             ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
             Sdk sdk = rootManager.getProjectSdk();
 
-            String sdk_path =  sdk.getHomePath() + "/bin/";
+            String sdk_path = sdk.getHomePath() + "/bin/";
 
             DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
             ControllerEngine.getInstance().startDeviceCommunication();
@@ -48,15 +46,14 @@ public class RunSimulatorMenu extends AnAction {
 
             ControllerAdvertiser advertiser = ControllerEngine.getInstance().getControllerAdvertiser();
 
-            if (SimulatorShell.isRunning()){
+            if (SimulatorShell.isRunning()) {
                 SimulatorShell.killSimulator();
 
                 // we only want
                 advertiser.setSendLocalHost(false);
-            }
-            else {
+            } else {
                 //displayNotification("Try run Simulator at " + project_path, NotificationType.INFORMATION);
-                if (SimulatorShell.runSimulator(sdk_path, project_path)){
+                if (SimulatorShell.runSimulator(sdk_path, project_path)) {
                     // we need to advertise on localhost
                     advertiser.setSendLocalHost(true);
                 }
@@ -82,7 +79,7 @@ public class RunSimulatorMenu extends AnAction {
             ProjectRootManager rootManager = ProjectRootManager.getInstance(current_project);
             Sdk sdk = rootManager.getProjectSdk();
 
-            lastSdkPath =  sdk.getHomePath() + "/bin/";
+            lastSdkPath = sdk.getHomePath() + "/bin/";
             lastProjectPath = project_path;
 
             boolean simulator_exists = SimulatorShell.simulatorExists(project_path);
@@ -91,8 +88,7 @@ public class RunSimulatorMenu extends AnAction {
                 menu_text = "Stop Simulator";
                 menu_icon = "/icons/stop.png";
                 event.getPresentation().setEnabled(true);
-            }
-            else{
+            } else {
                 event.getPresentation().setEnabled(simulator_exists);
             }
 

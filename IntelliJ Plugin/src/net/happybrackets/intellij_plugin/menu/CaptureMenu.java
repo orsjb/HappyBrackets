@@ -3,13 +3,8 @@ package net.happybrackets.intellij_plugin.menu;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.project.Project;
-import javafx.application.Platform;
 import net.happybrackets.core.Device;
-import net.happybrackets.intellij_plugin.ConfigurationScreen;
-import net.happybrackets.intellij_plugin.templates.project.ProjectUnzip;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,6 +20,32 @@ import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotif
 
 public class CaptureMenu extends AnAction {
 
+    static void pack(final Path folder, final Path zipFilePath) throws IOException {
+        try (
+                FileOutputStream fos = new FileOutputStream(zipFilePath.toFile());
+                ZipOutputStream zos = new ZipOutputStream(fos)
+        ) {
+            Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    String name = folder.relativize(file).toString().replace("\\", "/");
+
+                    zos.putNextEntry(new ZipEntry(name));
+                    Files.copy(file, zos);
+                    zos.closeEntry();
+                    return FileVisitResult.CONTINUE;
+                }
+
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    String name = folder.relativize(dir).toString().replace("\\", "/") + "/";
+
+                    zos.putNextEntry(new ZipEntry(name));
+                    zos.closeEntry();
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
+    }
+
     @Override
     public void update(AnActionEvent e) {
         try {
@@ -32,14 +53,16 @@ public class CaptureMenu extends AnAction {
 
             // Uncomment out when debugging on My Mac
             //zipProject(project);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
     }
 
-    void zipProject(Project project){
-        String source_path  = project.getBaseDir().getCanonicalPath();
+    void zipProject(Project project) {
+        String source_path = project.getBaseDir().getCanonicalPath();
         String project_name = project.getName();
 
-        Path target_file = Paths.get((Paths.get(source_path).getParent()).toString() + "/" + createFilename(project_name)); ;
+        Path target_file = Paths.get((Paths.get(source_path).getParent()).toString() + "/" + createFilename(project_name));
+        ;
 
         displayNotification("Created " + target_file.toString(), NotificationType.INFORMATION);
 
@@ -49,14 +72,16 @@ public class CaptureMenu extends AnAction {
             e1.printStackTrace();
         }
     }
+
     /**
      * Create a filename based on Scheduler time and device name as CSV
+     *
      * @return the name of a file
      */
-    String createFilename(String project_name){
+    String createFilename(String project_name) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-        String device_name =  Device.getDeviceName() + "-" + project_name;
-        return device_name + "-" + dateFormat.format(new Date())  + ".zip";
+        String device_name = Device.getDeviceName() + "-" + project_name;
+        return device_name + "-" + dateFormat.format(new Date()) + ".zip";
     }
 
     @Override
@@ -69,32 +94,5 @@ public class CaptureMenu extends AnAction {
         }
 
 
-    }
-
-
-    static void pack(final Path folder, final Path zipFilePath) throws IOException {
-        try (
-                FileOutputStream fos = new FileOutputStream(zipFilePath.toFile());
-                ZipOutputStream zos = new ZipOutputStream(fos)
-        ) {
-            Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    String name = folder.relativize(file).toString().replace("\\","/");
-
-                    zos.putNextEntry(new ZipEntry(name));
-                    Files.copy(file, zos);
-                    zos.closeEntry();
-                    return FileVisitResult.CONTINUE;
-                }
-
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    String name = folder.relativize(dir).toString().replace("\\","/") + "/";
-
-                    zos.putNextEntry(new ZipEntry(name));
-                    zos.closeEntry();
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        }
     }
 }

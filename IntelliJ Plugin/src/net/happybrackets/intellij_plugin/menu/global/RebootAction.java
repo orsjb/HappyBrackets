@@ -9,8 +9,7 @@ import javax.swing.*;
 /**
  * Menu action to reboot all devices
  */
-public class RebootAction extends AnAction
-{
+public class RebootAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
         try {
@@ -18,10 +17,11 @@ public class RebootAction extends AnAction
             int dialog_result = JOptionPane.showConfirmDialog(null,
                     "Are you sure you want to reboot all the devices?", "Rebooting All Devices", dialog_button);
 
-            if (dialog_result == JOptionPane.YES_OPTION){
+            if (dialog_result == JOptionPane.YES_OPTION) {
                 ControllerEngine.getInstance().getDeviceConnection().deviceReboot();
             }
-        } catch (Exception ex){}
+        } catch (Exception ex) {
+        }
 
     }
 }

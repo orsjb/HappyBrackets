@@ -7,7 +7,6 @@ import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.project.Project;
 import javafx.application.Platform;
 import net.happybrackets.intellij_plugin.ConfigurationScreen;
-import net.happybrackets.intellij_plugin.ConfigurationScreenSwing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

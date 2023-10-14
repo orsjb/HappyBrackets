@@ -18,9 +18,12 @@ import java.awt.event.ActionEvent;
 ///
 /// Based on the example at https://plugins.jetbrains.com/docs/intellij/dialog-wrapper.html#example
 public class ConfigurationScreenSwing extends DialogWrapper implements ConfigurationScreenModel.PopupPresenter {
-    ConfigurationScreenModel model;
-
     final static Logger logger = LoggerFactory.getLogger(ConfigurationScreenSwing.class);
+    /// A notification group used to display error messages.
+    private static final NotificationGroup NOTIFICATION_GROUP =
+            new NotificationGroup("HappyBrackets Settings Notifications",
+                    NotificationDisplayType.BALLOON, true);
+    ConfigurationScreenModel model;
 
     public ConfigurationScreenSwing(ConfigurationScreenModel model) {
         super(true); // use current window as parent
@@ -38,7 +41,7 @@ public class ConfigurationScreenSwing extends DialogWrapper implements Configura
 
         dialogPanel.add(createSubPanel("Configuration", ConfigurationScreenModel.ConfigurationEditorType.config));
 
-        dialogPanel.add(Box.createRigidArea(new Dimension(0,8)));
+        dialogPanel.add(Box.createRigidArea(new Dimension(0, 8)));
 
         dialogPanel.add(createSubPanel("Known devices", ConfigurationScreenModel.ConfigurationEditorType.devices));
 
@@ -50,7 +53,7 @@ public class ConfigurationScreenSwing extends DialogWrapper implements Configura
         BorderLayout mainLayout = new BorderLayout();
         mainLayout.setVgap(5);
 
-        JPanel panel = new JPanel (mainLayout);
+        JPanel panel = new JPanel(mainLayout);
 
         // Label at the top
         JLabel label = new JLabel(name);
@@ -64,24 +67,24 @@ public class ConfigurationScreenSwing extends DialogWrapper implements Configura
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // Action buttons at the bottom of the section.
-        JPanel actionButtonsPanel = new JPanel ();
+        JPanel actionButtonsPanel = new JPanel();
         actionButtonsPanel.setLayout(new BoxLayout(actionButtonsPanel, BoxLayout.LINE_AXIS));
 
         ConfigurationScreenSwing screen = this;
 
         JButton loadButton = new JButton("Load");
         loadButton.addActionListener((ActionEvent e) ->
-            textArea.setText(model.load(configurationEditorType, screen))
+                textArea.setText(model.load(configurationEditorType, screen))
         );
         actionButtonsPanel.add(loadButton);
 
-        actionButtonsPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        actionButtonsPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
         JButton saveButton = new JButton("Save");
         saveButton.addActionListener((ActionEvent e) -> model.save(textArea.getText(), screen, configurationEditorType));
 
         actionButtonsPanel.add(saveButton);
-        actionButtonsPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        actionButtonsPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         JButton applyButton = new JButton("Apply");
         applyButton.setEnabled(false);
         applyButton.addActionListener((ActionEvent e) -> {
@@ -120,16 +123,10 @@ public class ConfigurationScreenSwing extends DialogWrapper implements Configura
         Notifications.Bus.notify(notification);
     }
 
-    /// A notification group used to display error messages.
-    private static final NotificationGroup NOTIFICATION_GROUP =
-            new NotificationGroup("HappyBrackets Settings Notifications",
-                    NotificationDisplayType.BALLOON, true);
-
-
     @NotNull
     @Override
     protected Action[] createActions() {
         // Override default behaviour which places 'cancel' and 'ok' buttons at the bottom of the dialog.
-        return new Action[] { };
+        return new Action[]{};
     }
 }

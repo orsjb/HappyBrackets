@@ -14,9 +14,9 @@ public class FavouritesMenu extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         try {
 
-        DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
-        boolean showing_favourites = connection.isShowOnlyFavourites();
-        connection.setShowOnlyFavourites(!showing_favourites);
+            DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+            boolean showing_favourites = connection.isShowOnlyFavourites();
+            connection.setShowOnlyFavourites(!showing_favourites);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -24,6 +24,18 @@ public class ControllerConfig extends LoadableConfig {
     private String configDir;
     private Boolean useHostname;
 
+    public static ControllerConfig getInstance() {
+        return (ControllerConfig) (LoadableConfig.getInstance());
+    }
+
+    public static void setInstance(ControllerConfig instance) {
+        singletonInstance = instance;
+    }
+
+    public static ControllerConfig load(String configFile) {
+        return (ControllerConfig) (LoadableConfig.load(configFile, new ControllerConfig()));
+    }
+
     public String getCompositionsPath() {
         if (compositionsPath != null) {
             return compositionsPath;
@@ -31,28 +43,16 @@ public class ControllerConfig extends LoadableConfig {
         return getWorkingDir();
     }
 
-    public void setConfigDir(String configDir) {
-        this.configDir = configDir;
-    }
-
     public String getConfigDir() {
         return configDir;
     }
 
-    public static ControllerConfig getInstance() {
-        return (ControllerConfig)(LoadableConfig.getInstance());
-    }
-
-    public static ControllerConfig load(String configFile) {
-        return (ControllerConfig)(LoadableConfig.load(configFile, new ControllerConfig()));
-    }
-
-    public static void setInstance(ControllerConfig instance) {
-        singletonInstance = instance;
+    public void setConfigDir(String configDir) {
+        this.configDir = configDir;
     }
 
     public boolean useHostname() {
-        if(useHostname == null) {
+        if (useHostname == null) {
             return true;
         }
         return useHostname;

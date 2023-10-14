@@ -1,7 +1,7 @@
 package net.happybrackets.intellij_plugin.menu.context;
 
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
@@ -36,7 +36,7 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
                     SendDataType sendDataType = getSendDataType(vfile, e);
                     String fileName;
 
-                    switch (sendDataType){
+                    switch (sendDataType) {
                         case SEND_CLASS:
                             fileName = vfile.getNameWithoutExtension();
                             e.getPresentation().setText("Send " + fileName + " to " + device_name);
@@ -65,20 +65,19 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
 
                 e.getPresentation().setEnabled(enable);
             }
-        }
-        catch (Exception ex){
-            if (e != null){
+        } catch (Exception ex) {
+            if (e != null) {
                 try {
                     e.getPresentation().setEnabled(false);
+                } catch (Exception ex2) {
                 }
-                catch (Exception ex2){}
             }
         }
 
     }
 
     @Override
-        public void actionPerformed(AnActionEvent e) {
+    public void actionPerformed(AnActionEvent e) {
 
         VirtualFile vfile = selectedFile(e);
 
@@ -89,7 +88,7 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
             SendDataType sendDataType = getSendDataType(vfile, e);
 
 
-            switch (sendDataType){
+            switch (sendDataType) {
                 case SEND_CLASS:
                     VirtualFile classFile = getClassFile(e);
                     String full_class_name = getFullClassName(classFile.getCanonicalPath());
@@ -107,8 +106,8 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
                 case SEND_FOLDER:
                     ArrayList<VirtualFile> files = getFilesInFolder(vfile);
 
-                    for (VirtualFile child:
-                         files) {
+                    for (VirtualFile child :
+                            files) {
                         if (!selected_device.sendFileToDevice(child.getCanonicalPath(), getTargetFolder(e.getProject(), child))) {
                             displayNotification("Unable to send file", NotificationType.ERROR);
                         }
@@ -128,11 +127,10 @@ public class SendCompositionToSelectedDevice extends SendCompositionAction {
             }
 
 
-        } else{
+        } else {
             displayNotification("Unable to find file", NotificationType.ERROR);
         }
     }
-
 
 
 }
