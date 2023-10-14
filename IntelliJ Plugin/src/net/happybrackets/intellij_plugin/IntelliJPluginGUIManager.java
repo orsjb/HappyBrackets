@@ -85,7 +85,6 @@ public class IntelliJPluginGUIManager {
     private static final int SELECTED = -2; // Send to selected device(s).
     private final int defaultElementSpacing = 10;
     private String projectDir; // The base directory of project
-    private ControllerConfig config;
     private DeviceConnection deviceConnection;
     private ListView<LocalDeviceRepresentation> deviceListView;
     private List<String> commandHistory;
@@ -100,7 +99,6 @@ public class IntelliJPluginGUIManager {
     }
 
     private void init() {
-        config = HappyBracketsToolWindow.config;
         deviceConnection = ControllerEngine.getInstance().getDeviceConnection();
         deviceErrorListeners = new HashMap<>();
         // Add ErrorListener's to the devices so we can report to the user when an error occurs communicating

@@ -35,6 +35,7 @@ import net.happybrackets.core.logging.Logging;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 import net.happybrackets.intellij_plugin.controller.config.ControllerSettings;
 import net.happybrackets.intellij_plugin.controller.network.ControllerAdvertiser;
+import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,8 +68,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     final static Logger logger = LoggerFactory.getLogger(HappyBracketsToolWindow.class);
     static final Object advertiseStopLock = new Object();
-    //static String currentConfigString;
-    //static ControllerSettings settings;
     static protected IntelliJControllerConfig config;
     static boolean staticSetup = false;
     static Synchronizer synchronizer;                               //runs independently, no interaction needed
@@ -130,7 +129,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 }
             } else {
                 logger.debug("Loading config from plugin jar.");
-                //String jarPath = PathUtil.getJarPathForClass(this.getClass());
                 InputStream input = calling_class.getResourceAsStream("/config/controller-config.json");
 
                 String config_JSON = new Scanner(input).useDelimiter("\\Z").next();
@@ -138,15 +136,21 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 setConfig(config_JSON, getDefaultConfigFolder());
             }
 
-            //test code: you can create a test pi if you don't have a real pi...
-            //deviceConnection.createTestDevice();
-            //deviceConnection.createTestDevice();
+            // test code: you can create a test pi if you don't have a real pi...
+            createTestDevices();
+
             //using synchronizer is optional, TODO: switch to control this, leave it on for now
             synchronizer = Synchronizer.getInstance();
             staticSetup = true;
         } else {
             logger.info("HappyBrackets static setup already completed previously.");
         }
+    }
+
+    static void createTestDevices() {
+        DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
+        connection.createTestDevice();
+        connection.createTestDevice();
     }
 
     /**
@@ -281,9 +285,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
         String version_text = BuildVersion.getVersionBuildText();
         tool_window.setTitle(" - " + version_text);
-
-        // Do not start until we are at the end, otherwise, we are going to be getting messages before we are really ready for them
-        //ControllerEngine.getInstance().startDeviceCommunication();
 
         // Load our known devces based on project
         loadProjectKnownDevices(project_dir);

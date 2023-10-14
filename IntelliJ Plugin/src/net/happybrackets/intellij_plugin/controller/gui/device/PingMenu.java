@@ -23,7 +23,6 @@ import static net.happybrackets.intellij_plugin.templates.project.HappyBracketsP
  * Creates popup menus for Network Menus
  */
 public class PingMenu extends DeviceMenu {
-
     // define the username to use for SSH Command
     final String DEF_USERNAME = "pi";
     private String username = DEF_USERNAME;
@@ -68,7 +67,7 @@ public class PingMenu extends DeviceMenu {
         });
 
         // Get the SSH Command
-        MenuItem copy_ssh_command_menu = new MenuItem("Copy SSH " + localDeviceRepresentation.getAddress() + " to clipboard");
+        MenuItem copy_ssh_command_menu = new MenuItem("Copy SSH" + localDeviceRepresentation.getAddress() + " to clipboard");
         copy_ssh_command_menu.setOnAction(event -> {
             final Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
@@ -230,7 +229,6 @@ public class PingMenu extends DeviceMenu {
             } catch (Exception ex) {
             }
         }).start());
-
 
         return new MenuItem[]{copy_ip_address_menu, copy_ssh_command_menu,
                 copy_host_command_menu, new SeparatorMenuItem(),

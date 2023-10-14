@@ -40,13 +40,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 
-//import javafx.collections.FXCollections;
-//import javafx.collections.ObservableList;
-
-//import javafx.application.Platform;
-//import javafx.collections.FXCollections;
-//import javafx.collections.ObservableList;
-
 public class DeviceConnection {
 
     public static final boolean verbose = false;
@@ -61,7 +54,6 @@ public class DeviceConnection {
     Set<String> favouriteDevices = new HashSet<>();
     int replyPort = 0; // this is the port we want the device to return calls to
     int virtualDeviceCount = 1;
-    //private OSCServer oscServer;
     private OSCUDPReceiver oscServer;
     private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
     private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
@@ -74,12 +66,8 @@ public class DeviceConnection {
     private boolean showOnlyFavourites = false;
     private List<DeviceAliveListener> deviceAliveListenerList = new ArrayList<>();
 
-
     public DeviceConnection(ControllerConfig config) {
         this.config = config;
-        //broadcastManager = broadcast;
-        //replyPort = broadcast.getPort();
-
 
         //read the known devices from file
         try {
@@ -93,18 +81,6 @@ public class DeviceConnection {
         } catch (FileNotFoundException e1) {
             logger.error("Unable to read '{}'", config.getKnownDevicesFile());
         }
-
-		/*
-		broadcast.addPersistentBroadcastListener(new OSCListener() {
-			@Override
-			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
-				incomingMessage(msg, sender);
-			}
-		});
-		*/
-
-        // create the OSC Server
-
     }
 
     /**
@@ -148,8 +124,6 @@ public class DeviceConnection {
             deviceAliveListenerList.add(listener);
         }
     }
-
-    //BroadcastManager broadcastManager;
 
     /**
      * Get the LocalDevice  that is selected in this project
@@ -455,7 +429,7 @@ public class DeviceConnection {
                         }
                     }
 
-                    this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, null, config, replyPort);
+                    this_device = new LocalDeviceRepresentation(device_name, device_hostname, device_address, device_id, config, replyPort, false);
                     this_device.setFriendlyName(friendly_name);
 
                     if (favouriteDevices.contains(device_name)) {
@@ -519,9 +493,6 @@ public class DeviceConnection {
 
                     // Force device to send updates here
                     this_device.setAliveInterval(config.getAliveInterval());
-
-                    // we can't do this here as the loading and unloading of the DeviceRepresentation cell
-                    //sendControlRequestToDevice(this_device);
                 }
 
                 //keep up to date
@@ -554,7 +525,7 @@ public class DeviceConnection {
                         this_device.lastTimeSeen = System.currentTimeMillis();    //Ultimately this should be "corrected time"
                     }
                 }
-            } //if (!showOnlyFavourites || favouriteDevices.contains(device_name))
+            }
         } catch (Exception e) {
             logger.error("Error reading incoming OSC message", e);
             return;
@@ -732,16 +703,15 @@ public class DeviceConnection {
 
         synchronized (devicesByHostnameLock) {
             for (String deviceName : devicesByHostname.keySet()) {
-                if (!deviceName.startsWith("Virtual Test Device")) {
                     LocalDeviceRepresentation this_device = devicesByHostname.get(deviceName);
-                    if (!this_device.isIgnoringDevice()) {
-                        long time_since_seen = timeNow - this_device.lastTimeSeen;
-                        if (time_since_seen > config.getAliveInterval() * 5) {    //config this number?
-                            this_device.setIsConnected(false);
+                    if (!this_device.isFakeDevice) {
+                        if (!this_device.isIgnoringDevice()) {
+                            long time_since_seen = timeNow - this_device.lastTimeSeen;
+                            if (time_since_seen > config.getAliveInterval() * 5) {    //config this number?
+                                this_device.setIsConnected(false);
+                            }
                         }
-
                     }
-                }
             }
         }
 
@@ -760,7 +730,6 @@ public class DeviceConnection {
     public void deviceShutdown() {
         sendToAllDevices(OSCVocabulary.Device.SHUTDOWN);
     }
-
 
     //standard messages to Device
 
@@ -828,11 +797,11 @@ public class DeviceConnection {
         String name = "Virtual Test Device #" + virtualDeviceCount++;
         String hostname = "myHostname!";
         String address = "127.0.0.1";
-        LocalDeviceRepresentation virtual_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, null, this.config, replyPort);
-        theDevices.add(virtual_test_device);
+        LocalDeviceRepresentation fake_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, this.config, replyPort, true);
+        theDevices.add(fake_test_device);
 
         synchronized (devicesByHostnameLock) {
-            devicesByHostname.put(name, virtual_test_device);
+            devicesByHostname.put(name, fake_test_device);
         }
     }
 
@@ -840,10 +809,7 @@ public class DeviceConnection {
      * Perform shutdown processes. Stops and disposes of the OSC server.
      */
     public void dispose() {
-
-        //oscServer.dispose();
     }
-
 
     /**
      * Define  an interface for detecting sending address of device alive messages

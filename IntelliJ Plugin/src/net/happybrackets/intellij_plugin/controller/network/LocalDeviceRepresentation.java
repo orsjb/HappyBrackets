@@ -42,6 +42,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
     private static List<DeviceConnectedUpdateListener> globalConnectedUpdateListenerList = new ArrayList<>();
     public final String deviceName;
     public final String hostName;
+    public final boolean isFakeDevice;
     public final boolean[] groups;
     final Object dynamicControlLock = new Object();
     private final Object clientLock = new Object(); // define a lock for tcpClient
@@ -110,8 +111,8 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
     private List<LogListener> logListenerList = new ArrayList<>();
 
     // Overload constructors. Construct with a SocketAddress
-    public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress, int reply_port) {
-        this(deviceName, hostname, addr, id, server, config, reply_port);
+    public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, ControllerConfig config, InetSocketAddress socketAddress, int reply_port) {
+        this(deviceName, hostname, addr, id, config, reply_port, false);
         this.socketAddress = socketAddress;
 
         try {
@@ -119,10 +120,9 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
             advertiseTxSocket.setBroadcast(true);
         } catch (Exception ex) {
         }
-
     }
 
-    public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, int reply_port) {
+    public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, ControllerConfig config, int reply_port, boolean isFakeDevice) {
         // We will set timeDisplayed so it will not make a request for a control until it has been set by the display Cell
         replyPort = reply_port;
         replyPortObject = new Object[]{replyPort};
@@ -131,10 +131,9 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
         this.address = addr;
         this.socketAddress = null;
         this.deviceId = id;
-        //this.server = server;
         this.controllerConfig = config;
+        this.isFakeDevice = isFakeDevice;
         groups = new boolean[4];
-
 
         this.isConnected = true;
 
@@ -1157,7 +1156,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
     }
 
     public synchronized void send(String msg_name, Object... args) {
-        if (hostName.startsWith("Virtual Test Device")) {
+        if (isFakeDevice) {
             return;
         }
         OSCMessage msg = new OSCMessage(msg_name, args);

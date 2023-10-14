@@ -23,7 +23,6 @@ public class ControllerEngine {
     ControllerSettings settings;
     String currentConfigString;
 
-    //protected BroadcastManager broadcastManager;
     private boolean controllerStarted = false;
     private FileServer httpServer;
 
@@ -64,12 +63,7 @@ public class ControllerEngine {
             logger.debug("Stopping ControllerAdvertiser");
             controllerAdvertiser.stop();
         }
-/*
-        if (broadcastManager != null) {
-            logger.debug("Disposing of BroadcastManager");
-            broadcastManager.dispose();
-        }
-*/
+
         if (deviceConnection != null) {
             logger.debug("Disposing of DeviceConnection");
             deviceConnection.dispose();
@@ -79,13 +73,9 @@ public class ControllerEngine {
 
 
         logger.info("Starting ControllerAdvertiser");
-        //broadcastManager = new BroadcastManager(controllerConfig.getMulticastAddr(), listen_port);
 
         //set up device connection
         deviceConnection = new DeviceConnection(controllerConfig);
-
-        // Do Not start until we are at the end of initialisation
-        //controllerAdvertiser.start();
 
         //setup http httpServer
         try {
@@ -127,13 +117,6 @@ public class ControllerEngine {
         return settings;
     }
 
-/*
-    public BroadcastManager getBroadcastManager() {
-        return broadcastManager;
-    }
-
-*/
-
     /**
      * Make or controller start it network Communication
      */
@@ -154,7 +137,6 @@ public class ControllerEngine {
             int listen_port = deviceConnection.getReplyPort();
 
             controllerAdvertiser = new ControllerAdvertiser(controllerConfig.getMulticastAddr(), controllerConfig.getBroadcastPort(), listen_port);
-
         }
 
         if (controllerAdvertiser != null && !controllerStarted) {

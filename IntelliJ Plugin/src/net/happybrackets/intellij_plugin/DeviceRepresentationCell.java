@@ -75,7 +75,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
     Image connectedFavouriteImage = new Image(getClass().getResourceAsStream(GREEN_STAR_NAME));
     String projectDir;
     Text invalidTextWarning = null;
-    private String username = DEF_USERNAME;
     // we need to store our Item and listeners here so we can remove them
     // anything you add here will need to get reset if item is updated
     private LocalDeviceRepresentation localDevice = null;
@@ -89,15 +88,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
     public DeviceRepresentationCell(String project_dir) {
         projectDir = project_dir;
-    }
-
-    //in case the user is not using pi as the default username for ssh
-    public void setUsername(String val) {
-        this.username = val;
-    }
-
-    String buildSSHCommand(String device_name) {
-        return "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no " + username + "@" + device_name;
     }
 
     /**
@@ -469,15 +459,12 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         });
 
         // Now add slider
-
         Slider s = new Slider(0, 2, 1);
         s.setOrientation(Orientation.HORIZONTAL);
         s.setMaxWidth(100);
 
-
         s.valueProperty().addListener((obs, oldval, newval) ->
         {
-
             if (Math.abs(oldval.floatValue() - newval.floatValue()) > Math.abs(Float.MIN_VALUE)) {
                 item.send(OSCVocabulary.Device.GAIN, newval.floatValue(), 50f);
             }
@@ -494,14 +481,11 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 
                 } catch (Exception ex) {
                 }
-                ;
-
             }
         }));
 
         main.add(s, next_column, current_row);
         next_column++;
-
 
         // add a button to display menu items
         Button menu_button = new Button("...");
@@ -546,7 +530,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
         main.add(menu_button, next_column, current_row);
         next_column++;
 
-
         HBox controls = new HBox(5);
         controls.setAlignment(Pos.CENTER_LEFT);
         main.add(controls, 0, 1, 2, 1);
@@ -569,7 +552,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
                 main.add(invalidTextWarning, 0, 2, num_columns, 1);
             }
         }
-
 
         item.addStatusUpdateListener(updateListener = state -> Platform.runLater(new Runnable() {
             public void run() {
