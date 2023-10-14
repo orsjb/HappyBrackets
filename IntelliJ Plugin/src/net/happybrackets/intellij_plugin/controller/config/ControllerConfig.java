@@ -28,7 +28,6 @@ public class ControllerConfig extends LoadableConfig {
         if (compositionsPath != null) {
             return compositionsPath;
         }
-//        System.err.println("No composition path set in configuration.");
         return getWorkingDir();
     }
 

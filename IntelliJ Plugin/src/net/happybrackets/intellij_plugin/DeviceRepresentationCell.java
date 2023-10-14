@@ -16,7 +16,6 @@
 
 package net.happybrackets.intellij_plugin;
 
-//import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.intellij.ide.DataManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -52,7 +51,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.happybrackets.intellij_plugin.NotificationMessage.displayNotification;
-
 
 public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation> {
 
@@ -96,28 +94,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		projectDir = project_dir;
 	}
 
-	/**
-	 * Display a message dialog
-	 * @param text the text to display
-	 */
-	void olddisplayDialog(String text)
-	{
-
-		logger.warn(text);
-		/*
-		new Thread(() -> {
-			try {
-
-				JOptionPane.showMessageDialog(null,
-						text);
-
-
-			} catch (Exception ex) {
-			}
-		}).start();
-		*/
-	}
-
 	//in case the user is not using pi as the default username for ssh
 	public void setUsername(String val)
 	{
@@ -129,7 +105,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
     }
 
     Text invalidTextWarning = null;
-
 
 	/**
 	 * Check that none of the modifiers are down so we can prevent mouse
@@ -171,9 +146,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			localDevice.removeFriendlyNameUpdateListener(friendlyNameListener);
 			localDevice.removeFavouriteListener(favouriteChangedListener);
 			localDevice.removeGainCHangedListener(gainChangedListener);
-			localDevice.resetDeviceHasDisplayed();
-
-
 		}
 
 		resetCellParameters();
@@ -185,7 +157,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		//gui needs to be attached to "item", can't rely on DeviceRepresentationCell to bind to item
 		if (item != null) {
 			addCellRow(item);
-			item.setDeviceHasDisplayed();
 		}
 
 		this.prefWidthProperty().bind(this.getListView().widthProperty().subtract(4));
@@ -302,11 +273,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		main.getColumnConstraints().add(new ColumnConstraints(ICON_FIT_SIZE * 2));
 		main.getColumnConstraints().add(new ColumnConstraints(100));
 
-		//name of the device
-		//HBox txthbox = new HBox();
-		//txthbox.setAlignment(Pos.CENTER_LEFT);
-		//main.add(txthbox, next_column, current_row);
-
 		//if item not currently active, change icon to green
 		item.addConnectedUpdateListener(connectedUpdateListener = connected -> Platform.runLater(new Runnable() {
             public void run() {
@@ -403,15 +369,11 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			}
 		}));
 
-
 		item.addConfigUpdateListener(configListener = config -> Platform.runLater(new Runnable() {
 			public void run() {
 				displayNotification(config, NotificationType.INFORMATION);
 			}
 		}));
-
-
-
 
 		// Display a reset Text
 		Text reset_text = new Text("Reset");
@@ -433,7 +395,6 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 			contextMenu.getItems().addAll(menus.getMenuItems());
 			contextMenu.show(main, event.getScreenX(), event.getScreenY());
 		});
-
 
 		// Add our beep
 		Text ping_text = new Text("Ping");
@@ -596,29 +557,7 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
 		controls.setAlignment(Pos.CENTER_LEFT);
 		main.add(controls, 0, 1, 2, 1);
 
-
-
-		/*
-		//group allocations
-		HBox groupsHbox = new HBox();
-		groupsHbox.setAlignment(Pos.CENTER);
-		controls.getChildren().add(groupsHbox);
-		for (int i = 0; i < 4; i++) {
-			final int index = i;
-			CheckBox c = new CheckBox();
-			c.selectedProperty().addListener(new ChangeListener<Boolean>() {
-				public void changed(ObservableValue<? extends Boolean> ov,
-									Boolean oldval, Boolean newval) {
-					item.groups[index] = newval;
-				}
-			});
-			groupsHbox.getChildren().add(c);
-		}
-		*/
-
-
 		// now start on third line if required
-
 		final int num_columns = next_column;
 
 		current_row++;
@@ -655,10 +594,8 @@ public class DeviceRepresentationCell extends ListCell<LocalDeviceRepresentation
             }
         }));
 
-
 		setGraphic(main);
 		item.sendVersionRequest();
-
 	}
 
 	/**

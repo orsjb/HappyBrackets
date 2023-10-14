@@ -22,7 +22,6 @@ import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresent
 
 import java.util.*;
 
-
 /**
  * The stage looks like this
  *
@@ -201,12 +200,6 @@ public class DynamicControlScreen {
 
     private List<DynamicControlScreenLoaded> dynamicControlScreenLoadedList = new ArrayList<>();
 
-    private LocalDeviceRepresentation.LogListener deviceLogListener = null;
-
-    public boolean isAlwaysOnTop() {
-        return alwaysOnTop;
-    }
-
     public void setAlwaysOnTop(boolean always_on_top) {
         try {
             if (dynamicControlStage != null) {
@@ -219,35 +212,21 @@ public class DynamicControlScreen {
 
     private boolean alwaysOnTop = false;
 
-    public void addDynamicControlScreenLoadedListener(DynamicControlScreenLoaded listener){
-        dynamicControlScreenLoadedList.add(listener);
-    }
     /**
      * Create a screen to display controls for a LocalDevice
      * @param local_device the local device we are displaying controls for
      */
-    public DynamicControlScreen(LocalDeviceRepresentation local_device){
+    public DynamicControlScreen(LocalDeviceRepresentation local_device) {
         localDevice = local_device;
         screenTitle = localDevice.getFriendlyName();
         setGridColumnAttributes();
     }
 
-    private void setGridColumnAttributes()
-    {
+    private void setGridColumnAttributes() {
         column1.setHgrow(Priority.ALWAYS);
         column2.setHgrow(Priority.ALWAYS);
 
         dynamicControlGridPane.getColumnConstraints().addAll(column1, column2);
-    }
-    /**
-     * Create a Dynamic ControlScreen without a LocalDeviceRepresentation
-     * This means that it will run independantly
-     * @param title The title to display on the screen
-     */
-    public DynamicControlScreen (String title){
-        localDevice = null;
-        screenTitle = title;
-        setGridColumnAttributes();
     }
 
     /**
@@ -264,6 +243,7 @@ public class DynamicControlScreen {
                 }
         );
     }
+
     /**
      * Erase the dynamic controls on this screen
      */
@@ -467,7 +447,6 @@ public class DynamicControlScreen {
         });
     }
 
-
     /**
      * Add a Trigger control to control Group
      * @param control
@@ -497,7 +476,6 @@ public class DynamicControlScreen {
 
         return control_group;
     }
-
 
     /**
      * Add a addBooleanControl control to control Group
@@ -602,7 +580,6 @@ public class DynamicControlScreen {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 String text_val = textField.getText();
                 control.setValue(text_val);
-                ///localDevice.sendDynamicControl(control);
             }
         });
 
@@ -610,7 +587,6 @@ public class DynamicControlScreen {
         textField.setOnAction(actionEvent -> {
             String text_val = textField.getText();
             control.setValue(text_val);
-            //localDevice.sendDynamicControl(control);
         });
 
         control_group.listener = control1 -> Platform.runLater(new Runnable() {
@@ -630,7 +606,6 @@ public class DynamicControlScreen {
 
         return control_group;
     }
-
 
     /**
      * Add a Integer control to control Group
@@ -721,9 +696,6 @@ public class DynamicControlScreen {
         slider.setDisable(disable);
         slider.setOrientation(Orientation.HORIZONTAL);
 
-
-        //control_group.setBuddyNode(slider);
-
         slider.valueProperty().addListener((obs, oldval, newval) -> {
             if (slider.isFocused()) {
                 if (oldval != newval) {
@@ -733,7 +705,6 @@ public class DynamicControlScreen {
                 }
             }
         });
-
 
         slider.valueProperty().addListener((obs, oldval, newval) -> {
             if (slider.isFocused()) {
@@ -777,9 +748,7 @@ public class DynamicControlScreen {
             }
         });
         return control_group;
-
     }
-
 
     /**
      * Add an Float Control control to control Group
@@ -899,7 +868,6 @@ public class DynamicControlScreen {
 
         });
 
-
         control_group.listener = control12 -> Platform.runLater(new Runnable() {
             public void run() {
 
@@ -927,7 +895,6 @@ public class DynamicControlScreen {
             }
         });
 
-
         return control_group;
     }
 
@@ -940,7 +907,7 @@ public class DynamicControlScreen {
 
         if (control_group == null) {
 
-            // fist add a listeners to notify us of when this control gets removed
+            // first add a listeners to notify us of when this control gets removed
             ControlMap.getInstance().addDynamicControlRemovedListener(control1 -> removeDynamicControl(control1));
 
             ControlType control_type = control.getControlType();
@@ -1009,24 +976,10 @@ public class DynamicControlScreen {
                 }
             }
 
-
             show();
         }
 
     }
-    /**
-     * Add A dynamic Control to window. Will run later in main thread
-     * @param control The DynamicControl to add
-     */
-    public void addDynamicControl(DynamicControl control)
-    {
-
-        Platform.runLater(new Runnable() {
-            public void run() {
-                addDisplayDynamicControl(control); }
-        });
-    }
-
 
     public void show(){
         dynamicControlStage.show();
@@ -1043,6 +996,7 @@ public class DynamicControlScreen {
         int page_display_num = currentLogPage + 1;
         logPageNumber.setText("Page " + page_display_num + " of " + localDevice.numberLogPages());
     }
+
     /**
      * Add a debug pane
      * @return
@@ -1070,17 +1024,6 @@ public class DynamicControlScreen {
             }
         });
 
-        /*
-        localDevice.addLoggingStateListener(new LocalDeviceRepresentation.ConnectedUpdateListener() {
-            @Override
-            public void update(boolean logging_enabled) {
-                enable_button.setText(logging_enabled ? stop_text : start_text);
-                enable_button.setTooltip(logging_enabled ? stop_tooltip : start_tooltip);
-
-            }
-        });
-
-*/
         previousLogPageButton.setTooltip(new Tooltip("Displays the previous page of the log"));
         previousLogPageButton.setOnMouseClicked(event ->
                 {
@@ -1094,7 +1037,6 @@ public class DynamicControlScreen {
                 }
 
         );
-
 
         nextLogPageButton.setTooltip(new Tooltip("Displays the next page of the log"));
         nextLogPageButton.setOnMouseClicked(event ->
@@ -1112,7 +1054,7 @@ public class DynamicControlScreen {
 
         log_output_text_area.setMinHeight(MIN_TEXT_AREA_HEIGHT);
 
-        localDevice.addLogListener(deviceLogListener = (message, page) -> {
+        localDevice.addLogListener((message, page) -> {
             Platform.runLater(()-> {
                 try {
                     // let us see if the text is too big for us
@@ -1132,7 +1074,6 @@ public class DynamicControlScreen {
                 }
             });
         });
-
 
         // add a button to rebuild controls list
         Button rebuild_button = new Button("Rebuild Controls");
@@ -1155,5 +1096,4 @@ public class DynamicControlScreen {
         setLogPageButtons();
         return pane;
     }
-
 }

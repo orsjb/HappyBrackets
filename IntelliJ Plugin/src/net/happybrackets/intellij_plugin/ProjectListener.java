@@ -45,9 +45,7 @@ public class ProjectListener implements VetoableProjectManagerListener {
                 });
             }
 
-        }catch (Exception ex)
-        {
-            //ex.printStackTrace();
+        } catch (Exception ex) {
         }
     }
 

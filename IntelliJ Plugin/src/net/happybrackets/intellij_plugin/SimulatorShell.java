@@ -9,10 +9,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class SimulatorShell {
-
-
-    private static int processId = 0;
-
     static String projectPath = "";
 
     static final String DEVICE_SCRIPT_PATH =  "/Device/HappyBrackets/scripts/";
@@ -21,7 +17,6 @@ public class SimulatorShell {
     private static String WIN_SIMULATOR = "run-simulator.bat";
 
     private static Process simulatorProcess = null;
-
 
     /**
      * Run the simulator from the specified project path
@@ -41,11 +36,7 @@ public class SimulatorShell {
                 // we have a success
                 if (exit_value == 0) {
                     projectPath = project_path;
-
-                    String process_text = shellExecute.getProcessText().trim();
-                    processId = Integer.parseInt(process_text);
                     NotificationMessage.displayNotification("Simulator Started", NotificationType.INFORMATION);
-
                     // store our project path
 
                 }
@@ -102,7 +93,6 @@ public class SimulatorShell {
         return ret;
     }
 
-
     /**
      * If the closing project is the one that started simulator, then kill simulator
      * If this is not the path that the simulator was loaded at, we will ask if we want to shut simulator
@@ -122,6 +112,7 @@ public class SimulatorShell {
             ex.printStackTrace();
         }
     }
+
     /**
      * Kill the simulator based on process ID
      */

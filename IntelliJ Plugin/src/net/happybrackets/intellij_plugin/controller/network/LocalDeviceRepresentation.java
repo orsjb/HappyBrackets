@@ -33,24 +33,12 @@ import java.net.*;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.*;
 
-//import net.happybrackets.intellij_plugin.gui.DynamicControlScreen;
-
 public class LocalDeviceRepresentation implements FileSender.FileSendStatusListener {
 
 	private static final int MAX_UDP_SENDS = 3; // use this number of messages to account for
 	private final Object clientLock = new Object(); // define a lock for tcpClient
 
-
 	DatagramSocket advertiseTxSocket = null;
-
-	/**
-	 * Return the home directory if this s a simulator.
-	 * The message is only ever received if the device is on the localhost
-	 * @return the path of the device home directory if it is a simulator
-	 */
-	public String getSimulatorHomePath() {
-		return simulatorHomePath;
-	}
 
 	/**
 	 * Returns whether we are the simulator on the local host
@@ -78,7 +66,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 	final static Logger logger = LoggerFactory.getLogger(LocalDeviceRepresentation.class);
 
-	private long timeDisplayed; // we will set the thime this device was displayed
 	public long lastTimeSeen;
 	public final String deviceName;
 	public final String hostName;
@@ -297,17 +284,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 	}
 
-
-
-
-
-	/**
-	 * Get the remote server port that we need to connect to to create a TCP connection with this device
-	 * @return the Port we need to connect to TCP server
-	 */
-	public int getServerPort(){
-		return serverPort;
-	}
 	/**
 	 * get The friendly name we want to display this device as
 	 * @return the friendly name. If not set, will return device name
@@ -343,7 +319,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		}
 	}
 
-
 	/**
 	 * Get DynamicControl Screen
 	 * @return The dynamicControlScreen associated with this device
@@ -351,6 +326,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	public DynamicControlScreen getDynamicControlScreen(){
 		return dynamicControlScreen;
 	}
+
 	/**
 	 * If true, we will ignore this device and not respond to any of its messages
 	 * @return true if we are ignoring
@@ -375,13 +351,9 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		}
 	}
 
-
-
-
 	public boolean isFavouriteDevice() {
 		return isFavouriteDevice;
 	}
-
 
 	public void setFavouriteDevice(boolean enabled) {
 		if (isFavouriteDevice != enabled) {
@@ -393,7 +365,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			}
 		}
 	}
-
 
 	/**
 	 * Return if the device has it's status as actively connected
@@ -510,7 +481,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	public void sendResetConfiguration() {
 		send(OSCVocabulary.DeviceConfig.DELETE_CONFIG, replyPortObject);
 	}
-
 
 	public interface StatusUpdateListener {
 		void update(String state);
@@ -636,7 +606,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		}
 	}
 
-
 	/**
 	 * Open the control Port for TCP Communication
 	 * @return true if port is opened. If not opened, it will open itm and on success, return true
@@ -669,18 +638,9 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			dynamicControlScreen.show();
 			ret = true;
 		}
-
 		return ret;
 	}
 
-	/**
-	 * Return the time in milliseconds that we have had this appeared
-	 * @return The time the device has been active in our list
-	 */
-	public long timeActive()
-	{
-		return System.currentTimeMillis() - timeDisplayed;
-	}
 	/**
 	 * Add A dynamic Control
 	 *
@@ -748,7 +708,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	public void clearDynamicControls() {
 		// we need to get the collection synchronised with map
 		// or we will get an access vioaltion
-
 		synchronized (pendingControlsLock){
 			pendingControls.clear();
 		}
@@ -788,7 +747,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		}
 	}
 
-
 	// Overload constructors. Construct with a SocketAddress
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, InetSocketAddress socketAddress, int reply_port) {
 		this(deviceName, hostname, addr, id, server, config, reply_port);
@@ -803,10 +761,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	}
 
 	public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, OSCServer server, ControllerConfig config, int reply_port) {
-
-		//timeCreated = System.nanoTime();
 		// We will set timeDisplayed so it will not make a request for a control until it has been set by the display Cell
-		timeDisplayed = System.currentTimeMillis();
 		replyPort = reply_port;
 		replyPortObject = new Object[] {replyPort};
 		this.deviceName = deviceName;
@@ -843,16 +798,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 		}
 	}
-	/**
-	 * Notifiy Device that it has been displayed and we can start any functions that required the item to be displayed
-	 */
-	public void setDeviceHasDisplayed(){
-		timeDisplayed = System.currentTimeMillis();
-	}
 
-	public void resetDeviceHasDisplayed(){
-		timeDisplayed = System.currentTimeMillis();
-	}
 	/**
 	 * Process and incoming OSC Message for this device
 	 *
@@ -870,7 +816,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.FRIENDLY_NAME)) {
 			//processFriendlyNameMessage(msg, sender);
-
 		} else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DynamicControlMessage.CONTROL)) {
 			processDynamicControlMessage(msg, sender);
 		} else if (OSCVocabulary.match(msg, OSCVocabulary.Device.LOG)) {
@@ -910,7 +855,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	private void processSimulatorHomeMessage(OSCMessage msg, SocketAddress sender) {
 		simulatorHomePath = (String)msg.getArg(0);
 	}
-
 
 	private synchronized void processLogMessage(OSCMessage msg, SocketAddress sender) {
 		String new_log_output = (String) msg.getArg(1);
@@ -997,8 +941,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		setFriendlyName(name);
 	}
 
-
-
 	/**
 	 * Process Messages with Dynamic Control
 	 * @param msg OSC Message
@@ -1022,7 +964,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 			// This call will send an update to all listeners
 			DynamicControl.processUpdateMessage(msg);
 		}
-
 	}
 
 	/**
@@ -1032,6 +973,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	public void setAliveInterval(int milliseconds){
 		sendOscMsg(OSCMessageBuilder.createOscMessage(OSCVocabulary.Device.ALIVE, milliseconds));
 	}
+
 	/**
 	 * Process Messages for device config
 	 * @param msg OSC Message
@@ -1053,7 +995,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 		}
 	}
 
-
 	/**
 	 * We will recieve this message and send the dynamic control message back to the device
 	 * @param dynamic_control The Dynamic Control
@@ -1067,7 +1008,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	{
 		return this.socketAddress;
 	}
-
 
 	// First test if our stored socket address is the same as the argument
 	// If it is different, store new value and raise event to notify that change occurred
@@ -1537,9 +1477,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 	 * @param enable true if we want logs
 	 */
 	public void setLogging (boolean enable){
-
 		// we need to send a start logging message to the device
-
 		loggingEnabled = enable;
 
 		send(OSCVocabulary.Device.GET_LOGS, new Object[]{enable ? 1 : 0});

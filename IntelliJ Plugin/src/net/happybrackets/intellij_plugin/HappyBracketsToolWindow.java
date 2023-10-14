@@ -177,8 +177,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
             ControllerEngine controller_engine = ControllerEngine.getInstance();
 
-            //ControllerSettings.setDefaultSettingsFolder(getPluginLocation());
-
             logger.info("Loading plugin settings from " + ControllerSettings.getDefaultSettingsLocation());
             ControllerSettings settings = controller_engine.loadSettings(getPluginLocation());
             // Save settings on exit.
@@ -227,8 +225,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         } else {
             logger.info("HappyBrackets static setup already completed previously.");
         }
-
     }
+
     /**
      * Loads the specified configuration file, resets the statically stored
      * configuration to the newly loaded config, and recreates or resets the
@@ -250,8 +248,10 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
             throw new IllegalArgumentException("Specified configuration file does not exist or is not readable, path is: " + config_file_path);
         }
 
+        logger.error("Loading config from: {}", new_config_file);
         String config_JSON = new Scanner(new_config_file).useDelimiter("\\Z").next();
         logger.info("Loaded config: {}", config_JSON);
+
         setConfig(config_JSON, new_config_file.getParent());
     }
 
@@ -293,10 +293,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         }
 
         config.setKnownDevicesFile(known_devices_path);
-
-
     }
-
 
     /**
      * Loads the config file in the project config path
@@ -321,12 +318,6 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         catch (Exception ex){}
         return ret;
     }
-/*
-    public static ControllerSettings getSettings() {
-        return settings;
-    }
-*/
-
 
     /**
      * Returns the absolute path to the plugin folder.

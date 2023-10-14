@@ -19,14 +19,11 @@ package net.happybrackets.intellij_plugin;
 
 import net.happybrackets.core.config.LoadableConfig;
 import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
-//import net.happybrackets.core.config.LoadableConfig;
 
 /**
  * Created by ollie on 13/05/2016.
  */
 public class IntelliJControllerConfig extends ControllerConfig {
-    String pluginFolder;
-
     public static IntelliJControllerConfig getInstance() {
         return (IntelliJControllerConfig)(LoadableConfig.getInstance());
     }
