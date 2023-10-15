@@ -343,7 +343,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
             serverPort = port;
 
         }
-
     }
 
     /**
@@ -627,22 +626,22 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
      * @return TRue if a TCP connection was made and controls could be shown
      */
     public boolean showControlScreen() {
-        boolean ret = false;
+        if (!isFakeDevice) {
+            openControlPort();
 
+            // we will only show control screen if we have a valid TCP port
+            if (!testClientOpen()) {
+                return false;
+            }
 
-        openControlPort();
-
-        // we will only show control screen if we have a valid TCP port
-        if (testClientOpen()) {
             if (!controlRequestSent) {
                 sendInitialControlRequest();
             }
-
-            dynamicControlScreen.setTitle(getFriendlyName());
-            dynamicControlScreen.show();
-            ret = true;
         }
-        return ret;
+
+        dynamicControlScreen.setTitle(getFriendlyName());
+        dynamicControlScreen.show();
+        return true;
     }
 
     /**
@@ -672,7 +671,7 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
                 @Override
                 public void update(DynamicControl control) {
 
-                    System.out.println("Dynamic Control value changed");
+                    System.out.println("Dynamic Control value changed to: " + control.getValue());
                 }
             });
 
@@ -790,7 +789,6 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
         } else if (OSCVocabulary.startsWith(msg, OSCVocabulary.DeviceConfig.CONFIG)) {
             processDeviceConfigMessage(msg);
         }
-
     }
 
     /**
@@ -825,21 +823,30 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
     private synchronized void processLogMessage(OSCMessage msg, SocketAddress sender) {
         String new_log_output = (String) msg.getArg(1);
 
+        addLogMessage(new_log_output);
+    }
+
+    /**
+     * Inject a log message.
+     *
+     * This is public purely for testing purposes to allow us to inject fake log messages.
+     * @param message the message to inject
+     */
+    public void addLogMessage(String message) {
         // see if our new logpage will exceed our max log page size
         int current_log_length = currentLogPage.length();
 
-        if (current_log_length + new_log_output.length() > MAX_LOG_DISPLAY_CHARS && currentLogPage.length() != 0) {
+        if (current_log_length + message.length() > MAX_LOG_DISPLAY_CHARS && currentLogPage.length() != 0) {
             completeLog.add(currentLogPage);
-            currentLogPage = new String(new_log_output);
+            currentLogPage = new String(message);
         } else {
-            currentLogPage = currentLogPage + "\n" + new_log_output;
+            currentLogPage = currentLogPage + "\n" + message;
         }
-
 
         //logger.debug("Received new log output from device {} ({}): {}", deviceName, socketAddress, new_log_output);
         synchronized (logListenerListLock) {
             for (LogListener listener : logListenerList) {
-                listener.newLogMessage(new_log_output, numberLogPages() - 1);
+                listener.newLogMessage(message, numberLogPages() - 1);
             }
         }
     }
@@ -1115,6 +1122,10 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
     }
 
     public synchronized void sendOscMsg(OSCMessage msg) {
+        if (isFakeDevice) {
+            return;
+        }
+
         lazySetupAddressStrings();
         boolean success = false;
         int count = 0;

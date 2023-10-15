@@ -35,7 +35,6 @@ import net.happybrackets.core.logging.Logging;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 import net.happybrackets.intellij_plugin.controller.config.ControllerSettings;
 import net.happybrackets.intellij_plugin.controller.network.ControllerAdvertiser;
-import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,9 +147,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     }
 
     static void createTestDevices() {
-        DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
-        connection.createTestDevice();
-        connection.createTestDevice();
+        ControllerEngine.getInstance().getDeviceConnection().createFakeTestDevices();
     }
 
     /**
@@ -320,8 +317,8 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     /**
      * Loads the config file in the project config path
      *
-     * @param project_dir Thew project Directory
-     * @return true if sa known config file was found
+     * @param project_dir The project Directory
+     * @return true if a known config file was found
      */
     boolean loadProjectKnownDevices(String project_dir) {
         boolean ret = false;

@@ -307,15 +307,12 @@ public class DynamicControlScreen {
      */
     public void loadDynamicControls(LocalDeviceRepresentation localDevice) {
 
-
         Platform.runLater(new Runnable() {
             public void run() {
 
                 DynamicControl control = localDevice.popNextPendingControl();
                 while (control != null) {
-
                     addDisplayDynamicControl(control);
-
 
                     control = localDevice.popNextPendingControl();
                 }
@@ -937,6 +934,7 @@ public class DynamicControlScreen {
         );
 
         log_output_text_area.setMinHeight(MIN_TEXT_AREA_HEIGHT);
+        log_output_text_area.setText(localDevice.getDeviceLog(0));
 
         localDevice.addLogListener((message, page) -> {
             Platform.runLater(() -> {

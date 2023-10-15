@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import net.happybrackets.core.OSCUDPReceiver;
 import net.happybrackets.core.OSCVocabulary;
 import net.happybrackets.core.config.KnownDeviceID;
+import net.happybrackets.core.control.ControlType;
 import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.DeviceSchedulerValue;
 import net.happybrackets.core.scheduling.DeviceSchedules;
@@ -111,6 +112,12 @@ public class DeviceConnection {
             if (showOnlyFavourites) {
                 clearDevices(false);
             }
+        }
+    }
+
+    public void createFakeTestDevices () {
+        for (int i=0; i<5; i++) {
+            createTestDevice();
         }
     }
 
@@ -797,11 +804,27 @@ public class DeviceConnection {
         String name = "Virtual Test Device #" + virtualDeviceCount++;
         String hostname = "myHostname!";
         String address = "127.0.0.1";
-        LocalDeviceRepresentation fake_test_device = new LocalDeviceRepresentation(name, hostname, address, 1, this.config, replyPort, true);
-        theDevices.add(fake_test_device);
+        LocalDeviceRepresentation fakeTestDevice = new LocalDeviceRepresentation(name, hostname, address, 1, this.config, replyPort, true);
+
+        fakeTestDevice.addDynamicControl(new DynamicControl(ControlType.INT,"Float control", 13).setMinimumValue(10).setMaximumDisplayValue(20));
+        fakeTestDevice.addDynamicControl(new DynamicControl(ControlType.TEXT,"Float control", "Initial text"));
+        fakeTestDevice.addDynamicControl(new DynamicControl(ControlType.FLOAT,"Float control", 4.4).setMinimumValue(0.0).setMaximumDisplayValue(10.0));
+        fakeTestDevice.addDynamicControl(new DynamicControl(ControlType.BOOLEAN,"Boolean control", true));
+        fakeTestDevice.addDynamicControl(new DynamicControl(ControlType.TRIGGER,"Trigger control"));
+        fakeTestDevice.addDynamicControl(new DynamicControl(ControlType.OBJECT,"Object control", new Object() {
+            @Override
+            public String toString() {
+                return "String representation of the object";
+            }
+        }));
+
+        for (int i = 1; i<=1000; i++) {
+            fakeTestDevice.addLogMessage("Log message " + i);
+        }
+        theDevices.add(fakeTestDevice);
 
         synchronized (devicesByHostnameLock) {
-            devicesByHostname.put(name, fake_test_device);
+            devicesByHostname.put(name, fakeTestDevice);
         }
     }
 
