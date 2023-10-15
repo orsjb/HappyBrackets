@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +65,7 @@ import java.util.Scanner;
  */
 @SuppressWarnings("ALL")
 public class HappyBracketsToolWindow implements ToolWindowFactory {
-
+    // Whether to use the new Swing UI or the legacy JFX UI.
     final static Logger logger = LoggerFactory.getLogger(HappyBracketsToolWindow.class);
     static final Object advertiseStopLock = new Object();
     static protected IntelliJControllerConfig config;
@@ -73,7 +74,7 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     static int numberStartingToolwindows = 0;
     // define how long to wait before starting thread
     final int AUTO_PROBE_WAIT_PERIOD = 10000;
-    private JFXPanel jfxp;
+    private JComponent rootComponent;
     private Scene scene;
 
     /**
@@ -263,7 +264,10 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         }
 
         //awful hack but we need to prompt JavaFX to initialise itself, this will do it
-        new JFXPanel();
+        if (!GlobalConfigurationFlags.useSwingUI) {
+            new JFXPanel();
+        }
+
         Logging.AddFileAppender((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root"), "Plugin", getPluginLocation() + "/controller.log", Level.DEBUG);
 
         logger.info("*** HappyBrackets IntelliJ Plugin launching ***");
@@ -272,12 +276,9 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
         String project_dir = project.getBaseDir().getCanonicalPath();
         loadSingletons(project_dir, this.getClass());
 
-        IntelliJPluginGUIManager gui_manager = new IntelliJPluginGUIManager(project);
-        jfxp = new JFXPanel();
-        scene = gui_manager.setupGUI();
-        jfxp.setScene(scene);
+        rootComponent = GlobalConfigurationFlags.useSwingUI ? createSwingUI(project) : createLegacyJavaFxUI(project);
         ContentFactory content_factory = ContentFactory.SERVICE.getInstance();
-        Content content = content_factory.createContent(jfxp, "", false);
+        Content content = content_factory.createContent(rootComponent, "", false);
         tool_window.getContentManager().addContent(content);
 
         String version_text = BuildVersion.getVersionBuildText();
@@ -310,8 +311,19 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
             }
         }).start();/* End threadFunction */
+    }
 
+    JComponent createSwingUI(Project project) {
+        IntellijPluginSwingGUIManager guiManager = new IntellijPluginSwingGUIManager();
+        return guiManager.getRootComponent();
+    }
 
+    JComponent createLegacyJavaFxUI(Project project) {
+        IntelliJPluginGUIManager gui_manager = new IntelliJPluginGUIManager(project);
+        JFXPanel jfxPanel = new JFXPanel();
+        scene = gui_manager.setupGUI();
+        jfxPanel.setScene(scene);
+        return jfxPanel;
     }
 
     /**

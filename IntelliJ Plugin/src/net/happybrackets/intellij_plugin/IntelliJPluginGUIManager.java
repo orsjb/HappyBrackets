@@ -57,7 +57,6 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import net.happybrackets.core.ErrorListener;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
-import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
 import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
 import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 import net.happybrackets.intellij_plugin.controller.network.SendToDevice;

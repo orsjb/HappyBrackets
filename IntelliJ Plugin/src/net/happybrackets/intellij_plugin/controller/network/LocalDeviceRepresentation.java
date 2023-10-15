@@ -23,6 +23,7 @@ import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.ClockAdjustment;
 import net.happybrackets.core.scheduling.HBScheduler;
 import net.happybrackets.device.network.UDPCachedMessage;
+import net.happybrackets.intellij_plugin.GlobalConfigurationFlags;
 import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
 import net.happybrackets.intellij_plugin.controller.gui.DynamicControlScreen;
 import org.slf4j.Logger;
@@ -137,9 +138,10 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
 
         this.isConnected = true;
 
-        dynamicControlScreen = new DynamicControlScreen(this);
-
-        dynamicControlScreen.createDynamicControlStage();
+        if (!GlobalConfigurationFlags.useSwingUI) {
+            dynamicControlScreen = new DynamicControlScreen(this);
+            dynamicControlScreen.createDynamicControlStage();
+        }
 
         // Set-up log monitor.
         currentLogPage = "";
@@ -626,6 +628,11 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
      * @return TRue if a TCP connection was made and controls could be shown
      */
     public boolean showControlScreen() {
+        if (GlobalConfigurationFlags.useSwingUI) {
+            System.out.println("Did not show control screen because it's not implemented in Swing yet");
+            return false;
+        }
+
         if (!isFakeDevice) {
             openControlPort();
 
@@ -660,7 +667,9 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
                 pendingControls.add(control);
             }
 
-            dynamicControlScreen.loadDynamicControls(this);
+            if (dynamicControlScreen != null) {
+                dynamicControlScreen.loadDynamicControls(this);
+            }
 
             synchronized (addDynamicControlListenerListLock) {
                 for (DynamicControl.DynamicControlListener listener : addDynamicControlListenerList) {

@@ -193,7 +193,6 @@ public class PingMenu extends DeviceMenu {
                 } else {
                     displayNotification("Unable to connect to " + localDeviceRepresentation.deviceName, NotificationType.ERROR);
                 }
-
             } catch (Exception ex) {
             }
         }).start());
