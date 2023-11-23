@@ -57,6 +57,8 @@ public class DeviceConnection {
     int virtualDeviceCount = 1;
     private OSCUDPReceiver oscServer;
     private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
+    private List<LocalDeviceRepresentation> theDevicesList = new ArrayList<LocalDeviceRepresentation>();
+
     private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
     private Map<String, KnownDeviceID> knownDevices = new Hashtable<String, KnownDeviceID>();
     // We will have a selected device based on project
@@ -300,7 +302,7 @@ public class DeviceConnection {
             }
         }
 
-        for (LocalDeviceRepresentation device : theDevices) {
+        for (LocalDeviceRepresentation device : theDevicesList) {
             int id = 0;
 
             if (knownDevices.containsKey(device.hostName)) {
@@ -330,18 +332,22 @@ public class DeviceConnection {
         return theDevices;
     }
 
+    public List<LocalDeviceRepresentation> getDevicesList() {
+        return theDevicesList;
+    }
+
     public String[] getDeviceHostnames() {
-        String[] hostnames = new String[theDevices.size()];
+        String[] hostnames = new String[theDevicesList.size()];
         for (int i = 0; i < hostnames.length; i++) {
-            hostnames[i] = theDevices.get(i).hostName;
+            hostnames[i] = theDevicesList.get(i).hostName;
         }
         return hostnames;
     }
 
     public String[] getDeviceAddresses() {
-        String[] addresses = new String[theDevices.size()];
+        String[] addresses = new String[theDevicesList.size()];
         for (int i = 0; i < addresses.length; i++) {
-            addresses[i] = theDevices.get(i).getAddress();
+            addresses[i] = theDevicesList.get(i).getAddress();
         }
         return addresses;
     }
@@ -464,6 +470,7 @@ public class DeviceConnection {
                                     synchronized (devicesByHostnameLock) {
                                         String device_name = device.deviceName;
                                         theDevices.remove(devicesByHostname.get(device_name));
+                                        theDevicesList.remove(devicesByHostname.get(device_name));
                                         devicesByHostname.remove(device_name);
                                         logger.info("Removed Device from list: {}", device_name);
                                         device.sendConnectionListeners();
@@ -487,6 +494,7 @@ public class DeviceConnection {
                         @Override
                         public void run() {
                             theDevices.add(device_to_add);
+                            theDevicesList.add(device_to_add);
                             device_to_add.sendConnectionListeners();
                         }
                     });
@@ -694,7 +702,7 @@ public class DeviceConnection {
      */
     public void sendToDeviceGroup(int group, String msg_name, Object... args) {
         //send to group - group is defined by each LocalDeviceRep having group[i] flag
-        for (LocalDeviceRepresentation device : theDevices) {
+        for (LocalDeviceRepresentation device : theDevicesList) {
             if (device.groups[group]) {
                 sendToDevice(device, msg_name, args);
             }
@@ -822,6 +830,7 @@ public class DeviceConnection {
             fakeTestDevice.addLogMessage("Log message " + i);
         }
         theDevices.add(fakeTestDevice);
+        theDevicesList.add(fakeTestDevice);
 
         synchronized (devicesByHostnameLock) {
             devicesByHostname.put(name, fakeTestDevice);
