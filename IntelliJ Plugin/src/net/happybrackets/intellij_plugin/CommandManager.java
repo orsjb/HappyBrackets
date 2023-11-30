@@ -1,6 +1,7 @@
 package net.happybrackets.intellij_plugin;
 
 import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
+import net.happybrackets.intellij_plugin.controller.network.LocalDeviceRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +21,15 @@ class CommandManager {
     private static final int UP_ARROW_KEY_CODE = 38;
     private static final int DOWN_ARROW_KEY_CODE = 40;
 
+    public interface UpdateCommandDelegate {
+        void updateCommand(String command);
+    }
+
     private CommandHistoryManager historyManager = new CommandHistoryManager();
-    private IntellijPluginSwingGUIManager.UpdateCommandDelegate updateCommandDelegate;
+
+    private List<LocalDeviceRepresentation> selectedLocalDeviceRepresentations;
+
+    private UpdateCommandDelegate updateCommandDelegate;
     private DeviceConnection deviceConnection;
     private final Logger logger = LoggerFactory.getLogger(CommandManager.class);
 
@@ -74,6 +82,7 @@ class CommandManager {
             if (devicesOrGroup == ALL) {
                 deviceConnection.sendToAllDevices(msg, args);
             } else if (devicesOrGroup == SELECTED) {
+                deviceConnection.sendToDeviceList(selectedLocalDeviceRepresentations, msg, args);
                 // TODO: Implement device selection and make this work.
                 //deviceConnection.sendToDeviceList(deviceListView.getSelectionModel().getSelectedItems(), msg, args);
             } else {
@@ -83,8 +92,12 @@ class CommandManager {
     }
 
     /** Sets a listener for when the displayed command in the text field should be updated. */
-    void setUpdateCommandDelegate(IntellijPluginSwingGUIManager.UpdateCommandDelegate delegate) {
+    void setUpdateCommandDelegate(UpdateCommandDelegate delegate) {
         updateCommandDelegate = delegate;
+    }
+
+    void setSelectedLocalDeviceRepresentations(List<LocalDeviceRepresentation> localDeviceRepresentations) {
+        this.selectedLocalDeviceRepresentations = localDeviceRepresentations;
     }
 
     /** A class to manage the command history. */

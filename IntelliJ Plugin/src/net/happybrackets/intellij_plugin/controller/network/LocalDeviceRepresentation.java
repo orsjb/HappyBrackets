@@ -1176,6 +1176,11 @@ public class LocalDeviceRepresentation implements FileSender.FileSendStatusListe
     }
 
     public synchronized void send(String msg_name, Object... args) {
+        String extraPrintContent = "";
+        for (Object arg : args) {
+            extraPrintContent = extraPrintContent + arg.toString();
+        }
+        logger.debug("Sending OSC message to " + deviceName + " - " + msg_name + ": " + extraPrintContent);
         if (isFakeDevice) {
             return;
         }

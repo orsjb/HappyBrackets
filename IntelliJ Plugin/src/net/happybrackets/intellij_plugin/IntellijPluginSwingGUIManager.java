@@ -21,6 +21,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
@@ -34,7 +37,7 @@ public class IntellijPluginSwingGUIManager {
     JButton sendCommandToSelectedDevicesButton = new JButton("Selected");
 
     JComponent getRootComponent() {
-        JPanel panel = createContainer(BoxLayout.PAGE_AXIS);
+        JPanel panel = SwingUtilities.createContainer(BoxLayout.PAGE_AXIS);
 
         panel.add(createCustomCommandArea());
         panel.add(createGlobalButtonsArea());
@@ -45,7 +48,7 @@ public class IntellijPluginSwingGUIManager {
     }
 
     JComponent createCustomCommandArea() {
-        JPanel list = createContainer(BoxLayout.PAGE_AXIS);
+        JPanel list = SwingUtilities.createContainer(BoxLayout.PAGE_AXIS);
 
         list.add(createCommandTextArea());
         list.add(Box.createVerticalStrut(5));
@@ -57,12 +60,9 @@ public class IntellijPluginSwingGUIManager {
     JComponent createCommandTextArea() {
         commandTextField = new JTextField();
         commandTextField.setMargin(new Insets(2,2,2,2));
-        // TODO: Handled keypresses here for command history.
         commandTextField.addKeyListener(new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
+            public void keyTyped(KeyEvent e) {}
 
             @Override
             public void keyPressed(KeyEvent e) {
@@ -70,11 +70,9 @@ public class IntellijPluginSwingGUIManager {
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
+            public void keyReleased(KeyEvent e) {}
         });
-        commandManager.setUpdateCommandDelegate(new UpdateCommandDelegate() {
+        commandManager.setUpdateCommandDelegate(new CommandManager.UpdateCommandDelegate() {
             @Override
             public void updateCommand(String command) {
                 commandTextField.setText(command);
@@ -102,10 +100,6 @@ public class IntellijPluginSwingGUIManager {
         panel.setAlignmentX(LEFT_ALIGNMENT);
 
         return panel;
-    }
-
-    public interface UpdateCommandDelegate {
-        void updateCommand(String command);
     }
 
     JComponent createGlobalButtonsArea() {
@@ -167,16 +161,18 @@ public class IntellijPluginSwingGUIManager {
     }
 
     JComponent createHorizontalButtonPanel() {
-        JPanel panel = createContainer(BoxLayout.LINE_AXIS);
+        JPanel panel = SwingUtilities.createContainer(BoxLayout.LINE_AXIS);
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setPreferredSize(new Dimension(FULL_WIDTH, 32));
         return panel;
     }
 
-    class DevicesListComponent extends JComponent {
+    class DevicesListComponent extends JComponent implements DeviceRepresentationSwingCell.DeviceCellDelegate {
         private DeviceConnection deviceConnection;
 
         boolean selected = false;
+
+        java.util.List<DeviceRepresentationSwingCell> cells = new ArrayList();
 
         DevicesListComponent(DeviceConnection deviceConnection) {
             this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -191,36 +187,70 @@ public class IntellijPluginSwingGUIManager {
             });
         }
 
-        private void initialize() {
+        void initialize() {
             updateDevices();
         }
 
         private void updateDevices() {
             this.removeAll();
+            for (DeviceRepresentationSwingCell cell : cells) {
+                cell.dispose();
+            }
+            cells.clear();
             java.util.List<LocalDeviceRepresentation> devices = deviceConnection.getDevicesList();
 
             for (LocalDeviceRepresentation device : devices) {
-                add(new DeviceRepresentationSwingCell(IntellijPluginSwingGUIManager.this, device));
+                DeviceRepresentationSwingCell cell = new DeviceRepresentationSwingCell(device, this);
+                add(cell);
+                cells.add(cell);
             }
+
+            onDeviceSelectionChanged();
         }
+
+        public void onCellClicked(DeviceRepresentationSwingCell clickedCell) {
+            if (clickedCell.getSelected()) {
+                clickedCell.setSelected(false);
+                return;
+            }
+
+            for (DeviceRepresentationSwingCell cell : cells) {
+                cell.setSelected(cell == clickedCell);
+            }
+            onDeviceSelectionChanged();
+        }
+
+        public void onDeviceSelectionChanged() {
+            commandManager.setSelectedLocalDeviceRepresentations(getSelectedDevices());
+        }
+
+        public java.util.List<LocalDeviceRepresentation> getSelectedDevices() {
+            ArrayList<LocalDeviceRepresentation> selectedDevices = new ArrayList();
+            for (DeviceRepresentationSwingCell cell : cells) {
+                if (cell.getSelected()) {
+                    selectedDevices.add(cell.localDeviceRepresentation);
+                }
+            }
+            return selectedDevices;
+        }
+
+//        private DeviceRepresentationSwingCell getCellForDevice(LocalDeviceRepresentation localDeviceRepresentation) {
+//            for (DeviceRepresentationSwingCell cell : cells) {
+//                if(cell.localDeviceRepresentation == localDeviceRepresentation) {
+//                    return cell;
+//                }
+//            }
+//        }
     }
 
     JComponent createDevicesArea() {
         JPanel list = new JPanel();
         list.setLayout(new BoxLayout(list, BoxLayout.PAGE_AXIS));
-        java.util.List<LocalDeviceRepresentation> devices = deviceConnection.getDevicesList();
 
         DevicesListComponent listComponent = new DevicesListComponent(deviceConnection);
         listComponent.initialize();
 
-        return createTopLevelContainer("Devices", createVerticallyScrollingArea(listComponent));
-    }
-
-    JComponent createVerticallyScrollingArea(JComponent contents) {
-        JScrollPane listScroller = new JBScrollPane(contents);
-        listScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        listScroller.setAlignmentX(LEFT_ALIGNMENT);
-        return listScroller;
+        return createTopLevelContainer("Devices", SwingUtilities.createVerticallyScrollingArea(listComponent));
     }
 
     JPanel createTopLevelContainer(String name, JComponent content) {
@@ -243,25 +273,5 @@ public class IntellijPluginSwingGUIManager {
         panel.add(new JSeparator(), BorderLayout.SOUTH);
 
         return panel;
-    }
-
-    JPanel createContainer(int axis) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, axis));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        return panel;
-    }
-
-    JLabel createFixedWidthLabel(String text, int width) {
-        JLabel label = new JLabel(text);
-        label.setMaximumSize(new Dimension(width, label.getMaximumSize().height));
-        return label;
-    }
-
-    JButton createSmallButton(String title) {
-        JButton button = new JButton(title);
-        button.setMaximumSize(new Dimension(25, button.getMaximumSize().height));
-        return button;
     }
 }
