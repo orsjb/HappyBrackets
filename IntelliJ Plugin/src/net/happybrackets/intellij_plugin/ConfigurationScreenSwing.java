@@ -28,7 +28,7 @@ public class ConfigurationScreenSwing extends DialogWrapper implements Configura
     public ConfigurationScreenSwing(ConfigurationScreenModel model) {
         super(true); // use current window as parent
         this.model = model;
-        setTitle("HappyBrackets Settings K la");
+        setTitle("HappyBrackets Settings");
         init();
     }
 

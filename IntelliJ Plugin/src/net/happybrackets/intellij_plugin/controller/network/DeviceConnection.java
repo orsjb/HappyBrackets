@@ -118,7 +118,7 @@ public class DeviceConnection {
     }
 
     public void createFakeTestDevices () {
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<2; i++) { //adjust for just 2
             createTestDevice();
         }
     }

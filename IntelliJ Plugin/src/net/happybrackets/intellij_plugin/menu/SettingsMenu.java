@@ -7,6 +7,9 @@ import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.project.Project;
 import javafx.application.Platform;
 import net.happybrackets.intellij_plugin.ConfigurationScreen;
+import net.happybrackets.intellij_plugin.ConfigurationScreenModel;
+import net.happybrackets.intellij_plugin.ConfigurationScreenSwing;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +36,7 @@ public class SettingsMenu extends AnAction {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    ConfigurationScreen settings = new ConfigurationScreen(project);
+                    ConfigurationScreenSwing settings = new ConfigurationScreenSwing(new ConfigurationScreenModel(ControllerEngine.getInstance(),project));
                     settings.show();
                 }
             });

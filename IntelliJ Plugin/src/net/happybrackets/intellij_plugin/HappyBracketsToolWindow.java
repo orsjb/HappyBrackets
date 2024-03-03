@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.SwingUtilities;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -300,23 +301,15 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
         // Now let us Wait a certain period and automaticaly start the proble for devices
         new Thread(() -> {
-           try {
-               while (!javafxInitialized) {
-                   checkAndSetJavaFXInitialized();
-
-                   Thread.sleep(100); // Check every 100 milliseconds
-               }
-
-               Thread.sleep(AUTO_PROBE_WAIT_PERIOD);
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        ControllerEngine.getInstance().doProbe();
-                    }
+            try {
+                Thread.sleep(AUTO_PROBE_WAIT_PERIOD);
+                SwingUtilities.invokeLater(() -> {
+                    // Assuming ControllerEngine.getInstance().doProbe() is thread-safe and can be called like this.
+                    // Otherwise, ensure thread-safety within doProbe() or its Swing equivalent.
+                    ControllerEngine.getInstance().doProbe();
                 });
-
             } catch (InterruptedException e) {
-               Thread.currentThread().interrupt(); // Restore the interrupted status
+                Thread.currentThread().interrupt(); // Restore the interrupted status
             }
         }).start();/* End threadFunction */
 

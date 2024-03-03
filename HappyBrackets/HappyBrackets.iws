@@ -2,35 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="de38a533-9907-4514-820a-fb831b564ee0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/HappyBrackets_main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HappyBrackets_test.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/global/NoteAppears.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets/HB.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets/HB.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets/HBVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets/HBVersion.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/allclasses-frame.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/allclasses-frame.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/allclasses-noframe.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/allclasses-noframe.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/index-all.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/core/control/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/core/control/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/device/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/device/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/device/sensors/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/device/sensors/package-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/extras/assignment_autograding/RuntimeTypeAdapterFactory.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/extras/assignment_autograding/RuntimeTypeAdapterFactory.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/overview-tree.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/versionddate.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/resources/versionddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/resources/versionddate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/builddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/builddate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/resources/META-INF/plugin.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/resources/META-INF/plugin.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/resources/builddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/resources/builddate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/HB.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/HB.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/HappyBracketsProject.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/HappyBracketsProject.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/JavaDocs.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/JavaDocs.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenSwing.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenSwing.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/HappyBracketsToolWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/HappyBracketsToolWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntelliJPluginGUIManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntelliJPluginGUIManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ProjectListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ProjectListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/DeviceConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/DeviceConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/SettingsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/SettingsMenu.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -124,109 +98,144 @@
     </system>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreen.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="43" column="65" selection-start-line="43" selection-start-column="65" selection-end-line="43" selection-end-column="65" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#11165#11166#0" expanded="true" />
-                <element signature="e#11228#11229#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/config/ControllerConfig.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/config/ControllerSettings.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/global/GetDeviceAddressesAction.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="15" column="27" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="37" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/resources/META-INF/plugin.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="799">
-              <caret line="47" column="11" selection-start-line="47" selection-start-column="11" selection-end-line="47" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/DeviceConnection.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="497" column="60" selection-start-line="497" selection-start-column="60" selection-end-line="497" selection-end-column="60" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/global/NoteAppears.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="44" selection-start-line="44" selection-end-line="46" selection-end-column="74" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/examples/HappyBracketsExamplesFolderMenu.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntellijPluginSwingGUIManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="39" column="63" selection-start-line="39" selection-start-column="63" selection-end-line="39" selection-end-column="63" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntelliJPluginGUIManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7089">
-              <caret line="492" column="35" selection-start-line="492" selection-start-column="28" selection-end-line="492" selection-end-column="35" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreen.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="96">
+                  <caret line="227" column="54" selection-start-line="227" selection-start-column="46" selection-end-line="227" selection-end-column="54" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                    <element signature="e#11165#11166#0" expanded="true" />
+                    <element signature="e#11228#11229#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenModel.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="157">
+                  <caret line="22" column="52" selection-start-line="22" selection-start-column="36" selection-end-line="22" selection-end-column="52" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/HappyBracketsToolWindow.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="2782">
+                  <caret line="221" lean-forward="true" selection-start-line="221" selection-end-line="221" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/DeviceConnection.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="123">
+                  <caret line="123" column="5" lean-forward="true" selection-start-line="123" selection-start-column="5" selection-end-line="123" selection-end-column="5" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/DeviceRepresentationSwingCell.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="231">
+                  <caret line="39" column="22" lean-forward="true" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/SettingsMenu.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="357">
+                  <caret line="38" column="85" selection-start-line="38" selection-start-column="85" selection-end-line="38" selection-end-column="85" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/ControllerEngine.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="68">
+                  <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/examples/HappyBracketsExamplesFolderMenu.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="136">
+                  <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntellijPluginSwingGUIManager.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="204">
+                  <caret line="39" column="63" selection-start-line="39" selection-start-column="63" selection-end-line="39" selection-end-column="63" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntelliJPluginGUIManager.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="7089">
+                  <caret line="492" column="35" selection-start-line="492" selection-start-column="28" selection-end-line="492" selection-end-column="35" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenSwing.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="272">
+                  <caret line="27" column="60" selection-start-line="27" selection-start-column="36" selection-end-line="27" selection-end-column="60" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/SettingsMenu.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="510">
+                  <caret line="38" column="144" selection-start-line="38" selection-start-column="144" selection-end-line="38" selection-end-column="144" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -234,6 +243,9 @@
       <find>packDeviceRuntime</find>
       <find>Virtual</find>
       <find>run</find>
+      <find>configuration</find>
+      <find>Settings</find>
+      <find>settings</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -246,12 +258,13 @@
         <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenModel.java" />
         <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntelliJPluginGUIManager.java" />
         <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ProjectListener.java" />
-        <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenSwing.java" />
-        <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/HappyBracketsToolWindow.java" />
-        <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/SettingsMenu.java" />
         <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreen.java" />
         <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/global/NoteAppears.java" />
         <option value="$PROJECT_DIR$/../IntelliJ Plugin/resources/META-INF/plugin.xml" />
+        <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/DeviceConnection.java" />
+        <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenSwing.java" />
+        <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/HappyBracketsToolWindow.java" />
+        <option value="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/SettingsMenu.java" />
       </list>
     </option>
   </component>
@@ -285,6 +298,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -292,12 +307,33 @@
               <item name="HappyBrackets" type="b2602c69:ProjectViewProjectNode" />
               <item name="IntelliJ Plugin" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="HappyBrackets" type="b2602c69:ProjectViewProjectNode" />
+              <item name="IntelliJ Plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets" type="b2602c69:ProjectViewProjectNode" />
+              <item name="IntelliJ Plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets" type="b2602c69:ProjectViewProjectNode" />
+              <item name="IntelliJ Plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="intellij_plugin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="HappyBrackets" type="b2602c69:ProjectViewProjectNode" />
+              <item name="IntelliJ Plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="intellij_plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="menu" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -307,7 +343,7 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1709430198278" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1709433055296" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/HappyBrackets.ipr" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
@@ -519,8 +555,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1719" height="932" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27747747" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2018018" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -528,17 +565,17 @@
       <window_info id="UI Designer" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" visible="true" weight="0.3287841" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.84804803" weight="0.51488835" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3287841" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.8468468" visible="true" weight="0.17990075" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49973363" weight="0.39956802" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.4990991" weight="0.3287841" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.15195195" side_tool="true" visible="true" weight="0.51488835" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.15315315" side_tool="true" visible="true" weight="0.17990075" />
       <window_info anchor="bottom" id="Build" order="10" weight="0.19639407" />
-      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.49866667" weight="0.3287841" />
+      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.4978979" weight="0.3287841" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -563,24 +600,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/DeviceRepresentationSwingCell.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1683">
-          <caret line="127" column="33" selection-start-line="127" selection-start-column="33" selection-end-line="127" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/CommandManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/ControllerEngine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="36" column="7" selection-start-line="36" selection-start-column="7" selection-end-line="36" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -601,13 +624,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="34" selection-start-line="12" selection-start-column="34" selection-end-line="12" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_301/javafx-src.zip!/com/sun/javafx/application/PlatformImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -622,13 +638,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/HappyBracketsToolWindow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="833">
-          <caret line="333" lean-forward="true" selection-start-line="333" selection-end-line="333" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_301/javafx-src.zip!/javafx/application/Platform.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -637,13 +646,6 @@
             <element signature="e#2753#2754#0" expanded="true" />
             <element signature="e#2800#2801#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenSwing.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="29" column="27" selection-start-line="29" selection-start-column="27" selection-end-line="29" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -657,34 +659,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/SettingsMenu.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="28" column="2" selection-start-line="28" selection-start-column="2" selection-end-line="28" selection-end-column="2" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ProjectListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="19" column="29" selection-start-line="19" selection-start-column="16" selection-end-line="19" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="43" column="65" selection-start-line="43" selection-start-column="65" selection-end-line="43" selection-end-column="65" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#11165#11166#0" expanded="true" />
-            <element signature="e#11228#11229#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -751,10 +731,73 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/DeviceRepresentationSwingCell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="39" column="22" lean-forward="true" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/DeviceConnection.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="497" column="60" selection-start-line="497" selection-start-column="60" selection-end-line="497" selection-end-column="60" />
+        <state relative-caret-position="123">
+          <caret line="123" column="5" lean-forward="true" selection-start-line="123" selection-start-column="5" selection-end-line="123" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="227" column="54" selection-start-line="227" selection-start-column="46" selection-end-line="227" selection-end-column="54" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#11165#11166#0" expanded="true" />
+            <element signature="e#11228#11229#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/HappyBracketsToolWindow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2782">
+          <caret line="221" lean-forward="true" selection-start-line="221" selection-end-line="221" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenSwing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="27" column="60" selection-start-line="27" selection-start-column="36" selection-end-line="27" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/ConfigurationScreenModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="157">
+          <caret line="22" column="52" selection-start-line="22" selection-start-column="36" selection-end-line="22" selection-end-column="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/ControllerEngine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/menu/SettingsMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="38" column="144" selection-start-line="38" selection-start-column="144" selection-end-line="38" selection-end-column="144" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
