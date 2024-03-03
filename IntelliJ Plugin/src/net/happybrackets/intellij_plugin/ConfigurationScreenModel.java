@@ -10,6 +10,7 @@ import com.intellij.openapi.wm.WindowManager;
 import javafx.application.Platform;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 
+import javax.swing.SwingUtilities;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;

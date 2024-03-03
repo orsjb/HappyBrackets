@@ -311,7 +311,7 @@ packDeviceRuntime.dependsOn shadowJar
 packDeviceRuntime.dependsOn deployJarAndJavaDoc
 
 // we need to put this depending on versionPlugin to ensure that version plugin copies to intellij plugin
-packDeviceRuntime.dependsOn versionPlugin
+//packDeviceRuntime.dependsOn versionPlugin
 packDeviceRuntime.dependsOn copyCompileVersionToPlugin
 
 

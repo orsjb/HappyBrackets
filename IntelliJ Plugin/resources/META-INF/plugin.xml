@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.happybrackets.intellij_plugin.HappyBracketsToolWindow</id>
   <name>HappyBrackets</name>
-  <version>4.13.3.0</version>
+  <version>4.14.9.961</version>
   <vendor email="support@happybrackets.net" url="http://www.happybrackets.net">HappyBrackets</vendor>
 
   <description><![CDATA[
@@ -97,6 +97,10 @@
 
       <action id="HappyBracketsGetDevicesAddressMenu" class="net.happybrackets.intellij_plugin.menu.global.GetDeviceAddressesAction"
               text="Display All Device Addresses" description="Display all device addresses to a event window so they can be used as input to the update script">
+      </action>
+
+      <action id="ThrowSomething" class="net.happybrackets.intellij_plugin.menu.global.NoteAppears"
+              text="Testing Appearance" description="Make a thing appear">
       </action>
 
       <separator/>

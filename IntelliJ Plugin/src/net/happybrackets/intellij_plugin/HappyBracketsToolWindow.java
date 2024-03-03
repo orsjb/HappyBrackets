@@ -72,10 +72,12 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
     static boolean staticSetup = false;
     static Synchronizer synchronizer;                               //runs independently, no interaction needed
     static int numberStartingToolwindows = 0;
+    private static volatile boolean javafxInitialized = false;
     // define how long to wait before starting thread
     final int AUTO_PROBE_WAIT_PERIOD = 10000;
     private JComponent rootComponent;
     private Scene scene;
+
 
     /**
      * Create a simple tally to determine how many toolwindws are currently in the create process
@@ -298,8 +300,14 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
         // Now let us Wait a certain period and automaticaly start the proble for devices
         new Thread(() -> {
-            try {
-                Thread.sleep(AUTO_PROBE_WAIT_PERIOD);
+           try {
+               while (!javafxInitialized) {
+                   checkAndSetJavaFXInitialized();
+
+                   Thread.sleep(100); // Check every 100 milliseconds
+               }
+
+               Thread.sleep(AUTO_PROBE_WAIT_PERIOD);
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -308,10 +316,25 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
                 });
 
             } catch (InterruptedException e) {
-
+               Thread.currentThread().interrupt(); // Restore the interrupted status
             }
         }).start();/* End threadFunction */
+
+
     }
+
+    public static void checkAndSetJavaFXInitialized() {
+        try {
+            Platform.runLater(() -> {});
+            javafxInitialized = true; // No exception, platform is initialized
+//            System.out.println("state = " + javafxInitialized);
+        } catch (IllegalStateException e) {
+            javafxInitialized = false; // Exception caught, platform not initialized
+//            System.out.println("HB toolwindow thread waiting...state = " +javafxInitialized);
+
+        }
+    }
+
 
     JComponent createSwingUI(Project project) {
         IntellijPluginSwingGUIManager guiManager = new IntellijPluginSwingGUIManager();

@@ -10,6 +10,8 @@ import net.happybrackets.intellij_plugin.ConfigurationScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+
 public class SettingsMenu extends AnAction {
     final static Logger logger = LoggerFactory.getLogger(SettingsMenu.class);
 
@@ -19,14 +21,25 @@ public class SettingsMenu extends AnAction {
             logger.debug("action performed");
             DataContext dataContext = e.getDataContext();
             Project project = DataKeys.PROJECT.getData(dataContext);
-            Platform.runLater(new Runnable() {
+//            Platform.runLater(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ConfigurationScreen settings = new ConfigurationScreen(project);
+//                    settings.show();
+//
+//                }
+//            });
+
+            SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     ConfigurationScreen settings = new ConfigurationScreen(project);
                     settings.show();
-
                 }
             });
+            logger.debug("creating configuration screen");
+
+
             logger.debug("creating configuration screen");
 
             //new ConfigurationScreenSwing().showAndGet();

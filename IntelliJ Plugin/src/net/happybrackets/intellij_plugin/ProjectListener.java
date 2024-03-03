@@ -9,6 +9,7 @@ import net.happybrackets.intellij_plugin.menu.UpdateProjectMenu;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.SwingUtilities;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
