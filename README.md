@@ -14,7 +14,7 @@ The core HappyBrackets project lives inside the folder HappyBrackets next to thi
 
 Happy brackets builds with Gradle. All you need to do to get started is call:
 * ```./gradlew idea``` on Unix like platforms such as linux or OS X
-* ```gradlew idea``` on Windows
+* ```gradlew idea``` on Windows 10
 
 This will give you a ready to go IDEA project configured with builds.
 

@@ -14,6 +14,7 @@ public class ProbeDevicesMenu extends AnAction {
         try {
             ControllerEngine.getInstance().doProbe();
             NotificationMessage.displayNotification("Probed Network for devices", NotificationType.INFORMATION);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -16,6 +16,7 @@
 
 package net.happybrackets.intellij_plugin.controller.network;
 
+import com.intellij.notification.NotificationType;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
 import javafx.application.Platform;
@@ -29,6 +30,7 @@ import net.happybrackets.core.control.DynamicControl;
 import net.happybrackets.core.scheduling.DeviceSchedulerValue;
 import net.happybrackets.core.scheduling.DeviceSchedules;
 import net.happybrackets.core.scheduling.HBScheduler;
+import net.happybrackets.intellij_plugin.NotificationMessage;
 import net.happybrackets.intellij_plugin.controller.config.ControllerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +50,7 @@ public class DeviceConnection {
     // flag to disable sending and receiving OSC
     private static boolean disableAdvertising = true;
     // create locks for our device lists
-    private final Object devicesByHostnameLock = new Object();
+    public final Object devicesByHostnameLock = new Object();
     private final Object deviceAliveListenerListLock = new Object();
     List<DisableAdvertiseChangedListener> disabledAdvertiseListener = new ArrayList<>();
     List<FavouritesChangedListener> favouritesChangedListeners = new ArrayList<>();
@@ -57,9 +59,9 @@ public class DeviceConnection {
     int virtualDeviceCount = 1;
     private OSCUDPReceiver oscServer;
     private ObservableList<LocalDeviceRepresentation> theDevices = FXCollections.observableArrayList(new ArrayList<LocalDeviceRepresentation>());
-    private List<LocalDeviceRepresentation> theDevicesList = new ArrayList<LocalDeviceRepresentation>();
+    public List<LocalDeviceRepresentation> theDevicesList = new ArrayList<LocalDeviceRepresentation>();
 
-    private Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
+    public Map<String, LocalDeviceRepresentation> devicesByHostname = new Hashtable<String, LocalDeviceRepresentation>();
     private Map<String, KnownDeviceID> knownDevices = new Hashtable<String, KnownDeviceID>();
     // We will have a selected device based on project
     private Map<String, LocalDeviceRepresentation> selectedDevices = new Hashtable<String, LocalDeviceRepresentation>();
@@ -85,6 +87,8 @@ public class DeviceConnection {
             logger.error("Unable to read '{}'", config.getKnownDevicesFile());
         }
     }
+
+
 
     /**
      * Flag if we are disabling OSC
@@ -118,7 +122,7 @@ public class DeviceConnection {
     }
 
     public void createFakeTestDevices () {
-        for (int i=0; i<2; i++) { //adjust for just 2
+        for (int i=0; i<4; i++) { //adjust for just 2
             createTestDevice();
         }
     }
@@ -216,6 +220,7 @@ public class DeviceConnection {
             }
 
         }
+        notifyDeviceListChange();
 
     }
 
@@ -244,6 +249,7 @@ public class DeviceConnection {
                 while (true) {
 
                     checkDeviceAliveness();
+//                    System.out.println("tock !");
 
 
                     try {
@@ -330,6 +336,7 @@ public class DeviceConnection {
 
     public ObservableList<LocalDeviceRepresentation> getDevices() {
         return theDevices;
+
     }
 
     public List<LocalDeviceRepresentation> getDevicesList() {
@@ -474,6 +481,7 @@ public class DeviceConnection {
                                         devicesByHostname.remove(device_name);
                                         logger.info("Removed Device from list: {}", device_name);
                                         device.sendConnectionListeners();
+                                        notifyDeviceListChange();
                                     }
                                 }
                             });
@@ -496,6 +504,11 @@ public class DeviceConnection {
                             theDevices.add(device_to_add);
                             theDevicesList.add(device_to_add);
                             device_to_add.sendConnectionListeners();
+                            System.out.println("Notifying listeners: " + theDevicesList.size() + " devices");
+                            notifyDeviceListChange();
+                            NotificationMessage.displayNotification("ADDED DEVICE", NotificationType.INFORMATION);
+
+//                            System.out.println("Notifying listeners: " + theDevicesList.size() + " devices");
                         }
                     });
 
@@ -541,11 +554,13 @@ public class DeviceConnection {
                     }
                 }
             }
+            System.out.println("Notifying listeners: " + theDevicesList.size() + " devices");
+
+//            notifyDeviceListChange();
         } catch (Exception e) {
             logger.error("Error reading incoming OSC message", e);
             return;
         }
-
 
     }
 
@@ -829,10 +844,10 @@ public class DeviceConnection {
         for (int i = 1; i<=1000; i++) {
             fakeTestDevice.addLogMessage("Log message " + i);
         }
-        theDevices.add(fakeTestDevice);
+//        theDevices.add(fakeTestDevice);
         theDevicesList.add(fakeTestDevice);
 
-        synchronized (devicesByHostnameLock) {
+            synchronized (devicesByHostnameLock) {
             devicesByHostname.put(name, fakeTestDevice);
         }
     }
@@ -857,4 +872,36 @@ public class DeviceConnection {
     public interface FavouritesChangedListener {
         void isFavourite(boolean enabled);
     }
+
+    /**
+     * Define an interface for updating the JPanel
+     */
+    public interface DeviceListChangeListener {
+        void onDeviceListChanged(List<LocalDeviceRepresentation> newDeviceList);
+    }
+    // Add the list of listeners
+    private final List<DeviceListChangeListener> deviceListChangeListeners = new ArrayList<>();
+
+    public void addDeviceListChangeListener(DeviceListChangeListener listener) {
+        synchronized (deviceListChangeListeners) {
+            deviceListChangeListeners.add(listener);
+        }
+    }
+
+    public void removeDeviceListChangeListener(DeviceListChangeListener listener) {
+        synchronized (deviceListChangeListeners) {
+            deviceListChangeListeners.remove(listener);
+        }
+    }
+
+    private void notifyDeviceListChange() {
+        List<LocalDeviceRepresentation> devices = getDevicesList();
+        synchronized (deviceListChangeListeners) {
+            System.out.println("Notifying listeners: " + devices.size() + " devices");
+            for (DeviceListChangeListener listener : deviceListChangeListeners) {
+                listener.onDeviceListChanged(devices);
+            }
+        }
+    }
+
 }

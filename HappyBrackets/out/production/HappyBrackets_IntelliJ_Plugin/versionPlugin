@@ -1,0 +1,28 @@
+#!/bin/bash
+
+VERSION=$1
+FILE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "Current dir" $FILE_PATH
+
+FILENAME="$FILE_PATH/resources/META-INF/plugin.xml"
+TEMP_FILE="$FILE_PATH/resources/META-INF/temp.xml"
+
+echo $FILENAME
+
+FILE_TEXT=""
+rm -f "$TEMP_FILE"
+while IFS= read -r line
+do
+    if [[ $line == *\<version\>*\<\/version\>* ]] ;
+    then
+        # write our modified version
+        printf "  <version>$VERSION</version>\n" >> "$TEMP_FILE"
+    else
+        # write our original line to temp
+	    printf '%s\n' "$line" >> "$TEMP_FILE"
+	fi
+done <"$FILENAME"
+
+# now replace original file with this new one
+mv "$TEMP_FILE" "$FILENAME"
+echo "Complete"

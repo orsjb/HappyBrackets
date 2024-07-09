@@ -64,7 +64,7 @@ import java.util.Scanner;
  * * deal with finding the config dolder, and also setting it (thus know where the plugin folder lives).
  * * deal with finding the compositions folder. It is possible we can make this context aware -- i.e., it looks at the build folder for the current project.
  */
-@SuppressWarnings("ALL")
+//@SuppressWarnings("ALL")
 public class HappyBracketsToolWindow implements ToolWindowFactory {
     // Whether to use the new Swing UI or the legacy JFX UI.
     final static Logger logger = LoggerFactory.getLogger(HappyBracketsToolWindow.class);
@@ -331,12 +331,15 @@ public class HappyBracketsToolWindow implements ToolWindowFactory {
 
     JComponent createSwingUI(Project project) {
         IntellijPluginSwingGUIManager guiManager = new IntellijPluginSwingGUIManager();
+        System.out.println("calling root component");
         return guiManager.getRootComponent();
     }
 
     JComponent createLegacyJavaFxUI(Project project) {
         IntelliJPluginGUIManager gui_manager = new IntelliJPluginGUIManager(project);
         JFXPanel jfxPanel = new JFXPanel();
+        System.out.println("calling root component");
+
         scene = gui_manager.setupGUI();
         jfxPanel.setScene(scene);
         return jfxPanel;
