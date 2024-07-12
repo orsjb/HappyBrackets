@@ -5,247 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de38a533-9907-4514-820a-fb831b564ee0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets/HB.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets/HB.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets/HBVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/Device/HappyBrackets/HBVersion.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/index-all.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/extras/assignment_autograding/RuntimeTypeAdapterFactory.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Distribution/HappyBrackets Developer Kit/HappyBrackets Project/libs/docs/hb/javadoc/net/happybrackets/extras/assignment_autograding/RuntimeTypeAdapterFactory.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HappyBrackets.iml" beforeDir="false" afterPath="$PROJECT_DIR$/HappyBrackets.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HappyBrackets.iws" beforeDir="false" afterPath="$PROJECT_DIR$/HappyBrackets.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HappyBrackets_IntelliJ_Plugin/builddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HappyBrackets_IntelliJ_Plugin/builddate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HappyBrackets_IntelliJ_Plugin/projectTemplates/HB.zip" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HappyBrackets_IntelliJ_Plugin/projectTemplates/HB.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/HappyBrackets_IntelliJ_Plugin/projectTemplates/HappyBracketsProject.zip" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/HappyBrackets_IntelliJ_Plugin/projectTemplates/HappyBracketsProject.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/4.8/fileChanges/last-build.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/4.8/fileHashes/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/4.8/taskHistory/taskHistory.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/copyright/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__ch_qos_logback_logback_classic_1_1_7.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__ch_qos_logback_logback_core_1_1_7.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__de_sciss_netutil_1_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__org_apache_commons_commons_lang3_3_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__org_nanohttpd_nanohttpd_2_2_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__org_slf4j_slf4j_api_1_7_20.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/modules/HappyBrackets.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/modules/HappyBrackets_main.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/modules/HappyBrackets_test.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/Device/HappyBrackets/scripts/simulator.config" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/HappyBrackets_IntelliJ_Plugin.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/HappyBrackets_IntelliJ_Plugin.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatBd.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatCym.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatHiT.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatHiT2.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatHiT3.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatLoT.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatSn.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_A_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_B_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_D_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_E_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_G_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/_credits.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/long/1979.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/long/DrumLoop130.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/long/Nightingale.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/data/hello.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/lib/json-20180130.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/META-INF/plugin.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/builddate.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/config/controller-config.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/config/known_devices" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/fileTemplates/internal/HappyBracketsProject.iml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/fileTemplates/internal/HappyBracketsSketch.java.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/fileTemplates/internal/description.html.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/fileTemplates/internal/modules.xml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/fileTemplates/internal/workspace.xml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/hb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/copy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/copy_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/debug.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/debug_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/green.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/greenstar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/hb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/hb_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/ping.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/play.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/play_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/reboot.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/reboot_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/red.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/redstar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/reset.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/resetMenu.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/resetMenu_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/send.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/sendAll.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/sendAll_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/sendMenu.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/sendMenu_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/shutdown.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/shutdown_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/stop.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/icons/stop_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/liveTemplates/HappyBrackets.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/projectTemplates/HB.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/projectTemplates/HappyBracketsProject.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/production/HappyBrackets_IntelliJ_Plugin/projectTemplates/JavaDocs.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/4.8/fileChanges/last-build.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/4.8/fileHashes/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/4.8/taskHistory/taskHistory.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/copyright/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__ch_qos_logback_logback_classic_1_1_7.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__ch_qos_logback_logback_core_1_1_7.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__de_sciss_netutil_1_0_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__org_apache_commons_commons_lang3_3_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__org_nanohttpd_nanohttpd_2_2_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/libraries/Gradle__org_slf4j_slf4j_api_1_7_20.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/modules/HappyBrackets.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/modules/HappyBrackets_main.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/modules/HappyBrackets_test.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/Device/HappyBrackets/scripts/simulator.config" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/HappyBrackets_IntelliJ_Plugin.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/HappyBrackets_IntelliJ_Plugin.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatBd.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatCym.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatHiT.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatHiT2.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatHiT3.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatLoT.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Mattel_Drum_Machine/MatSn.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_A_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_B_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_D_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_E_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/Nylon_Guitar/Clean_G_harm.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/_credits.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/long/1979.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/long/DrumLoop130.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/audio/long/Nightingale.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/data/hello.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/lib/json-20180130.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/META-INF/plugin.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/builddate.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/config/controller-config.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/config/known_devices" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/hb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/icons/green.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/icons/greenstar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/icons/red.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/icons/redstar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/liveTemplates/HappyBrackets.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/projectTemplates/HB.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/projectTemplates/HappyBracketsProject.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/resources/projectTemplates/JavaDocs.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/HappyBracketsProject.iml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/HappyBracketsSketch.java.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/description.html.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/modules.xml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/workspace.xml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/copy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/copy_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/debug.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/debug_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/hb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/hb_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/ping.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/play.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/play_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/reboot.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/reboot_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/reset.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/resetMenu.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/resetMenu_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/send.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/sendAll.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/sendAll_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/sendMenu.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/sendMenu_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/shutdown.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/shutdown_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/stop.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/stop_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/out/test/HappyBrackets_IntelliJ_Plugin/versionPlugin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/META-INF/plugin.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/builddate.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/config/controller-config.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/config/known_devices" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/hb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/icons/green.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/icons/greenstar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/icons/red.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/icons/redstar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/liveTemplates/HappyBrackets.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/projectTemplates/HB.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/projectTemplates/HappyBracketsProject.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/resources/projectTemplates/JavaDocs.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/HappyBracketsProject.iml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/HappyBracketsSketch.java.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/description.html.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/modules.xml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/fileTemplates/internal/workspace.xml.ft" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/copy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/copy_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/debug.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/debug_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/hb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/hb_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/ping.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/play.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/play_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/reboot.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/reboot_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/reset.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/resetMenu.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/resetMenu_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/send.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/sendAll.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/sendAll_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/sendMenu.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/sendMenu_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/shutdown.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/shutdown_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/stop.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/icons/stop_dark.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/src/net/happybrackets/intellij_plugin/templates/project/HappyBracketsGeneratorPeer.form" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/versionPlugin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/HappyBrackets_IntelliJ_Plugin/versionPluginWin.ps1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/builddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/builddate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/versionddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/versionddate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/resources/builddate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/resources/builddate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/HB.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/HB.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/HappyBracketsProject.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/resources/projectTemplates/HappyBracketsProject.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntellijPluginSwingGUIManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/IntellijPluginSwingGUIManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/ControllerEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/ControllerEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/ControllerAdvertiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/ControllerAdvertiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/DeviceConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IntelliJ Plugin/src/net/happybrackets/intellij_plugin/controller/network/DeviceConnection.java" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/out/" />
-    <ignored path="$PROJECT_DIR$/.gradle/" />
-    <ignored path="$PROJECT_DIR$/build/" />
-    <ignored path="$PROJECT_DIR$/../IntelliJ Plugin/" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -377,6 +141,10 @@
     <option name="LAST_EDITED_MODULE_NAME" />
     <option name="LAST_EDITED_TAB_NAME" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 2
+}]]></component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-18" />
     <option name="y" value="-18" />
@@ -422,34 +190,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="net.happybrackets.intellij_plugin.menu.global" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
   <component name="RunManager" selected="Gradle.HappyBrackets [packDeviceRuntime]">
-    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
-      <Host>localhost</Host>
-      <Port>5050</Port>
-    </configuration>
     <configuration default="true" type="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -474,7 +236,10 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration name="HappyBrackets [listJars]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -493,7 +258,10 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration name="HappyBrackets [packDeviceRuntime]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -512,7 +280,10 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration name="HappyBrackets [smile]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -531,7 +302,10 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration name="HappyBrackets [versionPlugin]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -550,7 +324,10 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
@@ -728,7 +505,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_301/javafx-src.zip!/com/sun/javafx/application/PlatformImpl.java">
+    <entry file="jar://$PROJECT_DIR$/../../../../../Program Files/Java/jdk1.8.0_301/javafx-src.zip!/com/sun/javafx/application/PlatformImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="274" selection-start-line="274" selection-end-line="274" />
@@ -742,7 +519,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_301/javafx-src.zip!/javafx/application/Platform.java">
+    <entry file="jar://$PROJECT_DIR$/../../../../../Program Files/Java/jdk1.8.0_301/javafx-src.zip!/javafx/application/Platform.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="38" column="19" selection-start-line="38" selection-start-column="19" selection-end-line="38" selection-end-column="19" />

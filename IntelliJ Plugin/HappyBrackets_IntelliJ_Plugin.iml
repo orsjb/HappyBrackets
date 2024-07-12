@@ -27,5 +27,8 @@
     </orderEntry>
     <orderEntry type="library" name="com.google.code.gson:gson:2.11.0" level="project" />
     <orderEntry type="library" name="Beads" level="project" />
+    <orderEntry type="library" name="openjfx.javafx.base" level="project" />
+    <orderEntry type="library" name="openjfx.javafx.fxml" level="project" />
+    <orderEntry type="library" name="openjfx.javafx.swing" level="project" />
   </component>
 </module>

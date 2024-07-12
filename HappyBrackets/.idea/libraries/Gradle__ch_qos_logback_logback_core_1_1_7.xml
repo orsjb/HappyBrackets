@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: ch.qos.logback:logback-core:1.1.7">
+  <library name="Gradle: ch.qos.logback:logback-core:1.1.7" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.7/7873092d39ef741575ca91378a6a21c388363ac8/logback-core-1.1.7.jar!/" />
     </CLASSES>

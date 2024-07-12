@@ -224,6 +224,10 @@ public class DeviceConnection {
 
     }
 
+
+    //Thread here on device communication, called from ControllerEnginer.java
+    //public synchronized void startDeviceCommunication() {
+
     public void startDeviceConnection() {
         try {
             oscServer = new OSCUDPReceiver(true); //OSCServer.newUsing(OSCServer.UDP);

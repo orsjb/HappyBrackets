@@ -143,7 +143,7 @@ public class ControllerEngine {
             controllerStarted = true;
             controllerAdvertiser.start();
 
-            // Tell Our Scheduler we are conrtroller
+            // Tell Our Scheduler we are controller
             HBScheduler.setDeviceController();
         }
     }

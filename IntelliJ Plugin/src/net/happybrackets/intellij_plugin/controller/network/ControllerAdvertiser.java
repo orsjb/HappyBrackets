@@ -388,7 +388,7 @@ public class ControllerAdvertiser {
         byte[] msgBuff; // Just the data inside the packet
 
         /**
-         * Crate a chached message to send
+         * Create a cached message to send
          *
          * @param msg               The OSC Message
          * @param msg_buff          The Bytes inside OSC Message

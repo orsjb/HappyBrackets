@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/HappyBrackets.iml" filepath="$PROJECT_DIR$/HappyBrackets.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HappyBrackets_main.iml" filepath="$PROJECT_DIR$/.idea/modules/HappyBrackets_main.iml" group="HappyBrackets" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HappyBrackets_test.iml" filepath="$PROJECT_DIR$/.idea/modules/HappyBrackets_test.iml" group="HappyBrackets" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HappyBrackets.main.iml" filepath="$PROJECT_DIR$/.idea/modules/HappyBrackets.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HappyBrackets.test.iml" filepath="$PROJECT_DIR$/.idea/modules/HappyBrackets.test.iml" />
     </modules>
   </component>
 </project>

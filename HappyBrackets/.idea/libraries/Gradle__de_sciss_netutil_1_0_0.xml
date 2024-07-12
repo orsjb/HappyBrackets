@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: de.sciss:netutil:1.0.0">
+  <library name="Gradle: de.sciss:netutil:1.0.0" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.sciss/netutil/1.0.0/2581190e8619c4ba3b3316ad24c237f812f87/netutil-1.0.0.jar!/" />
     </CLASSES>

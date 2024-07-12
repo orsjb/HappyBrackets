@@ -193,24 +193,30 @@ task packDeviceRuntime (type:Zip) {
 }
 
 // this task will write the HBVersion.text complete version created in the tests into plugin resource
-task versionPlugin(type:Exec) {
+task versionPlugin(type: Exec) {
     // write the version details into the plugin.xml  file
     def VERSION_FILENAME = 'build/libs/HBVersion.txt'
-    def VERSION_RENAME_PROGRAM = '../IntelliJ Plugin/versionPlugin'
+    def VERSION_RENAME_PROGRAM = '../IntelliJ Plugin/versionPluginWin.ps1'
+//    def VERSION_RENAME_PROGRAM = '../IntelliJ Plugin/versionPlugin'
 
 
     if (file(VERSION_FILENAME).exists()) {
         File file = file(VERSION_FILENAME)
-        def version_text = file.text
+        def version_text = file.text.trim() // Trim to avoid any unexpected whitespace issues
 
-        commandLine VERSION_RENAME_PROGRAM, version_text
+        // Set the command line to execute the PowerShell script with the version text as an argument
+        commandLine 'powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', VERSION_RENAME_PROGRAM, version_text
         standardOutput = new ByteArrayOutputStream()
         doLast {
             String output = standardOutput.toString()
             println output
         }
-
+    } else {
+        // Handle the case where the version file does not exist
+        println "Version file does not exist: $VERSION_FILENAME"
     }
+
+
 
 }
 
@@ -311,7 +317,7 @@ packDeviceRuntime.dependsOn shadowJar
 packDeviceRuntime.dependsOn deployJarAndJavaDoc
 
 // we need to put this depending on versionPlugin to ensure that version plugin copies to intellij plugin
-//packDeviceRuntime.dependsOn versionPlugin
+packDeviceRuntime.dependsOn versionPlugin
 packDeviceRuntime.dependsOn copyCompileVersionToPlugin
 
 

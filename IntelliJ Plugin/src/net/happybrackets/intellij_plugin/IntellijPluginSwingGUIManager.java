@@ -23,10 +23,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
@@ -61,18 +59,9 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
     private void updateDeviceList(List<LocalDeviceRepresentation> newDeviceList) {
         if (devicesListComponent != null) {
             System.out.println("updating list!");
-
-            devicePanel.updateUI();
-            devicePanel.revalidate();
-            devicePanel.repaint();
-
-            //this did nothing
-//            devicesListComponent.updateDevices(newDeviceList);
-//            devicesListComponent.revalidate(); //not doing anything anywhere i tried
-//            devicesListComponent.repaint();
-//            devicesListComponent.updateUI();
+            devicePanel.add(devicesListComponent,0);
+            //set the label at the top of devices
             topLevelContainerLabel.setText( "Devices: [ " + newDeviceList.size() + " ]");
-//            devicePanel.add((Component) newDeviceList);
         } else {
             System.out.println("device list null!");
         }
@@ -83,9 +72,126 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
 
         panel.add(createCustomCommandArea());
         panel.add(createGlobalButtonsArea());
+        panel.add(createDeviceAddAndRemove()); //TODO: Test
         panel.add(createDevicesArea());
         panel.add(Box.createVerticalGlue());
 
+        return panel;
+    }
+
+    private Component createDeviceAddAndRemove() {
+        JPanel panel = SwingUtilities.createContainer(BoxLayout.LINE_AXIS);
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setPreferredSize(new Dimension(FULL_WIDTH, 32));
+
+        JButton AddDevice = new JButton("Add Device");
+        AddDevice.addActionListener((ActionEvent e) -> {
+//                ControllerEngine.getInstance().getDeviceConnection().deviceReset()
+
+            //make a test device to add to the panel
+            System.out.println("called ___AddDevice__");
+            float tag = (float) Math.random();
+            String name = "hakushuDevice #" + tag;
+            String hostname = "haku5hu!" + tag;
+
+            String address = "127.0.0." + tag;
+            LocalDeviceRepresentation hakushuDevice = new LocalDeviceRepresentation(name, hostname, address, 1, null, 0, true);
+            DeviceRepresentationSwingCell cell = new DeviceRepresentationSwingCell(hakushuDevice, devicesListComponent);
+
+            devicePanel.remove(devicesListComponent);
+            devicePanel.add(devicesListComponent,0);
+
+            int insertAt = devicesListComponent.cells.size();
+
+            devicesListComponent.add(cell, insertAt);
+            devicesListComponent.cells.add(cell);
+            deviceConnection.getDevicesList().add(hakushuDevice);
+            updateDeviceList(deviceConnection.getDevicesList());
+
+            devicePanel.remove(devicesListComponent);
+            devicePanel.add(devicesListComponent,0);
+
+            devicesListComponent.revalidate();
+            devicesListComponent.repaint();
+            devicesListComponent.updateUI();
+            devicePanel.revalidate();
+            devicePanel.repaint();
+            devicePanel.updateUI();
+            panel.updateUI();
+            panel.repaint();
+            panel.revalidate();
+
+            synchronized (deviceConnection.devicesByHostnameLock) {
+                deviceConnection.devicesByHostname.put(name, hakushuDevice);
+            }
+        });
+        panel.add(AddDevice);
+
+
+        JButton RemoveDevice = new JButton("Remove Device");
+        RemoveDevice.addActionListener((ActionEvent e) -> {
+            System.out.println("called ___RemoveDevice__");
+
+//            devicePanel.add(devicesListComponent, 0);
+//            devicesListComponent.remove(0);
+//            deviceConnection.getDevicesList().remove(0);
+            updateDeviceList(deviceConnection.getDevicesList());
+
+            synchronized (deviceConnection.devicesByHostnameLock) {
+
+                List<String> keys = new ArrayList<>(deviceConnection.devicesByHostname.keySet());
+                int index = keys.size()-1;
+                System.out.println("removing: " + index);
+
+
+                List<LocalDeviceRepresentation> deviceList = deviceConnection.getDevicesList();
+                LocalDeviceRepresentation deviceRepresentation = deviceList.get(deviceList.size()-1);
+                String name = deviceRepresentation.deviceName;
+                System.out.println("arr size: " + deviceConnection.devicesByHostname.size());
+                deviceConnection.devicesByHostname.remove(name);
+                System.out.println( "index: " + index);
+                System.out.println("arr size: " + deviceConnection.devicesByHostname.size());
+                devicesListComponent.remove(index);
+                devicesListComponent.cells.remove(index);
+
+                deviceConnection.getDevicesList().remove(index);
+                devicePanel.remove(devicesListComponent);
+//                devicePanel.add(topLevelContainerLabel);
+                //set the label at the top of devices
+                topLevelContainerLabel.setText( "Devices: [ " + deviceConnection.getDevicesList().size() + " ]");
+                devicePanel.add(devicesListComponent);
+
+                devicesListComponent.revalidate();
+                devicesListComponent.repaint();
+                devicesListComponent.updateUI();
+                devicePanel.revalidate();
+                devicePanel.repaint();
+                devicePanel.updateUI();
+
+                devicePanel.remove(devicesListComponent);
+                devicePanel.add(devicesListComponent,0);
+
+
+                devicesListComponent.revalidate();
+                devicesListComponent.repaint();
+                devicesListComponent.updateUI();
+                devicePanel.revalidate();
+                devicePanel.repaint();
+                devicePanel.updateUI();
+                panel.updateUI();
+                panel.repaint();
+                panel.revalidate();
+
+
+                updateDeviceList(deviceConnection.getDevicesList());
+
+
+            }
+
+
+        });
+        panel.add(RemoveDevice);
+        panel.setAlignmentX(LEFT_ALIGNMENT);
         return panel;
     }
 
@@ -207,6 +313,55 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
             displayNotification("Probed Network for devices", NotificationType.INFORMATION);
             int num = deviceConnection.getDevicesList().size();
             topLevelContainerLabel.setText("Devices: " + " [ " + num + " ] ");
+
+            if(num > devicesListComponent.cells.size()){
+                System.out.println("Device Detected in IntelliJPlugin");
+                System.out.println("Cells: " + devicesListComponent.cells.size() );
+                System.out.println("devicesList seems to be same size");
+            } else {
+                System.out.println("device lists seem to be the same size");
+            }
+
+//
+////            LocalDeviceRepresentation hakushuDevice = new LocalDeviceRepresentation(name, hostname, address, 1, null, 0, true);
+//            DeviceRepresentationSwingCell cell = new DeviceRepresentationSwingCell(hakushuDevice, devicesListComponent);
+//
+//            devicePanel.add(devicesListComponent,0);
+//            devicesListComponent.add(cell, 0);
+//            deviceConnection.getDevicesList().add(hakushuDevice);
+
+
+            //enter device to be displayed function
+
+
+
+            devicePanel.remove(devicesListComponent);
+//                devicePanel.add(topLevelContainerLabel);
+            //set the label at the top of devices
+            topLevelContainerLabel.setText( "Devices: [ " + deviceConnection.getDevicesList().size() + " ]");
+            devicePanel.add(devicesListComponent);
+
+            devicesListComponent.revalidate();
+            devicesListComponent.repaint();
+            devicesListComponent.updateUI();
+            devicePanel.revalidate();
+            devicePanel.repaint();
+            devicePanel.updateUI();
+
+            devicePanel.remove(devicesListComponent);
+            devicePanel.add(devicesListComponent,0);
+
+            devicesListComponent.revalidate();
+            devicesListComponent.repaint();
+            devicesListComponent.updateUI();
+            devicePanel.revalidate();
+            devicePanel.repaint();
+            devicePanel.updateUI();
+            panel.updateUI();
+            panel.repaint();
+            panel.revalidate();
+
+
             updateDeviceList(deviceConnection.getDevicesList());
         });
         panel.add(probeButton);
@@ -215,122 +370,91 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
         //rename button - for testing
         JButton renameButton = new JButton("rename");
         renameButton.addActionListener((ActionEvent e) -> {
-        System.out.println("called ___Rename__" );
-        String name = "hakushuDevice #" + Math.random() ;
-        String hostname = "haku5hu!";
-        String address = "127.0.0.1";
-        LocalDeviceRepresentation hakushuDevice = new LocalDeviceRepresentation(name, hostname, address, 1, null, 0, true);
-//            deviceConnection.getDevicesList().add();
-// LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, ControllerConfig config, int reply_port, boolean isFakeDevice) {
+            //make a test device to add to the panel
+            System.out.println("called ___Rename__" );
+            String nameToAdd = "hakushuDevice #" + Math.random() ;
+            String hostname = "haku5hu!";
+            String address = "127.0.0.1";
+//            LocalDeviceRepresentation hakushuDevice = new LocalDeviceRepresentation(name, hostname, address, 1, null, 0, true);
+//            DeviceRepresentationSwingCell cell = new DeviceRepresentationSwingCell(hakushuDevice,devicesListComponent);
 
-//            deviceConnection.getDevicesList().add(hakushuDevice);
-//            System.out.println("NUM!!!: " + deviceConnection.getDevicesList().size());
+//            devicePanel.add(devicesListComponent,0);
+            try {
+                List<LocalDeviceRepresentation> devicesByHostname = ControllerEngine.getInstance().getDeviceConnection().getAllActiveDevices();
 
-//            listComponent.cells.remove(0);
-//
-//            localListHere.getUIClassID();
-//            System.out.println("WHY Y ?: " + localListHere.getY());
-//            deviceConnection.getDevicesList().add(hakushuDevice);
-//
-//
-//
-//            listComponent.cells.remove(0);
-//            devicesListComponent.cells.remove(0);
-//            devicesListComponent.deviceConnection.theDevicesList.add(hakushuDevice);
-//
-//            devicesListComponent.deviceConnection.theDevicesList.remove(0);
-//            devicesListComponent.cells.remove(0);
-////            createDevicesArea();
-//
-//            System.out.println( "hakushu lives: " + hakushuDevice.deviceName);
-//
-//            System.out.println("update deviceConnection: " + deviceConnection.getDevicesList().size());
-//            deviceConnection.getDevicesList().add(hakushuDevice);
-//            deviceConnection.getDevicesList().size();
-//            deviceConnection.getDevicesList().add(hakushuDevice);
-//            devicesListComponent.deviceConnection.theDevicesList.add(hakushuDevice);
-////            deviceConnection.createFakeTestDevices();
-//            updateDeviceList(deviceConnection.getDevicesList());
-//
-//            System.out.println("update deviceConnection: " + deviceConnection.getDevicesList().size());
-//            DeviceRepresentationSwingCell cell = new DeviceRepresentationSwingCell(hakushuDevice, devicesListComponent);
-//            listComponent.cells.add(cell);
-//            devicesListComponent.updateUI();
-//            listComponent.updateUI();
-//
-//
-//            //this does not update anything after adding to the list
-//            listComponent.revalidate();
-//            listComponent.repaint();
-//
-//            devicesListComponent.revalidate();
-//            devicesListComponent.repaint();
-//
-//            localListHere.updateUI();
-//            localListHere.revalidate();
-//            localListHere.repaint();
-//
-//            topLevelContainerLabel.updateUI();
-//            topLevelContainerLabel.revalidate();
-//            topLevelContainerLabel.repaint();
-//
-//
-//
-//
-            DeviceRepresentationSwingCell cell = new DeviceRepresentationSwingCell(hakushuDevice,devicesListComponent);
-            devicesListComponent.cells.add(cell);
-            listComponent.cells.add(cell);
-            devicePanel.add(devicesListComponent, BorderLayout.CENTER);
-            devicePanel.setBackground(Color.ORANGE);
-            devicePanel.add(devicesListComponent,0);
-//            devicePanel
-//            devicePanel.remove(3);
-//            devicePanel.getComponent(2).setBackground(JBColor.BLUE);
-            /**
-             *             DeviceRepresentationSwingCell cell = new DeviceRepresentationSwingCell(hakushuDevice,devicesListComponent);
-             * The ticket
-             * devicesListComponent.add(cell,0);
-             *
-             */
-            devicesListComponent.remove(0);
-            devicesListComponent.add(cell,0);
-//    public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, ControllerConfig config, InetSocketAddress socketAddress, int reply_port) {
+                int deviceCount = 0;
+                nameToAdd = null;
 
-            synchronized (deviceConnection.devicesByHostnameLock) {
-                deviceConnection.devicesByHostname.put(name, hakushuDevice);
-                System.out.println("added in sync thread?");
-            }
+                if (devicesByHostname.size() > 0) {
+                    //add a device here
+                    if (devicesListComponent.cells.size() != devicesByHostname.size()) {
+                        int display  = devicesByHostname.size() - devicesListComponent.cells.size();
+                        displayNotification("updateUI: " + display, NotificationType.INFORMATION);
 
-            deviceConnection.getDevicesList().add(hakushuDevice);
-//    public LocalDeviceRepresentation(String deviceName, String hostname, String addr, int id, ControllerConfig config, int reply_port, boolean isFakeDevice) {
-//            listComponent.cells.add(cell);
+                        updateDeviceList(devicesByHostname);
 
-//            devicesListComponent.updateDevices(deviceConnection.getDevicesList());
+
+                        devicesByHostname.forEach((LocalDeviceRepresentation dev) -> {
+                            if(deviceConnection.getDevicesList().stream().noneMatch(d -> d.deviceName.equals(dev.deviceName))){
+                                System.out.println("!!linus located!!");
+                                displayNotification("linus Located!!: ", NotificationType.INFORMATION);
+
+                                System.out.println("name: " + dev.deviceName);
+                                int insertAt = deviceConnection.theDevicesList.size();
+                                DeviceRepresentationSwingCell cell = new DeviceRepresentationSwingCell(dev, devicesListComponent);
+                                devicesListComponent.add(cell,0);
+                                devicesListComponent.cells.add(cell);
+                            }
+                        });
+
+                        //devicePanel.add(topLevelContainerLabel);
+                        //set the label at the top of devices
+                        topLevelContainerLabel.setText("Devicez: [ " + deviceConnection.getDevicesList().size() + " ]");
+                        devicePanel.remove(devicesListComponent);
+
+                        devicePanel.add(devicesListComponent,0);
+
+                        devicesListComponent.revalidate();
+                        devicesListComponent.repaint();
+                        devicesListComponent.updateUI();
+                        devicePanel.revalidate();
+                        devicePanel.repaint();
+                        devicePanel.updateUI();
+
+                        devicePanel.remove(devicesListComponent);
+                        devicePanel.add(devicesListComponent, 0);
+
+
+                        devicesListComponent.revalidate();
+                        devicesListComponent.repaint();
+                        devicesListComponent.updateUI();
+                        devicePanel.revalidate();
+                        devicePanel.repaint();
+                        devicePanel.updateUI();
+                        panel.updateUI();
+                        panel.repaint();
+                        panel.revalidate();
+
+
+                        updateDeviceList(deviceConnection.getDevicesList());
+                        System.out.println("iterating __rename__ loop");
+                        displayNotification("updateUI", NotificationType.INFORMATION);
+
+                    }
+
+                        }
+                        displayNotification("exiting Rename Function", NotificationType.INFORMATION);
+                }
+                catch(Exception ex){
+
+                }
+
+
+//            devicesListComponent.add(cell,1);
+
             updateDeviceList(deviceConnection.getDevicesList());
-
-//            createDevicesArea();
-//            listComponent.updateUI();
-
-
-//            listComponent.cells.remove(0);
-//            deviceConnection.getDevicesList().remove(0);
-//            listComponent.updateUI();
-//                System.out.println("cells: " + listComponent.cells.size());
-//                listComponent.remove(0);
-//                listComponent.updateUI();
-//            listComponent.add();
-
-//            listComponent.remove(listComponent.cells.get(0));
-//            System.out.println("names: " + listComponent.getParent());
-
-//            int num = 99;
-//            createDevicesArea(); //works but restarts osc server?
-//            topLevelContainerLabel.setText("Devices: " + " [ " + num + " ] ");
-//            topLevelContainerLabel.getParent().revalidate();
-//            topLevelContainerLabel.getParent().repaint();
         });
         panel.add(renameButton);
-
 
         //this is the top level name
         return createTopLevelContainer("System Messages", panel);
@@ -367,7 +491,6 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
         }
 
         void initialize() {
-
             updateDevices(deviceConnection.getDevicesList());
         }
 
@@ -407,25 +530,8 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
                 add(cell);
                 cells.add(cell);
                 System.out.println("devices.size = " + devices.size());
-
-
-//                this.remove(1);
-                System.out.println();
-//                if(this.getSize())
                 System.out.println("cells size: " + cells.size());
             }
-
-            this.updateUI();
-//            this.remove(0);
-
-
-
-//            onDeviceSelectionChanged();
-//            revalidate();
-//            repaint();
-//            localListHere.revalidate();
-//            localListHere.repaint();
-//            updateUI();
         }
 
         public void onCellClicked(DeviceRepresentationSwingCell clickedCell) {
@@ -466,13 +572,13 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
     }
 
     JComponent createDevicesArea() {
-        localListHere = new JPanel();
-        localListHere.setLayout(new BoxLayout(localListHere, BoxLayout.PAGE_AXIS));
-        localListHere.getUIClassID();
+//        localListHere = new JPanel();
+//        localListHere.setLayout(new BoxLayout(localListHere, BoxLayout.PAGE_AXIS));
+//        localListHere.getUIClassID();
 
 
-        listComponent = new DevicesListComponent(deviceConnection);
-        listComponent.initialize();
+//        listComponent = new DevicesListComponent(deviceConnection);
+//        listComponent.initialize();
 
 
 //        List<LocalDeviceRepresentation> devicesByHostname = ControllerEngine.getInstance().getDeviceConnection().getAllActiveDevices();
@@ -480,7 +586,7 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
         int num = ControllerEngine.getInstance().getDeviceConnection().getAllActiveDevices().size();
         System.out.println("Total number of devices" + num);
 
-        return createTopLevelContainer("Devices:" + " [ " + num + " ] ", SwingUtilities.createVerticallyScrollingArea(listComponent));
+        return createTopLevelContainer("Devices:" + " [ " + num + " ] ", SwingUtilities.createVerticallyScrollingArea(devicesListComponent));
     }
 
     JPanel createTopLevelContainer(String name, JComponent content) {
@@ -490,7 +596,6 @@ public class IntellijPluginSwingGUIManager implements DeviceListChangeListener {
 //        JPanel panel = new JPanel(layout);
         devicePanel = new JPanel(layout);
 
-        // For some reason this seems to shrink to the content.
         devicePanel.setMaximumSize(new Dimension(FULL_WIDTH, 0));
 
         // Label at the top
