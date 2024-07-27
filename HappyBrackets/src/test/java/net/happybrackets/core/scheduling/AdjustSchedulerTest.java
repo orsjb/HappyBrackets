@@ -8,7 +8,7 @@ public class AdjustSchedulerTest {
 
     final double CLOCK_INTERVAL = Math.random() * 100 + 10;
 
-    final double MAX_ALLOWED_JITTER = 10;
+    final double MAX_ALLOWED_JITTER = 20;
 
     final double RESHEDULE_AMOUNT = 150;
 

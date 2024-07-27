@@ -1,0 +1,14 @@
+  {
+  "multicastAddr":            "::FFFF:225.3.2.6",
+  "broadcastPort":            23220,
+  "statusFromDevicePort":     23230,
+  "clockSynchPort":           23240,
+  "codeToDevicePort":         23250,
+  "controlToDevicePort":      23260,
+  "controllerDiscoveryPort":  23270,
+  "controllerHTTPPort":       23280,
+  "aliveInterval":            15000,
+
+  "useHostname":              false,
+  "polyLimit":                4
+}

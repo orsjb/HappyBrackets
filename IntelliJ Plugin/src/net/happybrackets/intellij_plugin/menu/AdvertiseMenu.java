@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
@@ -23,7 +24,10 @@ public class AdvertiseMenu extends AnAction {
     @Override
     public void update(AnActionEvent event) {
         try {
-
+            if(ControllerEngine.getInstance().getDeviceConnection() == null){
+                System.out.println("getAllActiveDevices == null!!");
+                return;
+            }
             int advertise_port = ControllerEngine.getInstance().getDeviceConnection().getReplyPort();
 
             DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
@@ -43,5 +47,10 @@ public class AdvertiseMenu extends AnAction {
             ex.printStackTrace();
         }
 
+    }
+
+    @Override
+    public ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT; // Use EDT (Event Dispatch Thread)
     }
 }

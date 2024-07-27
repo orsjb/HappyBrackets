@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
@@ -35,6 +36,11 @@ public class RefreshDevicesMenu extends AnAction {
             ex.printStackTrace();
         }
 
+    }
+
+    @Override
+    public ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT; // Use EDT (Event Dispatch Thread)
     }
 
 }

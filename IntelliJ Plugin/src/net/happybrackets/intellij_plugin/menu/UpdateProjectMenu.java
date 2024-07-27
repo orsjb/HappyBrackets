@@ -1,9 +1,11 @@
 package net.happybrackets.intellij_plugin.menu;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import net.happybrackets.core.BuildVersion;
+import net.happybrackets.intellij_plugin.controller.ControllerEngine;
 import net.happybrackets.intellij_plugin.controller.gui.DialogDisplay;
 import net.happybrackets.intellij_plugin.menu.context.SendCompositionAction;
 import net.happybrackets.intellij_plugin.templates.project.HappyBracketsProject;
@@ -187,7 +189,10 @@ public class UpdateProjectMenu extends AnAction {
     public void update(AnActionEvent e) {
         try {
             Project current_project = e.getProject();
-
+            if(current_project == null){
+                System.out.println("current_project == null!!");
+                return;
+            }
             // Read the Version Number of Version Text file
             String source_folder = current_project.getBaseDir().getCanonicalPath() + HAPPY_BRACKETS_DEVICE_FOLDER;
             String version_file = source_folder + VERSION_FILE;
@@ -222,5 +227,9 @@ public class UpdateProjectMenu extends AnAction {
             ex.printStackTrace();
         }
 
+    }
+    @Override
+    public ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT; // Use EDT (Event Dispatch Thread)
     }
 }

@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
@@ -73,6 +74,10 @@ public class RunSimulatorMenu extends AnAction {
             String menu_icon = "/icons/play.png";
 
             Project current_project = event.getProject();
+            if(current_project == null){
+                System.out.println("currentProject == null!!");
+                return;
+            }
 
             String project_path = current_project.getBaseDir().getCanonicalPath();
 
@@ -98,6 +103,11 @@ public class RunSimulatorMenu extends AnAction {
             ex.printStackTrace();
         }
 
+    }
+
+    @Override
+    public ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT; // Use EDT (Event Dispatch Thread)
     }
 
 }

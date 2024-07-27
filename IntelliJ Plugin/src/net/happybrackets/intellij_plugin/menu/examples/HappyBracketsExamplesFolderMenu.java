@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu.examples;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -78,5 +79,10 @@ public class HappyBracketsExamplesFolderMenu extends DefaultActionGroup {
             this.add(folder_group);
         }
         return true;
+    }
+
+    @Override
+    public ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT; // Use EDT (Event Dispatch Thread)
     }
 }

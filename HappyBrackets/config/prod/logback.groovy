@@ -3,8 +3,9 @@ statusListener(OnConsoleStatusListener)
 
 appender("STDOUT", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
-        pattern = "%level %logger - %msg%n"
+        pattern = "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
     }
 }
+
 
 root(ERROR, ["STDOUT"])

@@ -1,6 +1,7 @@
 package net.happybrackets.intellij_plugin.menu.global;
 
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
@@ -46,6 +47,10 @@ public class GetDeviceAddressesAction extends AnAction {
     @Override
     public void update(AnActionEvent event) {
         try {
+            if(ControllerEngine.getInstance().getDeviceConnection() == null){
+                System.out.println("getAllActiveDevices == null!!");
+                return;
+            }
             List<LocalDeviceRepresentation> device_address = ControllerEngine.getInstance().getDeviceConnection().getAllActiveDevices();
 
             event.getPresentation().setEnabled(device_address.size() > 0);
@@ -54,5 +59,9 @@ public class GetDeviceAddressesAction extends AnAction {
             ex.printStackTrace();
         }
 
+    }
+    @Override
+    public ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT; // Use EDT (Event Dispatch Thread)
     }
 }

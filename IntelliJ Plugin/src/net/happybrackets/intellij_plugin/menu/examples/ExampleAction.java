@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu.examples;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -44,5 +45,10 @@ public class ExampleAction extends AnAction {
             ex.printStackTrace();
         }
 
+    }
+
+    @Override
+    public ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT; // Use EDT (Event Dispatch Thread)
     }
 }

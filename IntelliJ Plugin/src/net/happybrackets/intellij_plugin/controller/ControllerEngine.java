@@ -10,20 +10,24 @@ import net.happybrackets.intellij_plugin.controller.network.ControllerAdvertiser
 import net.happybrackets.intellij_plugin.controller.network.DeviceConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+//import ch.qos.logback.classic.;
+//import ch.qos.logback.classic.Logger;
 
 import java.io.IOException;
 
 public class ControllerEngine {
 
-    final static Logger logger = LoggerFactory.getLogger(ControllerEngine.class);
+
+    private boolean controllerStarted = false;
     private static ControllerEngine ourInstance = new ControllerEngine();
+    final static Logger logger = LoggerFactory.getLogger(ControllerEngine.class);
+
     protected ControllerAdvertiser controllerAdvertiser;     //runs independently, no interaction needed
     DeviceConnection deviceConnection = null;
     ControllerConfig controllerConfig;
     ControllerSettings settings;
     String currentConfigString;
 
-    private boolean controllerStarted = false;
     private FileServer httpServer;
 
     private ControllerEngine() {

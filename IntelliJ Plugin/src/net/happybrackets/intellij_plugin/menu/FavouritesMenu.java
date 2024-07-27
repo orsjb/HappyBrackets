@@ -1,5 +1,6 @@
 package net.happybrackets.intellij_plugin.menu;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import net.happybrackets.intellij_plugin.controller.ControllerEngine;
@@ -13,7 +14,10 @@ public class FavouritesMenu extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         try {
-
+            if(ControllerEngine.getInstance().getDeviceConnection()== null){
+                System.out.println("getDeviceConnection == null!!");
+                return;
+            }
             DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
             boolean showing_favourites = connection.isShowOnlyFavourites();
             connection.setShowOnlyFavourites(!showing_favourites);
@@ -25,7 +29,10 @@ public class FavouritesMenu extends AnAction {
     @Override
     public void update(AnActionEvent event) {
         try {
-
+            if(ControllerEngine.getInstance().getDeviceConnection()== null){
+                System.out.println("getDeviceConnection == null!!");
+                return;
+            }
             DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
 
             boolean showing_favourites = connection.isShowOnlyFavourites();
@@ -40,5 +47,9 @@ public class FavouritesMenu extends AnAction {
             ex.printStackTrace();
         }
 
+    }
+    @Override
+    public ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT; // Use EDT (Event Dispatch Thread)
     }
 }

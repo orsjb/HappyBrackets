@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HappyBrackets.iml" filepath="$PROJECT_DIR$/HappyBrackets.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HappyBrackets.main.iml" filepath="$PROJECT_DIR$/.idea/modules/HappyBrackets.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HappyBrackets.test.iml" filepath="$PROJECT_DIR$/.idea/modules/HappyBrackets.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HappyBrackets.iml" filepath="$PROJECT_DIR$/.idea/modules/HappyBrackets.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HappyBrackets.main.iml" filepath="$PROJECT_DIR$/HappyBrackets.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HappyBrackets.test.iml" filepath="$PROJECT_DIR$/HappyBrackets.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.iml" filepath="$PROJECT_DIR$/../IntelliJ Plugin/HappyBrackets_IntelliJ_Plugin.iml" />
     </modules>
   </component>
 </project>
