@@ -208,14 +208,47 @@ public class IntelliJPluginGUIManager {
 		DeviceConnection connection = ControllerEngine.getInstance().getDeviceConnection();
 
 		TitledPane device_pane = new TitledPane(connection.isShowOnlyFavourites()? DEVICE_FAVOURITES: DEVICES_TEXT, makeDevicePane());
-		ControllerEngine.getInstance().getDeviceConnection().
+		connection.
 				addFavouritesChangedListener(enabled -> {
-					Platform.runLater(new Runnable() {
-						@Override public void run() {
-							device_pane.textProperty().setValue(enabled? DEVICE_FAVOURITES: DEVICES_TEXT);
+					ObservableList<LocalDeviceRepresentation> devices = connection.getDevices();
+					int num_devices = 0;
+					int connected_devices = 0;
+					for (LocalDeviceRepresentation device: devices) {
+						num_devices++;
+						if (device.getIsConnected()){
+							connected_devices++;
 						}
+					}
+					int finalNum_devices = num_devices;
+					int finalConnected_devices = connected_devices;
+					Platform.runLater(() -> {
+						String title = enabled? DEVICE_FAVOURITES: DEVICES_TEXT;
+						title = title + " (" + finalConnected_devices + "/" + finalNum_devices + ")";
+						device_pane.textProperty().setValue(title);
 					});
 				});
+
+		LocalDeviceRepresentation.addDeviceConnectedUpdateListener((localdevice, connected) -> {
+			boolean enabled = connection.isShowOnlyFavourites();
+			ObservableList<LocalDeviceRepresentation> devices = connection.getDevices();
+			int num_devices = 0;
+			int connected_devices = 0;
+			for (LocalDeviceRepresentation device: devices) {
+				num_devices++;
+				if (device.getIsConnected()){
+					connected_devices++;
+				}
+			}
+			int finalNum_devices = num_devices;
+			int finalConnected_devices = connected_devices;
+			Platform.runLater(() -> {
+				String title = enabled? DEVICE_FAVOURITES: DEVICES_TEXT;
+				title = title + " (" + finalConnected_devices + "/" + finalNum_devices + ")";
+				device_pane.textProperty().setValue(title);
+			});
+
+		});
+
 		//TitledPane config_pane = new TitledPane("Configuration", makeConfigurationPane(0));
 		//TitledPane known_devices_pane = new TitledPane("Known Devices", makeConfigurationPane(1));
 		//TitledPane global_pane = new TitledPane("Global Management", makeGlobalPane());
@@ -250,6 +283,7 @@ public class IntelliJPluginGUIManager {
 		main_scroll.setContent(main_container);
 
 		deviceListView.prefWidthProperty().bind(main_scroll.widthProperty().subtract(4));
+		deviceListView.prefHeightProperty().bind(main_scroll.heightProperty());
 
 		//finally update composition path
 		updateCompositionPath(compositionsPath);
