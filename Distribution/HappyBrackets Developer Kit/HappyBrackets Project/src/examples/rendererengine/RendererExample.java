@@ -11,33 +11,33 @@ import net.happybrackets.rendererengine.*;
 import java.lang.invoke.MethodHandles;
 
 /**
- * This sketch shows how to extends the Renderer classes in the new Renderer Engine.
+ * This sketch shows how to extend the Renderer classes in the new Renderer Engine.
  */
 public class RendererExample extends Renderer implements HBAction {
 
     /**
-     * Replace de default interval parameter of the RendererController internal clock. Default is 50.
+     * Replace the default interval parameter of the RendererController internal clock. Default is 50.
      */
     public static int clockInterval = 50;
 
     /**
-     * Replace de default interval parameter of the RendererController for the OSC receiver for HB Annotations. Default is 9002.
+     * Replace the default interval parameter of the RendererController for the OSC receiver for HB Annotations. Default is 9002.
      */
     public static int oscPort = 6000;
 
     /**
-     * Determined the path of the hardware configuration file to be loaded by the RendererControlle.loadHardwareConfiguration()
+     * Determine the path of the hardware configuration file to be loaded by the RendererController. Calls loadHardwareConfiguration()
      */
     public static String installationConfig = "config/hardware_setup_casula.csv";
 
     /**
-     * Define the rendering mode.
+     * Define the rendering mode. (REAL or UNITY)
      */
     public static RendererController.RenderMode renderMode = RendererController.RenderMode.UNITY;
 
     /**
      * This field becomes automatically exposed to OSC control > i.e., the message "/armX 0.5" would set the value of armX.
-     * It can handles the following type: String, OSCMessage, float, int and boolean.
+     * It can handle the following type: String, OSCMessage, float, int and boolean.
      */
     @HBParam
     public float armX;
@@ -67,7 +67,7 @@ public class RendererExample extends Renderer implements HBAction {
     }
 
     /**
-     * When extending Renderer, a setupAudio can be define to set anything that needs to be set for a Audio/Speaker Renderer
+     * When extending Renderer, a setupAudio can be defined to set anything that needs to be set for a Audio/Speaker Renderer
      * To be executed once when a Light renderer is added to the RendererController list.
      */
     @Override
@@ -85,7 +85,7 @@ public class RendererExample extends Renderer implements HBAction {
     }
 
     /**
-     * When extending Renderer, a setupLight can be define to set anything that needs to be set for a Light Renderer
+     * When extending Renderer, a setupLight can be defined to set anything that needs to be set for a Light Renderer
      * To be executed once when a Light renderer is added to the RendererController list.
      */
     @Override
